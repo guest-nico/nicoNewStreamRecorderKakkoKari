@@ -1,0 +1,231 @@
+C:\Users\zack\Desktop\c# project\namaichi 5.21\namaichi\obj\Debug\namaichi.csprojResolveAssemblyReference.cache
+C:\Users\zack\Desktop\c# project\namaichi 5.21\namaichi\obj\Debug\namaichi.fileNameOptionForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.21\namaichi\obj\Debug\namaichi.MainForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.21\namaichi\obj\Debug\namaichi.optionForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.21\namaichi\obj\Debug\namaichi.csproj.GenerateResource.Cache
+C:\Users\zack\Desktop\c# project\namaichi 5.21\namaichi\bin\Debug\namaichi.exe.config
+C:\Users\zack\Desktop\c# project\namaichi 5.21\namaichi\bin\Debug\namaichi.exe
+C:\Users\zack\Desktop\c# project\namaichi 5.21\namaichi\bin\Debug\namaichi.pdb
+C:\Users\zack\Desktop\c# project\namaichi 5.21\namaichi\bin\Debug\Microsoft.Web.XmlTransform.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.21\namaichi\bin\Debug\Newtonsoft.Json.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.21\namaichi\bin\Debug\SnkLib.App.CookieGetter.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.21\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.21\namaichi\bin\Debug\SuperSocket.ClientEngine.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.21\namaichi\bin\Debug\System.Data.SQLite.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.21\namaichi\bin\Debug\WebSocket4Net.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.21\namaichi\bin\Debug\Newtonsoft.Json.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.21\namaichi\bin\Debug\SnkLib.App.CookieGetter.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.21\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.21\namaichi\bin\Debug\System.Data.SQLite.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.21\namaichi\obj\Debug\namaichi.exe
+C:\Users\zack\Desktop\c# project\namaichi 5.21\namaichi\obj\Debug\namaichi.pdb
+C:\Users\pc\Desktop\namaichi 5.23\namaichi 5.21\namaichi\obj\Debug\namaichi.csprojResolveAssemblyReference.cache
+C:\Users\pc\Desktop\namaichi 5.23\namaichi 5.21\namaichi\obj\Debug\namaichi.fileNameOptionForm.resources
+C:\Users\pc\Desktop\namaichi 5.23\namaichi 5.21\namaichi\obj\Debug\namaichi.MainForm.resources
+C:\Users\pc\Desktop\namaichi 5.23\namaichi 5.21\namaichi\obj\Debug\namaichi.optionForm.resources
+C:\Users\pc\Desktop\namaichi 5.23\namaichi 5.21\namaichi\obj\Debug\namaichi.csproj.GenerateResource.Cache
+C:\Users\pc\Desktop\namaichi 5.23\namaichi 5.21\namaichi\obj\Debug\namaichi.exe
+C:\Users\pc\Desktop\namaichi 5.23\namaichi 5.21\namaichi\bin\Debug\namaichi.exe.config
+C:\Users\pc\Desktop\namaichi 5.23\namaichi 5.21\namaichi\bin\Debug\namaichi.exe
+C:\Users\pc\Desktop\namaichi 5.23\namaichi 5.21\namaichi\bin\Debug\namaichi.pdb
+C:\Users\pc\Desktop\namaichi 5.23\namaichi 5.21\namaichi\bin\Debug\Microsoft.Web.XmlTransform.dll
+C:\Users\pc\Desktop\namaichi 5.23\namaichi 5.21\namaichi\bin\Debug\Newtonsoft.Json.dll
+C:\Users\pc\Desktop\namaichi 5.23\namaichi 5.21\namaichi\bin\Debug\SnkLib.App.CookieGetter.dll
+C:\Users\pc\Desktop\namaichi 5.23\namaichi 5.21\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.dll
+C:\Users\pc\Desktop\namaichi 5.23\namaichi 5.21\namaichi\bin\Debug\SuperSocket.ClientEngine.dll
+C:\Users\pc\Desktop\namaichi 5.23\namaichi 5.21\namaichi\bin\Debug\System.Data.SQLite.dll
+C:\Users\pc\Desktop\namaichi 5.23\namaichi 5.21\namaichi\bin\Debug\WebSocket4Net.dll
+C:\Users\pc\Desktop\namaichi 5.23\namaichi 5.21\namaichi\bin\Debug\Newtonsoft.Json.xml
+C:\Users\pc\Desktop\namaichi 5.23\namaichi 5.21\namaichi\bin\Debug\SnkLib.App.CookieGetter.xml
+C:\Users\pc\Desktop\namaichi 5.23\namaichi 5.21\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.xml
+C:\Users\pc\Desktop\namaichi 5.23\namaichi 5.21\namaichi\bin\Debug\System.Data.SQLite.xml
+C:\Users\pc\Desktop\namaichi 5.23\namaichi 5.21\namaichi\obj\Debug\namaichi.pdb
+C:\Users\zack\Desktop\c# project\namaichi 5.24\namaichi 5.21\namaichi\bin\Debug\namaichi.exe.config
+C:\Users\zack\Desktop\c# project\namaichi 5.24\namaichi 5.21\namaichi\bin\Debug\namaichi.exe
+C:\Users\zack\Desktop\c# project\namaichi 5.24\namaichi 5.21\namaichi\bin\Debug\namaichi.pdb
+C:\Users\zack\Desktop\c# project\namaichi 5.24\namaichi 5.21\namaichi\bin\Debug\Microsoft.Web.XmlTransform.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.24\namaichi 5.21\namaichi\bin\Debug\Newtonsoft.Json.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.24\namaichi 5.21\namaichi\bin\Debug\SnkLib.App.CookieGetter.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.24\namaichi 5.21\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.24\namaichi 5.21\namaichi\bin\Debug\SuperSocket.ClientEngine.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.24\namaichi 5.21\namaichi\bin\Debug\System.Data.SQLite.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.24\namaichi 5.21\namaichi\bin\Debug\WebSocket4Net.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.24\namaichi 5.21\namaichi\bin\Debug\Newtonsoft.Json.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.24\namaichi 5.21\namaichi\bin\Debug\SnkLib.App.CookieGetter.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.24\namaichi 5.21\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.24\namaichi 5.21\namaichi\bin\Debug\System.Data.SQLite.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.24\namaichi 5.21\namaichi\obj\Debug\namaichi.csprojResolveAssemblyReference.cache
+C:\Users\zack\Desktop\c# project\namaichi 5.24\namaichi 5.21\namaichi\obj\Debug\namaichi.fileNameOptionForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.24\namaichi 5.21\namaichi\obj\Debug\namaichi.MainForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.24\namaichi 5.21\namaichi\obj\Debug\namaichi.optionForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.24\namaichi 5.21\namaichi\obj\Debug\namaichi.csproj.GenerateResource.Cache
+C:\Users\zack\Desktop\c# project\namaichi 5.24\namaichi 5.21\namaichi\obj\Debug\namaichi.exe
+C:\Users\zack\Desktop\c# project\namaichi 5.24\namaichi 5.21\namaichi\obj\Debug\namaichi.pdb
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2\namaichi 5.21\namaichi\obj\Debug\namaichi.csprojResolveAssemblyReference.cache
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2\namaichi 5.21\namaichi\obj\Debug\namaichi.fileNameOptionForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2\namaichi 5.21\namaichi\obj\Debug\namaichi.MainForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2\namaichi 5.21\namaichi\obj\Debug\namaichi.optionForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2\namaichi 5.21\namaichi\obj\Debug\namaichi.csproj.GenerateResource.Cache
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2\namaichi 5.21\namaichi\obj\Debug\namaichi.exe
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2\namaichi 5.21\namaichi\bin\Debug\namaichi.exe.config
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2\namaichi 5.21\namaichi\bin\Debug\namaichi.exe
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2\namaichi 5.21\namaichi\bin\Debug\namaichi.pdb
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2\namaichi 5.21\namaichi\bin\Debug\Microsoft.Web.XmlTransform.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2\namaichi 5.21\namaichi\bin\Debug\Newtonsoft.Json.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2\namaichi 5.21\namaichi\bin\Debug\SnkLib.App.CookieGetter.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2\namaichi 5.21\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2\namaichi 5.21\namaichi\bin\Debug\SuperSocket.ClientEngine.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2\namaichi 5.21\namaichi\bin\Debug\System.Data.SQLite.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2\namaichi 5.21\namaichi\bin\Debug\WebSocket4Net.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2\namaichi 5.21\namaichi\bin\Debug\Newtonsoft.Json.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2\namaichi 5.21\namaichi\bin\Debug\SnkLib.App.CookieGetter.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2\namaichi 5.21\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2\namaichi 5.21\namaichi\bin\Debug\System.Data.SQLite.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2\namaichi 5.21\namaichi\obj\Debug\namaichi.pdb
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2 - コピー\namaichi 5.21\namaichi\obj\Debug\namaichi.csprojResolveAssemblyReference.cache
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2 - コピー\namaichi 5.21\namaichi\obj\Debug\namaichi.exe
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2 - コピー\namaichi 5.21\namaichi\obj\Debug\namaichi.pdb
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2 - コピー\namaichi 5.21\namaichi\bin\Debug\namaichi.exe.config
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2 - コピー\namaichi 5.21\namaichi\bin\Debug\namaichi.exe
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2 - コピー\namaichi 5.21\namaichi\bin\Debug\namaichi.pdb
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2 - コピー\namaichi 5.21\namaichi\bin\Debug\Microsoft.Web.XmlTransform.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2 - コピー\namaichi 5.21\namaichi\bin\Debug\Newtonsoft.Json.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2 - コピー\namaichi 5.21\namaichi\bin\Debug\SnkLib.App.CookieGetter.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2 - コピー\namaichi 5.21\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2 - コピー\namaichi 5.21\namaichi\bin\Debug\SuperSocket.ClientEngine.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2 - コピー\namaichi 5.21\namaichi\bin\Debug\System.Data.SQLite.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2 - コピー\namaichi 5.21\namaichi\bin\Debug\WebSocket4Net.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2 - コピー\namaichi 5.21\namaichi\bin\Debug\Newtonsoft.Json.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2 - コピー\namaichi 5.21\namaichi\bin\Debug\SnkLib.App.CookieGetter.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2 - コピー\namaichi 5.21\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2 - コピー\namaichi 5.21\namaichi\bin\Debug\System.Data.SQLite.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2 - コピー\namaichi 5.21\namaichi\obj\Debug\namaichi.fileNameOptionForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2 - コピー\namaichi 5.21\namaichi\obj\Debug\namaichi.MainForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2 - コピー\namaichi 5.21\namaichi\obj\Debug\namaichi.optionForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.24 mainform修正2 - コピー\namaichi 5.21\namaichi\obj\Debug\namaichi.csproj.GenerateResource.Cache
+C:\Users\pc\Desktop\namaichi 5.26\namaichi\obj\Debug\namaichi.csprojResolveAssemblyReference.cache
+C:\Users\pc\Desktop\namaichi 5.26\namaichi\obj\Debug\namaichi.fileNameOptionForm.resources
+C:\Users\pc\Desktop\namaichi 5.26\namaichi\obj\Debug\namaichi.MainForm.resources
+C:\Users\pc\Desktop\namaichi 5.26\namaichi\obj\Debug\namaichi.optionForm.resources
+C:\Users\pc\Desktop\namaichi 5.26\namaichi\obj\Debug\namaichi.csproj.GenerateResource.Cache
+C:\Users\pc\Desktop\namaichi 5.26\namaichi\obj\Debug\namaichi.exe
+C:\Users\pc\Desktop\namaichi 5.26\namaichi\bin\Debug\namaichi.exe.config
+C:\Users\pc\Desktop\namaichi 5.26\namaichi\bin\Debug\namaichi.exe
+C:\Users\pc\Desktop\namaichi 5.26\namaichi\bin\Debug\namaichi.pdb
+C:\Users\pc\Desktop\namaichi 5.26\namaichi\bin\Debug\Microsoft.Web.XmlTransform.dll
+C:\Users\pc\Desktop\namaichi 5.26\namaichi\bin\Debug\Newtonsoft.Json.dll
+C:\Users\pc\Desktop\namaichi 5.26\namaichi\bin\Debug\SnkLib.App.CookieGetter.dll
+C:\Users\pc\Desktop\namaichi 5.26\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.dll
+C:\Users\pc\Desktop\namaichi 5.26\namaichi\bin\Debug\SuperSocket.ClientEngine.dll
+C:\Users\pc\Desktop\namaichi 5.26\namaichi\bin\Debug\System.Data.SQLite.dll
+C:\Users\pc\Desktop\namaichi 5.26\namaichi\bin\Debug\WebSocket4Net.dll
+C:\Users\pc\Desktop\namaichi 5.26\namaichi\bin\Debug\Newtonsoft.Json.xml
+C:\Users\pc\Desktop\namaichi 5.26\namaichi\bin\Debug\SnkLib.App.CookieGetter.xml
+C:\Users\pc\Desktop\namaichi 5.26\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.xml
+C:\Users\pc\Desktop\namaichi 5.26\namaichi\bin\Debug\System.Data.SQLite.xml
+C:\Users\pc\Desktop\namaichi 5.26\namaichi\obj\Debug\namaichi.pdb
+C:\Users\zack\Desktop\c# project\namaichi 5.27\namaichi\bin\Debug\namaichi.exe.config
+C:\Users\zack\Desktop\c# project\namaichi 5.27\namaichi\bin\Debug\namaichi.exe
+C:\Users\zack\Desktop\c# project\namaichi 5.27\namaichi\bin\Debug\namaichi.pdb
+C:\Users\zack\Desktop\c# project\namaichi 5.27\namaichi\bin\Debug\Microsoft.Web.XmlTransform.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.27\namaichi\bin\Debug\Newtonsoft.Json.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.27\namaichi\bin\Debug\SnkLib.App.CookieGetter.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.27\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.27\namaichi\bin\Debug\SuperSocket.ClientEngine.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.27\namaichi\bin\Debug\System.Data.SQLite.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.27\namaichi\bin\Debug\WebSocket4Net.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.27\namaichi\bin\Debug\Newtonsoft.Json.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.27\namaichi\bin\Debug\SnkLib.App.CookieGetter.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.27\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.27\namaichi\bin\Debug\System.Data.SQLite.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.27\namaichi\obj\Debug\namaichi.csprojResolveAssemblyReference.cache
+C:\Users\zack\Desktop\c# project\namaichi 5.27\namaichi\obj\Debug\namaichi.fileNameOptionForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.27\namaichi\obj\Debug\namaichi.MainForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.27\namaichi\obj\Debug\namaichi.optionForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.27\namaichi\obj\Debug\namaichi.csproj.GenerateResource.Cache
+C:\Users\zack\Desktop\c# project\namaichi 5.27\namaichi\obj\Debug\namaichi.exe
+C:\Users\zack\Desktop\c# project\namaichi 5.27\namaichi\obj\Debug\namaichi.pdb
+C:\Users\pc\Desktop\namaichi 5.28\namaichi 5.27\namaichi\obj\Debug\namaichi.csprojResolveAssemblyReference.cache
+C:\Users\pc\Desktop\namaichi 5.28\namaichi 5.27\namaichi\obj\Debug\namaichi.fileNameOptionForm.resources
+C:\Users\pc\Desktop\namaichi 5.28\namaichi 5.27\namaichi\obj\Debug\namaichi.MainForm.resources
+C:\Users\pc\Desktop\namaichi 5.28\namaichi 5.27\namaichi\obj\Debug\namaichi.optionForm.resources
+C:\Users\pc\Desktop\namaichi 5.28\namaichi 5.27\namaichi\obj\Debug\namaichi.csproj.GenerateResource.Cache
+C:\Users\pc\Desktop\namaichi 5.28\namaichi 5.27\namaichi\obj\Debug\namaichi.exe
+C:\Users\pc\Desktop\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\namaichi.exe.config
+C:\Users\pc\Desktop\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\namaichi.exe
+C:\Users\pc\Desktop\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\namaichi.pdb
+C:\Users\pc\Desktop\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\Microsoft.Web.XmlTransform.dll
+C:\Users\pc\Desktop\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\Newtonsoft.Json.dll
+C:\Users\pc\Desktop\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\SnkLib.App.CookieGetter.dll
+C:\Users\pc\Desktop\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.dll
+C:\Users\pc\Desktop\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\SuperSocket.ClientEngine.dll
+C:\Users\pc\Desktop\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\System.Data.SQLite.dll
+C:\Users\pc\Desktop\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\WebSocket4Net.dll
+C:\Users\pc\Desktop\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\Newtonsoft.Json.xml
+C:\Users\pc\Desktop\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\SnkLib.App.CookieGetter.xml
+C:\Users\pc\Desktop\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.xml
+C:\Users\pc\Desktop\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\System.Data.SQLite.xml
+C:\Users\pc\Desktop\namaichi 5.28\namaichi 5.27\namaichi\obj\Debug\namaichi.pdb
+C:\Users\zack\Desktop\c# project\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\namaichi.exe.config
+C:\Users\zack\Desktop\c# project\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\namaichi.exe
+C:\Users\zack\Desktop\c# project\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\namaichi.pdb
+C:\Users\zack\Desktop\c# project\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\Microsoft.Web.XmlTransform.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\Newtonsoft.Json.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\SnkLib.App.CookieGetter.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\SuperSocket.ClientEngine.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\System.Data.SQLite.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\WebSocket4Net.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\Newtonsoft.Json.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\SnkLib.App.CookieGetter.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.28\namaichi 5.27\namaichi\bin\Debug\System.Data.SQLite.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.28\namaichi 5.27\namaichi\obj\Debug\namaichi.csprojResolveAssemblyReference.cache
+C:\Users\zack\Desktop\c# project\namaichi 5.28\namaichi 5.27\namaichi\obj\Debug\namaichi.fileNameOptionForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.28\namaichi 5.27\namaichi\obj\Debug\namaichi.MainForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.28\namaichi 5.27\namaichi\obj\Debug\namaichi.optionForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.28\namaichi 5.27\namaichi\obj\Debug\namaichi.csproj.GenerateResource.Cache
+C:\Users\zack\Desktop\c# project\namaichi 5.28\namaichi 5.27\namaichi\obj\Debug\namaichi.exe
+C:\Users\zack\Desktop\c# project\namaichi 5.28\namaichi 5.27\namaichi\obj\Debug\namaichi.pdb
+C:\Users\zack\Desktop\c# project\namaichi 5.28 - コピー\namaichi 5.27\namaichi\bin\Debug\nicoNewStreamRecorderKakkoKari.exe.config
+C:\Users\zack\Desktop\c# project\namaichi 5.28 - コピー\namaichi 5.27\namaichi\bin\Debug\nicoNewStreamRecorderKakkoKari.exe
+C:\Users\zack\Desktop\c# project\namaichi 5.28 - コピー\namaichi 5.27\namaichi\bin\Debug\nicoNewStreamRecorderKakkoKari.pdb
+C:\Users\zack\Desktop\c# project\namaichi 5.28 - コピー\namaichi 5.27\namaichi\bin\Debug\Microsoft.Web.XmlTransform.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.28 - コピー\namaichi 5.27\namaichi\bin\Debug\Newtonsoft.Json.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.28 - コピー\namaichi 5.27\namaichi\bin\Debug\SnkLib.App.CookieGetter.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.28 - コピー\namaichi 5.27\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.28 - コピー\namaichi 5.27\namaichi\bin\Debug\SuperSocket.ClientEngine.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.28 - コピー\namaichi 5.27\namaichi\bin\Debug\System.Data.SQLite.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.28 - コピー\namaichi 5.27\namaichi\bin\Debug\WebSocket4Net.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.28 - コピー\namaichi 5.27\namaichi\bin\Debug\Newtonsoft.Json.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.28 - コピー\namaichi 5.27\namaichi\bin\Debug\SnkLib.App.CookieGetter.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.28 - コピー\namaichi 5.27\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.28 - コピー\namaichi 5.27\namaichi\bin\Debug\System.Data.SQLite.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.28 - コピー\namaichi 5.27\namaichi\obj\Debug\namaichi.csprojResolveAssemblyReference.cache
+C:\Users\zack\Desktop\c# project\namaichi 5.28 - コピー\namaichi 5.27\namaichi\obj\Debug\namaichi.fileNameOptionForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.28 - コピー\namaichi 5.27\namaichi\obj\Debug\namaichi.MainForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.28 - コピー\namaichi 5.27\namaichi\obj\Debug\namaichi.optionForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.28 - コピー\namaichi 5.27\namaichi\obj\Debug\namaichi.csproj.GenerateResource.Cache
+C:\Users\zack\Desktop\c# project\namaichi 5.28 - コピー\namaichi 5.27\namaichi\obj\Debug\nicoNewStreamRecorderKakkoKari.exe
+C:\Users\zack\Desktop\c# project\namaichi 5.28 - コピー\namaichi 5.27\namaichi\obj\Debug\nicoNewStreamRecorderKakkoKari.pdb
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\bin\Debug\nicoNewStreamRecorderKakkoKari.exe.config
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\bin\Debug\nicoNewStreamRecorderKakkoKari.exe
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\bin\Debug\nicoNewStreamRecorderKakkoKari.pdb
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\bin\Debug\Microsoft.Web.XmlTransform.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\bin\Debug\Newtonsoft.Json.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\bin\Debug\SnkLib.App.CookieGetter.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\bin\Debug\SuperSocket.ClientEngine.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\bin\Debug\System.Data.SQLite.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\bin\Debug\WebSocket4Net.dll
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\bin\Debug\Newtonsoft.Json.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\bin\Debug\SnkLib.App.CookieGetter.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\bin\Debug\System.Data.SQLite.xml
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\obj\Debug\namaichi.csprojResolveAssemblyReference.cache
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\obj\Debug\namaichi.fileNameOptionForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\obj\Debug\namaichi.MainForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\obj\Debug\namaichi.optionForm.resources
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\obj\Debug\namaichi.csproj.GenerateResource.Cache
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\obj\Debug\nicoNewStreamRecorderKakkoKari.exe
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\obj\Debug\nicoNewStreamRecorderKakkoKari.pdb

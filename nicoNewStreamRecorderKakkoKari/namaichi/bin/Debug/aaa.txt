@@ -1,0 +1,6 @@
+Width
+Width 648
+Height
+Height 400
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\bin\Debug nicoNewStreamRecorderKakkoKari exe
+C:\Users\zack\Desktop\c# project\namaichi 5.30\namaichi 5.27\namaichi\bin\Debug nicoNewStreamRecorderKakkoKari exe
