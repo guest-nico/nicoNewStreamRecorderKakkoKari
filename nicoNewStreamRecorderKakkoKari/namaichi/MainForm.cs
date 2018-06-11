@@ -64,11 +64,12 @@ namespace namaichi
 			System.Diagnostics.Debug.WriteLine(args);
 			
 			//test
+			/*
 			var name = (args.Length == 0) ? "aaa" : util.getRegGroup(args[0], "(lv\\d+)");
 			System.Diagnostics.DefaultTraceListener dtl
 		      = (System.Diagnostics.DefaultTraceListener)System.Diagnostics.Debug.Listeners["Default"];
 			dtl.LogFileName = util.getJarPath()[0] + "/" + name + ".txt";
-
+			*/
 		    
 			
 			//test

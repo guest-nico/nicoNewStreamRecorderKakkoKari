@@ -34,7 +34,7 @@ namespace namaichi.rec
 		public int rec(string url, string lvid) {
 			//endcode 0-その他の理由 1-stop 2-最初に終了 3-始まった後に番組終了
 			System.Diagnostics.Debug.WriteLine("RecordFromUrl rec");
-			var pageType = this.getPageType(url);
+			var pageType = this.getPageType(url, true);
 			if (container == null) {
 				rm.form.addLogText("ログインに失敗しました。" + lvid);
 				if (bool.Parse(rm.cfg.get("IsmessageBox"))) {
@@ -157,7 +157,7 @@ namespace namaichi.rec
             
 
 		}
-		public int getPageType(string url) {
+		public int getPageType(string url, bool isLogin = false) {
 			while (this == rm.rfu) {
 				try {
 					var cg = new CookieGetter(rm.cfg);
@@ -167,6 +167,10 @@ namespace namaichi.rec
 					
 		//			cgret.ConfigureAwait(false);
 					if (cgret == null || cgret.Result == null) {
+					if (isLogin) {	
+						rm.form.addLogText("ログインに失敗しました。");
+						isLogin = false;
+					}
 						System.Threading.Thread.Sleep(3000);
 						continue;
 					}
@@ -186,6 +190,10 @@ namespace namaichi.rec
 				} catch (Exception e) {
 					System.Diagnostics.Debug.WriteLine(e.Message + " " + e.StackTrace);
 					System.Threading.Thread.Sleep(3000);
+					if (isLogin) {	
+						rm.form.addLogText("ログインに失敗しました。");
+						isLogin = false;
+					}
 				}
 			}
 			return 5;
