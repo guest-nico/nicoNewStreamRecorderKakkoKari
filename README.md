@@ -1,12 +1,12 @@
 ## ニコ生 新配信録画ツール（仮）
 
 ニコ生のHLS新配信を録画するツールです。
-ここまで一人で作っておりましたが、再現性の低い不具合に対する
-一人での限界、
-当方の技術的時間的問題、そして一人のニコ生録画ユーザーとしてより完成度の高いツールを作るために
+一人のニコ生録画ユーザーとしてより完成度の高いツールを作るために
 今後はgithubで進めていくことにいたしました。
 このツールを改良していただいても、もし参考になるところがあれば
-ソースを使っていただいても構いません。
+ソースを使って別のツールを作っていただいても構いません。
+ただし、ffmpegやCookieGetterがGPLのため、このツールやこのツールから派生するツールも
+GPLライセンスとなります
 リファクタリング大歓迎です。
 
 ## ライセンス
@@ -34,8 +34,5 @@ https://www.newtonsoft.com/json
 #config
 config: 設定ファイル
 #info
-ChatInfo: 
+ChatInfo: コメントの送受信を表す
 
-## Rename a file
-
-You can rename the current file by clicking the file name in the navigation bar or by clicking the **Rename** button in the file explorer.
