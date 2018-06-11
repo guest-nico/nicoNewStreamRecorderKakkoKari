@@ -152,7 +152,9 @@ namespace namaichi.rec
 			try {
 				pageSource = util.getPageSource(url + "", ref headers, cc);
 			} catch (Exception e) {
-				System.Diagnostics.Debug.WriteLine(e.Message+e.StackTrace);
+				System.Diagnostics.Debug.WriteLine("cookiegetter ishtml5login " + e.Message+e.StackTrace);
+				pageSource = "";
+				return false;
 			}
 //			isHtml5 = (headers.Get("Location") == null) ? false : true;
 			

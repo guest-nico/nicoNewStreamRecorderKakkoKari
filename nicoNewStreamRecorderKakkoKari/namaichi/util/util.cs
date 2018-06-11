@@ -84,13 +84,14 @@ class util {
 		for (int i = 0; i < 1000000; i++) {
 			//ナツココ_co3387528(ドル円死亡遊戯)_lv298866554(ドル円死亡遊戯)0
 			string name = dirPath + "/" + getFileName(host, group, title, lvId, communityNum,  cfg) + i;
+			
 			//string name = dirPath + "/" + host + "_" + communityNum + "(" + group + ")_" + lvId + "(" + title + ")" + i + "";
 			
 //			if (i == 54) return new String[]{dirPath, name};
 			
 			if (File.Exists(name + ".ts")) continue;
 			
-//			System.Diagnostics.Debug.WriteLine(dirPath + " " + name);
+			System.Diagnostics.Debug.WriteLine(dirPath + " " + name);
 			string[] ret = {dirPath, name};
 			return ret;
 		}
@@ -122,7 +123,7 @@ class util {
 		var month = (_hiduke.Month < 10) ? ("0" + _hiduke.Month.ToString()) : (_hiduke.Month.ToString());
 		var day = (_hiduke.Day < 10) ? ("0" + _hiduke.Day.ToString()) : (_hiduke.Day.ToString());
 		var hiduke = _hiduke.Year + "年" + month + "月" + day + "日";
-		if (n == null) return n = "1";
+		if (n == null) n = "1";
 		if (n == "1") return host + "_" + communityNum + "(" + group + ")_" + lvId + "(" + title + ")";
 		else if (n == "2") return communityNum + "(" + group + ")_" + host + "_" + lvId + "(" + title + ")";
 		
@@ -194,6 +195,7 @@ class util {
 				return resStr;
 			} catch (Exception e) {
 				System.Diagnostics.Debug.WriteLine(e.Message+e.StackTrace);
+				System.Threading.Thread.Sleep(3000);
 				continue;
 			}
 		}
@@ -208,6 +210,7 @@ class util {
 		else if (util.getRegGroup(res, "(に終了いたしました)") != null) return 2;
 		else if (util.getRegGroup(res, "(<archive>1</archive>)") != null) return 3;
 		else if (util.getRegGroup(res, "(コミュニティフォロワー限定番組です。<br>)") != null) return 4;
+		else if (util.getRegGroup(res, "(チャンネル会員限定番組です。<br>)") != null) return 4;
 		else if (util.getRegGroup(res, "(<h3>【会場のご案内】</h3>)") != null) return 6;
 		else return 5;
 	}

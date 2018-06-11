@@ -158,18 +158,24 @@ namespace namaichi.rec
 
 		}
 		public int getPageType(string url) {
-			for (int i = 0; i < 3; i++) {
+			while (this == rm.rfu) {
 				try {
 					var cg = new CookieGetter(rm.cfg);
 					var cgret = cg.getHtml5RecordCookie(url);
 					cgret.Wait();
+					                                  
 					
 		//			cgret.ConfigureAwait(false);
-					if (cgret == null || cgret.Result == null) continue;
+					if (cgret == null || cgret.Result == null) {
+						System.Threading.Thread.Sleep(3000);
+						continue;
+					}
 		//			if (cgret == null) return true;
 					container = cgret.Result;
 	//				System.Diagnostics.Debug.WriteLine("a2a");
 					
+
+	
 					res = cg.pageSource;
 					
 	//				Uri TargetUrl = new Uri("http://live.nicovideo.jp/");
@@ -179,6 +185,7 @@ namespace namaichi.rec
 					return util.getPageType(res);
 				} catch (Exception e) {
 					System.Diagnostics.Debug.WriteLine(e.Message + " " + e.StackTrace);
+					System.Threading.Thread.Sleep(3000);
 				}
 			}
 			return 5;

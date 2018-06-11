@@ -83,7 +83,6 @@ namespace namaichi.rec
 			isRetry = false;
 			
 			
-			
 			System.Diagnostics.Debug.WriteLine("rm.rfu dds3 " + rm.rfu);
 			System.Diagnostics.Debug.WriteLine("closed saikai");
 			
@@ -131,10 +130,10 @@ namespace namaichi.rec
 //			endStreamProcess();
 		}
 		private void onDataReceive(object sender, DataReceivedEventArgs e) {
-			System.Diagnostics.Debug.WriteLine(e.Data);
+			System.Diagnostics.Debug.WriteLine("on data " + e.Data);
 		}
 		private void onMessageReceive(object sender, MessageReceivedEventArgs e) {
-			System.Diagnostics.Debug.WriteLine(e.Message);
+			System.Diagnostics.Debug.WriteLine("receive " + e.Message);
 //			System.Diagnostics.Debug.WriteLine("ws " + ws);
 			if (ws == null) return;
 			//pong
@@ -161,11 +160,13 @@ namespace namaichi.rec
 			//new stream retry
 			if (e.Message.IndexOf("\"NO_PERMISSION\"") >= 0
 			    || e.Message.IndexOf("\"TAKEOVER\"") >= 0
+			    || e.Message.IndexOf("\"INTERNAL_SERVERERROR\"") >= 0
 			   	) {
 				if (e.Message.IndexOf("\"TAKEOVER\"") >= 0) rm.form.addLogText("追い出されました。");
 				System.Diagnostics.Debug.WriteLine("kiteru");
 //				connect(webSocketInfo[0].Replace("\"requireNewStream\":false", "\"requireNewStream\":true"));
 				isNoPermission = true;
+				stopRecording();
 //				Task.Run(() => {
 //				         	sendIntervalPong();
 //				         });
@@ -187,10 +188,11 @@ namespace namaichi.rec
 		}
 		private void sendPong() {
 	    	try {
+				var dt = System.DateTime.Now.ToShortTimeString();
 				ws.Send("{\"body\":{},\"type\":\"pong\"}");
 				ws.Send("{\"type\":\"watch\",\"body\":{\"command\":\"watching\",\"params\":[\"" + broadcastId + "\",\"-1\",\"0\"]}}");
-				System.Diagnostics.Debug.WriteLine("send {\"body\":{},\"type\":\"pong\"} and watching");
-				System.Diagnostics.Debug.WriteLine("{\"type\":\"watch\",\"body\":{\"command\":\"watching\",\"params\":[\"" + broadcastId + "\",\"-1\",\"0\"]}}");
+				System.Diagnostics.Debug.WriteLine("send {\"body\":{},\"type\":\"pong\"} and watching" + dt);
+				System.Diagnostics.Debug.WriteLine("send {\"type\":\"watch\",\"body\":{\"command\":\"watching\",\"params\":[\"" + broadcastId + "\",\"-1\",\"0\"]}}" + dt);
 			} catch (Exception e) {
 				System.Diagnostics.Debug.WriteLine(e.Message+e.StackTrace);
 			}

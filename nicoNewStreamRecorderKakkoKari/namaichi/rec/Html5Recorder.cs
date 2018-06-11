@@ -201,12 +201,15 @@ namespace namaichi.rec
 				System.Diagnostics.Debug.WriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode());
 				string[] recFolderFile = util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg);
 				
+				System.Diagnostics.Debug.WriteLine("recforlderfie test");
+				System.Diagnostics.Debug.WriteLine("recforlderfi test " + recFolderFileInfo);
 				
-				if (rm.form.IsDisposed) return 2;
+				if (!rm.form.IsDisposed) {
 		        	rm.form.Invoke((MethodInvoker)delegate() {
 				        var fileName = System.IO.Path.GetFileName(recFolderFile[1]);
 				        rm.form.Text = fileName;
 					});
+				}
 				
 				
 				System.Diagnostics.Debug.WriteLine("recforlderfie");
@@ -237,19 +240,28 @@ namespace namaichi.rec
 		private string getPageSourceFromNewCookie() {
 			CookieGetter _cg = null;
 			Task<CookieContainer> _cgtask = null;
-			for (int i = 0; i < 3; i++) {
-				_cg = new CookieGetter(rm.cfg);
-				_cgtask = _cg.getHtml5RecordCookie(url);
-				_cgtask.Wait();
-				
-				if (_cgtask == null || _cgtask.Result == null) continue; 
-				container = _cgtask.Result;
-				return _cg.pageSource;
+			while (rm.rfu == rfu) {
+				try {
+					_cg = new CookieGetter(rm.cfg);
+					_cgtask = _cg.getHtml5RecordCookie(url);
+					_cgtask.Wait();
+					
+					if (_cgtask == null || _cgtask.Result == null) {
+						System.Threading.Thread.Sleep(3000);
+						continue;
+					}
+					
+					container = _cgtask.Result;
+					return _cg.pageSource;
+				} catch (Exception e) {
+					System.Diagnostics.Debug.WriteLine(e.Message + " " + e.StackTrace);
+					System.Threading.Thread.Sleep(3000);
+				} 
 				
 	//			var _c = new System.Net.WebHeaderCollection();
 	//			return util.getPageSource(url, ref _c, container);
 			}
-			return _cg.pageSource;
+			return "";
 		}
 		/*
 		public bool isAliveStream() {

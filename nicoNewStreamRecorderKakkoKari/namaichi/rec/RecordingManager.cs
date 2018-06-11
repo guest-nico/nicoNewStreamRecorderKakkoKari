@@ -74,6 +74,8 @@ namespace namaichi.rec
 				form.optionMenuItem.Enabled = false;
 				form.resetDisplay();
 				
+ 
+				
 				Task.Run(() => {
 				    rfu = new RecordFromUrl(this);
 				    var _rfu = rfu;
