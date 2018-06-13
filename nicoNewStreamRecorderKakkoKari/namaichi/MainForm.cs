@@ -64,10 +64,21 @@ namespace namaichi
 			//test
 			if (bool.Parse(config.get("IsLogFile"))) {
 				var name = (args.Length == 0) ? "lv_" : util.getRegGroup(args[0], "(lv\\d+)");
-				System.Diagnostics.DefaultTraceListener dtl
-			      = (System.Diagnostics.DefaultTraceListener)System.Diagnostics.Debug.Listeners["Default"];
-				dtl.LogFileName = util.getJarPath()[0] + "/" + name + ".txt";
+				var logPath = util.getJarPath()[0] + "/" + name + ".txt";
+					
+				#if DEBUG
+					System.Diagnostics.DefaultTraceListener dtl
+				      = (System.Diagnostics.DefaultTraceListener)System.Diagnostics.Debug.Listeners["Default"];
+					dtl.LogFileName = logPath;
+					util.isLogFile = true;				
+				#else
+					var w = new System.IO.StreamWriter(logPath);
+					w.AutoFlush = true;
+					System.Console.SetOut(w);
+				#endif
+				
 			}
+
 
 		    
 			
@@ -75,6 +86,7 @@ namespace namaichi
 //			args = new string[]{};
 			
 			InitializeComponent();
+			
 			rec = new rec.RecordingManager(this, config);
 			//player = new play.Player(rec);
 			

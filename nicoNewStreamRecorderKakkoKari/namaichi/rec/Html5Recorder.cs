@@ -208,7 +208,7 @@ namespace namaichi.rec
 				System.Diagnostics.Debug.WriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode());
 				string[] recFolderFile = util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg);
 				
-				System.Diagnostics.Debug.WriteLine("form disposed" + rm.form.IsDisposed;
+				System.Diagnostics.Debug.WriteLine("form disposed" + rm.form.IsDisposed);
 				System.Diagnostics.Debug.WriteLine("recforlderfi test " + recFolderFileInfo);
 				
 				if (!rm.form.IsDisposed) {
@@ -234,7 +234,7 @@ namespace namaichi.rec
 					System.Diagnostics.Debug.WriteLine(e.Message + e.StackTrace);
 				}
 				
-				System.Diagnostics.Debug(rm.rfu + " " + rfu + " " + (rm.rfu == rfu));
+				System.Diagnostics.Debug.WriteLine(rm.rfu + " " + rfu + " " + (rm.rfu == rfu));
 				if (rm.rfu != rfu) break;
 				
 				res = getPageSourceFromNewCookie();

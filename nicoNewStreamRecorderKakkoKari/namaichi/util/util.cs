@@ -223,4 +223,14 @@ class util {
 		w.Close();
 		f.Close();
 	}
+	public static bool isLogFile = false;
+	public static void debugWriteLine(string str) {
+		//
+		#if DEBUG
+      		System.Diagnostics.Debug.WriteLine(str);
+		#else
+			if (isLogFile) System.Console.WriteLine(str);
+		#endif
+		
+	}
 }
