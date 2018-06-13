@@ -46,7 +46,7 @@ public class SourceInfoSerialize
 			return null;
 		}
 		foreach (System.Xml.XmlNode n in x.LastChild.ChildNodes) {
-			System.Diagnostics.Debug.WriteLine(n.Name + " " + n.InnerText);
+			util.debugWriteLine(n.Name + " " + n.InnerText);
 			if (n.Name == "IsCustomized") IsCustomized = bool.Parse(n.InnerText);
 			if (n.Name == "BrowserName") BrowserName = n.InnerText;
 			if (n.Name == "ProfileName") ProfileName = n.InnerText;

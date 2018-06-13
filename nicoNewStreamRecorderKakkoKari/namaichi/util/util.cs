@@ -23,7 +23,7 @@ class util {
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);
 		var m = r.Match(target);
-		Console.WriteLine(m.Groups.Count +""+ m.Groups[0]);
+//		Console.WriteLine(m.Groups.Count +""+ m.Groups[0]);
 		if (m.Groups.Count>group) {
 			return m.Groups[group].ToString();
 		} else return null;
@@ -47,7 +47,7 @@ class util {
 		} else {
 //			string f=Environment.GetCommandLineArgs()[0];
 			string f = System.Reflection.Assembly.GetExecutingAssembly().Location;
-//			System.Diagnostics.Debug.WriteLine(Environment.GetCommandLineArgs().Length);
+//			util.debugWriteLine(Environment.GetCommandLineArgs().Length);
 			f=System.IO.Path.GetFileName(f);
 
 			string withoutKakutyousi = (f.IndexOf(".") < 0) ? f :
@@ -55,7 +55,7 @@ class util {
 			string kakutyousi = (f.IndexOf(".") < 0) ? null :
 					util.getRegGroup(f,"^.*\\.(.*)");
 			
-			System.Diagnostics.Debug.WriteLine(getPath() + " " +withoutKakutyousi+" "+kakutyousi);
+			util.debugWriteLine(getPath() + " " +withoutKakutyousi+" "+kakutyousi);
 			//0-dir 1-withoutKakutyousi 2-kakutyousi
 			return new String[]{getPath(), withoutKakutyousi, kakutyousi};
 		}
@@ -68,7 +68,7 @@ class util {
 		title = getOkFileName(title);
 		
 		string[] jarpath = getJarPath();
-//		System.Diagnostics.Debug.WriteLine(jarpath);
+//		util.debugWriteLine(jarpath);
 		//string dirPath = jarpath[0] + "\\rec\\" + host;
 		string dirPath = (cfg.get("IsdefaultRecordDir") == "true") ?
 			(jarpath[0] + "\\rec") : cfg.get("recordDir");
@@ -89,7 +89,7 @@ class util {
 			if (File.Exists(fName + ".ts") ||
 			   	File.Exists(fName + ".xml")) continue;
 			
-			System.Diagnostics.Debug.WriteLine(dirPath + " " + fName);
+			util.debugWriteLine(dirPath + " " + fName);
 			string[] ret = {dirPath, fName};
 			return ret;
 		}
@@ -192,7 +192,7 @@ class util {
 				getheaders = res.Headers;
 				return resStr;
 			} catch (Exception e) {
-				System.Diagnostics.Debug.WriteLine(e.Message+e.StackTrace);
+				util.debugWriteLine(e.Message+e.StackTrace);
 				System.Threading.Thread.Sleep(3000);
 				continue;
 			}
@@ -224,12 +224,14 @@ class util {
 		f.Close();
 	}
 	public static bool isLogFile = false;
-	public static void debugWriteLine(string str) {
-		//
+	public static void debugWriteLine(object str) {
+		var dt = DateTime.Now.ToLongTimeString();
+//		System.Console.WriteLine(dt + " " + str);
 		#if DEBUG
-      		System.Diagnostics.Debug.WriteLine(str);
+			System.Diagnostics.Debug.WriteLine(str);
+//      		System.Diagnostics.Debug.WriteLine(
 		#else
-			if (isLogFile) System.Console.WriteLine(str);
+			if (isLogFile) System.Console.WriteLine(dt + " " + str);
 		#endif
 		
 	}

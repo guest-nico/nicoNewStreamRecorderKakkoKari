@@ -33,18 +33,18 @@ namespace namaichi.info
 		public XDocument getFormatXml(long serverTime) {
 			this.serverTime = serverTime;
 			//xml.Root
-//			System.Diagnostics.Debug.WriteLine(xml.Root);
+//			util.debugWriteLine(xml.Root);
 			var _xml = new XDocument();
 			_xml.Add(new XElement(xml.Root.Name));
 			root = xml.Root.Name.ToString();
-//			System.Diagnostics.Debug.WriteLine(xml.Root.Name);
+//			util.debugWriteLine(xml.Root.Name);
 			
 //			var atts = _xml.Root.Attributes();
 			Object[] o = new Object[20];
 			
 			date = 0;
 			foreach (XElement e in xml.Root.Elements()) {
-//				System.Diagnostics.Debug.WriteLine(xml.Root);
+//				util.debugWriteLine(xml.Root);
 //				o[0] = new XAttribute(e.Name, e.Value);
 //				_xml.Root.SetAttributeValue(e.Name, e.Value);
 				if (e.Name == "content") {
@@ -67,7 +67,7 @@ namespace namaichi.info
 			}
 //			_xml.Add(new XElement("ele", o));
 //			http://live2.nicovideo.jp/watch/lv312502201?ref=top&zroute=index&kind=top_onair&row=3
-//			System.Diagnostics.Debug.WriteLine(_xml);
+//			util.debugWriteLine(_xml);
 			
 			return _xml;
 		}

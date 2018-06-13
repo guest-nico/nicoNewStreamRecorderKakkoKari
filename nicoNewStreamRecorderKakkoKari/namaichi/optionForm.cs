@@ -36,7 +36,7 @@ namespace namaichi
 			// The InitializeComponent() call is required for Windows Forms designer support.
 			//
 			this.StartPosition = FormStartPosition.CenterParent;
-			//System.Diagnostics.Debug.WriteLine(p.X + " " + p.Y);
+			//util.debugWriteLine(p.X + " " + p.Y);
 			InitializeComponent();
 			//this.Location = p;
 			this.cfg = cfg;
@@ -50,7 +50,7 @@ namespace namaichi
 		{
 			var f = new FolderBrowserDialog();
 			DialogResult r = f.ShowDialog();
-			System.Diagnostics.Debug.WriteLine(f.SelectedPath);
+			util.debugWriteLine(f.SelectedPath);
 
 		}
 		
@@ -144,7 +144,7 @@ namespace namaichi
                         
                         var cookie = result.Status == CookieImportState.Success ? result.Cookies["user_session"] : null;
 //                        foreach (var c in result.Cookies)
-//                        	System.Diagnostics.Debug.WriteLine(c);
+//                        	util.debugWriteLine(c);
                         //logText.Text += cookie.Name + cookie.Value+ cookie.Expires;
                         
                         //UI更新
@@ -172,13 +172,13 @@ namespace namaichi
 		void btnReload_Click(object sender, EventArgs e)
         { 
 			//var si = nicoSessionComboBox1.Selector.SelectedImporter.SourceInfo;
-			//System.Diagnostics.Debug.WriteLine(si.EngineId + " " + si.BrowserName + " " + si.ProfileName);
+			//util.debugWriteLine(si.EngineId + " " + si.BrowserName + " " + si.ProfileName);
 //			var a = new SunokoLibrary.Application.Browsers.FirefoxImporterFactory();
 //			foreach (var b in a.GetCookieImporters()) {
 //				var c = b.GetCookiesAsync(TargetUrl);
 //				c.ConfigureAwait(false);
 				
-//				System.Diagnostics.Debug.WriteLine(c.Result.Cookies["user_session"]);
+//				util.debugWriteLine(c.Result.Cookies["user_session"]);
 //			}
 				
 //			a.GetCookieImporter(new CookieSourceInfo("

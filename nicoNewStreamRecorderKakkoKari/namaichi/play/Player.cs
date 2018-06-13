@@ -23,7 +23,7 @@ namespace namaichi.play
 			this.rm = rm;
 		}
 		public void play() {
-			System.Diagnostics.Debug.WriteLine(rm.hlsUrl);
+			util.debugWriteLine(rm.hlsUrl);
 			int a;
 			if (rm.hlsUrl == null) return;
 			var isVlc = true;
@@ -50,14 +50,14 @@ namespace namaichi.play
 			process.StartInfo.RedirectStandardInput = true;
 			process.StartInfo.UseShellExecute = false;
 //			process.StartInfo.CreateNoWindow = true;
-			System.Diagnostics.Debug.WriteLine(string.Join(" ", args));
+			util.debugWriteLine(string.Join(" ", args));
 			process.StartInfo.Arguments = string.Join(" ", args);
 			
 			try {
 				process.Start();
 				
 			} catch (Exception ee) {
-				System.Diagnostics.Debug.WriteLine(ee.Message + ee.StackTrace);
+				util.debugWriteLine(ee.Message + ee.StackTrace);
 			}
 		}
 	}

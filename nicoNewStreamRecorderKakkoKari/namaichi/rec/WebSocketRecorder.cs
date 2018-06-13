@@ -56,19 +56,19 @@ namespace namaichi.rec
 			
 		}
 		public bool start() {
-			System.Diagnostics.Debug.WriteLine("rm.rfu dds0 " + rm.rfu);
+			util.debugWriteLine("rm.rfu dds0 " + rm.rfu);
 			
 			connect(webSocketInfo[0]);
 			
-			System.Diagnostics.Debug.WriteLine("rm.rfu dds1 " + rm.rfu);
+			util.debugWriteLine("rm.rfu dds1 " + rm.rfu);
 			
 			broadcastId = util.getRegGroup(webSocketInfo[0], "watch/(.+?)\\?");
 			userId = util.getRegGroup(webSocketInfo[0], "audience_token=.+?_(.+?)_");
 			
-			System.Diagnostics.Debug.WriteLine("rm.rfu dds6 " + rm.rfu);
-			System.Diagnostics.Debug.WriteLine("rm.rfu dds5 " + rm.rfu);
+			util.debugWriteLine("rm.rfu dds6 " + rm.rfu);
+			util.debugWriteLine("rm.rfu dds5 " + rm.rfu);
 			
-			System.Diagnostics.Debug.WriteLine("ws main " + ws + " a " + (ws == null));
+			util.debugWriteLine("ws main " + ws + " a " + (ws == null));
 			
 			
 			
@@ -78,13 +78,13 @@ namespace namaichi.rec
 			       (rec == null || !rec.isStopRead())) {
 				System.Threading.Thread.Sleep(1000);
 				if (rec != null) 
-					System.Diagnostics.Debug.WriteLine("isStopread " + rec.isStopRead());
+					util.debugWriteLine("isStopread " + rec.isStopRead());
 			}
 			isRetry = false;
 			
 			
-			System.Diagnostics.Debug.WriteLine("rm.rfu dds3 " + rm.rfu);
-			System.Diagnostics.Debug.WriteLine("closed saikai");
+			util.debugWriteLine("rm.rfu dds3 " + rm.rfu);
+			util.debugWriteLine("closed saikai");
 			
 			return isNoPermission;
 		}
@@ -99,11 +99,11 @@ namespace namaichi.rec
 			ws.Open();
 		}
 		private void onOpen(object sender, EventArgs e) {
-			System.Diagnostics.Debug.WriteLine("rm.rfu dds2 " + rm.rfu);
+			util.debugWriteLine("rm.rfu dds2 " + rm.rfu);
 			
 			String leoReq = "{\"type\":\"watch\",\"body\":{\"command\":\"playerversion\",\"params\":[\"leo\"]}}";
-			System.Diagnostics.Debug.WriteLine("leoReq " + leoReq);
-			System.Diagnostics.Debug.WriteLine("websocketinfo1 " + webSocketInfo[1]);
+			util.debugWriteLine("leoReq " + leoReq);
+			util.debugWriteLine("websocketinfo1 " + webSocketInfo[1]);
 			ws.Send(leoReq);
 			
 			ws.Send(webSocketInfo[1]);
@@ -112,29 +112,29 @@ namespace namaichi.rec
 				ws.Send(webSocketInfo[1]);
 			else ws.Send(webSocketInfo[1].Replace("\"requireNewStream\":false", "\"requireNewStream\":true"));
 			*/
-			System.Diagnostics.Debug.WriteLine("open send  " + ws);
-			System.Diagnostics.Debug.WriteLine("rm " + rm + " rm.rfu " + rm.rfu + " rfu " + rfu);
+			util.debugWriteLine("open send  " + ws);
+			util.debugWriteLine("rm " + rm + " rm.rfu " + rm.rfu + " rfu " + rfu);
 			
 			if (rm.rfu != rfu) stopRecording();
 		}
 		private void onClose(object sender, EventArgs e) {
-			System.Diagnostics.Debug.WriteLine("on close " + e.ToString());
+			util.debugWriteLine("on close " + e.ToString());
 			stopRecording();
 //			ws.Open();
 //			endStreamProcess();
 		}
 		private void onError(object sender, SuperSocket.ClientEngine.ErrorEventArgs e) {
-			System.Diagnostics.Debug.WriteLine("on error " + e.Exception.Message);
+			util.debugWriteLine("on error " + e.Exception.Message);
 			stopRecording();
 //			ws.Open();
 //			endStreamProcess();
 		}
 		private void onDataReceive(object sender, DataReceivedEventArgs e) {
-			System.Diagnostics.Debug.WriteLine("on data " + e.Data);
+			util.debugWriteLine("on data " + e.Data);
 		}
 		private void onMessageReceive(object sender, MessageReceivedEventArgs e) {
-			System.Diagnostics.Debug.WriteLine("receive " + e.Message);
-//			System.Diagnostics.Debug.WriteLine("ws " + ws);
+			util.debugWriteLine("receive " + e.Message);
+//			util.debugWriteLine("ws " + ws);
 			if (ws == null) return;
 			//pong
 			if (e.Message.IndexOf("\"ping\"") >= 0) {
@@ -163,7 +163,7 @@ namespace namaichi.rec
 			    || e.Message.IndexOf("\"INTERNAL_SERVERERROR\"") >= 0
 			   	) {
 				if (e.Message.IndexOf("\"TAKEOVER\"") >= 0) rm.form.addLogText("追い出されました。");
-				System.Diagnostics.Debug.WriteLine("kiteru");
+				util.debugWriteLine("kiteru");
 //				connect(webSocketInfo[0].Replace("\"requireNewStream\":false", "\"requireNewStream\":true"));
 				isNoPermission = true;
 				stopRecording();
@@ -191,18 +191,18 @@ namespace namaichi.rec
 				var dt = System.DateTime.Now.ToShortTimeString();
 				ws.Send("{\"body\":{},\"type\":\"pong\"}");
 				ws.Send("{\"type\":\"watch\",\"body\":{\"command\":\"watching\",\"params\":[\"" + broadcastId + "\",\"-1\",\"0\"]}}");
-				System.Diagnostics.Debug.WriteLine("send {\"body\":{},\"type\":\"pong\"} and watching" + dt);
-				System.Diagnostics.Debug.WriteLine("send {\"type\":\"watch\",\"body\":{\"command\":\"watching\",\"params\":[\"" + broadcastId + "\",\"-1\",\"0\"]}}" + dt);
+				util.debugWriteLine("send {\"body\":{},\"type\":\"pong\"} and watching" + dt);
+				util.debugWriteLine("send {\"type\":\"watch\",\"body\":{\"command\":\"watching\",\"params\":[\"" + broadcastId + "\",\"-1\",\"0\"]}}" + dt);
 			} catch (Exception e) {
-				System.Diagnostics.Debug.WriteLine(e.Message+e.StackTrace);
+				util.debugWriteLine(e.Message+e.StackTrace);
 			}
 		}
 		private void record(String message) {
 			Task.Run(() => {
-				System.Diagnostics.Debug.WriteLine("rec " + string.Join(" ", recFolderFile));
+				util.debugWriteLine("rec " + string.Join(" ", recFolderFile));
 				hlsUrl = util.getRegGroup(message, "\"uri\":\"(.+?)\"");
 				rm.hlsUrl = hlsUrl;
-				System.Diagnostics.Debug.WriteLine(hlsUrl);
+				util.debugWriteLine(hlsUrl);
 //				string[] command = { 
 //						"-i", "" + url + "", 
 //						"-c", "copy", "-bsf:a",
@@ -218,17 +218,17 @@ namespace namaichi.rec
 				_buf.AddRange(tuikaArr.AsEnumerable());
 				string[] command = _buf.ToArray();
 				
-				System.Diagnostics.Debug.WriteLine(string.Join(" ", command));
+				util.debugWriteLine(string.Join(" ", command));
 				rec = new Record(rm, true, rfu);
 				rec.recordCommand(command);
 				 
-				System.Diagnostics.Debug.WriteLine("stop recd");
+				util.debugWriteLine("stop recd");
 				isRetry = false;
 				stopRecording();
 			});
 		}
 		private void connectMessageServer(string message) {
-	    	System.Diagnostics.Debug.WriteLine("message");
+	    	util.debugWriteLine("message");
 			string msUri = util.getRegGroup(message, "(ws://.+?)\"");
 			string msThread = util.getRegGroup(message, "threadId\":\"(.+?)\"");
 	//		String msReq = "[truncated][{\"ping\":{\"content\":\"rs:0\"}},{\"ping\":{\"content\":\"ps:0\"}},{\"thread\":{\"thread\":\"" + msThread + "\",\"version\":\"20061206\",\"fork\":0,\"user_id\":\"" + userId + "\",\"res_from\":-1000,\"with_global\":1,\"scores\":1,\"nicoru\":0}},{\"ping\":{\"content\":\"pf:0\"}},{\"ping\":{\"content\":\"rf:0\"}}]\0";
@@ -239,9 +239,9 @@ namespace namaichi.rec
 			string msPort = util.getRegGroup(message, "jp:(.+?)/");
 			string msAddr = util.getRegGroup(message, "://(.+?):");
 			
-			System.Diagnostics.Debug.WriteLine(msAddr + " " + msPort);
-			System.Diagnostics.Debug.WriteLine("msuri " + msUri);
-			System.Diagnostics.Debug.WriteLine("msreq " + msReq);
+			util.debugWriteLine(msAddr + " " + msPort);
+			util.debugWriteLine("msuri " + msUri);
+			util.debugWriteLine("msreq " + msReq);
 			
 			var header =  new List<KeyValuePair<string, string>>();
 			header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Protocol", "msg.nicovideo.jp#json"));
@@ -251,44 +251,44 @@ namespace namaichi.rec
 			wsc.MessageReceived += onWscMessageReceive;
 			wsc.Error += onWscError;
 			
-	        System.Diagnostics.Debug.WriteLine(msUri);
+	        util.debugWriteLine(msUri);
 	        
 	        wsc.Open();
 	        	        
 	        
-			System.Diagnostics.Debug.WriteLine("ms start");
+			util.debugWriteLine("ms start");
 			
 			
 		}
 		public void stopRecording() {
-			System.Diagnostics.Debug.WriteLine("stop recording");
+			util.debugWriteLine("stop recording");
 			try {
 				if (ws != null && ws.State != WebSocketState.Closed) ws.Close();
 //				ws = null;
 			} catch (Exception e) {
-				System.Diagnostics.Debug.WriteLine("ws close error");
-				System.Diagnostics.Debug.WriteLine(e.Message + e.StackTrace);
+				util.debugWriteLine("ws close error");
+				util.debugWriteLine(e.Message + e.StackTrace);
 			}
 			try {
 				if (wsc != null && wsc.State != WebSocketState.Closed && wsc.State != WebSocketState.Closing) {
-					System.Diagnostics.Debug.WriteLine("state close wsc " + WebSocketState.Closed + " " + wsc.State);					
+					util.debugWriteLine("state close wsc " + WebSocketState.Closed + " " + wsc.State);					
 					wsc.Close();
 				}
 			} catch (Exception e) {
-				System.Diagnostics.Debug.WriteLine("wsc close error");
-				System.Diagnostics.Debug.WriteLine(e.Message + e.StackTrace);
+				util.debugWriteLine("wsc close error");
+				util.debugWriteLine(e.Message + e.StackTrace);
 			}
 			try {
 //				if (commentSW != null) commentSW.Close();
 			} catch (Exception e) {
-				System.Diagnostics.Debug.WriteLine("comment sw close error");
-				System.Diagnostics.Debug.WriteLine(e.Message + e.StackTrace);
+				util.debugWriteLine("comment sw close error");
+				util.debugWriteLine(e.Message + e.StackTrace);
 			}
 			try {
 				if (rec != null) rec.stopRecording();
 			} catch (Exception e) {
-				System.Diagnostics.Debug.WriteLine("rec close error");
-				System.Diagnostics.Debug.WriteLine(e.Message + e.StackTrace);
+				util.debugWriteLine("rec close error");
+				util.debugWriteLine(e.Message + e.StackTrace);
 			}
 			isRetry = false;
 			
@@ -298,8 +298,8 @@ namespace namaichi.rec
 			if (rm.rfu != rfu) return;
 					
 			//string[] recFolderFile = util.getRecFolderFilePath(recFolderFile[0], recFolderFile[1], recFolderFile[2], recFolderFile[3], recFolderFileInfo[4]);
-			System.Diagnostics.Debug.WriteLine("recforlderfie");
-			System.Diagnostics.Debug.WriteLine("recforlderfi " + string.Join(" ",recFolderFile));
+			util.debugWriteLine("recforlderfie");
+			util.debugWriteLine("recforlderfi " + string.Join(" ",recFolderFile));
 			if (recFolderFile == null) return;
 			
 			if (!h5r.isAliveStream()) return;
@@ -314,9 +314,9 @@ namespace namaichi.rec
 			rm.form.setStatistics(visit, comment);
 		}
 		private void onWscOpen(object sender, EventArgs e) {
-			System.Diagnostics.Debug.WriteLine("ms open a");
+			util.debugWriteLine("ms open a");
 			wsc.Send(msReq);
-			System.Diagnostics.Debug.WriteLine("ms open b");
+			util.debugWriteLine("ms open b");
 			
 			if (rm.rfu != rfu) {
 				stopRecording();
@@ -332,12 +332,12 @@ namespace namaichi.rec
 			       
 				}
 			} catch (Exception ee) {
-				System.Diagnostics.Debug.WriteLine(ee.Message + " " + ee.StackTrace);
+				util.debugWriteLine(ee.Message + " " + ee.StackTrace);
 			}
 
 		}
 		private void onWscClose(object sender, EventArgs e) {
-			System.Diagnostics.Debug.WriteLine("ms onclose");
+			util.debugWriteLine("ms onclose");
 			if (commentSW != null) {
 				if (bool.Parse(rm.cfg.get("IsgetcommentXml"))) {
 					commentSW.WriteLine("</packet>");
@@ -350,23 +350,23 @@ namespace namaichi.rec
 //			endStreamProcess();
 		}
 		private void onWscError(object sender, SuperSocket.ClientEngine.ErrorEventArgs e) {
-			System.Diagnostics.Debug.WriteLine("ms onerror");
+			util.debugWriteLine("ms onerror");
 			stopRecording();
 //			endStreamProcess();
 		}
 		private void onWscMessageReceive(object sender, MessageReceivedEventArgs e) {
-//			System.Diagnostics.Debug.WriteLine("ms " + e.Message);
+//			util.debugWriteLine("ms " + e.Message);
 			if (rm.rfu != rfu || !isRetry) {
 				wsc.Close();
 				stopRecording();
-				System.Diagnostics.Debug.WriteLine("tigau rfu comment" + e.Message);
+				util.debugWriteLine("tigau rfu comment" + e.Message);
 			}
 			
 			var xml = JsonConvert.DeserializeXNode(e.Message);
 			var chatinfo = new namaichi.info.ChatInfo(xml);
 			var chatXml = chatinfo.getFormatXml(serverTime);
 			
-			System.Diagnostics.Debug.WriteLine("xml " + chatXml.ToString());
+			util.debugWriteLine("xml " + chatXml.ToString());
 			
 			if (chatinfo.root == "chat" && (chatinfo.contents.IndexOf("/hb ifseetno") != -1 && 
 					chatinfo.premium == "3")) return;
@@ -376,14 +376,14 @@ namespace namaichi.rec
 				serverTime = chatinfo.serverTime;
 			}
 			
-			System.Diagnostics.Debug.WriteLine("wsc message " + ws);
+			util.debugWriteLine("wsc message " + ws);
 			
 //			Newtonsoft.Json
 			//if (e.Message.IndexOf("chat") < 0 &&
 			//    	e.Message.IndexOf("thread") < 0) return;
 			
 			
-//            System.Diagnostics.Debug.WriteLine(jsonCommentToXML(text));
+//            util.debugWriteLine(jsonCommentToXML(text));
 			try {
 				if (commentSW != null) {
 					if (bool.Parse(rm.cfg.get("IsgetcommentXml"))) {
@@ -397,7 +397,7 @@ namespace namaichi.rec
 		            commentSW.Flush();
 				}
            
-			} catch (Exception ee) {System.Diagnostics.Debug.WriteLine(ee.Message + " " + ee.StackTrace);}
+			} catch (Exception ee) {util.debugWriteLine(ee.Message + " " + ee.StackTrace);}
 			
 			addDisplayComment(chatinfo);
 

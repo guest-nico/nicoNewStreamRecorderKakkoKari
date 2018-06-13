@@ -42,7 +42,7 @@ namespace namaichi.rec
 
 		async public void rec() {
 			
-            System.Diagnostics.Debug.WriteLine("rm");
+            util.debugWriteLine("rm");
             //config.Save();
             
             
@@ -79,10 +79,10 @@ namespace namaichi.rec
 				Task.Run(() => {
 				    rfu = new RecordFromUrl(this);
 				    var _rfu = rfu;
-				    System.Diagnostics.Debug.WriteLine("rm rec");
+				    util.debugWriteLine("rm rec");
 				    //endcode 0-その他の理由 1-stop 2-最初に終了 3-始また後に番組終了
                 	var endCode = rfu.rec(form.urlText.Text, lvid);
-                	System.Diagnostics.Debug.WriteLine("endcode " + endCode);
+                	util.debugWriteLine("endcode " + endCode);
                 	
                 	if (rfu == _rfu) {
 	                	isRecording = false;
@@ -95,7 +95,7 @@ namespace namaichi.rec
 							});
 						}
 						
-						System.Diagnostics.Debug.WriteLine("end rec " + rfu);
+						util.debugWriteLine("end rec " + rfu);
 						if (!isClickedRecBtn && endCode == 3) form.Close();
 						hlsUrl = null;
                 	}
@@ -139,7 +139,7 @@ namespace namaichi.rec
 			Application.ApplicationExit -= new EventHandler(h);
 		}
 		private void h(object se,EventArgs e){
-			System.Diagnostics.Debug.WriteLine(id);
+			util.debugWriteLine(id);
 			System.Threading.Thread.Sleep(3000);
 		}
 	}

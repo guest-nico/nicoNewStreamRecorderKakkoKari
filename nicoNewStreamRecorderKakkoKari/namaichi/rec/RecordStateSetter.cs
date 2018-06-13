@@ -66,7 +66,7 @@ namespace namaichi.rec
 				description = description.Replace("\\\"", "\"");
 //				description = description.Replace("", "\"");
 			} catch(Exception e) {
-				System.Diagnostics.Debug.WriteLine(e.Message);
+				util.debugWriteLine(e.Message);
 			}
 			
 			form.setInfo(host, hostUrl, group, groupUrl, title, url, gentei, openTime, description);

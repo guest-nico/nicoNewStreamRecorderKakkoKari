@@ -41,7 +41,7 @@ namespace namaichi.rec
 				var gateurl = "http://live.nicovideo.jp/gate/lv313793991";
 				var __gatePage = util.getPageSource(gateurl, ref headers, cc);
 				var _compage2 = util.getPageSource(url, ref headers, cc);
-				System.Diagnostics.Debug.WriteLine(cc.GetCookieHeader(new Uri(url)));
+				util.debugWriteLine(cc.GetCookieHeader(new Uri(url)));
 				form.addLogText(isJidouShounin ? "フォローを試みます。" : "自動承認ではありませんでした。");
 				
 				if (!isJidouShounin) return false;
@@ -108,7 +108,7 @@ namespace namaichi.rec
 				return isSuccess;
 			} catch (Exception e) {
 				form.addLogText("フォローに失敗しました。");
-				System.Diagnostics.Debug.WriteLine(e.Message+e.StackTrace);
+				util.debugWriteLine(e.Message+e.StackTrace);
 				return false;
 			}
 			

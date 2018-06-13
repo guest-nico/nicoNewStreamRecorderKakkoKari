@@ -36,7 +36,7 @@ namespace namaichi.rec
 		async public Task<CookieContainer> getHtml5RecordCookie(string url) {
 			var userSessionCC = getUserSessionCC();
 			if (userSessionCC != null && true) {
-				System.Diagnostics.Debug.WriteLine(userSessionCC.GetCookieHeader(TargetUrl));
+				util.debugWriteLine(userSessionCC.GetCookieHeader(TargetUrl));
 				if (isHtml5Login(userSessionCC, url)) {
 					
 					var c = userSessionCC.GetCookies(TargetUrl)["user_session"];
@@ -54,8 +54,8 @@ namespace namaichi.rec
 				
 				if (cc != null) {
 					if (isHtml5Login(cc, url)) {
-						System.Diagnostics.Debug.WriteLine("browser 1 " + cc.GetCookieHeader(TargetUrl));
-						System.Diagnostics.Debug.WriteLine("browser 2 " + cc.GetCookieHeader(new Uri("http://live2.nicovideo.jp")));
+						util.debugWriteLine("browser 1 " + cc.GetCookieHeader(TargetUrl));
+						util.debugWriteLine("browser 2 " + cc.GetCookieHeader(new Uri("http://live2.nicovideo.jp")));
 						var c = cc.GetCookies(TargetUrl)["user_session"];
 						var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
 						if (c != null)
@@ -118,7 +118,7 @@ namespace namaichi.rec
 //			var importers = new SunokoLibrary.Application.CookieGetters(true, null);
 //			var importera = (await SunokoLibrary.Application.CookieGetters.Browsers.IEProtected.GetCookiesAsync(TargetUrl));
 //			foreach (var rr in importer.Cookies)
-//				System.Diagnostics.Debug.WriteLine(rr);
+//				util.debugWriteLine(rr);
 			//importer = await importers.GetInstanceAsync(si, true);
 			if (importer == null) return null;
 
@@ -128,7 +128,7 @@ namespace namaichi.rec
 			//if (result.Cookies["user_session"] == null) return null;
 			//var cookie = result.Cookies["user_session"].Value;
 
-			//System.Diagnostics.Debug.WriteLine("usersession " + cookie);
+			//util.debugWriteLine("usersession " + cookie);
 			
 			var cc = new CookieContainer();
 			result.AddTo(cc);
@@ -146,7 +146,7 @@ namespace namaichi.rec
 			try {
 				pageSource = util.getPageSource(url + "", ref headers, cc);
 			} catch (Exception e) {
-				System.Diagnostics.Debug.WriteLine("cookiegetter ishtml5login " + e.Message+e.StackTrace);
+				util.debugWriteLine("cookiegetter ishtml5login " + e.Message+e.StackTrace);
 				pageSource = "";
 				return false;
 			}
@@ -183,7 +183,7 @@ namespace namaichi.rec
 				
 //				return cc;
 			} catch (Exception e) {
-				System.Diagnostics.Debug.WriteLine(e.Message+e.StackTrace);
+				util.debugWriteLine(e.Message+e.StackTrace);
 				return null;
 			}
 			

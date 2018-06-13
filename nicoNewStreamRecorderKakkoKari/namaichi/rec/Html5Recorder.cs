@@ -42,13 +42,13 @@ namespace namaichi.rec
 			
 			
 //			for (int i = 0; i < webSocketRecInfo.Length; i++)
-//				System.Diagnostics.Debug.WriteLine(webSocketRecInfo[i]);
+//				util.debugWriteLine(webSocketRecInfo[i]);
 //			for (int i = 0; i < recFolderFileInfo.Length; i++)
-//				System.Diagnostics.Debug.WriteLine(recFolderFileInfo[i]);
+//				util.debugWriteLine(recFolderFileInfo[i]);
 			
 			//endcode 0-その他の理由 1-stop 2-最初に終了 3-始まった後に番組終了
 			var ret = html5Record(res).Result;
-			System.Diagnostics.Debug.WriteLine("html5 rec ret " + ret);
+			util.debugWriteLine("html5 rec ret " + ret);
 			return ret;
 		
 		}
@@ -66,13 +66,13 @@ namespace namaichi.rec
 		}
 		*/
 		private string[] getWebSocketInfo(string data) {
-//			System.Diagnostics.Debug.WriteLine(data);
+//			util.debugWriteLine(data);
 			var wsUrl = util.getRegGroup(data, "\"webSocketUrl\":\"([\\d\\D]+?)\"");
-			System.Diagnostics.Debug.WriteLine("wsurl " + wsUrl);
+			util.debugWriteLine("wsurl " + wsUrl);
 			var broadcastId = util.getRegGroup(wsUrl, "/(\\d+)\\?");
-			System.Diagnostics.Debug.WriteLine("broadcastid " + broadcastId);
+			util.debugWriteLine("broadcastid " + broadcastId);
 			string request = "{\"type\":\"watch\",\"body\":{\"command\":\"getpermit\",\"requirement\":{\"broadcastId\":\"" + broadcastId + "\",\"route\":\"\",\"stream\":{\"protocol\":\"hls\",\"requireNewStream\":false,\"priorStreamQuality\":\"normal\"},\"room\":{\"isCommentable\":true,\"protocol\":\"webSocket\"}}}}";
-			System.Diagnostics.Debug.WriteLine("request " + request);
+			util.debugWriteLine("request " + request);
 			return new string[]{wsUrl, request};
 		}
 		private string[] getHtml5RecFolderFileInfo(string data, string type) {
@@ -91,9 +91,9 @@ namespace namaichi.rec
 				if (communityNum == null) communityNum = "official";
 				userId = "official";
 				
-				System.Diagnostics.Debug.WriteLine(host + " " + group + " " + title + " " + communityNum);
+				util.debugWriteLine(host + " " + group + " " + title + " " + communityNum);
 				if (host == null || group == null || title == null || communityNum == null) return null;
-				System.Diagnostics.Debug.WriteLine(host + " " + group + " " + title + " " + communityNum);
+				util.debugWriteLine(host + " " + group + " " + title + " " + communityNum);
 			} else {
 				bool isAPI = false;
 				if (isAPI) {
@@ -116,16 +116,16 @@ namespace namaichi.rec
 					communityNum = util.getRegGroup(data, "\"socialGroup\".+?\"id\".\"(.+?)\"");
 		//			community = util.getRegGroup(res, "socialGroup\\:)");
 					userId = (isChannel) ? "channel" : (util.getRegGroup(data, "supplier\":{\"name\".+?pageUrl\":\"http://www.nicovideo.jp/user/(\\d+?)\""));
-					System.Diagnostics.Debug.WriteLine("userid " + userId);
+					util.debugWriteLine("userid " + userId);
 		
-					System.Diagnostics.Debug.WriteLine("title " + title);
-					System.Diagnostics.Debug.WriteLine("community " + communityNum);
+					util.debugWriteLine("title " + title);
+					util.debugWriteLine("community " + communityNum);
 		//			community = util.getRegGroup(res, "socialGr(oup:)");
 		//			title = util.getRegGroup(res, "\\\"programHeader\\\"\\:\\{\\\"thumbnailUrl\\\".+?\\\"title\\\"\\:\\\"(.*?)\\\"");
 					//  ,\"programHeader\":{\"thumbnailUrl\":\"http:\/\/icon.nimg.jp\/community\/s\/123\/co1231728.jpg?1373210036\",\"title\":\"\u56F2\u7881\",\"provider
 		//			title = util.uniToOriginal(title);
 					
-					System.Diagnostics.Debug.WriteLine(host + " " + group + " " + title + " " + communityNum + " userid " + userId);
+					util.debugWriteLine(host + " " + group + " " + title + " " + communityNum + " userid " + userId);
 					if (host == null || group == null || title == null || communityNum == null || userId == null) return null;
 				}
 			}
@@ -157,11 +157,11 @@ namespace namaichi.rec
 				if (data == null) {
 					
 					var pageType = util.getPageType(res);
-					System.Diagnostics.Debug.WriteLine(pageType);
+					util.debugWriteLine(pageType);
 					
 					//processType 0-ok 1-retry 2-放送終了 3-その他の理由の終了
 					var processType = processFromPageType(pageType);
-					System.Diagnostics.Debug.WriteLine("processType " + processType);
+					util.debugWriteLine("processType " + processType);
 					//if (processType == 0 || processType == 1) continue;
 					if (processType == 2) return 3;
 //					if (processType == 3) return 0;
@@ -180,14 +180,14 @@ namespace namaichi.rec
 //				var openTime = long.Parse(util.getRegGroup(data, "\"beginTimeMs\":(\\d+)"));
 							
 				
-	//			System.Diagnostics.Debug.WriteLine(data);
+	//			util.debugWriteLine(data);
 				
 				//0-wsUrl 1-request
 				webSocketRecInfo = getWebSocketInfo(data);
-				System.Diagnostics.Debug.WriteLine("websocketrecinfo " + webSocketRecInfo);
+				util.debugWriteLine("websocketrecinfo " + webSocketRecInfo);
 				if (webSocketRecInfo == null) continue;
 				
-				System.Diagnostics.Debug.WriteLine("isnopermission " + isNoPermission);
+				util.debugWriteLine("isnopermission " + isNoPermission);
 				if (isNoPermission) webSocketRecInfo[1] = webSocketRecInfo[1].Replace("\"requireNewStream\":false", "\"requireNewStream\":true");
 				recFolderFileInfo = getHtml5RecFolderFileInfo(data, type);
 				
@@ -205,11 +205,11 @@ namespace namaichi.rec
 				//System.Threading.Thread.Sleep(20000);
 				
 				
-				System.Diagnostics.Debug.WriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode());
+				util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode());
 				string[] recFolderFile = util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg);
 				
-				System.Diagnostics.Debug.WriteLine("form disposed" + rm.form.IsDisposed);
-				System.Diagnostics.Debug.WriteLine("recforlderfi test " + recFolderFileInfo);
+				util.debugWriteLine("form disposed" + rm.form.IsDisposed);
+				util.debugWriteLine("recforlderfi test " + recFolderFileInfo);
 				
 				if (!rm.form.IsDisposed) {
 		        	rm.form.Invoke((MethodInvoker)delegate() {
@@ -219,22 +219,22 @@ namespace namaichi.rec
 				}
 				
 				
-				System.Diagnostics.Debug.WriteLine("recforlderfi " + recFolderFileInfo);
+				util.debugWriteLine("recforlderfi " + recFolderFileInfo);
 				
 				if (recFolderFile == null) continue;
 				
 				for (int i = 0; i < recFolderFile.Length; i++)
-					System.Diagnostics.Debug.WriteLine("recd " + i + " " + recFolderFileInfo[i]);
+					util.debugWriteLine("recd " + i + " " + recFolderFileInfo[i]);
 				
 				
 				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime);
 				try {
 					isNoPermission = wsr.start();
 				} catch (Exception e) {
-					System.Diagnostics.Debug.WriteLine(e.Message + e.StackTrace);
+					util.debugWriteLine(e.Message + e.StackTrace);
 				}
 				
-				System.Diagnostics.Debug.WriteLine(rm.rfu + " " + rfu + " " + (rm.rfu == rfu));
+				util.debugWriteLine(rm.rfu + " " + rfu + " " + (rm.rfu == rfu));
 				if (rm.rfu != rfu) break;
 				
 				res = getPageSourceFromNewCookie();
@@ -261,7 +261,7 @@ namespace namaichi.rec
 					container = _cgtask.Result;
 					return _cg.pageSource;
 				} catch (Exception e) {
-					System.Diagnostics.Debug.WriteLine(e.Message + " " + e.StackTrace);
+					util.debugWriteLine(e.Message + " " + e.StackTrace);
 					System.Threading.Thread.Sleep(3000);
 				} 
 				
@@ -330,7 +330,7 @@ namespace namaichi.rec
 				if (pageType == 2) mes = "この放送は終了しています。";
 				if (pageType == 3) mes = "この放送は終了しています。";
 				rm.form.addLogText(mes);
-				System.Diagnostics.Debug.WriteLine("pagetype " + pageType + " end");
+				util.debugWriteLine("pagetype " + pageType + " end");
 				
 				if (bool.Parse(rm.cfg.get("IsdeleteExit"))) {
 					rm.rfu = null;

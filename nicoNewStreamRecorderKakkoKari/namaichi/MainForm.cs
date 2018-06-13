@@ -58,8 +58,8 @@ namespace namaichi
 			
 			this.args = args;
 			
-			System.Diagnostics.Debug.WriteLine(args.Length);
-			System.Diagnostics.Debug.WriteLine(args);
+			util.debugWriteLine(args.Length);
+			util.debugWriteLine(args);
 			
 			//test
 			if (bool.Parse(config.get("IsLogFile"))) {
@@ -70,13 +70,12 @@ namespace namaichi
 					System.Diagnostics.DefaultTraceListener dtl
 				      = (System.Diagnostics.DefaultTraceListener)System.Diagnostics.Debug.Listeners["Default"];
 					dtl.LogFileName = logPath;
-					util.isLogFile = true;				
 				#else
-					var w = new System.IO.StreamWriter(logPath);
+					var w = new System.IO.StreamWriter(logPath, true);
 					w.AutoFlush = true;
 					System.Console.SetOut(w);
 				#endif
-				
+				util.isLogFile = true;				
 			}
 
 
@@ -156,17 +155,17 @@ namespace namaichi
 
 		void btnReload_Click(object sender, EventArgs e)
         { 
-			System.Diagnostics.Debug.WriteLine(DateTime.Now.ToString("{W}"));
+			util.debugWriteLine(DateTime.Now.ToString("{W}"));
 			var si = nicoSessionComboBox1.Selector.SelectedImporter.SourceInfo;
-			System.Diagnostics.Debug.WriteLine(si.EngineId + " " + si.BrowserName + " " + si.ProfileName);
+			util.debugWriteLine(si.EngineId + " " + si.BrowserName + " " + si.ProfileName);
 //			var a = new SunokoLibrary.Application.Browsers.FirefoxImporterFactory();
 //			foreach (var b in a.GetCookieImporters()) {
 //				var c = b.GetCookiesAsync(TargetUrl);
 //				c.ConfigureAwait(false);
 				
-//				System.Diagnostics.Debug.WriteLine(c.Result.Cookies["user_session"]);
+//				util.debugWriteLine(c.Result.Cookies["user_session"]);
 //			}
-			System.Diagnostics.Debug.WriteLine(nicoSessionComboBox1.Selector.SelectedImporter.SourceInfo.CookiePath);
+			util.debugWriteLine(nicoSessionComboBox1.Selector.SelectedImporter.SourceInfo.CookiePath);
 			//System.IO.Directory.CreateDirectory("aa/ss/u");
 			//a.GetCookieImporter(new CookieSourceInfo("
 			//var tsk = nicoSessionComboBox1.Selector.UpdateAsync(); 
@@ -185,7 +184,7 @@ namespace namaichi
         	try {
 	        	optionForm o = new optionForm(config); o.ShowDialog();
 	        } catch (Exception ee) {
-        		System.Diagnostics.Debug.WriteLine(ee.Message + " " + ee.StackTrace);
+        		util.debugWriteLine(ee.Message + " " + ee.StackTrace);
 	        }
         }
         
@@ -230,15 +229,15 @@ namespace namaichi
 			});
 		}
         private void initRec() {
-        	//System.Diagnostics.Debug.WriteLine(int.Parse(config.get("browserName")));
-        	//System.Diagnostics.Debug.WriteLine(bool.Parse(config.get("isAllBrowserMode")));
+        	//util.debugWriteLine(int.Parse(config.get("browserName")));
+        	//util.debugWriteLine(bool.Parse(config.get("isAllBrowserMode")));
         	
         	//try {
         	//	nicoSessionComboBox1.SelectedIndex = int.Parse(config.get("browserNum"));
-        	//} catch (Exception e) {System.Diagnostics.Debug.WriteLine(333); return;};
+        	//} catch (Exception e) {util.debugWriteLine(333); return;};
         	//var t = getCookie();
 			//t.ConfigureAwait(false);
-			//System.Diagnostics.Debug.WriteLine(t.Result);
+			//util.debugWriteLine(t.Result);
             if (args.Length > 0) {
             	urlText.Text = args[0];
 //            	rec = new rec.RecordingManager(this);
@@ -282,7 +281,7 @@ namespace namaichi
 				
 				
 			} catch (Exception e) {
-				System.Diagnostics.Debug.WriteLine(e.Message);
+				util.debugWriteLine(e.Message);
 				}
 			
 
@@ -334,7 +333,7 @@ namespace namaichi
 				if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
 				System.Diagnostics.Process.Start(dirPath);
 			} catch (Exception ee) {
-				System.Diagnostics.Debug.WriteLine(ee.Message + " " + ee.StackTrace);
+				util.debugWriteLine(ee.Message + " " + ee.StackTrace);
 			}
 		}
 		
@@ -372,7 +371,7 @@ namespace namaichi
 				config.set("Width", Width.ToString());
 				config.set("Height", Height.ToString());
 			} catch(Exception e) {
-				System.Diagnostics.Debug.WriteLine(e.Message + " " + e.StackTrace);
+				util.debugWriteLine(e.Message + " " + e.StackTrace);
 			}
 			return true;
 		}

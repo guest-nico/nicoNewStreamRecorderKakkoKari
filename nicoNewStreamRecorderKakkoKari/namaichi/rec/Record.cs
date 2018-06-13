@@ -29,8 +29,8 @@ namespace namaichi.rec
 			this.rfu = rfu;
 		}
 		public void recordCommand(string[] command) {
-			System.Diagnostics.Debug.WriteLine("rec start");
-			System.Diagnostics.Debug.WriteLine(String.Join(" ", command));
+			util.debugWriteLine("rec start");
+			util.debugWriteLine(String.Join(" ", command));
 
 			EventHandler e = new EventHandler(appExitHandler);
 			Application.ApplicationExit += e;
@@ -46,11 +46,11 @@ namespace namaichi.rec
 			process.StartInfo.CreateNoWindow = true;
 			process.StartInfo.Arguments = string.Join(" ", command);
 			
-//			System.Diagnostics.Debug.WriteLine(command[command.Length - 2].Trim('\"'));
+//			util.debugWriteLine(command[command.Length - 2].Trim('\"'));
 			/*
 			if (System.IO.File.Exists(command[command.Length - 2].Trim('\"'))) {
-			    	System.Diagnostics.Debug.WriteLine(command[command.Length - 2]);
-			    	System.Diagnostics.Debug.WriteLine("exost file");
+			    	util.debugWriteLine(command[command.Length - 2]);
+			    	util.debugWriteLine("exost file");
 			    	var i = 3;
 			    }
 			*/
@@ -63,24 +63,24 @@ namespace namaichi.rec
 //				});
 				
 				displayRecordStatus();
-				System.Diagnostics.Debug.WriteLine("stop record");
+				util.debugWriteLine("stop record");
 				stopRecording();
 				Application.ApplicationExit -= e;
 				
 			} catch (Exception ee) {
-				System.Diagnostics.Debug.WriteLine(ee.Message + ee.StackTrace);
+				util.debugWriteLine(ee.Message + ee.StackTrace);
 			}
 			
 			
 //			while(true)
 //				System.Threading.Thread.Sleep(3000);
-			System.Diagnostics.Debug.WriteLine("rec end");
+			util.debugWriteLine("rec end");
 		}
 		private void appExitHandler(object sender, EventArgs e) {
 			stopRecording();
 		}
 		public void stopRecording() {
-			System.Diagnostics.Debug.WriteLine("isffmepg " + isFFmpeg);
+			util.debugWriteLine("isffmepg " + isFFmpeg);
 	
 			if (process == null || process.HasExited) return;
 			
@@ -92,11 +92,11 @@ namespace namaichi.rec
 					i.Close();
 				} catch (Exception ee) {
 					if (!(ee is  System.ObjectDisposedException))
-						System.Diagnostics.Debug.WriteLine(ee.Message + ee.StackTrace);
+						util.debugWriteLine(ee.Message + ee.StackTrace);
 					try {
 						process.Kill();
 					} catch (Exception eee) {
-						System.Diagnostics.Debug.WriteLine(eee.Message + eee.StackTrace);
+						util.debugWriteLine(eee.Message + eee.StackTrace);
 					}
 				};
 			} else {
@@ -106,7 +106,7 @@ namespace namaichi.rec
 				System.Threading.Thread.Sleep(200);
 			}
 			
-			System.Diagnostics.Debug.WriteLine("destroy " + process.ExitCode);
+			util.debugWriteLine("destroy " + process.ExitCode);
 
 
 		}
@@ -121,7 +121,7 @@ namespace namaichi.rec
 					
 					if (line == null) break;
 					
-					System.Diagnostics.Debug.WriteLine("error " + line);
+					util.debugWriteLine("error " + line);
 					displayStateGui(line);
 					
 				} catch (Exception e) {};
@@ -132,7 +132,7 @@ namespace namaichi.rec
 				
 				es.Close();
 			} catch (Exception e) {
-				System.Diagnostics.Debug.WriteLine(e.Message + e.StackTrace);
+				util.debugWriteLine(e.Message + e.StackTrace);
 			}
 
 		}
@@ -171,7 +171,7 @@ namespace namaichi.rec
 			var ret = DateTime.UtcNow - lastReadTime > new TimeSpan(0,0,30);
 			if (ret) {
 				var a = DateTime.UtcNow - lastReadTime;
-				System.Diagnostics.Debug.WriteLine(a);
+				util.debugWriteLine(a);
 			}
 			return DateTime.UtcNow - lastReadTime > new TimeSpan(0,0,30);
 		}

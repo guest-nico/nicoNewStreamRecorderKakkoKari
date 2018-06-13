@@ -43,16 +43,16 @@ namespace namaichi.rec
 			
 			while (util.getRegGroup(getPlayerStatusInfo, 
 					"(<archive>0</archive>)") != null && rm.rfu == rfu) {
-				System.Diagnostics.Debug.WriteLine("record try");
+				util.debugWriteLine("record try");
 				string[] recFolderFile = getNotHtmlRecFolderFile(res, getPlayerStatusInfo);
 				if (recFolderFile == null) return;
-				System.Diagnostics.Debug.WriteLine("recff " + string.Join("  ",  recFolderFile));
+				util.debugWriteLine("recff " + string.Join("  ",  recFolderFile));
 				string[] command = getGetPlayerStatusCommand(getPlayerStatusInfo, recFolderFile);
 				if (command == null) return;
-				System.Diagnostics.Debug.WriteLine("command " + string.Join("  ",  command));
+				util.debugWriteLine("command " + string.Join("  ",  command));
 				string[] messageInfo = getMessageInfo(getPlayerStatusInfo);
 				bool isFFmpeg = Array.IndexOf(command, "-i") != -1;
-				System.Diagnostics.Debug.WriteLine("isffmpeg " + isFFmpeg);
+				util.debugWriteLine("isffmpeg " + isFFmpeg);
 				
 				var rec = new Record(rm, isFFmpeg, rfu);
 				commentGetter = new NotHtmlCommentGetter(messageInfo, rm, rfu, recFolderFile);
@@ -74,7 +74,7 @@ namespace namaichi.rec
 		public string getGetPlayerStatusInfo() {
 			var a = new WebHeaderCollection();
 			var res = util.getPageSource("http://live.nicovideo.jp/api/getplayerstatus?v=" + lvid, ref a, container);
-//			System.Diagnostics.Debug.WriteLine(res);
+//			util.debugWriteLine(res);
 			return res;
 		}
 		private String[] getNotHtmlRecFolderFile(string res, string getPlayerStatusInfo) {
@@ -117,7 +117,7 @@ namespace namaichi.rec
 			string title = util.getRegGroup(getPlayerStatusInfo, "<title>(.+)</title>");
 			string lvid = util.getRegGroup(url, "(lv[0-9]+)");
 			
-			System.Diagnostics.Debug.WriteLine("host group title " + host + " " + group + " " + title + " " + lvid + " " + communityNum);
+			util.debugWriteLine("host group title " + host + " " + group + " " + title + " " + lvid + " " + communityNum);
 			
 	//		System.out.println(String.join(" ", util.getRecFolderFilePath(host, group, title, lvid, communityNum)));
 			
@@ -135,18 +135,18 @@ namespace namaichi.rec
 		private String[] getPlayersStatusCommandVal(bool isOfficial, string getPlayerStatusInfo) {
 
 			if (!isOfficial) {
-				System.Diagnostics.Debug.WriteLine("not official");
+				util.debugWriteLine("not official");
 				string ticket = util.getRegGroup(getPlayerStatusInfo, "<ticket>(.+?)</ticket>");
 				string contentsUrl = util.getRegGroup(getPlayerStatusInfo, "<contents_list>.+?(rtmp://.+?)<");
 				string rtmpUrl = util.getRegGroup(getPlayerStatusInfo, "<url>(.+?)</url>");
 				string lvid = util.getRegGroup(getPlayerStatusInfo, "<id>(.+?)</id>");
-				System.Diagnostics.Debug.WriteLine(ticket + " " + contentsUrl + " " + rtmpUrl + " " + lvid); 
+				util.debugWriteLine(ticket + " " + contentsUrl + " " + rtmpUrl + " " + lvid); 
 				if (ticket == null || contentsUrl == null || rtmpUrl == null || lvid == null) return null;
 				
-				System.Diagnostics.Debug.WriteLine(ticket);
-				System.Diagnostics.Debug.WriteLine(contentsUrl);
-				System.Diagnostics.Debug.WriteLine(rtmpUrl);
-				System.Diagnostics.Debug.WriteLine(lvid);
+				util.debugWriteLine(ticket);
+				util.debugWriteLine(contentsUrl);
+				util.debugWriteLine(rtmpUrl);
+				util.debugWriteLine(lvid);
 				string[] ret = {ticket, contentsUrl, rtmpUrl, lvid};
 				return ret;
 			} else {
@@ -165,13 +165,13 @@ namespace namaichi.rec
 					if (ticketUid != null) {
 						
 						decodedTickets = ticketUid.Replace("&amp;", "&");
-						System.Diagnostics.Debug.WriteLine(premiumContentsUrl0);
-						System.Diagnostics.Debug.WriteLine(premiumContentsUrl1);
-						System.Diagnostics.Debug.WriteLine(tickets);
-						System.Diagnostics.Debug.WriteLine(ticketUid);
-						System.Diagnostics.Debug.WriteLine(decodedTickets);
+						util.debugWriteLine(premiumContentsUrl0);
+						util.debugWriteLine(premiumContentsUrl1);
+						util.debugWriteLine(tickets);
+						util.debugWriteLine(ticketUid);
+						util.debugWriteLine(decodedTickets);
 						string url = "\"" + premiumContentsUrl0 + "/" + premiumContentsUrl1 + "?" + decodedTickets + "\"";
-						System.Diagnostics.Debug.WriteLine(url);
+						util.debugWriteLine(url);
 						string[] ret = {url, "rtmpdump"};
 						return ret;
 					} else {
@@ -179,14 +179,14 @@ namespace namaichi.rec
 						string ticket = util.getRegGroup(getPlayerStatusInfo, "<ticket>(.+?)</ticket>");
 						string stream = util.getRegGroup(getPlayerStatusInfo, "<stream name=\"" + premiumContentsUrl1 + "\">(.*?)</stream>");
 						stream = stream.Replace("&amp;", "&");
-						System.Diagnostics.Debug.WriteLine("ticket " + ticket + " precon0 " + premiumContentsUrl0);
-						System.Diagnostics.Debug.WriteLine("precon1 " + premiumContentsUrl1 + " stream " + stream);
+						util.debugWriteLine("ticket " + ticket + " precon0 " + premiumContentsUrl0);
+						util.debugWriteLine("precon1 " + premiumContentsUrl1 + " stream " + stream);
 						string url = "\"" + premiumContentsUrl0 + "/" + premiumContentsUrl1 + "?" + stream + " live=1\"";
 						string[] ret = {url, "ffmpeg"};
 						return ret;
 					}
 					
-				} catch (Exception e) {System.Diagnostics.Debug.WriteLine(e.Message + e.StackTrace);}
+				} catch (Exception e) {util.debugWriteLine(e.Message + e.StackTrace);}
 			}
 			return null;
 		}
@@ -234,7 +234,7 @@ namespace namaichi.rec
 		}
 		
 		public Boolean start() {
-			System.Diagnostics.Debug.WriteLine("comment start");
+			util.debugWriteLine("comment start");
 			
 			/*
 			Socket s = null;

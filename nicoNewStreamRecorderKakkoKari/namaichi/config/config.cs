@@ -26,7 +26,7 @@ public class config
 	public Configuration getConfig() {
 		var jarPath = util.getJarPath();
 		var configFile = jarPath[0] + "\\" + jarPath[1] + ".config";
-		//System.Diagnostics.Debug.WriteLine(configFile);
+		//util.debugWriteLine(configFile);
         var exeFileMap = new System.Configuration. ExeConfigurationFileMap { ExeConfigFilename = configFile };
         var cfg     = ConfigurationManager.OpenMappedExeConfiguration(exeFileMap, ConfigurationUserLevel.None);
         return cfg;
@@ -41,12 +41,12 @@ public class config
 		try {
 			cfg.Save();
 		} catch (Exception e) {
-			System.Diagnostics.Debug.WriteLine(e.Message + " " + e.StackTrace);
+			util.debugWriteLine(e.Message + " " + e.StackTrace);
 		}
 	}
 	public string get(string key) {
-		System.Diagnostics.Debug.WriteLine(key);
-		System.Diagnostics.Debug.WriteLine(key + " " + cfg.AppSettings.Settings[key].Value);
+		util.debugWriteLine(key);
+		util.debugWriteLine(key + " " + cfg.AppSettings.Settings[key].Value);
 		return cfg.AppSettings.Settings[key].Value;
 	}
 	private void defaultMergeFile() {
@@ -103,7 +103,7 @@ public class config
 		try {
 			cfg.Save();
 		} catch (Exception e) {
-			System.Diagnostics.Debug.WriteLine(e.Message + " " + e.StackTrace);
+			util.debugWriteLine(e.Message + " " + e.StackTrace);
 		}
 		
 		
@@ -114,12 +114,12 @@ public class config
 		
 		foreach (var k in formData.Keys) {
 			cfg.AppSettings.Settings[k].Value = formData[k];
-			//System.Diagnostics.Debug.WriteLine(k + formData[k]);
+			//util.debugWriteLine(k + formData[k]);
 		}		
 		try {
 			cfg.Save();
 		} catch (Exception e) {
-			System.Diagnostics.Debug.WriteLine(e.Message + " " + e.StackTrace);
+			util.debugWriteLine(e.Message + " " + e.StackTrace);
 		}
 	}
 	private string[] defaultConfig = {};
