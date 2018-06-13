@@ -271,7 +271,7 @@ namespace namaichi.rec
 			}
 			try {
 				if (wsc != null && wsc.State != WebSocketState.Closed && wsc.State != WebSocketState.Closing) {
-					System.Diagnostics.Debug.WriteLine("state close " + WebSocketState.Closed + " " + wsc.State);					
+					System.Diagnostics.Debug.WriteLine("state close wsc " + WebSocketState.Closed + " " + wsc.State);					
 					wsc.Close();
 				}
 			} catch (Exception e) {

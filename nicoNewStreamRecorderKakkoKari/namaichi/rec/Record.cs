@@ -91,7 +91,8 @@ namespace namaichi.rec
 					i.Flush();
 					i.Close();
 				} catch (Exception ee) {
-					System.Diagnostics.Debug.WriteLine(ee.Message + ee.StackTrace);
+					if (!(ee is  System.ObjectDisposedException))
+						System.Diagnostics.Debug.WriteLine(ee.Message + ee.StackTrace);
 					try {
 						process.Kill();
 					} catch (Exception eee) {

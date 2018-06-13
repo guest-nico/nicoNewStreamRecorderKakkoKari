@@ -75,24 +75,22 @@ class util {
 		
 		if (cfg.get("IscreateSubfolder") == "true") {
 			var sfn = getSubFolderName(host, group, title, lvId, communityNum, userId,  cfg);
+			if (sfn.Length > 120) sfn = sfn.Substring(0, 120);
 			if (sfn == null) return null;
 			dirPath += "/" + sfn;
 		}
 		if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
 		if (!Directory.Exists(dirPath)) return null;
 
+		var name = getFileName(host, group, title, lvId, communityNum,  cfg);
+		if (name.Length > 120) name = name.Substring(0, 120); 
 		for (int i = 0; i < 1000000; i++) {
-			//ƒiƒcƒRƒR_co3387528(ƒhƒ‹‰~Ž€–S—V‹Y)_lv298866554(ƒhƒ‹‰~Ž€–S—V‹Y)0
-			string name = dirPath + "/" + getFileName(host, group, title, lvId, communityNum,  cfg) + i;
+			var fName = dirPath + "/" + name + i.ToString();
+			if (File.Exists(fName + ".ts") ||
+			   	File.Exists(fName + ".xml")) continue;
 			
-			//string name = dirPath + "/" + host + "_" + communityNum + "(" + group + ")_" + lvId + "(" + title + ")" + i + "";
-			
-//			if (i == 54) return new String[]{dirPath, name};
-			
-			if (File.Exists(name + ".ts")) continue;
-			
-			System.Diagnostics.Debug.WriteLine(dirPath + " " + name);
-			string[] ret = {dirPath, name};
+			System.Diagnostics.Debug.WriteLine(dirPath + " " + fName);
+			string[] ret = {dirPath, fName};
 			return ret;
 		}
 		return null;

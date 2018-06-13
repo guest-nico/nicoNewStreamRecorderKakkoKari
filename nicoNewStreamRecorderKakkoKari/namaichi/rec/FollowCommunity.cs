@@ -23,21 +23,27 @@ namespace namaichi.rec
 		public FollowCommunity()
 		{
 		}
-		public bool followCommunity(string res, CookieContainer cc) {
+		public bool followCommunity(string res, CookieContainer cc, MainForm form) {
 			var comId = util.getRegGroup(res, "Nicolive_JS_Conf\\.Recommend = \\{type\\: 'community', community_id\\: '(co\\d+)'\\};");
 			if (comId == null) return false;
 			
-			var isJoinedTask = join(comId, cc);
+			var isJoinedTask = join(comId, cc, form);
 //			isJoinedTask.Wait();
 			return isJoinedTask;
 //			return false;
 		}
-		private bool join(string comId, CookieContainer cc) {
+		private bool join(string comId, CookieContainer cc, MainForm form) {
 			var url = "https://com.nicovideo.jp/motion/" + comId;
-			
 			var headers = new WebHeaderCollection();
 			try {
 				var isJidouShounin = util.getPageSource(url, ref headers, cc).IndexOf("自動承認されます") > -1;
+				var _compage = util.getPageSource(url, ref headers, cc);
+				var gateurl = "http://live.nicovideo.jp/gate/lv313793991";
+				var __gatePage = util.getPageSource(gateurl, ref headers, cc);
+				var _compage2 = util.getPageSource(url, ref headers, cc);
+				System.Diagnostics.Debug.WriteLine(cc.GetCookieHeader(new Uri(url)));
+				form.addLogText(isJidouShounin ? "フォローを試みます。" : "自動承認ではありませんでした。");
+				
 				if (!isJidouShounin) return false;
 			} catch (Exception e) {
 				return false;
@@ -96,8 +102,12 @@ namespace namaichi.rec
 	//			if (res.IndexOf("login_status = 'login'") < 0) return null;
 				
 //				var cc = handler.CookieContainer;
-				return resStr.IndexOf("フォローしました") > -1;
+				var isSuccess = resStr.IndexOf("フォローしました") > -1;
+				form.addLogText(isSuccess ?
+	                	"フォローしました。録画開始までしばらくお待ちください。" : "フォローに失敗しました。");
+				return isSuccess;
 			} catch (Exception e) {
+				form.addLogText("フォローに失敗しました。");
 				System.Diagnostics.Debug.WriteLine(e.Message+e.StackTrace);
 				return false;
 			}

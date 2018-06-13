@@ -110,6 +110,7 @@ namespace namaichi
 			this.ffmpegoptText = new System.Windows.Forms.TextBox();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
+			this.isLogFileChkBox = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox6.SuspendLayout();
@@ -158,6 +159,7 @@ namespace namaichi
 			this.groupBox6.Controls.Add(this.isCommentJson);
 			this.groupBox6.Controls.Add(this.isCommentXML);
 			this.groupBox6.Controls.Add(this.isAutoFollowComGen);
+			this.groupBox6.Controls.Add(this.isLogFileChkBox);
 			this.groupBox6.Controls.Add(this.isTitleBarSamune);
 			this.groupBox6.Controls.Add(this.isTitleBarInfoChkBox);
 			this.groupBox6.Controls.Add(this.isGetCommentChkBox);
@@ -169,7 +171,7 @@ namespace namaichi
 			this.groupBox6.Controls.Add(this.isMinimizedChkBox);
 			this.groupBox6.Location = new System.Drawing.Point(5, 83);
 			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(385, 292);
+			this.groupBox6.Size = new System.Drawing.Size(385, 329);
 			this.groupBox6.TabIndex = 0;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Recorder設定";
@@ -929,6 +931,15 @@ namespace namaichi
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
 			// 
+			// isLogFileChkBox
+			// 
+			this.isLogFileChkBox.Location = new System.Drawing.Point(19, 289);
+			this.isLogFileChkBox.Name = "isLogFileChkBox";
+			this.isLogFileChkBox.Size = new System.Drawing.Size(271, 19);
+			this.isLogFileChkBox.TabIndex = 2;
+			this.isLogFileChkBox.Text = "ログをファイルに出力する";
+			this.isLogFileChkBox.UseVisualStyleBackColor = true;
+			// 
 			// optionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -961,6 +972,7 @@ namespace namaichi
 			this.groupBox4.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox isLogFileChkBox;
 		private System.Windows.Forms.Button upBtn;
 		private System.Windows.Forms.Button downBtn;
 		private System.Windows.Forms.ListBox qualityListBox;

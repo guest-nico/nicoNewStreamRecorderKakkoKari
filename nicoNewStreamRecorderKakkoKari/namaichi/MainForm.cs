@@ -52,24 +52,23 @@ namespace namaichi
 		
 		public MainForm(string[] args)
 		{
-			
+			System.Diagnostics.Debug.Listeners.Clear();
+			System.Diagnostics.Debug.Listeners.Add(new log.TraceListener());
 		    
-    
-			//
-			// The InitializeComponent() call is required for Windows Forms designer support.
-			//
+			
 			this.args = args;
 			
 			System.Diagnostics.Debug.WriteLine(args.Length);
 			System.Diagnostics.Debug.WriteLine(args);
 			
 			//test
-			/*
-			var name = (args.Length == 0) ? "aaa" : util.getRegGroup(args[0], "(lv\\d+)");
-			System.Diagnostics.DefaultTraceListener dtl
-		      = (System.Diagnostics.DefaultTraceListener)System.Diagnostics.Debug.Listeners["Default"];
-			dtl.LogFileName = util.getJarPath()[0] + "/" + name + ".txt";
-			*/
+			if (bool.Parse(config.get("IsLogFile"))) {
+				var name = (args.Length == 0) ? "lv_" : util.getRegGroup(args[0], "(lv\\d+)");
+				System.Diagnostics.DefaultTraceListener dtl
+			      = (System.Diagnostics.DefaultTraceListener)System.Diagnostics.Debug.Listeners["Default"];
+				dtl.LogFileName = util.getJarPath()[0] + "/" + name + ".txt";
+			}
+
 		    
 			
 			//test

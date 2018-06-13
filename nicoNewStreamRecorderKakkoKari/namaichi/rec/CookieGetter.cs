@@ -27,6 +27,7 @@ namespace namaichi.rec
 		private config.config cfg;
 		static readonly Uri TargetUrl = new Uri("http://live.nicovideo.jp/");
 		static readonly Uri TargetUrl2 = new Uri("http://live2.nicovideo.jp");
+		static readonly Uri TargetUrl3 = new Uri("https://com.nicovideo.jp");
 		
 		public CookieGetter(config.config cfg)
 		{
@@ -92,16 +93,11 @@ namespace namaichi.rec
 			if ((us == null || us.Length == 0) &&
 			    (uss == null || uss.Length == 0)) return null;
 			var cc = new CookieContainer();
-			if (us != null && us.Length != 0)
-				cc.Add(TargetUrl, new Cookie("user_session", us));
-				cc.Add(TargetUrl2, new Cookie("user_session", us));
-			if (uss != null && uss.Length != 0) {
-				var _c = new Cookie("user_session_secure", uss);
-				_c.Secure = true;
-				cc.Add(TargetUrl, _c);
-				cc.Add(TargetUrl2, _c);
-			}
-			cc.Add(TargetUrl, new Cookie("player_version", "leo"));
+			
+			var c = new Cookie("user_session", us);
+			var secureC = new Cookie("user_session_secure", uss);
+			cc = copyUserSession(cc, c, secureC);
+ 			cc.Add(TargetUrl, new Cookie("player_version", "leo"));
 
 			
 			//test
@@ -139,10 +135,8 @@ namespace namaichi.rec
 			
 			var c = cc.GetCookies(TargetUrl)["user_session"];
 			var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
-			if (c != null)
-				cc.Add(TargetUrl2, new Cookie(c.Name, c.Value));
-			if (secureC != null) 
-				cc.Add(TargetUrl2, new Cookie(secureC.Name, secureC.Value));
+			cc = copyUserSession(cc, c, secureC);
+			
 			
 			return cc;
 			
@@ -185,13 +179,18 @@ namespace namaichi.rec
 				
 	//			if (res.IndexOf("login_status = 'login'") < 0) return null;
 				
-				var cc = handler.CookieContainer;
-				return cc;
+				cc = handler.CookieContainer;
+				
+//				return cc;
 			} catch (Exception e) {
 				System.Diagnostics.Debug.WriteLine(e.Message+e.StackTrace);
 				return null;
 			}
-				
+			
+			
+			var c = cc.GetCookies(TargetUrl)["user_session"];
+			var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
+			cc = copyUserSession(cc, c, secureC);
 			/*
 			var encoder = System.Text.Encoding.GetEncoding("UTF=8");
 			var sr = new System.IO.StreamReader(resStream, encoder);
@@ -201,8 +200,22 @@ namespace namaichi.rec
 			
 			if (xml.IndexOf("not login") != -1) return null;
 			*/
-			
+			return cc;
 				
+		}
+		private CookieContainer copyUserSession(CookieContainer cc, 
+				Cookie c, Cookie secureC) {
+			if (c != null) {
+				cc.Add(TargetUrl, new Cookie(c.Name, c.Value));
+				cc.Add(TargetUrl2, new Cookie(c.Name, c.Value));
+				cc.Add(TargetUrl3, new Cookie(c.Name, c.Value));
+			}
+			if (secureC != null) {
+				cc.Add(TargetUrl, new Cookie(secureC.Name, secureC.Value));
+				cc.Add(TargetUrl2, new Cookie(secureC.Name, secureC.Value));
+				cc.Add(TargetUrl3, new Cookie(secureC.Name, secureC.Value));
+			}
+			return cc;
 		}
 	}
 	

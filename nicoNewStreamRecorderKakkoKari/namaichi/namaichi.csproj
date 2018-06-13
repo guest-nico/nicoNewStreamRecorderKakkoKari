@@ -113,6 +113,7 @@
       <DependentUpon>fileNameOptionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="info\ChatInfo.cs" />
+    <Compile Include="log\TraceListener.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -161,6 +162,7 @@
   <ItemGroup>
     <Folder Include="info" />
     <Folder Include="config" />
+    <Folder Include="log" />
     <Folder Include="play" />
     <Folder Include="rec" />
   </ItemGroup>
