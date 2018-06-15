@@ -1,0 +1,26 @@
+
+## 製作中に見つけたニコ生新配信仕様
+
+誰かの役に立てば幸いです。
+独自の経験のため、間違っている部分もあるかもしれません。
+
+### 視聴ページ
+- たまに500 internal server errorが返ります。
+- 放送終了直後は視聴ページでも放送後の表示のページでもない、非ログインのときに表示されるページ？のようなところに飛ばされることがあります。まだ放送終了後ページが用意されていないのかもしれません。
+
+### websocket
+接続時
+- まず基本メッセージは{"type":"watch","body":{"command":"getpermit","requirement":{"broadcastId":"6121945301627","route":"","stream":{"protocol":"hls","requireNewStream":true,"priorStreamQuality":"normal","isLowLatency":true},"room":{"isCommentable":true,"protocol":"webSocket"}}}}
+- このうちのrequireNewStreamは名前の通り新しい映像ストリームを要請する意味だと思われます。ここにfalseを指定することで既存の映像ストリームを切断することなく既存の映像ストリームを取得することができます。ブラウザでは最初にプレイヤーをロードしたときにはtrueで接続され、プレイヤー右下の更新ボタンを押すとfalseでメッセージが送られるようです。これを利用してツール側でfalseで接続すれば、ある程度はブラウザ視聴に干渉せずに接続することができますが、有料会員限定放送の非会員でも視聴できる部分？などは例外としてfalseで接続しても既存の接続を切断して新規ストリームが返ってくるようです。完全な確認は取れていませんが、どうやらサーバーから送られてきたcurrentstreamのmediaServerAuthがnullでない場合はfalseが効かないような気がします。既存の有効なストリームが存在しない状態でfalseで接続disconnectされて「NO_PERMISSION」が返ってきます。本ツールでは一旦falseで送ってNO_PERMISSIONが返ってきたときだけtrueで接続し直すという手法を取っていますが、映像クオリティ選択機能との兼ね合いで機能しないことも多いです。
+- priorStreamQualityは新規に取得したい映像ストリームのクオリティを指定します。ほとんどの放送では自動はabr、3Mbpsはsuper_high、2Mbpsはhigh、1Mbpsはnormal、384kbpsはlow、192kbpsはsuper_lowに対応しており、一部の放送の高画質はhigh、低画質はnormalに対応しています。また、有料放送などでは高画質＝highが会員映像、normalが非会員映像に分けられていることもありますがそうでないこともあります。この項目の設定はrequireNewStreamにtrueを指定した場合にのみ有効になります。多くの放送ではsuper_highが存在しない放送にsuper_highを指定したり「abc」などの適当な文字列を指定した場合は前回有効な接続をしたときの設定でストリームが返ってくるようですが、高画質と低画質しか画質選択が存在しない放送でrequireNewStreamがfalseだったとしても、highとnormal以外を指定すると有効なストリームの取得ができなかったことがありました。いきなり目的の画質を指定するとNO_PERMISSIONになる可能性があるので、一旦何も指定せずに投げて、返ってきたcurrentStreamのqualityTypesから目的の画質を指定して送り直すのも手かもしれません。
+
+サーバーからのcurrentStream
+- mediaServerTypeはほとんどがdmcですが、もう一つの種類があったと思います。が、手元にログがないので定かではないです。
+
+disconnect
+- NO_PERMISSION: 既存の有効なストリームがない状態でrequireNewStreamをfalseに指定したりなど、getpermitが成功しなかったときに送られてくるようです。
+- TAKEOVER: いわゆる追い出しです。rtmp配信と違い、新配信では追い出し時にwebsocketの接続自体が切られてしまいます。
+- SERVICE_TEMPORARILY_UNAVAILABLE: 稀に予約枠の最初に送られてくることがあります。これを出していた生主さんに質問してみたところ、PS4ゲーム機から配信しようとしたが最初の数分はケーブルを繋げていなかったとのことでした。配信者側に何らかの問題があるまま予約枠が始まった状態？
+
+INTERNAL_SERVERERROR
+- 通常メッセージかdisconnectかは失念しましたが、稀に送られてきます。
