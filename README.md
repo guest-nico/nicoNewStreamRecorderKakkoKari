@@ -6,6 +6,8 @@
 ソースを使って別のツールを作っていただいても構いません。
 リファクタリング大歓迎です。
 
+製作中に見つけた[ニコ生新配信の仕様](siyou.md)を記してみました。
+
 ## ライセンス
 SnkLib.App.CookieGetter  
 CookieGetterSharp  
@@ -34,21 +36,51 @@ Json.NET
   <dt>info</dt>
   <dd>ChatInfo: 受信したコメントを表す</dd>
   <dt>rec</dt>
-  <dd>CookieGetter: 受信したコメントを表す</dd>
-  <dd>FollowCommunity: 受信したコメントを表す</dd>
-  <dd>Html5Recorder: 受信したコメントを表す</dd>
-  <dd>Record: 受信したコメントを表す</dd>
-  <dd>RecordFromUrl: 受信したコメントを表す</dd>
-  <dd>RecordingManager: 受信したコメントを表す</dd>
-  <dd>RecordStateSetter.cs: 受信したコメントを表す</dd>
-  <dd>WebSocketRecorder: 受信したコメントを表す</dd>
-  <dd>NotHtml5Recorder: 受信したコメントを表す</dd>
-  <dt>info</dt>
-  <dd>ChatInfo: 受信したコメントを表す</dd>
-  <dt>info</dt>
-  <dd>ChatInfo: 受信したコメントを表す</dd>
+  <dd>CookieGetter: Cookieの取得と同時にページの取得</dd>
+  <dd>FollowCommunity: コミュニティのフォロー</dd>
+  <dd>Html5Recorder: html5ページからの録画</dd>
+  <dd>Record: ffmpegを使った録画</dd>
+  <dd>RecordFromUrl: 録画開始前の放送状態の判定</dd>
+  <dd>RecordingManager: 録画開始ボタンの動作定義的クラス</dd>
+  <dd>RecordStateSetter.cs: 録画状況の表示</dd>
+  <dd>WebSocketRecorder: WebSocket関係</dd>
+  <dd>NotHtml5Recorder: 当初旧配信にも対応しようとしていた時の残り</dd>
+  <dt>util</dt>
+  <dd>util: 小さなメソッド群</dd>
+  <dd>SourceInfoSerialize: ブラウザのCookie情報の保存と読み込み</dd>
+  <dt>play</dt>
+  <dd>Player: 録画しながら視聴するためにプレイヤーを実装しようとしていた頃の名残</dd>
+  <dt>フォーム関係</dt>
+  <dd>MainForm: メインフォーム</dd>
+  <dd>optionForm: オプション画面のフォーム</dd>
+  <dd>fileNameOptionForm: オプション画面中のファイル名設定のフォーム</dd>
 </dl>
-#config
-config: 設定ファイル
-#info
-ChatInfo: コメントの送受信を表す
+```mermaid
+graph TD;
+ MainForm-->optionForm;
+ optionForm-->fileNameOptionForm;
+ fileNameOptionForm-->optionForm;
+ optionForm-->MainForm;
+ MainForm-->RecordingManager;
+ RecordingManager-->RecordFromUrl;
+ RecordFromUrl-->Html5Recorder;
+ Html5Recorder-->WebSocketRecorder;
+ WebSocketRecorder-->Record;
+```
+
+## 既知の問題
+多重起動されているものがまとめてmscorib?やwebsocket4netの
+エラーを出して止まる現象を一度見たことがあります。  
+その一度以来見ていないので気のせいだったのかもしれません。
+
+
+
+
+
+
+
+
+
+
+
+

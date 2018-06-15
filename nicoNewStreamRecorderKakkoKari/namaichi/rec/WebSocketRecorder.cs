@@ -107,6 +107,13 @@ namespace namaichi.rec
 			ws.Send(leoReq);
 			
 			ws.Send(webSocketInfo[1]);
+			
+			//test
+//			for (int i = 0; i < 100; i++)
+//				System.Threading.Tasks.Task.Run(() => {
+//			                                	ws.Send(webSocketInfo[1]);
+//			                                });
+			
 			/*
 			if (isNoPermission)
 				ws.Send(webSocketInfo[1]);
@@ -120,6 +127,10 @@ namespace namaichi.rec
 		private void onClose(object sender, EventArgs e) {
 			util.debugWriteLine("on close " + e.ToString());
 			stopRecording();
+			
+			//SERVICE_TEMPORARILY_UNAVAILABLE 予約枠開始後に何らかの問題？
+			if (e.ToString().IndexOf("SERVICE_TEMPORARILY_UNAVAILABLE") > 0) 
+				rm.form.addLogText("サーバーからデータの受信ができませんでした。リトライします。");
 //			ws.Open();
 //			endStreamProcess();
 		}
@@ -148,10 +159,11 @@ namespace namaichi.rec
 			
 			//record
 			if (e.Message.IndexOf("\"currentStream\"") >= 0) {
+				util.debugWriteLine("mediaservertype = " + util.getRegGroup(e.Message, "(\"mediaServerType\".\".+?\")"));
 				var bestGettableQuolity = getBestGettableQuolity(e.Message);
-				if (isFirstChoiceQuality(e.Message, bestGettableQuolity)) 
+				if (isFirstChoiceQuality(e.Message, bestGettableQuolity)) {
 					record(e.Message);
-				else sendUseableStreamGetCommand(bestGettableQuolity);
+				} else sendUseableStreamGetCommand(bestGettableQuolity);
 //				Task.Run(() => {
 //				         	sendIntervalPong();
 //				         });
@@ -405,7 +417,10 @@ namespace namaichi.rec
 		private void addDisplayComment(namaichi.info.ChatInfo chat) {
 			
 			if (chat.root.Equals("thread")) return;
-			if (chat.contents == "再読み込みを行いました<br>読み込み中のままの方はお手数ですがプレイヤー下の更新ボタンをお試し下さい") return;
+			if (chat.contents == "再読み込みを行いました<br>読み込み中のままの方はお手数ですがプレイヤー下の更新ボタンをお試し下さい") {
+				util.debugWriteLine("chat 再読み込みを行いました");
+				return;
+			}
 			if (chat.contents == null) return;
 //			var time = util.getUnixToDatetime(chat.vpos / 100);
 //			var unixKijunDt = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);

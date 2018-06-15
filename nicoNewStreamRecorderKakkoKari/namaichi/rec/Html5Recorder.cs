@@ -207,6 +207,11 @@ namespace namaichi.rec
 				
 				util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode());
 				string[] recFolderFile = util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg);
+				if (recFolderFile[0] == null) {
+					//パスが長すぎ
+					rm.form.addLogText("パスが長すぎます " + recFolderFile[1]);
+					return 2;
+				}
 				
 				util.debugWriteLine("form disposed" + rm.form.IsDisposed);
 				util.debugWriteLine("recforlderfi test " + recFolderFileInfo);

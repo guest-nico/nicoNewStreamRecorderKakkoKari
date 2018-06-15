@@ -70,11 +70,13 @@ class util {
 		string[] jarpath = getJarPath();
 //		util.debugWriteLine(jarpath);
 		//string dirPath = jarpath[0] + "\\rec\\" + host;
-		string dirPath = (cfg.get("IsdefaultRecordDir") == "true") ?
+		string _dirPath = (cfg.get("IsdefaultRecordDir") == "true") ?
 			(jarpath[0] + "\\rec") : cfg.get("recordDir");
+		string dirPath = _dirPath;
 		
+		string sfn = null;
 		if (cfg.get("IscreateSubfolder") == "true") {
-			var sfn = getSubFolderName(host, group, title, lvId, communityNum, userId,  cfg);
+			sfn = getSubFolderName(host, group, title, lvId, communityNum, userId,  cfg);
 			if (sfn.Length > 120) sfn = sfn.Substring(0, 120);
 			if (sfn == null) return null;
 			dirPath += "/" + sfn;
@@ -83,7 +85,22 @@ class util {
 		if (!Directory.Exists(dirPath)) return null;
 
 		var name = getFileName(host, group, title, lvId, communityNum,  cfg);
-		if (name.Length > 120) name = name.Substring(0, 120); 
+		if (name.Length > 120) name = name.Substring(0, 120);
+		
+		//’·‚¢ƒpƒX’²®
+		if (name.Length + dirPath.Length > 250) {
+			name = lvId;
+			if (name.Length + dirPath.Length > 250 && sfn != null) {
+				sfn = sfn.Substring(0, 3);
+				dirPath = _dirPath + "/" + sfn;
+								
+				if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
+				if (!Directory.Exists(dirPath)) return null;
+				
+			}
+		}
+		if (name.Length + dirPath.Length > 255) return new string[]{null, name + " " + dirPath};
+
 		for (int i = 0; i < 1000000; i++) {
 			var fName = dirPath + "/" + name + i.ToString();
 			if (File.Exists(fName + ".ts") ||

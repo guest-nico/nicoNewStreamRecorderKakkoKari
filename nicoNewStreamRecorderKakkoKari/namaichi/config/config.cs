@@ -45,8 +45,11 @@ public class config
 		}
 	}
 	public string get(string key) {
-		util.debugWriteLine(key);
-		util.debugWriteLine(key + " " + cfg.AppSettings.Settings[key].Value);
+		util.debugWriteLine("config get " + key);
+		if (key != "accountId" && key != "accountPass" &&
+		   		key != "user_session" && key != "user_session_secure") {
+			util.debugWriteLine(key + " " + cfg.AppSettings.Settings[key].Value);
+		}
 		return cfg.AppSettings.Settings[key].Value;
 	}
 	private void defaultMergeFile() {

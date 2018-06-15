@@ -25,7 +25,10 @@ namespace namaichi.rec
 		}
 		public bool followCommunity(string res, CookieContainer cc, MainForm form) {
 			var comId = util.getRegGroup(res, "Nicolive_JS_Conf\\.Recommend = \\{type\\: 'community', community_id\\: '(co\\d+)'\\};");
-			if (comId == null) return false;
+			if (comId == null) {
+				form.addLogText("この放送はフォローできませんでした。");
+				return false;
+			}
 			
 			var isJoinedTask = join(comId, cc, form);
 //			isJoinedTask.Wait();
@@ -37,10 +40,10 @@ namespace namaichi.rec
 			var headers = new WebHeaderCollection();
 			try {
 				var isJidouShounin = util.getPageSource(url, ref headers, cc).IndexOf("自動承認されます") > -1;
-				var _compage = util.getPageSource(url, ref headers, cc);
-				var gateurl = "http://live.nicovideo.jp/gate/lv313793991";
-				var __gatePage = util.getPageSource(gateurl, ref headers, cc);
-				var _compage2 = util.getPageSource(url, ref headers, cc);
+//				var _compage = util.getPageSource(url, ref headers, cc);
+//				var gateurl = "http://live.nicovideo.jp/gate/lv313793991";
+//				var __gatePage = util.getPageSource(gateurl, ref headers, cc);
+//				var _compage2 = util.getPageSource(url, ref headers, cc);
 				util.debugWriteLine(cc.GetCookieHeader(new Uri(url)));
 				form.addLogText(isJidouShounin ? "フォローを試みます。" : "自動承認ではありませんでした。");
 				

@@ -36,7 +36,8 @@ namespace namaichi.rec
 		async public Task<CookieContainer> getHtml5RecordCookie(string url) {
 			var userSessionCC = getUserSessionCC();
 			if (userSessionCC != null && true) {
-				util.debugWriteLine(userSessionCC.GetCookieHeader(TargetUrl));
+//				util.debugWriteLine(userSessionCC.GetCookieHeader(TargetUrl));
+				util.debugWriteLine("usersessioncc ishtml5login");
 				if (isHtml5Login(userSessionCC, url)) {
 					
 					var c = userSessionCC.GetCookies(TargetUrl)["user_session"];
@@ -53,9 +54,11 @@ namespace namaichi.rec
 				CookieContainer cc = await getBrowserCookie().ConfigureAwait(false);
 				
 				if (cc != null) {
+					util.debugWriteLine("browser ishtml5login");
 					if (isHtml5Login(cc, url)) {
-						util.debugWriteLine("browser 1 " + cc.GetCookieHeader(TargetUrl));
-						util.debugWriteLine("browser 2 " + cc.GetCookieHeader(new Uri("http://live2.nicovideo.jp")));
+//						util.debugWriteLine("browser 1 " + cc.GetCookieHeader(TargetUrl));
+//						util.debugWriteLine("browser 2 " + cc.GetCookieHeader(new Uri("http://live2.nicovideo.jp")));
+						util.debugWriteLine("browser login ok");
 						var c = cc.GetCookies(TargetUrl)["user_session"];
 						var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
 						if (c != null)
@@ -74,7 +77,9 @@ namespace namaichi.rec
 				var pass = cfg.get("accountPass");
 				var accCC = await getAccountCookie(mail, pass).ConfigureAwait(false);
 				if (accCC != null) {
+					util.debugWriteLine("account ishtml5login");
 					if (isHtml5Login(accCC, url)) {
+						util.debugWriteLine("account login ok");
 						var c = accCC.GetCookies(TargetUrl)["user_session"];
 						var secureC = accCC.GetCookies(TargetUrl)["user_session_secure"];
 						if (c != null)
@@ -144,18 +149,19 @@ namespace namaichi.rec
 		private bool isHtml5Login(CookieContainer cc, string url) {
 			var headers = new WebHeaderCollection();
 			try {
+				util.debugWriteLine("ishtml5login getpage " + url);
 				pageSource = util.getPageSource(url + "", ref headers, cc);
+				util.debugWriteLine("ishtml5login getpage ok");
 			} catch (Exception e) {
 				util.debugWriteLine("cookiegetter ishtml5login " + e.Message+e.StackTrace);
 				pageSource = "";
 				return false;
 			}
 //			isHtml5 = (headers.Get("Location") == null) ? false : true;
-			
-			if (pageSource.IndexOf("\"login_status\":\"login\"") < 0 &&
-			   	pageSource.IndexOf("login_status = 'login'") < 0) return false;
-			//if (pageSource.IndexOf("not login?") != -1) return false;
-			return true;
+			var isLogin = !(pageSource.IndexOf("\"login_status\":\"login\"") < 0 &&
+			   	pageSource.IndexOf("login_status = 'login'") < 0); 
+			util.debugWriteLine("islogin " + isLogin);
+			return isLogin;
 		}
 		async public Task<CookieContainer> getAccountCookie(string mail, string pass) {
 			
