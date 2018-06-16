@@ -97,16 +97,21 @@ namespace namaichi.rec
 			ws.Error += onError;
 			
 			ws.Open();
+			
 		}
 		private void onOpen(object sender, EventArgs e) {
-			util.debugWriteLine("rm.rfu dds2 " + rm.rfu);
+			util.debugWriteLine("on open rm.rfu dds2 " + rm.rfu);
 			
 			String leoReq = "{\"type\":\"watch\",\"body\":{\"command\":\"playerversion\",\"params\":[\"leo\"]}}";
 			util.debugWriteLine("leoReq " + leoReq);
 			util.debugWriteLine("websocketinfo1 " + webSocketInfo[1]);
 			ws.Send(leoReq);
 			
+			
 			ws.Send(webSocketInfo[1]);
+			
+			
+			
 			
 			//test
 //			for (int i = 0; i < 100; i++)
@@ -128,11 +133,8 @@ namespace namaichi.rec
 			util.debugWriteLine("on close " + e.ToString());
 			stopRecording();
 			
-			//SERVICE_TEMPORARILY_UNAVAILABLE 予約枠開始後に何らかの問題？
-			if (e.ToString().IndexOf("SERVICE_TEMPORARILY_UNAVAILABLE") > 0) 
-				rm.form.addLogText("サーバーからデータの受信ができませんでした。リトライします。");
-//			ws.Open();
-//			endStreamProcess();
+			
+
 		}
 		private void onError(object sender, SuperSocket.ClientEngine.ErrorEventArgs e) {
 			util.debugWriteLine("on error " + e.Exception.Message);
@@ -145,6 +147,8 @@ namespace namaichi.rec
 		}
 		private void onMessageReceive(object sender, MessageReceivedEventArgs e) {
 			util.debugWriteLine("receive " + e.Message);
+			
+			
 //			util.debugWriteLine("ws " + ws);
 			if (ws == null) return;
 			//pong
@@ -159,6 +163,8 @@ namespace namaichi.rec
 			
 			//record
 			if (e.Message.IndexOf("\"currentStream\"") >= 0) {
+			
+			
 				util.debugWriteLine("mediaservertype = " + util.getRegGroup(e.Message, "(\"mediaServerType\".\".+?\")"));
 				var bestGettableQuolity = getBestGettableQuolity(e.Message);
 				if (isFirstChoiceQuality(e.Message, bestGettableQuolity)) {
@@ -173,8 +179,15 @@ namespace namaichi.rec
 			if (e.Message.IndexOf("\"NO_PERMISSION\"") >= 0
 			    || e.Message.IndexOf("\"TAKEOVER\"") >= 0
 			    || e.Message.IndexOf("\"INTERNAL_SERVERERROR\"") >= 0
+			    || e.Message.IndexOf("\"SERVICE_TEMPORARILY_UNAVAILABLE\"") >= 0
 			   	) {
 				if (e.Message.IndexOf("\"TAKEOVER\"") >= 0) rm.form.addLogText("追い出されました。");
+				
+				//SERVICE_TEMPORARILY_UNAVAILABLE 予約枠開始後に何らかの問題？
+				if (e.Message.IndexOf("\"SERVICE_TEMPORARILY_UNAVAILABLE\"") > 0) 
+					rm.form.addLogText("サーバーからデータの受信ができませんでした。リトライします。");
+			
+			
 				util.debugWriteLine("kiteru");
 //				connect(webSocketInfo[0].Replace("\"requireNewStream\":false", "\"requireNewStream\":true"));
 				isNoPermission = true;
@@ -182,6 +195,11 @@ namespace namaichi.rec
 //				Task.Run(() => {
 //				         	sendIntervalPong();
 //				         });
+			}
+			if (e.Message.IndexOf("\"disconnect\"") >= 0) {
+				util.debugWriteLine("unknown disconnect");
+				isNoPermission = true;
+				stopRecording();
 			}
 			if (e.Message.IndexOf("\"command\":\"statistics\",\"params\"") >= 0
 			   	) {

@@ -45,6 +45,10 @@ namespace namaichi.rec
             util.debugWriteLine("rm");
             //config.Save();
             
+//            int a = 0; a = a / a;
+//            try {
+//            	a = 0; a = a / a;
+//            } catch (Exception e) {util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.StackTrace);}
             
             //Properties.Settings.Default = new namaichi.Properties.Settings(
 			if (rfu == null) {
@@ -74,12 +78,11 @@ namespace namaichi.rec
 				form.optionMenuItem.Enabled = false;
 				form.resetDisplay();
 				
- 
-				
 				Task.Run(() => {
 				    rfu = new RecordFromUrl(this);
 				    var _rfu = rfu;
 				    util.debugWriteLine("rm rec");
+				    
 				    //endcode 0-その他の理由 1-stop 2-最初に終了 3-始また後に番組終了
                 	var endCode = rfu.rec(form.urlText.Text, lvid);
                 	util.debugWriteLine("endcode " + endCode);

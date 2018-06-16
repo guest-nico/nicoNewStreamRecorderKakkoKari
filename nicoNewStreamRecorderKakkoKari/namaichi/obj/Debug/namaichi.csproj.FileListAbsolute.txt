@@ -249,4 +249,3 @@ C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo\nicoNewStream
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\SnkLib.App.CookieGetter.xml
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.xml
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\System.Data.SQLite.xml
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.csprojResolveAssemblyReference.cache

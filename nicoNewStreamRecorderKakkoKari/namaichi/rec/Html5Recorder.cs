@@ -202,7 +202,7 @@ namespace namaichi.rec
 			         });
 //				new RecordStateSetter().set(data, rm.form, type, recFolderFileInfo);
 			
-				//System.Threading.Thread.Sleep(20000);
+//				System.Threading.Thread.Sleep(20000);
 				
 				
 				util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode());
@@ -234,10 +234,14 @@ namespace namaichi.rec
 				
 				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime);
 				try {
+					
 					isNoPermission = wsr.start();
+					
 				} catch (Exception e) {
-					util.debugWriteLine(e.Message + e.StackTrace);
+					util.debugWriteLine("wsr start " + e.Message + e.StackTrace);
 				}
+				
+//				System.Threading.Thread.Sleep(2000);
 				
 				util.debugWriteLine(rm.rfu + " " + rfu + " " + (rm.rfu == rfu));
 				if (rm.rfu != rfu) break;
