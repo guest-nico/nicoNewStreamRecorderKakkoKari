@@ -17,13 +17,15 @@
 サーバーからのcurrentStream
 - mediaServerTypeはほとんどがdmcですが、もう一つの種類があったと思います。が、手元にログがないので定かではないです。
 
+statistics
+- 極希に「{"type":"watch","body":{"command":"statistics","params":["2",null,"0","0"]}}」のようにnullが入っていることがあります。
+
 disconnect
+- disconnectを受け取った後にgetpermitで再接続する際は、requireNewStreamをfalseにしていると前回の切断理由が返ってきて再びdisconnectになってしまうようです。disconnectされた後は一度requireNewStreamをtrueにする必要があるようです。
 - NO_PERMISSION: 既存の有効なストリームがない状態でrequireNewStreamをfalseに指定したりなど、getpermitが成功しなかったときに送られてくるようです。
 - TAKEOVER: いわゆる追い出しです。rtmp配信と違い、新配信では追い出し時にwebsocketの接続自体が切られてしまいます。
-- SERVICE_TEMPORARILY_UNAVAILABLE: ある放送へのアクセス過多？大量のスレッドで集中的にアクセスすると起こりました。放送の最初でも起こりやすい？ただ、それほど人がいない放送の予約枠の最初でも起こっていた。視聴者からのアクセスだけではない何かもカウントされてるとか？
+- SERVICE_TEMPORARILY_UNAVAILABLE: ある放送へのアクセス過多？大量のスレッドで集中的にアクセスすると起こりました。放送の最初でも起こりやすい？ただ、それほど人がいない放送の予約枠の最初でも起こっていました。ユーザー側の環境により放送の最初に頻発することもあるようです。
 - END_PROGRAM: 番組終了
 - TOO_MANY_CONNECTIONS: あるアカウントあたりのある放送への接続が多すぎる。10ぐらい？一つのaudience_tokenごとではなく、アカウントごとの気がします。つまり、一つのアカウントを使って大量の別放送を録画する分には引っかからない、かも。また、逆を言えば一つのアカウントから制限数以下の複数のストリームの取得が可能なので、使い方はありそうです。ただし、一つのアカウントに対して配信されるストリームは一つのクオリティのみのようです。
-
-
 INTERNAL_SERVERERROR
-- 通常メッセージかdisconnectかは失念しましたが、稀に送られてきます。
+- こちらもあまりよく理解できていませんが、稀に送られてきます。

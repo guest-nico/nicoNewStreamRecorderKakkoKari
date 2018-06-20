@@ -79,6 +79,10 @@ namespace namaichi.rec
 				System.Threading.Thread.Sleep(1000);
 				if (rec != null) 
 					util.debugWriteLine("isStopread " + rec.isStopRead());
+				
+				//test
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
 			}
 			isRetry = false;
 			
@@ -195,8 +199,7 @@ namespace namaichi.rec
 //				Task.Run(() => {
 //				         	sendIntervalPong();
 //				         });
-			}
-			if (e.Message.IndexOf("\"disconnect\"") >= 0) {
+			} else if (e.Message.IndexOf("\"disconnect\"") >= 0) {
 				util.debugWriteLine("unknown disconnect");
 				isNoPermission = true;
 				stopRecording();
@@ -339,9 +342,13 @@ namespace namaichi.rec
 		private void displayStatistics(string e) {
 			var visit = util.getRegGroup(e, "{\"type\":\"watch\",\"body\":{\"command\":\"statistics\",\"params\":\\[\"(\\d+?)\",\"\\d+?\"");
 			var comment = util.getRegGroup(e, "{\"type\":\"watch\",\"body\":{\"command\":\"statistics\",\"params\":\\[\"\\d+?\",\"(\\d+?)\"");
-			visit = int.Parse(visit).ToString("n0");
-			comment = int.Parse(comment).ToString("n0");
-			rm.form.setStatistics(visit, comment);
+			try {
+				visit = int.Parse(visit).ToString("n0");
+				comment = int.Parse(comment).ToString("n0");
+				rm.form.setStatistics(visit, comment);
+			} catch (Exception ee){
+				util.debugWriteLine(ee.Message + " " + ee.StackTrace + " " + ee.Source + " " + ee.TargetSite);
+			}
 		}
 		private void onWscOpen(object sender, EventArgs e) {
 			util.debugWriteLine("ms open a");
@@ -370,8 +377,12 @@ namespace namaichi.rec
 			util.debugWriteLine("ms onclose");
 			if (commentSW != null) {
 				if (bool.Parse(rm.cfg.get("IsgetcommentXml"))) {
-					commentSW.WriteLine("</packet>");
-					commentSW.Flush();
+					try {
+						commentSW.WriteLine("</packet>");
+						commentSW.Flush();
+					} catch (Exception ee) {
+						util.debugWriteLine(ee.Message + " " + ee.StackTrace + " " + ee.TargetSite);
+					}
 				}
 				commentSW.Close();
 				commentSW = null;

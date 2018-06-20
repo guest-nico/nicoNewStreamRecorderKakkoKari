@@ -216,12 +216,16 @@ namespace namaichi.rec
 				util.debugWriteLine("form disposed" + rm.form.IsDisposed);
 				util.debugWriteLine("recforlderfi test " + recFolderFileInfo);
 				
-				if (!rm.form.IsDisposed) {
-		        	rm.form.Invoke((MethodInvoker)delegate() {
-				        var fileName = System.IO.Path.GetFileName(recFolderFile[1]);
-				        rm.form.Text = fileName;
-					});
-				}
+				try {
+					if (!rm.form.IsDisposed) {
+			        	rm.form.Invoke((MethodInvoker)delegate() {
+					        var fileName = System.IO.Path.GetFileName(recFolderFile[1]);
+					        rm.form.Text = fileName;
+						});
+					}
+				} catch (Exception e) {
+		       		util.showException(e);
+		       	}
 				
 				
 				util.debugWriteLine("recforlderfi " + recFolderFileInfo);
@@ -321,15 +325,23 @@ namespace namaichi.rec
 				rm.form.addLogText("require_community_menber");
 				if (bool.Parse(rm.cfg.get("IsmessageBox"))) {
 					if (rm.form.IsDisposed) return 2;
-		        	rm.form.Invoke((MethodInvoker)delegate() {
-		       			MessageBox.Show("コミュニティに入る必要があります：\nrequire_community_menber/" + lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None);
-					});
+					try {
+			        	rm.form.Invoke((MethodInvoker)delegate() {
+			       			MessageBox.Show("コミュニティに入る必要があります：\nrequire_community_menber/" + lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None);
+						});
+					} catch (Exception e) {
+			       		util.showException(e);
+			       	}
 				}
 				if (bool.Parse(rm.cfg.get("IsfailExit"))) {
 					rm.rfu = null;
-					rm.form.Invoke((MethodInvoker)delegate() {
-		       			rm.form.Close();
-					});
+					try {
+						rm.form.Invoke((MethodInvoker)delegate() {
+			       			rm.form.Close();
+						});
+					} catch (Exception e) {
+			       		util.showException(e);
+			       	}
 					
 				}
 				return 3;
@@ -343,9 +355,13 @@ namespace namaichi.rec
 				
 				if (bool.Parse(rm.cfg.get("IsdeleteExit"))) {
 					rm.rfu = null;
-					rm.form.Invoke((MethodInvoker)delegate() {
-		       			rm.form.Close();
-					});
+					try {
+						rm.form.Invoke((MethodInvoker)delegate() {
+			       			rm.form.Close();
+						});
+					} catch (Exception e) {
+			       		util.showException(e);
+			       	}
 					
 				}
 				return 2;

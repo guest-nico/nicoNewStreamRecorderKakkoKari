@@ -24,32 +24,45 @@ namespace namaichi
 		private static void Main(string[] args)
 		{
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandleExceptionHandler);
+			System.Threading.Thread.GetDomain().UnhandledException += new UnhandledExceptionEventHandler(UnhandleExceptionHandler);
+			AppDomain.CurrentDomain.UnhandledException += UnhandleExceptionHandler;
+			System.Threading.Thread.GetDomain().UnhandledException += UnhandleExceptionHandler;
+			Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(threadException);
+			Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+			System.Threading.Tasks.TaskScheduler.UnobservedTaskException += taskSchedulerUnobservedTaskException;
+			AppDomain.CurrentDomain.FirstChanceException += firstChanceException;
 				
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.Run(new MainForm(args));
 		}
 		private static void UnhandleExceptionHandler(Object sender, UnhandledExceptionEventArgs e) {
+			util.debugWriteLine("unhandled exception");
 			var eo = (Exception)e.ExceptionObject;
-			util.debugWriteLine("eo " + eo);
-			util.debugWriteLine("0 message " + eo.Message + "\nsource " + 
-					eo.Source + "\nstacktrace " + eo.StackTrace + 
-					"\n targetsite " + eo.TargetSite + "\n\n");
-			
-			var _eo = eo.GetBaseException();
-			util.debugWriteLine("eo " + _eo);
-			util.debugWriteLine("1 message " + _eo.Message + "\nsource " + 
-					_eo.Source + "\nstacktrace " + _eo.StackTrace + 
-					"\n targetsite " + _eo.TargetSite + "\n\n");
-			
-			eo = eo.InnerException;
-			util.debugWriteLine("eo " + eo);
-			util.debugWriteLine("2 message " + eo.Message + "\nsource " + 
-					eo.Source + "\nstacktrace " + eo.StackTrace + 
-					"\n targetsite " + eo.TargetSite);
+			util.showException(eo);
 			                    
 		}
+		static void threadException(object sender, System.Threading.ThreadExceptionEventArgs e) {
+		    util.debugWriteLine("thread exception");
+			var eo = (Exception)e.Exception;
+			util.showException(eo);
+			
+		}
+		static private void taskSchedulerUnobservedTaskException(object sender,
+				System.Threading.Tasks.UnobservedTaskExceptionEventArgs e) {
+			util.debugWriteLine("task_unobserved exception");
+			var eo = (Exception)e.Exception;
+			util.showException(eo);
+			e.SetObserved();
+			
+		}
+		static private void firstChanceException(object sender,
+				System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e) {
+			util.debugWriteLine("firstchance exception");
+			var eo = (Exception)e.Exception;
+			util.showException(eo, false);
 		
+		}
 	}
 	
 }

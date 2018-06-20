@@ -41,15 +41,23 @@ namespace namaichi.rec
 				rm.form.addLogText("ログインに失敗しました。" + lvid);
 				if (bool.Parse(rm.cfg.get("IsmessageBox"))) {
 					if (rm.form.IsDisposed) return 2;
-		        	rm.form.Invoke((MethodInvoker)delegate() {
-		       			MessageBox.Show("ログインに失敗しました。\n" + lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None);
-					});
+					try {
+			        	rm.form.Invoke((MethodInvoker)delegate() {
+			       			MessageBox.Show("ログインに失敗しました。\n" + lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None);
+						});
+					} catch (Exception e) {
+			       		util.showException(e);
+			       	}
 				}
 				if (bool.Parse(rm.cfg.get("IsfailExit"))) {
 					rm.rfu = null;
-					rm.form.Invoke((MethodInvoker)delegate() {
-		       			rm.form.Close();
-					});
+					try {
+						rm.form.Invoke((MethodInvoker)delegate() {
+			       			rm.form.Close();
+						});
+					} catch (Exception e) {
+			       		util.showException(e);
+			       	}
 					
 				}
 				
@@ -126,7 +134,8 @@ namespace namaichi.rec
 					
 					util.debugWriteLine(rm.cfg.get("IsautoFollowComgen"));
 					if (bool.Parse(rm.cfg.get("IsautoFollowComgen"))) {
-						var isFollow = new FollowCommunity().followCommunity(res, container, rm.form);
+						 
+						var isFollow = new FollowCommunity().followCommunity(res, container, rm.form, rm.cfg);
 						util.debugWriteLine("isfollow " + isFollow);
 						if (isFollow) {
 //							var wc = new WebHeaderCollection();
@@ -138,15 +147,23 @@ namespace namaichi.rec
 					}
 					if (bool.Parse(rm.cfg.get("IsmessageBox"))) {
 						if (rm.form.IsDisposed) return 2;
-			        	rm.form.Invoke((MethodInvoker)delegate() {
-			       			MessageBox.Show("コミュニティに入る必要があります：\nrequire_community_menber/" + lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None);
-						});
+						try {
+				        	rm.form.Invoke((MethodInvoker)delegate() {
+				       			MessageBox.Show("コミュニティに入る必要があります：\nrequire_community_menber/" + lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None);
+							});
+						} catch (Exception e) {
+				       		util.showException(e);
+				       	}
 					}
 					if (bool.Parse(rm.cfg.get("IsfailExit"))) {
 						rm.rfu = null;
-						rm.form.Invoke((MethodInvoker)delegate() {
-			       			rm.form.Close();
-						});
+						try {
+							rm.form.Invoke((MethodInvoker)delegate() {
+				       			rm.form.Close();
+							});
+						} catch (Exception e) {
+				       		util.showException(e);
+				       	}
 						
 					}
 					return 2;
@@ -160,9 +177,13 @@ namespace namaichi.rec
 					
 					if (bool.Parse(rm.cfg.get("IsdeleteExit"))) {
 						rm.rfu = null;
-						rm.form.Invoke((MethodInvoker)delegate() {
-			       			rm.form.Close();
-						});
+						try {
+							rm.form.Invoke((MethodInvoker)delegate() {
+				       			rm.form.Close();
+							});
+						} catch (Exception e) {
+				       		util.showException(e);
+				       	}
 						
 					}
 					return 2;
@@ -177,6 +198,7 @@ namespace namaichi.rec
 		public int getPageType(string url, bool isLogin = false) {
 			while (this == rm.rfu) {
 				try {
+					
 					var cg = new CookieGetter(rm.cfg);
 					var cgret = cg.getHtml5RecordCookie(url);
 					cgret.Wait();

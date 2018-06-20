@@ -65,17 +65,23 @@ namespace namaichi
 			if (bool.Parse(config.get("IsLogFile"))) {
 				var name = (args.Length == 0) ? "lv_" : util.getRegGroup(args[0], "(lv\\d+)");
 				var logPath = util.getJarPath()[0] + "/" + name + ".txt";
-					
-				#if DEBUG
-					System.Diagnostics.DefaultTraceListener dtl
-				      = (System.Diagnostics.DefaultTraceListener)System.Diagnostics.Debug.Listeners["Default"];
-					dtl.LogFileName = logPath;
-				#else
-					var w = new System.IO.StreamWriter(logPath, true);
-					w.AutoFlush = true;
-					System.Console.SetOut(w);
-				#endif
-				util.isLogFile = true;				
+				
+				try {
+					#if DEBUG
+						System.Diagnostics.DefaultTraceListener dtl
+					      = (System.Diagnostics.DefaultTraceListener)System.Diagnostics.Debug.Listeners["Default"];
+						dtl.LogFileName = logPath;
+					#else
+						FileStream fs = new FileStream(logPath, 
+					    		FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
+						var w = new System.IO.StreamWriter(fs);
+						w.AutoFlush = true;
+						System.Console.SetOut(w);
+					#endif
+				} catch (Exception e) {
+					util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+				}
+				util.isLogFile = true;
 			}
 
 
@@ -204,29 +210,35 @@ namespace namaichi
         }
         */
         public void addLogText(string t) {
-       		if (IsDisposed) return;
-       		
-       		
-        	Invoke((MethodInvoker)delegate() {
-        	    string _t = "";
-		    	if (logText.Text.Length != 0) _t += "\r\n";
-		    	_t += t;
-		    	
-	    		logText.AppendText(_t);
-				if (logText.Text.Length > 20000) 
-					logText.Text = logText.Text.Substring(logText.TextLength - 10000);
-
-			});
+       		try {
+	       		if (IsDisposed) return;
+	        	Invoke((MethodInvoker)delegate() {
+	        	    string _t = "";
+			    	if (logText.Text.Length != 0) _t += "\r\n";
+			    	_t += t;
+			    	
+		    		logText.AppendText(_t);
+					if (logText.Text.Length > 20000) 
+						logText.Text = logText.Text.Substring(logText.TextLength - 10000);
+	
+				});
+	       	} catch (Exception e) {
+	       		util.showException(e);
+	       	}
 		}
 		public void setRecordState(String t) {
-       		if (IsDisposed) return;
-        	Invoke((MethodInvoker)delegate() {
-        	    recordStateLabel.Text = t;
-        	    if (bool.Parse(config.get("IstitlebarInfo"))) {
-        	    	Text = t;
-        	    }
-        	    //recordStateLabel.AutoSize
-			});
+	       	try {
+	       		if (IsDisposed) return;
+	        	Invoke((MethodInvoker)delegate() {
+	        	    recordStateLabel.Text = t;
+	        	    if (bool.Parse(config.get("IstitlebarInfo"))) {
+	        	    	Text = t;
+	        	    }
+	        	    //recordStateLabel.AutoSize
+				});
+	       	} catch (Exception e) {
+	       		util.showException(e);
+	       	}
 		}
         private void initRec() {
         	//util.debugWriteLine(int.Parse(config.get("browserName")));
@@ -250,31 +262,38 @@ namespace namaichi
 		public void setInfo(string host, string hostUrl, 
         		string group, string groupUrl, string title, string url, 
         		string gentei, string openTime, string description) {
-       		if (IsDisposed) return;
-        	Invoke((MethodInvoker)delegate() {
-       		    titleLabel.Links.Clear();
-       		    hostLabel.Links.Clear();
-       		    communityLabel.Links.Clear();
-       		    
-        	    titleLabel.Text = title;
-        	    titleLabel.Links.Add(0, titleLabel.Text.Length, url);
-        	    hostLabel.Text = host;
-        	    hostLabel.Links.Add(0, (hostUrl != null) ? hostLabel.Text.Length : 0, hostUrl);
-        	    hostLabel.LinkArea = new LinkArea(0, (hostUrl == null) ? 0 : hostLabel.Text.Length);
-        	    communityLabel.Text = group;
-        	    communityLabel.Links.Add(0, groupLabel.Text.Length, groupUrl);
-        	    genteiLabel.Text = gentei;
-        	    startTimeLabel.Text = openTime;
-        	    descriptLabel.Text = description;
-			});
+	       	try {
+	       		if (IsDisposed) return;
+	        	Invoke((MethodInvoker)delegate() {
+	       		    titleLabel.Links.Clear();
+	       		    hostLabel.Links.Clear();
+	       		    communityLabel.Links.Clear();
+	       		    
+	        	    titleLabel.Text = title;
+	        	    titleLabel.Links.Add(0, titleLabel.Text.Length, url);
+	        	    hostLabel.Text = host;
+	        	    hostLabel.Links.Add(0, (hostUrl != null) ? hostLabel.Text.Length : 0, hostUrl);
+	        	    hostLabel.LinkArea = new LinkArea(0, (hostUrl == null) ? 0 : hostLabel.Text.Length);
+	        	    communityLabel.Text = group;
+	        	    communityLabel.Links.Add(0, groupLabel.Text.Length, groupUrl);
+	        	    genteiLabel.Text = gentei;
+	        	    startTimeLabel.Text = openTime;
+	        	    descriptLabel.Text = description;
+				});
+	       	} catch (Exception e) {
+	       		util.showException(e);
+	       	}
 		}
 		public void setSamune(string url) {
        		if (IsDisposed) return;
        		WebClient cl = new WebClient();
        		cl.Proxy = null;
-			byte[] pic = cl.DownloadData(url);
-			System.Drawing.Icon icon =  null;
+			
+       		System.Drawing.Icon icon =  null;
 			try {
+       			byte[] pic = cl.DownloadData(url);
+				
+			
 				var  st = new System.IO.MemoryStream(pic);
 				icon = Icon.FromHandle(new System.Drawing.Bitmap(st).GetHicon());
 				st.Close();
@@ -284,43 +303,57 @@ namespace namaichi
 				util.debugWriteLine(e.Message);
 				}
 			
-
-        	Invoke((MethodInvoker)delegate() {
-			    samuneBox.Image = icon.ToBitmap();
-//       			samuneBox.ImageLocation = url;
-				if (bool.Parse(config.get("IstitlebarSamune"))) {
-        	    	this.Icon = icon;
-				}
+			try {
+	        	Invoke((MethodInvoker)delegate() {
+				    samuneBox.Image = icon.ToBitmap();
+	//       			samuneBox.ImageLocation = url;
+					if (bool.Parse(config.get("IstitlebarSamune"))) {
+	        	    	this.Icon = icon;
+				}});
+			} catch (Exception e) {
+       			util.showException(e);
+       		}
 					
        			
 //       			Icon = new System.Drawing.Icon(url);
-			});
 			
 		}
        public void setKeikaJikan(string keikaJikan) {
+       	try {
 	       if (IsDisposed) return;
 	        	Invoke((MethodInvoker)delegate() {
 	       			keikaTimeLabel.Text = keikaJikan;
 				});
+       	} catch (Exception e) {
+       		util.showException(e);
+       	}
        }
        public void setStatistics(string visit, string comment) {
-	       	if (IsDisposed) return;
-	        	Invoke((MethodInvoker)delegate() {
-	       			visitLabel.Text = visit;
-	       			commentLabel.Text = comment;
-				});
+       	try {
+		       	if (IsDisposed) return;
+		        	Invoke((MethodInvoker)delegate() {
+		       			visitLabel.Text = visit;
+		       			commentLabel.Text = comment;
+					});
+		} catch (Exception e) {
+			util.showException(e);
+		} 
        }
        public void addComment(string time, string comment) {
-	       	if (IsDisposed) return;
-	        	Invoke((MethodInvoker)delegate() {
-	       	       	var rows = new string[]{time, comment};
-	       	       	commentList.Rows.Add(rows);
-	       	       	commentList.FirstDisplayedScrollingRowIndex = commentList.Rows.Count - 1;
-	       	       	while (commentList.Rows.Count > 20) {
-	       	       		commentList.Rows.RemoveAt(0);
-	       	       	}
-	       	       	
-				});
+       	try {
+		       	if (IsDisposed) return;
+		        	Invoke((MethodInvoker)delegate() {
+		       	       	var rows = new string[]{time, comment};
+		       	       	commentList.Rows.Add(rows);
+		       	       	commentList.FirstDisplayedScrollingRowIndex = commentList.Rows.Count - 1;
+		       	       	while (commentList.Rows.Count > 20) {
+		       	       		commentList.Rows.RemoveAt(0);
+		       	       	}
+		       	       	
+					});
+       	} catch (Exception e) {
+       		util.showException(e);
+       	}
        }
 
 		
@@ -354,7 +387,12 @@ namespace namaichi
 		
 		void endMenu_Click(object sender, EventArgs e)
 		{
-			Close();
+			try {
+				Close();
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + " " + ee.StackTrace + " " + ee.TargetSite);
+			}
+				
 //			if (kakuninClose()) Close();;
 		}
 		

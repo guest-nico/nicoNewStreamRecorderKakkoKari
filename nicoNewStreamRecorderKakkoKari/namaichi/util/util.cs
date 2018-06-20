@@ -193,13 +193,15 @@ class util {
 			return getDokujiSetteiFileName("放送者名", "コミュ名", "タイトル", "lv12345", "co9876", filenametype);
 		}
 	public static string getPageSource(string _url, ref WebHeaderCollection getheaders, CookieContainer container = null, string referer = "") {
+		var a = container.GetCookieHeader(new Uri(_url));
+		util.debugWriteLine(_url + " " + a);
 		for (int i = 0; i < 3; i++) {
 			try {
 				var req = (HttpWebRequest)WebRequest.Create(_url);
 				req.Proxy = null;
 				req.AllowAutoRedirect = true;
 	//			req.Headers = getheaders;
-				req.Referer = referer;
+				if (referer != null) req.Referer = referer;
 				if (container != null) req.CookieContainer = container;
 				var res = (HttpWebResponse)req.GetResponse();
 				var dataStream = res.GetResponseStream();
@@ -234,22 +236,57 @@ class util {
 		return UNIX_EPOCH.AddSeconds(unix).ToLocalTime();
 	}
 	public static void writeFile(string name, string str) {
-		var f = new System.IO.FileStream(name, FileMode.Append);
-		var w = new StreamWriter(f);
-		w.WriteLine(str);
-		w.Close();
-		f.Close();
+		using (var f = new System.IO.FileStream(name, FileMode.Append))
+        using (var w = new StreamWriter(f)) {
+	       	try {
+				w.WriteLine(str);
+	       	} catch (Exception e) {
+	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.TargetSite);
+	       	}
+       }
+//		w.Close();
+//		f.Close();
 	}
 	public static bool isLogFile = false;
 	public static void debugWriteLine(object str) {
 		var dt = DateTime.Now.ToLongTimeString();
 //		System.Console.WriteLine(dt + " " + str);
-		#if DEBUG
-			System.Diagnostics.Debug.WriteLine(str);
-//      		System.Diagnostics.Debug.WriteLine(
-		#else
-			if (isLogFile) System.Console.WriteLine(dt + " " + str);
-		#endif
+		try {
+			#if DEBUG
+				System.Diagnostics.Debug.WriteLine(str);
+	//      		System.Diagnostics.Debug.WriteLine(
+			#else
+				if (isLogFile) System.Console.WriteLine(dt + " " + str);
+			#endif
+		} catch (Exception e) {
+			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.TargetSite + " " + e.Source);
+		}
 		
+	}
+	public static void showException(Exception eo, bool isMessageBox = true) {
+		util.debugWriteLine("show exception eo " + eo);
+		if (eo == null) return;
+		
+		util.debugWriteLine("0 message " + eo.Message + "\nsource " + 
+				eo.Source + "\nstacktrace " + eo.StackTrace + 
+				"\n targetsite " + eo.TargetSite + "\n\n");
+		
+		var _eo = eo.GetBaseException();
+		util.debugWriteLine("eo " + _eo);
+		if (_eo != null) {
+			util.debugWriteLine("1 message " + _eo.Message + "\nsource " + 
+					_eo.Source + "\nstacktrace " + _eo.StackTrace + 
+					"\n targetsite " + _eo.TargetSite + "\n\n");
+		}
+		
+		_eo = eo.InnerException;
+		util.debugWriteLine("eo " + _eo);
+		if (_eo != null) {
+			util.debugWriteLine("2 message " + _eo.Message + "\nsource " + 
+					_eo.Source + "\nstacktrace " + _eo.StackTrace + 
+					"\n targetsite " + _eo.TargetSite);
+		}
+		if (isMessageBox && isLogFile)
+			MessageBox.Show("error", "error");
 	}
 }

@@ -23,10 +23,14 @@ public class SourceInfoSerialize
 		XmlSerializer serializer = new XmlSerializer(typeof(CookieSourceInfo));
 		
 		var jarPath = util.getJarPath();
-		var sw = new System.IO.StreamWriter(jarPath[0] + "\\" + jarPath[1] + ".xml", false, System.Text.Encoding.UTF8);
-//		sw.
-		serializer.Serialize(sw, si);
-		sw.Close();
+		try {
+			var sw = new System.IO.StreamWriter(jarPath[0] + "\\" + jarPath[1] + ".xml", false, System.Text.Encoding.UTF8);
+		
+			serializer.Serialize(sw, si);
+			sw.Close();
+		} catch (Exception e) {
+			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.TargetSite);
+		}
 	}
 	public static CookieSourceInfo load() {
 //		var sio = new SourceInfoObject(si);

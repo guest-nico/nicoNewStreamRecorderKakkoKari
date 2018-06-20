@@ -24,24 +24,36 @@ public class config
         
  	}
 	public Configuration getConfig() {
-		var jarPath = util.getJarPath();
-		var configFile = jarPath[0] + "\\" + jarPath[1] + ".config";
-		//util.debugWriteLine(configFile);
-        var exeFileMap = new System.Configuration. ExeConfigurationFileMap { ExeConfigFilename = configFile };
-        var cfg     = ConfigurationManager.OpenMappedExeConfiguration(exeFileMap, ConfigurationUserLevel.None);
-        return cfg;
+		try {
+			var jarPath = util.getJarPath();
+			var configFile = jarPath[0] + "\\" + jarPath[1] + ".config";
+			//util.debugWriteLine(configFile);
+	        var exeFileMap = new System.Configuration. ExeConfigurationFileMap { ExeConfigFilename = configFile };
+	        var cfg     = ConfigurationManager.OpenMappedExeConfiguration(exeFileMap, ConfigurationUserLevel.None);
+	        return cfg;
+		} catch (Exception e) {
+			util.debugWriteLine("getconfig " + e.Message + " " + e.StackTrace + " " + e.TargetSite);
+			return null;
+		}
 	}
 	public void set(string key, string value) {
-		cfg = getConfig();
-		
-		var keys = cfg.AppSettings.Settings.AllKeys;
-		if (System.Array.IndexOf(keys, key) < 0)
-			cfg.AppSettings.Settings.Add(key, value);
-		else cfg.AppSettings.Settings[key].Value = value;
-		try {
-			cfg.Save();
-		} catch (Exception e) {
-			util.debugWriteLine(e.Message + " " + e.StackTrace);
+		util.debugWriteLine("config set " + key);
+		for (var i = 0; i < 100; i++) {
+			cfg = getConfig();
+			
+			
+			var keys = cfg.AppSettings.Settings.AllKeys;
+			if (System.Array.IndexOf(keys, key) < 0)
+				cfg.AppSettings.Settings.Add(key, value);
+			else cfg.AppSettings.Settings[key].Value = value;
+			try {
+				cfg.Save();
+				return;
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + " " + e.StackTrace);
+				System.Threading.Thread.Sleep(500);
+				continue;
+			}
 		}
 	}
 	public string get(string key) {

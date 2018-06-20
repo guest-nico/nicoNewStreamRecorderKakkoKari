@@ -211,12 +211,12 @@ namespace namaichi.rec
 		}
 		private CookieContainer copyUserSession(CookieContainer cc, 
 				Cookie c, Cookie secureC) {
-			if (c != null) {
+			if (c != null && c.Value != "") {
 				cc.Add(TargetUrl, new Cookie(c.Name, c.Value));
 				cc.Add(TargetUrl2, new Cookie(c.Name, c.Value));
 				cc.Add(TargetUrl3, new Cookie(c.Name, c.Value));
 			}
-			if (secureC != null) {
+			if (secureC != null && secureC.Value != "") {
 				cc.Add(TargetUrl, new Cookie(secureC.Name, secureC.Value));
 				cc.Add(TargetUrl2, new Cookie(secureC.Name, secureC.Value));
 				cc.Add(TargetUrl3, new Cookie(secureC.Name, secureC.Value));

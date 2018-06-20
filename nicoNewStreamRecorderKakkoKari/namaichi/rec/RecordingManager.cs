@@ -78,7 +78,9 @@ namespace namaichi.rec
 				form.optionMenuItem.Enabled = false;
 				form.resetDisplay();
 				
+
 				Task.Run(() => {
+				    
 				    rfu = new RecordFromUrl(this);
 				    var _rfu = rfu;
 				    util.debugWriteLine("rm rec");
@@ -91,11 +93,15 @@ namespace namaichi.rec
 	                	isRecording = false;
 						rfu = null;
 						if (!form.IsDisposed) {
-							form.Invoke((MethodInvoker)delegate() {
-				        	    form.recBtn.Text = "録画開始";
-								form.urlText.Enabled = true;
-								form.optionMenuItem.Enabled = true;
-							});
+							try {
+								form.Invoke((MethodInvoker)delegate() {
+					        	    form.recBtn.Text = "録画開始";
+									form.urlText.Enabled = true;
+									form.optionMenuItem.Enabled = true;
+								});
+							} catch (Exception e) {
+					       		util.showException(e);
+					       	}
 						}
 						
 						util.debugWriteLine("end rec " + rfu);
@@ -104,19 +110,27 @@ namespace namaichi.rec
                 	}
                 	if (bool.Parse(cfg.get("IscloseExit")) && endCode == 3) {
                 		rfu = null;
-						form.Invoke((MethodInvoker)delegate() {
-				       		form.Close();
-						});
+                		try {
+							form.Invoke((MethodInvoker)delegate() {
+					       		form.Close();
+							});
+                		} catch (Exception e) {
+				       		util.showException(e);
+				       	}
                 	}
 				});
 				
 			} else {
-            	form.Invoke((MethodInvoker)delegate() {
-	        	    form.recBtn.Text = "録画開始";
-					form.urlText.Enabled = true;
-					form.optionMenuItem.Enabled = true;
-					form.addLogText("録画を中断しました");
-				});
+            	try {
+	            	form.Invoke((MethodInvoker)delegate() {
+		        	    form.recBtn.Text = "録画開始";
+						form.urlText.Enabled = true;
+						form.optionMenuItem.Enabled = true;
+						form.addLogText("録画を中断しました");
+					});
+            	} catch (Exception e) {
+		       		util.showException(e);
+		       	}
 				isRecording = false;
 				rfu = null;
 				hlsUrl = null;

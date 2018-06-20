@@ -124,7 +124,9 @@ namespace namaichi.rec
 					util.debugWriteLine("error " + line);
 					displayStateGui(line);
 					
-				} catch (Exception e) {};
+				} catch (Exception e) {
+					util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.TargetSite);
+				};
 				
 				if (rm.rfu != rfu) stopRecording();
 			}
