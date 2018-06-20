@@ -286,7 +286,12 @@ class util {
 					_eo.Source + "\nstacktrace " + _eo.StackTrace + 
 					"\n targetsite " + _eo.TargetSite);
 		}
-		if (isMessageBox && isLogFile)
-			MessageBox.Show("error", "error");
+		
+		#if DEBUG
+			if (isMessageBox && isLogFile)
+				MessageBox.Show("error", "error");
+		#else
+			
+		#endif
 	}
 }
