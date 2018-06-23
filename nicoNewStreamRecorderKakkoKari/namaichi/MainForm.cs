@@ -213,13 +213,17 @@ namespace namaichi
        		try {
 	       		if (IsDisposed) return;
 	        	Invoke((MethodInvoker)delegate() {
-	        	    string _t = "";
-			    	if (logText.Text.Length != 0) _t += "\r\n";
-			    	_t += t;
-			    	
-		    		logText.AppendText(_t);
-					if (logText.Text.Length > 20000) 
-						logText.Text = logText.Text.Substring(logText.TextLength - 10000);
+	       		       	try {
+			        	    string _t = "";
+					    	if (logText.Text.Length != 0) _t += "\r\n";
+					    	_t += t;
+					    	
+				    		logText.AppendText(_t);
+							if (logText.Text.Length > 20000) 
+								logText.Text = logText.Text.Substring(logText.TextLength - 10000);
+	       		       	} catch (Exception e) {
+	       		       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+	       		       	}
 	
 				});
 	       	} catch (Exception e) {
@@ -230,14 +234,19 @@ namespace namaichi
 	       	try {
 	       		if (IsDisposed) return;
 	        	Invoke((MethodInvoker)delegate() {
-	        	    recordStateLabel.Text = t;
-	        	    if (bool.Parse(config.get("IstitlebarInfo"))) {
-	        	    	Text = t;
-	        	    }
+	       		    try {
+		        	    recordStateLabel.Text = t;
+		        	    if (bool.Parse(config.get("IstitlebarInfo"))) {
+		        	    	Text = t;
+		        	    }
+	       		    } catch (Exception e) {
+	       		       	util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+	       		    }
+		        	   
 	        	    //recordStateLabel.AutoSize
 				});
 	       	} catch (Exception e) {
-	       		util.showException(e);
+       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 	       	}
 		}
         private void initRec() {
@@ -265,23 +274,27 @@ namespace namaichi
 	       	try {
 	       		if (IsDisposed) return;
 	        	Invoke((MethodInvoker)delegate() {
-	       		    titleLabel.Links.Clear();
-	       		    hostLabel.Links.Clear();
-	       		    communityLabel.Links.Clear();
-	       		    
-	        	    titleLabel.Text = title;
-	        	    titleLabel.Links.Add(0, titleLabel.Text.Length, url);
-	        	    hostLabel.Text = host;
-	        	    hostLabel.Links.Add(0, (hostUrl != null) ? hostLabel.Text.Length : 0, hostUrl);
-	        	    hostLabel.LinkArea = new LinkArea(0, (hostUrl == null) ? 0 : hostLabel.Text.Length);
-	        	    communityLabel.Text = group;
-	        	    communityLabel.Links.Add(0, groupLabel.Text.Length, groupUrl);
-	        	    genteiLabel.Text = gentei;
-	        	    startTimeLabel.Text = openTime;
-	        	    descriptLabel.Text = description;
+	       		       	try {
+			       		    titleLabel.Links.Clear();
+			       		    hostLabel.Links.Clear();
+			       		    communityLabel.Links.Clear();
+			       		    
+			        	    titleLabel.Text = title;
+			        	    titleLabel.Links.Add(0, titleLabel.Text.Length, url);
+			        	    hostLabel.Text = host;
+			        	    hostLabel.Links.Add(0, (hostUrl != null) ? hostLabel.Text.Length : 0, hostUrl);
+			        	    hostLabel.LinkArea = new LinkArea(0, (hostUrl == null) ? 0 : hostLabel.Text.Length);
+			        	    communityLabel.Text = group;
+			        	    communityLabel.Links.Add(0, groupLabel.Text.Length, groupUrl);
+			        	    genteiLabel.Text = gentei;
+			        	    startTimeLabel.Text = openTime;
+			        	    descriptLabel.Text = description;
+	       		       	} catch (Exception e) {
+	       		       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+	       		       	}
 				});
 	       	} catch (Exception e) {
-	       		util.showException(e);
+	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 	       	}
 		}
 		public void setSamune(string url) {
@@ -300,18 +313,23 @@ namespace namaichi
 				
 				
 			} catch (Exception e) {
-				util.debugWriteLine(e.Message);
+				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 				}
 			
 			try {
 	        	Invoke((MethodInvoker)delegate() {
-				    samuneBox.Image = icon.ToBitmap();
-	//       			samuneBox.ImageLocation = url;
-					if (bool.Parse(config.get("IstitlebarSamune"))) {
-	        	    	this.Icon = icon;
-				}});
+       			       	try {
+						    samuneBox.Image = icon.ToBitmap();
+			//       			samuneBox.ImageLocation = url;
+							if (bool.Parse(config.get("IstitlebarSamune"))) {
+			        	    	this.Icon = icon;
+							}
+       			       	} catch (Exception e) {
+       			       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+       			       	}
+       			});
 			} catch (Exception e) {
-       			util.showException(e);
+       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
        		}
 					
        			
@@ -322,18 +340,26 @@ namespace namaichi
        	try {
 	       if (IsDisposed) return;
 	        	Invoke((MethodInvoker)delegate() {
-	       			keikaTimeLabel.Text = keikaJikan;
+	              	try {
+	       				keikaTimeLabel.Text = keikaJikan;
+	              	} catch (Exception e) {
+	              		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+	              	}
 				});
        	} catch (Exception e) {
-       		util.showException(e);
+       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
        	}
        }
        public void setStatistics(string visit, string comment) {
        	try {
 		       	if (IsDisposed) return;
 		        	Invoke((MethodInvoker)delegate() {
-		       			visitLabel.Text = visit;
-		       			commentLabel.Text = comment;
+		       	       	try {
+			       			visitLabel.Text = visit;
+			       			commentLabel.Text = comment;
+		       	       	} catch (Exception e) {
+		       	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+		       	       	}
 					});
 		} catch (Exception e) {
 			util.showException(e);
@@ -343,16 +369,20 @@ namespace namaichi
        	try {
 		       	if (IsDisposed) return;
 		        	Invoke((MethodInvoker)delegate() {
-		       	       	var rows = new string[]{time, comment};
-		       	       	commentList.Rows.Add(rows);
-		       	       	commentList.FirstDisplayedScrollingRowIndex = commentList.Rows.Count - 1;
-		       	       	while (commentList.Rows.Count > 20) {
-		       	       		commentList.Rows.RemoveAt(0);
+		       	       	try {
+			       	       	var rows = new string[]{time, comment};
+			       	       	commentList.Rows.Add(rows);
+			       	       	commentList.FirstDisplayedScrollingRowIndex = commentList.Rows.Count - 1;
+			       	       	while (commentList.Rows.Count > 20) {
+			       	       		commentList.Rows.RemoveAt(0);
+			       	       	}
+		       	       	} catch (Exception e) {
+		       	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 		       	       	}
 		       	       	
 					});
        	} catch (Exception e) {
-       		util.showException(e);
+       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
        	}
        }
 
