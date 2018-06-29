@@ -53,7 +53,10 @@ namespace namaichi.rec
 					rm.rfu = null;
 					try {
 						rm.form.Invoke((MethodInvoker)delegate() {
-			       			rm.form.Close();
+			       			try { rm.form.Close();} 
+							catch (Exception e) {
+		       	       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+		       	       		}
 						});
 					} catch (Exception e) {
 			       		util.showException(e);
@@ -159,7 +162,10 @@ namespace namaichi.rec
 						rm.rfu = null;
 						try {
 							rm.form.Invoke((MethodInvoker)delegate() {
-				       			rm.form.Close();
+				       			try { rm.form.Close();} 
+								catch (Exception e) {
+			       	       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+			       	       		}
 							});
 						} catch (Exception e) {
 				       		util.showException(e);
@@ -179,7 +185,10 @@ namespace namaichi.rec
 						rm.rfu = null;
 						try {
 							rm.form.Invoke((MethodInvoker)delegate() {
-				       			rm.form.Close();
+				       			try { rm.form.Close();} 
+								 catch (Exception e) {
+			       	       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+			       	       		}
 							});
 						} catch (Exception e) {
 				       		util.showException(e);

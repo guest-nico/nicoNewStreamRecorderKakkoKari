@@ -73,3 +73,4 @@ C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo\nicoNewStream
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo\nicoNewStreamRecorderKakkoKari\namaichi\obj\Release\namaichi.optionForm.resources
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo\nicoNewStreamRecorderKakkoKari\namaichi\obj\Release\namaichi.csproj.GenerateResource.Cache
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo\nicoNewStreamRecorderKakkoKari\namaichi\obj\Release\nicoNewStreamRecorderKakkoKari.exe
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo\nicoNewStreamRecorderKakkoKari\namaichi\obj\Release\namaichi.csprojResolveAssemblyReference.cache

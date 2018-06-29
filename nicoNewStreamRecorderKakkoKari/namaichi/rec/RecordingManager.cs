@@ -80,7 +80,7 @@ namespace namaichi.rec
 				
 
 				Task.Run(() => {
-				    
+				         	
 				    rfu = new RecordFromUrl(this);
 				    var _rfu = rfu;
 				    util.debugWriteLine("rm rec");
@@ -95,9 +95,13 @@ namespace namaichi.rec
 						if (!form.IsDisposed) {
 							try {
 								form.Invoke((MethodInvoker)delegate() {
-					        	    form.recBtn.Text = "録画開始";
-									form.urlText.Enabled = true;
-									form.optionMenuItem.Enabled = true;
+									try {
+						        	    form.recBtn.Text = "録画開始";
+										form.urlText.Enabled = true;
+										form.optionMenuItem.Enabled = true;
+									} catch (Exception e) {
+			       	       				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+			       	       			}
 								});
 							} catch (Exception e) {
 					       		util.showException(e);
@@ -112,7 +116,11 @@ namespace namaichi.rec
                 		rfu = null;
                 		try {
 							form.Invoke((MethodInvoker)delegate() {
-					       		form.Close();
+								try {
+					       			form.Close();
+                			    } catch (Exception e) {
+			       	       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+			       	       		}
 							});
                 		} catch (Exception e) {
 				       		util.showException(e);
@@ -123,10 +131,14 @@ namespace namaichi.rec
 			} else {
             	try {
 	            	form.Invoke((MethodInvoker)delegate() {
-		        	    form.recBtn.Text = "録画開始";
-						form.urlText.Enabled = true;
-						form.optionMenuItem.Enabled = true;
-						form.addLogText("録画を中断しました");
+						try {
+			        	    form.recBtn.Text = "録画開始";
+							form.urlText.Enabled = true;
+							form.optionMenuItem.Enabled = true;
+							form.addLogText("録画を中断しました");
+						} catch (Exception e) {
+							util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+						}
 					});
             	} catch (Exception e) {
 		       		util.showException(e);

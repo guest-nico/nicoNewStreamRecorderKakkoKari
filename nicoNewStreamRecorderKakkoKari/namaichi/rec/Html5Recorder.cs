@@ -219,8 +219,12 @@ namespace namaichi.rec
 				try {
 					if (!rm.form.IsDisposed) {
 			        	rm.form.Invoke((MethodInvoker)delegate() {
-					        var fileName = System.IO.Path.GetFileName(recFolderFile[1]);
-					        rm.form.Text = fileName;
+							try {
+						        var fileName = System.IO.Path.GetFileName(recFolderFile[1]);
+						        rm.form.Text = fileName;
+							} catch (Exception e) {
+			       	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+		       	       		}
 						});
 					}
 				} catch (Exception e) {
@@ -337,7 +341,11 @@ namespace namaichi.rec
 					rm.rfu = null;
 					try {
 						rm.form.Invoke((MethodInvoker)delegate() {
-			       			rm.form.Close();
+							try { rm.form.Close();} 
+							catch (Exception e) {
+		       	       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+						               }
+
 						});
 					} catch (Exception e) {
 			       		util.showException(e);
@@ -357,7 +365,10 @@ namespace namaichi.rec
 					rm.rfu = null;
 					try {
 						rm.form.Invoke((MethodInvoker)delegate() {
-			       			rm.form.Close();
+			       			try { rm.form.Close();} 
+							catch (Exception e) {
+		       	       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+		       	       		}
 						});
 					} catch (Exception e) {
 			       		util.showException(e);
