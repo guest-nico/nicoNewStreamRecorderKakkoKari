@@ -148,17 +148,20 @@ namespace namaichi.rec
 			string[] webSocketRecInfo;
 			string[] recFolderFileInfo;
 			
-			Task displayTask = null;
+//			Task displayTask = null;
+			var pageType = util.getPageType(res);
+			util.debugWriteLine("pagetype " + pageType);
+				
+			var isTimeShift = pageType == 0; 
 			
 			var isNoPermission = false;
 			while(rm.rfu == rfu) {
 				var type = util.getRegGroup(res, "\"content_type\":\"(.+?)\"");
 				var data = util.getRegGroup(res, "<script id=\"embedded-data\" data-props=\"([\\d\\D]+?)</script>");
-				if (data == null) {
-					
-					var pageType = util.getPageType(res);
-					util.debugWriteLine(pageType);
-					
+				pageType = util.getPageType(res);
+				util.debugWriteLine("pagetype " + pageType);
+				
+				if (data == null || pageType != 0) {
 					//processType 0-ok 1-retry 2-放送終了 3-その他の理由の終了
 					var processType = processFromPageType(pageType);
 					util.debugWriteLine("processType " + processType);
@@ -173,7 +176,7 @@ namespace namaichi.rec
 					continue;
 				}
 				
-				
+				if (pageType == 0)
 				
 				data = System.Web.HttpUtility.HtmlDecode(data);
 				var openTime = long.Parse(util.getRegGroup(data, "\"beginTime\":(\\d+)"));
@@ -244,9 +247,10 @@ namespace namaichi.rec
 				try {
 					
 					isNoPermission = wsr.start();
-					
+					if (wsr.isEndProgram) return 3;
+						
 				} catch (Exception e) {
-					util.debugWriteLine("wsr start " + e.Message + e.StackTrace);
+					util.debugWriteLine("wsr start exception " + e.Message + e.StackTrace);
 				}
 				
 //				System.Threading.Thread.Sleep(2000);

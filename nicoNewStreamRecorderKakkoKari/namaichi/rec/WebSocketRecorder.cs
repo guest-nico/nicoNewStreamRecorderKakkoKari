@@ -42,6 +42,7 @@ namespace namaichi.rec
 		private string hlsUrl;
 		private bool isNoPermission = false;
 		private long openTime;
+		public bool isEndProgram = false;
 		
 		private System.Threading.Thread mainThread;
 		public WebSocketRecorder(string[] webSocketInfo, CookieContainer container, string[] recFolderFile, RecordingManager rm, RecordFromUrl rfu, Html5Recorder h5r, long openTime)
@@ -184,14 +185,16 @@ namespace namaichi.rec
 			    || e.Message.IndexOf("\"TAKEOVER\"") >= 0
 			    || e.Message.IndexOf("\"INTERNAL_SERVERERROR\"") >= 0
 			    || e.Message.IndexOf("\"SERVICE_TEMPORARILY_UNAVAILABLE\"") >= 0
-			   	) {
+			   	|| e.Message.IndexOf("\"END_PROGRAM\"") >= 0) {
 				if (e.Message.IndexOf("\"TAKEOVER\"") >= 0) rm.form.addLogText("追い出されました。");
 				
 				//SERVICE_TEMPORARILY_UNAVAILABLE 予約枠開始後に何らかの問題？
 				if (e.Message.IndexOf("\"SERVICE_TEMPORARILY_UNAVAILABLE\"") > 0) 
 					rm.form.addLogText("サーバーからデータの受信ができませんでした。リトライします。");
 			
-			
+				if (e.Message.IndexOf("\"END_PROGRAM\"") > 0)
+					isEndProgram = true;
+				
 				util.debugWriteLine("kiteru");
 //				connect(webSocketInfo[0].Replace("\"requireNewStream\":false", "\"requireNewStream\":true"));
 				isNoPermission = true;
@@ -265,7 +268,10 @@ namespace namaichi.rec
 			string msUri = util.getRegGroup(message, "(ws://.+?)\"");
 			string msThread = util.getRegGroup(message, "threadId\":\"(.+?)\"");
 	//		String msReq = "[truncated][{\"ping\":{\"content\":\"rs:0\"}},{\"ping\":{\"content\":\"ps:0\"}},{\"thread\":{\"thread\":\"" + msThread + "\",\"version\":\"20061206\",\"fork\":0,\"user_id\":\"" + userId + "\",\"res_from\":-1000,\"with_global\":1,\"scores\":1,\"nicoru\":0}},{\"ping\":{\"content\":\"pf:0\"}},{\"ping\":{\"content\":\"rf:0\"}}]\0";
+	
 			msReq = "[{\"ping\":{\"content\":\"rs:0\"}},{\"ping\":{\"content\":\"ps:0\"}},{\"thread\":{\"thread\":\"" + msThread + "\",\"version\":\"20061206\",\"fork\":0,\"user_id\":\"" + userId + "\",\"res_from\":-10,\"with_global\":1,\"scores\":0,\"nicoru\":0}},{\"ping\":{\"content\":\"pf:0\"}},{\"ping\":{\"content\":\"rf:0\"}}]";
+//			msReq = "[{\"ping\":{\"content\":\"rs:0\"}},{\"ping\":{\"content\":\"ps:0\"}},{\"thread\":{\"thread\":\"" + msThread + "\",\"version\":\"20061206\",\"fork\":0,\"user_id\":\"" + userId + "\",\"res_from\":1,\"with_global\":1,\"scores\":0,\"nicoru\":0}},{\"ping\":{\"content\":\"pf:0\"}},{\"ping\":{\"content\":\"rf:0\"}}]";
+			
 	//		String msReq = "{\"thread\":{\"thread\":\"" + msThread + "\",\"version\":\"20061206\",\"fork\":0,\"user_id\":\"" + userId + "\",\"res_from\":-100,\"with_global\":1,\"scores\":1,\"nicoru\":0}}";
 	//		String msReq = "{\"thread\":{\"thread\":\"" + msThread + "\",\"version\":\"20061206\",\"res_from\":-1000}}";
 	//		String msReq = "<thread thread=\"" + msThread + "\" version=\"20061206\" res_from=\"-100\" />\0";

@@ -98,8 +98,12 @@ namespace namaichi
             //nicoSessionComboBox1.Selector.PropertyChanged += Selector_PropertyChanged;
 //            checkBoxShowAll.Checked = bool.Parse(config.get("isAllBrowserMode"));
 			//if (isInitRun) initRec();
-			Width = int.Parse(config.get("Width"));
-			Height = int.Parse(config.get("Height"));
+			try {
+				Width = int.Parse(config.get("Width"));
+				Height = int.Parse(config.get("Height"));
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+			}
 			
 			if (args.Length > 0) {
 				if (bool.Parse(config.get("Isminimized"))) {
@@ -436,8 +440,15 @@ namespace namaichi
 				if (res == DialogResult.No) return false;
 			}
 			try{
-				config.set("Width", Width.ToString());
-				config.set("Height", Height.ToString());
+				util.debugWriteLine("width " + Width.ToString() + " height " + Height.ToString() + " restore width " + RestoreBounds.Width.ToString() + " restore height " + RestoreBounds.Height.ToString());
+				if (this.WindowState == FormWindowState.Normal) {
+					config.set("Width", Width.ToString());
+					config.set("Height", Height.ToString());
+				} else {
+					config.set("Width", RestoreBounds.Width.ToString());
+					config.set("Height", RestoreBounds.Height.ToString());
+				}
+
 			} catch(Exception e) {
 				util.debugWriteLine(e.Message + " " + e.StackTrace);
 			}
