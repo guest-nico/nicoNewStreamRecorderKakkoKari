@@ -42,6 +42,7 @@ namespace namaichi
 			this.isCommentJson = new System.Windows.Forms.RadioButton();
 			this.isCommentXML = new System.Windows.Forms.RadioButton();
 			this.isAutoFollowComGen = new System.Windows.Forms.CheckBox();
+			this.isLogFileChkBox = new System.Windows.Forms.CheckBox();
 			this.isTitleBarSamune = new System.Windows.Forms.CheckBox();
 			this.isTitleBarInfoChkBox = new System.Windows.Forms.CheckBox();
 			this.isGetCommentChkBox = new System.Windows.Forms.CheckBox();
@@ -55,6 +56,11 @@ namespace namaichi
 			this.isDefaultBrowserPathChkBox = new System.Windows.Forms.CheckBox();
 			this.browserPathSanshouBtn = new System.Windows.Forms.Button();
 			this.browserPathText = new System.Windows.Forms.TextBox();
+			this.tabPage6 = new System.Windows.Forms.TabPage();
+			this.groupBox8 = new System.Windows.Forms.GroupBox();
+			this.isRenketuAfterChkBox = new System.Windows.Forms.CheckBox();
+			this.isSegmentNotRenketuRadioBtn = new System.Windows.Forms.RadioButton();
+			this.isSegmentRenketuRadioBtn = new System.Windows.Forms.RadioButton();
 			this.tabPage5 = new System.Windows.Forms.TabPage();
 			this.groupBox7 = new System.Windows.Forms.GroupBox();
 			this.downBtn = new System.Windows.Forms.Button();
@@ -110,11 +116,12 @@ namespace namaichi
 			this.ffmpegoptText = new System.Windows.Forms.TextBox();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
-			this.isLogFileChkBox = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox6.SuspendLayout();
 			this.groupBox5.SuspendLayout();
+			this.tabPage6.SuspendLayout();
+			this.groupBox8.SuspendLayout();
 			this.tabPage5.SuspendLayout();
 			this.groupBox7.SuspendLayout();
 			this.tabPage2.SuspendLayout();
@@ -129,6 +136,7 @@ namespace namaichi
 			// tabControl1
 			// 
 			this.tabControl1.Controls.Add(this.tabPage1);
+			this.tabControl1.Controls.Add(this.tabPage6);
 			this.tabControl1.Controls.Add(this.tabPage5);
 			this.tabControl1.Controls.Add(this.tabPage2);
 			this.tabControl1.Controls.Add(this.tabPage3);
@@ -138,7 +146,7 @@ namespace namaichi
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
 			this.tabControl1.Size = new System.Drawing.Size(411, 485);
-			this.tabControl1.TabIndex = 0;
+			this.tabControl1.TabIndex = 1;
 			this.tabControl1.Click += new System.EventHandler(this.btnReload_Click);
 			// 
 			// tabPage1
@@ -171,7 +179,7 @@ namespace namaichi
 			this.groupBox6.Controls.Add(this.isMinimizedChkBox);
 			this.groupBox6.Location = new System.Drawing.Point(5, 83);
 			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(385, 329);
+			this.groupBox6.Size = new System.Drawing.Size(385, 354);
 			this.groupBox6.TabIndex = 0;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Recorder設定";
@@ -204,6 +212,15 @@ namespace namaichi
 			this.isAutoFollowComGen.TabIndex = 2;
 			this.isAutoFollowComGen.Text = "コミュニティが自動承認の場合、自動でフォローしてコミュ限を録画する\r\n（フォローから視聴可能までラグがあるため、録画開始まで数秒から数分かかります。）";
 			this.isAutoFollowComGen.UseVisualStyleBackColor = true;
+			// 
+			// isLogFileChkBox
+			// 
+			this.isLogFileChkBox.Location = new System.Drawing.Point(19, 289);
+			this.isLogFileChkBox.Name = "isLogFileChkBox";
+			this.isLogFileChkBox.Size = new System.Drawing.Size(271, 19);
+			this.isLogFileChkBox.TabIndex = 2;
+			this.isLogFileChkBox.Text = "ログをファイルに出力する";
+			this.isLogFileChkBox.UseVisualStyleBackColor = true;
 			// 
 			// isTitleBarSamune
 			// 
@@ -325,6 +342,59 @@ namespace namaichi
 			this.browserPathText.Name = "browserPathText";
 			this.browserPathText.Size = new System.Drawing.Size(291, 19);
 			this.browserPathText.TabIndex = 0;
+			// 
+			// tabPage6
+			// 
+			this.tabPage6.Controls.Add(this.groupBox8);
+			this.tabPage6.Location = new System.Drawing.Point(4, 22);
+			this.tabPage6.Name = "tabPage6";
+			this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage6.Size = new System.Drawing.Size(403, 459);
+			this.tabPage6.TabIndex = 5;
+			this.tabPage6.Text = "録画形式";
+			this.tabPage6.UseVisualStyleBackColor = true;
+			// 
+			// groupBox8
+			// 
+			this.groupBox8.Controls.Add(this.isRenketuAfterChkBox);
+			this.groupBox8.Controls.Add(this.isSegmentNotRenketuRadioBtn);
+			this.groupBox8.Controls.Add(this.isSegmentRenketuRadioBtn);
+			this.groupBox8.Location = new System.Drawing.Point(5, 10);
+			this.groupBox8.Name = "groupBox8";
+			this.groupBox8.Size = new System.Drawing.Size(385, 107);
+			this.groupBox8.TabIndex = 0;
+			this.groupBox8.TabStop = false;
+			this.groupBox8.Text = "保存形式";
+			// 
+			// isRenketuAfterChkBox
+			// 
+			this.isRenketuAfterChkBox.Location = new System.Drawing.Point(43, 60);
+			this.isRenketuAfterChkBox.Name = "isRenketuAfterChkBox";
+			this.isRenketuAfterChkBox.Size = new System.Drawing.Size(159, 15);
+			this.isRenketuAfterChkBox.TabIndex = 1;
+			this.isRenketuAfterChkBox.Text = "録画終了後に連結する";
+			this.isRenketuAfterChkBox.UseVisualStyleBackColor = true;
+			// 
+			// isSegmentNotRenketuRadioBtn
+			// 
+			this.isSegmentNotRenketuRadioBtn.Location = new System.Drawing.Point(19, 39);
+			this.isSegmentNotRenketuRadioBtn.Name = "isSegmentNotRenketuRadioBtn";
+			this.isSegmentNotRenketuRadioBtn.Size = new System.Drawing.Size(252, 15);
+			this.isSegmentNotRenketuRadioBtn.TabIndex = 0;
+			this.isSegmentNotRenketuRadioBtn.Text = "セグメントファイルを連結せずそのまま保存する";
+			this.isSegmentNotRenketuRadioBtn.UseVisualStyleBackColor = true;
+			this.isSegmentNotRenketuRadioBtn.CheckedChanged += new System.EventHandler(this.isSegmentNotRenketuRadioBtn_CheckedChanged);
+			// 
+			// isSegmentRenketuRadioBtn
+			// 
+			this.isSegmentRenketuRadioBtn.Checked = true;
+			this.isSegmentRenketuRadioBtn.Location = new System.Drawing.Point(19, 18);
+			this.isSegmentRenketuRadioBtn.Name = "isSegmentRenketuRadioBtn";
+			this.isSegmentRenketuRadioBtn.Size = new System.Drawing.Size(273, 15);
+			this.isSegmentRenketuRadioBtn.TabIndex = 0;
+			this.isSegmentRenketuRadioBtn.TabStop = true;
+			this.isSegmentRenketuRadioBtn.Text = "セグメントファイルを連結して保存する（通常の録画）";
+			this.isSegmentRenketuRadioBtn.UseVisualStyleBackColor = true;
 			// 
 			// tabPage5
 			// 
@@ -931,15 +1001,6 @@ namespace namaichi
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
 			// 
-			// isLogFileChkBox
-			// 
-			this.isLogFileChkBox.Location = new System.Drawing.Point(19, 289);
-			this.isLogFileChkBox.Name = "isLogFileChkBox";
-			this.isLogFileChkBox.Size = new System.Drawing.Size(271, 19);
-			this.isLogFileChkBox.TabIndex = 2;
-			this.isLogFileChkBox.Text = "ログをファイルに出力する";
-			this.isLogFileChkBox.UseVisualStyleBackColor = true;
-			// 
 			// optionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -958,6 +1019,8 @@ namespace namaichi
 			this.groupBox6.ResumeLayout(false);
 			this.groupBox5.ResumeLayout(false);
 			this.groupBox5.PerformLayout();
+			this.tabPage6.ResumeLayout(false);
+			this.groupBox8.ResumeLayout(false);
 			this.tabPage5.ResumeLayout(false);
 			this.groupBox7.ResumeLayout(false);
 			this.tabPage2.ResumeLayout(false);
@@ -972,6 +1035,11 @@ namespace namaichi
 			this.groupBox4.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox isRenketuAfterChkBox;
+		private System.Windows.Forms.RadioButton isSegmentRenketuRadioBtn;
+		private System.Windows.Forms.RadioButton isSegmentNotRenketuRadioBtn;
+		private System.Windows.Forms.GroupBox groupBox8;
+		private System.Windows.Forms.TabPage tabPage6;
 		private System.Windows.Forms.CheckBox isLogFileChkBox;
 		private System.Windows.Forms.Button upBtn;
 		private System.Windows.Forms.Button downBtn;

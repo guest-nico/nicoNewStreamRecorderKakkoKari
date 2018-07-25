@@ -58,8 +58,7 @@ namespace namaichi
 			
 			this.args = args;
 			
-			util.debugWriteLine(args.Length);
-			util.debugWriteLine(args);
+			
 			
 			//test
 			if (bool.Parse(config.get("IsLogFile"))) {
@@ -84,7 +83,8 @@ namespace namaichi
 				util.isLogFile = true;
 			}
 
-
+			util.debugWriteLine("arg len " + args.Length);
+			util.debugWriteLine("arg join " + string.Join(" ", args));
 		    
 			
 			//test
@@ -106,10 +106,13 @@ namespace namaichi
 			}
 			
 			if (args.Length > 0) {
+				
+				
+				    
 				if (bool.Parse(config.get("Isminimized"))) {
 					this.WindowState = FormWindowState.Minimized;
 				}
-            	urlText.Text = args[0];
+				urlText.Text = string.Join("|", args);
 //            	rec = new rec.RecordingManager(this);
             	rec.rec();
 
@@ -318,7 +321,8 @@ namespace namaichi
 				
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-				}
+				return;
+			}
 			
 			try {
 	        	Invoke((MethodInvoker)delegate() {

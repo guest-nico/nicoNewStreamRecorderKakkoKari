@@ -54,14 +54,15 @@ namespace namaichi.rec
 				bool isFFmpeg = Array.IndexOf(command, "-i") != -1;
 				util.debugWriteLine("isffmpeg " + isFFmpeg);
 				
-				var rec = new Record(rm, isFFmpeg, rfu);
+				var rec = new Record(rm, isFFmpeg, rfu, "", "", 0, null, false, null, null);
 				commentGetter = new NotHtmlCommentGetter(messageInfo, rm, rfu, recFolderFile);
 				
+				/*
 				var recTask = Task.Run(() => rec.recordCommand(command));
 				var commentTask = Task.Run(() => commentGetter.start());
 				recTask.Wait();
 				commentGetter.close();
-				
+				*/
 				System.Threading.Thread.Sleep(3000);
 		       
 		        getPlayerStatusInfo = getGetPlayerStatusInfo();

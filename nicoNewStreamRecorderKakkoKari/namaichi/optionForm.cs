@@ -112,6 +112,8 @@ namespace namaichi
 				{"IsautoFollowComgen",isAutoFollowComGen.Checked.ToString().ToLower()},
 				{"qualityRank",getQualityRank()},
 				{"IsLogFile",isLogFileChkBox.Checked.ToString().ToLower()},
+				{"segmentSaveType",getSegmentSaveType()},
+				{"IsRenketuAfter",isRenketuAfterChkBox.Checked.ToString().ToLower()},
 				
 				{"cookieFile",cookieFileText.Text},
 				{"iscookie",isCookieFileSiteiChkBox.Checked.ToString().ToLower()},
@@ -242,6 +244,9 @@ namespace namaichi
         	isAutoFollowComGen.Checked = bool.Parse(cfg.get("IsautoFollowComgen"));
         	setInitQualityRankList(cfg.get("qualityRank"));
         	isLogFileChkBox.Checked = bool.Parse(cfg.get("IsLogFile"));
+        	setSegmentSaveType(cfg.get("segmentSaveType"));
+        	isRenketuAfterChkBox.Checked = bool.Parse(cfg.get("IsRenketuAfter"));
+        	isRenketuAfterChkBox_UpdateAction();
         	
         	isCookieFileSiteiChkBox.Checked = bool.Parse(cfg.get("iscookie"));
         	isCookieFileSiteiChkBox_UpdateAction();
@@ -473,6 +478,24 @@ namespace namaichi
 			qualityListBox.Items.Clear();
 			var items = getRanksToItems(ranks.ToArray(), qualityListBox);
 			qualityListBox.Items.AddRange(items);
+		}
+		string getSegmentSaveType() {
+			if (isSegmentRenketuRadioBtn.Checked) return "0";
+			else if (isSegmentNotRenketuRadioBtn.Checked) return "1";
+//			else if (isSegmentBothRadioBtn.Checked) return "2";
+			return "0";
+		}
+		void setSegmentSaveType(string segmentSaveType) {
+			if (segmentSaveType == "0") isSegmentRenketuRadioBtn.Checked = true;
+			else if (segmentSaveType == "1") isSegmentNotRenketuRadioBtn.Checked = true;
+//			else if (segmentSaveType == "2") isSegmentBothRadioBtn.Checked = true;
+		}
+		void isSegmentNotRenketuRadioBtn_CheckedChanged(object sender, EventArgs e)
+		{
+			isRenketuAfterChkBox_UpdateAction();
+		}
+		void isRenketuAfterChkBox_UpdateAction() {
+			isRenketuAfterChkBox.Enabled = isSegmentNotRenketuRadioBtn.Checked;
 		}
 	}
 }

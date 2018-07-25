@@ -21,21 +21,24 @@ namespace namaichi.rec
 		
 	public class Html5Recorder
 	{
-		private string url;
+		public string url;
 		private CookieContainer container;
 		private string lvid;
 		private RecordingManager rm;
 		private RecordFromUrl rfu;
+		private bool isTimeShift;
 		
 	
 		public Html5Recorder(string url, CookieContainer container, 
-				string lvid, RecordingManager rm, RecordFromUrl rfu)
+				string lvid, RecordingManager rm, RecordFromUrl rfu,
+				bool isTimeShift)
 		{
 			this.url = url;
 			this.container = container;
 			this.lvid = lvid;
 			this.rm = rm;
 			this.rfu = rfu;
+			this.isTimeShift = isTimeShift;
 			
 		}
 		public int record(string res) {
@@ -146,22 +149,23 @@ namespace namaichi.rec
 			
 	
 			string[] webSocketRecInfo;
-			string[] recFolderFileInfo;
-			
-//			Task displayTask = null;
-			var pageType = util.getPageType(res);
-			util.debugWriteLine("pagetype " + pageType);
+			string[] recFolderFileInfo = null;
+			string[] recFolderFile = null;
 				
-			var isTimeShift = pageType == 0; 
+//			Task displayTask = null;
+//			var pageType = util.getPageType(res);
+//			util.debugWriteLine("pagetype " + pageType);
+				
+			var lastSegmentNo = 0;
 			
 			var isNoPermission = false;
 			while(rm.rfu == rfu) {
 				var type = util.getRegGroup(res, "\"content_type\":\"(.+?)\"");
 				var data = util.getRegGroup(res, "<script id=\"embedded-data\" data-props=\"([\\d\\D]+?)</script>");
-				pageType = util.getPageType(res);
+				var pageType = util.getPageType(res);
 				util.debugWriteLine("pagetype " + pageType);
 				
-				if (data == null || pageType != 0) {
+				if (data == null || (pageType != 0 && pageType != 7)) {
 					//processType 0-ok 1-retry 2-放送終了 3-その他の理由の終了
 					var processType = processFromPageType(pageType);
 					util.debugWriteLine("processType " + processType);
@@ -176,11 +180,10 @@ namespace namaichi.rec
 					continue;
 				}
 				
-				if (pageType == 0)
 				
 				data = System.Web.HttpUtility.HtmlDecode(data);
 				var openTime = long.Parse(util.getRegGroup(data, "\"beginTime\":(\\d+)"));
-//				var openTime = long.Parse(util.getRegGroup(data, "\"beginTimeMs\":(\\d+)"));
+	//				var openTime = long.Parse(util.getRegGroup(data, "\"beginTimeMs\":(\\d+)"));
 							
 				
 	//			util.debugWriteLine(data);
@@ -191,7 +194,7 @@ namespace namaichi.rec
 				if (webSocketRecInfo == null) continue;
 				
 				util.debugWriteLine("isnopermission " + isNoPermission);
-				if (isNoPermission) webSocketRecInfo[1] = webSocketRecInfo[1].Replace("\"requireNewStream\":false", "\"requireNewStream\":true");
+//				if (isNoPermission) webSocketRecInfo[1] = webSocketRecInfo[1].Replace("\"requireNewStream\":false", "\"requireNewStream\":true");
 				recFolderFileInfo = getHtml5RecFolderFileInfo(data, type);
 				
 				
@@ -209,15 +212,17 @@ namespace namaichi.rec
 				
 				
 				util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode());
-				string[] recFolderFile = util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg);
-				if (recFolderFile[0] == null) {
+				if (recFolderFile == null)
+					recFolderFile = util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg);
+				if (recFolderFile == null || recFolderFile[0] == null) {
 					//パスが長すぎ
-					rm.form.addLogText("パスが長すぎます " + recFolderFile[1]);
+					rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);
+					util.debugWriteLine("too long path? " + recFolderFile[1]);
 					return 2;
 				}
 				
 				util.debugWriteLine("form disposed" + rm.form.IsDisposed);
-				util.debugWriteLine("recforlderfi test " + recFolderFileInfo);
+				util.debugWriteLine("recforlderfile test " + recFolderFileInfo);
 				
 				try {
 					if (!rm.form.IsDisposed) {
@@ -243,7 +248,7 @@ namespace namaichi.rec
 					util.debugWriteLine("recd " + i + " " + recFolderFileInfo[i]);
 				
 				
-				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime);
+				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, lastSegmentNo, isTimeShift, lvid);
 				try {
 					
 					isNoPermission = wsr.start();
@@ -305,7 +310,7 @@ namespace namaichi.rec
 		*/
 		private int processFromPageType(int pageType) {
 			//ret 0-ok 1-retry 2-放送終了 3-その他の理由の終了
-			if (pageType == 0) {
+			if (pageType == 0 || pageType == 7) {
 				return 0;
 			} else if (pageType == 1) {
 				rm.form.addLogText("満員です。");

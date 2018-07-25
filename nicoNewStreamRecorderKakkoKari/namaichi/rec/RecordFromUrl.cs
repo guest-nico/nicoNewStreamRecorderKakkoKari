@@ -71,8 +71,9 @@ namespace namaichi.rec
 			
 			while (true && this == rm.rfu) {
 				util.debugWriteLine("pagetype " + pageType);
-				if (pageType == 0) {
-					var h5r = new Html5Recorder(url, container, lvid, rm, this);
+				if (pageType == 0 || pageType == 7) {
+					var isTimeShift = pageType == 7;
+					var h5r = new Html5Recorder(url, container, lvid, rm, this, isTimeShift);
 					var recResult = h5r.record(res);
 					util.debugWriteLine("recresult " + recResult);
 					return recResult;					

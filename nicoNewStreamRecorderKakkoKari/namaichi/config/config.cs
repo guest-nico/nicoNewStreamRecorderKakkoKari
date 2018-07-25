@@ -91,6 +91,8 @@ public class config
 			{"IsautoFollowComgen","false"},
 			{"qualityRank","0,1,2,3,4,5"},
 			{"IsLogFile","false"},
+			{"segmentSaveType","0"},
+			{"IsRenketuAfter","false"},
 			
 			
 			{"cookieFile",""},

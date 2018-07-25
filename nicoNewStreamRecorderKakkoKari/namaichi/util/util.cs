@@ -81,16 +81,17 @@ class util {
 			if (sfn == null) return null;
 			dirPath += "/" + sfn;
 		}
-		if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
-		if (!Directory.Exists(dirPath)) return null;
+
+
+		var segmentSaveType = cfg.get("segmentSaveType");
 
 		var name = getFileName(host, group, title, lvId, communityNum,  cfg);
-		if (name.Length > 120) name = name.Substring(0, 120);
+		if (name.Length > 200) name = name.Substring(0, 200);
 		
 		//長いパス調整
-		if (name.Length + dirPath.Length > 250) {
+		if (name.Length + dirPath.Length > 235) {
 			name = lvId;
-			if (name.Length + dirPath.Length > 250 && sfn != null) {
+			if (name.Length + dirPath.Length > 240 && sfn != null) {
 				sfn = sfn.Substring(0, 3);
 				dirPath = _dirPath + "/" + sfn;
 								
@@ -99,12 +100,22 @@ class util {
 				
 			}
 		}
-		if (name.Length + dirPath.Length > 255) return new string[]{null, name + " " + dirPath};
+		if (name.Length + dirPath.Length > 235) return new string[]{null, name + " " + dirPath};
+		
+		if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
+		if (!Directory.Exists(dirPath)) return null;
+		
 
 		for (int i = 0; i < 1000000; i++) {
-			var fName = dirPath + "/" + name + i.ToString();
-			if (File.Exists(fName + ".ts") ||
-			   	File.Exists(fName + ".xml")) continue;
+			var fName = dirPath + "/" + name + "_" + i.ToString();
+			
+			if (segmentSaveType == "0" && (File.Exists(fName + ".ts") ||
+					File.Exists(fName + ".xml"))) continue;
+			else if (segmentSaveType == "1") {
+				if (Directory.Exists(fName)) continue;
+				Directory.CreateDirectory(fName);
+				if (!Directory.Exists(fName)) return null;
+			}
 			
 			util.debugWriteLine(dirPath + " " + fName);
 			string[] ret = {dirPath, fName};
@@ -192,10 +203,33 @@ class util {
 			//var format = cfg.get("filenameformat");
 			return getDokujiSetteiFileName("放送者名", "コミュ名", "タイトル", "lv12345", "co9876", filenametype);
 		}
-	public static string getPageSource(string _url, ref WebHeaderCollection getheaders, CookieContainer container = null, string referer = "") {
-		var a = container.GetCookieHeader(new Uri(_url));
-		util.debugWriteLine(_url + " " + a);
-		for (int i = 0; i < 3; i++) {
+	public static string getOkCommentFileName(config cfg, string fName, string lvid) {
+		var kakutyousi = (cfg.get("IsgetcommentXml") == "true") ? ".xml" : ".json";
+		if (cfg.get("segmentSaveType") == "0") {
+			//renketu
+			util.debugWriteLine("comment file path " + fName + ".xml");
+			return fName + kakutyousi;
+		} else {
+			
+			var name = util.getRegGroup(fName, ".+/(.+)");
+			if (fName.Length + name.Length > 245) name = lvid;
+			util.debugWriteLine("comment file path " + fName + "/" + name + kakutyousi);
+			return fName + "/" + name + kakutyousi;
+		}
+	}
+		
+	public static string getPageSource(string _url, ref WebHeaderCollection getheaders, CookieContainer container = null, string referer = null, bool isFirstLog = true) {
+		string a;
+		try {
+			a = container.GetCookieHeader(new Uri(_url));
+		} catch (Exception e) {
+			util.debugWriteLine("getpage get cookie header error " + _url + e.Message+e.StackTrace);
+			return null;
+		}
+		if (isFirstLog)
+			util.debugWriteLine("getpagesource " + _url + " " + a);
+			
+		for (int i = 0; i < 1; i++) {
 			try {
 				var req = (HttpWebRequest)WebRequest.Create(_url);
 				req.Proxy = null;
@@ -203,6 +237,7 @@ class util {
 	//			req.Headers = getheaders;
 				if (referer != null) req.Referer = referer;
 				if (container != null) req.CookieContainer = container;
+
 				var res = (HttpWebResponse)req.GetResponse();
 				var dataStream = res.GetResponseStream();
 				var reader = new StreamReader(dataStream);
@@ -210,9 +245,45 @@ class util {
 				
 				getheaders = res.Headers;
 				return resStr;
+	
 			} catch (Exception e) {
-				util.debugWriteLine(e.Message+e.StackTrace);
-				System.Threading.Thread.Sleep(3000);
+				util.debugWriteLine("getpage error " + _url + e.Message+e.StackTrace);
+	//				System.Threading.Thread.Sleep(3000);
+				continue;
+			}
+		}
+			
+		return null;
+	}
+	public static byte[] getFileBytes(string url, CookieContainer container) {
+//		var a = container.GetCookieHeader(new Uri(_url));
+		util.debugWriteLine("getfilebyte " + url);
+		for (int i = 0; i < 1; i++) {
+			try {
+				var req = (HttpWebRequest)WebRequest.Create(url);
+				req.Proxy = null;
+				req.AllowAutoRedirect = true;
+	//			req.Headers = getheaders;
+//				if (referer != null) req.Referer = referer;
+				if (container != null) req.CookieContainer = container;
+				var res = (HttpWebResponse)req.GetResponse();
+				var dataStream = res.GetResponseStream();
+				
+//				var reader = new StreamReader(dataStream);
+				byte[] b = new byte[10000000];
+				int pos = 0;
+				var r = 0;
+				while ((r = dataStream.Read(b, pos, 1000000)) > 0) {
+//					if (dataStream.Read(b, (int)j, (int)dataStream.Length) == 0) break;
+//					j = dataStream.Position;
+					pos += r;
+				}
+				Array.Resize(ref b, pos);
+				return b;
+				
+			} catch (Exception e) {
+				util.debugWriteLine("getfile error " + url + e.Message+e.StackTrace);
+//				System.Threading.Thread.Sleep(3000);
 				continue;
 			}
 		}
@@ -222,7 +293,7 @@ class util {
 		var data = util.getRegGroup(res, "<script id=\"embedded-data\" data-props=\"([\\d\\D]+?)</script>");
 		var status = (data == null) ? null : util.getRegGroup(data, "&quot;status&quot;:&quot;(.+?)&quot;");
 		if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ON_AIR") return 0;
-		else if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ENDED") return 2;
+		else if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ENDED") return 7;
 		else if (util.getRegGroup(res, "(混雑中ですが、プレミアム会員の方は優先して入場ができます)") != null ||
 		        util.getRegGroup(res, "(ただいま、満員のため入場できません)") != null) return 1;
 //		else if (util.getRegGroup(res, "<div id=\"comment_arealv\\d+\">[^<]+この番組は\\d+/\\d+/\\d+\\(.\\) \\d+:\\d+に終了いたしました。<br>") != null) return 2;
@@ -296,4 +367,5 @@ class util {
 			
 		#endif
 	}
+
 }

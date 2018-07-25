@@ -89,7 +89,7 @@ namespace namaichi
 			// urlText
 			// 
 			this.urlText.Location = new System.Drawing.Point(69, 38);
-			this.urlText.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.urlText.Margin = new System.Windows.Forms.Padding(2);
 			this.urlText.Name = "urlText";
 			this.urlText.Size = new System.Drawing.Size(241, 19);
 			this.urlText.TabIndex = 0;
@@ -97,7 +97,7 @@ namespace namaichi
 			// recBtn
 			// 
 			this.recBtn.Location = new System.Drawing.Point(314, 35);
-			this.recBtn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.recBtn.Margin = new System.Windows.Forms.Padding(2);
 			this.recBtn.Name = "recBtn";
 			this.recBtn.Size = new System.Drawing.Size(75, 24);
 			this.recBtn.TabIndex = 1;
@@ -109,12 +109,12 @@ namespace namaichi
 			// 
 			this.logText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
 									| System.Windows.Forms.AnchorStyles.Left)));
-			this.logText.Location = new System.Drawing.Point(6, 263);
-			this.logText.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.logText.Location = new System.Drawing.Point(6, 276);
+			this.logText.Margin = new System.Windows.Forms.Padding(2);
 			this.logText.Multiline = true;
 			this.logText.Name = "logText";
 			this.logText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.logText.Size = new System.Drawing.Size(249, 87);
+			this.logText.Size = new System.Drawing.Size(249, 74);
 			this.logText.TabIndex = 5;
 			// 
 			// recordStateLabel
@@ -122,7 +122,7 @@ namespace namaichi
 			this.recordStateLabel.Location = new System.Drawing.Point(5, 14);
 			this.recordStateLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
 			this.recordStateLabel.Name = "recordStateLabel";
-			this.recordStateLabel.Size = new System.Drawing.Size(140, 24);
+			this.recordStateLabel.Size = new System.Drawing.Size(155, 37);
 			this.recordStateLabel.TabIndex = 6;
 			// 
 			// groupLabel
@@ -140,7 +140,7 @@ namespace namaichi
 			this.samuneBox.Image = ((System.Drawing.Image)(resources.GetObject("samuneBox.Image")));
 			this.samuneBox.InitialImage = ((System.Drawing.Image)(resources.GetObject("samuneBox.InitialImage")));
 			this.samuneBox.Location = new System.Drawing.Point(12, 61);
-			this.samuneBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.samuneBox.Margin = new System.Windows.Forms.Padding(2);
 			this.samuneBox.Name = "samuneBox";
 			this.samuneBox.Size = new System.Drawing.Size(141, 150);
 			this.samuneBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -241,9 +241,9 @@ namespace namaichi
 			this.groupBox5.Controls.Add(this.label5);
 			this.groupBox5.Controls.Add(this.communityLabel);
 			this.groupBox5.Controls.Add(this.label1);
-			this.groupBox5.Location = new System.Drawing.Point(182, 76);
+			this.groupBox5.Location = new System.Drawing.Point(179, 76);
 			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(443, 161);
+			this.groupBox5.Size = new System.Drawing.Size(452, 161);
 			this.groupBox5.TabIndex = 17;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "番組情報";
@@ -412,7 +412,7 @@ namespace namaichi
 			this.groupBox2.Controls.Add(this.recordStateLabel);
 			this.groupBox2.Location = new System.Drawing.Point(6, 217);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(156, 41);
+			this.groupBox2.Size = new System.Drawing.Size(167, 54);
 			this.groupBox2.TabIndex = 20;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "転送状況";
@@ -467,7 +467,7 @@ namespace namaichi
 			this.Controls.Add(this.samuneBox);
 			this.Controls.Add(this.menuStrip1);
 			this.MainMenuStrip = this.menuStrip1;
-			this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+			this.Margin = new System.Windows.Forms.Padding(2);
 			this.Name = "MainForm";
 			this.Text = "ニコ生新配信録画ツール（仮";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.form_Close);
@@ -516,7 +516,7 @@ namespace namaichi
 		private System.Windows.Forms.ToolStripMenuItem fileMenuItem;
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.Label recordStateLabel;
-		private System.Windows.Forms.TextBox logText;
+		public System.Windows.Forms.TextBox logText;
 		public System.Windows.Forms.Button recBtn;
 		public System.Windows.Forms.TextBox urlText;
 		private System.Windows.Forms.Label groupLabel;

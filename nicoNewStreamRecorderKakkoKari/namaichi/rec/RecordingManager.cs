@@ -43,26 +43,21 @@ namespace namaichi.rec
 		async public void rec() {
 			
             util.debugWriteLine("rm");
-            //config.Save();
             
-//            int a = 0; a = a / a;
-//            try {
-//            	a = 0; a = a / a;
-//            } catch (Exception e) {util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.StackTrace);}
-            
-            //Properties.Settings.Default = new namaichi.Properties.Settings(
 			if (rfu == null) {
-//				var c = await getCookie();
-//				var d = c.Result;
+            	var arr = form.urlText.Text.Split('|');
+            	
+            	try {
+            		if (!arr[0].StartsWith("http") && System.IO.File.Exists(arr[0]) ||
+	            	   		System.IO.Directory.Exists(arr[0])) {
+            			Task.Run(() => new ArgConcat(this, arr).concat());
+	            		return;
+	            	}
+            	} catch (Exception e) {
+            		util.debugWriteLine(e.Message + " " + e.Source + " " + e.StackTrace + " " + e.TargetSite);
+            	}
 				
-            	/*
-				if (c == null) {
-					MessageBox.Show("not login");
-					return;
-				}
-//				var cookie = c;
-				//MessageBox.Show(""+c.IsFaulted+c.IsCanceled+c.IsCompleted);
-				*/
+
 				var lvid = util.getRegGroup(form.urlText.Text, "(lv\\d+)", 1);
 				if (lvid != null) form.urlText.Text = "http://live2.nicovideo.jp/watch/" + lvid;
 //				if (lvid != null) form.urlText.Text = "https://cas.nicovideo.jp/user/77252622/lv313508832";
@@ -83,7 +78,11 @@ namespace namaichi.rec
 				         	
 				    rfu = new RecordFromUrl(this);
 				    var _rfu = rfu;
-				    util.debugWriteLine("rm rec");
+				    util.debugWriteLine("rm rec 録画開始" + rfu);
+				    
+				    util.debugWriteLine(form);
+				    util.debugWriteLine(form.urlText);
+				    util.debugWriteLine(form.urlText.Text);
 				    
 				    //endcode 0-その他の理由 1-stop 2-最初に終了 3-始また後に番組終了
                 	var endCode = rfu.rec(form.urlText.Text, lvid);
