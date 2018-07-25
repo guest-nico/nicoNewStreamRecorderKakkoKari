@@ -293,7 +293,7 @@ class util {
 		var data = util.getRegGroup(res, "<script id=\"embedded-data\" data-props=\"([\\d\\D]+?)</script>");
 		var status = (data == null) ? null : util.getRegGroup(data, "&quot;status&quot;:&quot;(.+?)&quot;");
 		if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ON_AIR") return 0;
-		else if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ENDED") return 7;
+		else if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ENDED") return 2;
 		else if (util.getRegGroup(res, "(混雑中ですが、プレミアム会員の方は優先して入場ができます)") != null ||
 		        util.getRegGroup(res, "(ただいま、満員のため入場できません)") != null) return 1;
 //		else if (util.getRegGroup(res, "<div id=\"comment_arealv\\d+\">[^<]+この番組は\\d+/\\d+/\\d+\\(.\\) \\d+:\\d+に終了いたしました。<br>") != null) return 2;

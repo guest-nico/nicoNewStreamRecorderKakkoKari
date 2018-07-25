@@ -66,7 +66,8 @@ namespace namaichi.rec
 		public void record() {
 			if (isTimeShift) {
 				rm.form.addLogText("タイムシフトの録画を開始します");
-				timeShiftRecord();
+//				timeShiftMultiRecord();
+				timeShiftOnTimeRecord();
 			} else {
 				rm.form.addLogText("録画を開始します");
 				realTimeRecord();
@@ -311,7 +312,7 @@ namespace namaichi.rec
 				return false;
 			}
 		}
-		private void timeShiftRecord() {
+		private void timeShiftMultiRecord() {
 			//var baseMasterUrl = util.getRegGroup(hlsMasterUrl, "(.+start=)");
 			var baseMasterUrl = hlsMasterUrl + "&satrt=";
 			var segUrl = getHlsSegM3uUrl(hlsMasterUrl);
@@ -471,6 +472,37 @@ namespace namaichi.rec
 			}
 			w.Close();
 			
+		}
+		private void timeShiftOnTimeRecord() {
+			var startTime = getTSStartTime();
+			return;
+			var baseMasterUrl = hlsMasterUrl + "&start=" + startTime;
+			var segUrl = getHlsSegM3uUrl(baseMasterUrl);
+			if (segUrl == null) {
+				wr.reConnect();
+				return;
+			}
+			util.debugWriteLine("timeshift basemaster " + baseMasterUrl + " segUrl " + segUrl);
+			var wc = new WebHeaderCollection();
+			var segRes = util.getPageSource(segUrl, ref wc, container);
+			if (segRes == null) {
+				wr.reConnect();
+				return;
+			}
+			util.debugWriteLine("seg res " + segRes);
+			var i = 8;
+		}
+		private string getTSStartTime() {
+			var r = new FileStream("48498.ts", FileMode.Open, FileAccess.Read);
+			var w = new FileStream("48498_henshuu.ts", FileMode.OpenOrCreate, FileAccess.ReadWrite);
+			w.Position = w.Length - 192;
+			var b = new byte[300];
+			w.Read(b, 0, 200);
+			//foreach (var _b in b) 
+			util.debugWriteLine(BitConverter.ToString(b));
+			w.Close();
+			r.Close();
+			return null;
 		}
 	}
 	class numTaskInfo {

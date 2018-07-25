@@ -445,8 +445,8 @@ namespace namaichi.rec
 						util.debugWriteLine(ee.Message + " " + ee.StackTrace + " " + ee.TargetSite);
 					}
 				}
-				commentSW.Close();
-				commentSW = null;
+//				commentSW.Close();
+//				commentSW = null;
 			}
 			
 
