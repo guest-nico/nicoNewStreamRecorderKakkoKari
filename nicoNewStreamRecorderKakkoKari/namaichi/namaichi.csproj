@@ -125,6 +125,7 @@
       <DependentUpon>fileNameOptionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="info\ChatInfo.cs" />
+    <Compile Include="info\TimeShiftConfig.cs" />
     <Compile Include="log\TraceListener.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -154,7 +155,12 @@
     <Compile Include="rec\RecordFromUrl.cs" />
     <Compile Include="rec\RecordingManager.cs" />
     <Compile Include="rec\RecordStateSetter.cs" />
+    <Compile Include="rec\ThroughFFMpeg.cs" />
     <Compile Include="rec\WebSocketRecorder.cs" />
+    <Compile Include="TimeShiftOptionForm.cs" />
+    <Compile Include="TimeShiftOptionForm.Designer.cs">
+      <DependentUpon>TimeShiftOptionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="util\SourceInfoSerialize.cs" />
     <Compile Include="util\util.cs" />
   </ItemGroup>
@@ -167,6 +173,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="optionForm.resx">
       <DependentUpon>optionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TimeShiftOptionForm.resx">
+      <DependentUpon>TimeShiftOptionForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

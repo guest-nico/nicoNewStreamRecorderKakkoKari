@@ -11,6 +11,9 @@ using System.Net;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using namaichi.config;
+using namaichi.info;
+using namaichi;
 
 namespace namaichi.rec
 {
@@ -72,7 +75,8 @@ namespace namaichi.rec
 //			util.debugWriteLine(data);
 			var wsUrl = util.getRegGroup(data, "\"webSocketUrl\":\"([\\d\\D]+?)\"");
 			util.debugWriteLine("wsurl " + wsUrl);
-			var broadcastId = util.getRegGroup(wsUrl, "/(\\d+)\\?");
+			//var broadcastId = util.getRegGroup(wsUrl, "/(\\d+)\\?");
+			var broadcastId = util.getRegGroup(data, "\"broadcastId\"\\:\"(\\d+)\"");
 			util.debugWriteLine("broadcastid " + broadcastId);
 			string request = "{\"type\":\"watch\",\"body\":{\"command\":\"getpermit\",\"requirement\":{\"broadcastId\":\"" + broadcastId + "\",\"route\":\"\",\"stream\":{\"protocol\":\"hls\",\"requireNewStream\":false,\"priorStreamQuality\":\"normal\"},\"room\":{\"isCommentable\":true,\"protocol\":\"webSocket\"}}}}";
 			util.debugWriteLine("request " + request);
@@ -210,10 +214,16 @@ namespace namaichi.rec
 			
 //				System.Threading.Thread.Sleep(20000);
 				
+				//timeshift option
+				TimeShiftConfig timeShiftConfig = null;
+				if (isTimeShift) {
+					timeShiftConfig = getTimeShiftConfig(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg);
+					if (timeShiftConfig == null) return 2;
+				}
 				
 				util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode());
 				if (recFolderFile == null)
-					recFolderFile = util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg);
+					recFolderFile = util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, isTimeShift, timeShiftConfig);
 				if (recFolderFile == null || recFolderFile[0] == null) {
 					//パスが長すぎ
 					rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);
@@ -224,33 +234,18 @@ namespace namaichi.rec
 				util.debugWriteLine("form disposed" + rm.form.IsDisposed);
 				util.debugWriteLine("recforlderfile test " + recFolderFileInfo);
 				
-				try {
-					if (!rm.form.IsDisposed) {
-			        	rm.form.Invoke((MethodInvoker)delegate() {
-							try {
-						        var fileName = System.IO.Path.GetFileName(recFolderFile[1]);
-						        rm.form.Text = fileName;
-							} catch (Exception e) {
-			       	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-		       	       		}
-						});
-					}
-				} catch (Exception e) {
-		       		util.showException(e);
-		       	}
+				var fileName = System.IO.Path.GetFileName(recFolderFile[1]);
+				rm.form.setTitle(fileName);
 				
 				
-				util.debugWriteLine("recforlderfi " + recFolderFileInfo);
-				
-				if (recFolderFile == null) continue;
+//				if (recFolderFile == null) continue;
 				
 				for (int i = 0; i < recFolderFile.Length; i++)
 					util.debugWriteLine("recd " + i + " " + recFolderFileInfo[i]);
 				
 				
-				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, lastSegmentNo, isTimeShift, lvid);
+				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, lastSegmentNo, isTimeShift, lvid, timeShiftConfig);
 				try {
-					
 					isNoPermission = wsr.start();
 					if (wsr.isEndProgram) return 3;
 						
@@ -389,6 +384,40 @@ namespace namaichi.rec
 				//nh5r.record(res);
 			}
 			
+		}
+		private TimeShiftConfig getTimeShiftConfig(string host, 
+			string group, string title, string lvId, string communityNum, 
+			string userId, config.config cfg) {
+			var segmentSaveType = cfg.get("segmentSaveType");
+			var lastFile = util.getLastTimeshiftFileName(host,
+					group, title, lvId, communityNum, userId, cfg);
+			util.debugWriteLine("timeshift lastfile " + lastFile);
+			string[] lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType);
+			if (lastFileTime == null)
+				util.debugWriteLine("timeshift lastfiletime " + 
+				                    ((lastFileTime == null) ? "null" : string.Join(" ", lastFileTime)));
+				
+			try {
+				var o = new TimeShiftOptionForm(lastFileTime, segmentSaveType);
+				
+				try {
+					rm.form.Invoke((MethodInvoker)delegate() {
+		       		       	try {
+				        	    o.ShowDialog(rm.form);
+		       		       	} catch (Exception e) {
+		       		       		util.debugWriteLine("timeshift option form invoke " + e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+		       		       	}
+					});
+				} catch (Exception e) {
+					util.debugWriteLine("timeshift option form invoke try " + e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+				}
+				
+				//if (o.ret == null) return null;
+				return o.ret;
+	        } catch (Exception ee) {
+        		util.debugWriteLine(ee.Message + " " + ee.StackTrace);
+	        }
+			return null;
 		}
 	}
 }

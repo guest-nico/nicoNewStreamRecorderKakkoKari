@@ -476,5 +476,20 @@ namespace namaichi
 			Text = "ニコ生新配信録画ツール（仮";
 			Icon = null;
 		}
+		public void setTitle(string s) {
+			try {
+				if (!IsDisposed) {
+		        	Invoke((MethodInvoker)delegate() {
+						try {
+					        Text = s;
+						} catch (Exception e) {
+		       	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+	       	       		}
+					});
+				}
+			} catch (Exception e) {
+	       		util.showException(e);
+	       	}
+		}
 	}
 }

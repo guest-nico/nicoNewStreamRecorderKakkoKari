@@ -6,6 +6,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using namaichi.config;
+using namaichi.info;
 
 class app {
 	public static void Mains(string[] args) {
@@ -61,7 +62,10 @@ class util {
 		}
 	}
 
-	public static string[] getRecFolderFilePath(string host, string group, string title, string lvId, string communityNum, string userId, config cfg) {
+	public static string[] getRecFolderFilePath(string host, 
+			string group, string title, string lvId, 
+			string communityNum, string userId, config cfg, 
+			bool isTimeShift, TimeShiftConfig tsConfig) {
 		
 		host = getOkFileName(host);
 		group = getOkFileName(group);
@@ -105,21 +109,53 @@ class util {
 		if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
 		if (!Directory.Exists(dirPath)) return null;
 		
-
 		for (int i = 0; i < 1000000; i++) {
-			var fName = dirPath + "/" + name + "_" + i.ToString();
-			
-			if (segmentSaveType == "0" && (File.Exists(fName + ".ts") ||
-					File.Exists(fName + ".xml"))) continue;
-			else if (segmentSaveType == "1") {
-				if (Directory.Exists(fName)) continue;
-				Directory.CreateDirectory(fName);
-				if (!Directory.Exists(fName)) return null;
-			}
-			
+			var fName = dirPath + "/" + name + "_" + ((isTimeShift) ? "ts" : "") + i.ToString();
 			util.debugWriteLine(dirPath + " " + fName);
-			string[] ret = {dirPath, fName};
-			return ret;
+			
+			if (!isTimeShift) {
+				if (segmentSaveType == "0" && (File.Exists(fName + ".ts") ||
+						File.Exists(fName + ".xml"))) continue;
+				else if (segmentSaveType == "1") {
+					if (Directory.Exists(fName)) continue;
+					Directory.CreateDirectory(fName);
+					if (!Directory.Exists(fName)) return null;
+				}
+				
+				
+				string[] reta = {dirPath, fName};
+				return reta;
+			} else {
+				if (segmentSaveType == "0" && !File.Exists(fName + ".ts")) {
+					if (tsConfig.isContinueConcat) {
+						if (i == 0) {
+							string[] retb = {dirPath, fName};
+							return retb;
+						} else {
+							fName = dirPath + "/" + name + "_" + ((isTimeShift) ? "ts" : "") + (i - 1).ToString();
+							string[] retc = {dirPath, fName};
+							return retc;
+						}
+					} else {
+						string[] retd = {dirPath, fName};
+						return retd;
+					}
+//					continue;
+				}
+				else if (segmentSaveType == "1") {
+					if (Directory.Exists(fName)) {
+						string[] rete = {dirPath, fName};
+						return rete;
+					} else if (File.Exists(fName)) {
+						continue;
+					}
+					util.debugWriteLine(dirPath + " " + fName);
+					Directory.CreateDirectory(fName);
+					if (!Directory.Exists(fName)) return null;
+					string[] retf = {dirPath, fName};
+					return retf;
+				}
+			}
 		}
 		return null;
 	}
@@ -217,7 +253,130 @@ class util {
 			return fName + "/" + name + kakutyousi;
 		}
 	}
+	public static string getLastTimeshiftFileName(string host, 
+			string group, string title, string lvId, string communityNum, 
+			string userId, config cfg) {
+		host = getOkFileName(host);
+		group = getOkFileName(group);
+		title = getOkFileName(title);
 		
+		string[] jarpath = getJarPath();
+//		util.debugWriteLine(jarpath);
+		//string dirPath = jarpath[0] + "\\rec\\" + host;
+		string _dirPath = (cfg.get("IsdefaultRecordDir") == "true") ?
+			(jarpath[0] + "\\rec") : cfg.get("recordDir");
+		string dirPath = _dirPath;
+		
+		string sfn = null;
+		if (cfg.get("IscreateSubfolder") == "true") {
+			sfn = getSubFolderName(host, group, title, lvId, communityNum, userId,  cfg);
+			if (sfn.Length > 120) sfn = sfn.Substring(0, 120);
+			if (sfn == null) return null;
+			dirPath += "/" + sfn;
+		}
+
+
+		var segmentSaveType = cfg.get("segmentSaveType");
+
+		var name = getFileName(host, group, title, lvId, communityNum,  cfg);
+		if (name.Length > 200) name = name.Substring(0, 200);
+		
+		//長いパス調整
+		if (name.Length + dirPath.Length > 235) {
+			name = lvId;
+			if (name.Length + dirPath.Length > 240 && sfn != null) {
+				sfn = sfn.Substring(0, 3);
+				dirPath = _dirPath + "/" + sfn;
+								
+				if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
+				if (!Directory.Exists(dirPath)) return null;
+				
+			}
+		}
+		if (name.Length + dirPath.Length > 230) return null;
+		
+		if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
+		if (!Directory.Exists(dirPath)) return null;
+		
+		string existFile = null;
+		var files = Directory.GetFiles(dirPath);
+		for (int i = 0; i < 1000; i++) {
+			var fName = dirPath + "/" + name + "_" + "ts" + i.ToString();
+			
+
+			//util.existFile(dirPath, name + "_ts_\\d+h\\d+m\\d+s_" + i.ToString());
+			var _existFile = util.existFile(files, "_ts_(\\d+h\\d+m\\d+s)_" + i.ToString(), name);
+			if (_existFile != null) existFile = _existFile;
+//			if (segmentSaveType == "0" && (File.Exists(fName + ".ts")
+				if (segmentSaveType == "0" && _existFile != null)
+					//|| File.Exists(fName + ".xml"))) continue;
+					continue;
+			else if (segmentSaveType == "1") {
+				if (Directory.Exists(fName)) {
+					return fName;
+				}
+				if (File.Exists(fName)) continue;
+				
+				/*
+				try {
+					//Directory.CreateDirectory(fName);
+					if (Directory.Exists(fName)) return fName;
+					continue;
+				} catch (Exception e) {
+					util.debugWriteLine("get last timeshift file create dir exception " + fName + e.Message + e.StackTrace + e.Source + e.TargetSite);
+					continue;
+				}
+				*/
+				
+				return null;
+			}
+			
+			util.debugWriteLine(dirPath + " " + fName);
+			
+			if (i == 0) {
+				util.debugWriteLine("last timeshift file " + dirPath + "/" + name + "_" + "ts" + (i - 0).ToString());
+				return null;
+//			} else util.debugWriteLine("last timeshift file " + dirPath + "/" + name + "_" + "ts" + (i - 1).ToString());
+			} else util.debugWriteLine("last timeshift file " + existFile);
+//			return dirPath + "/" + name + "_" + "ts" + (i - 1).ToString();
+			return existFile;
+//			string[] ret = {dirPath, dirPath + "/" + name + "_" + "ts" + (i - 1).ToString()};
+		}
+		return null;
+	}
+	public static string[] getLastTimeShiftFileTime(string lastFile, string segmentSaveType) {
+		if (lastFile == null) return null;
+		string fname = null;
+		if (segmentSaveType == "0") {
+			fname = lastFile + "";
+		} else {
+			var ss = new List<string>();
+			var key = new List<int>();
+			foreach (var f in Directory.GetFiles(lastFile)) {
+				if (!f.EndsWith(".ts")) continue;
+				var name = util.getRegGroup(f, ".+\\\\(.+)");
+				if (name == null) continue;
+				if (util.getRegGroup(name, "(\\d+h\\d+m\\d+s)") == null) continue;;
+				var _k = util.getRegGroup(name, "(\\d+)");
+				if (_k == null) continue;
+				ss.Add(f);
+				key.Add(int.Parse(_k));
+				  
+			}
+			if (ss.Count == 0) return null;
+			var ssArr = ss.ToArray();
+			Array.Sort(key.ToArray(), ssArr);
+			fname = ssArr[ssArr.Length - 1];
+		}
+		if (!File.Exists(fname)) return null;
+		var _name = util.getRegGroup(fname, ".+\\\\(.+)");
+		var h = util.getRegGroup(_name, "(\\d+)h");
+		var m = util.getRegGroup(_name, "(\\d+)m");
+		var s = util.getRegGroup(_name, "(\\d+)s");
+		if (h == null || m == null || s == null) return null;
+		var ret = new string[]{h, m, s};
+		return ret;
+	}
 	public static string getPageSource(string _url, ref WebHeaderCollection getheaders, CookieContainer container = null, string referer = null, bool isFirstLog = true) {
 		string a;
 		try {
@@ -289,11 +448,28 @@ class util {
 		}
 		return null;
 	}
+	public static string existFile(string[] files, string reg, string startWith) {
+//		var files = Directory.GetFiles(dirPath);
+		foreach (var f in files) {
+			var _f = getRegGroup(f, ".+\\\\(.+)");
+			var isStartsWith = _f.StartsWith(startWith);
+			if (!isStartsWith) continue;
+			var _reg = util.getRegGroup(_f.Substring(startWith.Length), reg);
+			if (_reg == null) continue;
+//			util.debugWriteLine(_f.StartsWith(startWith));
+//			util.debugWriteLine(util.getRegGroup(_f.Substring(startWith.Length), reg));
+			return f;
+//			if (issta_f.StartsWith(startWith) && 
+//			    util.getRegGroup(_f.Substring(startWith.Length), reg) != null) return f;
+		}
+		return null;
+	}
+
 	public static int getPageType(string res) {
 		var data = util.getRegGroup(res, "<script id=\"embedded-data\" data-props=\"([\\d\\D]+?)</script>");
 		var status = (data == null) ? null : util.getRegGroup(data, "&quot;status&quot;:&quot;(.+?)&quot;");
 		if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ON_AIR") return 0;
-		else if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ENDED") return 2;
+		else if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ENDED") return 7;
 		else if (util.getRegGroup(res, "(混雑中ですが、プレミアム会員の方は優先して入場ができます)") != null ||
 		        util.getRegGroup(res, "(ただいま、満員のため入場できません)") != null) return 1;
 //		else if (util.getRegGroup(res, "<div id=\"comment_arealv\\d+\">[^<]+この番組は\\d+/\\d+/\\d+\\(.\\) \\d+:\\d+に終了いたしました。<br>") != null) return 2;

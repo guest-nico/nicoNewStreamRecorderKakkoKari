@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading;
+using namaichi.info;
 
 namespace namaichi.rec
 {
@@ -34,6 +35,7 @@ namespace namaichi.rec
 		private CookieContainer container;
 		private int segmentSaveType = 0;
 		private bool isTimeShift = false;
+		private TimeShiftConfig tsConfig = null;
 		private List<numTaskInfo> newGetTsTaskList = new List<numTaskInfo>();
 		private List<string> recordedNo = new List<string>();
 		private string baseUrl;
@@ -49,7 +51,8 @@ namespace namaichi.rec
 		              RecordFromUrl rfu, string hlsUrl, 
 		              string recFolderFile, int lastSegmentNo, 
 		              CookieContainer container, bool isTimeShift, 
-		              WebSocketRecorder wr, string lvid) {
+		              WebSocketRecorder wr, string lvid, 
+		              TimeShiftConfig tsConfig) {
 			this.rm = rm;
 			this.isFFmpeg = isFFmpeg;
 			this.rfu = rfu;
@@ -61,7 +64,7 @@ namespace namaichi.rec
 			segmentSaveType = int.Parse(rm.cfg.get("segmentSaveType"));
 			this.wr = wr;
 			this.lvid = lvid;
-
+			this.tsConfig = tsConfig;
 		}
 		public void record() {
 			if (isTimeShift) {
@@ -95,8 +98,14 @@ namespace namaichi.rec
 				    rm.cfg.get("IsRenketuAfter") == "true") {
 				util.debugWriteLine("renketu after");
 				renketuAfter();
+			} else if (segmentSaveType == 0) {
+				var tf = new ThroughFFMpeg(rm);
+				tf.start(recFolderFile + ".ts");
+				rm.form.addLogText("録画終了処理を完了しました");
 			}
 				
+				
+			
 			isEnd = true;
 		}
 		private void renketuRecord() {
@@ -154,6 +163,13 @@ namespace namaichi.rec
 			//isRetry = false;
 			while(newGetTsTaskList.Count > 0) {
 				Thread.Sleep(200);
+				lock (newGetTsTaskList) {
+					var isAllEnd = true;
+					foreach (var n in newGetTsTaskList) {
+						if (n.res == null) isAllEnd = false;
+					}
+					if (isAllEnd) break;
+				}
 			}
 
 		}
@@ -207,11 +223,14 @@ namespace namaichi.rec
 				var url = baseUrl + s;
 				
 				var isInList = false;
-				foreach (var t in newGetTsTaskList)
-					if (t.no == no) isInList = true;
+				lock (newGetTsTaskList) {
+					foreach (var t in newGetTsTaskList)
+						if (t.no == no) isInList = true;
+				}
 				
 				if (no > lastSegmentNo && !isInList) {
 					var fileName = util.getRegGroup(s, "(.+?.ts)\\?");
+					fileName = util.getRegGroup(fileName, "(\\d+)") + ".ts";
 					util.debugWriteLine(no + " " + fileName);
 					
 					newGetTsTaskList.Add(new numTaskInfo(no, url, second, fileName));
@@ -411,7 +430,10 @@ namespace namaichi.rec
 			if (isFFmpegRenketuAfter) {
 				ffmpegRenketuAfter();
 			} else {
-				streamRenketuAfter();
+				var outFName = streamRenketuAfter();
+				var tf = new ThroughFFMpeg(rm);
+				tf.start(outFName);
+				rm.form.addLogText("録画終了処理を完了しました");
 			}
 		}
 		private void ffmpegRenketuAfter() {
@@ -427,13 +449,16 @@ namespace namaichi.rec
 			var r = new FFMpegConcat(rm, rfu);
 			r.recordCommand(args.Split(' '), m3u8, pipeName);
 		}
-		private void streamRenketuAfter() {
+		private string streamRenketuAfter() {
 			var fName = util.getRegGroup(recFolderFile, ".+/(.+)");
 			var outFName = recFolderFile + "/" + fName + ".ts";
 			
 			FileStream w; 
 			try {
 				util.debugWriteLine("renketu after out fname " + outFName);			
+				if (outFName.Length > 245) outFName = recFolderFile + "/" + lvid + ".ts";
+				if (outFName.Length > 245) outFName = recFolderFile + "/out.ts";
+				util.debugWriteLine("renketu after out fname shuusei go " + outFName);
 				w = new FileStream(outFName, FileMode.Append, FileAccess.Write);
 			} catch (PathTooLongException e) {
 				try {
@@ -446,7 +471,7 @@ namespace namaichi.rec
 					} catch (PathTooLongException eee) {
 						util.debugWriteLine("renketu after too long");
 						rm.form.addLogText("録画後に連結しようとしましたがパスが長すぎてファイルが開けませんでした " + recFolderFile + "/_.ts");
-						return;
+						return null;
 					}
 					
 				}
@@ -471,38 +496,76 @@ namespace namaichi.rec
 				}
 			}
 			w.Close();
-			
+			return w.Name;
 		}
 		private void timeShiftOnTimeRecord() {
-			var startTime = getTSStartTime();
-			return;
-			var baseMasterUrl = hlsMasterUrl + "&start=" + startTime;
-			var segUrl = getHlsSegM3uUrl(baseMasterUrl);
-			if (segUrl == null) {
-				wr.reConnect();
-				return;
+			var start = (tsConfig.timeSeconds - 10 < 0) ? 0 : (tsConfig.timeSeconds - 10);
+			var baseMasterUrl = hlsMasterUrl + "&start=" + (start.ToString());
+			hlsSegM3uUrl = getHlsSegM3uUrl(baseMasterUrl);
+			
+			while (rm.rfu == rfu && isRetry) {
+				if (isReConnecting) {
+					Thread.Sleep(100);
+					continue;
+				}
+				if (hlsSegM3uUrl == null) {
+					isReConnecting = true;
+					wr.reConnect();
+					continue;
+				}
+				timeShiftAddNewTsTaskList(hlsSegM3uUrl);
 			}
-			util.debugWriteLine("timeshift basemaster " + baseMasterUrl + " segUrl " + segUrl);
-			var wc = new WebHeaderCollection();
-			var segRes = util.getPageSource(segUrl, ref wc, container);
-			if (segRes == null) {
-				wr.reConnect();
-				return;
+			waitForRecording();
+			if (segmentSaveType == 1 && 
+				    rm.cfg.get("IsRenketuAfter") == "true") {
+				util.debugWriteLine("renketu after");
+				renketuAfter();
+			} else if (segmentSaveType == 0) {
+				var tf = new ThroughFFMpeg(rm);
+				tf.start(recFolderFile + ".ts");
+				rm.form.addLogText("録画終了処理を完了しました");
 			}
-			util.debugWriteLine("seg res " + segRes);
-			var i = 8;
+			
+			isEnd = true;
 		}
-		private string getTSStartTime() {
-			var r = new FileStream("48498.ts", FileMode.Open, FileAccess.Read);
-			var w = new FileStream("48498_henshuu.ts", FileMode.OpenOrCreate, FileAccess.ReadWrite);
-			w.Position = w.Length - 192;
-			var b = new byte[300];
-			w.Read(b, 0, 200);
-			//foreach (var _b in b) 
-			util.debugWriteLine(BitConverter.ToString(b));
-			w.Close();
-			r.Close();
-			return null;
+		private void timeShiftAddNewTsTaskList(string hlsSegM3uUrl) {
+			var wc = new WebHeaderCollection();
+			var res = util.getPageSource(hlsSegM3uUrl, ref wc, container, null, false);
+//			util.debugWriteLine("m3u8 " + res);
+			if (res == null) {
+				wr.reConnect();
+				isReConnecting = true;
+				return;
+			}
+			var startTime = 0;
+			var second = 0.0;
+			foreach (var s in res.Split('\n')) {
+				var _second = util.getRegGroup(s, "^#EXTINF:(\\d+(\\.\\d+)*)");
+				if (_second != null)
+					second = double.Parse(_second);
+				var _second = util.getRegGroup(s, "^#CURRENT-POSITION:(.+)");
+				if (_second != null)
+					second = double.Parse(_second);
+				
+				if (s.IndexOf(".ts") < 0) continue;
+				var no = int.Parse(util.getRegGroup(s, "(\\d+).ts"));
+				var url = baseUrl + s;
+				
+				var isInList = false;
+				lock (newGetTsTaskList) {
+					foreach (var t in newGetTsTaskList)
+						if (t.no == no) isInList = true;
+				}
+				
+				if (no > lastSegmentNo && !isInList) {
+					var fileName = util.getRegGroup(s, "(.+?.ts)\\?");
+					fileName = util.getRegGroup(fileName, "(\\d+)") + ".ts";
+					util.debugWriteLine(no + " " + fileName);
+					
+					newGetTsTaskList.Add(new numTaskInfo(no, url, second, fileName));
+					Task.Run(() => getTsTask(url));
+				}
+			}
 		}
 	}
 	class numTaskInfo {

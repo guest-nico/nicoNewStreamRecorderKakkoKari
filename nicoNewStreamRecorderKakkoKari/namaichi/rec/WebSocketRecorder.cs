@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using namaichi.info;
 
 namespace namaichi.rec
 {
@@ -46,11 +47,17 @@ namespace namaichi.rec
 		public bool isEndProgram = false;
 		public int lastSegmentNo = 0;
 		private bool isTimeShift = false;
+		private TimeShiftConfig tsConfig = null;
 		
 		private WebSocket[] himodukeWS = new WebSocket[2];
 			
 		private System.Threading.Thread mainThread;
-		public WebSocketRecorder(string[] webSocketInfo, CookieContainer container, string[] recFolderFile, RecordingManager rm, RecordFromUrl rfu, Html5Recorder h5r, long openTime, int lastSegmentNo, bool isTimeShift, string lvid)
+		public WebSocketRecorder(string[] webSocketInfo, 
+				CookieContainer container, string[] recFolderFile, 
+				RecordingManager rm, RecordFromUrl rfu, 
+				Html5Recorder h5r, long openTime, 
+				int lastSegmentNo, bool isTimeShift, string lvid, 
+				TimeShiftConfig tsConfig)
 		{
 			this.webSocketInfo = webSocketInfo;
 			this.container = container;
@@ -62,6 +69,7 @@ namespace namaichi.rec
 			this.lastSegmentNo = lastSegmentNo;
 			this.isTimeShift = isTimeShift;
 			this.lvid = lvid;
+			this.tsConfig = tsConfig;
 		}
 		public bool start() {
 			util.debugWriteLine("rm.rfu dds0 " + rm.rfu);
@@ -99,11 +107,13 @@ namespace namaichi.rec
 				stopRecording(ws, wsc);
 //				ws.Close();
 //				wsc.Close();
-				rec.waitForEnd();
+				if (rec != null) 
+					rec.waitForEnd();
 			}
 			if (!isRetry) {
 				stopRecording(ws, wsc);
-				rec.waitForEnd();
+				if (rec != null)
+					rec.waitForEnd();
 			}
 			
 			util.debugWriteLine("rm.rfu dds3 " + rm.rfu);
@@ -285,7 +295,7 @@ namespace namaichi.rec
 			
 			Task.Run(() => {
 			   	if (rec == null) {
-					rec = new Record(rm, true, rfu, hlsUrl, recFolderFile[1], lastSegmentNo, container, isTimeShift, this, lvid);
+					rec = new Record(rm, true, rfu, hlsUrl, recFolderFile[1], lastSegmentNo, container, isTimeShift, this, lvid, tsConfig);
 					rec.record();
 	         	} else {
 			    	rec.reSetHlsUrl(hlsUrl);
