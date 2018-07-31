@@ -51,7 +51,7 @@ namespace namaichi
 			var f = new FolderBrowserDialog();
 			DialogResult r = f.ShowDialog();
 			util.debugWriteLine(f.SelectedPath);
-
+			recordDirectoryText.Text = f.SelectedPath;
 		}
 		
 		void fileNameOptionBtn(object sender, EventArgs e)
@@ -114,6 +114,7 @@ namespace namaichi
 				{"IsLogFile",isLogFileChkBox.Checked.ToString().ToLower()},
 				{"segmentSaveType",getSegmentSaveType()},
 				{"IsRenketuAfter",isRenketuAfterChkBox.Checked.ToString().ToLower()},
+				{"IsAfterRenketuFFmpeg",isAfterRenketuFFmpegChkBox.Checked.ToString().ToLower()},
 				
 				{"cookieFile",cookieFileText.Text},
 				{"iscookie",isCookieFileSiteiChkBox.Checked.ToString().ToLower()},
@@ -247,6 +248,8 @@ namespace namaichi
         	setSegmentSaveType(cfg.get("segmentSaveType"));
         	isRenketuAfterChkBox.Checked = bool.Parse(cfg.get("IsRenketuAfter"));
         	isRenketuAfterChkBox_UpdateAction();
+        	isAfterRenketuFFmpegChkBox.Checked = bool.Parse(cfg.get("IsAfterRenketuFFmpeg"));
+        	
         	
         	isCookieFileSiteiChkBox.Checked = bool.Parse(cfg.get("iscookie"));
         	isCookieFileSiteiChkBox_UpdateAction();

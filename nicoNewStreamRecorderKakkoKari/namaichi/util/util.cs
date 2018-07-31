@@ -109,6 +109,8 @@ class util {
 		if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
 		if (!Directory.Exists(dirPath)) return null;
 		
+		var files = Directory.GetFiles(dirPath);
+		string existFile = null;
 		for (int i = 0; i < 1000000; i++) {
 			var fName = dirPath + "/" + name + "_" + ((isTimeShift) ? "ts" : "") + i.ToString();
 			util.debugWriteLine(dirPath + " " + fName);
@@ -126,18 +128,26 @@ class util {
 				string[] reta = {dirPath, fName};
 				return reta;
 			} else {
-				if (segmentSaveType == "0" && !File.Exists(fName + ".ts")) {
+				if (segmentSaveType == "0") {
+					var _existFile = util.existFile(files, "_ts_(\\d+h\\d+m\\d+s)_" + i.ToString(), name);
+					if (_existFile != null) {
+						existFile = _existFile;
+						continue;
+					}
 					if (tsConfig.isContinueConcat) {
 						if (i == 0) {
-							string[] retb = {dirPath, fName};
+							var firstFile = dirPath + "/" + name + "_ts_0h0m0s_" + i.ToString();
+							string[] retb = {dirPath, firstFile};
 							return retb;
 						} else {
-							fName = dirPath + "/" + name + "_" + ((isTimeShift) ? "ts" : "") + (i - 1).ToString();
-							string[] retc = {dirPath, fName};
+							//fName = dirPath + "/" + name + "_" + ((isTimeShift) ? "ts" : "") + (i - 1).ToString();
+							existFile = existFile.Substring(0, existFile.Length - 3);
+							string[] retc = {dirPath, existFile};
 							return retc;
 						}
 					} else {
-						string[] retd = {dirPath, fName};
+						var firstFile = dirPath + "/" + name + "_ts_0h0m0s_" + i.ToString();
+						string[] retd = {dirPath, firstFile};
 						return retd;
 					}
 //					continue;
@@ -243,7 +253,9 @@ class util {
 		var kakutyousi = (cfg.get("IsgetcommentXml") == "true") ? ".xml" : ".json";
 		if (cfg.get("segmentSaveType") == "0") {
 			//renketu
-			util.debugWriteLine("comment file path " + fName + ".xml");
+			var time = getRegGroup(fName, "(_\\d+h\\d+m\\d+s_)");
+			fName = fName.Replace(time, "");
+			util.debugWriteLine("comment file path " + fName + kakutyousi);
 			return fName + kakutyousi;
 		} else {
 			
@@ -303,15 +315,17 @@ class util {
 		for (int i = 0; i < 1000; i++) {
 			var fName = dirPath + "/" + name + "_" + "ts" + i.ToString();
 			
-
-			//util.existFile(dirPath, name + "_ts_\\d+h\\d+m\\d+s_" + i.ToString());
-			var _existFile = util.existFile(files, "_ts_(\\d+h\\d+m\\d+s)_" + i.ToString(), name);
-			if (_existFile != null) existFile = _existFile;
-//			if (segmentSaveType == "0" && (File.Exists(fName + ".ts")
-				if (segmentSaveType == "0" && _existFile != null)
-					//|| File.Exists(fName + ".xml"))) continue;
+			if (segmentSaveType == "0") {
+				//util.existFile(dirPath, name + "_ts_\\d+h\\d+m\\d+s_" + i.ToString());
+				var _existFile = util.existFile(files, "_ts_(\\d+h\\d+m\\d+s)_" + i.ToString(), name);
+				if (_existFile != null) {
+					existFile = _existFile;
 					continue;
-			else if (segmentSaveType == "1") {
+				}
+
+			}
+			
+			if (segmentSaveType == "1") {
 				if (Directory.Exists(fName)) {
 					return fName;
 				}
@@ -464,7 +478,22 @@ class util {
 		}
 		return null;
 	}
-
+	public static string getSecondsToStr(double seconds) {
+//		var dotSecond = ((int)((seconds % 1) * 10)).ToString("0");
+		var second = ((int)((seconds % 60) * 1)).ToString("00");
+		var minute = ((int)((seconds % 3600 / 60))).ToString("00");
+		var hour = ((int)((seconds / 3600) * 1));
+		var _hour = (hour < 100) ? hour.ToString("00") : hour.ToString();;
+		var timeStr = _hour + "h" + minute + "m" + second + "s";
+		return timeStr;
+	}
+	public static int getSecondsFromStr(string _s) {
+		var h = getRegGroup(_s, "(\\d+)h");
+		var m = getRegGroup(_s, "(\\d+)m");
+		var s = getRegGroup(_s, "(\\d+)s");
+		if (h == null || m == null || s == null) return -1;
+		return int.Parse(h) * 3600 + int.Parse(m) * 60 + int.Parse(s);
+	}
 	public static int getPageType(string res) {
 		var data = util.getRegGroup(res, "<script id=\"embedded-data\" data-props=\"([\\d\\D]+?)</script>");
 		var status = (data == null) ? null : util.getRegGroup(data, "&quot;status&quot;:&quot;(.+?)&quot;");
@@ -483,6 +512,13 @@ class util {
 	public static DateTime getUnixToDatetime(long unix) {
 		DateTime UNIX_EPOCH = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 		return UNIX_EPOCH.AddSeconds(unix).ToLocalTime();
+	}
+	public static string getSecondsToKeikaJikan(double seconds) {
+		var second = ((int)((seconds % 60) * 1)).ToString("00");
+		var minute = ((int)((seconds % 3600 / 60))).ToString("00");
+		var hour = ((int)((seconds / 3600) * 1));
+		var _hour = (hour < 100) ? hour.ToString("00") : hour.ToString();;
+		return _hour + "ŽžŠÔ" + minute + "•ª" + second + "•b";
 	}
 	public static void writeFile(string name, string str) {
 		using (var f = new System.IO.FileStream(name, FileMode.Append))
@@ -543,5 +579,29 @@ class util {
 			
 		#endif
 	}
-
+	public static void setLog(config config, string lv) {
+		//test
+		if (bool.Parse(config.get("IsLogFile"))) {
+			//var name = (args.Length == 0) ? "lv_" : util.getRegGroup(args[0], "(lv\\d+)");
+			var name = (lv == null) ? "lv_" : lv;
+			var logPath = util.getJarPath()[0] + "/" + name + ".txt";
+			
+			try {
+				#if DEBUG
+					System.Diagnostics.DefaultTraceListener dtl
+				      = (System.Diagnostics.DefaultTraceListener)System.Diagnostics.Debug.Listeners["Default"];
+					dtl.LogFileName = logPath;
+				#else
+					FileStream fs = new FileStream(logPath, 
+				    		FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
+					var w = new System.IO.StreamWriter(fs);
+					w.AutoFlush = true;
+					System.Console.SetOut(w);
+				#endif
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+			}
+			util.isLogFile = true;
+		}
+	}
 }

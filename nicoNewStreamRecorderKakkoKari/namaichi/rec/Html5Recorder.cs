@@ -160,7 +160,7 @@ namespace namaichi.rec
 //			var pageType = util.getPageType(res);
 //			util.debugWriteLine("pagetype " + pageType);
 				
-			var lastSegmentNo = 0;
+			var lastSegmentNo = -1;
 			
 			var isNoPermission = false;
 			while(rm.rfu == rfu) {
@@ -205,7 +205,7 @@ namespace namaichi.rec
 			
 				//display set
 				Task.Run(() => {
-			         	var b = new RecordStateSetter(rm.form, rm, rfu);
+			         	var b = new RecordStateSetter(rm.form, rm, rfu, isTimeShift);
 			         	b.set(data, type, recFolderFileInfo);
 
 //			         	int abcd;
@@ -247,7 +247,11 @@ namespace namaichi.rec
 				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, lastSegmentNo, isTimeShift, lvid, timeShiftConfig);
 				try {
 					isNoPermission = wsr.start();
-					if (wsr.isEndProgram) return 3;
+					if (wsr.isEndProgram)
+						return (isTimeShift) ? 1 : 3;
+//					if (isTimeShift && wsr.isEndProgram) 
+//						return 1;
+
 						
 				} catch (Exception e) {
 					util.debugWriteLine("wsr start exception " + e.Message + e.StackTrace);

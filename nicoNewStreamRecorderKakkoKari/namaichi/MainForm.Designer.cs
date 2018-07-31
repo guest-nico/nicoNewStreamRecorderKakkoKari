@@ -156,7 +156,7 @@ namespace namaichi
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
-			this.menuStrip1.Size = new System.Drawing.Size(632, 26);
+			this.menuStrip1.Size = new System.Drawing.Size(632, 24);
 			this.menuStrip1.TabIndex = 11;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -168,25 +168,25 @@ namespace namaichi
 									this.終了ToolStripMenuItem});
 			this.fileMenuItem.Name = "fileMenuItem";
 			this.fileMenuItem.ShowShortcutKeys = false;
-			this.fileMenuItem.Size = new System.Drawing.Size(85, 22);
+			this.fileMenuItem.Size = new System.Drawing.Size(70, 20);
 			this.fileMenuItem.Text = "ファイル(&F)";
 			// 
 			// 録画フォルダを開くToolStripMenuItem
 			// 
 			this.録画フォルダを開くToolStripMenuItem.Name = "録画フォルダを開くToolStripMenuItem";
-			this.録画フォルダを開くToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.録画フォルダを開くToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
 			this.録画フォルダを開くToolStripMenuItem.Text = "録画フォルダを開く(&O)";
 			this.録画フォルダを開くToolStripMenuItem.Click += new System.EventHandler(this.openRecFolderMenu_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(200, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(176, 6);
 			// 
 			// 終了ToolStripMenuItem
 			// 
 			this.終了ToolStripMenuItem.Name = "終了ToolStripMenuItem";
-			this.終了ToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.終了ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
 			this.終了ToolStripMenuItem.Text = "終了(&X)";
 			this.終了ToolStripMenuItem.Click += new System.EventHandler(this.endMenu_Click);
 			// 
@@ -196,14 +196,14 @@ namespace namaichi
 									this.optionMenuItem});
 			this.toolMenuItem.Name = "toolMenuItem";
 			this.toolMenuItem.ShowShortcutKeys = false;
-			this.toolMenuItem.Size = new System.Drawing.Size(74, 22);
+			this.toolMenuItem.Size = new System.Drawing.Size(66, 20);
 			this.toolMenuItem.Text = "ツール(&T)";
 			// 
 			// optionMenuItem
 			// 
 			this.optionMenuItem.Name = "optionMenuItem";
 			this.optionMenuItem.ShowShortcutKeys = false;
-			this.optionMenuItem.Size = new System.Drawing.Size(147, 22);
+			this.optionMenuItem.Size = new System.Drawing.Size(129, 22);
 			this.optionMenuItem.Text = "オプション(&O)";
 			this.optionMenuItem.Click += new System.EventHandler(this.optionItem_Select);
 			// 
@@ -213,14 +213,14 @@ namespace namaichi
 									this.バージョン情報VToolStripMenuItem});
 			this.helpMenuItem.Name = "helpMenuItem";
 			this.helpMenuItem.ShowShortcutKeys = false;
-			this.helpMenuItem.Size = new System.Drawing.Size(75, 22);
+			this.helpMenuItem.Size = new System.Drawing.Size(67, 20);
 			this.helpMenuItem.Text = "ヘルプ(&H)";
 			this.helpMenuItem.Visible = false;
 			// 
 			// バージョン情報VToolStripMenuItem
 			// 
 			this.バージョン情報VToolStripMenuItem.Name = "バージョン情報VToolStripMenuItem";
-			this.バージョン情報VToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+			this.バージョン情報VToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
 			this.バージョン情報VToolStripMenuItem.Text = "バージョン情報(&A)";
 			// 
 			// groupBox5
@@ -267,7 +267,7 @@ namespace namaichi
 			// 
 			this.keikaTimeLabel.Location = new System.Drawing.Point(78, 125);
 			this.keikaTimeLabel.Name = "keikaTimeLabel";
-			this.keikaTimeLabel.Size = new System.Drawing.Size(118, 19);
+			this.keikaTimeLabel.Size = new System.Drawing.Size(118, 25);
 			this.keikaTimeLabel.TabIndex = 3;
 			// 
 			// startTimeLabel

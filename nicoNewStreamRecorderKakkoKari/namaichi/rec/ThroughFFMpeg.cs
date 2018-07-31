@@ -26,12 +26,15 @@ namespace namaichi.rec
 		}
 		public void start(string path) {
 			util.debugWriteLine("through ffmpeg path " + path);
+			rm.form.addLogText("FFmpeg処理を開始します");
 			var fName = util.getRegGroup(path, ".+(\\\\|/)(.+)", 2);
 			var dir = util.getRegGroup(path, "(.+(\\\\|/)).+");
 			var tmp = dir + "_" + fName;
 			util.debugWriteLine("through ffmpeg tmp " + tmp);
 			
 			string _command = "-i \"" + path + "\" -c copy \"" + tmp + "\"";
+//			string _command = "-i \"" + path + "\" -movflags faststart -c copy \"" + tmp + "\"";
+			
 			util.debugWriteLine("through command " + _command);
 			
 			var e = new EventHandler(appExitHandler);
@@ -81,6 +84,7 @@ namespace namaichi.rec
 			
 //			while(true)
 //				System.Threading.Thread.Sleep(3000);
+			rm.form.addLogText("FFmpeg処理を完了しました");
 			util.debugWriteLine("rec end through ffmpeg");
 			
 		}
@@ -161,7 +165,7 @@ namespace namaichi.rec
 			if (line.StartsWith("frame=")) rm.form.setRecordState(line);
 			
 //				util.getShiftJisToUni
-			else rm.form.addLogText(line);
+//			else rm.form.addLogText(line);
 			
 		}
 	}

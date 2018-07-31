@@ -21,17 +21,21 @@ namespace namaichi.rec
 		private MainForm form;
 		private RecordingManager rm;
 		private RecordFromUrl rfu;
-		public RecordStateSetter(MainForm form, RecordingManager rm, RecordFromUrl rfu)
+		private bool isTimeShift;
+		public RecordStateSetter(MainForm form, RecordingManager rm, RecordFromUrl rfu, bool isTimeShift)
 		{
 			this.form = form;
 			this.rm = rm;
 			this.rfu = rfu;
+			this.isTimeShift = isTimeShift;
 		}
 		public void set(string data, string type, string[] recFolderFileInfo) {
 			setInfo(data, form, type, recFolderFileInfo);
 //			var a = await setInfo(data, form, type, recFolderFileInfo).ConfigureAwait(false);
 			
 			Task.Run(() => setSamune(data, form));
+			
+			if (isTimeShift) return;
 			
 			while (rm.rfu == rfu) {
 				var _keikaJikanDt = (DateTime.Now - openTimeDt);

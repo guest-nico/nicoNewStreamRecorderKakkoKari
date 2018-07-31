@@ -44,6 +44,10 @@ namespace namaichi.rec
 			
             util.debugWriteLine("rm");
             
+            var lv = util.getRegGroup(form.urlText.Text, "(lv\\d+)");
+			util.setLog(cfg, lv);
+            
+            
 			if (rfu == null) {
             	var arr = form.urlText.Text.Split('|');
             	

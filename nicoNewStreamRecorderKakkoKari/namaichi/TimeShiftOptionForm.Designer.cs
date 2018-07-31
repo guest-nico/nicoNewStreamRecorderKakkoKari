@@ -191,6 +191,7 @@ namespace namaichi
 			this.Controls.Add(this.okBtn);
 			this.Controls.Add(this.groupBox1);
 			this.Name = "TimeShiftOptionForm";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "タイムシフト録画設定";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();

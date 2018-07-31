@@ -59,29 +59,8 @@ namespace namaichi
 			this.args = args;
 			
 			
-			
-			//test
-			if (bool.Parse(config.get("IsLogFile"))) {
-				var name = (args.Length == 0) ? "lv_" : util.getRegGroup(args[0], "(lv\\d+)");
-				var logPath = util.getJarPath()[0] + "/" + name + ".txt";
-				
-				try {
-					#if DEBUG
-						System.Diagnostics.DefaultTraceListener dtl
-					      = (System.Diagnostics.DefaultTraceListener)System.Diagnostics.Debug.Listeners["Default"];
-						dtl.LogFileName = logPath;
-					#else
-						FileStream fs = new FileStream(logPath, 
-					    		FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
-						var w = new System.IO.StreamWriter(fs);
-						w.AutoFlush = true;
-						System.Console.SetOut(w);
-					#endif
-				} catch (Exception e) {
-					util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-				}
-				util.isLogFile = true;
-			}
+			var lv = (args.Length == 0) ? null : util.getRegGroup(args[0], "(lv\\d+)");
+			util.setLog(config, lv);
 
 			util.debugWriteLine("arg len " + args.Length);
 			util.debugWriteLine("arg join " + string.Join(" ", args));
@@ -345,18 +324,18 @@ namespace namaichi
 			
 		}
        public void setKeikaJikan(string keikaJikan) {
-       	try {
-	       if (IsDisposed) return;
-	        	Invoke((MethodInvoker)delegate() {
-	              	try {
-	       				keikaTimeLabel.Text = keikaJikan;
-	              	} catch (Exception e) {
-	              		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-	              	}
+			try {
+				if (IsDisposed) return;
+				Invoke((MethodInvoker)delegate() {
+					try {
+						keikaTimeLabel.Text = keikaJikan;
+					} catch (Exception e) {
+						util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+					}
 				});
-       	} catch (Exception e) {
-       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-       	}
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+			}
        }
        public void setStatistics(string visit, string comment) {
        	try {

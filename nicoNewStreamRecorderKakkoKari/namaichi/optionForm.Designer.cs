@@ -57,6 +57,9 @@ namespace namaichi
 			this.browserPathSanshouBtn = new System.Windows.Forms.Button();
 			this.browserPathText = new System.Windows.Forms.TextBox();
 			this.tabPage6 = new System.Windows.Forms.TabPage();
+			this.groupBox9 = new System.Windows.Forms.GroupBox();
+			this.label4 = new System.Windows.Forms.Label();
+			this.isAfterRenketuFFmpegChkBox = new System.Windows.Forms.CheckBox();
 			this.groupBox8 = new System.Windows.Forms.GroupBox();
 			this.isRenketuAfterChkBox = new System.Windows.Forms.CheckBox();
 			this.isSegmentNotRenketuRadioBtn = new System.Windows.Forms.RadioButton();
@@ -121,6 +124,7 @@ namespace namaichi
 			this.groupBox6.SuspendLayout();
 			this.groupBox5.SuspendLayout();
 			this.tabPage6.SuspendLayout();
+			this.groupBox9.SuspendLayout();
 			this.groupBox8.SuspendLayout();
 			this.tabPage5.SuspendLayout();
 			this.groupBox7.SuspendLayout();
@@ -345,6 +349,7 @@ namespace namaichi
 			// 
 			// tabPage6
 			// 
+			this.tabPage6.Controls.Add(this.groupBox9);
 			this.tabPage6.Controls.Add(this.groupBox8);
 			this.tabPage6.Location = new System.Drawing.Point(4, 22);
 			this.tabPage6.Name = "tabPage6";
@@ -354,6 +359,35 @@ namespace namaichi
 			this.tabPage6.Text = "録画形式";
 			this.tabPage6.UseVisualStyleBackColor = true;
 			// 
+			// groupBox9
+			// 
+			this.groupBox9.Controls.Add(this.label4);
+			this.groupBox9.Controls.Add(this.isAfterRenketuFFmpegChkBox);
+			this.groupBox9.Location = new System.Drawing.Point(5, 116);
+			this.groupBox9.Name = "groupBox9";
+			this.groupBox9.Size = new System.Drawing.Size(385, 101);
+			this.groupBox9.TabIndex = 1;
+			this.groupBox9.TabStop = false;
+			this.groupBox9.Text = "連結処理";
+			// 
+			// label4
+			// 
+			this.label4.Location = new System.Drawing.Point(19, 39);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(360, 59);
+			this.label4.TabIndex = 1;
+			this.label4.Text = "（ファイルサイズが若干小さくなることが多く、音声や映像の問題も減りますが、処理のための時間がかかります。後からエクスプローラ上で.tsファイルや.tsファイルの入" +
+			"ったフォルダをexeファイルにドロップしても同様の処理を行うことができます。）\r\n";
+			// 
+			// isAfterRenketuFFmpegChkBox
+			// 
+			this.isAfterRenketuFFmpegChkBox.Location = new System.Drawing.Point(19, 18);
+			this.isAfterRenketuFFmpegChkBox.Name = "isAfterRenketuFFmpegChkBox";
+			this.isAfterRenketuFFmpegChkBox.Size = new System.Drawing.Size(169, 18);
+			this.isAfterRenketuFFmpegChkBox.TabIndex = 0;
+			this.isAfterRenketuFFmpegChkBox.Text = "連結後にFFmpegで処理する";
+			this.isAfterRenketuFFmpegChkBox.UseVisualStyleBackColor = true;
+			// 
 			// groupBox8
 			// 
 			this.groupBox8.Controls.Add(this.isRenketuAfterChkBox);
@@ -361,7 +395,7 @@ namespace namaichi
 			this.groupBox8.Controls.Add(this.isSegmentRenketuRadioBtn);
 			this.groupBox8.Location = new System.Drawing.Point(5, 10);
 			this.groupBox8.Name = "groupBox8";
-			this.groupBox8.Size = new System.Drawing.Size(385, 107);
+			this.groupBox8.Size = new System.Drawing.Size(385, 100);
 			this.groupBox8.TabIndex = 0;
 			this.groupBox8.TabStop = false;
 			this.groupBox8.Text = "保存形式";
@@ -1020,6 +1054,7 @@ namespace namaichi
 			this.groupBox5.ResumeLayout(false);
 			this.groupBox5.PerformLayout();
 			this.tabPage6.ResumeLayout(false);
+			this.groupBox9.ResumeLayout(false);
 			this.groupBox8.ResumeLayout(false);
 			this.tabPage5.ResumeLayout(false);
 			this.groupBox7.ResumeLayout(false);
@@ -1035,6 +1070,9 @@ namespace namaichi
 			this.groupBox4.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox isAfterRenketuFFmpegChkBox;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.GroupBox groupBox9;
 		private System.Windows.Forms.CheckBox isRenketuAfterChkBox;
 		private System.Windows.Forms.RadioButton isSegmentRenketuRadioBtn;
 		private System.Windows.Forms.RadioButton isSegmentNotRenketuRadioBtn;
