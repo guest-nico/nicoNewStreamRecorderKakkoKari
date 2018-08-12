@@ -120,7 +120,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="config\config.cs" />
-    <Compile Include="fileNameOptionForm.cs" />
+    <Compile Include="fileNameOptionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="fileNameOptionForm.Designer.cs">
       <DependentUpon>fileNameOptionForm.cs</DependentUpon>
     </Compile>
@@ -135,6 +137,7 @@
     </Compile>
     <Compile Include="optionForm.cs">
       <DependentUpon>app.config</DependentUpon>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="optionForm.Designer.cs">
       <DependentUpon>optionForm.cs</DependentUpon>
@@ -157,7 +160,9 @@
     <Compile Include="rec\RecordStateSetter.cs" />
     <Compile Include="rec\ThroughFFMpeg.cs" />
     <Compile Include="rec\WebSocketRecorder.cs" />
-    <Compile Include="TimeShiftOptionForm.cs" />
+    <Compile Include="TimeShiftOptionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="TimeShiftOptionForm.Designer.cs">
       <DependentUpon>TimeShiftOptionForm.cs</DependentUpon>
     </Compile>
@@ -183,13 +188,7 @@
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="info" />
-    <Folder Include="config" />
-    <Folder Include="log" />
-    <Folder Include="play" />
-    <Folder Include="rec" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\SnkLib.App.CookieGetter.2.1.0.0\build\net40\SnkLib.App.CookieGetter.targets" Condition="Exists('..\packages\SnkLib.App.CookieGetter.2.1.0.0\build\net40\SnkLib.App.CookieGetter.targets')" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.108.0\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.108.0\build\net451\System.Data.SQLite.Core.targets')" />

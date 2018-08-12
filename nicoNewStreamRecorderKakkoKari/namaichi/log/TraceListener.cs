@@ -20,8 +20,13 @@ namespace namaichi.log
 		{
 		}
 		public override void WriteLine(string msg) {
-			var dt = DateTime.Now.ToLongTimeString();
-			base.WriteLine(dt + " " + msg);
+			try {
+				var dt = DateTime.Now.ToLongTimeString();
+				base.WriteLine(dt + " " + msg);
+			} catch (Exception e) {
+				
+//				util.debugWriteLine("trace listner exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
 		}
 	}
 }

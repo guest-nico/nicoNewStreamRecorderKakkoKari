@@ -249,12 +249,14 @@ class util {
 			//var format = cfg.get("filenameformat");
 			return getDokujiSetteiFileName("放送者名", "コミュ名", "タイトル", "lv12345", "co9876", filenametype);
 		}
-	public static string getOkCommentFileName(config cfg, string fName, string lvid) {
+	public static string getOkCommentFileName(config cfg, string fName, string lvid, bool isTimeShift) {
 		var kakutyousi = (cfg.get("IsgetcommentXml") == "true") ? ".xml" : ".json";
 		if (cfg.get("segmentSaveType") == "0") {
 			//renketu
-			var time = getRegGroup(fName, "(_\\d+h\\d+m\\d+s_)");
-			fName = fName.Replace(time, "");
+			if (isTimeShift) {
+				var time = getRegGroup(fName, "(_\\d+h\\d+m\\d+s_)");
+				fName = fName.Replace(time, "");
+			}
 			util.debugWriteLine("comment file path " + fName + kakutyousi);
 			return fName + kakutyousi;
 		} else {
@@ -411,10 +413,17 @@ class util {
 				if (referer != null) req.Referer = referer;
 				if (container != null) req.CookieContainer = container;
 
+				req.Timeout = 5000;
 				var res = (HttpWebResponse)req.GetResponse();
 				var dataStream = res.GetResponseStream();
 				var reader = new StreamReader(dataStream);
-				string resStr = reader.ReadToEnd();
+				
+				/*
+				var resStrTask = reader.ReadToEndAsync();
+				if (!resStrTask.Wait(5000)) return null;
+				string resStr = resStrTask.Result;
+				*/
+				var resStr = reader.ReadToEnd();
 				
 				getheaders = res.Headers;
 				return resStr;
@@ -549,6 +558,21 @@ class util {
 		
 	}
 	public static void showException(Exception eo, bool isMessageBox = true) {
+		var frameCount = new System.Diagnostics.StackTrace().FrameCount;
+		#if DEBUG
+			if (isMessageBox && isLogFile) {
+				if (frameCount > 50) {
+					MessageBox.Show("framecount stack", frameCount.ToString());
+					return;
+				}
+			}
+		#else
+			
+		#endif
+		
+		
+		util.debugWriteLine("exception stacktrace framecount " + frameCount);
+		
 		util.debugWriteLine("show exception eo " + eo);
 		if (eo == null) return;
 		

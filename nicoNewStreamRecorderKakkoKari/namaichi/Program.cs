@@ -60,7 +60,21 @@ namespace namaichi
 			
 		}
 		static private void firstChanceException(object sender,
-				System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e) {
+			System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e) {
+			var frameCount = new System.Diagnostics.StackTrace().FrameCount;
+			#if DEBUG
+				if (util.isLogFile) {
+					if (frameCount > 50) {
+						MessageBox.Show("first chance framecount stack", frameCount.ToString());
+						return;
+					}
+				}
+			#else
+				
+			#endif
+		
+			util.debugWriteLine("exception stacktrace framecount " + frameCount);
+		
 			util.debugWriteLine("firstchance exception");
 			var eo = (Exception)e.Exception;
 			util.showException(eo, false);

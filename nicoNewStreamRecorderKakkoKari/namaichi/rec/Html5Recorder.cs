@@ -186,7 +186,10 @@ namespace namaichi.rec
 				
 				
 				data = System.Web.HttpUtility.HtmlDecode(data);
-				var openTime = long.Parse(util.getRegGroup(data, "\"beginTime\":(\\d+)"));
+				long openTime = 0;
+				if (data == null || 
+				    !long.TryParse(util.getRegGroup(data, "\"beginTime\":(\\d+)"), out openTime))
+						return 3;
 	//				var openTime = long.Parse(util.getRegGroup(data, "\"beginTimeMs\":(\\d+)"));
 							
 				

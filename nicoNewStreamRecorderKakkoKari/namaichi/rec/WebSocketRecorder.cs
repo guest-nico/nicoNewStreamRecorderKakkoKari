@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using System.Threading;
 using namaichi.info;
 
 namespace namaichi.rec
@@ -49,6 +50,8 @@ namespace namaichi.rec
 		private bool isTimeShift = false;
 		private TimeShiftConfig tsConfig = null;
 		private bool isTimeShiftCommentGetEnd = false;
+		private DateTime lastEndProgramCheckTime = DateTime.Now;
+		private DateTime lastWebsocketConnectTime = DateTime.Now;
 		
 		private WebSocket[] himodukeWS = new WebSocket[2];
 			
@@ -98,16 +101,17 @@ namespace namaichi.rec
 //				if (rec != null) 
 //					util.debugWriteLine("isStopread " + rec.isStopRead());
 				
+				
 				if (ws.State == WebSocket4Net.WebSocketState.Closed) {
-					util.debugWriteLine("connect loop ws close");
-					connect();
+					util.debugWriteLine("no connect loop ws close");
+//					connect();
 				}
 				
 				//test
-				GC.Collect();
-				GC.WaitForPendingFinalizers();
+//				GC.Collect();
+//				GC.WaitForPendingFinalizers();
 				
-				System.Threading.Thread.Sleep(3000);
+				System.Threading.Thread.Sleep(100);
 			}
 			while (isTimeShift && !isTimeShiftCommentGetEnd) 
 				System.Threading.Thread.Sleep(300);
@@ -127,22 +131,40 @@ namespace namaichi.rec
 					rec.waitForEnd();
 			}
 			
-			util.debugWriteLine("rm.rfu dds3 " + rm.rfu);
 			util.debugWriteLine("closed saikai");
 			
 			return isNoPermission;
 		}
-		private void connect() {
+		private bool connect() {
+			lock (this) {
+				var  isPass = (TimeSpan.FromSeconds(3) > (DateTime.Now - lastWebsocketConnectTime));
+				lastWebsocketConnectTime = DateTime.Now;
+				if (isPass) 
+					Thread.Sleep(3000);
+			}
+			
+			
 			util.debugWriteLine("ws connect");
-			ws = new WebSocket(webSocketInfo[0]);
-			ws.Opened += onOpen;
-			ws.Closed += onClose;
-			ws.DataReceived += onDataReceive;
-			ws.MessageReceived += onMessageReceive;
-			ws.Error += onError;
-			
-			ws.Open();
-			
+			try {
+				ws = new WebSocket(webSocketInfo[0]);
+				ws.Opened += onOpen;
+				ws.Closed += onClose;
+				ws.DataReceived += onDataReceive;
+				ws.MessageReceived += onMessageReceive;
+				ws.Error += onError;
+				
+				ws.Open();
+				
+				var _ws = ws; 
+				Thread.Sleep(5000);
+				if (_ws.State == WebSocketState.Connecting) 
+					ws.Close();
+				
+			} catch (Exception ee) {
+				util.debugWriteLine("ws connect exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+				return false;
+			}
+			return true;
 		}
 		private void onOpen(object sender, EventArgs e) {
 			util.debugWriteLine("on open rm.rfu dds2 " + rm.rfu);
@@ -183,14 +205,24 @@ namespace namaichi.rec
 		}
 		private void onClose(object sender, EventArgs e) {
 			util.debugWriteLine("on close " + e.ToString() + " " + sender.ToString());
+			
 			//stopRecording();
 			if (rm.rfu == rfu && !isEndProgram && (WebSocket)sender == ws) {
-				connect();
-//				ws.Open();
-				if (!isTimeShift && isEndedProgram()) {
-					isRetry = false;
-					isEndProgram = true;
+				while (true) {
+					try {
+						if (!connect()) continue;
+						break;
+					} catch (Exception ee) {
+						util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+					}
 				}
+//				ws.Open();
+				Task.Run(() => {
+					if (!isTimeShift && isEndedProgram()) {
+						isRetry = false;
+						isEndProgram = true;
+					}
+				});
 			}
 			
 
@@ -433,7 +465,7 @@ namespace namaichi.rec
 			}			
 			try {
 				if (bool.Parse(rm.cfg.get("IsgetComment")) && commentSW == null) {
-					var commentFileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid);
+					var commentFileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, isTimeShift);
 					commentSW = new StreamWriter(commentFileName, false, System.Text.Encoding.UTF8);
 			        if (bool.Parse(rm.cfg.get("IsgetcommentXml"))) {
 						commentSW.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
@@ -620,9 +652,13 @@ namespace namaichi.rec
 //			ws.Open();
 		}
 		private bool isEndedProgram() {
+			var isPass = (DateTime.Now - lastEndProgramCheckTime < TimeSpan.FromSeconds(5)); 
+			lastEndProgramCheckTime = DateTime.Now;
+			if (isPass) return false;
+			
 			var a = new System.Net.WebHeaderCollection();
 			var res = util.getPageSource(h5r.url, ref a, container);
-			util.debugWriteLine("isendedprogram url " + h5r.url);
+			util.debugWriteLine("isendedprogram url " + h5r.url + " res==null " + (res == null));
 //			util.debugWriteLine("isendedprogram res " + res);
 			if (res == null) return false;
 			var type = util.getPageType(res);
