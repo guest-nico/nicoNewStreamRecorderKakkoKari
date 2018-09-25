@@ -21,22 +21,26 @@ namespace namaichi.rec
 	/// </summary>
 	public class FollowCommunity
 	{
-		public FollowCommunity()
+		private bool isSub;
+		public FollowCommunity(bool isSub)
 		{
+			this.isSub = isSub;
 		}
 		public bool followCommunity(string res, CookieContainer cc, MainForm form, config.config cfg) {
-			var comId = util.getRegGroup(res, "Nicolive_JS_Conf\\.Recommend = \\{type\\: 'community', community_id\\: '(co\\d+)'\\};");
+			var isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
+			var comId = (isJikken) ? util.getRegGroup(res, "&quot;followPageUrl&quot;\\:&quot;.+?motion/(.+?)&quot;") :
+					util.getRegGroup(res, "Nicolive_JS_Conf\\.Recommend = \\{type\\: 'community', community_id\\: '(co\\d+)'\\};");
 			if (comId == null) {
 				form.addLogText("この放送はフォローできませんでした。");
 				return false;
 			}
 			
-			var isJoinedTask = join(comId, cc, form, cfg);
+			var isJoinedTask = join(comId, cc, form, cfg, isSub);
 //			isJoinedTask.Wait();
 			return isJoinedTask;
 //			return false;
 		}
-		private bool join(string comId, CookieContainer cc, MainForm form, config.config cfg) {
+		private bool join(string comId, CookieContainer cc, MainForm form, config.config cfg, bool isSub) {
 			for (int i = 0; i < 5; i++) {
 				var myPageUrl = "http://www.nicovideo.jp/my";
 				var comUrl = "https://com.nicovideo.jp/community/" + comId; 
@@ -55,10 +59,10 @@ namespace namaichi.rec
 						System.Threading.Thread.Sleep(3000);
 						continue;
 					}
-					cc = cgret.Result;
+					var _cc = cgret.Result[(isSub) ? 1 : 0];
 //					util.debugWriteLine(cg.pageSource);
 					
-					var isJidouShounin = util.getPageSource(url, ref headers, cc, comUrl).IndexOf("自動承認されます") > -1;
+					var isJidouShounin = util.getPageSource(url, ref headers, _cc, comUrl).IndexOf("自動承認されます") > -1;
 	//				var _compage = util.getPageSource(url, ref headers, cc);
 	//				var gateurl = "http://live.nicovideo.jp/gate/lv313793991";
 	//				var __gatePage = util.getPageSource(gateurl, ref headers, cc);

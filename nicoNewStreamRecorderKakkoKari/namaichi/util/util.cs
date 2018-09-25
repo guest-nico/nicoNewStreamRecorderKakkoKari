@@ -21,6 +21,9 @@ class app {
 	}
 }
 class util {
+	public static string versionStr = "ver0.86.17";
+	public static string versionDayStr = "2018/09/26";
+	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);
 		var m = r.Match(target);
@@ -39,6 +42,9 @@ class util {
 	public static string getTime() {
 		return DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
 		
+	}
+	public static int getUnixTime() {
+		return (int)(((TimeSpan)(DateTime.Now - new DateTime(1970, 1, 1))).TotalSeconds);
 	}
 	public static String[] getJarPath() {
 		bool isTestMode = false;
@@ -65,7 +71,8 @@ class util {
 	public static string[] getRecFolderFilePath(string host, 
 			string group, string title, string lvId, 
 			string communityNum, string userId, config cfg, 
-			bool isTimeShift, TimeShiftConfig tsConfig) {
+			bool isTimeShift, TimeShiftConfig tsConfig, 
+			long _openTime) {
 		
 		host = getOkFileName(host);
 		group = getOkFileName(group);
@@ -88,8 +95,12 @@ class util {
 
 
 		var segmentSaveType = cfg.get("segmentSaveType");
+		if (cfg.get("IsDefaultEngine") == "false") segmentSaveType = "0";
+		
+		bool _isTimeShift = isTimeShift;
+		if (cfg.get("IsDefaultEngine") == "false") _isTimeShift = false;
 
-		var name = getFileName(host, group, title, lvId, communityNum,  cfg);
+		var name = getFileName(host, group, title, lvId, communityNum,  cfg, _openTime);
 		if (name.Length > 200) name = name.Substring(0, 200);
 		
 		//長いパス調整
@@ -112,10 +123,10 @@ class util {
 		var files = Directory.GetFiles(dirPath);
 		string existFile = null;
 		for (int i = 0; i < 1000000; i++) {
-			var fName = dirPath + "/" + name + "_" + ((isTimeShift) ? "ts" : "") + i.ToString();
+			var fName = dirPath + "/" + name + "_" + ((_isTimeShift) ? "ts" : "") + i.ToString();
 			util.debugWriteLine(dirPath + " " + fName);
 			
-			if (!isTimeShift) {
+			if (!_isTimeShift) {
 				if (segmentSaveType == "0" && (File.Exists(fName + ".ts") ||
 						File.Exists(fName + ".xml"))) continue;
 				else if (segmentSaveType == "1") {
@@ -189,9 +200,10 @@ class util {
 		else if (n == "8") return host + "_" + communityNum + "";
 		else return host;
 	}
-	private static string getFileName(string host, string group, string title, string lvId, string communityNum, config cfg) {
+	private static string getFileName(string host, string group, string title, string lvId, string communityNum, config cfg, long _openTime) {
 		var n = cfg.get("fileNameType");
-		var _hiduke = DateTime.Now;
+		//var _hiduke = DateTime.Now;
+		var _hiduke = getUnixToDatetime(_openTime);
 		var month = (_hiduke.Month < 10) ? ("0" + _hiduke.Month.ToString()) : (_hiduke.Month.ToString());
 		var day = (_hiduke.Day < 10) ? ("0" + _hiduke.Day.ToString()) : (_hiduke.Day.ToString());
 		var hiduke = _hiduke.Year + "年" + month + "月" + day + "日";
@@ -206,15 +218,16 @@ class util {
 		else if (n == "7") return hiduke + "_" + host + "_" + group + "(" + communityNum + ")_" + title + "(" + lvId + ")";
 		else if (n == "8") return hiduke + "_" + group + "(" + communityNum + ")_" + host + "_" + title + "(" + lvId + ")";
 		else if (n == "9") return hiduke + "_" + title + "(" + lvId + ")_" + host + "_" + group + "(" + communityNum + ")";
-		else if (n == "10") return getDokujiSetteiFileName(host, group, title, lvId, communityNum, cfg.get("filenameformat"));
+		else if (n == "10") return getDokujiSetteiFileName(host, group, title, lvId, communityNum, cfg.get("filenameformat"), _hiduke);
 		else return host + "_" + communityNum + "(" + group + ")_" + lvId + "(" + title + ")";
 		
 		
 	}
-	public static string getDokujiSetteiFileName(string host, string group, string title, string lvId, string communityNum, string format) {
+	public static string getDokujiSetteiFileName(string host, string group, string title, string lvId, string communityNum, string format, DateTime _openTime) {
 		var type = format;
 		if (type == null) return "";
-		var dt = DateTime.Now;
+		//var dt = DateTime.Now;
+		var dt = _openTime;
 		var yearBuf = ("0000" + dt.Year.ToString());
 		var year2 = yearBuf.Substring(yearBuf.Length - 2);
 		var year4 = yearBuf.Substring(yearBuf.Length - 4);
@@ -247,13 +260,14 @@ class util {
 	}
 	public static string getFileNameTypeSample(string filenametype) {
 			//var format = cfg.get("filenameformat");
-			return getDokujiSetteiFileName("放送者名", "コミュ名", "タイトル", "lv12345", "co9876", filenametype);
+			return getDokujiSetteiFileName("放送者名", "コミュ名", "タイトル", "lv12345", "co9876", filenametype, DateTime.Now);
 		}
 	public static string getOkCommentFileName(config cfg, string fName, string lvid, bool isTimeShift) {
 		var kakutyousi = (cfg.get("IsgetcommentXml") == "true") ? ".xml" : ".json";
-		if (cfg.get("segmentSaveType") == "0") {
+		var isDefaultEngine = cfg.get("IsDefaultEngine");
+		if (cfg.get("segmentSaveType") == "0" || isDefaultEngine == "false") {
 			//renketu
-			if (isTimeShift) {
+			if (isTimeShift && isDefaultEngine == "true") {
 				var time = getRegGroup(fName, "(_\\d+h\\d+m\\d+s_)");
 				fName = fName.Replace(time, "");
 			}
@@ -269,7 +283,7 @@ class util {
 	}
 	public static string getLastTimeshiftFileName(string host, 
 			string group, string title, string lvId, string communityNum, 
-			string userId, config cfg) {
+			string userId, config cfg, long _openTime) {
 		host = getOkFileName(host);
 		group = getOkFileName(group);
 		title = getOkFileName(title);
@@ -292,7 +306,7 @@ class util {
 
 		var segmentSaveType = cfg.get("segmentSaveType");
 
-		var name = getFileName(host, group, title, lvId, communityNum,  cfg);
+		var name = getFileName(host, group, title, lvId, communityNum,  cfg, _openTime);
 		if (name.Length > 200) name = name.Substring(0, 200);
 		
 		//長いパス調整
@@ -393,29 +407,40 @@ class util {
 		var ret = new string[]{h, m, s};
 		return ret;
 	}
-	public static string getPageSource(string _url, ref WebHeaderCollection getheaders, CookieContainer container = null, string referer = null, bool isFirstLog = true) {
+	public static string getPageSource(string _url, ref WebHeaderCollection getheaders, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 5000) {
+		//util.debugWriteLine("getpage 01");
+		/*
 		string a;
 		try {
-			a = container.GetCookieHeader(new Uri(_url));
+//			a = container.GetCookieHeader(new Uri(_url));
 		} catch (Exception e) {
 			util.debugWriteLine("getpage get cookie header error " + _url + e.Message+e.StackTrace);
 			return null;
 		}
-		if (isFirstLog)
-			util.debugWriteLine("getpagesource " + _url + " " + a);
+		*/
+//		if (isFirstLog)
+//			util.debugWriteLine("getpagesource " + _url + " ");
 			
+//		util.debugWriteLine("getpage 02");
 		for (int i = 0; i < 1; i++) {
 			try {
+//				util.debugWriteLine("getpage 00");
 				var req = (HttpWebRequest)WebRequest.Create(_url);
 				req.Proxy = null;
 				req.AllowAutoRedirect = true;
 	//			req.Headers = getheaders;
+//				util.debugWriteLine("getpage 03");
 				if (referer != null) req.Referer = referer;
+//				util.debugWriteLine("getpage 04");
 				if (container != null) req.CookieContainer = container;
+//				util.debugWriteLine("getpage 05");
 
-				req.Timeout = 5000;
+				req.Timeout = timeoutMs;
+//				util.debugWriteLine("getpage 0");
 				var res = (HttpWebResponse)req.GetResponse();
+//				util.debugWriteLine("getpage 1");
 				var dataStream = res.GetResponseStream();
+//				util.debugWriteLine("getpage 2");
 				var reader = new StreamReader(dataStream);
 				
 				/*
@@ -423,13 +448,75 @@ class util {
 				if (!resStrTask.Wait(5000)) return null;
 				string resStr = resStrTask.Result;
 				*/
+//				util.debugWriteLine("getpage 3");
 				var resStr = reader.ReadToEnd();
+//				util.debugWriteLine("getpage 4");
 				
 				getheaders = res.Headers;
 				return resStr;
 	
 			} catch (Exception e) {
-				util.debugWriteLine("getpage error " + _url + e.Message+e.StackTrace);
+				System.Threading.Tasks.Task.Run(() => {
+					util.debugWriteLine("getpage error " + _url + e.Message+e.StackTrace);
+				});
+	//				System.Threading.Thread.Sleep(3000);
+				continue;
+			}
+		}
+			
+		return null;
+	}
+	public static string getPageSource(string _url, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 5000) {
+//		util.debugWriteLine("getpage 01");
+		/*
+		string a = "";
+		try {
+//			a = container.GetCookieHeader(new Uri(_url));
+		} catch (Exception e) {
+			util.debugWriteLine("getpage get cookie header error " + _url + e.Message+e.StackTrace);
+			return null;
+		}
+		if (isFirstLog)
+			util.debugWriteLine("getpagesource " + _url + " " + a);
+		*/	
+//		util.debugWriteLine("getpage 02");
+		for (int i = 0; i < 1; i++) {
+			try {
+//				util.debugWriteLine("getpage 00");
+				var req = (HttpWebRequest)WebRequest.Create(_url);
+				req.Proxy = null;
+				req.AllowAutoRedirect = true;
+	//			req.Headers = getheaders;
+//				util.debugWriteLine("getpage 03");
+				if (referer != null) req.Referer = referer;
+//				util.debugWriteLine("getpage 04");
+				if (container != null) req.CookieContainer = container;
+//				util.debugWriteLine("getpage 05");
+
+				req.Timeout = timeoutMs;
+//				util.debugWriteLine("getpage 0");
+				var res = (HttpWebResponse)req.GetResponse();
+//				util.debugWriteLine("getpage 1");
+				var dataStream = res.GetResponseStream();
+//				util.debugWriteLine("getpage 2");
+				var reader = new StreamReader(dataStream);
+				
+				/*
+				var resStrTask = reader.ReadToEndAsync();
+				if (!resStrTask.Wait(5000)) return null;
+				string resStr = resStrTask.Result;
+				*/
+//				util.debugWriteLine("getpage 3");
+				var resStr = reader.ReadToEnd();
+//				util.debugWriteLine("getpage 4");
+				
+//				getheaders = res.Headers;
+				return resStr;
+	
+			} catch (Exception e) {
+				System.Threading.Tasks.Task.Run(() => {
+					util.debugWriteLine("getpage error " + _url + e.Message+e.StackTrace);
+				});
 	//				System.Threading.Thread.Sleep(3000);
 				continue;
 			}
@@ -439,7 +526,7 @@ class util {
 	}
 	public static byte[] getFileBytes(string url, CookieContainer container) {
 //		var a = container.GetCookieHeader(new Uri(_url));
-		util.debugWriteLine("getfilebyte " + url);
+		//util.debugWriteLine("getfilebyte " + url);
 		for (int i = 0; i < 1; i++) {
 			try {
 				var req = (HttpWebRequest)WebRequest.Create(url);
@@ -464,7 +551,9 @@ class util {
 				return b;
 				
 			} catch (Exception e) {
-				util.debugWriteLine("getfile error " + url + e.Message+e.StackTrace);
+				System.Threading.Tasks.Task.Run(() => {
+					util.debugWriteLine("getfile error " + url + e.Message+e.StackTrace);
+				});
 //				System.Threading.Thread.Sleep(3000);
 				continue;
 			}
@@ -504,20 +593,27 @@ class util {
 		return int.Parse(h) * 3600 + int.Parse(m) * 60 + int.Parse(s);
 	}
 	public static int getPageType(string res) {
-		var data = util.getRegGroup(res, "<script id=\"embedded-data\" data-props=\"([\\d\\D]+?)</script>");
-		var status = (data == null) ? null : util.getRegGroup(data, "&quot;status&quot;:&quot;(.+?)&quot;");
-		if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ON_AIR") return 0;
-		else if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ENDED") return 7;
-		else if (util.getRegGroup(res, "(混雑中ですが、プレミアム会員の方は優先して入場ができます)") != null ||
-		        util.getRegGroup(res, "(ただいま、満員のため入場できません)") != null) return 1;
-//		else if (util.getRegGroup(res, "<div id=\"comment_arealv\\d+\">[^<]+この番組は\\d+/\\d+/\\d+\\(.\\) \\d+:\\d+に終了いたしました。<br>") != null) return 2;
-		else if (util.getRegGroup(res, "(に終了いたしました)") != null) return 2;
-		else if (util.getRegGroup(res, "(<archive>1</archive>)") != null) return 3;
-		else if (util.getRegGroup(res, "(コミュニティフォロワー限定番組です。<br>)") != null) return 4;
-		else if (util.getRegGroup(res, "(チャンネル会員限定番組です。<br>)") != null) return 4;
-		else if (util.getRegGroup(res, "(<h3>【会場のご案内】</h3>)") != null) return 6;
-		else return 5;
+		//if (res.IndexOf("siteId&quot;:&quot;nicolive2") > -1) {
+			var data = util.getRegGroup(res, "<script id=\"embedded-data\" data-props=\"([\\d\\D]+?)</script>");
+			var status = (data == null) ? null : util.getRegGroup(data, "&quot;status&quot;:&quot;(.+?)&quot;");
+			if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ON_AIR") return 0;
+			else if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ENDED") return 7;
+			else if (util.getRegGroup(res, "(混雑中ですが、プレミアム会員の方は優先して入場ができます)") != null ||
+			        util.getRegGroup(res, "(ただいま、満員のため入場できません)") != null) return 1;
+	//		else if (util.getRegGroup(res, "<div id=\"comment_arealv\\d+\">[^<]+この番組は\\d+/\\d+/\\d+\\(.\\) \\d+:\\d+に終了いたしました。<br>") != null) return 2;
+			else if (res.IndexOf(" onclick=\"Nicolive.ProductSerial") > -1) return 8;
+			else if (util.getRegGroup(res, "(に終了いたしました)") != null && res.IndexOf(" onclick=\"Nicolive.WatchingReservation") > -1) return 9;
+			else if (util.getRegGroup(res, "(に終了いたしました)") != null) return 2;
+			else if (util.getRegGroup(res, "(<archive>1</archive>)") != null) return 3;
+			else if (util.getRegGroup(res, "(コミュニティフォロワー限定番組です。<br>)") != null) return 4;
+			else if (util.getRegGroup(res, "(チャンネル会員限定番組です。<br>)") != null) return 4;
+			else if (util.getRegGroup(res, "(<h3>【会場のご案内】</h3>)") != null) return 6;
+			else return 5;
+		//}
+		//return 5;
 	}
+
+	
 	public static DateTime getUnixToDatetime(long unix) {
 		DateTime UNIX_EPOCH = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 		return UNIX_EPOCH.AddSeconds(unix).ToLocalTime();
@@ -542,6 +638,8 @@ class util {
 //		f.Close();
 	}
 	public static bool isLogFile = false;
+	public static List<string> debugWriteBuf = new List<string>();
+	//public static Task debugWriteTask = null;
 	public static void debugWriteLine(object str) {
 		var dt = DateTime.Now.ToLongTimeString();
 //		System.Console.WriteLine(dt + " " + str);
@@ -550,13 +648,24 @@ class util {
 				System.Diagnostics.Debug.WriteLine(str);
 	//      		System.Diagnostics.Debug.WriteLine(
 			#else
-				if (isLogFile) System.Console.WriteLine(dt + " " + str);
+				if (isLogFile) {
+					System.Console.WriteLine(dt + " " + str);
+					//debugWriteBuf.Add(dt + " " + str);
+				}
 			#endif
 		} catch (Exception e) {
-			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.TargetSite + " " + e.Source);
+//			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.TargetSite + " " + e.Source);
+			System.Diagnostics.Debug.WriteLine(e.Message + " " + e.StackTrace + " " + e.TargetSite + " " + e.Source);
 		}
 		
 	}
+	/*
+	private static Task debugWriter() {
+		while (true) {
+			
+		}
+	}
+	*/
 	public static void showException(Exception eo, bool isMessageBox = true) {
 		var frameCount = new System.Diagnostics.StackTrace().FrameCount;
 		#if DEBUG

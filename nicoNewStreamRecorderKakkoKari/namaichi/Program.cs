@@ -34,10 +34,8 @@ namespace namaichi
 				
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			
-
-			
 			Application.Run(new MainForm(args));
+
 		}
 		private static void UnhandleExceptionHandler(Object sender, UnhandledExceptionEventArgs e) {
 			util.debugWriteLine("unhandled exception");

@@ -17,14 +17,16 @@ using System.IO;
 	/// </summary>
 public class SourceInfoSerialize
 {
-	public static void save(CookieSourceInfo si) {
+	public static void save(CookieSourceInfo si, bool isSub = false) {
 //		var sio = new SourceInfoObject(si);
 //		XmlSerializer serializer = new XmlSerializer(typeof(SourceInfoObject));
 		XmlSerializer serializer = new XmlSerializer(typeof(CookieSourceInfo));
 		
 		var jarPath = util.getJarPath();
 		try {
-			var sw = new System.IO.StreamWriter(jarPath[0] + "\\" + jarPath[1] + ".xml", false, System.Text.Encoding.UTF8);
+			var uri = (isSub) ? (jarPath[0] + "\\" + jarPath[1] + "0.xml") :
+				(jarPath[0] + "\\" + jarPath[1] + ".xml");
+			var sw = new System.IO.StreamWriter(uri, false, System.Text.Encoding.UTF8);
 		
 			serializer.Serialize(sw, si);
 			sw.Close();
@@ -32,7 +34,7 @@ public class SourceInfoSerialize
 			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.TargetSite);
 		}
 	}
-	public static CookieSourceInfo load() {
+	public static CookieSourceInfo load(bool isSub = false) {
 //		var sio = new SourceInfoObject(si);
 //		XmlSerializer serializer = new XmlSerializer(typeof(SourceInfoObject));
 		XmlSerializer serializer = new XmlSerializer(typeof(CookieSourceInfo));
@@ -45,7 +47,9 @@ public class SourceInfoSerialize
 		var x = new System.Xml.XmlDocument();
 		var jarPath = util.getJarPath();
 		try {
-			x.Load(jarPath[0] + "\\" + jarPath[1] + ".xml");
+			var uri = (isSub) ? (jarPath[0] + "\\" + jarPath[1] + "0.xml") :
+				(jarPath[0] + "\\" + jarPath[1] + ".xml");
+			x.Load(uri);
 		} catch (Exception e) {
 			return null;
 		}

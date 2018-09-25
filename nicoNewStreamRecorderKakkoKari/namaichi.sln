@@ -1,9 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
+# Visual Studio 2012
+# SharpDevelop 4.4
 VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "namaichi", "namaichi\namaichi.csproj", "{5E31FCA6-A895-4706-90BE-5024B24C1043}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rokugaTouroku", "rokugaTouroku\rokugaTouroku.csproj", "{D5EF4095-FA38-4ADB-9F7C-3A61BEE2EA98}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +18,10 @@ Global
 		{5E31FCA6-A895-4706-90BE-5024B24C1043}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E31FCA6-A895-4706-90BE-5024B24C1043}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E31FCA6-A895-4706-90BE-5024B24C1043}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5EF4095-FA38-4ADB-9F7C-3A61BEE2EA98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5EF4095-FA38-4ADB-9F7C-3A61BEE2EA98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5EF4095-FA38-4ADB-9F7C-3A61BEE2EA98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5EF4095-FA38-4ADB-9F7C-3A61BEE2EA98}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

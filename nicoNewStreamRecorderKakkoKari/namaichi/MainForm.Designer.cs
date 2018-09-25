@@ -78,6 +78,7 @@ namespace namaichi
 			this.commentList = new System.Windows.Forms.DataGridView();
 			this.時間 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.playerBtn = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.samuneBox)).BeginInit();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox5.SuspendLayout();
@@ -156,7 +157,7 @@ namespace namaichi
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
-			this.menuStrip1.Size = new System.Drawing.Size(632, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(699, 26);
 			this.menuStrip1.TabIndex = 11;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -168,25 +169,25 @@ namespace namaichi
 									this.終了ToolStripMenuItem});
 			this.fileMenuItem.Name = "fileMenuItem";
 			this.fileMenuItem.ShowShortcutKeys = false;
-			this.fileMenuItem.Size = new System.Drawing.Size(70, 20);
+			this.fileMenuItem.Size = new System.Drawing.Size(85, 22);
 			this.fileMenuItem.Text = "ファイル(&F)";
 			// 
 			// 録画フォルダを開くToolStripMenuItem
 			// 
 			this.録画フォルダを開くToolStripMenuItem.Name = "録画フォルダを開くToolStripMenuItem";
-			this.録画フォルダを開くToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+			this.録画フォルダを開くToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.録画フォルダを開くToolStripMenuItem.Text = "録画フォルダを開く(&O)";
 			this.録画フォルダを開くToolStripMenuItem.Click += new System.EventHandler(this.openRecFolderMenu_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(176, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(200, 6);
 			// 
 			// 終了ToolStripMenuItem
 			// 
 			this.終了ToolStripMenuItem.Name = "終了ToolStripMenuItem";
-			this.終了ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+			this.終了ToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.終了ToolStripMenuItem.Text = "終了(&X)";
 			this.終了ToolStripMenuItem.Click += new System.EventHandler(this.endMenu_Click);
 			// 
@@ -196,14 +197,14 @@ namespace namaichi
 									this.optionMenuItem});
 			this.toolMenuItem.Name = "toolMenuItem";
 			this.toolMenuItem.ShowShortcutKeys = false;
-			this.toolMenuItem.Size = new System.Drawing.Size(66, 20);
+			this.toolMenuItem.Size = new System.Drawing.Size(74, 22);
 			this.toolMenuItem.Text = "ツール(&T)";
 			// 
 			// optionMenuItem
 			// 
 			this.optionMenuItem.Name = "optionMenuItem";
 			this.optionMenuItem.ShowShortcutKeys = false;
-			this.optionMenuItem.Size = new System.Drawing.Size(129, 22);
+			this.optionMenuItem.Size = new System.Drawing.Size(147, 22);
 			this.optionMenuItem.Text = "オプション(&O)";
 			this.optionMenuItem.Click += new System.EventHandler(this.optionItem_Select);
 			// 
@@ -213,15 +214,15 @@ namespace namaichi
 									this.バージョン情報VToolStripMenuItem});
 			this.helpMenuItem.Name = "helpMenuItem";
 			this.helpMenuItem.ShowShortcutKeys = false;
-			this.helpMenuItem.Size = new System.Drawing.Size(67, 20);
+			this.helpMenuItem.Size = new System.Drawing.Size(75, 22);
 			this.helpMenuItem.Text = "ヘルプ(&H)";
-			this.helpMenuItem.Visible = false;
 			// 
 			// バージョン情報VToolStripMenuItem
 			// 
 			this.バージョン情報VToolStripMenuItem.Name = "バージョン情報VToolStripMenuItem";
-			this.バージョン情報VToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+			this.バージョン情報VToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
 			this.バージョン情報VToolStripMenuItem.Text = "バージョン情報(&A)";
+			this.バージョン情報VToolStripMenuItem.Click += new System.EventHandler(this.versionMenu_Click);
 			// 
 			// groupBox5
 			// 
@@ -243,7 +244,7 @@ namespace namaichi
 			this.groupBox5.Controls.Add(this.label1);
 			this.groupBox5.Location = new System.Drawing.Point(179, 76);
 			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(452, 161);
+			this.groupBox5.Size = new System.Drawing.Size(519, 161);
 			this.groupBox5.TabIndex = 17;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "番組情報";
@@ -258,9 +259,11 @@ namespace namaichi
 			// 
 			// descriptLabel
 			// 
+			this.descriptLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+									| System.Windows.Forms.AnchorStyles.Right)));
 			this.descriptLabel.Location = new System.Drawing.Point(214, 106);
 			this.descriptLabel.Name = "descriptLabel";
-			this.descriptLabel.Size = new System.Drawing.Size(223, 53);
+			this.descriptLabel.Size = new System.Drawing.Size(290, 53);
 			this.descriptLabel.TabIndex = 3;
 			// 
 			// keikaTimeLabel
@@ -370,7 +373,7 @@ namespace namaichi
 			this.groupBox1.Controls.Add(this.commentLabel);
 			this.groupBox1.Controls.Add(this.visitLabel);
 			this.groupBox1.Controls.Add(this.label13);
-			this.groupBox1.Location = new System.Drawing.Point(396, 30);
+			this.groupBox1.Location = new System.Drawing.Point(467, 30);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(229, 40);
 			this.groupBox1.TabIndex = 19;
@@ -433,7 +436,7 @@ namespace namaichi
 			this.commentList.Name = "commentList";
 			this.commentList.RowHeadersVisible = false;
 			this.commentList.RowTemplate.Height = 21;
-			this.commentList.Size = new System.Drawing.Size(363, 107);
+			this.commentList.Size = new System.Drawing.Size(430, 107);
 			this.commentList.TabIndex = 21;
 			// 
 			// 時間
@@ -450,12 +453,23 @@ namespace namaichi
 			this.Column1.HeaderText = "コメント";
 			this.Column1.Name = "Column1";
 			// 
+			// playerBtn
+			// 
+			this.playerBtn.Location = new System.Drawing.Point(397, 35);
+			this.playerBtn.Name = "playerBtn";
+			this.playerBtn.Size = new System.Drawing.Size(64, 24);
+			this.playerBtn.TabIndex = 22;
+			this.playerBtn.Text = "視聴";
+			this.playerBtn.UseVisualStyleBackColor = true;
+			this.playerBtn.Click += new System.EventHandler(this.PlayerBtnClick);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Window;
-			this.ClientSize = new System.Drawing.Size(632, 362);
+			this.ClientSize = new System.Drawing.Size(699, 362);
+			this.Controls.Add(this.playerBtn);
 			this.Controls.Add(this.commentList);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
@@ -469,8 +483,9 @@ namespace namaichi
 			this.MainMenuStrip = this.menuStrip1;
 			this.Margin = new System.Windows.Forms.Padding(2);
 			this.Name = "MainForm";
-			this.Text = "ニコ生新配信録画ツール（仮";
+			this.Text = "ニコ生新配信録画ツール（仮 ver0.86.15";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.form_Close);
+			this.Load += new System.EventHandler(this.mainForm_Load);
 			((System.ComponentModel.ISupportInitialize)(this.samuneBox)).EndInit();
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
@@ -481,13 +496,14 @@ namespace namaichi
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
-		private System.Windows.Forms.Label commentLabel;
+		public System.Windows.Forms.Button playerBtn;
+		public System.Windows.Forms.Label commentLabel;
 		private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
 		private System.Windows.Forms.DataGridViewTextBoxColumn 時間;
 		private System.Windows.Forms.DataGridView commentList;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.Label label13;
-		private System.Windows.Forms.Label visitLabel;
+		public System.Windows.Forms.Label visitLabel;
 		private System.Windows.Forms.Label label15;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.Label label12;

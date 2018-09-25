@@ -32,8 +32,9 @@ namespace namaichi.rec
 			var tmp = dir + "_" + fName;
 			util.debugWriteLine("through ffmpeg tmp " + tmp);
 			
-			string _command = "-i \"" + path + "\" -c copy \"" + tmp + "\"";
-//			string _command = "-i \"" + path + "\" -movflags faststart -c copy \"" + tmp + "\"";
+			var _command = getCommand(path, tmp);
+			
+			
 			
 			util.debugWriteLine("through command " + _command);
 			
@@ -90,6 +91,27 @@ namespace namaichi.rec
 		}
 		private void appExitHandler(object sender, EventArgs e) {
 //			stopRecording();
+		}
+		private string getCommand(string path, string tmp) {
+			var def = "-i \"" + path + "\" -c copy \"" + tmp + "\"";
+			if (rm.ri == null)
+				return def;
+//			string _command = "-i \"" + path + "\" -movflags faststart -c copy \"" + tmp + "\"";
+			if (rm.ri.afterFFmpegMode == 0)
+				return "-i \"" + path + "\" -c copy \"" + tmp + "\"";
+			else if (rm.ri.afterFFmpegMode == 1)
+				return "-i \"" + path + "\" -c copy \"" + tmp + "\"";
+			else if (rm.ri.afterFFmpegMode == 1)
+				return "-i \"" + path + "\" -c copy \"" + tmp + "\"";
+			else if (rm.ri.afterFFmpegMode == 1)
+				return "-i \"" + path + "\" -c copy \"" + tmp + "\"";
+			else if (rm.ri.afterFFmpegMode == 1)
+				return "-i \"" + path + "\" -c copy \"" + tmp + "\"";
+			else if (rm.ri.afterFFmpegMode == 1)
+				return "-i \"" + path + "\" -c copy \"" + tmp + "\"";
+			else if (rm.ri.afterFFmpegMode == 1)
+				return "-i \"" + path + "\" -c copy \"" + tmp + "\"";
+			return def;
 		}
 		/*
 		public void stopRecording() {

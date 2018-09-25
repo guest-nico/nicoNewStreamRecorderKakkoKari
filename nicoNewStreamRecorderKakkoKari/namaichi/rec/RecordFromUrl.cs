@@ -20,9 +20,12 @@ namespace namaichi.rec
 	/// </summary>
 	public class RecordFromUrl
 	{
-		private CookieContainer container;
+		private CookieContainer[] container;
 		private RecordingManager rm;
 		private string res;
+		private bool isJikken = false;
+		private JikkenRecorder jr;
+		private string lvid;
 		
 		public RecordFromUrl(RecordingManager rm)
 		{
@@ -35,9 +38,18 @@ namespace namaichi.rec
 			//endcode 0-その他の理由 1-stop 2-最初に終了 3-始まった後に番組終了
 			util.debugWriteLine("RecordFromUrl rec");
 			util.debugWriteLine(url + " " + lvid);
-			var pageType = this.getPageType(url, true);
-			util.debugWriteLine("pagetype " + pageType + " container " + container);
-			if (container == null) {
+			this.lvid = lvid;
+			
+			var mainT = Task.Run<int>(() => {return _rec(url, false);});
+			mainT.Wait();
+			
+			return mainT.Result;
+		}
+		private int _rec(string url, bool isSub) {
+			var pageType = this.getPageType(url, true, isSub);
+			var ccInd = (isSub) ? 1 : 0;
+			util.debugWriteLine("pagetype " + pageType + " container " + container + " isSub " + isSub);
+			if (container[ccInd] == null) {
 				rm.form.addLogText("ログインに失敗しました。" + lvid);
 				if (bool.Parse(rm.cfg.get("IsmessageBox"))) {
 					if (rm.form.IsDisposed) return 2;
@@ -72,9 +84,16 @@ namespace namaichi.rec
 			while (true && this == rm.rfu) {
 				util.debugWriteLine("pagetype " + pageType);
 				if (pageType == 0 || pageType == 7) {
-					var isTimeShift = pageType == 7;
-					var h5r = new Html5Recorder(url, container, lvid, rm, this, isTimeShift);
-					var recResult = h5r.record(res);
+					var isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
+					int recResult = 0;
+					if (isJikken) {
+						recResult = jr.record(res);
+					} else {
+						var isTimeShift = pageType == 7;
+						
+						var h5r = new Html5Recorder(url, container[ccInd], lvid, rm, this, isTimeShift, isSub);
+						recResult = h5r.record(res);
+					}
 					util.debugWriteLine("recresult " + recResult);
 					return recResult;					
 				} else if (pageType == 1) {
@@ -85,8 +104,14 @@ namespace namaichi.rec
 						while(this == rm.rfu) {
 							try {
 								var wc = new WebHeaderCollection();
-								res = util.getPageSource(url, ref wc, container);
-								pageType = util.getPageType(res);
+								res = util.getPageSource(url, ref wc, container[ccInd]);
+								
+								isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
+								var _pageType = (isJikken) ? getJikkenPageType(res, isSub) : util.getPageType(res);
+								util.debugWriteLine(_pageType);
+								if (pageType != 1) continue;
+								
+								System.Threading.Thread.Sleep(5000);
 							} catch (Exception e) {
 								util.debugWriteLine(e.Message + " " + e.StackTrace + " ");
 							}
@@ -107,7 +132,7 @@ namespace namaichi.rec
 //							var wc = new WebHeaderCollection();
 //							res = util.getPageSource(url, ref wc, container);
 //							pageType = util.getPageType(res);
-							pageType = getPageType(url);
+							pageType = getPageType(url, false, isSub);
 							util.debugWriteLine("pagetype_ " + pageType);
 						} catch (Exception e) {
 							util.debugWriteLine(e.Message + " " + e.StackTrace + " ");
@@ -123,7 +148,7 @@ namespace namaichi.rec
 					util.debugWriteLine("pagetype6process");
 					System.Threading.Thread.Sleep(3000);
 					try {
-						pageType = getPageType(url);
+						pageType = getPageType(url, false, isSub);
 						util.debugWriteLine("pagetype_ " + pageType);
 					} catch (Exception e) {
 						util.debugWriteLine(e.Message + " " + e.StackTrace + " ");
@@ -138,13 +163,13 @@ namespace namaichi.rec
 					
 					util.debugWriteLine(rm.cfg.get("IsautoFollowComgen"));
 					if (bool.Parse(rm.cfg.get("IsautoFollowComgen"))) {
-						 
-						var isFollow = new FollowCommunity().followCommunity(res, container, rm.form, rm.cfg);
+						
+						var isFollow = new FollowCommunity(isSub).followCommunity(res, container[ccInd], rm.form, rm.cfg);
 						util.debugWriteLine("isfollow " + isFollow);
 						if (isFollow) {
 //							var wc = new WebHeaderCollection();
 //							var referer = "http://live.nicovideo.jp/gate/" + lvid;
-							pageType = getPageAfterFollow(url, lvid);
+							pageType = getPageAfterFollow(url, lvid, isSub);
 							util.debugWriteLine("pagetype_ " + pageType);
 							continue;
 						}
@@ -175,6 +200,29 @@ namespace namaichi.rec
 					}
 					return 2;
 					
+				} else if (pageType == 8) {
+					rm.form.addLogText("この番組の視聴にはシリアル番号が必要です。");
+					return 2;
+				} else if (pageType == 9) {
+					rm.form.addLogText("この番組の視聴には予約が必要です。");
+					DialogResult isYoyakuRes = DialogResult.None;
+					rm.form.Invoke((MethodInvoker)delegate() {
+						isYoyakuRes = MessageBox.Show(rm.form, "この番組の視聴には予約が必要です。予約しますか？", "", MessageBoxButtons.YesNo);
+					               });
+					if (isYoyakuRes == DialogResult.No) return 2;
+					
+					var r = new Reservation(container[ccInd], lvid);
+					var reserveRet = r.reserve();
+					if (reserveRet == "ok") {
+						rm.form.addLogText("予約しました");
+						//res = util.getPageSource(url, container, null, false, 2000);
+						pageType = getPageType(url, false, isSub);
+						continue;
+					} else {
+						rm.form.addLogText("予約できませんでした");
+						rm.form.addLogText(reserveRet);
+						return 2;
+					}
 				} else {
 					var mes = "";
 					if (pageType == 2) mes = "この放送は終了しています。";
@@ -205,7 +253,7 @@ namespace namaichi.rec
             
 
 		}
-		public int getPageType(string url, bool isLogin = false) {
+		public int getPageType(string url, bool isLogin, bool isSub) {
 			while (this == rm.rfu) {
 				try {
 					
@@ -236,10 +284,15 @@ namespace namaichi.rec
 	//				util.debugWriteLine("1 " + container.GetCookieHeader(TargetUrl));
 	//				TargetUrl = new Uri("http://live2.nicovideo.jp/");
 	//				util.debugWriteLine("2 " + container.GetCookieHeader(TargetUrl));
-					var _pageType = util.getPageType(res);
-					util.debugWriteLine(_pageType);
-					
-					return _pageType;
+					//if (res.IndexOf("siteId&quot;:&quot;nicolive2") > -1) {
+					var isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
+					if (isJikken) {
+						return getJikkenPageType(res, isSub);
+					} else {
+						var _pageType = util.getPageType(res);
+						util.debugWriteLine(_pageType);
+						return _pageType;
+					}
 				} catch (Exception e) {
 					util.debugWriteLine(e.Message + " " + e.StackTrace);
 					System.Threading.Thread.Sleep(3000);
@@ -261,7 +314,7 @@ namespace namaichi.rec
             return (res.Headers.Get("Location") == null) ? false : true;
             */
 		}
-		private int getPageAfterFollow(string url, string lvid) {
+		private int getPageAfterFollow(string url, string lvid, bool isSub) {
 			Uri TargetUrl = new Uri("http://live.nicovideo.jp");
 			Uri TargetUrl2 = new Uri("http://live2.nicovideo.jp");
 			for (int i = 0; this == rm.rfu; i++) {
@@ -297,8 +350,9 @@ namespace namaichi.rec
 					req.AllowAutoRedirect = true;
 		//			req.Headers = getheaders;
 					req.Referer = "http://live.nicovideo.jp/gate/" + lvid;
-					container.Add(TargetUrl, new Cookie("_gali", "box" + lvid));
-					if (container != null) req.CookieContainer = container;
+					var ccInd = (isSub) ? 1 : 0;
+					container[ccInd].Add(TargetUrl, new Cookie("_gali", "box" + lvid));
+					if (container[ccInd] != null) req.CookieContainer = container[ccInd];
 					var _res = (HttpWebResponse)req.GetResponse();
 					var dataStream = _res.GetResponseStream();
 					var reader = new StreamReader(dataStream);
@@ -307,15 +361,26 @@ namespace namaichi.rec
 					var resCookie = _res.Cookies;
 					
 	//				if (res.IndexOf("会場のご案内") < 0) break;
-					var pagetype = util.getPageType(res);
-					if (pagetype != 5) return pagetype;
+					isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
+					var pagetype = (isJikken) ? getJikkenPageType(res, isSub) : util.getPageType(res);
+								
+//					var pagetype = util.getPageType(res);
+					if (!isJikken && pagetype != 5) return pagetype;
+					if (isJikken && pagetype != 4) return pagetype;
 					util.debugWriteLine(i);
 				} catch (Exception e) {
 					util.debugWriteLine(e.Message + " " + e.StackTrace);
 				}
-				System.Threading.Thread.Sleep(1000);
+				System.Threading.Thread.Sleep(3000);
 			}
 			return -1;
+		}
+		private int getJikkenPageType(string res, bool isSub) {
+//			if (jr == null)
+			var ccInd = (isSub) ? 1 : 0;
+			jr = new JikkenRecorder(res, lvid, container[ccInd], rm.cfg, rm, this);
+//			rm.jr = jr;
+			return jr.getPageType();
 		}
 	}
 }

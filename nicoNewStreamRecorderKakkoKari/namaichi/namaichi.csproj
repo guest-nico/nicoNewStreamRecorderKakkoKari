@@ -119,7 +119,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="commentForm.cs" />
+    <Compile Include="commentForm.Designer.cs">
+      <DependentUpon>commentForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\config.cs" />
+    <Compile Include="defaultFFplayController.cs" />
+    <Compile Include="defaultFFplayController.Designer.cs">
+      <DependentUpon>defaultFFplayController.cs</DependentUpon>
+    </Compile>
     <Compile Include="fileNameOptionForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -127,7 +135,9 @@
       <DependentUpon>fileNameOptionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="info\ChatInfo.cs" />
+    <Compile Include="info\RedistInfo.cs" />
     <Compile Include="info\TimeShiftConfig.cs" />
+    <Compile Include="info\WatchingInfo.cs" />
     <Compile Include="log\TraceListener.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -135,6 +145,7 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="NicoSessionComboBox2.cs" />
     <Compile Include="optionForm.cs">
       <DependentUpon>app.config</DependentUpon>
       <SubType>Form</SubType>
@@ -142,23 +153,41 @@
     <Compile Include="optionForm.Designer.cs">
       <DependentUpon>optionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="placeHolderText.cs" />
+    <Compile Include="placeHolderText.Designer.cs">
+      <DependentUpon>placeHolderText.cs</DependentUpon>
+    </Compile>
+    <Compile Include="placeTextBox5.cs" />
+    <Compile Include="placeTextBox5.Designer.cs">
+      <DependentUpon>placeTextBox5.cs</DependentUpon>
+    </Compile>
+    <Compile Include="play\CommentPlayerWebSocket.cs" />
     <Compile Include="play\Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.cs" />
     <Compile Include="Properties\Settings.Designer.cs" />
     <Compile Include="rec\ArgConcat.cs" />
+    <Compile Include="rec\AnotherEngineRecorder.cs" />
+    <Compile Include="rec\DeflateDecoder.cs" />
     <Compile Include="rec\FFMpegConcat.cs" />
     <Compile Include="rec\FFMpegRecord.cs" />
     <Compile Include="rec\CookieGetter.cs" />
     <Compile Include="rec\FollowCommunity.cs" />
     <Compile Include="rec\Html5Recorder.cs" />
+    <Compile Include="rec\IRecorderProcess.cs" />
+    <Compile Include="rec\JikkenRecorder.cs" />
+    <Compile Include="rec\JikkenRecordProcess.cs" />
     <Compile Include="rec\NotHtml5Recorder.cs" />
+    <Compile Include="rec\OutputTimeShiftTsUrlList.cs" />
     <Compile Include="rec\Record.cs" />
     <Compile Include="rec\RecordFromUrl.cs" />
     <Compile Include="rec\RecordingManager.cs" />
     <Compile Include="rec\RecordStateSetter.cs" />
+    <Compile Include="rec\Reservation.cs" />
     <Compile Include="rec\ThroughFFMpeg.cs" />
+    <Compile Include="rec\TimeShiftCommentGetter.cs" />
+    <Compile Include="rec\TimeShiftCommentGetter_jikken.cs" />
     <Compile Include="rec\WebSocketRecorder.cs" />
     <Compile Include="TimeShiftOptionForm.cs">
       <SubType>Form</SubType>
@@ -168,8 +197,18 @@
     </Compile>
     <Compile Include="util\SourceInfoSerialize.cs" />
     <Compile Include="util\util.cs" />
+    <Compile Include="VersionForm.cs" />
+    <Compile Include="VersionForm.Designer.cs">
+      <DependentUpon>VersionForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="commentForm.resx">
+      <DependentUpon>commentForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="defaultFFplayController.resx">
+      <DependentUpon>defaultFFplayController.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="fileNameOptionForm.resx">
       <DependentUpon>fileNameOptionForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -181,6 +220,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TimeShiftOptionForm.resx">
       <DependentUpon>TimeShiftOptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VersionForm.resx">
+      <DependentUpon>VersionForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

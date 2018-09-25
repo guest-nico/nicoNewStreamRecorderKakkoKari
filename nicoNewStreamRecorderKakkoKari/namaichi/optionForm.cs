@@ -13,9 +13,12 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 using namaichi.config;
 using SunokoLibrary.Application;
+using SunokoLibrary.Windows.ViewModels;
 
 namespace namaichi
 {
@@ -115,6 +118,12 @@ namespace namaichi
 				{"segmentSaveType",getSegmentSaveType()},
 				{"IsRenketuAfter",isRenketuAfterChkBox.Checked.ToString().ToLower()},
 				{"IsAfterRenketuFFmpeg",isAfterRenketuFFmpegChkBox.Checked.ToString().ToLower()},
+				{"IsDefaultEngine",isDefaultEngineChkBox.Checked.ToString().ToLower()},
+				{"anotherEngineCommand",anotherEngineCommandText.Text},
+				{"IsDefaultPlayer",isDefaultPlayerRadioBtn.Checked.ToString().ToLower()},
+				{"IsDefaultCommentViewer",isDefaultCommentViewerRadioBtn.Checked.ToString().ToLower()},
+				{"anotherPlayerPath",anotherPlayerPathText.Text},
+				{"anotherCommentViewerPath",anotherCommentViewerPathText.Text},
 				
 				{"cookieFile",cookieFileText.Text},
 				{"iscookie",isCookieFileSiteiChkBox.Checked.ToString().ToLower()},
@@ -124,17 +133,16 @@ namespace namaichi
 				{"subFolderNameType",getSubFolderNameType() + ""},
 				{"fileNameType",getFileNameType() + ""},
 				{"filenameformat",fileNameFormat},
-				{"ffmpegopt",ffmpegoptText.Text},
+				//{"ffmpegopt",ffmpegoptText.Text},
 				{"user_session",""},
 				{"user_session_secure",""},
 			};
 			
 		}
+		
 		async void Selector_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
 			//if (isInitRun) initRec();
-			
-	
 			
             switch(e.PropertyName)
             {
@@ -249,8 +257,16 @@ namespace namaichi
         	isRenketuAfterChkBox.Checked = bool.Parse(cfg.get("IsRenketuAfter"));
         	isRenketuAfterChkBox_UpdateAction();
         	isAfterRenketuFFmpegChkBox.Checked = bool.Parse(cfg.get("IsAfterRenketuFFmpeg"));
-        	
-        	
+        	isDefaultEngineChkBox.Checked = bool.Parse(cfg.get("IsDefaultEngine"));
+        	setEngineType(bool.Parse(cfg.get("IsDefaultEngine")));
+        	isDefaultEngineChkBox_UpdateAction();
+			anotherEngineCommandText.Text = cfg.get("anotherEngineCommand");
+			setPlayerType();
+			setCommentViewerType();
+			anotherPlayerPathText.Text = cfg.get("anotherPlayerPath");
+			anotherCommentViewerPathText.Text = cfg.get("anotherCommentViewerPath");
+				
+			
         	isCookieFileSiteiChkBox.Checked = bool.Parse(cfg.get("iscookie"));
         	isCookieFileSiteiChkBox_UpdateAction();
         	cookieFileText.Text = cfg.get("cookieFile");
@@ -263,7 +279,7 @@ namespace namaichi
         	setFileNameType(int.Parse(cfg.get("fileNameType")));
         	fileNameFormat = cfg.get("filenameformat");
         	fileNameTypeDokujiSetteiBtn.Text = util.getFileNameTypeSample(fileNameFormat);
-        	ffmpegoptText.Text = cfg.get("ffmpegopt");
+        	//ffmpegoptText.Text = cfg.get("ffmpegopt");
         	
         	var si = SourceInfoSerialize.load();
         	nicoSessionComboBox1.Selector.SetInfoAsync(si);
@@ -499,6 +515,84 @@ namespace namaichi
 		}
 		void isRenketuAfterChkBox_UpdateAction() {
 			isRenketuAfterChkBox.Enabled = isSegmentNotRenketuRadioBtn.Checked;
+		}
+		void isDefaultEngineChkBox_UpdateAction() {
+			if (isDefaultEngineChkBox.Checked) {
+				anotherEngineCommandText.Enabled = false;
+				isSegmentRenketuRadioBtn.Enabled = true;
+				isSegmentNotRenketuRadioBtn.Enabled = true;
+				isRenketuAfterChkBox_UpdateAction();
+			} else {
+				anotherEngineCommandText.Enabled = true;
+				isSegmentRenketuRadioBtn.Enabled = false;
+				isSegmentNotRenketuRadioBtn.Enabled = false;
+				isRenketuAfterChkBox.Enabled = false;
+			}
+		}
+		void setEngineType(bool isDefaultEngine) {
+			if (isDefaultEngine) isDefaultEngineChkBox.Checked = true;
+			else isAnotherEngineChkBox.Checked = true;
+			isDefaultEngineChkBox_UpdateAction();
+		}
+		
+		void isDefaultEngineChkBox_CheckedChanged(object sender, EventArgs e)
+		{
+			isDefaultEngineChkBox_UpdateAction();
+		}
+		void setPlayerType() {
+			if (bool.Parse(cfg.get("IsDefaultPlayer")))
+				isDefaultPlayerRadioBtn.Checked = true;
+			else isAnotherPlayerRadioBtn.Checked = true;
+			isDefaultPlayerRadioBtn_UpdateAction();
+		}
+		void setCommentViewerType() {
+			if (bool.Parse(cfg.get("IsDefaultCommentViewer")))
+				isDefaultCommentViewerRadioBtn.Checked = true;
+			else isAnotherCommentViewerRadioBtn.Checked = true;
+		}
+		void isDefaultPlayerRadioBtn_UpdateAction() {
+			if (isDefaultPlayerRadioBtn.Checked) {
+				anotherPlayerPathText.Enabled = false;
+				anotherPlayerSanshouBtn.Enabled = false;
+			} else {
+				anotherPlayerPathText.Enabled = true;
+				anotherPlayerSanshouBtn.Enabled = true;
+			}
+		}
+		void isDefaultCommentViewerRadioBtn_UpdateAction() {
+			if (isDefaultCommentViewerRadioBtn.Checked) {
+				anotherCommentViewerPathText.Enabled = false;
+				anotherCommentViewerSanshouBtn.Enabled = false;
+			} else {
+				anotherCommentViewerPathText.Enabled = true;
+				anotherCommentViewerSanshouBtn.Enabled = true;
+			}
+		}
+		void isDefaultPlayerRadioBtn_CheckedChanged(object sender, EventArgs e)
+		{
+			isDefaultPlayerRadioBtn_UpdateAction();
+		}
+		void isDefaultCommentViewerRadioBtn_CheckedChanged(object sender, EventArgs e)
+		{
+			isDefaultCommentViewerRadioBtn_UpdateAction();
+		}
+		void anotherPlayerSanshouBtn_Click(object sender, EventArgs e)
+		{
+			var dialog = new OpenFileDialog();
+			dialog.Multiselect = false;
+			var result = dialog.ShowDialog();
+			if (result != DialogResult.OK) return;
+			
+			anotherPlayerPathText.Text = dialog.FileName;
+		}
+		void anotherCommentViewerSanshouBtn_Click(object sender, EventArgs e)
+		{
+			var dialog = new OpenFileDialog();
+			dialog.Multiselect = false;
+			var result = dialog.ShowDialog();
+			if (result != DialogResult.OK) return;
+			
+			anotherCommentViewerPathText.Text = dialog.FileName;
 		}
 	}
 }

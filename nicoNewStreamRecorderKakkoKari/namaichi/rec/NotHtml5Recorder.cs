@@ -54,7 +54,7 @@ namespace namaichi.rec
 				bool isFFmpeg = Array.IndexOf(command, "-i") != -1;
 				util.debugWriteLine("isffmpeg " + isFFmpeg);
 				
-				var rec = new Record(rm, isFFmpeg, rfu, "", "", 0, null, false, null, null, null);
+				var rec = new Record(rm, isFFmpeg, rfu, "", "", 0, null, false, null, null, null, 0, null);
 				commentGetter = new NotHtmlCommentGetter(messageInfo, rm, rfu, recFolderFile);
 				
 				/*
@@ -122,7 +122,7 @@ namespace namaichi.rec
 			
 	//		System.out.println(String.join(" ", util.getRecFolderFilePath(host, group, title, lvid, communityNum)));
 			
-	return util.getRecFolderFilePath(host, group, title, lvid, communityNum, userId, rm.cfg, false, null);
+	return util.getRecFolderFilePath(host, group, title, lvid, communityNum, userId, rm.cfg, false, null, 0);
 		}
 		private string[] getGetPlayerStatusCommand(string getPlayerStatusInfo, string[] recFolderFile) {
 			//0-ticket 1-contentsUrl 2-rtmpUrl 3-lvid

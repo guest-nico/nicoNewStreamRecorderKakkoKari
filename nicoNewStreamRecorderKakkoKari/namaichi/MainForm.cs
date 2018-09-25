@@ -50,6 +50,8 @@ namespace namaichi
 		private string[] args;
 		private play.Player player;
 		
+		
+		
 		public MainForm(string[] args)
 		{
 			System.Diagnostics.Debug.Listeners.Clear();
@@ -70,8 +72,10 @@ namespace namaichi
 //			args = new string[]{};
 			
 			InitializeComponent();
+			Text = "ニコ生新配信録画ツール（仮 " + util.versionStr;
 			
 			rec = new rec.RecordingManager(this, config);
+			player = new Player(this, config);
 			//player = new play.Player(rec);
 			
             //nicoSessionComboBox1.Selector.PropertyChanged += Selector_PropertyChanged;
@@ -85,16 +89,18 @@ namespace namaichi
 			}
 			
 			if (args.Length > 0) {
-				
-				
-				    
 				if (bool.Parse(config.get("Isminimized"))) {
 					this.WindowState = FormWindowState.Minimized;
 				}
-				urlText.Text = string.Join("|", args);
-//            	rec = new rec.RecordingManager(this);
-            	rec.rec();
-
+				if (args.Length == 9 && args[0] == "redist") {
+					urlText.Text = args[1];
+					rec.setRedistInfo(args);
+					rec.rec();
+				} else {
+					urlText.Text = string.Join("|", args);
+	//            	rec = new rec.RecordingManager(this);
+	            	rec.rec();
+				}
             }
 		}
 
@@ -215,14 +221,17 @@ namespace namaichi
 	       	} catch (Exception e) {
 	       		util.showException(e);
 	       	}
+       		if (rec.ri != null) Console.WriteLine(t);
 		}
 		public void setRecordState(String t) {
+       		//util.debugWriteLine("setRecordState form");
 	       	try {
 	       		if (IsDisposed) return;
 	        	Invoke((MethodInvoker)delegate() {
+	       		    //util.debugWriteLine("setRecordState form after invoke");
 	       		    try {
 		        	    recordStateLabel.Text = t;
-		        	    if (bool.Parse(config.get("IstitlebarInfo"))) {
+		        	    if (rec.isTitleBarInfo) {
 		        	    	Text = t;
 		        	    }
 	       		    } catch (Exception e) {
@@ -234,6 +243,7 @@ namespace namaichi
 	       	} catch (Exception e) {
        			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 	       	}
+       		//util.debugWriteLine("setRecordState ok");
 		}
         private void initRec() {
         	//util.debugWriteLine(int.Parse(config.get("browserName")));
@@ -257,6 +267,8 @@ namespace namaichi
 		public void setInfo(string host, string hostUrl, 
         		string group, string groupUrl, string title, string url, 
         		string gentei, string openTime, string description) {
+       		util.debugWriteLine(hostUrl);
+       		
 	       	try {
 	       		if (IsDisposed) return;
 	        	Invoke((MethodInvoker)delegate() {
@@ -268,10 +280,14 @@ namespace namaichi
 			        	    titleLabel.Text = title;
 			        	    titleLabel.Links.Add(0, titleLabel.Text.Length, url);
 			        	    hostLabel.Text = host;
-			        	    hostLabel.Links.Add(0, (hostUrl != null) ? hostLabel.Text.Length : 0, hostUrl);
-			        	    hostLabel.LinkArea = new LinkArea(0, (hostUrl == null) ? 0 : hostLabel.Text.Length);
+			        	    if (hostUrl != null) {
+				        	    hostLabel.Links.Add(0, hostLabel.Text.Length, hostUrl);
+//				        	    hostLabel.LinkArea = new LinkArea(0, hostLabel.Text.Length);
+			        	    }
 			        	    communityLabel.Text = group;
-			        	    communityLabel.Links.Add(0, groupLabel.Text.Length, groupUrl);
+			        	    if (groupUrl != null) {
+			        	    	communityLabel.Links.Add(0, groupLabel.Text.Length, groupUrl);
+			        	    }
 			        	    genteiLabel.Text = gentei;
 			        	    startTimeLabel.Text = openTime;
 			        	    descriptLabel.Text = description;
@@ -282,6 +298,7 @@ namespace namaichi
 	       	} catch (Exception e) {
 	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 	       	}
+       		//util.debugWriteLine(hostLabel.Text + " " + hostLabel.Links);
 		}
 		public void setSamune(string url) {
        		if (IsDisposed) return;
@@ -323,12 +340,13 @@ namespace namaichi
 //       			Icon = new System.Drawing.Icon(url);
 			
 		}
-       public void setKeikaJikan(string keikaJikan) {
+       public void setKeikaJikan(string keikaJikan, string timeLabelStr) {
 			try {
 				if (IsDisposed) return;
 				Invoke((MethodInvoker)delegate() {
 					try {
 						keikaTimeLabel.Text = keikaJikan;
+						player.setCtrlFormKeikaJikan(timeLabelStr);
 					} catch (Exception e) {
 						util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 					}
@@ -337,24 +355,26 @@ namespace namaichi
 				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 			}
        }
-       public void setStatistics(string visit, string comment) {
-       	try {
-		       	if (IsDisposed) return;
-		        	Invoke((MethodInvoker)delegate() {
-		       	       	try {
+		public void setStatistics(string visit, string comment) {
+			try {
+			   	if (IsDisposed) return;
+			    	Invoke((MethodInvoker)delegate() {
+			   	       	try {
 			       			visitLabel.Text = visit;
 			       			commentLabel.Text = comment;
-		       	       	} catch (Exception e) {
-		       	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-		       	       	}
+			   	       	} catch (Exception e) {
+			   	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+			   	       	}
 					});
-		} catch (Exception e) {
-			util.showException(e);
-		} 
-       }
-       public void addComment(string time, string comment) {
+			} catch (Exception e) {
+				util.showException(e);
+			}
+			player.setStatistics(visit, comment);
+		}
+       public void addComment(string time, string comment, string userId, string score, bool isTimeShift, string color) {
+       	
        	try {
-		       	if (IsDisposed) return;
+       		if (!IsDisposed && !isTimeShift) {
 		        	Invoke((MethodInvoker)delegate() {
 		       	       	try {
 			       	       	var rows = new string[]{time, comment};
@@ -368,9 +388,12 @@ namespace namaichi
 		       	       	}
 		       	       	
 					});
+       		}
        	} catch (Exception e) {
        		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
        	}
+       	
+//       	player.addComment(time, comment, userId, score, color);
        }
 
 		
@@ -435,6 +458,7 @@ namespace namaichi
 			} catch(Exception e) {
 				util.debugWriteLine(e.Message + " " + e.StackTrace);
 			}
+			player.stopPlaying(true, true);
 			return true;
 		}
 		public void resetDisplay() {
@@ -454,6 +478,7 @@ namespace namaichi
 			commentList.Rows.Clear();
 			Text = "ニコ生新配信録画ツール（仮";
 			Icon = null;
+			recordStateLabel.Text = "";
 		}
 		public void setTitle(string s) {
 			try {
@@ -469,6 +494,44 @@ namespace namaichi
 			} catch (Exception e) {
 	       		util.showException(e);
 	       	}
+		}
+		
+		void PlayerBtnClick(object sender, EventArgs e)
+		{
+			player.play();
+		}
+		public void setPlayerBtnEnable(bool b) {
+			try {
+				if (!IsDisposed) {
+		        	Invoke((MethodInvoker)delegate() {
+						try {
+					        playerBtn.Enabled = b;
+						} catch (Exception e) {
+		       	       		util.debugWriteLine("player btn enabled exception " + e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+	       	       		}
+					});
+				}
+			} catch (Exception e) {
+	       		util.showException(e);
+	       	}
+		}
+		
+		
+		void mainForm_Load(object sender, EventArgs e)
+		{
+			
+			var a = util.getJarPath();
+			var desc = System.Diagnostics.FileVersionInfo.GetVersionInfo(util.getJarPath()[0] + "/websocket4net.dll");
+			if (desc.FileDescription != "WebSocket4Net for .NET 4.5 gettable data bytes") {
+				Invoke((MethodInvoker)delegate() {
+					System.Windows.Forms.MessageBox.Show("「WebSocket4Net.dll」をver0.86.9以降に同梱されているものと置き換えてください");
+				});
+			}
+		}
+		void versionMenu_Click(object sender, EventArgs e)
+		{
+			var v = new VersionForm();
+			v.ShowDialog();
 		}
 	}
 }

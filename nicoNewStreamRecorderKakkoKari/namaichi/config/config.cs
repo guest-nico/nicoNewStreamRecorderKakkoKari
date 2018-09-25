@@ -58,9 +58,14 @@ public class config
 	}
 	public string get(string key) {
 		util.debugWriteLine("config get " + key);
-		if (key != "accountId" && key != "accountPass" &&
-		   		key != "user_session" && key != "user_session_secure") {
-			util.debugWriteLine(key + " " + cfg.AppSettings.Settings[key].Value);
+		try {
+			if (key != "accountId" && key != "accountPass" &&
+			   		key != "user_session" && key != "user_session_secure") {
+				util.debugWriteLine(key + " " + cfg.AppSettings.Settings[key].Value);
+			}
+		} catch (Exception e) {
+			util.debugWriteLine("config get exception " + key + " " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+			return null;
 		}
 		return cfg.AppSettings.Settings[key].Value;
 	}
@@ -93,8 +98,20 @@ public class config
 			{"IsLogFile","false"},
 			{"segmentSaveType","0"},
 			{"IsRenketuAfter","true"},
-			{"IsAfterRenketuFFmpeg","true"},
-			
+			{"IsAfterRenketuFFmpeg","false"},
+			{"IsDefaultEngine","true"},
+			{"anotherEngineCommand",""},
+			{"IsDefaultPlayer","true"},
+			{"IsDefaultCommentViewer","true"},
+			{"anotherPlayerPath",""},
+			{"anotherCommentViewerPath",""},
+			{"Is184","true"},
+			{"IsUrlList","false"},
+			{"IsM3u8List","false"},
+			{"M3u8UpdateSeconds","5"},
+			{"IsOpenUrlList","false"},
+			{"openUrlListCommand","notepad {i}"},
+			//{"afterConvertMode","0"},
 			
 			{"cookieFile",""},
 			{"iscookie","false"},
@@ -106,7 +123,17 @@ public class config
 			{"filenameformat","{Y}年{M}月{D}日{h}時{m}分{0}_{1}_{2}_{3}_{4}"},
 			{"ffmpegopt",""},
 			{"Height","400"},
-			{"Width","648"},
+			{"Width","715"},
+			{"defaultControllerX","100"},
+			{"defaultControllerY","100"},
+			{"volume","50"},
+			{"defaultCommentFormX","100"},
+			{"defaultCommentFormY","100"},
+			{"defaultCommentFormWidth","500"},
+			{"defaultCommentFormHeight","520"},
+			
+			{"rokugaTourokuWidth","950"},
+			{"rokugaTourokuHeight","350"},
 		};
 		var buf = new Dictionary<string,string>();
 		foreach (var k in cfg.AppSettings.Settings.AllKeys) {

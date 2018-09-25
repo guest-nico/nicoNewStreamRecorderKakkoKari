@@ -18,6 +18,7 @@ using Newtonsoft.Json;
 using System.Configuration;
 using SunokoLibrary.Application;
 using SunokoLibrary.Application.Browsers;
+using namaichi.info;
 
 namespace namaichi.rec
 {
@@ -30,9 +31,20 @@ namespace namaichi.rec
 		public bool isRecording = false;
 		public RecordFromUrl rfu;
 		public bool isClickedRecBtn = false;
-		public string hlsUrl;
+		public string hlsUrl = null;
+		public IRecorderProcess wsr = null;
 		static readonly Uri TargetUrl = new Uri("http://live.nicovideo.jp/");
 		public config.config cfg;
+		public string recordingUrl;
+		public string communityNum;
+//		public string commentWsUrl;
+		public bool isJikken = false;
+//		public JikkenRecorder jr = null;
+//		public JikkenRecordProcess jrp = null;
+		public RedistInfo ri = null;
+		
+		public bool isTitleBarInfo = false;
+		public bool isPlayOnlyMode = false;
 		
 		public RecordingManager(MainForm form, config.config cfg)
 		{
@@ -41,13 +53,12 @@ namespace namaichi.rec
 		}
 
 		async public void rec() {
-			
             util.debugWriteLine("rm");
             
             var lv = util.getRegGroup(form.urlText.Text, "(lv\\d+)");
 			util.setLog(cfg, lv);
-            
-            
+			util.debugWriteLine(util.versionStr + " " + util.versionDayStr);
+			
 			if (rfu == null) {
             	var arr = form.urlText.Text.Split('|');
             	
@@ -63,24 +74,46 @@ namespace namaichi.rec
 				
 
 				var lvid = util.getRegGroup(form.urlText.Text, "(lv\\d+)", 1);
-				if (lvid != null) form.urlText.Text = "http://live2.nicovideo.jp/watch/" + lvid;
+				if (lvid != null) {
+					if (isPlayOnlyMode) {
+						form.Invoke((MethodInvoker)delegate() {
+							form.urlText.Text = "http://live2.nicovideo.jp/watch/" + lvid;
+						});
+					} else form.urlText.Text = "http://live2.nicovideo.jp/watch/" + lvid;
+				}
 //				if (lvid != null) form.urlText.Text = "https://cas.nicovideo.jp/user/77252622/lv313508832";
 				
 				else {
-					MessageBox.Show("not found lvid");
+					if (isPlayOnlyMode) {
+						form.Invoke((MethodInvoker)delegate() {
+							MessageBox.Show("not found lvid");
+						});
+					} else MessageBox.Show("not found lvid");
 					return;
 				}
 			
 				isRecording = true;
-				form.recBtn.Text = "中断";
-				form.urlText.Enabled = false;
-				form.optionMenuItem.Enabled = false;
-				form.resetDisplay();
+				if (isPlayOnlyMode) {
+					form.Invoke((MethodInvoker)delegate() {
+						form.recBtn.Text = "中断";
+						form.urlText.Enabled = false;
+						form.optionMenuItem.Enabled = false;
+					
+						form.resetDisplay();
+						recordingUrl = form.urlText.Text;
+					});
+				} else {
+					form.recBtn.Text = "中断";
+					form.urlText.Enabled = false;
+					form.optionMenuItem.Enabled = false;
 				
+					form.resetDisplay();
+					recordingUrl = form.urlText.Text;
+				}
 
+				rfu = new RecordFromUrl(this);
 				Task.Run(() => {
-				         	
-				    rfu = new RecordFromUrl(this);
+				    
 				    var _rfu = rfu;
 				    util.debugWriteLine("rm rec 録画開始" + rfu);
 				    
@@ -112,14 +145,20 @@ namespace namaichi.rec
 						}
 						
 						util.debugWriteLine("end rec " + rfu);
-						if (!isClickedRecBtn && endCode == 3) form.Close();
+						if (!isClickedRecBtn && endCode == 3) {
+							Environment.ExitCode = 5;
+							form.Close();
+						}
 						hlsUrl = null;
+						
+						recordingUrl = null;
                 	}
                 	if (bool.Parse(cfg.get("IscloseExit")) && endCode == 3) {
                 		rfu = null;
                 		try {
 							form.Invoke((MethodInvoker)delegate() {
 								try {
+                			        Environment.ExitCode = 5;
 					       			form.Close();
                 			    } catch (Exception e) {
 			       	       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
@@ -139,6 +178,7 @@ namespace namaichi.rec
 							form.urlText.Enabled = true;
 							form.optionMenuItem.Enabled = true;
 							form.addLogText("録画を中断しました");
+							
 						} catch (Exception e) {
 							util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 						}
@@ -149,31 +189,15 @@ namespace namaichi.rec
 				isRecording = false;
 				rfu = null;
 				hlsUrl = null;
-            	
+				
+            	recordingUrl = null;
 				
 			}
 
 		}
-		
+		public void setRedistInfo(string[] args) {
+			ri = new RedistInfo(args);
+		}
 		
 	}
-	/*
-	[System.Runtime.Serialization.DataContract]
-	class chat {
-		
-		public int id = 3;
-		public string name = "aa";
-		public chat (int a) {id= a;}
-		public void setExit() {
-			Application.ApplicationExit += new EventHandler(h);
-		}
-		public void minus(){
-			Application.ApplicationExit -= new EventHandler(h);
-		}
-		private void h(object se,EventArgs e){
-			util.debugWriteLine(id);
-			System.Threading.Thread.Sleep(3000);
-		}
-	}
-	*/
 }

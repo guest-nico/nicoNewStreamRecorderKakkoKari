@@ -60,8 +60,16 @@ namespace namaichi
 			this.groupBox9 = new System.Windows.Forms.GroupBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.isAfterRenketuFFmpegChkBox = new System.Windows.Forms.CheckBox();
-			this.groupBox8 = new System.Windows.Forms.GroupBox();
+			this.groupBox10 = new System.Windows.Forms.GroupBox();
+			this.label8 = new System.Windows.Forms.Label();
+			this.anotherEngineCommandText = new System.Windows.Forms.TextBox();
+			this.label5 = new System.Windows.Forms.Label();
+			this.label7 = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
 			this.isRenketuAfterChkBox = new System.Windows.Forms.CheckBox();
+			this.isAnotherEngineChkBox = new System.Windows.Forms.RadioButton();
+			this.isDefaultEngineChkBox = new System.Windows.Forms.RadioButton();
+			this.segmentRadioBtnPanel = new System.Windows.Forms.Panel();
 			this.isSegmentNotRenketuRadioBtn = new System.Windows.Forms.RadioButton();
 			this.isSegmentRenketuRadioBtn = new System.Windows.Forms.RadioButton();
 			this.tabPage5 = new System.Windows.Forms.TabPage();
@@ -80,13 +88,24 @@ namespace namaichi
 			this.useCookieRadioBtn = new System.Windows.Forms.RadioButton();
 			this.passText = new System.Windows.Forms.TextBox();
 			this.mailText = new System.Windows.Forms.TextBox();
-			this.nicoSessionComboBox1 = new SunokoLibrary.Windows.Forms.NicoSessionComboBox();
+			this.nicoSessionComboBox1 = new namaichi.NicoSessionComboBox2();
 			this.isCookieFileSiteiChkBox = new System.Windows.Forms.CheckBox();
 			this.checkBoxShowAll = new System.Windows.Forms.CheckBox();
 			this.loginBtn = new System.Windows.Forms.Button();
 			this.cookieFileSanshouBtn = new System.Windows.Forms.Button();
 			this.btnReload = new System.Windows.Forms.Button();
 			this.useSecondLoginChkBox = new System.Windows.Forms.CheckBox();
+			this.tabPage7 = new System.Windows.Forms.TabPage();
+			this.groupBox11 = new System.Windows.Forms.GroupBox();
+			this.isAnotherCommentViewerRadioBtn = new System.Windows.Forms.RadioButton();
+			this.isDefaultCommentViewerRadioBtn = new System.Windows.Forms.RadioButton();
+			this.anotherCommentViewerPathText = new System.Windows.Forms.TextBox();
+			this.anotherCommentViewerSanshouBtn = new System.Windows.Forms.Button();
+			this.groupBox8 = new System.Windows.Forms.GroupBox();
+			this.isAnotherPlayerRadioBtn = new System.Windows.Forms.RadioButton();
+			this.isDefaultPlayerRadioBtn = new System.Windows.Forms.RadioButton();
+			this.anotherPlayerPathText = new System.Windows.Forms.TextBox();
+			this.anotherPlayerSanshouBtn = new System.Windows.Forms.Button();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.fileNameTypeDokujiSetteiBtn = new System.Windows.Forms.Button();
@@ -113,10 +132,6 @@ namespace namaichi
 			this.useDefaultRecFolderChk = new System.Windows.Forms.CheckBox();
 			this.recFolderSanshouBtn = new System.Windows.Forms.Button();
 			this.recordDirectoryText = new System.Windows.Forms.TextBox();
-			this.tabPage4 = new System.Windows.Forms.TabPage();
-			this.groupBox4 = new System.Windows.Forms.GroupBox();
-			this.label3 = new System.Windows.Forms.Label();
-			this.ffmpegoptText = new System.Windows.Forms.TextBox();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
 			this.tabControl1.SuspendLayout();
@@ -125,16 +140,18 @@ namespace namaichi
 			this.groupBox5.SuspendLayout();
 			this.tabPage6.SuspendLayout();
 			this.groupBox9.SuspendLayout();
-			this.groupBox8.SuspendLayout();
+			this.groupBox10.SuspendLayout();
+			this.segmentRadioBtnPanel.SuspendLayout();
 			this.tabPage5.SuspendLayout();
 			this.groupBox7.SuspendLayout();
 			this.tabPage2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
+			this.tabPage7.SuspendLayout();
+			this.groupBox11.SuspendLayout();
+			this.groupBox8.SuspendLayout();
 			this.tabPage3.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox1.SuspendLayout();
-			this.tabPage4.SuspendLayout();
-			this.groupBox4.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tabControl1
@@ -143,8 +160,8 @@ namespace namaichi
 			this.tabControl1.Controls.Add(this.tabPage6);
 			this.tabControl1.Controls.Add(this.tabPage5);
 			this.tabControl1.Controls.Add(this.tabPage2);
+			this.tabControl1.Controls.Add(this.tabPage7);
 			this.tabControl1.Controls.Add(this.tabPage3);
-			this.tabControl1.Controls.Add(this.tabPage4);
 			this.tabControl1.Location = new System.Drawing.Point(9, 10);
 			this.tabControl1.Margin = new System.Windows.Forms.Padding(2);
 			this.tabControl1.Name = "tabControl1";
@@ -350,20 +367,20 @@ namespace namaichi
 			// tabPage6
 			// 
 			this.tabPage6.Controls.Add(this.groupBox9);
-			this.tabPage6.Controls.Add(this.groupBox8);
+			this.tabPage6.Controls.Add(this.groupBox10);
 			this.tabPage6.Location = new System.Drawing.Point(4, 22);
 			this.tabPage6.Name = "tabPage6";
 			this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
 			this.tabPage6.Size = new System.Drawing.Size(403, 459);
 			this.tabPage6.TabIndex = 5;
-			this.tabPage6.Text = "録画形式";
+			this.tabPage6.Text = "録画方法";
 			this.tabPage6.UseVisualStyleBackColor = true;
 			// 
 			// groupBox9
 			// 
 			this.groupBox9.Controls.Add(this.label4);
 			this.groupBox9.Controls.Add(this.isAfterRenketuFFmpegChkBox);
-			this.groupBox9.Location = new System.Drawing.Point(5, 116);
+			this.groupBox9.Location = new System.Drawing.Point(5, 248);
 			this.groupBox9.Name = "groupBox9";
 			this.groupBox9.Size = new System.Drawing.Size(385, 101);
 			this.groupBox9.TabIndex = 1;
@@ -388,30 +405,106 @@ namespace namaichi
 			this.isAfterRenketuFFmpegChkBox.Text = "連結後にFFmpegで処理する";
 			this.isAfterRenketuFFmpegChkBox.UseVisualStyleBackColor = true;
 			// 
-			// groupBox8
+			// groupBox10
 			// 
-			this.groupBox8.Controls.Add(this.isRenketuAfterChkBox);
-			this.groupBox8.Controls.Add(this.isSegmentNotRenketuRadioBtn);
-			this.groupBox8.Controls.Add(this.isSegmentRenketuRadioBtn);
-			this.groupBox8.Location = new System.Drawing.Point(5, 10);
-			this.groupBox8.Name = "groupBox8";
-			this.groupBox8.Size = new System.Drawing.Size(385, 100);
-			this.groupBox8.TabIndex = 0;
-			this.groupBox8.TabStop = false;
-			this.groupBox8.Text = "保存形式";
+			this.groupBox10.Controls.Add(this.label8);
+			this.groupBox10.Controls.Add(this.anotherEngineCommandText);
+			this.groupBox10.Controls.Add(this.label5);
+			this.groupBox10.Controls.Add(this.label7);
+			this.groupBox10.Controls.Add(this.label6);
+			this.groupBox10.Controls.Add(this.isRenketuAfterChkBox);
+			this.groupBox10.Controls.Add(this.isAnotherEngineChkBox);
+			this.groupBox10.Controls.Add(this.isDefaultEngineChkBox);
+			this.groupBox10.Controls.Add(this.segmentRadioBtnPanel);
+			this.groupBox10.Location = new System.Drawing.Point(5, 10);
+			this.groupBox10.Name = "groupBox10";
+			this.groupBox10.Size = new System.Drawing.Size(385, 232);
+			this.groupBox10.TabIndex = 0;
+			this.groupBox10.TabStop = false;
+			this.groupBox10.Text = "録画エンジン";
+			// 
+			// label8
+			// 
+			this.label8.Location = new System.Drawing.Point(32, 167);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(205, 13);
+			this.label8.TabIndex = 25;
+			this.label8.Text = "(例) ffmpeg -i {i} -c copy {o}";
+			// 
+			// anotherEngineCommandText
+			// 
+			this.anotherEngineCommandText.Location = new System.Drawing.Point(76, 195);
+			this.anotherEngineCommandText.Name = "anotherEngineCommandText";
+			this.anotherEngineCommandText.Size = new System.Drawing.Size(293, 19);
+			this.anotherEngineCommandText.TabIndex = 24;
+			// 
+			// label5
+			// 
+			this.label5.Location = new System.Drawing.Point(32, 149);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(167, 18);
+			this.label5.TabIndex = 23;
+			this.label5.Text = "{o} (保存ファイルパス)";
+			// 
+			// label7
+			// 
+			this.label7.Location = new System.Drawing.Point(32, 131);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(167, 18);
+			this.label7.TabIndex = 23;
+			this.label7.Text = "{i} (セグメントm3u8アドレス)";
+			// 
+			// label6
+			// 
+			this.label6.Location = new System.Drawing.Point(6, 198);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(64, 19);
+			this.label6.TabIndex = 21;
+			this.label6.Text = "コマンド：";
+			this.label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// isRenketuAfterChkBox
 			// 
-			this.isRenketuAfterChkBox.Location = new System.Drawing.Point(43, 60);
+			this.isRenketuAfterChkBox.Location = new System.Drawing.Point(56, 81);
 			this.isRenketuAfterChkBox.Name = "isRenketuAfterChkBox";
 			this.isRenketuAfterChkBox.Size = new System.Drawing.Size(159, 15);
 			this.isRenketuAfterChkBox.TabIndex = 1;
 			this.isRenketuAfterChkBox.Text = "録画終了後に連結する";
 			this.isRenketuAfterChkBox.UseVisualStyleBackColor = true;
 			// 
+			// isAnotherEngineChkBox
+			// 
+			this.isAnotherEngineChkBox.Location = new System.Drawing.Point(6, 113);
+			this.isAnotherEngineChkBox.Name = "isAnotherEngineChkBox";
+			this.isAnotherEngineChkBox.Size = new System.Drawing.Size(252, 15);
+			this.isAnotherEngineChkBox.TabIndex = 0;
+			this.isAnotherEngineChkBox.Text = "外部録画エンジンを使う";
+			this.isAnotherEngineChkBox.UseVisualStyleBackColor = true;
+			// 
+			// isDefaultEngineChkBox
+			// 
+			this.isDefaultEngineChkBox.Checked = true;
+			this.isDefaultEngineChkBox.Location = new System.Drawing.Point(6, 18);
+			this.isDefaultEngineChkBox.Name = "isDefaultEngineChkBox";
+			this.isDefaultEngineChkBox.Size = new System.Drawing.Size(273, 15);
+			this.isDefaultEngineChkBox.TabIndex = 0;
+			this.isDefaultEngineChkBox.TabStop = true;
+			this.isDefaultEngineChkBox.Text = "標準の録画エンジンを使う";
+			this.isDefaultEngineChkBox.UseVisualStyleBackColor = true;
+			this.isDefaultEngineChkBox.CheckedChanged += new System.EventHandler(this.isDefaultEngineChkBox_CheckedChanged);
+			// 
+			// segmentRadioBtnPanel
+			// 
+			this.segmentRadioBtnPanel.Controls.Add(this.isSegmentNotRenketuRadioBtn);
+			this.segmentRadioBtnPanel.Controls.Add(this.isSegmentRenketuRadioBtn);
+			this.segmentRadioBtnPanel.Location = new System.Drawing.Point(0, 0);
+			this.segmentRadioBtnPanel.Name = "segmentRadioBtnPanel";
+			this.segmentRadioBtnPanel.Size = new System.Drawing.Size(322, 85);
+			this.segmentRadioBtnPanel.TabIndex = 26;
+			// 
 			// isSegmentNotRenketuRadioBtn
 			// 
-			this.isSegmentNotRenketuRadioBtn.Location = new System.Drawing.Point(19, 39);
+			this.isSegmentNotRenketuRadioBtn.Location = new System.Drawing.Point(32, 60);
 			this.isSegmentNotRenketuRadioBtn.Name = "isSegmentNotRenketuRadioBtn";
 			this.isSegmentNotRenketuRadioBtn.Size = new System.Drawing.Size(252, 15);
 			this.isSegmentNotRenketuRadioBtn.TabIndex = 0;
@@ -422,7 +515,7 @@ namespace namaichi
 			// isSegmentRenketuRadioBtn
 			// 
 			this.isSegmentRenketuRadioBtn.Checked = true;
-			this.isSegmentRenketuRadioBtn.Location = new System.Drawing.Point(19, 18);
+			this.isSegmentRenketuRadioBtn.Location = new System.Drawing.Point(32, 39);
 			this.isSegmentRenketuRadioBtn.Name = "isSegmentRenketuRadioBtn";
 			this.isSegmentRenketuRadioBtn.Size = new System.Drawing.Size(273, 15);
 			this.isSegmentRenketuRadioBtn.TabIndex = 0;
@@ -459,7 +552,7 @@ namespace namaichi
 			// 
 			// downBtn
 			// 
-			this.downBtn.Location = new System.Drawing.Point(184, 63);
+			this.downBtn.Location = new System.Drawing.Point(290, 63);
 			this.downBtn.Name = "downBtn";
 			this.downBtn.Size = new System.Drawing.Size(42, 30);
 			this.downBtn.TabIndex = 4;
@@ -469,7 +562,7 @@ namespace namaichi
 			// 
 			// upBtn
 			// 
-			this.upBtn.Location = new System.Drawing.Point(184, 27);
+			this.upBtn.Location = new System.Drawing.Point(290, 27);
 			this.upBtn.Name = "upBtn";
 			this.upBtn.Size = new System.Drawing.Size(42, 30);
 			this.upBtn.TabIndex = 4;
@@ -482,15 +575,15 @@ namespace namaichi
 			this.qualityListBox.FormattingEnabled = true;
 			this.qualityListBox.ItemHeight = 12;
 			this.qualityListBox.Items.AddRange(new object[] {
-									"1. 自動(abr)",
+									"1. 自動(abr) (実験放送:auto)",
 									"2. 3Mbps(super_high)",
-									"3. 2Mbps(high・高画質)",
-									"4. 1Mbps(normal・低画質)",
-									"5. 384kbps(low)",
-									"6. 192kbps(super_low)"});
+									"3. 2Mbps(high・高画質) (実験放送:superhigh)",
+									"4. 1Mbps(normal・低画質) (実験放送:high)",
+									"5. 384kbps(low) (実験放送:middle)",
+									"6. 192kbps(super_low) (実験放送:low)"});
 			this.qualityListBox.Location = new System.Drawing.Point(26, 27);
 			this.qualityListBox.Name = "qualityListBox";
-			this.qualityListBox.Size = new System.Drawing.Size(143, 112);
+			this.qualityListBox.Size = new System.Drawing.Size(247, 112);
 			this.qualityListBox.TabIndex = 3;
 			// 
 			// lowRankBtn
@@ -686,6 +779,122 @@ namespace namaichi
 			this.useSecondLoginChkBox.TabIndex = 20;
 			this.useSecondLoginChkBox.Text = "ブラウザからクッキーが取得できなかった場合、次のアカウントでログインする";
 			this.useSecondLoginChkBox.UseVisualStyleBackColor = true;
+			// 
+			// tabPage7
+			// 
+			this.tabPage7.Controls.Add(this.groupBox11);
+			this.tabPage7.Controls.Add(this.groupBox8);
+			this.tabPage7.Location = new System.Drawing.Point(4, 22);
+			this.tabPage7.Name = "tabPage7";
+			this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage7.Size = new System.Drawing.Size(403, 459);
+			this.tabPage7.TabIndex = 6;
+			this.tabPage7.Text = "視聴";
+			this.tabPage7.UseVisualStyleBackColor = true;
+			// 
+			// groupBox11
+			// 
+			this.groupBox11.Controls.Add(this.isAnotherCommentViewerRadioBtn);
+			this.groupBox11.Controls.Add(this.isDefaultCommentViewerRadioBtn);
+			this.groupBox11.Controls.Add(this.anotherCommentViewerPathText);
+			this.groupBox11.Controls.Add(this.anotherCommentViewerSanshouBtn);
+			this.groupBox11.Location = new System.Drawing.Point(5, 122);
+			this.groupBox11.Name = "groupBox11";
+			this.groupBox11.Size = new System.Drawing.Size(385, 106);
+			this.groupBox11.TabIndex = 19;
+			this.groupBox11.TabStop = false;
+			this.groupBox11.Text = "コメントビューア";
+			// 
+			// isAnotherCommentViewerRadioBtn
+			// 
+			this.isAnotherCommentViewerRadioBtn.Location = new System.Drawing.Point(6, 40);
+			this.isAnotherCommentViewerRadioBtn.Name = "isAnotherCommentViewerRadioBtn";
+			this.isAnotherCommentViewerRadioBtn.Size = new System.Drawing.Size(211, 18);
+			this.isAnotherCommentViewerRadioBtn.TabIndex = 20;
+			this.isAnotherCommentViewerRadioBtn.TabStop = true;
+			this.isAnotherCommentViewerRadioBtn.Text = "外部のコメントビューアを使う";
+			this.isAnotherCommentViewerRadioBtn.UseVisualStyleBackColor = true;
+			// 
+			// isDefaultCommentViewerRadioBtn
+			// 
+			this.isDefaultCommentViewerRadioBtn.Location = new System.Drawing.Point(6, 18);
+			this.isDefaultCommentViewerRadioBtn.Name = "isDefaultCommentViewerRadioBtn";
+			this.isDefaultCommentViewerRadioBtn.Size = new System.Drawing.Size(211, 18);
+			this.isDefaultCommentViewerRadioBtn.TabIndex = 20;
+			this.isDefaultCommentViewerRadioBtn.TabStop = true;
+			this.isDefaultCommentViewerRadioBtn.Text = "デフォルトの簡易コメントビューアを使う";
+			this.isDefaultCommentViewerRadioBtn.UseVisualStyleBackColor = true;
+			this.isDefaultCommentViewerRadioBtn.CheckedChanged += new System.EventHandler(this.isDefaultCommentViewerRadioBtn_CheckedChanged);
+			// 
+			// anotherCommentViewerPathText
+			// 
+			this.anotherCommentViewerPathText.Location = new System.Drawing.Point(20, 70);
+			this.anotherCommentViewerPathText.Name = "anotherCommentViewerPathText";
+			this.anotherCommentViewerPathText.Size = new System.Drawing.Size(297, 19);
+			this.anotherCommentViewerPathText.TabIndex = 19;
+			// 
+			// anotherCommentViewerSanshouBtn
+			// 
+			this.anotherCommentViewerSanshouBtn.Location = new System.Drawing.Point(322, 68);
+			this.anotherCommentViewerSanshouBtn.Margin = new System.Windows.Forms.Padding(2);
+			this.anotherCommentViewerSanshouBtn.Name = "anotherCommentViewerSanshouBtn";
+			this.anotherCommentViewerSanshouBtn.Size = new System.Drawing.Size(40, 23);
+			this.anotherCommentViewerSanshouBtn.TabIndex = 17;
+			this.anotherCommentViewerSanshouBtn.Text = "参照";
+			this.anotherCommentViewerSanshouBtn.UseVisualStyleBackColor = true;
+			this.anotherCommentViewerSanshouBtn.Click += new System.EventHandler(this.anotherCommentViewerSanshouBtn_Click);
+			// 
+			// groupBox8
+			// 
+			this.groupBox8.Controls.Add(this.isAnotherPlayerRadioBtn);
+			this.groupBox8.Controls.Add(this.isDefaultPlayerRadioBtn);
+			this.groupBox8.Controls.Add(this.anotherPlayerPathText);
+			this.groupBox8.Controls.Add(this.anotherPlayerSanshouBtn);
+			this.groupBox8.Location = new System.Drawing.Point(5, 10);
+			this.groupBox8.Name = "groupBox8";
+			this.groupBox8.Size = new System.Drawing.Size(385, 106);
+			this.groupBox8.TabIndex = 19;
+			this.groupBox8.TabStop = false;
+			this.groupBox8.Text = "プレイヤー";
+			// 
+			// isAnotherPlayerRadioBtn
+			// 
+			this.isAnotherPlayerRadioBtn.Location = new System.Drawing.Point(6, 40);
+			this.isAnotherPlayerRadioBtn.Name = "isAnotherPlayerRadioBtn";
+			this.isAnotherPlayerRadioBtn.Size = new System.Drawing.Size(211, 18);
+			this.isAnotherPlayerRadioBtn.TabIndex = 20;
+			this.isAnotherPlayerRadioBtn.TabStop = true;
+			this.isAnotherPlayerRadioBtn.Text = "外部のプレイヤーを使う";
+			this.isAnotherPlayerRadioBtn.UseVisualStyleBackColor = true;
+			// 
+			// isDefaultPlayerRadioBtn
+			// 
+			this.isDefaultPlayerRadioBtn.Location = new System.Drawing.Point(6, 18);
+			this.isDefaultPlayerRadioBtn.Name = "isDefaultPlayerRadioBtn";
+			this.isDefaultPlayerRadioBtn.Size = new System.Drawing.Size(211, 18);
+			this.isDefaultPlayerRadioBtn.TabIndex = 20;
+			this.isDefaultPlayerRadioBtn.TabStop = true;
+			this.isDefaultPlayerRadioBtn.Text = "デフォルトのプレイヤーを使う";
+			this.isDefaultPlayerRadioBtn.UseVisualStyleBackColor = true;
+			this.isDefaultPlayerRadioBtn.CheckedChanged += new System.EventHandler(this.isDefaultPlayerRadioBtn_CheckedChanged);
+			// 
+			// anotherPlayerPathText
+			// 
+			this.anotherPlayerPathText.Location = new System.Drawing.Point(20, 70);
+			this.anotherPlayerPathText.Name = "anotherPlayerPathText";
+			this.anotherPlayerPathText.Size = new System.Drawing.Size(297, 19);
+			this.anotherPlayerPathText.TabIndex = 19;
+			// 
+			// anotherPlayerSanshouBtn
+			// 
+			this.anotherPlayerSanshouBtn.Location = new System.Drawing.Point(322, 68);
+			this.anotherPlayerSanshouBtn.Margin = new System.Windows.Forms.Padding(2);
+			this.anotherPlayerSanshouBtn.Name = "anotherPlayerSanshouBtn";
+			this.anotherPlayerSanshouBtn.Size = new System.Drawing.Size(40, 23);
+			this.anotherPlayerSanshouBtn.TabIndex = 17;
+			this.anotherPlayerSanshouBtn.Text = "参照";
+			this.anotherPlayerSanshouBtn.UseVisualStyleBackColor = true;
+			this.anotherPlayerSanshouBtn.Click += new System.EventHandler(this.anotherPlayerSanshouBtn_Click);
 			// 
 			// tabPage3
 			// 
@@ -975,46 +1184,6 @@ namespace namaichi
 			this.recordDirectoryText.Size = new System.Drawing.Size(304, 19);
 			this.recordDirectoryText.TabIndex = 0;
 			// 
-			// tabPage4
-			// 
-			this.tabPage4.Controls.Add(this.groupBox4);
-			this.tabPage4.Location = new System.Drawing.Point(4, 22);
-			this.tabPage4.Margin = new System.Windows.Forms.Padding(2);
-			this.tabPage4.Name = "tabPage4";
-			this.tabPage4.Padding = new System.Windows.Forms.Padding(2);
-			this.tabPage4.Size = new System.Drawing.Size(403, 459);
-			this.tabPage4.TabIndex = 3;
-			this.tabPage4.Text = "ffmpeg";
-			this.tabPage4.UseVisualStyleBackColor = true;
-			// 
-			// groupBox4
-			// 
-			this.groupBox4.Controls.Add(this.label3);
-			this.groupBox4.Controls.Add(this.ffmpegoptText);
-			this.groupBox4.Location = new System.Drawing.Point(5, 10);
-			this.groupBox4.Margin = new System.Windows.Forms.Padding(2);
-			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Padding = new System.Windows.Forms.Padding(2);
-			this.groupBox4.Size = new System.Drawing.Size(385, 156);
-			this.groupBox4.TabIndex = 1;
-			this.groupBox4.TabStop = false;
-			this.groupBox4.Text = "ffmpegの追加引数（上級者向け）";
-			// 
-			// label3
-			// 
-			this.label3.Location = new System.Drawing.Point(15, 45);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(230, 24);
-			this.label3.TabIndex = 1;
-			// 
-			// ffmpegoptText
-			// 
-			this.ffmpegoptText.Location = new System.Drawing.Point(4, 17);
-			this.ffmpegoptText.Margin = new System.Windows.Forms.Padding(2);
-			this.ffmpegoptText.Name = "ffmpegoptText";
-			this.ffmpegoptText.Size = new System.Drawing.Size(358, 19);
-			this.ffmpegoptText.TabIndex = 0;
-			// 
 			// button3
 			// 
 			this.button3.Location = new System.Drawing.Point(249, 500);
@@ -1055,28 +1224,51 @@ namespace namaichi
 			this.groupBox5.PerformLayout();
 			this.tabPage6.ResumeLayout(false);
 			this.groupBox9.ResumeLayout(false);
-			this.groupBox8.ResumeLayout(false);
+			this.groupBox10.ResumeLayout(false);
+			this.groupBox10.PerformLayout();
+			this.segmentRadioBtnPanel.ResumeLayout(false);
 			this.tabPage5.ResumeLayout(false);
 			this.groupBox7.ResumeLayout(false);
 			this.tabPage2.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
+			this.tabPage7.ResumeLayout(false);
+			this.groupBox11.ResumeLayout(false);
+			this.groupBox11.PerformLayout();
+			this.groupBox8.ResumeLayout(false);
+			this.groupBox8.PerformLayout();
 			this.tabPage3.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
-			this.tabPage4.ResumeLayout(false);
-			this.groupBox4.ResumeLayout(false);
-			this.groupBox4.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Button anotherPlayerSanshouBtn;
+		private System.Windows.Forms.TextBox anotherPlayerPathText;
+		private System.Windows.Forms.RadioButton isDefaultPlayerRadioBtn;
+		private System.Windows.Forms.RadioButton isAnotherPlayerRadioBtn;
+		private System.Windows.Forms.GroupBox groupBox8;
+		private System.Windows.Forms.Button anotherCommentViewerSanshouBtn;
+		private System.Windows.Forms.TextBox anotherCommentViewerPathText;
+		private System.Windows.Forms.RadioButton isDefaultCommentViewerRadioBtn;
+		private System.Windows.Forms.RadioButton isAnotherCommentViewerRadioBtn;
+		private System.Windows.Forms.GroupBox groupBox11;
+		private System.Windows.Forms.TabPage tabPage7;
+		private System.Windows.Forms.Panel segmentRadioBtnPanel;
+		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.TextBox anotherEngineCommandText;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.RadioButton isDefaultEngineChkBox;
+		private System.Windows.Forms.RadioButton isAnotherEngineChkBox;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.GroupBox groupBox10;
 		private System.Windows.Forms.CheckBox isAfterRenketuFFmpegChkBox;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.GroupBox groupBox9;
 		private System.Windows.Forms.CheckBox isRenketuAfterChkBox;
 		private System.Windows.Forms.RadioButton isSegmentRenketuRadioBtn;
 		private System.Windows.Forms.RadioButton isSegmentNotRenketuRadioBtn;
-		private System.Windows.Forms.GroupBox groupBox8;
 		private System.Windows.Forms.TabPage tabPage6;
 		private System.Windows.Forms.CheckBox isLogFileChkBox;
 		private System.Windows.Forms.Button upBtn;
@@ -1104,9 +1296,6 @@ namespace namaichi
 		private System.Windows.Forms.GroupBox groupBox5;
 		private System.Windows.Forms.GroupBox groupBox6;
 		private System.Windows.Forms.CheckBox useSecondLoginChkBox;
-		private System.Windows.Forms.TextBox ffmpegoptText;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.GroupBox groupBox4;
 		private System.Windows.Forms.Button loginBtn;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
@@ -1142,13 +1331,13 @@ namespace namaichi
 		private System.Windows.Forms.CheckBox useDefaultRecFolderChk;
 		private System.Windows.Forms.Button btnReload;
 		private System.Windows.Forms.CheckBox checkBoxShowAll;
-		private SunokoLibrary.Windows.Forms.NicoSessionComboBox nicoSessionComboBox1;
+		//private SunokoLibrary.Windows.Forms.NicoSessionComboBox nicoSessionComboBox1;
+		private namaichi.NicoSessionComboBox2 nicoSessionComboBox1;
 		private System.Windows.Forms.TextBox mailText;
 		private System.Windows.Forms.TextBox passText;
 		private System.Windows.Forms.TextBox recordDirectoryText;
 		private System.Windows.Forms.Button recFolderSanshouBtn;
 		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.TabPage tabPage4;
 		private System.Windows.Forms.TabPage tabPage3;
 		private System.Windows.Forms.TabPage tabPage2;
 		private System.Windows.Forms.TabPage tabPage1;

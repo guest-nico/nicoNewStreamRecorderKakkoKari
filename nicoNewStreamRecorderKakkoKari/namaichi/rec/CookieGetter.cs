@@ -33,25 +33,51 @@ namespace namaichi.rec
 		{
 			this.cfg = cfg;
 		}
-		async public Task<CookieContainer> getHtml5RecordCookie(string url) {
-			var userSessionCC = getUserSessionCC();
+		async public Task<CookieContainer[]> getHtml5RecordCookie(string url) {
+			string us;
+			string uss;
+			var cc0 = await getCookieContainer(cfg.get("BrowserNum"),
+					cfg.get("issecondlogin"), cfg.get("accountId"), 
+					cfg.get("accountPass"), cfg.get("user_session"),
+					cfg.get("user_session_secure"), false, 
+					url);
+			if (cc0 != null) {
+				var c = cc0.GetCookies(TargetUrl)["user_session"];
+				var secureC = cc0.GetCookies(TargetUrl)["user_session_secure"];
+				if (c != null)
+					cfg.set("user_session", c.Value);
+				if (secureC != null)
+					cfg.set("user_session_secure", secureC.Value);
+			}
+			var ret = new CookieContainer[]{cc0};
+			return ret;
+		}
+		async private Task<CookieContainer> getCookieContainer(
+				string browserNum, string isSecondLogin, string accountId,
+				string accountPass, string userSession, string userSessionSecure,
+				bool isSub, string url) {
+			
+			var userSessionCC = getUserSessionCC(userSession, userSessionSecure);
 			if (userSessionCC != null && true) {
 //				util.debugWriteLine(userSessionCC.GetCookieHeader(TargetUrl));
 				util.debugWriteLine("usersessioncc ishtml5login");
 				if (isHtml5Login(userSessionCC, url)) {
-					
+					/*
 					var c = userSessionCC.GetCookies(TargetUrl)["user_session"];
 					var secureC = userSessionCC.GetCookies(TargetUrl)["user_session_secure"];
 					if (c != null)
-						cfg.set("user_session", c.Value);
+						//cfg.set("user_session", c.Value);
+						us = c.Value;
 					if (secureC != null)
-						cfg.set("user_session_secure", secureC.Value);
+						//cfg.set("user_session_secure", secureC.Value);
+						uss = secureC.Value;
+					*/
 					return userSessionCC;
 				}
 			}
 			
-			if (cfg.get("BrowserNum") == "2") {
-				CookieContainer cc = await getBrowserCookie().ConfigureAwait(false);
+			if (browserNum == "2") {
+				CookieContainer cc = await getBrowserCookie(isSub).ConfigureAwait(false);
 				
 				if (cc != null) {
 					util.debugWriteLine("browser ishtml5login");
@@ -59,42 +85,50 @@ namespace namaichi.rec
 //						util.debugWriteLine("browser 1 " + cc.GetCookieHeader(TargetUrl));
 //						util.debugWriteLine("browser 2 " + cc.GetCookieHeader(new Uri("http://live2.nicovideo.jp")));
 						util.debugWriteLine("browser login ok");
+						/*
 						var c = cc.GetCookies(TargetUrl)["user_session"];
 						var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
 						if (c != null)
-							cfg.set("user_session", c.Value);
+							//cfg.set("user_session", c.Value);
+							us = c.Value;
 						if (secureC != null)
-							cfg.set("user_session_secure", secureC.Value);
+							//cfg.set("user_session_secure", secureC.Value);
+							uss = secureC.Value;
+						*/
 						return cc;
 					}
 					
 				}
 			}
 			
-			if (cfg.get("BrowserNum") == "1" || 
-			    cfg.get("issecondlogin") == "true") {
-				var mail = cfg.get("accountId");
-				var pass = cfg.get("accountPass");
+			if (browserNum == "1" || 
+			    isSecondLogin == "true") {
+				var mail = accountId;
+				var pass = accountPass;
 				var accCC = await getAccountCookie(mail, pass).ConfigureAwait(false);
 				if (accCC != null) {
 					util.debugWriteLine("account ishtml5login");
 					if (isHtml5Login(accCC, url)) {
 						util.debugWriteLine("account login ok");
+						/*
 						var c = accCC.GetCookies(TargetUrl)["user_session"];
 						var secureC = accCC.GetCookies(TargetUrl)["user_session_secure"];
 						if (c != null)
-							cfg.set("user_session", c.Value);
+							//cfg.set("user_session", c.Value);
+							us = c.Value;
 						if (secureC != null)
-							cfg.set("user_session_secure", secureC.Value);
+							//cfg.set("user_session_secure", secureC.Value);
+							uss = secureC.Value;
+						*/
 						return accCC;
 					}
 				}
 			}
 			return null;
 		}
-		private CookieContainer getUserSessionCC() {
-			var us = cfg.get("user_session");
-			var uss = cfg.get("user_session_secure");
+		private CookieContainer getUserSessionCC(string us, string uss) {
+			//var us = cfg.get("user_session");
+			//var uss = cfg.get("user_session_secure");
 			if ((us == null || us.Length == 0) &&
 			    (uss == null || uss.Length == 0)) return null;
 			var cc = new CookieContainer();
@@ -115,8 +149,8 @@ namespace namaichi.rec
 //			cc.Add(TargetUrl, c);
 			return cc;
 		}
-		async private Task<CookieContainer> getBrowserCookie() {
-			var si = SourceInfoSerialize.load();
+		async private Task<CookieContainer> getBrowserCookie(bool isSub) {
+			var si = SourceInfoSerialize.load(isSub);
 			
 //			var importer = await SunokoLibrary.Application.CookieGetters.Default.GetInstanceAsync(si, false);
 			ICookieImporter importer = await SunokoLibrary.Application.CookieGetters.Default.GetInstanceAsync(si, false).ConfigureAwait(false);
@@ -136,7 +170,14 @@ namespace namaichi.rec
 			//util.debugWriteLine("usersession " + cookie);
 			
 			var cc = new CookieContainer();
-			result.AddTo(cc);
+			foreach(Cookie _c in result.Cookies) {
+				try {
+					cc.Add(_c);
+				} catch (Exception e) {
+					util.debugWriteLine("cookie add browser " + _c.ToString() + e.Message + e.Source + e.StackTrace + e.TargetSite);
+				}
+			}
+//			result.AddTo(cc);
 			
 			var c = cc.GetCookies(TargetUrl)["user_session"];
 			var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
@@ -158,6 +199,7 @@ namespace namaichi.rec
 				return false;
 			}
 //			isHtml5 = (headers.Get("Location") == null) ? false : true;
+			if (pageSource == null) return false;
 			var isLogin = !(pageSource.IndexOf("\"login_status\":\"login\"") < 0 &&
 			   	pageSource.IndexOf("login_status = 'login'") < 0); 
 			util.debugWriteLine("islogin " + isLogin);
@@ -168,7 +210,7 @@ namespace namaichi.rec
 			if (mail == null || pass == null) return null;
 			
 			var loginUrl = "https://secure.nicovideo.jp/secure/login?site=nicolive";
-			var param = "mail=" + mail + "&password=" + pass;
+//			var param = "mail=" + mail + "&password=" + pass;
 			
 			try {
 				var handler = new System.Net.Http.HttpClientHandler();
