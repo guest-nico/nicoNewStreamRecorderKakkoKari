@@ -15,7 +15,7 @@
 - priorStreamQualityは新規に取得したい映像ストリームのクオリティを指定します。ほとんどの放送では自動はabr、3Mbpsはsuper_high、2Mbpsはhigh、1Mbpsはnormal、384kbpsはlow、192kbpsはsuper_lowに対応しており、一部の放送の高画質はhigh、低画質はnormalに対応しています。また、有料放送などでは高画質＝highが会員映像、normalが非会員映像に分けられていることもありますがそうでないこともあります。この項目の設定はrequireNewStreamにtrueを指定した場合にのみ有効になります。多くの放送ではsuper_highが存在しない放送にsuper_highを指定したり「abc」などの適当な文字列を指定した場合は前回有効な接続をしたときの設定でストリームが返ってくるようですが、高画質と低画質しか画質選択が存在しない放送でrequireNewStreamがfalseだったとしても、highとnormal以外を指定すると有効なストリームの取得ができなかったことがありました。いきなり目的の画質を指定するとNO_PERMISSIONになる可能性があるので、一旦何も指定せずに投げて、返ってきたcurrentStreamのqualityTypesから目的の画質を指定して送り直すのも手かもしれません。
 
 サーバーからのcurrentStream
-- mediaServerTypeはほとんどがdmcですが、もう一つの種類があったと思います。が、手元にログがないので定かではないです。
+- mediaServerTypeはほとんどがdmcですが、ウェザーニューズは"limelight"でした。(2018/7/30)
 
 statistics
 - 極希に「{"type":"watch","body":{"command":"statistics","params":["2",null,"0","0"]}}」のようにnullが入っていることがあります。
