@@ -22,14 +22,21 @@ namespace namaichi.rec
 		private RecordingManager rm;
 		private RecordFromUrl rfu;
 		private bool isTimeShift;
+<<<<<<< HEAD
 		private bool isJikken = false;
 		public RecordStateSetter(MainForm form, RecordingManager rm, RecordFromUrl rfu, bool isTimeShift, bool isJikken)
+=======
+		public RecordStateSetter(MainForm form, RecordingManager rm, RecordFromUrl rfu, bool isTimeShift)
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		{
 			this.form = form;
 			this.rm = rm;
 			this.rfu = rfu;
 			this.isTimeShift = isTimeShift;
+<<<<<<< HEAD
 			this.isJikken = isJikken;
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		}
 		public void set(string data, string type, string[] recFolderFileInfo) {
 			setInfo(data, form, type, recFolderFileInfo);
@@ -56,9 +63,23 @@ namespace namaichi.rec
 			//recfolderfileinfo host, group, title, lvid, communityNum, userId
 
 			var host = recFolderFileInfo[0];
+<<<<<<< HEAD
 			var group = recFolderFileInfo[1];
 			var title = recFolderFileInfo[2];
 			var url = util.getRegGroup(data, "\"watchPageUrl\":\"(.+?)\"");
+=======
+			var hostUrl = (type == "community" || type == "user") ? util.getRegGroup(data, "supplier\":{\"name\".\".+?\",\"pageUrl\":\"(.+?)\"") : null;
+			var group = recFolderFileInfo[1];
+			var groupUrl = util.getRegGroup(data, "\"socialGroupPageUrl\":\"(.+?)\"");
+			var title = recFolderFileInfo[2];
+			var url = util.getRegGroup(data, "\"watchPageUrl\":\"(.+?)\"");
+			var gentei = (data.IndexOf("\"isFollowerOnly\":true") > -1) ? "限定" : "オープン";
+//			var _openTime = long.Parse(util.getRegGroup(data, "\"openTime\":(\\d+)"));
+			var _openTime = long.Parse(util.getRegGroup(data, "\"beginTime\":(\\d+)"));
+			
+			openTimeDt = getOpenTimeDt(_openTime);
+			var openTime = openTimeDt.ToString("MM/dd(ddd) HH:mm:ss");
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			var description = util.getRegGroup(data, "\"program\".+?\"description\":\"(.+?)\",\"").Replace("\\n", " ");
 			try {
 				description = Regex.Replace(description, "<.*?>", "");
@@ -67,6 +88,7 @@ namespace namaichi.rec
 			} catch(Exception e) {
 				util.debugWriteLine(e.Message);
 			}
+<<<<<<< HEAD
 			string hostUrl, groupUrl, gentei;
 			long _openTime;
 			if (!isJikken) {
@@ -83,6 +105,8 @@ namespace namaichi.rec
 			}
 			openTimeDt = getOpenTimeDt(_openTime);
 			var openTime = openTimeDt.ToString("MM/dd(ddd) HH:mm:ss");
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			
 			form.setInfo(host, hostUrl, group, groupUrl, title, url, gentei, openTime, description);
 		}

@@ -18,7 +18,10 @@ namespace namaichi.info
 	public class ChatInfo
 	{
 		private XDocument xml;
+<<<<<<< HEAD
 		public string json;
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		public string contents;
 		public string premium;
 		public string root;
@@ -29,6 +32,7 @@ namespace namaichi.info
 		public string userId;
 		public string score = "0";
 		public string ticket;
+<<<<<<< HEAD
 		public string lastRes;
 		public bool isPingRf;
 		
@@ -37,6 +41,9 @@ namespace namaichi.info
 			this.xml = xml;
 			this.json =json;
 		}
+=======
+		
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		public ChatInfo(XDocument xml)
 		{
 			this.xml = xml;
@@ -54,18 +61,25 @@ namespace namaichi.info
 			Object[] o = new Object[20];
 			
 			date = 0;
+<<<<<<< HEAD
 			
 //			foreach(var a in xml.Root.Elements()) {
 //				util.debugWriteLine(a.Name + a.Value);
 //			}
 			
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			foreach (XElement e in xml.Root.Elements()) {
 //				util.debugWriteLine(xml.Root);
 //				o[0] = new XAttribute(e.Name, e.Value);
 //				_xml.Root.SetAttributeValue(e.Name, e.Value);
+<<<<<<< HEAD
 				if ((root == "chat" && e.Name == "content") ||
 				    (root == "control" && e.Name == "text") ||
 				    (root == "ping" && e.Name == "content")) {
+=======
+				if (e.Name == "content") {
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 					_xml.Root.Add(e.Value);
 					contents = e.Value;
 				} else _xml.Root.SetAttributeValue(e.Name, e.Value);
@@ -79,14 +93,21 @@ namespace namaichi.info
 				if (e.Name == "user_id") userId = e.Value;
 				if (e.Name == "score") score = e.Value;
 				if (e.Name == "ticket") ticket = e.Value;
+<<<<<<< HEAD
 				if (e.Name == "last_res") lastRes = e.Value;
 			}
 			
 			if (root == "chat" || root == "control") {
+=======
+			}
+			
+			if (root == "chat") {
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 				vpos = (date - serverTime) * 100;
 				if (vpos < 0) vpos = 0;
 				_xml.Root.SetAttributeValue("vpos", vpos);
 			}
+<<<<<<< HEAD
 			
 			//コメント再生用
 			if (root == "control") _xml.Root.Name = "chat";
@@ -94,6 +115,8 @@ namespace namaichi.info
 			if (thread != null) 
 				_xml.Root.SetAttributeValue("thread", util.getRegGroup(thread.Value, "(\\d+)"));
 				
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 //			_xml.Add(new XElement("ele", o));
 //			http://live2.nicovideo.jp/watch/lv312502201?ref=top&zroute=index&kind=top_onair&row=3
 //			util.debugWriteLine(_xml);

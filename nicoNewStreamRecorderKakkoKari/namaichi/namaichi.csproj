@@ -169,7 +169,10 @@
     <Compile Include="Properties\Settings.Designer.cs" />
     <Compile Include="rec\ArgConcat.cs" />
     <Compile Include="rec\AnotherEngineRecorder.cs" />
+<<<<<<< HEAD
     <Compile Include="rec\DeflateDecoder.cs" />
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
     <Compile Include="rec\FFMpegConcat.cs" />
     <Compile Include="rec\FFMpegRecord.cs" />
     <Compile Include="rec\CookieGetter.cs" />

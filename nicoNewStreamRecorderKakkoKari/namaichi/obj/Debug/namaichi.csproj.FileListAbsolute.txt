@@ -945,6 +945,7 @@ C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 8.19 m\nicoN
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 8.19 m\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\nicoNewStreamRecorderKakkoKari.exe
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 8.19 m\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\nicoNewStreamRecorderKakkoKari.pdb
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 8.19 m\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.csprojResolveAssemblyReference.cache
+<<<<<<< HEAD
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 8.19 n\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\nicoNewStreamRecorderKakkoKari.exe.config
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 8.19 n\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\nicoNewStreamRecorderKakkoKari.exe
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 8.19 n\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\nicoNewStreamRecorderKakkoKari.pdb
@@ -1753,3 +1754,5 @@ C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou 
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.csproj.GenerateResource.Cache
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\nicoNewStreamRecorderKakkoKari.exe
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\nicoNewStreamRecorderKakkoKari.pdb
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0

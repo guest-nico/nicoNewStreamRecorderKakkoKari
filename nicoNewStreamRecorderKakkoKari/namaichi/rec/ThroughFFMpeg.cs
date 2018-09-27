@@ -32,9 +32,14 @@ namespace namaichi.rec
 			var tmp = dir + "_" + fName;
 			util.debugWriteLine("through ffmpeg tmp " + tmp);
 			
+<<<<<<< HEAD
 			var _command = getCommand(path, tmp);
 			
 			
+=======
+			string _command = "-i \"" + path + "\" -c copy \"" + tmp + "\"";
+//			string _command = "-i \"" + path + "\" -movflags faststart -c copy \"" + tmp + "\"";
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			
 			util.debugWriteLine("through command " + _command);
 			
@@ -92,6 +97,7 @@ namespace namaichi.rec
 		private void appExitHandler(object sender, EventArgs e) {
 //			stopRecording();
 		}
+<<<<<<< HEAD
 		private string getCommand(string path, string tmp) {
 			var def = "-i \"" + path + "\" -c copy \"" + tmp + "\"";
 			if (rm.ri == null)
@@ -113,6 +119,8 @@ namespace namaichi.rec
 				return "-i \"" + path + "\" -c copy \"" + tmp + "\"";
 			return def;
 		}
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		/*
 		public void stopRecording() {
 			util.debugWriteLine("stop recording through ffmpeg");

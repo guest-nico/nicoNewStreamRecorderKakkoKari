@@ -64,7 +64,11 @@ namespace namaichi
 	        var WM_PASTE = 770;
 	        var WM_IME_CHAR = 646;
 	
+<<<<<<< HEAD
 //	        System.Diagnostics.Debug.WriteLine(DateTime.Now + " " + m.Msg);
+=======
+	        System.Diagnostics.Debug.WriteLine(DateTime.Now + " " + m.Msg);
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 	        
 	        if (placeTextBoxHwnd == IntPtr.Zero && placeText != null &&
 	            placeText.IsHandleCreated) placeTextBoxHwnd = placeText.Handle;     
@@ -105,9 +109,13 @@ namespace namaichi
 //	        	clearPlaceHolder();
 	       		
 	        }
+<<<<<<< HEAD
 	        if (m.Msg == 270) {
 //	        	System.Diagnostics.Debug.WriteLine(Text);
 	        }
+=======
+	        if (m.Msg == 270) System.Diagnostics.Debug.WriteLine(Text);
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 	        /*
 	        if ((m.Msg == WM_ERASEBKGND || m.Msg == -8 ||
 	            m.Msg == 8465 || m.Msg == 641 || m.Msg == -7 ||
@@ -127,8 +135,13 @@ namespace namaichi
 	        //System.Diagnostics.Debug.WriteLine(DateTime.Now.ToString() + " " + m.Msg + " " + isNowDisplay);
 	        if (m.Msg == WM_PAINT && Text == "" && true)
 	        {
+<<<<<<< HEAD
 //	        	System.Diagnostics.Debug.WriteLine("wmp");
 //	        	System.Diagnostics.Debug.WriteLine("wmp focus " + Focused + " isnowdisp " + isNowDisplay);
+=======
+	        	System.Diagnostics.Debug.WriteLine("wmp");
+	        	System.Diagnostics.Debug.WriteLine("wmp focus " + Focused + " isnowdisp " + isNowDisplay);
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 	        	if (isFirst || isNowDisplay) {
 	        		
 	        		isFirst = false;

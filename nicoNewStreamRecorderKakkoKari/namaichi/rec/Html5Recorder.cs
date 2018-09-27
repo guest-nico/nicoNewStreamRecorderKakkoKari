@@ -32,7 +32,10 @@ namespace namaichi.rec
 		private bool isTimeShift;
 		private TimeShiftConfig timeShiftConfig;
 		private string[] recFolderFileInfo;
+<<<<<<< HEAD
 		private bool isSub;
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 	
 		public Html5Recorder(string url, CookieContainer container, 
 				string lvid, RecordingManager rm, RecordFromUrl rfu,
@@ -200,10 +203,13 @@ namespace namaichi.rec
 				    !long.TryParse(util.getRegGroup(data, "\"endTime\":(\\d+)"), out endTime))
 						return 3;				
 				var programTime = util.getUnixToDatetime(endTime) - util.getUnixToDatetime(openTime);
+<<<<<<< HEAD
 				long _openTime = 0;
 				if (data == null || 
 				    !long.TryParse(util.getRegGroup(data, "\"openTime\":(\\d+)"), out _openTime))
 						return 3;
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 	//			util.debugWriteLine(data);
 				
 				//0-wsUrl 1-request
@@ -242,7 +248,11 @@ namespace namaichi.rec
 				
 				util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode());
 				if (recFolderFile == null)
+<<<<<<< HEAD
 					recFolderFile = getRecFilePath(openTime);
+=======
+					recFolderFile = getRecFilePath();
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 				if (recFolderFile == null || recFolderFile[0] == null) {
 					//パスが長すぎ
 					rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);
@@ -264,7 +274,11 @@ namespace namaichi.rec
 				
 				var userId = util.getRegGroup(res, "\"user\"\\:\\{\"user_id\"\\:(.+?),");
 				var isPremium = res.IndexOf("\"member_status\":\"premium\"") > -1;
+<<<<<<< HEAD
 				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, lastSegmentNo, isTimeShift, lvid, timeShiftConfig, userId, isPremium, programTime, type, _openTime);
+=======
+				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, lastSegmentNo, isTimeShift, lvid, timeShiftConfig, userId, isPremium, programTime);
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 				rm.wsr = wsr;
 				try {
 					isNoPermission = wsr.start();
@@ -446,8 +460,13 @@ namespace namaichi.rec
 	        }
 			return null;
 		}
+<<<<<<< HEAD
 		public string[] getRecFilePath(long openTime) {
 			return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, isTimeShift, timeShiftConfig, openTime);
+=======
+		public string[] getRecFilePath() {
+			return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, isTimeShift, timeShiftConfig);
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		}
 	}
 }

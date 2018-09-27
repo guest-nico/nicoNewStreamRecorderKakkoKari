@@ -98,7 +98,11 @@ public class config
 			{"IsLogFile","false"},
 			{"segmentSaveType","0"},
 			{"IsRenketuAfter","true"},
+<<<<<<< HEAD
 			{"IsAfterRenketuFFmpeg","false"},
+=======
+			{"IsAfterRenketuFFmpeg","true"},
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			{"IsDefaultEngine","true"},
 			{"anotherEngineCommand",""},
 			{"IsDefaultPlayer","true"},
@@ -106,12 +110,15 @@ public class config
 			{"anotherPlayerPath",""},
 			{"anotherCommentViewerPath",""},
 			{"Is184","true"},
+<<<<<<< HEAD
 			{"IsUrlList","false"},
 			{"IsM3u8List","false"},
 			{"M3u8UpdateSeconds","5"},
 			{"IsOpenUrlList","false"},
 			{"openUrlListCommand","notepad {i}"},
 			//{"afterConvertMode","0"},
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			
 			{"cookieFile",""},
 			{"iscookie","false"},
@@ -131,9 +138,12 @@ public class config
 			{"defaultCommentFormY","100"},
 			{"defaultCommentFormWidth","500"},
 			{"defaultCommentFormHeight","520"},
+<<<<<<< HEAD
 			
 			{"rokugaTourokuWidth","950"},
 			{"rokugaTourokuHeight","350"},
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		};
 		var buf = new Dictionary<string,string>();
 		foreach (var k in cfg.AppSettings.Settings.AllKeys) {

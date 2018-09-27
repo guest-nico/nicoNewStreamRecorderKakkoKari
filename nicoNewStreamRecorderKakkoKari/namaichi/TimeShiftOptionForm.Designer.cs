@@ -49,6 +49,7 @@ namespace namaichi
 			this.isStartTimeRadioBtn = new System.Windows.Forms.RadioButton();
 			this.cancelBtn = new System.Windows.Forms.Button();
 			this.okBtn = new System.Windows.Forms.Button();
+<<<<<<< HEAD
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.label6 = new System.Windows.Forms.Label();
 			this.endSText = new System.Windows.Forms.TextBox();
@@ -73,6 +74,9 @@ namespace namaichi
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.panel2.SuspendLayout();
+=======
+			this.groupBox1.SuspendLayout();
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -90,17 +94,28 @@ namespace namaichi
 			this.groupBox1.Controls.Add(this.isStartTimeRadioBtn);
 			this.groupBox1.Location = new System.Drawing.Point(5, 10);
 			this.groupBox1.Name = "groupBox1";
+<<<<<<< HEAD
 			this.groupBox1.Size = new System.Drawing.Size(299, 143);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "録画開始時間";
+=======
+			this.groupBox1.Size = new System.Drawing.Size(299, 153);
+			this.groupBox1.TabIndex = 0;
+			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = "オプション";
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			// 
 			// isRenketuLastFile
 			// 
 			this.isRenketuLastFile.Location = new System.Drawing.Point(26, 113);
 			this.isRenketuLastFile.Name = "isRenketuLastFile";
 			this.isRenketuLastFile.Size = new System.Drawing.Size(231, 17);
+<<<<<<< HEAD
 			this.isRenketuLastFile.TabIndex = 5;
+=======
+			this.isRenketuLastFile.TabIndex = 4;
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			this.isRenketuLastFile.Text = "前回のファイルと新しい録画を連結する";
 			this.isRenketuLastFile.UseVisualStyleBackColor = true;
 			// 
@@ -125,7 +140,11 @@ namespace namaichi
 			this.sText.Location = new System.Drawing.Point(153, 41);
 			this.sText.Name = "sText";
 			this.sText.Size = new System.Drawing.Size(29, 19);
+<<<<<<< HEAD
 			this.sText.TabIndex = 3;
+=======
+			this.sText.TabIndex = 1;
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			this.sText.Text = "0";
 			this.sText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
@@ -142,7 +161,11 @@ namespace namaichi
 			this.mText.Location = new System.Drawing.Point(95, 41);
 			this.mText.Name = "mText";
 			this.mText.Size = new System.Drawing.Size(29, 19);
+<<<<<<< HEAD
 			this.mText.TabIndex = 2;
+=======
+			this.mText.TabIndex = 1;
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			this.mText.Text = "0";
 			this.mText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
@@ -168,8 +191,12 @@ namespace namaichi
 			this.isFromLastTimeRadioBtn.Location = new System.Drawing.Point(6, 75);
 			this.isFromLastTimeRadioBtn.Name = "isFromLastTimeRadioBtn";
 			this.isFromLastTimeRadioBtn.Size = new System.Drawing.Size(182, 18);
+<<<<<<< HEAD
 			this.isFromLastTimeRadioBtn.TabIndex = 4;
 			this.isFromLastTimeRadioBtn.TabStop = true;
+=======
+			this.isFromLastTimeRadioBtn.TabIndex = 0;
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			this.isFromLastTimeRadioBtn.Text = "前回の続きから録画";
 			this.isFromLastTimeRadioBtn.UseVisualStyleBackColor = true;
 			// 
@@ -187,24 +214,39 @@ namespace namaichi
 			// 
 			// cancelBtn
 			// 
+<<<<<<< HEAD
 			this.cancelBtn.Location = new System.Drawing.Point(215, 440);
 			this.cancelBtn.Name = "cancelBtn";
 			this.cancelBtn.Size = new System.Drawing.Size(74, 23);
 			this.cancelBtn.TabIndex = 16;
+=======
+			this.cancelBtn.Location = new System.Drawing.Point(215, 169);
+			this.cancelBtn.Name = "cancelBtn";
+			this.cancelBtn.Size = new System.Drawing.Size(74, 23);
+			this.cancelBtn.TabIndex = 3;
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			this.cancelBtn.Text = "キャンセル";
 			this.cancelBtn.UseVisualStyleBackColor = true;
 			this.cancelBtn.Click += new System.EventHandler(this.cancelBtn_Click);
 			// 
 			// okBtn
 			// 
+<<<<<<< HEAD
 			this.okBtn.Location = new System.Drawing.Point(135, 440);
 			this.okBtn.Name = "okBtn";
 			this.okBtn.Size = new System.Drawing.Size(74, 23);
 			this.okBtn.TabIndex = 15;
+=======
+			this.okBtn.Location = new System.Drawing.Point(135, 169);
+			this.okBtn.Name = "okBtn";
+			this.okBtn.Size = new System.Drawing.Size(74, 23);
+			this.okBtn.TabIndex = 2;
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			this.okBtn.Text = "OK";
 			this.okBtn.UseVisualStyleBackColor = true;
 			this.okBtn.Click += new System.EventHandler(this.okBtn_Click);
 			// 
+<<<<<<< HEAD
 			// groupBox2
 			// 
 			this.groupBox2.BackColor = System.Drawing.SystemColors.Window;
@@ -398,14 +440,20 @@ namespace namaichi
 			this.label1.TabIndex = 9;
 			this.label1.Text = "0時間0分0秒を指定すると最後まで録画します";
 			// 
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			// TimeShiftOptionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Window;
+<<<<<<< HEAD
 			this.ClientSize = new System.Drawing.Size(311, 472);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
+=======
+			this.ClientSize = new System.Drawing.Size(311, 200);
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			this.Controls.Add(this.cancelBtn);
 			this.Controls.Add(this.okBtn);
 			this.Controls.Add(this.groupBox1);
@@ -414,6 +462,7 @@ namespace namaichi
 			this.Text = "タイムシフト録画設定";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
+<<<<<<< HEAD
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
@@ -442,6 +491,10 @@ namespace namaichi
 		private System.Windows.Forms.TextBox endSText;
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.GroupBox groupBox2;
+=======
+			this.ResumeLayout(false);
+		}
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		private System.Windows.Forms.Button okBtn;
 		private System.Windows.Forms.Button cancelBtn;
 		private System.Windows.Forms.CheckBox isRenketuLastFile;
