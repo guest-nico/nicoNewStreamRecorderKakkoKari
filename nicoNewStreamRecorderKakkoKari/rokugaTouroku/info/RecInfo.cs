@@ -8,6 +8,7 @@
  */
 using System;
 using System.Diagnostics;
+using System.Windows.Forms;
 using rokugaTouroku.rec;
 
 namespace rokugaTouroku.info
@@ -29,16 +30,19 @@ namespace rokugaTouroku.info
 		public string description;
 		public string qualityRank;
 		public string log = "";
+		public string afterFFmpegMode;
 		
 		public info.TimeShiftConfig tsConfig;
 		public Process process;
 		public RecDataGetter rdg;
 		
-		public RecInfo(string id, string url, RecDataGetter rdg) {
+		public RecInfo(string id, string url, RecDataGetter rdg, string afterFFmpegMode) {
 			this.id = id;
 			this.url = url;
 			this.rdg = rdg;
 			state = "待機中";
+			//this.afterFFmpegMode = afterFFmpegMode;
+			this.afterFFmpegMode = "ｓ";
 		}
 		public RecInfo(string id, string title, 
 				string host, string communityName,
@@ -100,6 +104,10 @@ namespace rokugaTouroku.info
         {
             get { return log; }
             set { this.log = value; }
+        }
+        public string AfterFFmpegMode  {
+        	get { return afterFFmpegMode; }
+        	set {this.afterFFmpegMode = value; }
         }
         public void addLog(string s) {
         	if (log != "") log += "\r\n";

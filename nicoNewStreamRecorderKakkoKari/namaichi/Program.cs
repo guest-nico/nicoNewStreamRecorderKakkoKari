@@ -17,12 +17,16 @@ namespace namaichi
 	/// </summary>
 	internal sealed class Program
 	{
+		static string arg = "";
+		
 		/// <summary>
 		/// Program entry point.
 		/// </summary>
 		[STAThread]
 		private static void Main(string[] args)
 		{
+			if (args.Length > 0) arg = args[0];
+			
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandleExceptionHandler);
 			System.Threading.Thread.GetDomain().UnhandledException += new UnhandledExceptionEventHandler(UnhandleExceptionHandler);
 			AppDomain.CurrentDomain.UnhandledException += UnhandleExceptionHandler;
@@ -63,7 +67,8 @@ namespace namaichi
 			#if DEBUG
 				if (util.isLogFile) {
 					if (frameCount > 50) {
-						MessageBox.Show("first chance framecount stack", frameCount.ToString());
+//						util.debugWriteLine("exception stacktrace framecount " + frameCount);
+						MessageBox.Show("first chance framecount stack", frameCount.ToString() + " " + DateTime.Now + " " + arg);
 						return;
 					}
 				}

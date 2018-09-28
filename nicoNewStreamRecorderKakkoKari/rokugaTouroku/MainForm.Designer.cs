@@ -37,8 +37,10 @@ namespace rokugaTouroku
 		private void InitializeComponent()
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+			System.Windows.Forms.ComboBox comboBox1;
 			this.recList = new System.Windows.Forms.DataGridView();
 			this.放送ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.形式 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.状態 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.タイトル = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.放送者 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -89,6 +91,7 @@ namespace rokugaTouroku
 			this.label3 = new System.Windows.Forms.Label();
 			this.samuneBox = new System.Windows.Forms.PictureBox();
 			this.logText = new System.Windows.Forms.TextBox();
+			comboBox1 = new System.Windows.Forms.ComboBox();
 			((System.ComponentModel.ISupportInitialize)(this.recList)).BeginInit();
 			this.menuStrip1.SuspendLayout();
 			this.panel1.SuspendLayout();
@@ -108,6 +111,7 @@ namespace rokugaTouroku
 			this.recList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.recList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
 									this.放送ID,
+									this.形式,
 									this.状態,
 									this.タイトル,
 									this.放送者,
@@ -129,6 +133,14 @@ namespace rokugaTouroku
 			this.放送ID.HeaderText = "放送ID";
 			this.放送ID.Name = "放送ID";
 			this.放送ID.ReadOnly = true;
+			// 
+			// 形式
+			// 
+			this.形式.DataPropertyName = "afterFFmpegMode";
+			this.形式.HeaderText = "形式";
+			this.形式.Name = "形式";
+			this.形式.ReadOnly = true;
+			this.形式.Resizable = System.Windows.Forms.DataGridViewTriState.True;
 			// 
 			// 状態
 			// 
@@ -190,7 +202,7 @@ namespace rokugaTouroku
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
-			this.menuStrip1.Size = new System.Drawing.Size(954, 24);
+			this.menuStrip1.Size = new System.Drawing.Size(954, 26);
 			this.menuStrip1.TabIndex = 12;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -202,25 +214,25 @@ namespace rokugaTouroku
 									this.終了ToolStripMenuItem});
 			this.fileMenuItem.Name = "fileMenuItem";
 			this.fileMenuItem.ShowShortcutKeys = false;
-			this.fileMenuItem.Size = new System.Drawing.Size(70, 20);
+			this.fileMenuItem.Size = new System.Drawing.Size(85, 22);
 			this.fileMenuItem.Text = "ファイル(&F)";
 			// 
 			// 録画フォルダを開くToolStripMenuItem
 			// 
 			this.録画フォルダを開くToolStripMenuItem.Name = "録画フォルダを開くToolStripMenuItem";
-			this.録画フォルダを開くToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+			this.録画フォルダを開くToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.録画フォルダを開くToolStripMenuItem.Text = "録画フォルダを開く(&O)";
 			this.録画フォルダを開くToolStripMenuItem.Click += new System.EventHandler(this.openRecFolderMenu_Click);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(176, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(200, 6);
 			// 
 			// 終了ToolStripMenuItem
 			// 
 			this.終了ToolStripMenuItem.Name = "終了ToolStripMenuItem";
-			this.終了ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+			this.終了ToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
 			this.終了ToolStripMenuItem.Text = "終了(&X)";
 			this.終了ToolStripMenuItem.Click += new System.EventHandler(this.endMenu_Click);
 			// 
@@ -230,14 +242,14 @@ namespace rokugaTouroku
 									this.optionMenuItem});
 			this.toolMenuItem.Name = "toolMenuItem";
 			this.toolMenuItem.ShowShortcutKeys = false;
-			this.toolMenuItem.Size = new System.Drawing.Size(66, 20);
+			this.toolMenuItem.Size = new System.Drawing.Size(74, 22);
 			this.toolMenuItem.Text = "ツール(&T)";
 			// 
 			// optionMenuItem
 			// 
 			this.optionMenuItem.Name = "optionMenuItem";
 			this.optionMenuItem.ShowShortcutKeys = false;
-			this.optionMenuItem.Size = new System.Drawing.Size(129, 22);
+			this.optionMenuItem.Size = new System.Drawing.Size(147, 22);
 			this.optionMenuItem.Text = "オプション(&O)";
 			this.optionMenuItem.Click += new System.EventHandler(this.optionItem_Select);
 			// 
@@ -247,13 +259,13 @@ namespace rokugaTouroku
 									this.バージョン情報VToolStripMenuItem});
 			this.helpMenuItem.Name = "helpMenuItem";
 			this.helpMenuItem.ShowShortcutKeys = false;
-			this.helpMenuItem.Size = new System.Drawing.Size(67, 20);
+			this.helpMenuItem.Size = new System.Drawing.Size(75, 22);
 			this.helpMenuItem.Text = "ヘルプ(&H)";
 			// 
 			// バージョン情報VToolStripMenuItem
 			// 
 			this.バージョン情報VToolStripMenuItem.Name = "バージョン情報VToolStripMenuItem";
-			this.バージョン情報VToolStripMenuItem.Size = new System.Drawing.Size(161, 22);
+			this.バージョン情報VToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
 			this.バージョン情報VToolStripMenuItem.Text = "バージョン情報(&A)";
 			// 
 			// panel1
@@ -263,6 +275,7 @@ namespace rokugaTouroku
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.panel1.AutoSize = true;
 			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panel1.Controls.Add(comboBox1);
 			this.panel1.Controls.Add(this.addListBtn);
 			this.panel1.Controls.Add(this.clearBtn);
 			this.panel1.Controls.Add(this.recBtn);
@@ -295,6 +308,7 @@ namespace rokugaTouroku
 			this.clearBtn.TabIndex = 3;
 			this.clearBtn.Text = "リストのクリア";
 			this.clearBtn.UseVisualStyleBackColor = true;
+			this.clearBtn.Click += new System.EventHandler(this.clearBtn_Click);
 			// 
 			// recBtn
 			// 
@@ -635,6 +649,29 @@ namespace rokugaTouroku
 			this.logText.TabIndex = 0;
 			this.logText.Text = "1\r\n2\r\n3\r\n4";
 			// 
+			// comboBox1
+			// 
+			comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			comboBox1.FormattingEnabled = true;
+			comboBox1.Items.AddRange(new object[] {
+									"flv(変換無し)",
+									"avi",
+									"mp4",
+									"mov",
+									"wmv",
+									"vob",
+									"mkv",
+									"ts",
+									"mp3(音声)",
+									"wav(音声)",
+									"wma(音声)",
+									"aac(音声)",
+									"ogg(音声)"});
+			comboBox1.Location = new System.Drawing.Point(613, 11);
+			comboBox1.Name = "comboBox1";
+			comboBox1.Size = new System.Drawing.Size(90, 20);
+			comboBox1.TabIndex = 5;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -658,6 +695,7 @@ namespace rokugaTouroku
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.DataGridViewTextBoxColumn 形式;
 		public System.Windows.Forms.DataGridView recList;
 		private System.Windows.Forms.Label label13;
 		private System.Windows.Forms.Label label12;

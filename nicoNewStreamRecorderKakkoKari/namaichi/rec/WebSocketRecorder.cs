@@ -189,6 +189,8 @@ namespace namaichi.rec
 //			while (isTimeShift && rm.rfu == rfu) 
 //				System.Threading.Thread.Sleep(300);
 			
+			util.debugWriteLine("loop end rm.rfu " + rm.rfu.GetHashCode() + " " + rfu.GetHashCode() + " isretry " + isRetry);
+			
 			isRetry = false;
 			if (rm.rfu != rfu && tscg != null) tscg.setIsRetry(false);
 			
@@ -198,6 +200,7 @@ namespace namaichi.rec
 				}
 			}
 //			tscg.setIsRetry(false);
+			
 			
 			if (rm.rfu != rfu) {
 				stopRecording(ws, wsc);
@@ -255,7 +258,7 @@ namespace namaichi.rec
 			return true;
 		}
 		private void onOpen(object sender, EventArgs e) {
-			addDebugBuf("on open rm.rfu dds2 " + rm.rfu);
+			addDebugBuf("on open rm.rfu dds2 " + rm.rfu + " ws " + sender.GetHashCode());
 			
 			if (sender != ws) {
 				((WebSocket)sender).Close();
@@ -294,6 +297,14 @@ namespace namaichi.rec
 		private void onClose(object sender, EventArgs e) {
 			addDebugBuf("on close " + e.ToString() + " ws hash " + sender.GetHashCode());
 			
+			Task.Run(() => {  
+				if (!isTimeShift && isEndedProgram()) {
+					isRetry = false;
+					if (tscg != null) tscg.setIsRetry(false);
+					isEndProgram = true;
+				}
+			});
+			
 			//stopRecording();
 			if (rm.rfu == rfu && !isEndProgram && (WebSocket)sender == ws) {
 				while (true) {
@@ -305,19 +316,12 @@ namespace namaichi.rec
 					}
 				}
 //				ws.Open();
-				Task.Run(() => {
-					if (!isTimeShift && isEndedProgram()) {
-						isRetry = false;
-						if (tscg != null) tscg.setIsRetry(false);
-						isEndProgram = true;
-					}
-				});
 			}
 			
 
 		}
 		private void onError(object sender, SuperSocket.ClientEngine.ErrorEventArgs e) {
-			addDebugBuf("on error " + e.Exception.Message);
+			addDebugBuf("on error " + e.Exception.Message + " ws " + sender.GetHashCode());
 			//stopRecording();
 //			reConnect();
 //			ws.Open();
@@ -379,7 +383,8 @@ namespace namaichi.rec
 			    || e.Message.IndexOf("\"SERVICE_TEMPORARILY_UNAVAILABLE\"") >= 0
 			   	|| e.Message.IndexOf("\"END_PROGRAM\"") >= 0
 			    || e.Message.IndexOf("\"TOO_MANY_CONNECTIONS\"") >= 0
-			    || e.Message.IndexOf("\"TEMPORARILY_CROWDED\"") >= 0) {
+			    || e.Message.IndexOf("\"TEMPORARILY_CROWDED\"") >= 0
+			   	|| e.Message.IndexOf("\"CONNECT_ERROR\"") >= 0) {
 				if (e.Message.IndexOf("\"TAKEOVER\"") >= 0) rm.form.addLogText("追い出されました。");
 				
 				//SERVICE_TEMPORARILY_UNAVAILABLE 予約枠開始後に何らかの問題？
@@ -395,7 +400,8 @@ namespace namaichi.rec
 				addDebugBuf("kiteru");
 //				connect(webSocketInfo[0].Replace("\"requireNewStream\":false", "\"requireNewStream\":true"));
 				isNoPermission = true;
-				if (e.Message.IndexOf("\"TEMPORARILY_CROWDED\"") >= 0) 
+				if (e.Message.IndexOf("\"TEMPORARILY_CROWDED\"") >= 0 ||
+				   	e.Message.IndexOf("\"CONNECT_ERROR\"") >= 0)
 					isWaitNextConnection = true;
 				//stopRecording();
 //				reConnect();
@@ -658,9 +664,18 @@ namespace namaichi.rec
 			} catch (Exception ee) {
 				addDebugBuf(ee.Message + " " + ee.StackTrace);
 			}
-
+			Task.Run(() => {pongWsc((WebSocket)sender);});
 		}
-		
+		private void pongWsc(WebSocket _wsc) {
+			while (_wsc.State == WebSocket4Net.WebSocketState.Open) {
+				try {
+					_wsc.Send("");
+					Thread.Sleep(60000);
+				} catch (Exception e) {
+					addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				}
+			}
+		}
 		private void onWscClose(object sender, EventArgs e) {
 			addDebugBuf("ms onclose");
 			closeWscProcess();
@@ -840,8 +855,9 @@ namespace namaichi.rec
 //			ws.Open();
 		}
 		public void reConnect(WebSocket _ws) {
-			addDebugBuf("reconnect " + _ws + " " + _ws.GetHashCode());
-			_ws.Close();
+			addDebugBuf("reconnect " + _ws + " " + _ws.GetHashCode() + " ws " + ws.GetHashCode());
+			//_ws.Close();
+			ws.Close();
 		}
 		private bool isEndedProgram() {
 			var isPass = (DateTime.Now - lastEndProgramCheckTime < TimeSpan.FromSeconds(5)); 
@@ -855,7 +871,8 @@ namespace namaichi.rec
 			if (res == null) return false;
 			var type = util.getPageType(res);
 			addDebugBuf("is ended program  pagetype " + type);
-			return (type == 7 || type == 2 || type == 3 || type == 9);
+			var isEnd = (type == 7 || type == 2 || type == 3 || type == 9);
+			return isEnd;
 		}
 		override public void sendComment(string s, bool is184) {
 			if (msThread == null) return;
@@ -880,13 +897,21 @@ namespace namaichi.rec
 			return h5r.getRecFilePath(openTime);
 		}
 		private void startDebugWriter() {
-			while (rm.rfu == rfu && isRetry) {
-				var l = new List<string>(debugWriteBuf);
-				foreach (var b in l) {
-					util.debugWriteLine(b);
-					debugWriteBuf.Remove(b);
+			while ((rm.rfu == rfu && isRetry) || debugWriteBuf.Count > 0) {
+				try {
+					//var l = new List<string>(debugWriteBuf);
+					//string[] _l = debugWriteBuf.ToArray();
+					//var l = new List<string>(_l.li);
+					util.debugWriteLine("debugwritebuf count " + debugWriteBuf.Count);
+					var l = debugWriteBuf.ToList<string>();
+					foreach (var b in l) {
+						util.debugWriteLine(b);
+						debugWriteBuf.Remove(b);
+					}
+					Thread.Sleep(100);
+				} catch (Exception e) {
+					addDebugBuf("debug writer exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
-				Thread.Sleep(500);
 			}
 		}
 		private void addDebugBuf(string s) {

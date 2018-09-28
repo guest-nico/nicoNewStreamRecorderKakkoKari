@@ -230,7 +230,7 @@ namespace namaichi
 					    	_t += t;
 					    	
 				    		logText.AppendText(_t);
-							if (logText.Text.Length > 20000) 
+							if (logText.Text.Length > 200000) 
 								logText.Text = logText.Text.Substring(logText.TextLength - 10000);
 	       		       	} catch (Exception e) {
 	       		       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
@@ -243,6 +243,9 @@ namespace namaichi
 <<<<<<< HEAD
        		if (rec.ri != null) Console.WriteLine(t);
 		}
+        public void addLogTextTest(string t) {
+       		addLogText(t);
+        }
 		public void setRecordState(String t) {
        		//util.debugWriteLine("setRecordState form");
 	       	try {

@@ -9,6 +9,7 @@
 using System;
 using System.Configuration;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace namaichi.config {
 /// <summary>
@@ -24,16 +25,20 @@ public class config
         
  	}
 	public Configuration getConfig() {
-		try {
-			var jarPath = util.getJarPath();
-			var configFile = jarPath[0] + "\\" + jarPath[1] + ".config";
-			//util.debugWriteLine(configFile);
-	        var exeFileMap = new System.Configuration. ExeConfigurationFileMap { ExeConfigFilename = configFile };
-	        var cfg     = ConfigurationManager.OpenMappedExeConfiguration(exeFileMap, ConfigurationUserLevel.None);
-	        return cfg;
-		} catch (Exception e) {
-			util.debugWriteLine("getconfig " + e.Message + " " + e.StackTrace + " " + e.TargetSite);
-			return null;
+		while (true) {
+			try {
+				var jarPath = util.getJarPath();
+				var configFile = jarPath[0] + "\\" + jarPath[1] + ".config";
+				//util.debugWriteLine(configFile);
+		        var exeFileMap = new System.Configuration. ExeConfigurationFileMap { ExeConfigFilename = configFile };
+		        var cfg     = ConfigurationManager.OpenMappedExeConfiguration(exeFileMap, ConfigurationUserLevel.None);
+		        return cfg;
+			} catch (Exception e) {
+				util.debugWriteLine("getconfig " + e.Message + " " + e.StackTrace + " " + e.TargetSite);
+				Thread.Sleep(3000);
+				continue;
+			}
+			
 		}
 	}
 	public void set(string key, string value) {

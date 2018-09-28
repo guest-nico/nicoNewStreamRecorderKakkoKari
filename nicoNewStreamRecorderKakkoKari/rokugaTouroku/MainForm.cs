@@ -145,5 +145,15 @@ namespace rokugaTouroku
 		{
 			rec.record();
 		}
+		public void resetBindingList() {
+			this.Invoke((MethodInvoker)delegate() {
+				recListDataSource.ResetBindings(false);
+			});
+		}
+		
+		void clearBtn_Click(object sender, EventArgs e)
+		{
+			recListDataSource.Clear();
+		}
 	}
 }

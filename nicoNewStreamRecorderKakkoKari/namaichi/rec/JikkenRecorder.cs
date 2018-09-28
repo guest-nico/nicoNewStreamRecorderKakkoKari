@@ -170,6 +170,7 @@ namespace namaichi.rec
 			var _res = getWatching();
 			_res.Wait();
 			watchingRes = _res.Result;
+			util.debugWriteLine("watching res " + watchingRes);
 			
 			var ret = getPageTypeFromWatching(watchingRes);
 			util.debugWriteLine("pagetype cas " + ret);
@@ -342,6 +343,7 @@ namespace namaichi.rec
 			else if (res.IndexOf("\"errorCode\":\"INVALID_PARAMETER\"") > -1) return 5;
 			else if (res.IndexOf("\"errorCode\":\"NOT_PLAYABLE\"") > -1) return 2;
 			else if (res.IndexOf("errorMessage\":\"program ended\"") > -1) return 2;
+//			else if (res.IndexOf("errorMessage\":\"Bad request") > -1) return 5;
 			rm.form.addLogText(res);
 			return 5;
 		}

@@ -945,7 +945,6 @@ C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 8.19 m\nicoN
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 8.19 m\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\nicoNewStreamRecorderKakkoKari.exe
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 8.19 m\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\nicoNewStreamRecorderKakkoKari.pdb
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 8.19 m\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.csprojResolveAssemblyReference.cache
-<<<<<<< HEAD
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 8.19 n\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\nicoNewStreamRecorderKakkoKari.exe.config
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 8.19 n\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\nicoNewStreamRecorderKakkoKari.exe
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 8.19 n\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\nicoNewStreamRecorderKakkoKari.pdb
@@ -1729,20 +1728,14 @@ C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.5 tuujou z\nicoNewSt
 C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.5 tuujou z\nicoNewStreamRecorderKakkoKariRepo2 9.5 tuujou y\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.csproj.GenerateResource.Cache
 C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.5 tuujou z\nicoNewStreamRecorderKakkoKariRepo2 9.5 tuujou y\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\nicoNewStreamRecorderKakkoKari.exe
 C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.5 tuujou z\nicoNewStreamRecorderKakkoKariRepo2 9.5 tuujou y\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\nicoNewStreamRecorderKakkoKari.pdb
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\nicoNewStreamRecorderKakkoKari.exe.config
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\nicoNewStreamRecorderKakkoKari.exe
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\nicoNewStreamRecorderKakkoKari.pdb
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\Microsoft.Web.XmlTransform.dll
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\Newtonsoft.Json.dll
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\SnkLib.App.CookieGetter.dll
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.dll
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\SuperSocket.ClientEngine.dll
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\System.Data.SQLite.dll
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\WebSocket4Net.dll
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\Newtonsoft.Json.xml
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\SnkLib.App.CookieGetter.xml
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.xml
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\System.Data.SQLite.xml
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.csprojResolveAssemblyReference.cache
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.commentForm.resources
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.defaultFFplayController.resources
@@ -1752,7 +1745,61 @@ C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou 
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.TimeShiftOptionForm.resources
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.VersionForm.resources
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.csproj.GenerateResource.Cache
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\nicoNewStreamRecorderKakkoKari.exe.config
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\Microsoft.Web.XmlTransform.dll
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\Newtonsoft.Json.xml
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\SnkLib.App.CookieGetter.xml
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.xml
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\System.Data.SQLite.xml
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\nicoNewStreamRecorderKakkoKari.exe
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\nicoNewStreamRecorderKakkoKari.pdb
-=======
->>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\nicoNewStreamRecorderKakkoKari.exe.config
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\nicoNewStreamRecorderKakkoKari.exe
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\nicoNewStreamRecorderKakkoKari.pdb
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\Microsoft.Web.XmlTransform.dll
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\Newtonsoft.Json.dll
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\SnkLib.App.CookieGetter.dll
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.dll
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\SuperSocket.ClientEngine.dll
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\System.Data.SQLite.dll
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\WebSocket4Net.dll
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\Newtonsoft.Json.xml
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\SnkLib.App.CookieGetter.xml
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.xml
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\System.Data.SQLite.xml
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.csprojResolveAssemblyReference.cache
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.commentForm.resources
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.defaultFFplayController.resources
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.fileNameOptionForm.resources
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.MainForm.resources
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.optionForm.resources
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.TimeShiftOptionForm.resources
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.VersionForm.resources
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.csproj.GenerateResource.Cache
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\nicoNewStreamRecorderKakkoKari.exe
+C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou b\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou a\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\nicoNewStreamRecorderKakkoKari.pdb
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\nicoNewStreamRecorderKakkoKari.exe.config
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\nicoNewStreamRecorderKakkoKari.exe
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\nicoNewStreamRecorderKakkoKari.pdb
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\Microsoft.Web.XmlTransform.dll
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\Newtonsoft.Json.dll
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\SnkLib.App.CookieGetter.dll
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.dll
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\SuperSocket.ClientEngine.dll
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\System.Data.SQLite.dll
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\WebSocket4Net.dll
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\Newtonsoft.Json.xml
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\SnkLib.App.CookieGetter.xml
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.xml
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\System.Data.SQLite.xml
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.csprojResolveAssemblyReference.cache
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.commentForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.defaultFFplayController.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.fileNameOptionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.MainForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.optionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.TimeShiftOptionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.VersionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.csproj.GenerateResource.Cache
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\nicoNewStreamRecorderKakkoKari.exe
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\nicoNewStreamRecorderKakkoKari.pdb

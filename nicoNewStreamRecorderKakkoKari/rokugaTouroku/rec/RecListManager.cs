@@ -51,13 +51,14 @@ namespace rokugaTouroku.rec
 			
 			//Task.Run(() => {
 				var rdg = new RecDataGetter(this);
-				var ri = new RecInfo(lvid, form.urlText.Text, rdg);
+				var ri = new RecInfo(lvid, form.urlText.Text, rdg, "mp3");
 				form.addList(ri);
 				
 				form.urlText.Text = "";
 
 		}
 		public void record() {
+			util.debugWriteLine("ver 0.1.0");
 			if (util.getRegGroup(form.urlText.Text, "(lv\\d+)") == null) {
 				form.urlText.Text = "";
 			} else {
