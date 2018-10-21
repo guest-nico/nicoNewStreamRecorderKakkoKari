@@ -17,7 +17,7 @@ using System.IO;
 	/// </summary>
 public class SourceInfoSerialize
 {
-	public static void save(CookieSourceInfo si, bool isSub = false) {
+	public static void save(CookieSourceInfo si, bool isSub) {
 //		var sio = new SourceInfoObject(si);
 //		XmlSerializer serializer = new XmlSerializer(typeof(SourceInfoObject));
 		XmlSerializer serializer = new XmlSerializer(typeof(CookieSourceInfo));
@@ -34,7 +34,7 @@ public class SourceInfoSerialize
 			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.TargetSite);
 		}
 	}
-	public static CookieSourceInfo load(bool isSub = false) {
+	public static CookieSourceInfo load(bool isSub) {
 //		var sio = new SourceInfoObject(si);
 //		XmlSerializer serializer = new XmlSerializer(typeof(SourceInfoObject));
 		XmlSerializer serializer = new XmlSerializer(typeof(CookieSourceInfo));

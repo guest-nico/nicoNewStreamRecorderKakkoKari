@@ -329,9 +329,11 @@ namespace namaichi
 			// 
 			// titleLabel
 			// 
+			this.titleLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+									| System.Windows.Forms.AnchorStyles.Right)));
 			this.titleLabel.Location = new System.Drawing.Point(78, 26);
 			this.titleLabel.Name = "titleLabel";
-			this.titleLabel.Size = new System.Drawing.Size(338, 23);
+			this.titleLabel.Size = new System.Drawing.Size(426, 23);
 			this.titleLabel.TabIndex = 2;
 			this.titleLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.titleLabel_Click);
 			// 
@@ -345,9 +347,11 @@ namespace namaichi
 			// 
 			// communityLabel
 			// 
+			this.communityLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+									| System.Windows.Forms.AnchorStyles.Right)));
 			this.communityLabel.Location = new System.Drawing.Point(78, 49);
 			this.communityLabel.Name = "communityLabel";
-			this.communityLabel.Size = new System.Drawing.Size(325, 23);
+			this.communityLabel.Size = new System.Drawing.Size(426, 23);
 			this.communityLabel.TabIndex = 2;
 			this.communityLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.titleLabel_Click);
 			// 

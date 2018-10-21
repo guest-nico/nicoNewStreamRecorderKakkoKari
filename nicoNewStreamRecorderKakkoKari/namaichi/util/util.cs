@@ -21,8 +21,10 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.86.17";
-	public static string versionDayStr = "2018/09/26";
+	public static string versionStr = "ver0.87.1";
+	public static string versionDayStr = "2018/10/22";
+	public static bool isShowWindow = true;
+	public static bool isStdIO = false;
 	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);
@@ -115,7 +117,7 @@ class util {
 				
 			}
 		}
-		if (name.Length + dirPath.Length > 235) return new string[]{null, name + " " + dirPath};
+		if (name.Length + dirPath.Length > 235) return new string[]{null, name + " " + dirPath, null};
 		
 		if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
 		if (!Directory.Exists(dirPath)) return null;
@@ -124,6 +126,7 @@ class util {
 		string existFile = null;
 		for (int i = 0; i < 1000000; i++) {
 			var fName = dirPath + "/" + name + "_" + ((_isTimeShift) ? "ts" : "") + i.ToString();
+			var originName = dirPath + "/" + name;
 			util.debugWriteLine(dirPath + " " + fName);
 			
 			if (!_isTimeShift) {
@@ -136,7 +139,7 @@ class util {
 				}
 				
 				
-				string[] reta = {dirPath, fName};
+				string[] reta = {dirPath, fName, originName};
 				return reta;
 			} else {
 				if (segmentSaveType == "0") {
@@ -148,24 +151,24 @@ class util {
 					if (tsConfig.isContinueConcat) {
 						if (i == 0) {
 							var firstFile = dirPath + "/" + name + "_ts_0h0m0s_" + i.ToString();
-							string[] retb = {dirPath, firstFile};
+							string[] retb = {dirPath, firstFile, originName};
 							return retb;
 						} else {
 							//fName = dirPath + "/" + name + "_" + ((isTimeShift) ? "ts" : "") + (i - 1).ToString();
 							existFile = existFile.Substring(0, existFile.Length - 3);
-							string[] retc = {dirPath, existFile};
+							string[] retc = {dirPath, existFile, originName};
 							return retc;
 						}
 					} else {
 						var firstFile = dirPath + "/" + name + "_ts_0h0m0s_" + i.ToString();
-						string[] retd = {dirPath, firstFile};
+						string[] retd = {dirPath, firstFile, originName};
 						return retd;
 					}
 //					continue;
 				}
 				else if (segmentSaveType == "1") {
 					if (Directory.Exists(fName)) {
-						string[] rete = {dirPath, fName};
+						string[] rete = {dirPath, fName, originName};
 						return rete;
 					} else if (File.Exists(fName)) {
 						continue;
@@ -173,7 +176,7 @@ class util {
 					util.debugWriteLine(dirPath + " " + fName);
 					Directory.CreateDirectory(fName);
 					if (!Directory.Exists(fName)) return null;
-					string[] retf = {dirPath, fName};
+					string[] retf = {dirPath, fName, originName};
 					return retf;
 				}
 			}
@@ -409,6 +412,7 @@ class util {
 	}
 	public static string getPageSource(string _url, ref WebHeaderCollection getheaders, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 5000) {
 		//util.debugWriteLine("getpage 01");
+		timeoutMs = 2000;
 		/*
 		string a;
 		try {
@@ -467,6 +471,7 @@ class util {
 		return null;
 	}
 	public static string getPageSource(string _url, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 5000) {
+		timeoutMs = 2000;
 //		util.debugWriteLine("getpage 01");
 		/*
 		string a = "";
@@ -532,24 +537,32 @@ class util {
 				var req = (HttpWebRequest)WebRequest.Create(url);
 				req.Proxy = null;
 				req.AllowAutoRedirect = true;
+				req.Timeout = 2000;
 	//			req.Headers = getheaders;
 //				if (referer != null) req.Referer = referer;
 				if (container != null) req.CookieContainer = container;
 				var res = (HttpWebResponse)req.GetResponse();
 				var dataStream = res.GetResponseStream();
 				
-//				var reader = new StreamReader(dataStream);
-				byte[] b = new byte[10000000];
-				int pos = 0;
-				var r = 0;
-				while ((r = dataStream.Read(b, pos, 1000000)) > 0) {
-//					if (dataStream.Read(b, (int)j, (int)dataStream.Length) == 0) break;
-//					j = dataStream.Position;
-					pos += r;
+				//test
+				var isMs = true;
+				if (isMs) {
+					var ms = new MemoryStream();
+					dataStream.CopyTo(ms);
+					return ms.ToArray();
+				} else {
+	//				var reader = new StreamReader(dataStream);
+					byte[] b = new byte[10000000];
+					int pos = 0;
+					var r = 0;
+					while ((r = dataStream.Read(b, pos, 1000000)) > 0) {
+	//					if (dataStream.Read(b, (int)j, (int)dataStream.Length) == 0) break;
+	//					j = dataStream.Position;
+						pos += r;
+					}
+					Array.Resize(ref b, pos);
+					return b;
 				}
-				Array.Resize(ref b, pos);
-				return b;
-				
 			} catch (Exception e) {
 				System.Threading.Tasks.Task.Run(() => {
 					util.debugWriteLine("getfile error " + url + e.Message+e.StackTrace);
@@ -608,7 +621,8 @@ class util {
 			else if (util.getRegGroup(res, "(コミュニティフォロワー限定番組です。<br>)") != null) return 4;
 			else if (util.getRegGroup(res, "(チャンネル会員限定番組です。<br>)") != null) return 4;
 			else if (util.getRegGroup(res, "(<h3>【会場のご案内】</h3>)") != null) return 6;
-			else return 5;
+			else if (util.getRegGroup(res, "(この番組は放送者により削除されました。<br />|削除された可能性があります。<br />)") != null) return 2;
+			return 5;
 		//}
 		//return 5;
 	}
@@ -670,8 +684,8 @@ class util {
 		var frameCount = new System.Diagnostics.StackTrace().FrameCount;
 		#if DEBUG
 			if (isMessageBox && isLogFile) {
-				if (frameCount > 50) {
-					MessageBox.Show("framecount stack", frameCount.ToString());
+				if (frameCount > 150) {
+					MessageBox.Show("framecount stack", frameCount.ToString() + " " + namaichi.Program.arg + " " + DateTime.Now.ToString());
 					return;
 				}
 			}
@@ -707,7 +721,7 @@ class util {
 		
 		#if DEBUG
 			if (isMessageBox && isLogFile)
-				MessageBox.Show("error", "error");
+				MessageBox.Show("error " + eo.Message, "error " + namaichi.Program.arg);
 		#else
 			
 		#endif
@@ -725,6 +739,7 @@ class util {
 				      = (System.Diagnostics.DefaultTraceListener)System.Diagnostics.Debug.Listeners["Default"];
 					dtl.LogFileName = logPath;
 				#else
+					if (isStdIO) return; 
 					FileStream fs = new FileStream(logPath, 
 				    		FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
 					var w = new System.IO.StreamWriter(fs);
@@ -736,5 +751,10 @@ class util {
 			}
 			util.isLogFile = true;
 		}
+	}
+	public static string getMainSubStr(bool isSub, bool isKakko = false) {
+		var ret = (isSub) ? "サブ" : "メイン";
+		if (isKakko) ret = "(" + ret + ")";
+		return ret;		
 	}
 }

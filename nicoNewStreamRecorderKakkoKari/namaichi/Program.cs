@@ -17,12 +17,16 @@ namespace namaichi
 	/// </summary>
 	internal sealed class Program
 	{
+		public static string arg = "";
+		
 		/// <summary>
 		/// Program entry point.
 		/// </summary>
 		[STAThread]
 		private static void Main(string[] args)
 		{
+			if (args.Length > 0) arg = util.getRegGroup(args[0], "(lv.+)");
+			
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandleExceptionHandler);
 			System.Threading.Thread.GetDomain().UnhandledException += new UnhandledExceptionEventHandler(UnhandleExceptionHandler);
 			AppDomain.CurrentDomain.UnhandledException += UnhandleExceptionHandler;
@@ -34,8 +38,17 @@ namespace namaichi
 				
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new MainForm(args));
-
+			
+//			args = new string[]{"-nowindo", "lv316266831", "-stdIO"};
+//			args = new String[]{"lv316036760", "-ts-start=5m0s", "-ts-end=5m10s", "-afterConvertMode=4"};
+			if (Array.IndexOf(args, "-nowindow") == -1) 
+				Application.Run(new MainForm(args));
+			else {
+				util.isShowWindow = false;
+				var a = new MainForm(args);
+				while(a.rec.isRecording) System.Threading.Thread.Sleep(1000);
+			}
+			
 		}
 		private static void UnhandleExceptionHandler(Object sender, UnhandledExceptionEventArgs e) {
 			util.debugWriteLine("unhandled exception");
@@ -62,8 +75,10 @@ namespace namaichi
 			var frameCount = new System.Diagnostics.StackTrace().FrameCount;
 			#if DEBUG
 				if (util.isLogFile) {
-					if (frameCount > 50) {
-						MessageBox.Show("first chance framecount stack", frameCount.ToString());
+					if (frameCount > 150) {
+//						util.debugWriteLine("exception stacktrace framecount " + frameCount);
+						MessageBox.Show("first chance framecount stack " + e.Exception.Message + e.Exception.StackTrace, frameCount.ToString() + " " + DateTime.Now + " " + arg);
+//						if (e.Exception.GetType() == System.IO.IOException
 						return;
 					}
 				}

@@ -7,6 +7,7 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.Collections.Generic;
 
 namespace namaichi.rec
 {
@@ -22,6 +23,7 @@ namespace namaichi.rec
 		public string[] msReq;
 		public long openTime;
 		public bool isJikken;
+		public string[] gotTsCommentList;
 		
 		public IRecorderProcess()
 		{

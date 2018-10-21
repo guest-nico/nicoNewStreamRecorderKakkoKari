@@ -32,6 +32,7 @@ using System.Text;
 using namaichi.rec;
 using namaichi.config;
 using namaichi.play;
+using namaichi.utility;
 
 //using System.Diagnostics.Process;
 
@@ -54,29 +55,53 @@ namespace namaichi
 		
 		public MainForm(string[] args)
 		{
+			#if !DEBUG
+				if (config.get("IsLogFile") == "true") 
+					config.set("IsLogFile", "false");
+			#endif
+					
 			System.Diagnostics.Debug.Listeners.Clear();
 			System.Diagnostics.Debug.Listeners.Add(new log.TraceListener());
 		    
-			
-			this.args = args;
-			
-			
-			var lv = (args.Length == 0) ? null : util.getRegGroup(args[0], "(lv\\d+)");
-			util.setLog(config, lv);
-
-			util.debugWriteLine("arg len " + args.Length);
-			util.debugWriteLine("arg join " + string.Join(" ", args));
-		    
-			
-			//test
-//			args = new string[]{};
-			
 			InitializeComponent();
 			Text = "ニコ生新配信録画ツール（仮 " + util.versionStr;
 			
+			this.args = args;
+			
 			rec = new rec.RecordingManager(this, config);
 			player = new Player(this, config);
-			//player = new play.Player(rec);
+			
+//			args = new string[]{"a", "-qualityrank=1,2,3,4,5,0", "lv315967820", "-istitlebarinfo=False", "-ts-start=25h2m", "-openUrlListCommand=notepad"};
+//			args = new string[]{"Debug_1.ts"};
+			if (Array.IndexOf(args, "-stdIO") > -1) util.isStdIO = true;
+			
+			var lv = (args.Length == 0) ? null : util.getRegGroup(args[0], "(lv\\d+)");
+			util.setLog(config, lv);
+			
+			if (args.Length > 0) {
+				var ar = new ArgReader(args, config, this);
+				ar.read();
+				if (ar.isConcatMode) {
+					urlText.Text = string.Join("|", args);
+	            	rec.rec();
+				} else {
+					if (ar.lvid != null) urlText.Text = ar.lvid;
+					config.argConfig = ar.argConfig;
+					rec.argTsConfig = ar.tsConfig;
+					rec.isRecording = true;
+//					rec.setArgConfig(args);
+					rec.rec();
+				}
+				if (bool.Parse(config.get("Isminimized"))) {
+					this.WindowState = FormWindowState.Minimized;
+				}
+            }
+			
+			
+
+			util.debugWriteLine("arg len " + args.Length);
+			util.debugWriteLine("arg join " + string.Join(" ", args));
+			
 			
             //nicoSessionComboBox1.Selector.PropertyChanged += Selector_PropertyChanged;
 //            checkBoxShowAll.Checked = bool.Parse(config.get("isAllBrowserMode"));
@@ -88,20 +113,6 @@ namespace namaichi
 				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 			}
 			
-			if (args.Length > 0) {
-				if (bool.Parse(config.get("Isminimized"))) {
-					this.WindowState = FormWindowState.Minimized;
-				}
-				if (args.Length == 9 && args[0] == "redist") {
-					urlText.Text = args[1];
-					rec.setRedistInfo(args);
-					rec.rec();
-				} else {
-					urlText.Text = string.Join("|", args);
-	//            	rec = new rec.RecordingManager(this);
-	            	rec.rec();
-				}
-            }
 		}
 
 		private void recBtnAction(object sender, EventArgs e) {
@@ -201,29 +212,50 @@ namespace namaichi
             else return null;
         }
         */
-        public void addLogText(string t) {
+        public void addLogText(string t, bool isInvoke = true) {
+       		if (util.isStdIO) Console.WriteLine("info.log:" + t);
+       		if (!util.isShowWindow) return;
        		try {
-	       		if (IsDisposed) return;
-	        	Invoke((MethodInvoker)delegate() {
-	       		       	try {
-			        	    string _t = "";
-					    	if (logText.Text.Length != 0) _t += "\r\n";
-					    	_t += t;
-					    	
-				    		logText.AppendText(_t);
-							if (logText.Text.Length > 20000) 
-								logText.Text = logText.Text.Substring(logText.TextLength - 10000);
-	       		       	} catch (Exception e) {
-	       		       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-	       		       	}
-	
-				});
+	       		if (this.IsDisposed) return;
+	       		if (!this.IsHandleCreated) return;
+	       		if (isInvoke) {
+		        	this.Invoke((MethodInvoker)delegate() {
+		       		       	try {
+				        	    string _t = "";
+						    	if (logText.Text.Length != 0) _t += "\r\n";
+						    	_t += t;
+						    	
+					    		logText.AppendText(_t);
+								if (logText.Text.Length > 200000) 
+									logText.Text = logText.Text.Substring(logText.TextLength - 10000);
+		       		       	} catch (Exception e) {
+		       		       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+		       		       	}
+		
+					});
+	       		} else {
+	       			try {
+		        	    string _t = "";
+				    	if (logText.Text.Length != 0) _t += "\r\n";
+				    	_t += t;
+				    	
+			    		logText.AppendText(_t);
+						if (logText.Text.Length > 20000) 
+							logText.Text = logText.Text.Substring(logText.TextLength - 10000);
+	   		       	} catch (Exception e) {
+	   		       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+	   		       	}
+	       		}
 	       	} catch (Exception e) {
 	       		util.showException(e);
 	       	}
-       		if (rec.ri != null) Console.WriteLine(t);
+       		
 		}
+        public void addLogTextTest(string t) {
+       		addLogText(t);
+        }
 		public void setRecordState(String t) {
+       		if (!util.isShowWindow) return;
        		//util.debugWriteLine("setRecordState form");
 	       	try {
 	       		if (IsDisposed) return;
@@ -267,6 +299,7 @@ namespace namaichi
 		public void setInfo(string host, string hostUrl, 
         		string group, string groupUrl, string title, string url, 
         		string gentei, string openTime, string description) {
+       		if (!util.isShowWindow) return;
        		util.debugWriteLine(hostUrl);
        		
 	       	try {
@@ -301,6 +334,7 @@ namespace namaichi
        		//util.debugWriteLine(hostLabel.Text + " " + hostLabel.Links);
 		}
 		public void setSamune(string url) {
+       		if (!util.isShowWindow) return;
        		if (IsDisposed) return;
        		WebClient cl = new WebClient();
        		cl.Proxy = null;
@@ -340,7 +374,8 @@ namespace namaichi
 //       			Icon = new System.Drawing.Icon(url);
 			
 		}
-       public void setKeikaJikan(string keikaJikan, string timeLabelStr) {
+       public void setKeikaJikan(string keikaJikan, string timeLabelStr, string stdIoStr, DateTime keikaTimeStart) {
+       		if (!util.isShowWindow) return;
 			try {
 				if (IsDisposed) return;
 				Invoke((MethodInvoker)delegate() {
@@ -354,8 +389,12 @@ namespace namaichi
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 			}
+       		if (util.isStdIO && keikaTimeStart != DateTime.MinValue)
+       			//Console.WriteLine("info.keikaTime:" + stdIoStr);
+       			Console.WriteLine("info.keikaTime:" + keikaTimeStart);
        }
 		public void setStatistics(string visit, string comment) {
+       		if (!util.isShowWindow) return;
 			try {
 			   	if (IsDisposed) return;
 			    	Invoke((MethodInvoker)delegate() {
@@ -372,7 +411,7 @@ namespace namaichi
 			player.setStatistics(visit, comment);
 		}
        public void addComment(string time, string comment, string userId, string score, bool isTimeShift, string color) {
-       	
+       	if (!util.isShowWindow) return;
        	try {
        		if (!IsDisposed && !isTimeShift) {
 		        	Invoke((MethodInvoker)delegate() {
@@ -481,6 +520,7 @@ namespace namaichi
 			recordStateLabel.Text = "";
 		}
 		public void setTitle(string s) {
+			if (!util.isShowWindow) return;
 			try {
 				if (!IsDisposed) {
 		        	Invoke((MethodInvoker)delegate() {
@@ -501,6 +541,7 @@ namespace namaichi
 			player.play();
 		}
 		public void setPlayerBtnEnable(bool b) {
+			if (!util.isShowWindow) return;
 			try {
 				if (!IsDisposed) {
 		        	Invoke((MethodInvoker)delegate() {
@@ -519,6 +560,7 @@ namespace namaichi
 		
 		void mainForm_Load(object sender, EventArgs e)
 		{
+			if (!util.isShowWindow) return;
 			
 			var a = util.getJarPath();
 			var desc = System.Diagnostics.FileVersionInfo.GetVersionInfo(util.getJarPath()[0] + "/websocket4net.dll");

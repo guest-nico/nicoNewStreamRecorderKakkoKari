@@ -47,6 +47,8 @@ namespace namaichi.play
 	    	util.debugWriteLine("connect message server player");
 	    	if (wsr == null)
 	    		return;
+	    	while (wsr.msUri  == null && wsr != null) 
+	    		Thread.Sleep(100);
 			var msUri = wsr.msUri;
 			util.debugWriteLine("msuri player2 " + msUri);
 			

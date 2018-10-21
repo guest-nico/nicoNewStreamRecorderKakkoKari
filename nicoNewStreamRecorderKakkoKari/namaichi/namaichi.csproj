@@ -135,6 +135,7 @@
       <DependentUpon>fileNameOptionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="info\ChatInfo.cs" />
+    <Compile Include="info\numTaskInfo.cs" />
     <Compile Include="info\RedistInfo.cs" />
     <Compile Include="info\TimeShiftConfig.cs" />
     <Compile Include="info\WatchingInfo.cs" />
@@ -170,6 +171,7 @@
     <Compile Include="rec\ArgConcat.cs" />
     <Compile Include="rec\AnotherEngineRecorder.cs" />
     <Compile Include="rec\DeflateDecoder.cs" />
+    <Compile Include="rec\DropSegmentProcess.cs" />
     <Compile Include="rec\FFMpegConcat.cs" />
     <Compile Include="rec\FFMpegRecord.cs" />
     <Compile Include="rec\CookieGetter.cs" />
@@ -195,6 +197,7 @@
     <Compile Include="TimeShiftOptionForm.Designer.cs">
       <DependentUpon>TimeShiftOptionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="util\ArgReader.cs" />
     <Compile Include="util\SourceInfoSerialize.cs" />
     <Compile Include="util\util.cs" />
     <Compile Include="VersionForm.cs" />

@@ -54,7 +54,8 @@ namespace namaichi.rec
 				bool isFFmpeg = Array.IndexOf(command, "-i") != -1;
 				util.debugWriteLine("isffmpeg " + isFFmpeg);
 				
-				var rec = new Record(rm, isFFmpeg, rfu, "", "", 0, null, false, null, null, null, 0, null);
+				
+				var rec = new Record(rm, isFFmpeg, rfu, "", "", 0, null, false, null, null, null, 0, null, null, false);
 				commentGetter = new NotHtmlCommentGetter(messageInfo, rm, rfu, recFolderFile);
 				
 				/*

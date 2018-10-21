@@ -9,6 +9,7 @@
 using System;
 using System.Configuration;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace rokugaTouroku.config {
 /// <summary>
@@ -24,16 +25,19 @@ public class config
         
  	}
 	public Configuration getConfig() {
-		try {
-			var jarPath = util.getJarPath();
-			var configFile = jarPath[0] + "\\ニコ生新配信録画ツール（仮.config";
-			//util.debugWriteLine(configFile);
-	        var exeFileMap = new System.Configuration. ExeConfigurationFileMap { ExeConfigFilename = configFile };
-	        var cfg     = ConfigurationManager.OpenMappedExeConfiguration(exeFileMap, ConfigurationUserLevel.None);
-	        return cfg;
-		} catch (Exception e) {
-			util.debugWriteLine("getconfig " + e.Message + " " + e.StackTrace + " " + e.TargetSite);
-			return null;
+		while (true) {
+			try {
+				var jarPath = util.getJarPath();
+				var configFile = jarPath[0] + "\\ニコ生新配信録画ツール（仮.config";
+				//util.debugWriteLine(configFile);
+		        var exeFileMap = new System.Configuration. ExeConfigurationFileMap { ExeConfigFilename = configFile };
+		        var cfg     = ConfigurationManager.OpenMappedExeConfiguration(exeFileMap, ConfigurationUserLevel.None);
+		        return cfg;
+			} catch (Exception e) {
+				util.debugWriteLine("getconfig " + e.Message + " " + e.StackTrace + " " + e.TargetSite);
+				Thread.Sleep(3000);
+				continue;
+			}
 		}
 	}
 	public void set(string key, string value) {
@@ -78,6 +82,17 @@ public class config
 			{"browserNum","1"},
 //			{"isAllBrowserMode","true"},
 			{"issecondlogin","false"},
+			
+			{"IsHokan","true"},
+			{"accountId2",""},
+			{"accountPass2",""},
+			{"user_session2",""},
+			{"user_session_secure2",""},
+			{"browserNum2","1"},
+			{"issecondlogin2","false"},
+			{"cookieFile2",""},
+			{"iscookie2","false"},
+			
 			{"IsdefaultBrowserPath","true"},
 			{"browserPath",""},
 			{"Isminimized","false"},
@@ -86,7 +101,8 @@ public class config
 			{"IsgetComment","true"},
 			{"IsmessageBox","false"},
 			{"IshosoInfo","false"},
-			{"Islog","true"},
+			{"IsDescriptionTag","false"},
+			{"Islog","false"},
 			{"IstitlebarInfo","true"},
 			{"Islimitpopup","true"},
 			{"Isretry","true"},
@@ -98,7 +114,7 @@ public class config
 			{"IsLogFile","false"},
 			{"segmentSaveType","0"},
 			{"IsRenketuAfter","true"},
-			{"IsAfterRenketuFFmpeg","true"},
+			{"IsAfterRenketuFFmpeg","false"},
 			{"IsDefaultEngine","true"},
 			{"anotherEngineCommand",""},
 			{"IsDefaultPlayer","true"},
@@ -111,7 +127,7 @@ public class config
 			{"M3u8UpdateSeconds","5"},
 			{"IsOpenUrlList","false"},
 			{"openUrlListCommand","notepad {i}"},
-			//{"afterConvertMode","0"},
+			{"afterConvertMode","0"},
 			
 			{"cookieFile",""},
 			{"iscookie","false"},
@@ -133,7 +149,7 @@ public class config
 			{"defaultCommentFormHeight","520"},
 			
 			{"rokugaTourokuWidth","950"},
-			{"rokugaTourokuHeight","350"},
+			{"rokugaTourokuHeight","500"},
 		};
 		var buf = new Dictionary<string,string>();
 		foreach (var k in cfg.AppSettings.Settings.AllKeys) {
@@ -167,7 +183,7 @@ public class config
 			util.debugWriteLine(e.Message + " " + e.StackTrace);
 		}
 	}
-	private string[] defaultConfig = {};
+//	private string[] defaultConfig = {};
 }
 
 }

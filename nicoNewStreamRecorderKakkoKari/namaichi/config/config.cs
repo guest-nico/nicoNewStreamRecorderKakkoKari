@@ -9,6 +9,7 @@
 using System;
 using System.Configuration;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace namaichi.config {
 /// <summary>
@@ -17,6 +18,8 @@ namespace namaichi.config {
 public class config
 {
 	private Configuration cfg;
+	public Dictionary<string, string> defaultConfig;
+	public Dictionary<string, string> argConfig = new Dictionary<string, string>();
 	public config()
 	{
 		cfg = getConfig();
@@ -24,16 +27,20 @@ public class config
         
  	}
 	public Configuration getConfig() {
-		try {
-			var jarPath = util.getJarPath();
-			var configFile = jarPath[0] + "\\" + jarPath[1] + ".config";
-			//util.debugWriteLine(configFile);
-	        var exeFileMap = new System.Configuration. ExeConfigurationFileMap { ExeConfigFilename = configFile };
-	        var cfg     = ConfigurationManager.OpenMappedExeConfiguration(exeFileMap, ConfigurationUserLevel.None);
-	        return cfg;
-		} catch (Exception e) {
-			util.debugWriteLine("getconfig " + e.Message + " " + e.StackTrace + " " + e.TargetSite);
-			return null;
+		while (true) {
+			try {
+				var jarPath = util.getJarPath();
+				var configFile = jarPath[0] + "\\" + jarPath[1] + ".config";
+				//util.debugWriteLine(configFile);
+		        var exeFileMap = new System.Configuration. ExeConfigurationFileMap { ExeConfigFilename = configFile };
+		        var cfg     = ConfigurationManager.OpenMappedExeConfiguration(exeFileMap, ConfigurationUserLevel.None);
+		        return cfg;
+			} catch (Exception e) {
+				util.debugWriteLine("getconfig " + e.Message + " " + e.StackTrace + " " + e.TargetSite);
+				Thread.Sleep(3000);
+				continue;
+			}
+			
 		}
 	}
 	public void set(string key, string value) {
@@ -67,10 +74,16 @@ public class config
 			util.debugWriteLine("config get exception " + key + " " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 			return null;
 		}
-		return cfg.AppSettings.Settings[key].Value;
+		try {
+			if (argConfig.ContainsKey(key)) 
+				return argConfig[key];
+			return cfg.AppSettings.Settings[key].Value;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 	private void defaultMergeFile() {
-		var defaulBuf = new Dictionary<string, string>(){
+		defaultConfig = new Dictionary<string, string>(){
 			{"accountId",""},
 			{"accountPass",""},
 			{"user_session",""},
@@ -78,6 +91,17 @@ public class config
 			{"browserNum","1"},
 //			{"isAllBrowserMode","true"},
 			{"issecondlogin","false"},
+			
+			{"IsHokan","false"},
+			{"accountId2",""},
+			{"accountPass2",""},
+			{"user_session2",""},
+			{"user_session_secure2",""},
+			{"browserNum2","1"},
+			{"issecondlogin2","false"},
+			{"cookieFile2",""},
+			{"iscookie2","false"},
+			
 			{"IsdefaultBrowserPath","true"},
 			{"browserPath",""},
 			{"Isminimized","false"},
@@ -86,7 +110,8 @@ public class config
 			{"IsgetComment","true"},
 			{"IsmessageBox","false"},
 			{"IshosoInfo","false"},
-			{"Islog","true"},
+			{"IsDescriptionTag","false"},
+			{"Islog","false"},
 			{"IstitlebarInfo","true"},
 			{"Islimitpopup","true"},
 			{"Isretry","true"},
@@ -111,7 +136,7 @@ public class config
 			{"M3u8UpdateSeconds","5"},
 			{"IsOpenUrlList","false"},
 			{"openUrlListCommand","notepad {i}"},
-			//{"afterConvertMode","0"},
+			{"afterConvertMode","0"},
 			
 			{"cookieFile",""},
 			{"iscookie","false"},
@@ -133,16 +158,17 @@ public class config
 			{"defaultCommentFormHeight","520"},
 			
 			{"rokugaTourokuWidth","950"},
-			{"rokugaTourokuHeight","350"},
+			{"rokugaTourokuHeight","500"},
 		};
+
 		var buf = new Dictionary<string,string>();
 		foreach (var k in cfg.AppSettings.Settings.AllKeys) {
 			buf.Add(k, cfg.AppSettings.Settings[k].Value);
 		}
 		
 		cfg.AppSettings.Settings.Clear();
-		foreach (var k in defaulBuf.Keys) {
-			var v = (buf.ContainsKey(k)) ? buf[k] : defaulBuf[k];
+		foreach (var k in defaultConfig.Keys) {
+			var v = (buf.ContainsKey(k)) ? buf[k] : defaultConfig[k];
 			cfg.AppSettings.Settings.Add(k, v);
 		}
 		try {
@@ -150,7 +176,6 @@ public class config
 		} catch (Exception e) {
 			util.debugWriteLine(e.Message + " " + e.StackTrace);
 		}
-		
 		
 		// Dictionary<string, string>
 	}
@@ -167,7 +192,7 @@ public class config
 			util.debugWriteLine(e.Message + " " + e.StackTrace);
 		}
 	}
-	private string[] defaultConfig = {};
+//	private string[] defaultConfig = {};
 }
 
 }

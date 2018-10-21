@@ -45,7 +45,7 @@ namespace namaichi
 			this.cfg = cfg;
 			
 			nicoSessionComboBox1.Selector.PropertyChanged += Selector_PropertyChanged;
-			
+			nicoSessionComboBox2.Selector.PropertyChanged += Selector2_PropertyChanged;
 			setFormFromConfig();
 		}
 		
@@ -76,20 +76,30 @@ namespace namaichi
 			cfg.saveFromForm(formData);
 			Close();
 			
+			//main cookie
 			var importer = nicoSessionComboBox1.Selector.SelectedImporter;
 			if (importer == null || importer.SourceInfo == null) return;
 			var si = importer.SourceInfo;
 			
 			if (isCookieFileSiteiChkBox.Checked)
-				SourceInfoSerialize.save(si.GenerateCopy(si.BrowserName, si.ProfileName, cookieFileText.Text));
-			else SourceInfoSerialize.save(si); 
+				SourceInfoSerialize.save(si.GenerateCopy(si.BrowserName, si.ProfileName, cookieFileText.Text), false);
+			else SourceInfoSerialize.save(si, false); 
 			
+			//sub cookie
+			var importer2 = nicoSessionComboBox2.Selector.SelectedImporter;
+			if (importer2 == null || importer2.SourceInfo == null) return;
+			var si2 = importer2.SourceInfo;
+			
+			if (isCookieFileSiteiChkBox2.Checked)
+				SourceInfoSerialize.save(si2.GenerateCopy(si2.BrowserName, si2.ProfileName, cookieFileText2.Text), true);
+			else SourceInfoSerialize.save(si2, true);
 		}
 
 		private Dictionary<string, string> getFormData() {
-			var selectedImporter = nicoSessionComboBox1.Selector.SelectedImporter;
+			//var selectedImporter = nicoSessionComboBox1.Selector.SelectedImporter;
 //			var browserName = (selectedImporter != null) ? selectedImporter.SourceInfo.BrowserName : "";
 			var browserNum = (useCookieRadioBtn.Checked) ? "2" : "1";
+			var browserNum2 = (useCookieRadioBtn2.Checked) ? "2" : "1";
 			return new Dictionary<string, string>(){
 				{"accountId",mailText.Text},
 				{"accountPass",passText.Text},
@@ -104,7 +114,8 @@ namespace namaichi
 				{"IsfailExit",isFailExit.Checked.ToString().ToLower()},
 				{"IsgetComment",isGetCommentChkBox.Checked.ToString().ToLower()},
 				{"IsmessageBox",isMessageBoxChkBox.Checked.ToString().ToLower()},
-//				{"IshosoInfo",isHosoInfoChkBox.Checked.ToString().ToLower()},
+				{"IshosoInfo",isHosoInfoChkBox.Checked.ToString().ToLower()},
+				{"IsDescriptionTag",isDescriptionTagChkBox.Checked.ToString().ToLower()},
 //				{"Islog",isLogChkBox.Checked.ToString().ToLower()},
 				{"IstitlebarInfo",isTitleBarInfoChkBox.Checked.ToString().ToLower()},
 //				{"Islimitpopup",isLimitPopupChkBox.Checked.ToString().ToLower()},
@@ -124,6 +135,7 @@ namespace namaichi
 				{"IsDefaultCommentViewer",isDefaultCommentViewerRadioBtn.Checked.ToString().ToLower()},
 				{"anotherPlayerPath",anotherPlayerPathText.Text},
 				{"anotherCommentViewerPath",anotherCommentViewerPathText.Text},
+				{"afterConvertMode",getAfterConvertType()},
 				
 				{"cookieFile",cookieFileText.Text},
 				{"iscookie",isCookieFileSiteiChkBox.Checked.ToString().ToLower()},
@@ -136,6 +148,16 @@ namespace namaichi
 				//{"ffmpegopt",ffmpegoptText.Text},
 				{"user_session",""},
 				{"user_session_secure",""},
+				
+				{"IsHokan",isHokanChkBox.Checked.ToString().ToLower()},
+				{"accountId2",mailText2.Text},
+				{"accountPass2",passText2.Text},
+				{"browserNum2",browserNum2},
+				{"issecondlogin2",useSecondLoginChkBox2.Checked.ToString().ToLower()},
+				{"cookieFile2",cookieFileText2.Text},
+				{"iscookie2",isCookieFileSiteiChkBox2.Checked.ToString().ToLower()},
+				{"user_session2",""},
+				{"user_session_secure2",""},
 			};
 			
 		}
@@ -179,7 +201,45 @@ namespace namaichi
                     break;
             }
         }
-
+		async void Selector2_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+			//if (isInitRun) initRec();
+			
+            switch(e.PropertyName)
+            {
+                case "SelectedIndex":
+                    var cookieContainer = new CookieContainer();
+                    var currentGetter = nicoSessionComboBox2.Selector.SelectedImporter;
+                    if (currentGetter != null)
+                    {
+                        var result = await currentGetter.GetCookiesAsync(TargetUrl);
+                        
+                        var cookie = result.Status == CookieImportState.Success ? result.Cookies["user_session"] : null;
+//                        foreach (var c in result.Cookies)
+//                        	util.debugWriteLine(c);
+                        //logText.Text += cookie.Name + cookie.Value+ cookie.Expires;
+                        
+                        //UI更新
+//                        txtCookiePath.Text = currentGetter.SourceInfo.CookiePath;
+//                        btnOpenCookieFileDialog.Enabled = true;
+//                        txtUserSession.Text = cookie != null ? cookie.Value : null;
+//                        txtUserSession.Enabled = result.Status == CookieImportState.Success;
+                        //Properties.Settings.Default.SelectedSourceInfo = currentGetter.SourceInfo;
+                        //Properties.Settings.Default.Save();
+                        //cfg.set("browserNum", nicoSessionComboBox1.Selector.SelectedIndex.ToString());
+                        //if (cookie != null) cfg.set("user_session", cookie.Value);
+                        //cfg.set("isAllBrowserMode", nicoSessionComboBox1.Selector.IsAllBrowserMode.ToString());
+                    }
+                    else
+                    {
+//                        txtCookiePath.Text = null;
+//                        txtUserSession.Text = null;
+//                        txtUserSession.Enabled = false;
+//                        btnOpenCookieFileDialog.Enabled = false;
+                    }
+                    break;
+            }
+        }
 		void btnReload_Click(object sender, EventArgs e)
         { 
 			//var si = nicoSessionComboBox1.Selector.SelectedImporter.SourceInfo;
@@ -195,10 +255,31 @@ namespace namaichi
 //			a.GetCookieImporter(new CookieSourceInfo("
 			var tsk = nicoSessionComboBox1.Selector.UpdateAsync(); 
 		}
+		void btnReload2_Click(object sender, EventArgs e)
+        { 
+			//var si = nicoSessionComboBox1.Selector.SelectedImporter.SourceInfo;
+			//util.debugWriteLine(si.EngineId + " " + si.BrowserName + " " + si.ProfileName);
+//			var a = new SunokoLibrary.Application.Browsers.FirefoxImporterFactory();
+//			foreach (var b in a.GetCookieImporters()) {
+//				var c = b.GetCookiesAsync(TargetUrl);
+//				c.ConfigureAwait(false);
+				
+//				util.debugWriteLine(c.Result.Cookies["user_session"]);
+//			}
+				
+//			a.GetCookieImporter(new CookieSourceInfo("
+			var tsk = nicoSessionComboBox2.Selector.UpdateAsync(); 
+		}
         void btnOpenCookieFileDialog_Click(object sender, EventArgs e)
         { var tsk = nicoSessionComboBox1.ShowCookieDialogAsync(); }
         void checkBoxShowAll_CheckedChanged(object sender, EventArgs e)
         { nicoSessionComboBox1.Selector.IsAllBrowserMode = checkBoxShowAll.Checked;
+//        	cfg.set("isAllBrowserMode", nicoSessionComboBox1.Selector.IsAllBrowserMode.ToString());
+        }
+        void btnOpenCookieFileDialog2_Click(object sender, EventArgs e)
+        { var tsk = nicoSessionComboBox2.ShowCookieDialogAsync(); }
+        void checkBoxShowAll2_CheckedChanged(object sender, EventArgs e)
+        { nicoSessionComboBox2.Selector.IsAllBrowserMode = checkBoxShowAll2.Checked;
 //        	cfg.set("isAllBrowserMode", nicoSessionComboBox1.Selector.IsAllBrowserMode.ToString());
         }
         int getSubFolderNameType() {
@@ -240,7 +321,9 @@ namespace namaichi
         	isFailExit.Checked = bool.Parse(cfg.get("IsfailExit"));
         	isGetCommentChkBox.Checked = bool.Parse(cfg.get("IsgetComment"));
         	isMessageBoxChkBox.Checked = bool.Parse(cfg.get("IsmessageBox"));
-//        	isHosoInfoChkBox.Checked = bool.Parse(cfg.get("IshosoInfo"));
+        	isHosoInfoChkBox.Checked = bool.Parse(cfg.get("IshosoInfo"));
+        	isDescriptionTagChkBox.Checked = bool.Parse(cfg.get("IsDescriptionTag"));
+        	isDescriptionChkBox_UpdateAction();
 //        	isLogChkBox.Checked = bool.Parse(cfg.get("Islog"));
         	isTitleBarInfoChkBox.Checked = bool.Parse(cfg.get("IstitlebarInfo"));
 //        	isLimitPopupChkBox.Checked = bool.Parse(cfg.get("Islimitpopup"));
@@ -265,7 +348,7 @@ namespace namaichi
 			setCommentViewerType();
 			anotherPlayerPathText.Text = cfg.get("anotherPlayerPath");
 			anotherCommentViewerPathText.Text = cfg.get("anotherCommentViewerPath");
-				
+			setConvertList(int.Parse(cfg.get("afterConvertMode")));
 			
         	isCookieFileSiteiChkBox.Checked = bool.Parse(cfg.get("iscookie"));
         	isCookieFileSiteiChkBox_UpdateAction();
@@ -281,8 +364,21 @@ namespace namaichi
         	fileNameTypeDokujiSetteiBtn.Text = util.getFileNameTypeSample(fileNameFormat);
         	//ffmpegoptText.Text = cfg.get("ffmpegopt");
         	
-        	var si = SourceInfoSerialize.load();
+        	isHokanChkBox.Checked = bool.Parse(cfg.get("IsHokan"));
+        	isSubHokanChkBox_updateAction();
+        	mailText2.Text = cfg.get("accountId2");
+        	passText2.Text = cfg.get("accountPass2");
+        	if (cfg.get("browserNum2") == "1") useAccountLoginRadioBtn2.Checked = true;
+        	else useCookieRadioBtn2.Checked = true; 
+        	useSecondLoginChkBox2.Checked = bool.Parse(cfg.get("issecondlogin2"));
+        	isCookieFileSiteiChkBox2.Checked = bool.Parse(cfg.get("iscookie2"));
+        	isCookieFileSiteiChkBox2_UpdateAction();
+        	cookieFileText2.Text = cfg.get("cookieFile2");
+        		
+        	var si = SourceInfoSerialize.load(false);
         	nicoSessionComboBox1.Selector.SetInfoAsync(si);
+        	var si2 = SourceInfoSerialize.load(true);
+        	nicoSessionComboBox2.Selector.SetInfoAsync(si2);
 //			!bool.Parse(cfg.get("defaultBrowserPath"))
         }
         private void setSubFolderNameType(int subFolderNameType) {
@@ -324,16 +420,31 @@ namespace namaichi
 			
 			cookieFileText.Text = dialog.FileName;
 		}
-		
+		void cookieFileSiteiSanshouBtn2_Click(object sender, EventArgs e)
+		{
+			var dialog = new OpenFileDialog();
+			dialog.Multiselect = false;
+			var result = dialog.ShowDialog();
+			if (result != DialogResult.OK) return;
+			
+			cookieFileText2.Text = dialog.FileName;
+		}
 		void isCookieFileSiteiChkBox_CheckedChanged(object sender, EventArgs e)
 		{
 			isCookieFileSiteiChkBox_UpdateAction();
+		}
+		void isCookieFileSiteiChkBox2_CheckedChanged(object sender, EventArgs e)
+		{
+			isCookieFileSiteiChkBox2_UpdateAction();
 		}
 		void isCookieFileSiteiChkBox_UpdateAction() {
 //			cookieFileText.Enabled = isCookieFileSiteiChkBox.Checked;
 //			cookieFileSanshouBtn.Enabled = isCookieFileSiteiChkBox.Checked;
 		}
-		
+		void isCookieFileSiteiChkBox2_UpdateAction() {
+//			cookieFileText.Enabled = isCookieFileSiteiChkBox.Checked;
+//			cookieFileSanshouBtn.Enabled = isCookieFileSiteiChkBox.Checked;
+		}
 		void useDefaultRecFolderChkBox_CheckedChanged(object sender, EventArgs e)
 		{
 			useDefaultRecFolderChkBox_UpdateAction();
@@ -368,17 +479,32 @@ namespace namaichi
 			var cg = new rec.CookieGetter(cfg);
 			var cc = await cg.getAccountCookie(mailText.Text, passText.Text);
 			if (cc == null) {
-				MessageBox.Show("error", "aaa", MessageBoxButtons.OK);
+				MessageBox.Show("login error", "", MessageBoxButtons.OK);
 				return;
 			}
 			if (cc.GetCookies(TargetUrl)["user_session"] == null &&
 				                   cc.GetCookies(TargetUrl)["user_session_secure"] == null)
-				MessageBox.Show("no login", "aaa", MessageBoxButtons.OK);
-			else MessageBox.Show("login ok", "aaa", MessageBoxButtons.OK);
+				MessageBox.Show("no login", "", MessageBoxButtons.OK);
+			else MessageBox.Show("login ok", "", MessageBoxButtons.OK);
 			
 			//MessageBox.Show("aa");
 		}
-		
+		async void loginBtn2_Click(object sender, EventArgs e)
+		{
+			
+			var cg = new rec.CookieGetter(cfg);
+			var cc = await cg.getAccountCookie(mailText2.Text, passText2.Text);
+			if (cc == null) {
+				MessageBox.Show("login error", "", MessageBoxButtons.OK);
+				return;
+			}
+			if (cc.GetCookies(TargetUrl)["user_session"] == null &&
+				                   cc.GetCookies(TargetUrl)["user_session_secure"] == null)
+				MessageBox.Show("no login", "", MessageBoxButtons.OK);
+			else MessageBox.Show("login ok", "", MessageBoxButtons.OK);
+			
+			//MessageBox.Show("aa");
+		}
 		
 		void isDefaultBrowserPathChkBox_CheckedChanged(object sender, EventArgs e)
 		{
@@ -576,6 +702,13 @@ namespace namaichi
 		{
 			isDefaultCommentViewerRadioBtn_UpdateAction();
 		}
+		void isHosoInfoChkBox_CheckedChanged(object sender, EventArgs e)
+		{
+			isDescriptionChkBox_UpdateAction();
+		}
+		void isDescriptionChkBox_UpdateAction() {
+			isDescriptionTagChkBox.Enabled = isHosoInfoChkBox.Checked;
+		}
 		void anotherPlayerSanshouBtn_Click(object sender, EventArgs e)
 		{
 			var dialog = new OpenFileDialog();
@@ -593,6 +726,62 @@ namespace namaichi
 			if (result != DialogResult.OK) return;
 			
 			anotherCommentViewerPathText.Text = dialog.FileName;
+		}
+		void setConvertList(int afterConvertMode) {
+			var t = "ts(変換無し)";
+			if (afterConvertMode == 1) t = "avi";  
+			if (afterConvertMode == 2) t = "mp4";
+			if (afterConvertMode == 3) t = "flv";
+			if (afterConvertMode == 4) t = "mov";
+			if (afterConvertMode == 5) t = "wmv";
+			if (afterConvertMode == 6) t = "vob";
+			if (afterConvertMode == 7) t = "mkv";
+			if (afterConvertMode == 8) t = "mp3(音声)";
+			if (afterConvertMode == 9) t = "wav(音声)";
+			if (afterConvertMode == 10) t = "wma(音声)";
+			if (afterConvertMode == 11) t = "aac(音声)";
+			if (afterConvertMode == 12) t = "ogg(音声)";
+			afterConvertModeList.Text = t;
+		}
+		private string getAfterConvertType() {
+			var t = afterConvertModeList.Text;
+			if (t == "ts(変換無し)") return "0";
+			if (t == "avi") return "1";
+			if (t == "mp4") return "2";
+			if (t == "flv") return "3";
+			if (t == "mov") return "4";
+			if (t == "wmv") return "5";
+			if (t == "vob") return "6";
+			if (t == "mkv") return "7";
+			if (t == "mp3(音声)") return "8";
+			if (t == "wav(音声)") return "9";
+			if (t == "wma(音声)") return "10";
+			if (t == "aac(音声)") return "11";
+			if (t == "ogg(音声)") return "12";
+			return t;
+		}
+		
+		
+		void isSubHokanChkBox_CheckedChanged(object sender, EventArgs e)
+		{
+			isSubHokanChkBox_updateAction();
+		}
+		void isSubHokanChkBox_updateAction() {
+			var _checked = isHokanChkBox.Checked; 
+			useCookieRadioBtn2.Enabled = _checked;
+			checkBoxShowAll2.Enabled = _checked;
+			nicoSessionComboBox2.Enabled = _checked;
+			btnReload2.Enabled = _checked;
+			isCookieFileSiteiChkBox2.Enabled = _checked;
+			cookieFileText2.Enabled = _checked;
+			cookieFileSanshouBtn2.Enabled = _checked;
+			useSecondLoginChkBox2.Enabled = _checked;
+			useAccountLoginRadioBtn2.Enabled = _checked;
+			mailText2.Enabled = _checked;
+			passText2.Enabled = _checked;
+			loginBtn2.Enabled = _checked;
+			subMailLabel2.Enabled = _checked;
+			subPassLabel2.Enabled = _checked;
 		}
 	}
 }

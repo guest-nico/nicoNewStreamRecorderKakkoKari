@@ -46,14 +46,35 @@ namespace namaichi.rec
 		public bool isTitleBarInfo = false;
 		public bool isPlayOnlyMode = false;
 		
+		public TimeShiftConfig argTsConfig;
+		
 		public RecordingManager(MainForm form, config.config cfg)
 		{
 			this.form = form;
 			this.cfg = cfg;
 		}
-
+		/*
+		async Task<int> test(int a) {
+			//util.debugWriteLine(a);
+			//c += a;
+			return a;
+		}
+		*/
 		async public void rec() {
             util.debugWriteLine("rm");
+            /*
+            var c = 0;
+            var l = new System.Collections.Generic.List<Task<int>>();
+            for (var a = 0; a < 10000; a++) {
+            	//var _a = a;
+            	//Task.Run(() => c+= _a);
+            	//c += a;
+            	l.Add(test(a));
+            }
+            foreach (var b in l) c += b.Result;
+            //Thread.Sleep(3000);
+            util.debugWriteLine(c);//4950
+            */
             
             var lv = util.getRegGroup(form.urlText.Text, "(lv\\d+)");
 			util.setLog(cfg, lv);
@@ -113,79 +134,118 @@ namespace namaichi.rec
 
 				rfu = new RecordFromUrl(this);
 				Task.Run(() => {
-				    
-				    var _rfu = rfu;
-				    util.debugWriteLine("rm rec 録画開始" + rfu);
-				    
-				    util.debugWriteLine(form);
-				    util.debugWriteLine(form.urlText);
-				    util.debugWriteLine(form.urlText.Text);
-				    
-				    //endcode 0-その他の理由 1-stop 2-最初に終了 3-始また後に番組終了
-                	var endCode = rfu.rec(form.urlText.Text, lvid);
-                	util.debugWriteLine("endcode " + endCode);
-                	
-                	if (rfu == _rfu) {
-	                	isRecording = false;
-						rfu = null;
-						if (!form.IsDisposed) {
-							try {
-								form.Invoke((MethodInvoker)delegate() {
-									try {
-						        	    form.recBtn.Text = "録画開始";
-										form.urlText.Enabled = true;
-										form.optionMenuItem.Enabled = true;
-									} catch (Exception e) {
-			       	       				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-			       	       			}
-								});
-							} catch (Exception e) {
-					       		util.showException(e);
-					       	}
-						}
-						
-						util.debugWriteLine("end rec " + rfu);
-						if (!isClickedRecBtn && endCode == 3) {
-							Environment.ExitCode = 5;
-							form.Close();
-						}
-						hlsUrl = null;
-						
-						recordingUrl = null;
-                	}
-                	if (bool.Parse(cfg.get("IscloseExit")) && endCode == 3) {
-                		rfu = null;
-                		try {
-							form.Invoke((MethodInvoker)delegate() {
+					try {
+					    var _rfu = rfu;
+					    util.debugWriteLine("rm rec 録画開始" + rfu);
+					    
+					    util.debugWriteLine(form);
+					    util.debugWriteLine(form.urlText);
+					    util.debugWriteLine(form.urlText.Text);
+					    
+					    //endcode 0-その他の理由 1-stop 2-最初に終了 3-始まった後に番組終了
+	                	var endCode = rfu.rec(form.urlText.Text, lvid);
+	                	util.debugWriteLine("endcode " + endCode);
+	                	
+	                	if (rfu == _rfu) {
+		                	isRecording = false;
+							rfu = null;
+							if (!form.IsDisposed && util.isShowWindow) {
 								try {
-                			        Environment.ExitCode = 5;
+									form.Invoke((MethodInvoker)delegate() {
+										try {
+							        	    form.recBtn.Text = "録画開始";
+											form.urlText.Enabled = true;
+											form.optionMenuItem.Enabled = true;
+										} catch (Exception e) {
+				       	       				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+				       	       			}
+									});
+								} catch (Exception e) {
+						       		util.showException(e);
+						       	}
+							}
+							
+							util.debugWriteLine("end rec " + rfu);
+							if (!isClickedRecBtn && endCode == 3) {
+								Environment.ExitCode = 5;
+								if (util.isShowWindow) {
+			                		try {
+										form.Invoke((MethodInvoker)delegate() {
+											try {
+								       			form.Close();
+			                			    } catch (Exception e) {
+						       	       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+						       	       		}
+										});
+			                		} catch (Exception e) {
+							       		util.showException(e);
+							       	}
+		                		}
+							}
+							hlsUrl = null;
+							
+							recordingUrl = null;
+	                	}
+	                	if (bool.Parse(cfg.get("IscloseExit")) && endCode == 3) {
+	                		rfu = null;
+	                		Environment.ExitCode = 5;
+	                		if (util.isShowWindow) {
+		                		try {
+									form.Invoke((MethodInvoker)delegate() {
+										try {
+							       			form.Close();
+		                			    } catch (Exception e) {
+					       	       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+					       	       		}
+									});
+		                		} catch (Exception e) {
+						       		util.showException(e);
+						       	}
+	                		}
+	                	}
+	                	if (util.isStdIO && (endCode == 0 || endCode == 2 || endCode == 3)) {
+	                		form.Invoke((MethodInvoker)delegate() {
+								try {
 					       			form.Close();
-                			    } catch (Exception e) {
+	            			    } catch (Exception e) {
 			       	       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 			       	       		}
 							});
-                		} catch (Exception e) {
-				       		util.showException(e);
-				       	}
-                	}
+	                		
+	                	}
+	             	} catch (Exception e) {
+						util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+						rfu = null;
+						form.Invoke((MethodInvoker)delegate() {
+							try {
+				        	    form.recBtn.Text = "録画開始";
+								form.urlText.Enabled = true;
+								form.optionMenuItem.Enabled = true;
+							} catch (Exception ee) {
+	       	       				util.debugWriteLine(ee.Message + " " + ee.StackTrace + " " + ee.Source + " " + ee.TargetSite);
+	       	       			}
+						});
+					}
 				});
-				
+		         
 			} else {
-            	try {
-	            	form.Invoke((MethodInvoker)delegate() {
-						try {
-			        	    form.recBtn.Text = "録画開始";
-							form.urlText.Enabled = true;
-							form.optionMenuItem.Enabled = true;
-							form.addLogText("録画を中断しました");
-							
-						} catch (Exception e) {
-							util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-						}
-					});
-            	} catch (Exception e) {
-		       		util.showException(e);
-		       	}
+				if (util.isShowWindow) {
+	            	try {
+		            	form.Invoke((MethodInvoker)delegate() {
+							try {
+				        	    form.recBtn.Text = "録画開始";
+								form.urlText.Enabled = true;
+								form.optionMenuItem.Enabled = true;
+								form.addLogText("録画を中断しました");
+								
+							} catch (Exception e) {
+								util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+							}
+						});
+	            	} catch (Exception e) {
+			       		util.showException(e);
+			       	}
+				}
 				isRecording = false;
 				rfu = null;
 				hlsUrl = null;

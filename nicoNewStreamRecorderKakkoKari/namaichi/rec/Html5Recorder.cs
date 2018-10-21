@@ -73,15 +73,16 @@ namespace namaichi.rec
 			
 		}
 		*/
-		private string[] getWebSocketInfo(string data) {
+		public string[] getWebSocketInfo(string data) {
 //			util.debugWriteLine(data);
 			var wsUrl = util.getRegGroup(data, "\"webSocketUrl\":\"([\\d\\D]+?)\"");
-			util.debugWriteLine("wsurl " + wsUrl);
+			util.debugWriteLine("wsurl " + wsUrl + util.getMainSubStr(isSub));
 			//var broadcastId = util.getRegGroup(wsUrl, "/(\\d+)\\?");
 			var broadcastId = util.getRegGroup(data, "\"broadcastId\"\\:\"(\\d+)\"");
-			util.debugWriteLine("broadcastid " + broadcastId);
-			string request = "{\"type\":\"watch\",\"body\":{\"command\":\"getpermit\",\"requirement\":{\"broadcastId\":\"" + broadcastId + "\",\"route\":\"\",\"stream\":{\"protocol\":\"hls\",\"requireNewStream\":true,\"priorStreamQuality\":\"normal\"},\"room\":{\"isCommentable\":true,\"protocol\":\"webSocket\"}}}}";
-			util.debugWriteLine("request " + request);
+			util.debugWriteLine("broadcastid " + broadcastId + util.getMainSubStr(isSub));
+			string request = "{\"type\":\"watch\",\"body\":{\"command\":\"getpermit\",\"requirement\":{\"broadcastId\":\"" + broadcastId + "\",\"route\":\"\",\"stream\":{\"protocol\":\"hls\",\"requireNewStream\":true,\"priorStreamQuality\":\"normal\", \"isLowLatency\": false},\"room\":{\"isCommentable\":true,\"protocol\":\"webSocket\"}}}}";
+//			string request = "{\"type\":\"watch\",\"body\":{\"command\":\"getpermit\",\"requirement\":{\"broadcastId\":\"" + broadcastId + "\",\"route\":\"\",\"stream\":{\"protocol\":\"hls\",\"requireNewStream\":true,\"priorStreamQuality\":\"normal\"},\"room\":{\"isCommentable\":true,\"protocol\":\"webSocket\"}}}}";
+			util.debugWriteLine("request " + request + util.getMainSubStr(isSub));
 			return new string[]{wsUrl, request};
 		}
 		private string[] getHtml5RecFolderFileInfo(string data, string type) {
@@ -171,12 +172,12 @@ namespace namaichi.rec
 				var type = util.getRegGroup(res, "\"content_type\":\"(.+?)\"");
 				var data = util.getRegGroup(res, "<script id=\"embedded-data\" data-props=\"([\\d\\D]+?)</script>");
 				var pageType = util.getPageType(res);
-				util.debugWriteLine("pagetype " + pageType);
+				util.debugWriteLine("pagetype " + pageType + util.getMainSubStr(isSub));
 				
 				if (data == null || (pageType != 0 && pageType != 7)) {
 					//processType 0-ok 1-retry 2-放送終了 3-その他の理由の終了
 					var processType = processFromPageType(pageType);
-					util.debugWriteLine("processType " + processType);
+					util.debugWriteLine("processType " + processType + util.getMainSubStr(isSub));
 					//if (processType == 0 || processType == 1) continue;
 					if (processType == 2) return 3;
 //					if (processType == 3) return 0;
@@ -215,56 +216,61 @@ namespace namaichi.rec
 //				if (isNoPermission) webSocketRecInfo[1] = webSocketRecInfo[1].Replace("\"requireNewStream\":false", "\"requireNewStream\":true");
 				recFolderFileInfo = getHtml5RecFolderFileInfo(data, type);
 				
-				
-			
-				//display set
-				Task.Run(() => {
-			         	var b = new RecordStateSetter(rm.form, rm, rfu, isTimeShift, false);
-			         	b.set(data, type, recFolderFileInfo);
-
-//			         	int abcd;
-			         });
-//				new RecordStateSetter().set(data, rm.form, type, recFolderFileInfo);
-			
-//				System.Threading.Thread.Sleep(20000);
-				
-				//timeshift option
-				timeShiftConfig = null;
-				if (isTimeShift) {
-					if (rm.ri != null) timeShiftConfig = rm.ri.tsConfig;
-					else {
-						timeShiftConfig = getTimeShiftConfig(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, openTime);
-						if (timeShiftConfig == null) return 2;
-						rm.cfg.set("IsUrlList", timeShiftConfig.isOutputUrlList.ToString().ToLower());
-						rm.cfg.set("openUrlListCommand", timeShiftConfig.openListCommand);
+				if (!isSub) {
+					//timeshift option
+					timeShiftConfig = null;
+					if (isTimeShift) {
+						if (rm.ri != null) timeShiftConfig = rm.ri.tsConfig;
+						if (rm.argTsConfig != null) {
+							timeShiftConfig = getReadyArgTsConfig(rm.argTsConfig, recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], openTime);
+						} else {
+							timeShiftConfig = getTimeShiftConfig(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, openTime);
+							if (timeShiftConfig == null) return 2;
+							rm.cfg.set("IsUrlList", timeShiftConfig.isOutputUrlList.ToString().ToLower());
+							rm.cfg.set("openUrlListCommand", timeShiftConfig.openListCommand);
+						}
 					}
+				
+				
+					util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode());
+					if (recFolderFile == null)
+						recFolderFile = getRecFilePath(openTime);
+					if (recFolderFile == null || recFolderFile[0] == null) {
+						//パスが長すぎ
+						rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);
+						util.debugWriteLine("too long path? " + recFolderFile[1]);
+						return 2;
+					}
+				
+					//display set
+					var b = new RecordStateSetter(rm.form, rm, rfu, isTimeShift, false, recFolderFile);
+					Task.Run(() => {
+					       	b.set(data, type, recFolderFileInfo);
+						});
+					
+					//hosoInfo
+					if (rm.cfg.get("IshosoInfo") == "true")
+						Task.Run(() => {b.writeHosoInfo();});
+					
+					util.debugWriteLine("form disposed" + rm.form.IsDisposed);
+					util.debugWriteLine("recfolderfile test " + recFolderFileInfo);
+					
+					var fileName = System.IO.Path.GetFileName(recFolderFile[1]);
+					rm.form.setTitle(fileName);
+					
+					
+	//				if (recFolderFile == null) continue;
+					
+					for (int i = 0; i < recFolderFile.Length; i++)
+						util.debugWriteLine("recd " + i + " " + recFolderFileInfo[i]);
+					
+				} else {
+					recFolderFile = new string[]{"", "", ""};
 				}
-				
-				util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode());
-				if (recFolderFile == null)
-					recFolderFile = getRecFilePath(openTime);
-				if (recFolderFile == null || recFolderFile[0] == null) {
-					//パスが長すぎ
-					rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);
-					util.debugWriteLine("too long path? " + recFolderFile[1]);
-					return 2;
-				}
-				
-				util.debugWriteLine("form disposed" + rm.form.IsDisposed);
-				util.debugWriteLine("recfolderfile test " + recFolderFileInfo);
-				
-				var fileName = System.IO.Path.GetFileName(recFolderFile[1]);
-				rm.form.setTitle(fileName);
-				
-				
-//				if (recFolderFile == null) continue;
-				
-				for (int i = 0; i < recFolderFile.Length; i++)
-					util.debugWriteLine("recd " + i + " " + recFolderFileInfo[i]);
 				
 				var userId = util.getRegGroup(res, "\"user\"\\:\\{\"user_id\"\\:(.+?),");
 				var isPremium = res.IndexOf("\"member_status\":\"premium\"") > -1;
-				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, lastSegmentNo, isTimeShift, lvid, timeShiftConfig, userId, isPremium, programTime, type, _openTime);
+				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, lastSegmentNo, isTimeShift, lvid, timeShiftConfig, userId, isPremium, programTime, type, _openTime, isSub);
 				rm.wsr = wsr;
 				try {
 					isNoPermission = wsr.start();
@@ -298,7 +304,7 @@ namespace namaichi.rec
 			while (rm.rfu == rfu) {
 				try {
 					_cg = new CookieGetter(rm.cfg);
-					_cgtask = _cg.getHtml5RecordCookie(url);
+					_cgtask = _cg.getHtml5RecordCookie(url, isSub);
 					_cgtask.Wait();
 					
 					if (_cgtask == null || _cgtask.Result == null) {
@@ -306,7 +312,8 @@ namespace namaichi.rec
 						continue;
 					}
 					
-					container = _cgtask.Result[(isSub) ? 1 : 0];
+					//container = _cgtask.Result[(isSub) ? 1 : 0];
+					container = _cgtask.Result[0];
 					return _cg.pageSource;
 				} catch (Exception e) {
 					util.debugWriteLine(e.Message + " " + e.StackTrace);
@@ -335,7 +342,7 @@ namespace namaichi.rec
 			if (pageType == 0 || pageType == 7) {
 				return 0;
 			} else if (pageType == 1) {
-				rm.form.addLogText("満員です。");
+				rm.form.addLogText("満員です。" + util.getMainSubStr(isSub, true));
 				if (bool.Parse(rm.cfg.get("Isretry"))) {
 					System.Threading.Thread.Sleep(10000);
 					return 1;
@@ -344,7 +351,7 @@ namespace namaichi.rec
 				}
 				
 			} else if (pageType == 5) {
-				rm.form.addLogText("接続エラー。10秒後リトライします。");
+				rm.form.addLogText("接続エラー。10秒後リトライします。" + util.getMainSubStr(isSub, true));
 				if (bool.Parse(rm.cfg.get("Isretry"))) {
 					System.Threading.Thread.Sleep(10000);
 					return 1;
@@ -357,8 +364,8 @@ namespace namaichi.rec
 				return 1;
 				
 			} else if (pageType == 4) {
-				rm.form.addLogText("require_community_menber");
-				if (bool.Parse(rm.cfg.get("IsmessageBox"))) {
+				rm.form.addLogText("require_community_menber" + util.getMainSubStr(isSub, true));
+				if (bool.Parse(rm.cfg.get("IsmessageBox")) && util.isShowWindow) {
 					if (rm.form.IsDisposed) return 2;
 					try {
 			        	rm.form.Invoke((MethodInvoker)delegate() {
@@ -368,7 +375,7 @@ namespace namaichi.rec
 			       		util.showException(e);
 			       	}
 				}
-				if (bool.Parse(rm.cfg.get("IsfailExit"))) {
+				if (bool.Parse(rm.cfg.get("IsfailExit")) && util.isShowWindow) {
 					rm.rfu = null;
 					try {
 						rm.form.Invoke((MethodInvoker)delegate() {
@@ -387,12 +394,12 @@ namespace namaichi.rec
 				
 			} else {
 				var mes = "";
-				if (pageType == 2) mes = "この放送は終了しています。";
-				if (pageType == 3) mes = "この放送は終了しています。";
+				if (pageType == 2) mes = "この放送は終了しています。" + util.getMainSubStr(isSub, true);
+				if (pageType == 3) mes = "この放送は終了しています。" + util.getMainSubStr(isSub, true);
 				rm.form.addLogText(mes);
 				util.debugWriteLine("pagetype " + pageType + " end");
 				
-				if (bool.Parse(rm.cfg.get("IsdeleteExit"))) {
+				if (bool.Parse(rm.cfg.get("IsdeleteExit")) && util.isShowWindow) {
 					rm.rfu = null;
 					try {
 						rm.form.Invoke((MethodInvoker)delegate() {
@@ -447,7 +454,31 @@ namespace namaichi.rec
 			return null;
 		}
 		public string[] getRecFilePath(long openTime) {
+			util.debugWriteLine(openTime + " c " + recFolderFileInfo[0] + " b " + " a " + timeShiftConfig);
 			return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, isTimeShift, timeShiftConfig, openTime);
+		}
+		private TimeShiftConfig getReadyArgTsConfig(
+				TimeShiftConfig _tsConfig, string host, 
+				string group, string title, string lvId, 
+				string communityNum, string userId, 
+				long _openTime) {
+			var segmentSaveType = rm.cfg.get("segmentSaveType");
+			var lastFile = util.getLastTimeshiftFileName(host,
+					group, title, lvId, communityNum, userId, rm.cfg, _openTime);
+			util.debugWriteLine("timeshift lastfile " + lastFile);
+			
+			var lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType);
+			if (lastFileTime == null) {
+				_tsConfig.timeType = 0;
+			} else {
+				if (_tsConfig.timeType == 1)
+					_tsConfig.timeSeconds = 
+						int.Parse(lastFileTime[0]) * 3600 + 
+						int.Parse(lastFileTime[1]) * 60 +
+						int.Parse(lastFileTime[2]);
+			}
+			if (_tsConfig.timeType == 0) _tsConfig.isContinueConcat = false;
+			return _tsConfig;
 		}
 	}
 }
