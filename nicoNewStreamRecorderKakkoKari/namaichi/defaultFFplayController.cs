@@ -19,14 +19,17 @@ namespace namaichi
 	public partial class defaultFFplayController : Form
 	{
 		private config.config config;
-		private Process process;
+		private play.Player player;
+		public Process process;
 		private bool onMuteButtonArea = false;
-		private bool isMute = false;
+		public bool isMute = false;
+		public int volume;
 		
-		public defaultFFplayController(config.config config, Process process)
+		public defaultFFplayController(config.config config, Process process, play.Player player)
 		{
 			this.config = config;
 			this.process = process;
+			this.player = player;
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
 			//
@@ -49,7 +52,7 @@ namespace namaichi
 			timeLabel.Paint += timeBorderPaint;
 			volumeTip.Paint += volumeTipBorderPaint;
 			muteTip.Paint += muteTipBorderPaint;
-			
+			reconnectTip.Paint += reconnectTipBorderPaint;
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
@@ -66,6 +69,11 @@ namespace namaichi
 			var color = Color.FromArgb(64, 64, 64);
 			ControlPaint.DrawBorder(e.Graphics, muteTip.ClientRectangle, color, ButtonBorderStyle.Solid);
 		}
+		private void reconnectTipBorderPaint(object sender, PaintEventArgs e) {
+			reconnectTip.BringToFront();
+			var color = Color.FromArgb(64, 64, 64);
+			ControlPaint.DrawBorder(e.Graphics, reconnectTip.ClientRectangle, color, ButtonBorderStyle.Solid);
+		}
 		void muteButton_Click(object sender, System.EventArgs e)
 		{
 			isMute = !isMute;
@@ -77,6 +85,7 @@ namespace namaichi
 				volumeBarArea.BackColor = Color.FromArgb(0, 128, 255);
 			}
 			setMuteButtonImage();
+			
 			volumeSet(-10);
 		}
 		void muteButton_MouseEnter(object sender, EventArgs e)
@@ -103,6 +112,29 @@ namespace namaichi
 			if (!onMuteButtonArea && isMute) mutedButton.BringToFront();
 			if (!onMuteButtonArea && !isMute) muteButton.BringToFront();
 		}
+		void reconnectButton_Click(object sender, System.EventArgs e)
+		{
+			player.isReconnect = true;
+		}
+		void reconnectButton_MouseEnter(object sender, EventArgs e)
+		{
+			//onReconnectButtonArea = true;
+			reconnectOnBtn.BringToFront();
+			reconnectTip.Visible = true;
+			var a = 0;
+		}
+		void reconnectButton_MouseLeave(object sender, System.EventArgs _e)
+		{
+			var e = PointToClient(Cursor.Position);
+			if (e.X < 289 || e.Y < 15 || e.X >= 311 || e.Y >= 37) {
+//				onMuteButtonArea = false;
+				
+				reconnectTip.Visible = false;
+				reconnectBtn.BringToFront();
+				return;
+			}
+			reconnectOnBtn.BringToFront();
+		}
 		private void volumeSet(int v) {
 			//v 0-100 mute -10
 			try {
@@ -110,6 +142,7 @@ namespace namaichi
 			} catch (Exception e) {
 				util.debugWriteLine("volume set exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
+			volume = v;
 		}
 		void form_Close(object sender, FormClosingEventArgs e)
 		{
@@ -136,7 +169,7 @@ namespace namaichi
 		public void setTimeLabel(string s) {
 			try {
 				if (IsDisposed) return;
-				Invoke((MethodInvoker)delegate() {
+				this.Invoke((MethodInvoker)delegate() {
 	       	       	try {
 		       			timeLabel.Text = s;
 	       	       	} catch (Exception e) {
@@ -145,6 +178,27 @@ namespace namaichi
 				});
 			} catch (Exception e) {
 				util.debugWriteLine("ctrl set time " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
+		}
+		public void reset() {
+			isMute = false;
+			onMuteButtonArea = false;
+			try {
+				if (IsDisposed) return;
+				this.Invoke((MethodInvoker)delegate() {
+	       	       	try {
+						setMuteButtonImage();
+						
+						volumeAllBarArea.BackColor = Color.FromArgb(197, 197, 197);
+						volumeBarArea.BackColor = Color.FromArgb(0, 128, 255);
+						volumeBarArea.Width  = volume;
+						
+	       	       	} catch (Exception e) {
+	       	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+	       	       	}
+				});
+			} catch (Exception e) {
+				util.debugWriteLine("reset mute btn image " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
 		}
 	}

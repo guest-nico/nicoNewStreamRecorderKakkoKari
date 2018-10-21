@@ -21,6 +21,9 @@ class app {
 	}
 }
 class util {
+	public static string versionStr = "ver0.1.0";
+	public static string versionDayStr = "2018/10/14";
+	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);
 		var m = r.Match(target);

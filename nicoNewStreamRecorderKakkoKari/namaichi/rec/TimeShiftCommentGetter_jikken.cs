@@ -35,7 +35,7 @@ namespace namaichi.rec
 		MainForm form;
 		RecordingManager rm;
 		RecordFromUrl rfu;
-		JikkenRecordProcess jrp;
+		private JikkenRecordProcess jrp;
 		WatchingInfo wi;
 		long openTime = 0;
 		string[] recFolderFile;
@@ -83,8 +83,8 @@ namespace namaichi.rec
 		}
 		public void save() {
 			if (!bool.Parse(rm.cfg.get("IsgetComment"))) {
-				isEnd = true;
-				return;
+//				isEnd = true;
+//				return;
 			}
 			try {
 //				fileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, true);
@@ -199,7 +199,6 @@ namespace namaichi.rec
 			
 			foreach (var chatinfo in chatInfoList) {
 				
-				
 //				var xml = JsonConvert.DeserializeXNode(e.Message);
 //				var chatinfo = new namaichi.info.ChatInfo(xml);
 				
@@ -244,8 +243,8 @@ namespace namaichi.rec
 						if (isGetXml) {
 							s = chatXml.ToString();
 						} else {
-							var vposReplaced = Regex.Replace(e.Message, 
-				            	"\"vpos\"\\:(\\d+)", 
+							var vposReplaced = Regex.Replace(chatinfo.json, 
+				            	"\"vpos\"\\:[ ]*(\\d+)", 
 				            	"\"vpos\":" + chatinfo.vpos + "");
 							s = vposReplaced;
 						}
@@ -294,8 +293,10 @@ namespace namaichi.rec
 		public void setIsRetry(bool b) {
 			isRetry = b;
 		}
-		public static void endProcess(List<string> gotList, string fileName, MainForm form, bool isGetXml, string chatThreadLine, string controlThreadLine) {
-			form.addLogText("コメントの後処理を開始します");
+		public static void endProcess(List<string> gotList, string fileName, MainForm form, bool isGetXml, string chatThreadLine, string controlThreadLine, JikkenRecordProcess jrp) {
+			var isWrite = (form.rec.cfg.get("IsgetComment") == "true" && !form.rec.isPlayOnlyMode);
+			if (isWrite)
+				form.addLogText("コメントの後処理を開始します");
 			
 			var keys = new List<int>();
 			foreach (var c in gotList) {
@@ -306,6 +307,9 @@ namespace namaichi.rec
 			}
 			var chats = gotList.ToArray();
 			Array.Sort(keys.ToArray(), chats);
+			
+			jrp.gotTsCommentList = chats;
+			if (!isWrite) return;
 			
 			var w = new StreamWriter(fileName + "_", false, System.Text.Encoding.UTF8);
 			if (isGetXml) {
@@ -325,6 +329,7 @@ namespace namaichi.rec
 			File.Delete(fileName);
 			File.Move(fileName + "_", fileName);
 			form.addLogText("コメントの保存を完了しました");
+			return;
 		}
 	}
 }

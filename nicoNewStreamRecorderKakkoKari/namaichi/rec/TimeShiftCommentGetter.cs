@@ -56,10 +56,12 @@ namespace namaichi.rec
 		bool isSave = true;
 		bool isRetry = true;
 		public bool isEnd = false;
+		public WebSocketRecorder rp;
 		
 		int gotCount = 0;
+		public string[] sortedComments;
 		
-		public TimeShiftCommentGetter(string message, string userId, RecordingManager rm, RecordFromUrl rfu, MainForm form, long openTime, string[] recFolderFile, string lvid, CookieContainer container, string programType, long _openTime)
+		public TimeShiftCommentGetter(string message, string userId, RecordingManager rm, RecordFromUrl rfu, MainForm form, long openTime, string[] recFolderFile, string lvid, CookieContainer container, string programType, long _openTime, WebSocketRecorder rp)
 		{
 			this.uri = util.getRegGroup(message, "messageServerUri\"\\:\"(ws.+?)\"");
 			this.thread = util.getRegGroup(message, "threadId\":\"(.+?)\"");
@@ -74,6 +76,7 @@ namespace namaichi.rec
 			this.isGetXml = bool.Parse(rm.cfg.get("IsgetcommentXml"));
 			this.programType = programType;
 			this._openTime = _openTime;
+			this.rp = rp;
 		}
 		public void save() {
 			if (!bool.Parse(rm.cfg.get("IsgetComment"))) {
@@ -102,7 +105,7 @@ namespace namaichi.rec
 
 		}
 		bool connect() {
-			util.debugWriteLine("connect ms");
+			util.debugWriteLine("connect tscg ms");
 			isSave = true;
 			try {
 				waybackKey = getWaybackKey();
@@ -141,7 +144,7 @@ namespace namaichi.rec
 		}
 		
 		private void onWscClose(object sender, EventArgs e) {
-			util.debugWriteLine("ms onclose");
+			util.debugWriteLine("ms tscg onclose");
 			//closeWscProcess();
 			wsc = null;
 			try {
@@ -276,7 +279,9 @@ namespace namaichi.rec
 			isRetry = b;
 		}
 		private void endProcess() {
-			form.addLogText("コメントの後処理を開始します");
+			var isWrite = (rm.cfg.get("IsgetComment") == "true" && !rm.isPlayOnlyMode);
+			if (isWrite)
+				form.addLogText("コメントの後処理を開始します");
 			try {
 				if (commentSW != null) commentSW.Close();
 			} catch (Exception e) {
@@ -295,6 +300,9 @@ namespace namaichi.rec
 				keys.Add(date);
 			}
 			Array.Sort(keys.ToArray(), chats);
+			
+			rp.gotTsCommentList = chats;
+			if (!isWrite) return;
 			
 			var w = new StreamWriter(fileName + "_", false, System.Text.Encoding.UTF8);
 			if (isGetXml) {

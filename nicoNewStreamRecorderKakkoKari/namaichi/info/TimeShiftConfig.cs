@@ -57,6 +57,10 @@ namespace namaichi.info
 			timeSeconds = h * 3600 + m * 60 + s;
 			timeType = (startType == 0) ? 0 : 1;
 			endTimeSeconds = endH * 3600 + endM * 60 + endS;
+			if (startType == 0) this.isContinueConcat = false;
 		}
+		public TimeShiftConfig() : this(0, 0, 0, 0, 0, 0, 0, 
+				false, false, "notepad {i}", false, 5, false) {}
+			
 	}
 }

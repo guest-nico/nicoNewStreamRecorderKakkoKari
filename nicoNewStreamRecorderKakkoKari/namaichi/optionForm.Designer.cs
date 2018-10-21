@@ -42,7 +42,8 @@ namespace namaichi
 			this.isCommentJson = new System.Windows.Forms.RadioButton();
 			this.isCommentXML = new System.Windows.Forms.RadioButton();
 			this.isAutoFollowComGen = new System.Windows.Forms.CheckBox();
-			this.isLogFileChkBox = new System.Windows.Forms.CheckBox();
+			this.isDescriptionTagChkBox = new System.Windows.Forms.CheckBox();
+			this.isHosoInfoChkBox = new System.Windows.Forms.CheckBox();
 			this.isTitleBarSamune = new System.Windows.Forms.CheckBox();
 			this.isTitleBarInfoChkBox = new System.Windows.Forms.CheckBox();
 			this.isGetCommentChkBox = new System.Windows.Forms.CheckBox();
@@ -57,6 +58,8 @@ namespace namaichi
 			this.browserPathSanshouBtn = new System.Windows.Forms.Button();
 			this.browserPathText = new System.Windows.Forms.TextBox();
 			this.tabPage6 = new System.Windows.Forms.TabPage();
+			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.afterConvertModeList = new System.Windows.Forms.ComboBox();
 			this.groupBox9 = new System.Windows.Forms.GroupBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.isAfterRenketuFFmpegChkBox = new System.Windows.Forms.CheckBox();
@@ -95,6 +98,23 @@ namespace namaichi
 			this.cookieFileSanshouBtn = new System.Windows.Forms.Button();
 			this.btnReload = new System.Windows.Forms.Button();
 			this.useSecondLoginChkBox = new System.Windows.Forms.CheckBox();
+			this.tabPage4 = new System.Windows.Forms.TabPage();
+			this.groupBox12 = new System.Windows.Forms.GroupBox();
+			this.isHokanChkBox = new System.Windows.Forms.CheckBox();
+			this.subPassLabel2 = new System.Windows.Forms.Label();
+			this.subMailLabel2 = new System.Windows.Forms.Label();
+			this.cookieFileText2 = new System.Windows.Forms.TextBox();
+			this.useAccountLoginRadioBtn2 = new System.Windows.Forms.RadioButton();
+			this.useCookieRadioBtn2 = new System.Windows.Forms.RadioButton();
+			this.passText2 = new System.Windows.Forms.TextBox();
+			this.mailText2 = new System.Windows.Forms.TextBox();
+			this.nicoSessionComboBox2 = new namaichi.NicoSessionComboBox2();
+			this.isCookieFileSiteiChkBox2 = new System.Windows.Forms.CheckBox();
+			this.checkBoxShowAll2 = new System.Windows.Forms.CheckBox();
+			this.loginBtn2 = new System.Windows.Forms.Button();
+			this.cookieFileSanshouBtn2 = new System.Windows.Forms.Button();
+			this.btnReload2 = new System.Windows.Forms.Button();
+			this.useSecondLoginChkBox2 = new System.Windows.Forms.CheckBox();
 			this.tabPage7 = new System.Windows.Forms.TabPage();
 			this.groupBox11 = new System.Windows.Forms.GroupBox();
 			this.isAnotherCommentViewerRadioBtn = new System.Windows.Forms.RadioButton();
@@ -132,6 +152,7 @@ namespace namaichi
 			this.useDefaultRecFolderChk = new System.Windows.Forms.CheckBox();
 			this.recFolderSanshouBtn = new System.Windows.Forms.Button();
 			this.recordDirectoryText = new System.Windows.Forms.TextBox();
+			this.isLogFileChkBox = new System.Windows.Forms.CheckBox();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
 			this.tabControl1.SuspendLayout();
@@ -139,6 +160,7 @@ namespace namaichi
 			this.groupBox6.SuspendLayout();
 			this.groupBox5.SuspendLayout();
 			this.tabPage6.SuspendLayout();
+			this.groupBox4.SuspendLayout();
 			this.groupBox9.SuspendLayout();
 			this.groupBox10.SuspendLayout();
 			this.segmentRadioBtnPanel.SuspendLayout();
@@ -146,6 +168,8 @@ namespace namaichi
 			this.groupBox7.SuspendLayout();
 			this.tabPage2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
+			this.tabPage4.SuspendLayout();
+			this.groupBox12.SuspendLayout();
 			this.tabPage7.SuspendLayout();
 			this.groupBox11.SuspendLayout();
 			this.groupBox8.SuspendLayout();
@@ -160,6 +184,7 @@ namespace namaichi
 			this.tabControl1.Controls.Add(this.tabPage6);
 			this.tabControl1.Controls.Add(this.tabPage5);
 			this.tabControl1.Controls.Add(this.tabPage2);
+			this.tabControl1.Controls.Add(this.tabPage4);
 			this.tabControl1.Controls.Add(this.tabPage7);
 			this.tabControl1.Controls.Add(this.tabPage3);
 			this.tabControl1.Location = new System.Drawing.Point(9, 10);
@@ -188,7 +213,8 @@ namespace namaichi
 			this.groupBox6.Controls.Add(this.isCommentJson);
 			this.groupBox6.Controls.Add(this.isCommentXML);
 			this.groupBox6.Controls.Add(this.isAutoFollowComGen);
-			this.groupBox6.Controls.Add(this.isLogFileChkBox);
+			this.groupBox6.Controls.Add(this.isDescriptionTagChkBox);
+			this.groupBox6.Controls.Add(this.isHosoInfoChkBox);
 			this.groupBox6.Controls.Add(this.isTitleBarSamune);
 			this.groupBox6.Controls.Add(this.isTitleBarInfoChkBox);
 			this.groupBox6.Controls.Add(this.isGetCommentChkBox);
@@ -234,14 +260,24 @@ namespace namaichi
 			this.isAutoFollowComGen.Text = "コミュニティが自動承認の場合、自動でフォローしてコミュ限を録画する\r\n（フォローから視聴可能までラグがあるため、録画開始まで数秒から数分かかります。）";
 			this.isAutoFollowComGen.UseVisualStyleBackColor = true;
 			// 
-			// isLogFileChkBox
+			// isDescriptionTagChkBox
 			// 
-			this.isLogFileChkBox.Location = new System.Drawing.Point(19, 289);
-			this.isLogFileChkBox.Name = "isLogFileChkBox";
-			this.isLogFileChkBox.Size = new System.Drawing.Size(271, 19);
-			this.isLogFileChkBox.TabIndex = 2;
-			this.isLogFileChkBox.Text = "ログをファイルに出力する";
-			this.isLogFileChkBox.UseVisualStyleBackColor = true;
+			this.isDescriptionTagChkBox.Location = new System.Drawing.Point(47, 311);
+			this.isDescriptionTagChkBox.Name = "isDescriptionTagChkBox";
+			this.isDescriptionTagChkBox.Size = new System.Drawing.Size(271, 19);
+			this.isDescriptionTagChkBox.TabIndex = 2;
+			this.isDescriptionTagChkBox.Text = "[説明]にタグを含める";
+			this.isDescriptionTagChkBox.UseVisualStyleBackColor = true;
+			// 
+			// isHosoInfoChkBox
+			// 
+			this.isHosoInfoChkBox.Location = new System.Drawing.Point(19, 289);
+			this.isHosoInfoChkBox.Name = "isHosoInfoChkBox";
+			this.isHosoInfoChkBox.Size = new System.Drawing.Size(271, 19);
+			this.isHosoInfoChkBox.TabIndex = 2;
+			this.isHosoInfoChkBox.Text = "それぞれの番組情報をテキスト( .txt)で保存する";
+			this.isHosoInfoChkBox.UseVisualStyleBackColor = true;
+			this.isHosoInfoChkBox.CheckedChanged += new System.EventHandler(this.isHosoInfoChkBox_CheckedChanged);
 			// 
 			// isTitleBarSamune
 			// 
@@ -366,6 +402,7 @@ namespace namaichi
 			// 
 			// tabPage6
 			// 
+			this.tabPage6.Controls.Add(this.groupBox4);
 			this.tabPage6.Controls.Add(this.groupBox9);
 			this.tabPage6.Controls.Add(this.groupBox10);
 			this.tabPage6.Location = new System.Drawing.Point(4, 22);
@@ -375,6 +412,40 @@ namespace namaichi
 			this.tabPage6.TabIndex = 5;
 			this.tabPage6.Text = "録画方法";
 			this.tabPage6.UseVisualStyleBackColor = true;
+			// 
+			// groupBox4
+			// 
+			this.groupBox4.Controls.Add(this.afterConvertModeList);
+			this.groupBox4.Location = new System.Drawing.Point(5, 355);
+			this.groupBox4.Name = "groupBox4";
+			this.groupBox4.Size = new System.Drawing.Size(385, 52);
+			this.groupBox4.TabIndex = 2;
+			this.groupBox4.TabStop = false;
+			this.groupBox4.Text = "変換処理";
+			// 
+			// afterConvertModeList
+			// 
+			this.afterConvertModeList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.afterConvertModeList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.afterConvertModeList.FormattingEnabled = true;
+			this.afterConvertModeList.Items.AddRange(new object[] {
+									"ts(変換無し)",
+									"avi",
+									"mp4",
+									"flv",
+									"mov",
+									"wmv",
+									"vob",
+									"mkv",
+									"mp3(音声)",
+									"wav(音声)",
+									"wma(音声)",
+									"aac(音声)",
+									"ogg(音声)"});
+			this.afterConvertModeList.Location = new System.Drawing.Point(12, 18);
+			this.afterConvertModeList.Name = "afterConvertModeList";
+			this.afterConvertModeList.Size = new System.Drawing.Size(90, 20);
+			this.afterConvertModeList.TabIndex = 6;
 			// 
 			// groupBox9
 			// 
@@ -576,7 +647,7 @@ namespace namaichi
 			this.qualityListBox.ItemHeight = 12;
 			this.qualityListBox.Items.AddRange(new object[] {
 									"1. 自動(abr) (実験放送:auto)",
-									"2. 3Mbps(super_high)",
+									"2. 3Mbps(super_high) (実験放送:ultrahigh)",
 									"3. 2Mbps(high・高画質) (実験放送:superhigh)",
 									"4. 1Mbps(normal・低画質) (実験放送:high)",
 									"5. 384kbps(low) (実験放送:middle)",
@@ -779,6 +850,190 @@ namespace namaichi
 			this.useSecondLoginChkBox.TabIndex = 20;
 			this.useSecondLoginChkBox.Text = "ブラウザからクッキーが取得できなかった場合、次のアカウントでログインする";
 			this.useSecondLoginChkBox.UseVisualStyleBackColor = true;
+			// 
+			// tabPage4
+			// 
+			this.tabPage4.Controls.Add(this.groupBox12);
+			this.tabPage4.Location = new System.Drawing.Point(4, 22);
+			this.tabPage4.Name = "tabPage4";
+			this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage4.Size = new System.Drawing.Size(403, 459);
+			this.tabPage4.TabIndex = 7;
+			this.tabPage4.Text = "補完設定";
+			this.tabPage4.UseVisualStyleBackColor = true;
+			// 
+			// groupBox12
+			// 
+			this.groupBox12.Controls.Add(this.isHokanChkBox);
+			this.groupBox12.Controls.Add(this.subPassLabel2);
+			this.groupBox12.Controls.Add(this.subMailLabel2);
+			this.groupBox12.Controls.Add(this.cookieFileText2);
+			this.groupBox12.Controls.Add(this.useAccountLoginRadioBtn2);
+			this.groupBox12.Controls.Add(this.useCookieRadioBtn2);
+			this.groupBox12.Controls.Add(this.passText2);
+			this.groupBox12.Controls.Add(this.mailText2);
+			this.groupBox12.Controls.Add(this.nicoSessionComboBox2);
+			this.groupBox12.Controls.Add(this.isCookieFileSiteiChkBox2);
+			this.groupBox12.Controls.Add(this.checkBoxShowAll2);
+			this.groupBox12.Controls.Add(this.loginBtn2);
+			this.groupBox12.Controls.Add(this.cookieFileSanshouBtn2);
+			this.groupBox12.Controls.Add(this.btnReload2);
+			this.groupBox12.Controls.Add(this.useSecondLoginChkBox2);
+			this.groupBox12.Location = new System.Drawing.Point(5, 10);
+			this.groupBox12.Name = "groupBox12";
+			this.groupBox12.Size = new System.Drawing.Size(385, 330);
+			this.groupBox12.TabIndex = 19;
+			this.groupBox12.TabStop = false;
+			this.groupBox12.Text = "ニコニコ動画アカウントの共有　(普段ニコニコ生放送を見ているブラウザ)";
+			// 
+			// isHokanChkBox
+			// 
+			this.isHokanChkBox.Location = new System.Drawing.Point(6, 29);
+			this.isHokanChkBox.Name = "isHokanChkBox";
+			this.isHokanChkBox.Size = new System.Drawing.Size(365, 28);
+			this.isHokanChkBox.TabIndex = 21;
+			this.isHokanChkBox.Text = "メインアカウントでデータが取得できなかった場合にサブアカウントで補完を試みる";
+			this.isHokanChkBox.UseVisualStyleBackColor = true;
+			this.isHokanChkBox.CheckedChanged += new System.EventHandler(this.isSubHokanChkBox_CheckedChanged);
+			// 
+			// subPassLabel2
+			// 
+			this.subPassLabel2.Location = new System.Drawing.Point(6, 287);
+			this.subPassLabel2.Name = "subPassLabel2";
+			this.subPassLabel2.Size = new System.Drawing.Size(80, 19);
+			this.subPassLabel2.TabIndex = 20;
+			this.subPassLabel2.Text = "パスワード：";
+			this.subPassLabel2.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// subMailLabel2
+			// 
+			this.subMailLabel2.Location = new System.Drawing.Point(6, 259);
+			this.subMailLabel2.Name = "subMailLabel2";
+			this.subMailLabel2.Size = new System.Drawing.Size(80, 19);
+			this.subMailLabel2.TabIndex = 20;
+			this.subMailLabel2.Text = "メールアドレス：";
+			this.subMailLabel2.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// cookieFileText2
+			// 
+			this.cookieFileText2.Location = new System.Drawing.Point(20, 170);
+			this.cookieFileText2.Name = "cookieFileText2";
+			this.cookieFileText2.Size = new System.Drawing.Size(297, 19);
+			this.cookieFileText2.TabIndex = 19;
+			// 
+			// useAccountLoginRadioBtn2
+			// 
+			this.useAccountLoginRadioBtn2.Checked = true;
+			this.useAccountLoginRadioBtn2.Location = new System.Drawing.Point(6, 238);
+			this.useAccountLoginRadioBtn2.Name = "useAccountLoginRadioBtn2";
+			this.useAccountLoginRadioBtn2.Size = new System.Drawing.Size(311, 18);
+			this.useAccountLoginRadioBtn2.TabIndex = 18;
+			this.useAccountLoginRadioBtn2.TabStop = true;
+			this.useAccountLoginRadioBtn2.Text = "ブラウザとクッキーを共有せず、次のアカウントでログインする";
+			this.useAccountLoginRadioBtn2.UseVisualStyleBackColor = true;
+			// 
+			// useCookieRadioBtn2
+			// 
+			this.useCookieRadioBtn2.Checked = true;
+			this.useCookieRadioBtn2.Location = new System.Drawing.Point(6, 73);
+			this.useCookieRadioBtn2.Name = "useCookieRadioBtn2";
+			this.useCookieRadioBtn2.Size = new System.Drawing.Size(189, 18);
+			this.useCookieRadioBtn2.TabIndex = 18;
+			this.useCookieRadioBtn2.TabStop = true;
+			this.useCookieRadioBtn2.Text = "次のブラウザとクッキーを共有する";
+			this.useCookieRadioBtn2.UseVisualStyleBackColor = true;
+			// 
+			// passText2
+			// 
+			this.passText2.Location = new System.Drawing.Point(95, 287);
+			this.passText2.Margin = new System.Windows.Forms.Padding(2);
+			this.passText2.Name = "passText2";
+			this.passText2.Size = new System.Drawing.Size(193, 19);
+			this.passText2.TabIndex = 13;
+			// 
+			// mailText2
+			// 
+			this.mailText2.Location = new System.Drawing.Point(95, 258);
+			this.mailText2.Margin = new System.Windows.Forms.Padding(2);
+			this.mailText2.Name = "mailText2";
+			this.mailText2.Size = new System.Drawing.Size(193, 19);
+			this.mailText2.TabIndex = 12;
+			// 
+			// nicoSessionComboBox2
+			// 
+			this.nicoSessionComboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.nicoSessionComboBox2.Location = new System.Drawing.Point(20, 116);
+			this.nicoSessionComboBox2.Margin = new System.Windows.Forms.Padding(2);
+			this.nicoSessionComboBox2.Name = "nicoSessionComboBox2";
+			this.nicoSessionComboBox2.Size = new System.Drawing.Size(297, 20);
+			this.nicoSessionComboBox2.TabIndex = 15;
+			// 
+			// isCookieFileSiteiChkBox2
+			// 
+			this.isCookieFileSiteiChkBox2.AutoSize = true;
+			this.isCookieFileSiteiChkBox2.Location = new System.Drawing.Point(20, 149);
+			this.isCookieFileSiteiChkBox2.Margin = new System.Windows.Forms.Padding(2);
+			this.isCookieFileSiteiChkBox2.Name = "isCookieFileSiteiChkBox2";
+			this.isCookieFileSiteiChkBox2.Size = new System.Drawing.Size(194, 16);
+			this.isCookieFileSiteiChkBox2.TabIndex = 16;
+			this.isCookieFileSiteiChkBox2.Text = "さらにクッキーファイルを直接指定する";
+			this.isCookieFileSiteiChkBox2.UseVisualStyleBackColor = true;
+			this.isCookieFileSiteiChkBox2.CheckedChanged += new System.EventHandler(this.isCookieFileSiteiChkBox2_CheckedChanged);
+			// 
+			// checkBoxShowAll2
+			// 
+			this.checkBoxShowAll2.AutoSize = true;
+			this.checkBoxShowAll2.Location = new System.Drawing.Point(20, 96);
+			this.checkBoxShowAll2.Margin = new System.Windows.Forms.Padding(2);
+			this.checkBoxShowAll2.Name = "checkBoxShowAll2";
+			this.checkBoxShowAll2.Size = new System.Drawing.Size(151, 16);
+			this.checkBoxShowAll2.TabIndex = 16;
+			this.checkBoxShowAll2.Text = "すべてのブラウザを表示する";
+			this.checkBoxShowAll2.UseVisualStyleBackColor = true;
+			this.checkBoxShowAll2.CheckedChanged += new System.EventHandler(this.checkBoxShowAll2_CheckedChanged);
+			// 
+			// loginBtn2
+			// 
+			this.loginBtn2.Location = new System.Drawing.Point(302, 285);
+			this.loginBtn2.Margin = new System.Windows.Forms.Padding(2);
+			this.loginBtn2.Name = "loginBtn2";
+			this.loginBtn2.Size = new System.Drawing.Size(69, 23);
+			this.loginBtn2.TabIndex = 17;
+			this.loginBtn2.Text = "ログインする";
+			this.loginBtn2.UseVisualStyleBackColor = true;
+			this.loginBtn2.Click += new System.EventHandler(this.loginBtn2_Click);
+			// 
+			// cookieFileSanshouBtn2
+			// 
+			this.cookieFileSanshouBtn2.Location = new System.Drawing.Point(322, 168);
+			this.cookieFileSanshouBtn2.Margin = new System.Windows.Forms.Padding(2);
+			this.cookieFileSanshouBtn2.Name = "cookieFileSanshouBtn2";
+			this.cookieFileSanshouBtn2.Size = new System.Drawing.Size(40, 23);
+			this.cookieFileSanshouBtn2.TabIndex = 17;
+			this.cookieFileSanshouBtn2.Text = "参照";
+			this.cookieFileSanshouBtn2.UseVisualStyleBackColor = true;
+			this.cookieFileSanshouBtn2.Click += new System.EventHandler(this.cookieFileSiteiSanshouBtn2_Click);
+			// 
+			// btnReload2
+			// 
+			this.btnReload2.Location = new System.Drawing.Point(322, 114);
+			this.btnReload2.Margin = new System.Windows.Forms.Padding(2);
+			this.btnReload2.Name = "btnReload2";
+			this.btnReload2.Size = new System.Drawing.Size(40, 23);
+			this.btnReload2.TabIndex = 17;
+			this.btnReload2.Text = "更新";
+			this.btnReload2.UseVisualStyleBackColor = true;
+			this.btnReload2.Click += new System.EventHandler(this.btnReload2_Click);
+			// 
+			// useSecondLoginChkBox2
+			// 
+			this.useSecondLoginChkBox2.Location = new System.Drawing.Point(20, 194);
+			this.useSecondLoginChkBox2.Margin = new System.Windows.Forms.Padding(2);
+			this.useSecondLoginChkBox2.Name = "useSecondLoginChkBox2";
+			this.useSecondLoginChkBox2.Size = new System.Drawing.Size(374, 36);
+			this.useSecondLoginChkBox2.TabIndex = 20;
+			this.useSecondLoginChkBox2.Text = "ブラウザからクッキーが取得できなかった場合、次のアカウントでログインする";
+			this.useSecondLoginChkBox2.UseVisualStyleBackColor = true;
 			// 
 			// tabPage7
 			// 
@@ -1184,6 +1439,16 @@ namespace namaichi
 			this.recordDirectoryText.Size = new System.Drawing.Size(304, 19);
 			this.recordDirectoryText.TabIndex = 0;
 			// 
+			// isLogFileChkBox
+			// 
+			this.isLogFileChkBox.Location = new System.Drawing.Point(37, 514);
+			this.isLogFileChkBox.Name = "isLogFileChkBox";
+			this.isLogFileChkBox.Size = new System.Drawing.Size(271, 19);
+			this.isLogFileChkBox.TabIndex = 2;
+			this.isLogFileChkBox.Text = "ログをファイルに出力する";
+			this.isLogFileChkBox.UseVisualStyleBackColor = true;
+			this.isLogFileChkBox.Visible = false;
+			// 
 			// button3
 			// 
 			this.button3.Location = new System.Drawing.Point(249, 500);
@@ -1212,6 +1477,7 @@ namespace namaichi
 			this.Controls.Add(this.button4);
 			this.Controls.Add(this.button3);
 			this.Controls.Add(this.tabControl1);
+			this.Controls.Add(this.isLogFileChkBox);
 			this.Location = new System.Drawing.Point(600, 100);
 			this.Margin = new System.Windows.Forms.Padding(2);
 			this.MaximizeBox = false;
@@ -1223,6 +1489,7 @@ namespace namaichi
 			this.groupBox5.ResumeLayout(false);
 			this.groupBox5.PerformLayout();
 			this.tabPage6.ResumeLayout(false);
+			this.groupBox4.ResumeLayout(false);
 			this.groupBox9.ResumeLayout(false);
 			this.groupBox10.ResumeLayout(false);
 			this.groupBox10.PerformLayout();
@@ -1232,6 +1499,9 @@ namespace namaichi
 			this.tabPage2.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
+			this.tabPage4.ResumeLayout(false);
+			this.groupBox12.ResumeLayout(false);
+			this.groupBox12.PerformLayout();
 			this.tabPage7.ResumeLayout(false);
 			this.groupBox11.ResumeLayout(false);
 			this.groupBox11.PerformLayout();
@@ -1243,6 +1513,27 @@ namespace namaichi
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox isHokanChkBox;
+		private System.Windows.Forms.CheckBox useSecondLoginChkBox2;
+		private System.Windows.Forms.Button btnReload2;
+		private System.Windows.Forms.Button cookieFileSanshouBtn2;
+		private System.Windows.Forms.Button loginBtn2;
+		private System.Windows.Forms.CheckBox checkBoxShowAll2;
+		private System.Windows.Forms.CheckBox isCookieFileSiteiChkBox2;
+		private namaichi.NicoSessionComboBox2 nicoSessionComboBox2;
+		private System.Windows.Forms.TextBox mailText2;
+		private System.Windows.Forms.TextBox passText2;
+		private System.Windows.Forms.RadioButton useCookieRadioBtn2;
+		private System.Windows.Forms.RadioButton useAccountLoginRadioBtn2;
+		private System.Windows.Forms.TextBox cookieFileText2;
+		private System.Windows.Forms.Label subMailLabel2;
+		private System.Windows.Forms.Label subPassLabel2;
+		private System.Windows.Forms.GroupBox groupBox12;
+		private System.Windows.Forms.TabPage tabPage4;
+		private System.Windows.Forms.CheckBox isDescriptionTagChkBox;
+		public System.Windows.Forms.ComboBox afterConvertModeList;
+		private System.Windows.Forms.GroupBox groupBox4;
+		private System.Windows.Forms.CheckBox isLogFileChkBox;
 		private System.Windows.Forms.Button anotherPlayerSanshouBtn;
 		private System.Windows.Forms.TextBox anotherPlayerPathText;
 		private System.Windows.Forms.RadioButton isDefaultPlayerRadioBtn;
@@ -1270,7 +1561,7 @@ namespace namaichi
 		private System.Windows.Forms.RadioButton isSegmentRenketuRadioBtn;
 		private System.Windows.Forms.RadioButton isSegmentNotRenketuRadioBtn;
 		private System.Windows.Forms.TabPage tabPage6;
-		private System.Windows.Forms.CheckBox isLogFileChkBox;
+		private System.Windows.Forms.CheckBox isHosoInfoChkBox;
 		private System.Windows.Forms.Button upBtn;
 		private System.Windows.Forms.Button downBtn;
 		private System.Windows.Forms.ListBox qualityListBox;

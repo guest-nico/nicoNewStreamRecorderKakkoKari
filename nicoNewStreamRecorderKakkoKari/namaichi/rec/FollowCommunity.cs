@@ -31,7 +31,7 @@ namespace namaichi.rec
 			var comId = (isJikken) ? util.getRegGroup(res, "&quot;followPageUrl&quot;\\:&quot;.+?motion/(.+?)&quot;") :
 					util.getRegGroup(res, "Nicolive_JS_Conf\\.Recommend = \\{type\\: 'community', community_id\\: '(co\\d+)'\\};");
 			if (comId == null) {
-				form.addLogText("この放送はフォローできませんでした。");
+				form.addLogText("この放送はフォローできませんでした。" + util.getMainSubStr(isSub, true));
 				return false;
 			}
 			
@@ -50,7 +50,7 @@ namespace namaichi.rec
 				headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36");
 				try {
 					var cg = new CookieGetter(cfg);
-					var cgret = cg.getHtml5RecordCookie(url);
+					var cgret = cg.getHtml5RecordCookie(url, isSub);
 					cgret.Wait();
 					                                  
 					
@@ -59,7 +59,8 @@ namespace namaichi.rec
 						System.Threading.Thread.Sleep(3000);
 						continue;
 					}
-					var _cc = cgret.Result[(isSub) ? 1 : 0];
+					var _cc = cgret.Result[0];
+//					var _cc = cgret.Result[(isSub) ? 1 : 0];
 //					util.debugWriteLine(cg.pageSource);
 					
 					var isJidouShounin = util.getPageSource(url, ref headers, _cc, comUrl).IndexOf("自動承認されます") > -1;
@@ -68,7 +69,8 @@ namespace namaichi.rec
 	//				var __gatePage = util.getPageSource(gateurl, ref headers, cc);
 	//				var _compage2 = util.getPageSource(url, ref headers, cc);
 					util.debugWriteLine(cc.GetCookieHeader(new Uri(url)));
-					form.addLogText(isJidouShounin ? "フォローを試みます。" : "自動承認ではありませんでした。");
+					var msg = (isJidouShounin ? "フォローを試みます。" : "自動承認ではありませんでした。") + util.getMainSubStr(isSub, true);
+					form.addLogText(msg);
 					
 					if (!isJidouShounin) return false;
 				} catch (Exception e) {
@@ -121,8 +123,8 @@ namespace namaichi.rec
 					var resStr = resStream.ReadToEnd();
 	
 					var isSuccess = resStr.IndexOf("フォローしました") > -1;
-					form.addLogText(isSuccess ?
-		                	"フォローしました。録画開始までしばらくお待ちください。" : "フォローに失敗しました。");
+					form.addLogText((isSuccess ?
+					                 "フォローしました。録画開始までしばらくお待ちください。" : "フォローに失敗しました。") + util.getMainSubStr(isSub, true));
 					return isSuccess;
 					
 	//				resStream.Close();
@@ -143,13 +145,13 @@ namespace namaichi.rec
 	//				var cc = handler.CookieContainer;
 					
 				} catch (Exception e) {
-					form.addLogText("フォローに失敗しました。");
+					form.addLogText("フォローに失敗しました。" + util.getMainSubStr(isSub, true));
 					util.debugWriteLine(e.Message+e.StackTrace);
 					continue;
 //					return false;
 				}
 			}
-			form.addLogText("フォローに失敗しました。");
+			form.addLogText("フォローに失敗しました。" + util.getMainSubStr(isSub, true));
 			util.debugWriteLine("フォロー失敗");
 			return false;
 		}

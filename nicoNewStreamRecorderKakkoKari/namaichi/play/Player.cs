@@ -37,6 +37,7 @@ namespace namaichi.play
 		private bool isDefaultCommentPlayer = false;
 		
 		private bool isRecording = false;
+		public bool isReconnect = false;
 			
 		public Player(MainForm form, config.config config)
 		{
@@ -119,14 +120,18 @@ namespace namaichi.play
 							if (form.rec.rfu == null) break;
 						    
 							Thread.Sleep(300);
-							if (form.rec.hlsUrl != lastPlayUrl 
+							if ((form.rec.hlsUrl != lastPlayUrl 
 								&& form.rec.hlsUrl != null    
-							    && form.rec.hlsUrl.StartsWith("http")) {
-								stopPlaying(true, false);
-								if (isDefaultPlayer) ctrlFormClose();
+								&& form.rec.hlsUrl.StartsWith("http")) || isReconnect) {
+								isReconnect = false;
 								
+								stopPlaying(true, false);
+
 								lastPlayUrl = form.rec.hlsUrl;
 								sendPlayCommand(isDefaultPlayer);
+//								if (isDefaultPlayer) {
+//									ctrlFormClose();
+//								}
 								var aaa = process.HasExited;
 							}
 						}
@@ -147,11 +152,21 @@ namespace namaichi.play
 		}
 		private void sendPlayCommand(bool isDefaultPlayer) {
 			if (isDefaultPlayer) {
-				playCommand("ffplay", form.rec.hlsUrl + " -autoexit -volume " + int.Parse(config.get("volume")));
+				Environment.SetEnvironmentVariable("SDL_AUDIODRIVER", "directsound", EnvironmentVariableTarget.Process);
+				var volume = (ctrl != null) ? ((ctrl.volume == -10) ? 0 : ctrl.volume) : int.Parse(config.get("volume"));
+				util.debugWriteLine("kia 00 " + form.rec.hlsUrl);
+				playCommand("ffplay", form.rec.hlsUrl + " -autoexit -volume " + volume);
+				util.debugWriteLine("kia 0 " + ctrl);
 				form.Invoke((MethodInvoker)delegate() {
-					ctrl = new defaultFFplayController(config, process);
-					ctrl.Show();
+					if (ctrl == null) {
+						ctrl = new defaultFFplayController(config, process, this);
+						ctrl.Show();
+	            	} else {
+	            		ctrl.process = process;
+	            		ctrl.reset();
+	            	}
 				});
+				util.debugWriteLine("kia 1 " + ctrl);
 			} else {
 				playCommand(config.get("anotherPlayerPath"), form.rec.hlsUrl);
 			}
@@ -277,6 +292,7 @@ namespace namaichi.play
 			} catch (Exception ee) {
 				util.debugWriteLine("ctrl close2 exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
+			ctrl = null;
 		}
 		private void defaultCommentFormClose() {
 			if (commentForm == null || commentForm.IsDisposed) return;
@@ -294,6 +310,19 @@ namespace namaichi.play
 		}
 		public void setCtrlFormKeikaJikan(string s) {
 			if (ctrl != null) ctrl.setTimeLabel(s);
+			
+			if (util.getRegGroup(s, "(\\d+:\\d+)/") != null) {
+				var __m = util.getRegGroup(s, "(\\d+):\\d+");
+				var __s = util.getRegGroup(s, "\\d+:(\\d+)");
+				if (__m == null || __s == null) return;
+				if (commentForm != null) commentForm.setTime(0, int.Parse(__m), int.Parse(__s));
+			} else {
+				var __h = util.getRegGroup(s, "(\\d+):");
+				var __m = util.getRegGroup(s, "\\d+:(\\d+):");
+				var __s = util.getRegGroup(s, "\\d+:\\d+:(\\d+)");
+				if (__h == null || __m == null || __s == null) return;
+				if (commentForm != null) commentForm.setTime(int.Parse(__h), int.Parse(__m), int.Parse(__s));
+			}
 		}
 		public void addComment(string time, string contents, string userId, string score, string color) {
 			if (commentForm != null) commentForm.addComment(time, contents, userId, score, color);
