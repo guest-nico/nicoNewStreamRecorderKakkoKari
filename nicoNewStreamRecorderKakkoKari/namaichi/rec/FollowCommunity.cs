@@ -21,6 +21,7 @@ namespace namaichi.rec
 	/// </summary>
 	public class FollowCommunity
 	{
+<<<<<<< HEAD
 		private bool isSub;
 		public FollowCommunity(bool isSub)
 		{
@@ -30,17 +31,32 @@ namespace namaichi.rec
 			var isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
 			var comId = (isJikken) ? util.getRegGroup(res, "&quot;followPageUrl&quot;\\:&quot;.+?motion/(.+?)&quot;") :
 					util.getRegGroup(res, "Nicolive_JS_Conf\\.Recommend = \\{type\\: 'community', community_id\\: '(co\\d+)'\\};");
+=======
+		public FollowCommunity()
+		{
+		}
+		public bool followCommunity(string res, CookieContainer cc, MainForm form, config.config cfg) {
+			var comId = util.getRegGroup(res, "Nicolive_JS_Conf\\.Recommend = \\{type\\: 'community', community_id\\: '(co\\d+)'\\};");
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			if (comId == null) {
 				form.addLogText("この放送はフォローできませんでした。" + util.getMainSubStr(isSub, true));
 				return false;
 			}
 			
+<<<<<<< HEAD
 			var isJoinedTask = join(comId, cc, form, cfg, isSub);
+=======
+			var isJoinedTask = join(comId, cc, form, cfg);
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 //			isJoinedTask.Wait();
 			return isJoinedTask;
 //			return false;
 		}
+<<<<<<< HEAD
 		private bool join(string comId, CookieContainer cc, MainForm form, config.config cfg, bool isSub) {
+=======
+		private bool join(string comId, CookieContainer cc, MainForm form, config.config cfg) {
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			for (int i = 0; i < 5; i++) {
 				var myPageUrl = "http://www.nicovideo.jp/my";
 				var comUrl = "https://com.nicovideo.jp/community/" + comId; 
@@ -59,11 +75,22 @@ namespace namaichi.rec
 						System.Threading.Thread.Sleep(3000);
 						continue;
 					}
+<<<<<<< HEAD
 					var _cc = cgret.Result[0];
 //					var _cc = cgret.Result[(isSub) ? 1 : 0];
+=======
+<<<<<<< HEAD
+					var _cc = cgret.Result[(isSub) ? 1 : 0];
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 //					util.debugWriteLine(cg.pageSource);
 					
 					var isJidouShounin = util.getPageSource(url, ref headers, _cc, comUrl).IndexOf("自動承認されます") > -1;
+=======
+					cc = cgret.Result;
+//					util.debugWriteLine(cg.pageSource);
+					
+					var isJidouShounin = util.getPageSource(url, ref headers, cc, comUrl).IndexOf("自動承認されます") > -1;
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 	//				var _compage = util.getPageSource(url, ref headers, cc);
 	//				var gateurl = "http://live.nicovideo.jp/gate/lv313793991";
 	//				var __gatePage = util.getPageSource(gateurl, ref headers, cc);

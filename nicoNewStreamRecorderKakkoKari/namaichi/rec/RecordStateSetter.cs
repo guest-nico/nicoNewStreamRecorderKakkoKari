@@ -24,7 +24,9 @@ namespace namaichi.rec
 		private RecordingManager rm;
 		private RecordFromUrl rfu;
 		private bool isTimeShift;
+<<<<<<< HEAD
 		private bool isJikken = false;
+<<<<<<< HEAD
 		private string[] recFolderFile;
 		
 		private string openTime;
@@ -40,13 +42,25 @@ namespace namaichi.rec
 		private string samuneUrl;
 			
 		public RecordStateSetter(MainForm form, RecordingManager rm, RecordFromUrl rfu, bool isTimeShift, bool isJikken, string[] recFolderFile)
+=======
+		public RecordStateSetter(MainForm form, RecordingManager rm, RecordFromUrl rfu, bool isTimeShift, bool isJikken)
+=======
+		public RecordStateSetter(MainForm form, RecordingManager rm, RecordFromUrl rfu, bool isTimeShift)
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 		{
 			this.form = form;
 			this.rm = rm;
 			this.rfu = rfu;
 			this.isTimeShift = isTimeShift;
+<<<<<<< HEAD
 			this.isJikken = isJikken;
+<<<<<<< HEAD
 			this.recFolderFile = recFolderFile;
+=======
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 		}
 		public void set(string data, string type, string[] recFolderFileInfo) {
 			setInfo(data, form, type, recFolderFileInfo);
@@ -74,6 +88,7 @@ namespace namaichi.rec
 			
 			//recfolderfileinfo host, group, title, lvid, communityNum, userId
 
+<<<<<<< HEAD
 			host = recFolderFileInfo[0];
 			group = recFolderFileInfo[1];
 			title = recFolderFileInfo[2];
@@ -92,6 +107,37 @@ namespace namaichi.rec
 			}
 //			string hostUrl, groupUrl, gentei;
 			long _openTime, _endTime;
+=======
+			var host = recFolderFileInfo[0];
+<<<<<<< HEAD
+			var group = recFolderFileInfo[1];
+			var title = recFolderFileInfo[2];
+			var url = util.getRegGroup(data, "\"watchPageUrl\":\"(.+?)\"");
+=======
+			var hostUrl = (type == "community" || type == "user") ? util.getRegGroup(data, "supplier\":{\"name\".\".+?\",\"pageUrl\":\"(.+?)\"") : null;
+			var group = recFolderFileInfo[1];
+			var groupUrl = util.getRegGroup(data, "\"socialGroupPageUrl\":\"(.+?)\"");
+			var title = recFolderFileInfo[2];
+			var url = util.getRegGroup(data, "\"watchPageUrl\":\"(.+?)\"");
+			var gentei = (data.IndexOf("\"isFollowerOnly\":true") > -1) ? "限定" : "オープン";
+//			var _openTime = long.Parse(util.getRegGroup(data, "\"openTime\":(\\d+)"));
+			var _openTime = long.Parse(util.getRegGroup(data, "\"beginTime\":(\\d+)"));
+			
+			openTimeDt = getOpenTimeDt(_openTime);
+			var openTime = openTimeDt.ToString("MM/dd(ddd) HH:mm:ss");
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+			var description = util.getRegGroup(data, "\"program\".+?\"description\":\"(.+?)\",\"").Replace("\\n", " ");
+			try {
+				description = Regex.Replace(description, "<.*?>", "");
+				description = description.Replace("\\\"", "\"");
+//				description = description.Replace("", "\"");
+			} catch(Exception e) {
+				util.debugWriteLine(e.Message);
+			}
+<<<<<<< HEAD
+			string hostUrl, groupUrl, gentei;
+			long _openTime;
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 			if (!isJikken) {
 				hostUrl = (type == "community" || type == "user") ? util.getRegGroup(data, "supplier\":{\"name\".\".+?\",\"pageUrl\":\"(.+?)\"") : null;
 				groupUrl = util.getRegGroup(data, "\"socialGroupPageUrl\":\"(.+?)\"");
@@ -106,12 +152,19 @@ namespace namaichi.rec
 				_openTime = long.Parse(util.getRegGroup(data, "\"beginTimeMs\":(\\d+)")) / 1000;
 				_endTime = long.Parse(util.getRegGroup(data, "\"endTimeMs\":(\\d+)")) / 1000;
 			}
+<<<<<<< HEAD
 			openTimeDt = getUnixToDt(_openTime);
 			openTime = openTimeDt.ToString("MM/dd(ddd) HH:mm:ss");
 			endTimeDt = getUnixToDt(_endTime);
 			endTime = endTimeDt.ToString("MM/dd(ddd) HH:mm:ss");
 			
 			samuneUrl = util.getRegGroup(data, "\"program\".+?\"thumbnail\":{\"imageUrl\":\"(.+?)\"");
+=======
+			openTimeDt = getOpenTimeDt(_openTime);
+			var openTime = openTimeDt.ToString("MM/dd(ddd) HH:mm:ss");
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 			
 			form.setInfo(host, hostUrl, group, groupUrl, title, url, gentei, openTime, description);
 		}

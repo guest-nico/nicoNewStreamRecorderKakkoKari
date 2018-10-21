@@ -145,7 +145,11 @@ namespace namaichi
 				{"subFolderNameType",getSubFolderNameType() + ""},
 				{"fileNameType",getFileNameType() + ""},
 				{"filenameformat",fileNameFormat},
+<<<<<<< HEAD
 				//{"ffmpegopt",ffmpegoptText.Text},
+=======
+				{"ffmpegopt",ffmpegoptText.Text},
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 				{"user_session",""},
 				{"user_session_secure",""},
 				
@@ -362,7 +366,11 @@ namespace namaichi
         	setFileNameType(int.Parse(cfg.get("fileNameType")));
         	fileNameFormat = cfg.get("filenameformat");
         	fileNameTypeDokujiSetteiBtn.Text = util.getFileNameTypeSample(fileNameFormat);
+<<<<<<< HEAD
         	//ffmpegoptText.Text = cfg.get("ffmpegopt");
+=======
+        	ffmpegoptText.Text = cfg.get("ffmpegopt");
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
         	
         	isHokanChkBox.Checked = bool.Parse(cfg.get("IsHokan"));
         	isSubHokanChkBox_updateAction();

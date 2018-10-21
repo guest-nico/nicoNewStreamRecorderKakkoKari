@@ -32,12 +32,17 @@ namespace namaichi.rec
 		public RecordFromUrl rfu;
 		public bool isClickedRecBtn = false;
 		public string hlsUrl = null;
+<<<<<<< HEAD
 		public IRecorderProcess wsr = null;
+=======
+		public WebSocketRecorder wsr = null;
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		static readonly Uri TargetUrl = new Uri("http://live.nicovideo.jp/");
 		public config.config cfg;
 		public string recordingUrl;
 		public string communityNum;
 //		public string commentWsUrl;
+<<<<<<< HEAD
 		public bool isJikken = false;
 //		public JikkenRecorder jr = null;
 //		public JikkenRecordProcess jrp = null;
@@ -45,6 +50,8 @@ namespace namaichi.rec
 		
 		public bool isTitleBarInfo = false;
 		public bool isPlayOnlyMode = false;
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		
 		public TimeShiftConfig argTsConfig;
 		
@@ -75,6 +82,8 @@ namespace namaichi.rec
             //Thread.Sleep(3000);
             util.debugWriteLine(c);//4950
             */
+            
+
             
             var lv = util.getRegGroup(form.urlText.Text, "(lv\\d+)");
 			util.setLog(cfg, lv);
@@ -114,6 +123,7 @@ namespace namaichi.rec
 				}
 			
 				isRecording = true;
+<<<<<<< HEAD
 				if (isPlayOnlyMode) {
 					form.Invoke((MethodInvoker)delegate() {
 						form.recBtn.Text = "中断";
@@ -131,6 +141,13 @@ namespace namaichi.rec
 					form.resetDisplay();
 					recordingUrl = form.urlText.Text;
 				}
+=======
+				form.recBtn.Text = "中断";
+				form.urlText.Enabled = false;
+				form.optionMenuItem.Enabled = false;
+				form.resetDisplay();
+				recordingUrl = form.urlText.Text;
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 
 				rfu = new RecordFromUrl(this);
 				Task.Run(() => {

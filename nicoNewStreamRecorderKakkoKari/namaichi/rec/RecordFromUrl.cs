@@ -45,6 +45,7 @@ namespace namaichi.rec
 			util.debugWriteLine(url + " " + lvid);
 			this.lvid = lvid;
 			
+<<<<<<< HEAD
 			
 			var mainT = Task.Run<int>(() => {return _rec(url, false);});
 			Task subT = null;
@@ -67,6 +68,18 @@ namespace namaichi.rec
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				return mainT.Result;
 			}
+=======
+			var mainT = Task.Run<int>(() => {return _rec(url, false);});
+			try {
+				mainT.Wait();
+				return mainT.Result;
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				return mainT.Result;
+			}
+			
+			
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 		}
 		private int _rec(string url, bool isSub) {
 			JikkenRecorder jr = null;
@@ -78,8 +91,13 @@ namespace namaichi.rec
 			var ccInd = 0;
 			util.debugWriteLine("pagetype " + pageType + " container " + container + " isSub " + isSub);
 			if (container == null || container[ccInd] == null) {
+<<<<<<< HEAD
 				rm.form.addLogText("ログインに失敗しました。(" + util.getMainSubStr(isSub) + ")");
 				if (bool.Parse(rm.cfg.get("IsmessageBox")) && util.isShowWindow) {
+=======
+				rm.form.addLogText("ログインに失敗しました。");
+				if (bool.Parse(rm.cfg.get("IsmessageBox"))) {
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 					if (rm.form.IsDisposed) return 2;
 					try {
 			        	rm.form.Invoke((MethodInvoker)delegate() {
@@ -325,10 +343,17 @@ namespace namaichi.rec
 		//			cgret.ConfigureAwait(false);
 					if (cgret == null || cgret.Result[0] == null) {
 						util.debugWriteLine("cgret " + cgret);
+<<<<<<< HEAD
 						if (isLogin && isFirst) {
 							rm.form.addLogText(cg.log + "(" + util.getMainSubStr(isSub) + ")");
 //							rm.form.addLogText("ログインに失敗しました。");
 							isFirst = false;
+=======
+						if (isLogin) {
+							rm.form.addLogText(cg.log);
+//							rm.form.addLogText("ログインに失敗しました。");
+							isLogin = false;
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 						}
 						System.Threading.Thread.Sleep(3000);
 						continue;
@@ -358,7 +383,11 @@ namespace namaichi.rec
 					util.debugWriteLine(e.Message + " " + e.StackTrace);
 					System.Threading.Thread.Sleep(3000);
 					if (isLogin) {	
+<<<<<<< HEAD
 						rm.form.addLogText("ページの取得に失敗しました。(" + util.getMainSubStr(isSub) + ")");
+=======
+						rm.form.addLogText("ページの取得に失敗しました。");
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 						isLogin = false;
 					}
 				}

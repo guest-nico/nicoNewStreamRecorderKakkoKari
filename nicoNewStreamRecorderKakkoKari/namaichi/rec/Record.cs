@@ -14,7 +14,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading;
+<<<<<<< HEAD
 using System.Globalization;
+=======
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 using WebSocket4Net;
 using namaichi.info;
 
@@ -182,6 +185,7 @@ namespace namaichi.rec
 			
 			rm.hlsUrl = "end";
 //			rm.form.setPlayerBtnEnable(false);
+
 			
 			
 			if (isDefaultEngine && !isPlayOnlyMode) {
@@ -597,7 +601,11 @@ namespace namaichi.rec
 			//if (res == null || (lastSegmentNo != -1 && res.IndexOf(lastSegmentNo.ToString()) == -1)) {
 			if (res == null || (lastSegmentNo != -1 && min != -1 && min > lastSegmentNo)) {
 			//if (res == null) {
+<<<<<<< HEAD
 				addDebugBuf("nuke? lastSegmentNo " + lastSegmentNo + " res " + res);
+=======
+				util.debugWriteLine("nuke? lastSegmentNo " + lastSegmentNo + " res " + res);
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 //				rm.form.addLogText("リトライ lastSegmentNo " + lastSegmentNo + " res " + res + " min " + min);
 				setReconnecting(true);
 //				if (!isReConnecting) 
@@ -1130,6 +1138,7 @@ namespace namaichi.rec
 			#endif
 			
 			while (rm.rfu == rfu && isRetry) {
+<<<<<<< HEAD
 				try {
 					lock (debugWriteBuf) {
 						string[] l = new String[debugWriteBuf.Count + 10];
@@ -1144,6 +1153,13 @@ namespace namaichi.rec
 					}
 					Thread.Sleep(500);
 				} catch (Exception e) {
+=======
+				var l = debugWriteBuf.ToList<string>();
+				//var l = new List<string>(debugWriteBuf);
+				foreach (var b in l) {
+					util.debugWriteLine(b);
+					debugWriteBuf.Remove(b);
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 				}
 			}
 		}
@@ -1180,11 +1196,19 @@ namespace namaichi.rec
 			//if (lastGetPlayListMaxNo != 0 && minNo > lastGetPlayListMaxNo) {
 			addDebugBuf("minNo " + minNo + " lastSegmentNo " + lastSegmentNo + "lastGetPlayListMaxNo " + lastGetPlayListMaxNo.ToString() + " base no " + baseNo);
 			//if (minNo > lastGetPlayListMaxNo) {
+<<<<<<< HEAD
 			if (minNo + baseNo > gotTsMaxNo) {
 				addDebugBuf("nuke? minNo " + minNo + " lastSegmentNo " + lastSegmentNo + "lastGetPlayListMaxNo " + lastGetPlayListMaxNo.ToString() + " gottsmaxno " + gotTsMaxNo);
 				var inf = getMostSegmentSecond(res);
 				var ins = "";
 				var startNo = (minNo + baseNo - gotTsMaxNo > 7) ? (minNo - 7) : (gotTsMaxNo - baseNo + 1);
+=======
+			if (minNo > gotTsMaxNo) {
+				addDebugBuf("nuke? minNo " + minNo + " lastSegmentNo " + lastSegmentNo + "lastGetPlayListMaxNo " + lastGetPlayListMaxNo.ToString() + " gottsmaxno " + gotTsMaxNo);
+				var inf = getMostSegmentSecond(res);
+				var ins = "";
+				var startNo = (minNo - gotTsMaxNo > 10) ? (minNo - 10) : (gotTsMaxNo + 1);
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 				for (var i = startNo; i < minNo; i++) {
 					if (i < 0) continue;
 					ins += "#EXTINF:" + inf + ",\n";
@@ -1229,6 +1253,7 @@ namespace namaichi.rec
 			if (streamDuration == -1) return false;
 			return lastSegmentNo + 5000 > streamDuration * 1000;
 		}
+<<<<<<< HEAD
 		private bool isAnotherEngineTimeShiftEnd(DateTime recStartTime, string hlsSegM3uUrl, string startPlayList) {
 			if (startPlayList == null) return false;
 			var lastTsNum = util.getRegGroup(startPlayList, "[\\s\\S]+\n(\\d+).ts");
@@ -1292,6 +1317,20 @@ namespace namaichi.rec
 					Thread.Sleep(10);
 				}
 			});
+=======
+	}
+	class numTaskInfo {
+		public int no = -1;
+		public string url = null;
+		public byte[] res = null;
+		public double second = 0;
+		public string fileName = null;
+		public numTaskInfo(int no, string url, double second, string fileName) {
+			this.no = no;
+			this.url = url;
+			this.second = second;
+			this.fileName = fileName;
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 		}
 	}
 }

@@ -457,6 +457,7 @@ C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou 
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\obj\Release\namaichi.VersionForm.resources
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\obj\Release\namaichi.csproj.GenerateResource.Cache
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou c\nicoNewStreamRecorderKakkoKari\namaichi\obj\Release\nicoNewStreamRecorderKakkoKari.exe
+<<<<<<< HEAD
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou e\nicoNewStreamRecorderKakkoKari\namaichi\bin\Release\nicoNewStreamRecorderKakkoKari.exe.config
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou e\nicoNewStreamRecorderKakkoKari\namaichi\bin\Release\nicoNewStreamRecorderKakkoKari.exe
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 9.26 tuujou e\nicoNewStreamRecorderKakkoKari\namaichi\bin\Release\Microsoft.Web.XmlTransform.dll
@@ -618,3 +619,5 @@ C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 10.12 tuujou
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 10.12 tuujou k\nicoNewStreamRecorderKakkoKari\namaichi\obj\Release\namaichi.VersionForm.resources
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 10.12 tuujou k\nicoNewStreamRecorderKakkoKari\namaichi\obj\Release\namaichi.csproj.GenerateResource.Cache
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 10.12 tuujou k\nicoNewStreamRecorderKakkoKari\namaichi\obj\Release\nicoNewStreamRecorderKakkoKari.exe
+=======
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c

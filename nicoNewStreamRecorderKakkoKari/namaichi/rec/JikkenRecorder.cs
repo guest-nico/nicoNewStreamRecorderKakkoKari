@@ -183,7 +183,11 @@ namespace namaichi.rec
 			var _res = getWatching();
 			_res.Wait();
 			watchingRes = _res.Result;
+<<<<<<< HEAD
 			util.debugWriteLine("watching res " + watchingRes + util.getMainSubStr(isSub, true));
+=======
+			util.debugWriteLine("watching res " + watchingRes);
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 			
 			var ret = getPageTypeFromWatching(watchingRes);
 			util.debugWriteLine("pagetype cas " + ret + util.getMainSubStr(isSub, true));
@@ -368,9 +372,15 @@ namespace namaichi.rec
 			else if (res.IndexOf("\"errorCode\":\"INTERNAL_SERVER_ERROR\"") > -1) return 5;
 			else if (res.IndexOf("\"errorCode\":\"INVALID_PARAMETER\"") > -1) return 5;
 			else if (res.IndexOf("\"errorCode\":\"NOT_PLAYABLE\"") > -1) return 2;
+<<<<<<< HEAD
 			else if (res.IndexOf("errorMessage\":\"program ended.\"") > -1) return 2;
 //			else if (res.IndexOf("errorMessage\":\"Bad request") > -1) return 5;
 			rm.form.addLogText(res + util.getMainSubStr(isSub, true));
+=======
+			else if (res.IndexOf("errorMessage\":\"program ended\"") > -1) return 2;
+//			else if (res.IndexOf("errorMessage\":\"Bad request") > -1) return 5;
+			rm.form.addLogText(res);
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 			return 5;
 		}
 		private string getActionTrackId() {

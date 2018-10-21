@@ -32,7 +32,10 @@ namespace namaichi.rec
 		private bool isTimeShift;
 		private TimeShiftConfig timeShiftConfig;
 		private string[] recFolderFileInfo;
+<<<<<<< HEAD
 		private bool isSub;
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 	
 		public Html5Recorder(string url, CookieContainer container, 
 				string lvid, RecordingManager rm, RecordFromUrl rfu,
@@ -201,10 +204,13 @@ namespace namaichi.rec
 				    !long.TryParse(util.getRegGroup(data, "\"endTime\":(\\d+)"), out endTime))
 						return 3;				
 				var programTime = util.getUnixToDatetime(endTime) - util.getUnixToDatetime(openTime);
+<<<<<<< HEAD
 				long _openTime = 0;
 				if (data == null || 
 				    !long.TryParse(util.getRegGroup(data, "\"openTime\":(\\d+)"), out _openTime))
 						return 3;
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 	//			util.debugWriteLine(data);
 				
 				//0-wsUrl 1-request
@@ -242,6 +248,7 @@ namespace namaichi.rec
 						return 2;
 					}
 				
+<<<<<<< HEAD
 					//display set
 					var b = new RecordStateSetter(rm.form, rm, rfu, isTimeShift, false, recFolderFile);
 					Task.Run(() => {
@@ -266,11 +273,33 @@ namespace namaichi.rec
 					
 				} else {
 					recFolderFile = new string[]{"", "", ""};
+=======
+				util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode());
+				if (recFolderFile == null)
+<<<<<<< HEAD
+					recFolderFile = getRecFilePath(openTime);
+=======
+					recFolderFile = getRecFilePath();
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+				if (recFolderFile == null || recFolderFile[0] == null) {
+					//パスが長すぎ
+					rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);
+					util.debugWriteLine("too long path? " + recFolderFile[1]);
+					return 2;
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 				}
 				
 				var userId = util.getRegGroup(res, "\"user\"\\:\\{\"user_id\"\\:(.+?),");
 				var isPremium = res.IndexOf("\"member_status\":\"premium\"") > -1;
+<<<<<<< HEAD
 				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, lastSegmentNo, isTimeShift, lvid, timeShiftConfig, userId, isPremium, programTime, type, _openTime, isSub);
+=======
+<<<<<<< HEAD
+				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, lastSegmentNo, isTimeShift, lvid, timeShiftConfig, userId, isPremium, programTime, type, _openTime);
+=======
+				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, lastSegmentNo, isTimeShift, lvid, timeShiftConfig, userId, isPremium, programTime);
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 				rm.wsr = wsr;
 				try {
 					isNoPermission = wsr.start();
@@ -453,9 +482,14 @@ namespace namaichi.rec
 	        }
 			return null;
 		}
+<<<<<<< HEAD
 		public string[] getRecFilePath(long openTime) {
 			util.debugWriteLine(openTime + " c " + recFolderFileInfo[0] + " b " + " a " + timeShiftConfig);
 			return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, isTimeShift, timeShiftConfig, openTime);
+=======
+		public string[] getRecFilePath() {
+			return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, isTimeShift, timeShiftConfig);
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		}
 		private TimeShiftConfig getReadyArgTsConfig(
 				TimeShiftConfig _tsConfig, string host, 

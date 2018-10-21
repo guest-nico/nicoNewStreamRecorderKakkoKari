@@ -46,11 +46,16 @@ namespace namaichi.play
 		}
 		public void play() {
 			util.debugWriteLine("play");
+<<<<<<< HEAD
 			
+=======
+			if (form.rec.rfu == null) return;
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			
 			if (form.playerBtn.Text == "視聴") {
 				form.playerBtn.Text = "視聴停止";
 				lastPlayUrl = null;
+<<<<<<< HEAD
 				
 				Task.Run(() => {
 		         	if (!getHlsUrl()) {
@@ -90,6 +95,21 @@ namespace namaichi.play
 		}
 		private void videoPlay(bool isStart) {
 			isRecording = true;
+=======
+				videoPlay(true);
+				commentPlay(true);
+			} else {
+				Task.Run(() => {
+				    setPlayerBtnText("視聴");
+					stopPlaying(true, true);
+					if (isDefaultPlayer) ctrlFormClose();
+					if (isDefaultCommentPlayer) defaultCommentFormClose();
+				});
+				
+			}
+		}
+		private void videoPlay(bool isStart) {
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			isDefaultPlayer = bool.Parse(config.get("IsDefaultPlayer"));
 			if (isStart) {
 				Task.Run(() => {
@@ -109,7 +129,11 @@ namespace namaichi.play
 						
 						lastPlayUrl = form.rec.hlsUrl;
 						
+<<<<<<< HEAD
 						//isRecording = true;
+=======
+						isRecording = true;
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 						sendPlayCommand(isDefaultPlayer);
 						
 						while (true) {
@@ -137,10 +161,17 @@ namespace namaichi.play
 						}
 						stopPlaying(true, false);
 				    	if (isDefaultPlayer) ctrlFormClose();
+<<<<<<< HEAD
 				    	//isRecording = false;
 						break;
 					}
 				    isRecording = false;
+=======
+				    	isRecording = false;
+						break;
+					}
+				    
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 				    setPlayerBtnText("視聴");
 				    
 				});
@@ -330,6 +361,7 @@ namespace namaichi.play
 		public void setStatistics(string visit, string comment) {
 			if (commentForm != null) commentForm.setStatistics(visit, comment);
 		}
+<<<<<<< HEAD
 		private bool getHlsUrl() {
 			if (form.rec.rfu == null) {
 				form.rec.hlsUrl = null;
@@ -351,5 +383,7 @@ namespace namaichi.play
 			}
 			return true;
 		}
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 	}
 }

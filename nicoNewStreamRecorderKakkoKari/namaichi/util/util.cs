@@ -21,10 +21,15 @@ class app {
 	}
 }
 class util {
+<<<<<<< HEAD
 	public static string versionStr = "ver0.87.1";
 	public static string versionDayStr = "2018/10/22";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
+=======
+	public static string versionStr = "ver0.86.17.4 debug ";
+	public static string versionDayStr = "2018/09/28";
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);

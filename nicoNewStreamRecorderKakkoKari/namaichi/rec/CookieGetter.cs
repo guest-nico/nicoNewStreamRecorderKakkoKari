@@ -26,7 +26,10 @@ namespace namaichi.rec
 		public bool isHtml5 = false;
 		private config.config cfg;
 		public string log = "";
+<<<<<<< HEAD
 		public string id = null;
+=======
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 		static readonly Uri TargetUrl = new Uri("http://live.nicovideo.jp/");
 		static readonly Uri TargetUrl2 = new Uri("http://live2.nicovideo.jp");
 		static readonly Uri TargetUrl3 = new Uri("https://com.nicovideo.jp");
@@ -79,7 +82,11 @@ namespace namaichi.rec
 				bool isSub, string url) {
 			
 			var userSessionCC = getUserSessionCC(userSession, userSessionSecure);
+<<<<<<< HEAD
 			log += (userSessionCC == null) ? "前回のユーザーセッションが見つかりませんでした。" : "前回のユーザーセッションが見つかりました。";
+=======
+			log += (userSessionCC == null) ? "前回のユーザーセッションが見つかりませんでした。\n" : "前回のユーザーセッションが見つかりました。\n";
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 			if (userSessionCC != null && true) {
 //				util.debugWriteLine(userSessionCC.GetCookieHeader(TargetUrl));
 				util.debugWriteLine("usersessioncc ishtml5login");
@@ -100,7 +107,11 @@ namespace namaichi.rec
 			
 			if (browserNum == "2") {
 				CookieContainer cc = await getBrowserCookie(isSub).ConfigureAwait(false);
+<<<<<<< HEAD
 				log += (cc == null) ? "ブラウザからユーザーセッションを取得できませんでした。" : "ブラウザからユーザーセッションを取得しました。";
+=======
+				log += (cc == null) ? "ブラウザからユーザーセッションを取得できませんでした。\n" : "ブラウザからユーザーセッションを取得しました。\n";
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 				if (cc != null) {
 					util.debugWriteLine("browser ishtml5login");
 					if (isHtml5Login(cc, url)) {
@@ -128,7 +139,11 @@ namespace namaichi.rec
 				var mail = accountId;
 				var pass = accountPass;
 				var accCC = await getAccountCookie(mail, pass).ConfigureAwait(false);
+<<<<<<< HEAD
 				log += (accCC == null) ? "アカウントログインからユーザーセッションを取得できませんでした。" : "アカウントログインからユーザーセッションを取得しました。";
+=======
+				log += (accCC == null) ? "アカウントログインからユーザーセッションを取得できませんでした。\n" : "アカウントログインからユーザーセッションを取得しました。\n";
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 				if (accCC != null) {
 					util.debugWriteLine("account ishtml5login");
 					if (isHtml5Login(accCC, url)) {
@@ -229,12 +244,17 @@ namespace namaichi.rec
 			var isLogin = !(pageSource.IndexOf("\"login_status\":\"login\"") < 0 &&
 			   	pageSource.IndexOf("login_status = 'login'") < 0); 
 			util.debugWriteLine("islogin " + isLogin);
+<<<<<<< HEAD
 			log += (isLogin) ? "ログインに成功しました。" : "ログインに失敗しました";
 //			if (!isLogin) log += pageSource;
 			if (isLogin) {
 				id = util.getRegGroup(pageSource, "\"user_id\":(\\d+)");
 				if (id == null) id = util.getRegGroup(pageSource, "user_id = (\\d+)");
 			}
+=======
+			log += (isLogin) ? "ログインに成功しました。\n" : "ログインに失敗しました\n";
+			if (!isLogin) log += pageSource;
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
 			return isLogin;
 		}
 		async public Task<CookieContainer> getAccountCookie(string mail, string pass) {
