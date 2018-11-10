@@ -35,6 +35,7 @@ namespace rokugaTouroku.rec
 			this.rlm = rlm;
 		}
 		public void rec() {
+			var maxRecordingNum = int.Parse(rlm.cfg.get("rokugaTourokuMaxRecordingNum"));
 			while (true) {
 				try {
 					var isAllEnd = true;
@@ -42,6 +43,8 @@ namespace rokugaTouroku.rec
 					var _count = rlm.form.getRecListCount();
 					util.debugWriteLine("rlm.reclistdata.count " + _count + " reclist count " + rlm.form.recList.Rows.Count);
 					for (var i = 0; i < _count; i++) {
+						if (rlm.rdg == null) return;
+							
 						util.debugWriteLine("i " + i + " count " + _count);
 						RecInfo ri = (RecInfo)rlm.recListData[i];
 						util.debugWriteLine(i + " " + ri);
@@ -50,7 +53,10 @@ namespace rokugaTouroku.rec
 						if (ri.state == "待機中" || ri.state == "録画中") isAllEnd = false;
 						if (ri.state != "待機中") continue;
 						
-						Task.Run(() => {recProcess(ri);});
+						if (getRecordingNum(_count, rlm.recListData) < maxRecordingNum) {
+							ri.state = "録画中";
+							Task.Run(() => {recProcess(ri);});
+						}
 					}
 					util.debugWriteLine(isAllEnd);
 					if (isAllEnd) break;
@@ -61,10 +67,11 @@ namespace rokugaTouroku.rec
 				
 				Thread.Sleep(1000);
 			}
+			util.debugWriteLine("rec rdg end");
 		}
 		private void recProcess(RecInfo ri) {
 			util.debugWriteLine("recProcess " + ri.id);
-			ri.state = "録画中";
+//			ri.state = "録画中";
 			var row = rlm.recListData.IndexOf(ri);
 			if (row == -1) return;
 			rlm.form.resetBindingList(row, "状態", "録画中");
@@ -78,7 +85,11 @@ namespace rokugaTouroku.rec
 				
 				readResProcess(res, w, ri);
 			}
+			util.debugWriteLine("recProcess loop end wait mae " + ri.id + " " + ri.state);
+			ri.process.WaitForExit();
 			ri.state = (ri.process.ExitCode == 5) ? "録画完了" : "録画失敗";
+			util.debugWriteLine("recProcess loop end wait go " + ri.id + " " + ri.state);
+			row = rlm.recListData.IndexOf(ri);
 			rlm.form.resetBindingList(row);
 		}
 		private void startRecProcess(RecInfo ri) {
@@ -88,7 +99,7 @@ namespace rokugaTouroku.rec
 				var si = new ProcessStartInfo();
 				si.FileName = "ニコ生新配信録画ツール（仮.exe";
 				//si.FileName = "nicoNewStreamRecorderKakkoKari.exe";
-				si.Arguments = "-nowindo -stdIO -IsmessageBox=false -IscloseExit=true " + ri.id + " -ts-start=" + ri.tsConfig.timeSeconds + "s -ts-end=" + ri.tsConfig.endTimeSeconds + "s -afterConvertMode=" + ri.getAfterConvertTypeNum() + " -qualityRank=" + ri.qualityRank + " -IsLogFile=false";
+				si.Arguments = "-nowindo -stdIO -IsmessageBox=false -IscloseExit=true " + ri.id + " -ts-start=" + ri.tsConfig.startTimeStr + " -ts-end=" + ri.tsConfig.endTimeSeconds + "s -ts-list=" + ri.tsConfig.isOutputUrlList.ToString().ToLower() + " -ts-list-m3u8=" + ri.tsConfig.isM3u8List.ToString().ToLower() + " -ts-list-update=" + (int)ri.tsConfig.m3u8UpdateSeconds + " -ts-list-open=" + ri.tsConfig.isOpenUrlList.ToString().ToLower() + " -ts-list-command=\"" + ri.tsConfig.openListCommand + "\" -ts-vpos-starttime=" + ri.tsConfig.isVposStartTime.ToString().ToLower() + " -afterConvertMode=" + ri.getAfterConvertTypeNum() + " -qualityRank=" + ri.qualityRank + " -IsLogFile=false";
 				util.debugWriteLine(si.Arguments);
 				//si.CreateNoWindow = true;
 				si.UseShellExecute = false;
@@ -150,11 +161,15 @@ namespace rokugaTouroku.rec
 			rlm.form.resetBindingList(row);
 			
 			var _count = rlm.form.getRecListCount();
-			util.debugWriteLine("setinfo c " + _count + " rowindex " + rlm.form.recList.SelectedCells[0].RowIndex);
+			var selectedRow0 = rlm.form.getRecListSelectedCount();
+			var selectedRowIndex = (selectedRow0 > 0) ? rlm.form.recList.SelectedCells[0].RowIndex : -1;
+			util.debugWriteLine("setinfo c " + _count + " selected rowindex " + selectedRow0);
 			try {
-				if (rlm.form.recList.SelectedCells.Count > 0 &&
+				if (selectedRow0 > 0 && 
 				    rlm.recListData[rlm.form.recList.SelectedCells[0].RowIndex] == ri) 
 					rlm.form.displayRiInfo(ri, ctrl, val);
+			} catch (ArgumentOutOfRangeException e) {
+				util.debugWriteLine("exception ok インデックスが範囲を超えています。負でない値で、コレクションのサイズよりも小さくなければなりません。");
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
@@ -163,8 +178,10 @@ namespace rokugaTouroku.rec
 		public void stopRecording() {
 			foreach (RecInfo ri in rlm.recListData) {
 				try {
-					if (ri.process.HasExited) continue;
-					ri.process.Kill();
+					if (ri.state == "録画中") {
+						if (ri.process.HasExited) continue;
+						ri.process.Kill();
+					}
 				} catch (Exception e) {
 					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
@@ -176,6 +193,7 @@ namespace rokugaTouroku.rec
 			
        		System.Drawing.Icon icon =  null;
 			try {
+       			util.debugWriteLine("samune url " + url);
        			byte[] pic = cl.DownloadData(url);
 				
 				var  st = new System.IO.MemoryStream(pic);
@@ -187,6 +205,14 @@ namespace rokugaTouroku.rec
 				return null;
 			}
 			return icon.ToBitmap();
+		}
+		private int getRecordingNum(int count, BindingSource list) {
+			var c = 0;
+			for (var i = 0; i < count; i++) {
+				RecInfo ri = (RecInfo)rlm.recListData[i];
+				if (ri.state == "録画中") c++;
+			}
+			return c;
 		}
 	}
 }

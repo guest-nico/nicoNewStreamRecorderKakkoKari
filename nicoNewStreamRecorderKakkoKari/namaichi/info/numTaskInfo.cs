@@ -21,13 +21,15 @@ namespace namaichi.info
 		public string fileName = null;
 		public DateTime dt;
 		public int originNo = -1;
-		public numTaskInfo(int no, string url, double second, string fileName, int originNo = -1) {
+		public double startSecond = -1;
+		public numTaskInfo(int no, string url, double second, string fileName, double startSecond, int originNo = -1) {
 			this.no = no;
 			this.url = url;
 			this.second = second;
 			this.fileName = fileName;
 			dt = DateTime.Now;
 			this.originNo = (originNo == -1) ? no : originNo;
+			this.startSecond = startSecond;
 		}
 	}
 }

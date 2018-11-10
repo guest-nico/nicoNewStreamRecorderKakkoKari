@@ -46,7 +46,7 @@ namespace namaichi.rec
 			this.isTimeShift = isTimeShift;
 			this.isSub = isSub;
 		}
-		public int record(string res) {
+		public int record(string res, bool isRtmp) {
 			
 			
 //			for (int i = 0; i < webSocketRecInfo.Length; i++)
@@ -55,7 +55,7 @@ namespace namaichi.rec
 //				util.debugWriteLine(recFolderFileInfo[i]);
 			
 			//endcode 0-その他の理由 1-stop 2-最初に終了 3-始まった後に番組終了
-			var ret = html5Record(res).Result;
+			var ret = html5Record(res, isRtmp).Result;
 			util.debugWriteLine("html5 rec ret " + ret);
 			return ret;
 		
@@ -144,7 +144,7 @@ namespace namaichi.rec
 			return new string[]{host, group, title, lvid, communityNum, userId};
 
 		}
-		async private Task<int> html5Record(string res) {
+		async private Task<int> html5Record(string res, bool isRtmp) {
 			//webSocketInfo 0-wsUrl 1-request
 			//recFolderFileInfo host, group, title, lvid, communityNum
 			//return 0-end stream 1-stop
@@ -205,6 +205,11 @@ namespace namaichi.rec
 				if (data == null || 
 				    !long.TryParse(util.getRegGroup(data, "\"openTime\":(\\d+)"), out _openTime))
 						return 3;
+				long serverTime = 0;
+				if (data == null || 
+				    !long.TryParse(util.getRegGroup(data, "\"serverTime\":(\\d+)"), out serverTime))
+						return 3;
+				var jisa = util.getUnixToDatetime(serverTime / 1000) - DateTime.Now;
 	//			util.debugWriteLine(data);
 				
 				//0-wsUrl 1-request
@@ -220,9 +225,9 @@ namespace namaichi.rec
 					//timeshift option
 					timeShiftConfig = null;
 					if (isTimeShift) {
-						if (rm.ri != null) timeShiftConfig = rm.ri.tsConfig;
+//						if (rm.ri != null) timeShiftConfig = rm.ri.tsConfig;
 						if (rm.argTsConfig != null) {
-							timeShiftConfig = getReadyArgTsConfig(rm.argTsConfig, recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], openTime);
+							timeShiftConfig = getReadyArgTsConfig(rm.argTsConfig.clone(), recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], openTime);
 						} else {
 							timeShiftConfig = getTimeShiftConfig(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, openTime);
 							if (timeShiftConfig == null) return 2;
@@ -231,25 +236,26 @@ namespace namaichi.rec
 						}
 					}
 				
-				
-					util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode());
-					if (recFolderFile == null)
-						recFolderFile = getRecFilePath(openTime);
-					if (recFolderFile == null || recFolderFile[0] == null) {
-						//パスが長すぎ
-						rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);
-						util.debugWriteLine("too long path? " + recFolderFile[1]);
-						return 2;
-					}
+					if (!rm.isPlayOnlyMode) {
+						util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode());
+						if (recFolderFile == null)
+							recFolderFile = getRecFilePath(openTime);
+						if (recFolderFile == null || recFolderFile[0] == null) {
+							//パスが長すぎ
+							rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);
+							util.debugWriteLine("too long path? " + recFolderFile[1]);
+							return 2;
+						}
+					} else recFolderFile = new string[]{"", "", ""};
 				
 					//display set
-					var b = new RecordStateSetter(rm.form, rm, rfu, isTimeShift, false, recFolderFile);
+					var b = new RecordStateSetter(rm.form, rm, rfu, isTimeShift, false, recFolderFile, rm.isPlayOnlyMode);
 					Task.Run(() => {
 					       	b.set(data, type, recFolderFileInfo);
 						});
 					
 					//hosoInfo
-					if (rm.cfg.get("IshosoInfo") == "true")
+					if (rm.cfg.get("IshosoInfo") == "true" && !rm.isPlayOnlyMode)
 						Task.Run(() => {b.writeHosoInfo();});
 					
 					util.debugWriteLine("form disposed" + rm.form.IsDisposed);
@@ -270,7 +276,7 @@ namespace namaichi.rec
 				
 				var userId = util.getRegGroup(res, "\"user\"\\:\\{\"user_id\"\\:(.+?),");
 				var isPremium = res.IndexOf("\"member_status\":\"premium\"") > -1;
-				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, lastSegmentNo, isTimeShift, lvid, timeShiftConfig, userId, isPremium, programTime, type, _openTime, isSub);
+				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, lastSegmentNo, isTimeShift, lvid, timeShiftConfig, userId, isPremium, programTime, type, _openTime, isSub, isRtmp);
 				rm.wsr = wsr;
 				try {
 					isNoPermission = wsr.start();
@@ -462,10 +468,11 @@ namespace namaichi.rec
 				string group, string title, string lvId, 
 				string communityNum, string userId, 
 				long _openTime) {
+			
 			var segmentSaveType = rm.cfg.get("segmentSaveType");
 			var lastFile = util.getLastTimeshiftFileName(host,
 					group, title, lvId, communityNum, userId, rm.cfg, _openTime);
-			util.debugWriteLine("timeshift lastfile " + lastFile);
+			util.debugWriteLine("timeshift lastfile " + lastFile + " host " + host + " title " + title);
 			
 			var lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType);
 			if (lastFileTime == null) {
@@ -478,6 +485,7 @@ namespace namaichi.rec
 						int.Parse(lastFileTime[2]);
 			}
 			if (_tsConfig.timeType == 0) _tsConfig.isContinueConcat = false;
+			util.debugWriteLine("ready arg ts iscontinueconcat " + _tsConfig.isContinueConcat + " startType " + _tsConfig.timeType + " lastfiletime " + lastFileTime + " lastfile " + lastFile);
 			return _tsConfig;
 		}
 	}

@@ -42,6 +42,7 @@ namespace namaichi.rec
 		private string hlsUrl;
 		private string msUri;
 		private WatchingInfo wi;
+//		private TimeSpan jisa = TimeSpan.MinValue;
 		
 		private string[] recFolderFileInfo;
 		private TimeShiftConfig timeShiftConfig;
@@ -79,7 +80,7 @@ namespace namaichi.rec
 //			else if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ENDED") return 7;
 			this.isSub = isSub;
 		}
-		public int record(string res) {
+		public int record(string res, bool isRtmp) {
 			//endcode 0-その他の理由 1-stop 2-最初に終了 3-始まった後に番組終了
 			recFolderFileInfo = null;
 			string[] recFolderFile = null;
@@ -101,10 +102,14 @@ namespace namaichi.rec
 			var programTime = util.getUnixToDatetime(endTime) - util.getUnixToDatetime(openTime);
 			long releaseTime = 0;
 			if (data == null || 
-			    !long.TryParse(util.getRegGroup(data, "\"releaseTimeMs\":(\\d+)"), out endTime))
+			    !long.TryParse(util.getRegGroup(data, "\"releaseTimeMs\":(\\d+)"), out releaseTime))
 					return 3;				
-			releaseTime = (long)(endTime / 1000);
-			
+			releaseTime = (long)(releaseTime / 1000);
+			long serverTime = 0;
+			if (data == null || 
+			    !long.TryParse(util.getRegGroup(data, "\"serverTimeMs\":(\\d+)"), out serverTime))
+					return 3;				
+			var jisa = util.getUnixToDatetime((long)(serverTime / 1000)) - DateTime.Now;
 			
 				
 //			util.debugWriteLine(data + util.getMainSubStr(isSub, true));
@@ -115,7 +120,7 @@ namespace namaichi.rec
 				if (!isLive) {
 					if (rm.ri != null) timeShiftConfig = rm.ri.tsConfig;
 					if (rm.argTsConfig != null) {
-						timeShiftConfig = getReadyArgTsConfig(rm.argTsConfig, recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], releaseTime);
+						timeShiftConfig = getReadyArgTsConfig(rm.argTsConfig.clone(), recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], releaseTime);
 					} else {
 						timeShiftConfig = getTimeShiftConfig(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, releaseTime);
 						if (timeShiftConfig == null) return 2;
@@ -123,24 +128,26 @@ namespace namaichi.rec
 					}
 				}
 				
-	//			util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode() + util.getMainSubStr(isSub, true));
-	//			if (recFolderFile == null)
-					recFolderFile = getRecFilePath(releaseTime);
-				if (recFolderFile == null || recFolderFile[0] == null) {
-					//パスが長すぎ
-					rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);
-					util.debugWriteLine("too long path? " + recFolderFile[1] + util.getMainSubStr(isSub, true));
-					return 2;
-				}
+				if (!rm.isPlayOnlyMode) {
+		//			util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode() + util.getMainSubStr(isSub, true));
+		//			if (recFolderFile == null)
+						recFolderFile = getRecFilePath(releaseTime);
+					if (recFolderFile == null || recFolderFile[0] == null) {
+						//パスが長すぎ
+						rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);
+						util.debugWriteLine("too long path? " + recFolderFile[1] + util.getMainSubStr(isSub, true));
+						return 2;
+					}
+				} else recFolderFile = new string[]{"", "", ""};
 					
 				//display set
-				var b = new RecordStateSetter(rm.form, rm, rfu, !isLive, true, recFolderFile);
+				var b = new RecordStateSetter(rm.form, rm, rfu, !isLive, true, recFolderFile, rm.isPlayOnlyMode);
 				Task.Run(() => {
 					b.set(data, type, recFolderFileInfo);
 				});
 				
 				//hosoInfo
-				if (rm.cfg.get("IshosoInfo") == "true")
+				if (rm.cfg.get("IshosoInfo") == "true" && !rm.isPlayOnlyMode)
 					Task.Run(() => {b.writeHosoInfo();});
 					
 				
@@ -158,7 +165,7 @@ namespace namaichi.rec
 			var userId = util.getRegGroup(res, "\"user\"\\:\\{\"user_id\"\\:(.+?),");
 			var isPremium = res.IndexOf("\"member_status\":\"premium\"") > -1;
 			wi = new WatchingInfo(watchingRes);
-			var jrp = new JikkenRecordProcess(container, recFolderFile, rm, rfu, this, openTime, !isLive, lvid, timeShiftConfig, userId, isPremium, programTime, wi, releaseTime, isSub);
+			var jrp = new JikkenRecordProcess(container, recFolderFile, rm, rfu, this, openTime, !isLive, lvid, timeShiftConfig, userId, isPremium, programTime, wi, releaseTime, isSub, isRtmp);
 			rm.wsr = jrp;
 			try {
 				jrp.start();
@@ -251,6 +258,7 @@ namespace namaichi.rec
 				http.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0");
 				http.DefaultRequestHeaders.Add("Accept", "application/json");
 				
+//				var contentStr = "{\"actionTrackId\":\"" + actionTrackId + "\",\"streamProtocol\":\"rtmp\",\"streamQuality\":\"" + requestQuality + "\"";
 				var contentStr = "{\"actionTrackId\":\"" + actionTrackId + "\",\"streamProtocol\":\"https\",\"streamQuality\":\"" + requestQuality + "\"";
 				if (streamCapacity != "ultrahigh") contentStr += ", \"streamCapacity\":\"" + streamCapacity + "\"";
 				if (isLive) contentStr += ",\"isBroadcaster\":" + isBroadcaster.ToString().ToLower() + ",\"isLowLatencyStream\":false";
@@ -442,12 +450,18 @@ namespace namaichi.rec
 			var isChannel = communityNum.IndexOf("ch") > -1;
 			var url = (isChannel) ? 
 				("http://ch.nicovideo.jp/" + communityNum) :
-				("https://com.nicovideo.jp/motion/" + communityNum);
-				
+				("https://com.nicovideo.jp/community/" + communityNum);
 			
 			var wc = new WebHeaderCollection();
 			var res = util.getPageSource(url, ref wc, container);
 			util.debugWriteLine(container.GetCookieHeader(new Uri(url)) + util.getMainSubStr(isSub, true));
+			
+			if (res == null) {
+				url = (isChannel) ? 
+					("http://ch.nicovideo.jp/" + communityNum) :
+					("https://com.nicovideo.jp/motion/" + communityNum);
+				res = util.getPageSource(url, ref wc, container);
+			}
 			if (res == null) return "com";
 			var title = (isChannel) ? 
 				util.getRegGroup(res, "<meta property=\"og\\:title\" content=\"(.+?) - ニコニコチャンネル") :
@@ -501,6 +515,7 @@ namespace namaichi.rec
 			var lastFile = util.getLastTimeshiftFileName(host,
 					group, title, lvId, communityNum, userId, rm.cfg, _openTime);
 			util.debugWriteLine("timeshift lastfile " + lastFile + util.getMainSubStr(isSub, true));
+			util.debugWriteLine("arg tsconfig vpos " + _tsConfig.isVposStartTime);
 			
 			var lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType);
 			if (lastFileTime == null) {

@@ -105,7 +105,7 @@ namespace namaichi.play
 			util.debugWriteLine("player wsr msreq " + wsr.msReq);
 			
 			if (wsr == null|| wsr.msReq == null) {
-				wsc.Close();
+				if (wsc != null) wsc.Close();
 				return;
 			}
 			try {
@@ -146,6 +146,12 @@ namespace namaichi.play
 		private void onWscMessageReceive(object sender, MessageReceivedEventArgs e) {
 			util.debugWriteLine("on wsc message ");
 			
+			if (cf.form.recBtn.Text == "録画開始") {
+				isEnd = true;
+				wsc.Close();
+				return;
+			}
+			
 			if (e.Message.StartsWith("{\"ping\":{\"content\":\"rf:")) {
 //				closeWscProcess();
 //				try {commentSW.Close();}
@@ -179,7 +185,11 @@ namespace namaichi.play
 //			string msg = (wsr.isJikken) ? deflateDecoder.decode(e.Data) : e.Message;
 			 
 			foreach (var chatinfo in chatInfoList) {
-			
+				if (cf.form.recBtn.Text == "録画開始") {
+					isEnd = true;
+					break;
+				}
+				
 				XDocument chatXml;
 				chatXml = chatinfo.getFormatXml(wsr.openTime);
 				

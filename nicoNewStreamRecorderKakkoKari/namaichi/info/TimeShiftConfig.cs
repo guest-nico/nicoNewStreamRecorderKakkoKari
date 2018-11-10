@@ -33,12 +33,14 @@ namespace namaichi.info
 		public bool isM3u8List;
 		public double m3u8UpdateSeconds;
 		public bool isOpenUrlList;
+		public bool isVposStartTime;
 		
 		public TimeShiftConfig(int startType, 
 				int h, int m, int s, int endH, int endM, int endS,
 				bool isContinueConcat, bool isOutputUrlList, 
 				string openListCommand, bool isM3u8List, 
-				double m3u8UpdateSeconds, bool isOpenUrlList)
+				double m3u8UpdateSeconds, bool isOpenUrlList,
+				bool isVposStartTime)
 		{
 			this.startType = startType;
 			this.h = h;
@@ -53,6 +55,7 @@ namespace namaichi.info
 			this.isM3u8List = isM3u8List;
 			this.m3u8UpdateSeconds = m3u8UpdateSeconds;
 			this.isOpenUrlList = isOpenUrlList;
+			this.isVposStartTime = isVposStartTime;
 			
 			timeSeconds = h * 3600 + m * 60 + s;
 			timeType = (startType == 0) ? 0 : 1;
@@ -60,7 +63,37 @@ namespace namaichi.info
 			if (startType == 0) this.isContinueConcat = false;
 		}
 		public TimeShiftConfig() : this(0, 0, 0, 0, 0, 0, 0, 
-				false, false, "notepad {i}", false, 5, false) {}
-			
+				false, false, "notepad {i}", false, 5, false, false) {}
+		public TimeShiftConfig clone() {
+			return new TimeShiftConfig(startType, h, m, s,
+					endH, endM, endS, isContinueConcat,
+					timeSeconds, timeType, endTimeSeconds,
+					isOutputUrlList, openListCommand, isM3u8List,
+					m3u8UpdateSeconds, isOpenUrlList, isVposStartTime);
+		}
+		public TimeShiftConfig(int startType, int h, int m, int s, 
+				int endH, int endM, int endS, bool isContinueConcat,
+				int timeSeconds, int timeType, int endTimeSeconds,
+				bool isOutputUrlList, string openListCommand,
+				bool isM3u8List, double m3u8UpdateSeconds, 
+				bool isOpenUrlList, bool isVposStartTime) {
+			this.startType = startType;
+			this.h = h;
+			this.m = m;
+			this.s = s;
+			this.endH = endH;
+			this.endM = endM;
+			this.endS = endS;
+			this.isContinueConcat = isContinueConcat;
+			this.timeSeconds = timeSeconds;
+			this.timeType = timeType;
+			this.endTimeSeconds = endTimeSeconds;
+			this.isOutputUrlList = isOutputUrlList;
+			this.openListCommand = openListCommand;
+			this.isM3u8List = isM3u8List;
+			this.m3u8UpdateSeconds = m3u8UpdateSeconds;
+			this.isOutputUrlList = isOpenUrlList;
+			this.isVposStartTime = isVposStartTime;
+		}
 	}
 }

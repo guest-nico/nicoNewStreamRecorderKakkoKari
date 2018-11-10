@@ -126,11 +126,14 @@ namespace rokugaTouroku
 				{"IsautoFollowComgen",isAutoFollowComGen.Checked.ToString().ToLower()},
 				{"qualityRank",getQualityRank()},
 				{"IsLogFile",isLogFileChkBox.Checked.ToString().ToLower()},
+				{"IsSegmentNukeInfo",isSegmentNukeInfoChkBox.Checked.ToString().ToLower()},
 				{"segmentSaveType",getSegmentSaveType()},
 				{"IsRenketuAfter",isRenketuAfterChkBox.Checked.ToString().ToLower()},
 				{"IsAfterRenketuFFmpeg",isAfterRenketuFFmpegChkBox.Checked.ToString().ToLower()},
 				{"IsDefaultEngine",isDefaultEngineChkBox.Checked.ToString().ToLower()},
 				{"anotherEngineCommand",anotherEngineCommandText.Text},
+				{"IsUsePlayer",isUsePlayerChkBox.Checked.ToString().ToLower()},
+				{"IsUseCommentViewer",isUseCommentViewerChkBox.Checked.ToString().ToLower()},
 				{"IsDefaultPlayer",isDefaultPlayerRadioBtn.Checked.ToString().ToLower()},
 				{"IsDefaultCommentViewer",isDefaultCommentViewerRadioBtn.Checked.ToString().ToLower()},
 				{"anotherPlayerPath",anotherPlayerPathText.Text},
@@ -158,6 +161,8 @@ namespace rokugaTouroku
 				{"iscookie2",isCookieFileSiteiChkBox2.Checked.ToString().ToLower()},
 				{"user_session2",""},
 				{"user_session_secure2",""},
+				
+				{"rokugaTourokuMaxRecordingNum",maxRecordingNum.Text},
 			};
 			
 		}
@@ -336,6 +341,7 @@ namespace rokugaTouroku
         	isAutoFollowComGen.Checked = bool.Parse(cfg.get("IsautoFollowComgen"));
         	setInitQualityRankList(cfg.get("qualityRank"));
         	isLogFileChkBox.Checked = bool.Parse(cfg.get("IsLogFile"));
+        	isSegmentNukeInfoChkBox.Checked = bool.Parse(cfg.get("IsSegmentNukeInfo"));
         	setSegmentSaveType(cfg.get("segmentSaveType"));
         	isRenketuAfterChkBox.Checked = bool.Parse(cfg.get("IsRenketuAfter"));
         	isRenketuAfterChkBox_UpdateAction();
@@ -348,6 +354,11 @@ namespace rokugaTouroku
 			setCommentViewerType();
 			anotherPlayerPathText.Text = cfg.get("anotherPlayerPath");
 			anotherCommentViewerPathText.Text = cfg.get("anotherCommentViewerPath");
+			isUsePlayerChkBox.Checked = bool.Parse(cfg.get("IsUsePlayer"));
+			isUseCommentViewerChkBox.Checked = bool.Parse(cfg.get("IsUseCommentViewer"));
+			isUsePlayerChkBox_UpdateAction();
+			isUseCommentViewerChkBox_UpdateAction();
+			
 			setConvertList(int.Parse(cfg.get("afterConvertMode")));
 			
         	isCookieFileSiteiChkBox.Checked = bool.Parse(cfg.get("iscookie"));
@@ -380,6 +391,8 @@ namespace rokugaTouroku
         	var si2 = SourceInfoSerialize.load(true);
         	nicoSessionComboBox2.Selector.SetInfoAsync(si2);
 //			!bool.Parse(cfg.get("defaultBrowserPath"))
+        	
+        	maxRecordingNum.Text= cfg.get("rokugaTourokuMaxRecordingNum");
         }
         private void setSubFolderNameType(int subFolderNameType) {
         	if (subFolderNameType == 1) housoushaRadioBtn.Checked = true;
@@ -668,13 +681,16 @@ namespace rokugaTouroku
 		void setPlayerType() {
 			if (bool.Parse(cfg.get("IsDefaultPlayer")))
 				isDefaultPlayerRadioBtn.Checked = true;
-			else isAnotherPlayerRadioBtn.Checked = true;
+			else  
+				isAnotherPlayerRadioBtn.Checked = true;
 			isDefaultPlayerRadioBtn_UpdateAction();
 		}
 		void setCommentViewerType() {
 			if (bool.Parse(cfg.get("IsDefaultCommentViewer")))
 				isDefaultCommentViewerRadioBtn.Checked = true;
-			else isAnotherCommentViewerRadioBtn.Checked = true;
+			else 
+				isAnotherCommentViewerRadioBtn.Checked = true;
+			isDefaultCommentViewerRadioBtn_UpdateAction();
 		}
 		void isDefaultPlayerRadioBtn_UpdateAction() {
 			if (isDefaultPlayerRadioBtn.Checked) {
@@ -782,6 +798,28 @@ namespace rokugaTouroku
 			loginBtn2.Enabled = _checked;
 			subMailLabel2.Enabled = _checked;
 			subPassLabel2.Enabled = _checked;
+		}
+		void IsUsePlayerChkBoxCheckedChanged(object sender, EventArgs e)
+		{
+			isUsePlayerChkBox_UpdateAction();
+		}
+		void IsUseCommentViewerChkBoxCheckedChanged(object sender, EventArgs e)
+		{
+			isUseCommentViewerChkBox_UpdateAction();
+		}
+		void isUsePlayerChkBox_UpdateAction() {
+			var c = isUsePlayerChkBox.Checked;
+			isDefaultPlayerRadioBtn.Enabled = c;
+			isAnotherPlayerRadioBtn.Enabled = c;
+			anotherPlayerPathText.Enabled = c && isAnotherPlayerRadioBtn.Checked;
+			anotherPlayerSanshouBtn.Enabled = c && isAnotherPlayerRadioBtn.Checked; 
+		}
+		void isUseCommentViewerChkBox_UpdateAction() {
+			var c = isUseCommentViewerChkBox.Checked;
+			isDefaultCommentViewerRadioBtn.Enabled = c;
+			isAnotherCommentViewerRadioBtn.Enabled = c;
+			anotherCommentViewerPathText.Enabled = c && isAnotherCommentViewerRadioBtn.Checked;
+			anotherCommentViewerSanshouBtn.Enabled = c && isAnotherCommentViewerRadioBtn.Checked;
 		}
 	}
 }

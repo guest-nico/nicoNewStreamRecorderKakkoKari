@@ -37,6 +37,7 @@ namespace namaichi
 		private void InitializeComponent()
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.isSetVposStartTime = new System.Windows.Forms.CheckBox();
 			this.isRenketuLastFile = new System.Windows.Forms.CheckBox();
 			this.lastFileInfoLabel = new System.Windows.Forms.Label();
 			this.sLabel = new System.Windows.Forms.Label();
@@ -50,6 +51,7 @@ namespace namaichi
 			this.cancelBtn = new System.Windows.Forms.Button();
 			this.okBtn = new System.Windows.Forms.Button();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.label1 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.endSText = new System.Windows.Forms.TextBox();
 			this.label7 = new System.Windows.Forms.Label();
@@ -68,7 +70,6 @@ namespace namaichi
 			this.isOpenListCommandChkBox = new System.Windows.Forms.CheckBox();
 			this.openListCommandText = new System.Windows.Forms.TextBox();
 			this.isUrlListChkBox = new System.Windows.Forms.CheckBox();
-			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -78,6 +79,7 @@ namespace namaichi
 			// groupBox1
 			// 
 			this.groupBox1.BackColor = System.Drawing.SystemColors.Window;
+			this.groupBox1.Controls.Add(this.isSetVposStartTime);
 			this.groupBox1.Controls.Add(this.isRenketuLastFile);
 			this.groupBox1.Controls.Add(this.lastFileInfoLabel);
 			this.groupBox1.Controls.Add(this.sLabel);
@@ -90,10 +92,21 @@ namespace namaichi
 			this.groupBox1.Controls.Add(this.isStartTimeRadioBtn);
 			this.groupBox1.Location = new System.Drawing.Point(5, 10);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(299, 143);
+			this.groupBox1.Size = new System.Drawing.Size(299, 165);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "録画開始時間";
+			// 
+			// isSetVposStartTime
+			// 
+			this.isSetVposStartTime.Checked = true;
+			this.isSetVposStartTime.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.isSetVposStartTime.Location = new System.Drawing.Point(6, 135);
+			this.isSetVposStartTime.Name = "isSetVposStartTime";
+			this.isSetVposStartTime.Size = new System.Drawing.Size(244, 17);
+			this.isSetVposStartTime.TabIndex = 5;
+			this.isSetVposStartTime.Text = "コメントのvposを録画開始時間を起点にする";
+			this.isSetVposStartTime.UseVisualStyleBackColor = true;
 			// 
 			// isRenketuLastFile
 			// 
@@ -187,7 +200,7 @@ namespace namaichi
 			// 
 			// cancelBtn
 			// 
-			this.cancelBtn.Location = new System.Drawing.Point(215, 440);
+			this.cancelBtn.Location = new System.Drawing.Point(215, 462);
 			this.cancelBtn.Name = "cancelBtn";
 			this.cancelBtn.Size = new System.Drawing.Size(74, 23);
 			this.cancelBtn.TabIndex = 16;
@@ -197,7 +210,7 @@ namespace namaichi
 			// 
 			// okBtn
 			// 
-			this.okBtn.Location = new System.Drawing.Point(135, 440);
+			this.okBtn.Location = new System.Drawing.Point(135, 462);
 			this.okBtn.Name = "okBtn";
 			this.okBtn.Size = new System.Drawing.Size(74, 23);
 			this.okBtn.TabIndex = 15;
@@ -215,12 +228,20 @@ namespace namaichi
 			this.groupBox2.Controls.Add(this.endMText);
 			this.groupBox2.Controls.Add(this.label8);
 			this.groupBox2.Controls.Add(this.endHText);
-			this.groupBox2.Location = new System.Drawing.Point(5, 159);
+			this.groupBox2.Location = new System.Drawing.Point(5, 181);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(299, 62);
 			this.groupBox2.TabIndex = 27;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "録画終了時間";
+			// 
+			// label1
+			// 
+			this.label1.Location = new System.Drawing.Point(60, 43);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(234, 16);
+			this.label1.TabIndex = 9;
+			this.label1.Text = "0時間0分0秒を指定すると最後まで録画します";
 			// 
 			// label6
 			// 
@@ -283,7 +304,7 @@ namespace namaichi
 			this.groupBox3.Controls.Add(this.isOpenListCommandChkBox);
 			this.groupBox3.Controls.Add(this.openListCommandText);
 			this.groupBox3.Controls.Add(this.isUrlListChkBox);
-			this.groupBox3.Location = new System.Drawing.Point(5, 227);
+			this.groupBox3.Location = new System.Drawing.Point(5, 249);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(299, 197);
 			this.groupBox3.TabIndex = 27;
@@ -390,20 +411,12 @@ namespace namaichi
 			this.isUrlListChkBox.UseVisualStyleBackColor = true;
 			this.isUrlListChkBox.CheckedChanged += new System.EventHandler(this.isUrlListChkBox_CheckedChanged);
 			// 
-			// label1
-			// 
-			this.label1.Location = new System.Drawing.Point(60, 43);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(234, 16);
-			this.label1.TabIndex = 9;
-			this.label1.Text = "0時間0分0秒を指定すると最後まで録画します";
-			// 
 			// TimeShiftOptionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Window;
-			this.ClientSize = new System.Drawing.Size(311, 472);
+			this.ClientSize = new System.Drawing.Size(311, 494);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.cancelBtn);
@@ -422,6 +435,7 @@ namespace namaichi
 			this.panel2.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox isSetVposStartTime;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.CheckBox isUrlListChkBox;
 		private System.Windows.Forms.TextBox openListCommandText;

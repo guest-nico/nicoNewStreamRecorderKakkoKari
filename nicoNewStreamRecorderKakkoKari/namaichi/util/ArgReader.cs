@@ -65,7 +65,7 @@ namespace namaichi.utility
 			var lowKeys = new List<string>(config.defaultConfig.Keys.Select((x) => x.ToLower()));
 			var values = config.defaultConfig.Values.ToList<string>();
 			var keys = config.defaultConfig.Keys.ToList();
-			lowKeys.AddRange(new string[] {"ts-start", "ts-end", "ts-list", "ts-list-update", "ts-list-command"});
+			lowKeys.AddRange(new string[] {"ts-start", "ts-end", "ts-list", "ts-list-update", "ts-list-command", "ts-list-open", "ts-list-m3u8", "ts-vpos-starttime"});
 			foreach (var a in args) {
 				if (a.StartsWith("-")) {
 					var name = util.getRegGroup(a, "-(.*)=");
@@ -236,6 +236,8 @@ namespace namaichi.utility
 					if (val.ToLower() == "true" || val.ToLower() == "false") {
 						setName = "IsUrlList";
 						setVal = val;
+						if (tsConfig == null) tsConfig = new TimeShiftConfig();
+						tsConfig.isOutputUrlList = bool.Parse(val);
 						return true;
 					} else {
 						form.addLogText(name + "の値が設定できませんでした(true or false) " + val, false);
@@ -246,6 +248,8 @@ namespace namaichi.utility
 					if (val.ToLower() == "true" || val.ToLower() == "false") {
 						setName = "IsOpenUrlList";
 						setVal = val;
+						if (tsConfig == null) tsConfig = new TimeShiftConfig();
+						tsConfig.isOpenUrlList = bool.Parse(val);
 						return true;
 				   	} else {
 						form.addLogText(name + "の値が設定できませんでした(true or false) " + val, false);
@@ -256,6 +260,8 @@ namespace namaichi.utility
 					if (val.ToLower() == "true" || val.ToLower() == "false") {
 						setName = "IsM3u8List";
 						setVal = val;
+						if (tsConfig == null) tsConfig = new TimeShiftConfig();
+						tsConfig.isM3u8List = bool.Parse(val);
 						return true;
 				   	} else {
 						form.addLogText(name + "の値が設定できませんでした(true or false) " + val, false);
@@ -267,6 +273,8 @@ namespace namaichi.utility
 					if (double.TryParse(val, out _s) && _s > 0) {
 						setName = "M3u8UpdateSeconds";
 						setVal = val;
+						if (tsConfig == null) tsConfig = new TimeShiftConfig();
+						tsConfig.m3u8UpdateSeconds = double.Parse(val);
 						return true;
 				   	} else {
 						form.addLogText(name + "の値が設定できませんでした(0以上の数値) " + val, false);
@@ -277,6 +285,8 @@ namespace namaichi.utility
 //					if (val.ToLower() == "true" || val.ToLower() == "false") {
 						setName = "openUrlListCommand";
 						setVal = val;
+						if (tsConfig == null) tsConfig = new TimeShiftConfig();
+						tsConfig.openListCommand = val;
 						return true;
 					/*
 				   	} else {
@@ -284,6 +294,18 @@ namespace namaichi.utility
 						return false;;
 					}
 					*/
+				}
+				if (lowKeys[i] == "ts-vpos-starttime") {
+					if (val.ToLower() == "true" || val.ToLower() == "false") {
+						setName = "IsVposStartTime";
+						setVal = val;
+						if (tsConfig == null) tsConfig = new TimeShiftConfig();
+						tsConfig.isVposStartTime = bool.Parse(val);
+						return true;
+				   	} else {
+						form.addLogText(name + "の値が設定できませんでした(true or false) " + val, false);
+						return false;;
+					}
 				}
 				setName = keys[i];
 				setVal = val;

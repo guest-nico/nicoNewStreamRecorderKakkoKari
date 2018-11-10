@@ -49,12 +49,13 @@ namespace namaichi.info
 			return new string[]{chat, control};
 		}
 		public void setPutWatching(string res) {
+			
 			hlsUrl = util.getRegGroup(res, "streamServer\".+?\"url\":\"(.+?)\"");
 			var _expireIn = util.getRegGroup(res, "\"expireIn\"\\:(\\d+)");
 			if (_expireIn != null) expireIn = long.Parse(_expireIn);
 			visit = util.getRegGroup(res, "\"statistics\".+?\"viewers\"\\:(\\d+)");
 			comment = util.getRegGroup(res, "\"statistics\".+?\"comments\"\\:(\\d+)");
-			
+			util.debugWriteLine("setPutWatching hlsUrl " + hlsUrl);
 		}
 	}
 }

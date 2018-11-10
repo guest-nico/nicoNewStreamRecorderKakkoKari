@@ -21,8 +21,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.87.1";
-	public static string versionDayStr = "2018/10/22";
+	public static string versionStr = "ver0.87.7";
+	public static string versionDayStr = "2018/11/10";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	
@@ -143,7 +143,7 @@ class util {
 				return reta;
 			} else {
 				if (segmentSaveType == "0") {
-					var _existFile = util.existFile(files, "_ts_(\\d+h\\d+m\\d+s)_" + i.ToString(), name);
+					var _existFile = util.existFile(files, "_ts(_\\d+h\\d+m\\d+s_)*" + i.ToString(), name);
 					if (_existFile != null) {
 						existFile = _existFile;
 						continue;
@@ -305,13 +305,15 @@ class util {
 			if (sfn == null) return null;
 			dirPath += "/" + sfn;
 		}
-
+		util.debugWriteLine("getLastTimeshiftFileName dirPath " + dirPath + " sfn " + sfn);
 
 		var segmentSaveType = cfg.get("segmentSaveType");
 
 		var name = getFileName(host, group, title, lvId, communityNum,  cfg, _openTime);
 		if (name.Length > 200) name = name.Substring(0, 200);
 		
+		util.debugWriteLine("getLastTimeshiftFileName name " + name);
+		                    
 		//’·‚¢ƒpƒX’²®
 		if (name.Length + dirPath.Length > 235) {
 			name = lvId;
@@ -319,15 +321,28 @@ class util {
 				sfn = sfn.Substring(0, 3);
 				dirPath = _dirPath + "/" + sfn;
 								
-				if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
-				if (!Directory.Exists(dirPath)) return null;
+//				if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
+				
+				if (!Directory.Exists(dirPath)) {
+					util.debugWriteLine("getLastTS FN too long not exist dir path " + dirPath);
+					return null;
+				}
 				
 			}
 		}
-		if (name.Length + dirPath.Length > 230) return null;
 		
-		if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
-		if (!Directory.Exists(dirPath)) return null;
+		if (name.Length + dirPath.Length > 235) {
+			util.debugWriteLine("too long " + name + " " + dirPath + " " + name.Length + " " + dirPath.Length);
+			return null;
+		}
+		
+//		if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
+		if (!Directory.Exists(dirPath)) {
+			util.debugWriteLine("no exists " + dirPath);
+			return null;
+		}
+		
+		util.debugWriteLine("getLast TS FN 00");
 		
 		string existFile = null;
 		var files = Directory.GetFiles(dirPath);
@@ -337,11 +352,11 @@ class util {
 			if (segmentSaveType == "0") {
 				//util.existFile(dirPath, name + "_ts_\\d+h\\d+m\\d+s_" + i.ToString());
 				var _existFile = util.existFile(files, "_ts_(\\d+h\\d+m\\d+s)_" + i.ToString(), name);
+				util.debugWriteLine("getLastTimeshiftFileName existfile " + _existFile);
 				if (_existFile != null) {
 					existFile = _existFile;
 					continue;
 				}
-
 			}
 			
 			if (segmentSaveType == "1") {
@@ -364,7 +379,7 @@ class util {
 				return null;
 			}
 			
-			util.debugWriteLine(dirPath + " " + fName);
+			util.debugWriteLine("getLastTimeshiftFileName dirpath " + dirPath + " fname " + fName);
 			
 			if (i == 0) {
 				util.debugWriteLine("last timeshift file " + dirPath + "/" + name + "_" + "ts" + (i - 0).ToString());

@@ -187,6 +187,7 @@
     <Compile Include="rec\RecordingManager.cs" />
     <Compile Include="rec\RecordStateSetter.cs" />
     <Compile Include="rec\Reservation.cs" />
+    <Compile Include="rec\RtmpRecorder.cs" />
     <Compile Include="rec\ThroughFFMpeg.cs" />
     <Compile Include="rec\TimeShiftCommentGetter.cs" />
     <Compile Include="rec\TimeShiftCommentGetter_jikken.cs" />

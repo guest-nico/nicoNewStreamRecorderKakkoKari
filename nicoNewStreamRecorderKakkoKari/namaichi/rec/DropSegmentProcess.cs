@@ -52,7 +52,11 @@ namespace namaichi.rec
 			var msg = lastWroteSegmentDt.ToString() + "ぐらいから" + nti.dt.ToString() + "ぐらいまでの動画データが取得できませんでした。(" + dropTime + "秒)";
 			string hokanMsg = (fName == null) ? "補完設定がされていませんでした。" : 
 				((fName == "") ? "補完用データがありませんでした。" : ("補完を試みました。" + fName));
-			writeNukeInfo(msg, fName, nti.no, hokanMsg);
+			if (rm.cfg.get("IsSegmentNukeInfo") == "true")
+				writeNukeInfo(msg, fName, nti.no, hokanMsg);
+			else 
+				rec.addDebugBuf("write nuke info no");
+				
 			rm.form.addLogText(msg);
 			rm.form.addLogText(hokanMsg, true);
 		}
@@ -77,11 +81,11 @@ namespace namaichi.rec
 				var name = getOkFileName();
 				var fs = new FileStream(name, FileMode.Create, FileAccess.Write);
 				var c = getCount(rfu.subGotNumTaskInfo);
-	//			util.debugWriteBuf("write nuke segment start seg dt " + rfu.subGotNumTaskInfo[0].dt + " no " + rfu.subGotNumTaskInfo[0].no + " end dt " + rfu.subGotNumTaskInfo[c].dt + " end no " + rfu.subGotNumTaskInfo[c].no);
+//				util.debugWriteBuf("write nuke segment start seg dt " + rfu.subGotNumTaskInfo[0].dt + " no " + rfu.subGotNumTaskInfo[0].no + " end dt " + rfu.subGotNumTaskInfo[c].dt + " end no " + rfu.subGotNumTaskInfo[c].no);
 				var i = 0;
-				for (i = 0; i < c; i++) {
-					if (rfu.subGotNumTaskInfo[i].dt > nti.dt + TimeSpan.FromSeconds(15)) break;
-					fs.Write(rfu.subGotNumTaskInfo[i].res, 0, rfu.subGotNumTaskInfo[i].res.Length);
+				while (rfu.subGotNumTaskInfo.Count > 0) {
+					if (nti != null && rfu.subGotNumTaskInfo[0].dt > nti.dt + TimeSpan.FromSeconds(15)) break;
+					fs.Write(rfu.subGotNumTaskInfo[0].res, 0, rfu.subGotNumTaskInfo[0].res.Length);
 				}
 				fs.Close();
 				rfu.subGotNumTaskInfo.RemoveRange(0, i);

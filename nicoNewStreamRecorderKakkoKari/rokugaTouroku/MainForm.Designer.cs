@@ -659,7 +659,7 @@ namespace rokugaTouroku
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.communityLabel.Location = new System.Drawing.Point(286, 103);
 			this.communityLabel.Name = "communityLabel";
-			this.communityLabel.Size = new System.Drawing.Size(207, 14);
+			this.communityLabel.Size = new System.Drawing.Size(126, 14);
 			this.communityLabel.TabIndex = 2;
 			// 
 			// programTimeLabel
@@ -677,7 +677,7 @@ namespace rokugaTouroku
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.hostLabel.Location = new System.Drawing.Point(286, 66);
 			this.hostLabel.Name = "hostLabel";
-			this.hostLabel.Size = new System.Drawing.Size(207, 14);
+			this.hostLabel.Size = new System.Drawing.Size(126, 14);
 			this.hostLabel.TabIndex = 2;
 			// 
 			// endTimeLabel
@@ -735,7 +735,7 @@ namespace rokugaTouroku
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.titleLabel.Location = new System.Drawing.Point(286, 29);
 			this.titleLabel.Name = "titleLabel";
-			this.titleLabel.Size = new System.Drawing.Size(207, 14);
+			this.titleLabel.Size = new System.Drawing.Size(126, 14);
 			this.titleLabel.TabIndex = 2;
 			// 
 			// label8

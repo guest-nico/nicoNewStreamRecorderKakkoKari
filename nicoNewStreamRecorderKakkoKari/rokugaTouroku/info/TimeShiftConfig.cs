@@ -34,24 +34,31 @@ namespace rokugaTouroku.info
 		public bool isM3u8List;
 		public double m3u8UpdateSeconds;
 		public bool isOpenUrlList;
+		public bool isVposStartTime;
 		
+		public string startTimeStr;
+
 		public TimeShiftConfig(int startType, 
-				int h, int m, int s, bool isContinueConcat)
+				int h, int m, int s, bool isContinueConcat, bool isVposStartTime)
 		{
 			this.startType = startType;
 			this.h = h;
 			this.m = m;
 			this.s = s;
 			this.isContinueConcat = isContinueConcat;
+			this.isVposStartTime = isVposStartTime;
 			
 			timeSeconds = h * 3600 + m * 60 + s;
 			timeType = (startType == 0) ? 0 : 1;
+			startTimeStr = (startType == 0) ? (timeSeconds + "s") :
+				((isContinueConcat) ? "continue-concat" : "continue");
 		}
 		public TimeShiftConfig(int startType, 
 				int h, int m, int s, int endH, int endM, int endS,
 				bool isContinueConcat, bool isOutputUrlList, 
 				string openListCommand, bool isM3u8List, 
-				double m3u8UpdateSeconds, bool isOpenUrlList)
+				double m3u8UpdateSeconds, bool isOpenUrlList,
+				bool isVposStartTime)
 		{
 			this.startType = startType;
 			this.h = h;
@@ -66,12 +73,16 @@ namespace rokugaTouroku.info
 			this.isM3u8List = isM3u8List;
 			this.m3u8UpdateSeconds = m3u8UpdateSeconds;
 			this.isOpenUrlList = isOpenUrlList;
+			this.isVposStartTime = isVposStartTime;
 			
 			timeSeconds = h * 3600 + m * 60 + s;
 			timeType = (startType == 0) ? 0 : 1;
 			endTimeSeconds = endH * 3600 + endM * 60 + endS;
+			
+			startTimeStr = (startType == 0) ? (timeSeconds + "s") :
+				((isContinueConcat) ? "continue-concat" : "continue");
 		}
 		public TimeShiftConfig() : this(0, 0, 0, 0, 0, 0, 0, 
-				false, false, "notepad {i}", false, 5, false) {}
+				false, false, "notepad {i}", false, 5, false, false) {}
 	}
 }

@@ -73,14 +73,17 @@ namespace namaichi.rec
 			
 		private WebSocket[] himodukeWS = new WebSocket[2];
 			
-		private System.Threading.Thread mainThread;
+//		private System.Threading.Thread mainThread;
 		private TimeShiftCommentGetter tscg = null;
 		
 		bool isWaitNextConnection = false;
+		List<WebSocket> wsList = new List<WebSocket>();
 		
 		private List<string> debugWriteBuf = new List<string>();
 		private Task tsWriterTask = null;
 		private bool isSub;
+		private bool isRtmp;
+		private RtmpRecorder rr;
 		
 		private string qualityRank = null;
 		private string isGetComment = null;
@@ -93,7 +96,7 @@ namespace namaichi.rec
 				int lastSegmentNo, bool isTimeShift, string lvid, 
 				TimeShiftConfig tsConfig, string userId, 
 				bool isPremium, TimeSpan programTime, 
-				string programType, long _openTime, bool isSub
+				string programType, long _openTime, bool isSub, bool isRtmp
 			)
 		{
 			this.webSocketInfo = webSocketInfo;
@@ -114,17 +117,26 @@ namespace namaichi.rec
 			this.programType = programType;
 			this._openTime = _openTime;
 			this.isSub = isSub;
+			this.isRtmp = isRtmp;
 			
 			this.qualityRank = rm.cfg.get("qualityRank");
 			this.isGetComment = rm.cfg.get("IsgetComment");
 			this.isGetCommentXml = rm.cfg.get("IsgetcommentXml");
 		}
 		public bool start() {
-			addDebugBuf("rm.rfu dds0 " + rm.rfu);
+			addDebugBuf("ws rec start");
 			
 			tsWriterTask = Task.Run(() => {startDebugWriter();});
 			
 //			connect(webSocketInfo[0]);
+			if (isRtmp) {
+				rr = new RtmpRecorder(lvid, container, rm, rfu, isSub, recFolderFile, this, openTime);
+				Task.Run(() => {
+					rr.record();
+					rm.hlsUrl = "end";
+				});
+			}
+			
 			connect();
 			
 			addDebugBuf("rm.rfu dds1 " + rm.rfu);
@@ -168,6 +180,7 @@ namespace namaichi.rec
 			//util.debugWriteLine("loop end rm.rfu " + rm.rfu.GetHashCode() + " " + rfu.GetHashCode() + " isretry " + isRetry);
 			
 			isRetry = false;
+			if (rr != null) rr.retryMode = (isEndProgram) ? 2 : 1;
 			if (rm.rfu != rfu && tscg != null) tscg.setIsRetry(false);
 			
 			if (isTimeShift && rm.rfu == rfu && tscg != null) {
@@ -179,6 +192,7 @@ namespace namaichi.rec
 			
 			
 			if (rm.rfu != rfu) {
+				//if (rr != null) rr.isRetry = false;
 				stopRecording(ws, wsc);
 //				ws.Close();
 //				wsc.Close();
@@ -186,10 +200,12 @@ namespace namaichi.rec
 					rec.waitForEnd();
 			}
 			if (!isRetry) {
+				//if (rr != null) rr.isRetry = false;
 				stopRecording(ws, wsc);
 				if (rec != null)
 					rec.waitForEnd();
 			}
+			
 			
 			addDebugBuf("closed saikai");
 			
@@ -203,15 +219,17 @@ namespace namaichi.rec
 					Thread.Sleep(500);
 			}
 			if (isWaitNextConnection) {
-				Thread.Sleep(65000);
+				Thread.Sleep(5000);
+				resetWebsocketInfo();
 				isWaitNextConnection = false;
+				addDebugBuf("after wait reset  " + " wsList " + wsList.Count);
 			}
 			
 			
 			addDebugBuf("ws connect");
 			try {
 				//ws = new WebSocket(webSocketInfo[0]);
-				addDebugBuf("ws connect webSocketInfo[0] " + webSocketInfo[0]);
+				addDebugBuf("ws connect webSocketInfo[0] " + webSocketInfo[0] + " wsList " + wsList.Count);
 				ws = new WebSocket(webSocketInfo[0], "", null, null, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
 				ws.Opened += onOpen;
 				ws.Closed += onClose;
@@ -220,6 +238,7 @@ namespace namaichi.rec
 				ws.Error += onError;
 				
 				ws.Open();
+				wsList.Add(ws);
 				
 				var _ws = ws; 
 				Thread.Sleep(5000);
@@ -239,7 +258,7 @@ namespace namaichi.rec
 			return true;
 		}
 		private void onOpen(object sender, EventArgs e) {
-			addDebugBuf("on open rm.rfu dds2 " + rm.rfu + " ws " + sender.GetHashCode());
+			addDebugBuf("on open rm.rfu dds2 " + rm.rfu + " ws " + sender.GetHashCode() + " wsList " + wsList.Count);
 			
 			if (sender != ws) {
 				((WebSocket)sender).Close();
@@ -276,11 +295,14 @@ namespace namaichi.rec
 //			if (rm.rfu != rfu) stopRecording();
 		}
 		private void onClose(object sender, EventArgs e) {
-			addDebugBuf("on close " + e.ToString() + " ws hash " + sender.GetHashCode() + " istimeshift " + isTimeShift);
+			addDebugBuf("on close " + e.ToString() + " ws hash " + sender.GetHashCode() + " istimeshift " + isTimeShift + " wsList " + wsList.Count);
+			wsList.Remove((WebSocket)sender);
+			addDebugBuf("on close2 " + " wsList " + wsList.Count);
 			
 			Task.Run(() => {  
 				if (!isTimeShift && isEndedProgram()) {
 					isRetry = false;
+					if (rr != null) rr.retryMode = 2;
 					if (tscg != null) tscg.setIsRetry(false);
 					isEndProgram = true;
 				}
@@ -333,7 +355,7 @@ namespace namaichi.rec
 				setMsInfo(e.Message);
 				if (isTimeShift) {
 					if (tscg == null) {
-						tscg = new TimeShiftCommentGetter(e.Message, userId, rm, rfu, rm.form, openTime, recFolderFile, lvid, container, programType, _openTime, this);
+						tscg = new TimeShiftCommentGetter(e.Message, userId, rm, rfu, rm.form, openTime, recFolderFile, lvid, container, programType, _openTime, this, tsConfig.timeSeconds, tsConfig);
 						tscg.save();
 						
 					}
@@ -348,6 +370,8 @@ namespace namaichi.rec
 			//record
 			if (e.Message.IndexOf("\"currentStream\"") >= 0) {
 				addDebugBuf("mediaservertype = " + util.getRegGroup(e.Message, "(\"mediaServerType\".\".+?\")"));
+				if (isRtmp) return;
+				
 				var bestGettableQuolity = getBestGettableQuolity(e.Message);
 				var currentQuality = util.getRegGroup(e.Message, "\"quality\":\"(.+?)\"");
 				if (isFirstChoiceQuality(currentQuality, bestGettableQuolity)) {
@@ -376,6 +400,7 @@ namespace namaichi.rec
 				if (e.Message.IndexOf("\"END_PROGRAM\"") > 0) {
 					isEndProgram = true;
 					isRetry = false;
+					if (rr != null) rr.retryMode = 2;
 					if (tscg != null) tscg.setIsRetry(false);
 				}
 				
@@ -386,13 +411,15 @@ namespace namaichi.rec
 				    	e.Message.IndexOf("\"CONNECT_ERROR\"") >= 0) {
 					isWaitNextConnection = true;
 					//{"type":"error","body":{"code":"CONNECT_ERROR"}}
+					
+					if (e.Message.IndexOf("\"TEMPORARILY_CROWDED\"") >= 0)
+						rm.form.addLogText("満員でした" + util.getMainSubStr(isSub, true));
+					
+					if (e.Message.IndexOf("\"CONNECT_ERROR\"") >= 0)
+						rm.form.addLogText("接続エラーでした" + util.getMainSubStr(isSub, true));
 					#if DEBUG
-						if (e.Message.IndexOf("\"TEMPORARILY_CROWDED\"") >= 0)
-							rm.form.addLogText("満員でした");
-						if (e.Message.IndexOf("\"CONNECT_ERROR\"") >= 0)
-							rm.form.addLogText("接続エラーでした");
 					#endif
-//					resetWebsocketInfo();
+					
 				//stopRecording();
 //				reConnect();
 //				Task.Run(() => {
@@ -454,7 +481,7 @@ namespace namaichi.rec
 				}
 			}
 			if (e.Message.IndexOf("\"command\":\"postkey\"") >= 0) {
-				if (sendCommentBuf != null && wsc != null)
+				if (sendCommentBuf != null && (rm.isPlayOnlyMode || wsc != null))
 					sendCommentWsc(e.Message);
 					
 			}
@@ -524,12 +551,13 @@ namespace namaichi.rec
 			
 			Task.Run(() => {
 			   	if (rec == null) {
-			         		rec = new Record(rm, true, rfu, hlsUrl, recFolderFile[1], lastSegmentNo, container, isTimeShift, this, lvid, tsConfig, openTime, ws, recFolderFile[2], isSub);
+			        rec = new Record(rm, true, rfu, hlsUrl, recFolderFile[1], lastSegmentNo, container, isTimeShift, this, lvid, tsConfig, openTime, ws, recFolderFile[2], isSub);
 					
 					rec.record(currentQuality);
 					if (rec.isEndProgram) {
 						addDebugBuf("stop websocket recd");
 						isRetry = false;
+						if (rr != null) rr.retryMode = 2;
 //						if (tscg != null) tscg.setIsRetry(false);
 						isEndProgram = true;
 					}
@@ -560,7 +588,7 @@ namespace namaichi.rec
 			addDebugBuf(msAddr + " " + msPort);
 			addDebugBuf("msuri " + msUri);
 			addDebugBuf("msreq " + msReq[0]);
-			if (rm.isPlayOnlyMode) return;
+//			if (rm.isPlayOnlyMode) return;
 			
 			var header =  new List<KeyValuePair<string, string>>();
 			header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Protocol", "msg.nicovideo.jp#json"));
@@ -605,7 +633,7 @@ namespace namaichi.rec
 			}
 			try {
 				if (_wsc != null && _wsc.State != WebSocketState.Closed && _wsc.State != WebSocketState.Closing) {
-					addDebugBuf("state close wsc " + WebSocketState.Closed + " " + _wsc.State);					
+					addDebugBuf("state close wsc " + _wsc.State);					
 					_wsc.Close();
 				}
 			} catch (Exception e) {
@@ -665,7 +693,7 @@ namespace namaichi.rec
 				return;
 			}			
 			try {
-				if (bool.Parse(isGetComment) && commentSW == null) {
+				if (bool.Parse(isGetComment) && commentSW == null && !rm.isPlayOnlyMode) {
 					var commentFileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, isTimeShift);
 					var isExists = File.Exists(commentFileName);
 					commentSW = new StreamWriter(commentFileName, false, System.Text.Encoding.UTF8);
@@ -682,7 +710,7 @@ namespace namaichi.rec
 			Task.Run(() => {pongWsc((WebSocket)sender);});
 		}
 		private void pongWsc(WebSocket _wsc) {
-			while (_wsc.State == WebSocket4Net.WebSocketState.Open) {
+			while (_wsc.State == WebSocket4Net.WebSocketState.Open && !isEndProgram && isRetry) {
 				try {
 					_wsc.Send("");
 					Thread.Sleep(60000);

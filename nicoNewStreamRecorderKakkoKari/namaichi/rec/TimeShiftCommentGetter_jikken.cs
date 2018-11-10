@@ -41,6 +41,7 @@ namespace namaichi.rec
 		string[] recFolderFile;
 		string lvid;
 		CookieContainer container;
+		int startSecond;
 		string ticket;
 		string waybackKey;
 		int gotMinTime;
@@ -61,9 +62,9 @@ namespace namaichi.rec
 		
 		int gotCount = 0;
 		bool isChat;
+		public TimeShiftConfig tsConfig;
 		
-		
-		public TimeShiftCommentGetter_jikken(JikkenRecordProcess jrp, string userId, RecordingManager rm, RecordFromUrl rfu, MainForm form, long openTime, string[] recFolderFile, string lvid, CookieContainer container, string thread, string key, bool isChat, WatchingInfo wi)
+		public TimeShiftCommentGetter_jikken(JikkenRecordProcess jrp, string userId, RecordingManager rm, RecordFromUrl rfu, MainForm form, long openTime, string[] recFolderFile, string lvid, CookieContainer container, string thread, string key, bool isChat, WatchingInfo wi, int startSecond, TimeShiftConfig tsConfig)
 		{
 			this.jrp = jrp;
 			this.uri = jrp.msUri;
@@ -80,12 +81,19 @@ namespace namaichi.rec
 			this.isGetXml = bool.Parse(rm.cfg.get("IsgetcommentXml"));
 			this.isChat = isChat;
 			this.wi = wi;
+			this.startSecond = startSecond;
+			this.tsConfig = tsConfig;
 		}
 		public void save() {
 			if (!bool.Parse(rm.cfg.get("IsgetComment"))) {
 //				isEnd = true;
 //				return;
 			}
+			
+			while (jrp.firstSegmentSecond == -1) {
+				Thread.Sleep(500);
+			}
+			util.debugWriteLine("firstSegmentSecond " + jrp.firstSegmentSecond);
 			try {
 //				fileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, true);
 //				var isExists = File.Exists(fileName);
@@ -203,7 +211,8 @@ namespace namaichi.rec
 //				var chatinfo = new namaichi.info.ChatInfo(xml);
 				
 				XDocument chatXml;
-				chatXml = chatinfo.getFormatXml(openTime);
+				var vposStartTime = (tsConfig.isVposStartTime) ? (long)jrp.firstSegmentSecond : 0;
+				chatXml = chatinfo.getFormatXml(openTime + vposStartTime);
 	//			else chatXml = chatinfo.getFormatXml(serverTime);
 	//			util.debugWriteLine("xml " + chatXml.ToString());
 				
@@ -253,7 +262,7 @@ namespace namaichi.rec
 							if (threadLine == null) {
 								threadLine = s;
 								if (!rm.isPlayOnlyMode)
-									form.addLogText(chatinfo.lastRes + "件ぐらいのコメントが見つかりました" + ((isChat) ? "(chat)" : "(control)"));
+									form.addLogText(chatinfo.lastRes + "件ぐらいのコメントが見つかりました(追い出しコメント含む)" + ((isChat) ? "(chat)" : "(control)"));
 							}
 			            } else {
 	//		            	commentSW.WriteLine(s + "}>");

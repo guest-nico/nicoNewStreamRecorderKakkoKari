@@ -19,9 +19,13 @@ namespace rokugaTouroku
 		/// <summary>
 		/// Program entry point.
 		/// </summary>
+		public static string arg = "";
+		
 		[STAThread]
 		private static void Main(string[] args)
 		{
+			if (args.Length > 0) arg = util.getRegGroup(args[0], "(lv.+)");
+			
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandleExceptionHandler);
 			System.Threading.Thread.GetDomain().UnhandledException += new UnhandledExceptionEventHandler(UnhandleExceptionHandler);
 			AppDomain.CurrentDomain.UnhandledException += UnhandleExceptionHandler;
@@ -63,8 +67,8 @@ namespace rokugaTouroku
 			var frameCount = new System.Diagnostics.StackTrace().FrameCount;
 			#if DEBUG
 				if (util.isLogFile) {
-					if (frameCount > 50) {
-						MessageBox.Show("first chance framecount stack", frameCount.ToString());
+					if (frameCount > 150) {
+						MessageBox.Show("first chance framecount stack " + e.Exception.Message + e.Exception.StackTrace, frameCount.ToString() + " " + DateTime.Now + " " + arg);
 						return;
 					}
 				}

@@ -29,7 +29,7 @@ namespace namaichi.rec
 		public bool followCommunity(string res, CookieContainer cc, MainForm form, config.config cfg) {
 			var isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
 			var comId = (isJikken) ? util.getRegGroup(res, "&quot;followPageUrl&quot;\\:&quot;.+?motion/(.+?)&quot;") :
-					util.getRegGroup(res, "Nicolive_JS_Conf\\.Recommend = \\{type\\: 'community', community_id\\: '(co\\d+)'\\};");
+					util.getRegGroup(res, "Nicolive_JS_Conf\\.Recommend = \\{type\\: 'community', community_id\\: '(co\\d+)'");
 			if (comId == null) {
 				form.addLogText("この放送はフォローできませんでした。" + util.getMainSubStr(isSub, true));
 				return false;
@@ -123,8 +123,9 @@ namespace namaichi.rec
 					var resStr = resStream.ReadToEnd();
 	
 					var isSuccess = resStr.IndexOf("フォローしました") > -1;
+					var _m = (form.rec.isPlayOnlyMode) ? "視聴" : "録画";
 					form.addLogText((isSuccess ?
-					                 "フォローしました。録画開始までしばらくお待ちください。" : "フォローに失敗しました。") + util.getMainSubStr(isSub, true));
+					                 "フォローしました。" + _m + "開始までしばらくお待ちください。" : "フォローに失敗しました。") + util.getMainSubStr(isSub, true));
 					return isSuccess;
 					
 	//				resStream.Close();

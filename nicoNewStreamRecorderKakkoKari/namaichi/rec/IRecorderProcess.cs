@@ -24,6 +24,7 @@ namespace namaichi.rec
 		public long openTime;
 		public bool isJikken;
 		public string[] gotTsCommentList;
+		public double firstSegmentSecond = -1;
 		
 		public IRecorderProcess()
 		{

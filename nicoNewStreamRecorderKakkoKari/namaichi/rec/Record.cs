@@ -111,15 +111,16 @@ namespace namaichi.rec
 			recordingQuality = quality;
 			tsWriterTask = Task.Run(() => {startDebugWriter();});
 			
+			var _m = (isPlayOnlyMode) ? "視聴" : "録画";
 			if (isTimeShift) {
-				rm.form.addLogText("タイムシフトの録画を開始します(画質:" + quality + ")");
+				rm.form.addLogText("タイムシフトの" + _m + "を開始します(画質:" + quality + ")");
 //				timeShiftMultiRecord();
 				timeShiftOnTimeRecord();
 			} else {
-				if (isSub)
-					rm.form.addLogText("録画をスタンバイします(画質:" + quality + " " + "サブ)");
-				else 
-					rm.form.addLogText("録画を開始します(画質:" + quality + " " + "メイン)");
+				if (isSub) {
+					rm.form.addLogText(_m + "をスタンバイします(画質:" + quality + " " + "サブ)");
+				} else
+					rm.form.addLogText(_m + "を開始します(画質:" + quality + " " + "メイン)");
 				realTimeRecord();
 			}
 			
@@ -185,7 +186,9 @@ namespace namaichi.rec
 			
 			
 			if (isDefaultEngine && !isPlayOnlyMode) {
-				addDebugBuf("rec end shori gottslist count " + gotTsList.Count + " subgot " + rfu.subGotNumTaskInfo.Count);
+				addDebugBuf("rec end shori gottslist count " + gotTsList.Count);
+				if (rfu.subGotNumTaskInfo != null)
+					addDebugBuf("subgot " + rfu.subGotNumTaskInfo.Count);
 				if (gotTsList.Count > 10) {
 					displayWriteRemainGotTsData();
 					
@@ -242,6 +245,8 @@ namespace namaichi.rec
 				if (hlsSegM3uUrl.IndexOf("start_time") > -1) {
 					//util.debugWriteLine("got timeshift playlist");
 					addDebugBuf("got timeshift playlist");
+					isEndProgram = true;
+					isRetry = false;
 					break;
 				}
 				//util.debugWriteLine("getpage m3u8 mae");
@@ -289,11 +294,14 @@ namespace namaichi.rec
 		}
 		private void startTsGetter() {
 			while (true) {
-				addDebugBuf("tsGetter loop segM3u8List count " + segM3u8List.Count);
+//				addDebugBuf("tsGetter loop segM3u8List count " + segM3u8List.Count);
 				var isM3u8GetterEnd = (m3u8GetterTask.IsCanceled ||
 						m3u8GetterTask.IsCompleted ||
 						m3u8GetterTask.IsFaulted);
-				if (isM3u8GetterEnd && segM3u8List.Count == 0) break;
+				if (isM3u8GetterEnd && segM3u8List.Count == 0) {
+					addDebugBuf("ts getter end");
+					break;
+				}
 				
 
 				foreach (var _s in new List<string>(segM3u8List)) {
@@ -348,7 +356,7 @@ namespace namaichi.rec
 								addDebugBuf(no + " " + fileName + " baseNo " + baseNo);
 								//util.debugWriteLine(no + " " + fileName);
 								
-								var nti = new numTaskInfo(no + baseNo, url, second, fileName, no);
+								var nti = new numTaskInfo(no + baseNo, url, second, fileName, startTime, no);
 								getFileBytesTasks.Add(getFileBytesNti(nti));
 							}
 							
@@ -392,7 +400,7 @@ namespace namaichi.rec
 		
 		private void startTsWriter() {
 			while (true) {
-				addDebugBuf("ts writer loop gotTsListCount " + gotTsList.Count);
+//				addDebugBuf("ts writer loop gotTsListCount " + gotTsList.Count);
 				var isTsGetterEnd = (tsGetterTask.IsCanceled ||
 						tsGetterTask.IsCompleted ||
 						tsGetterTask.IsFaulted);
@@ -416,8 +424,12 @@ namespace namaichi.rec
 							Thread.Sleep(2000);
 					}
 					//util.debugWriteLine("write ok " + s.no);
-					addDebugBuf("write ok " + s.no + " origin " + s.originNo);
+					
 					if (ret) {
+						if (wr.firstSegmentSecond == -1) 
+							wr.firstSegmentSecond = s.startSecond;
+						
+						addDebugBuf("write ok " + s.no + " origin " + s.originNo);
 						//recordedNo.Add(newGetTsTaskList[i].no.ToString());
 						if (rfu.subGotNumTaskInfo != null)
 							addDebugBuf("subGotTs count " + rfu.subGotNumTaskInfo.Count);
@@ -666,7 +678,7 @@ namespace namaichi.rec
 						fileName = util.getRegGroup(fileName, "(\\d+)\\.") + "_" + startTimeStr + ".ts";
 						addDebugBuf(no + " " + fileName);
 						
-						newGetTsTaskList.Add(new numTaskInfo(no, url, second, fileName));
+						newGetTsTaskList.Add(new numTaskInfo(no, url, second, fileName, startTime));
 						//Task.Run(() => getTsTask(url, startTime));
 						getTsTask(url, startTime);
 					}
@@ -715,6 +727,9 @@ namespace namaichi.rec
 
 						addDebugBuf("write ok " + newGetTsTaskList[i].no);
 						if (ret) {
+							if (wr.firstSegmentSecond == -1) 
+								wr.firstSegmentSecond = newGetTsTaskList[i].startSecond;
+							
 							//recordedNo.Add(newGetTsTaskList[i].no.ToString());
 							recordedNo.Add(newGetTsTaskList[i].fileName);
 							lastSegmentNo = newGetTsTaskList[i].no;
@@ -900,6 +915,7 @@ namespace namaichi.rec
 		}
 		*/
 		public void reSetHlsUrl(string url, string quality, WebSocket _ws) {
+			addDebugBuf("resetHlsUrl oldurl " + hlsMasterUrl + " new url " + url);
 			ws = _ws;
 			if (recordingQuality != quality)
 				rm.form.addLogText("画質を変更して再接続します(" + quality + ")" + util.getMainSubStr(isSub, false));
@@ -1058,10 +1074,15 @@ namespace namaichi.rec
 			rm.hlsUrl = "end";
 //			rm.form.setPlayerBtnEnable(false);
 			
+			if (isEndProgram) {
+				rm.form.addLogText("録画を完了しました");
+			}
 			if (isDefaultEngine && !isPlayOnlyMode) {
-				if (isEndProgram)
-					rm.form.addLogText("録画を完了しました");
-				if (segmentSaveType == 1 && 
+				if (isEndProgram && segmentSaveType == 0) {
+					renameWithoutTime(recFolderFile);
+					
+				}
+				if (segmentSaveType == 1 &&
 				    	(rm.cfg.get("IsRenketuAfter") == "true" || 
 				     int.Parse(rm.cfg.get("afterConvertMode")) != 0)) {
 					addDebugBuf("renketu after");
@@ -1148,6 +1169,10 @@ namespace namaichi.rec
 			}
 		}
 		public void addDebugBuf(string s) {
+			#if !DEBUG
+				return;
+			#endif
+			
 			var dt = DateTime.Now.ToLongTimeString();
 			debugWriteBuf.Add(dt + " " + s);
 		}
@@ -1269,10 +1294,11 @@ namespace namaichi.rec
 				var c = rfu.subGotNumTaskInfo.Count;
 				for (var i = 0; i < c; i++) {
 					var t = (lastFileSecond != 0) ? (lastFileSecond * 7) : 10;
+					addDebugBuf("delete old subts i " + i + " c " + c + " count " + rfu.subGotNumTaskInfo.Count);
 					if (rfu.subGotNumTaskInfo[0].dt < 
 					    	lastWroteSegmentDt - TimeSpan.FromSeconds(t)) {
 						addDebugBuf("delete subGotTs subTs.dt " + rfu.subGotNumTaskInfo[0].dt + " " + rfu.subGotNumTaskInfo[0].no + " originNo " + rfu.subGotNumTaskInfo[0].originNo + " lastWroteDt " + lastWroteSegmentDt);
-						rfu.subGotNumTaskInfo.RemoveAt(0);
+						rfu.subGotNumTaskInfo.Remove(rfu.subGotNumTaskInfo[0]);
 					}
 				}
 			} catch (Exception e) {
@@ -1286,12 +1312,28 @@ namespace namaichi.rec
 			return nti;
 		}
 		private void displayWriteRemainGotTsData() {
-			Task.Run(() => {
-				while (gotTsList.Count > 5) {
+//			Task.Run(() => {
+				while (gotTsList.Count > 0) {
 					rm.form.addLogText("未書き込みのデータを書き込んでいます...(" + gotTsList.Count + "件)");
-					Thread.Sleep(10);
+					addDebugBuf("mi kakikomi write write " + gotTsList.Count);
+					Thread.Sleep(10000);
 				}
-			});
+//			});
+		}
+		private void renameWithoutTime(string name) {
+			var time = util.getRegGroup(name, "(\\d+h\\d+m\\d+s)");
+			var num = util.getRegGroup(name, "\\d+h\\d+m\\d+s_(\\d+)");
+			
+			try {
+				for (int i = int.Parse(num); i < 1000; i++) {
+					var newName = name.Replace("_" + time + "_" + num, i.ToString());
+					if (File.Exists(newName + ".ts")) continue;
+					File.Move(recFolderFile + ".ts", newName + ".ts");
+					return;
+				}
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
 		}
 	}
 }

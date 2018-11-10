@@ -29,6 +29,7 @@ namespace namaichi.play
 		private MainForm form;
 		private config.config config;
 		private Process process = null;
+		private Process process2 = null;
 		private Process commentProcess = null;
 		string lastPlayUrl = null;
 		private defaultFFplayController ctrl = null;
@@ -38,15 +39,20 @@ namespace namaichi.play
 		
 		private bool isRecording = false;
 		public bool isReconnect = false;
+		
+		private bool isUsePlayer = false;
+		private bool isUseCommentViewer = false;
 			
 		public Player(MainForm form, config.config config)
 		{
 			this.form = form;
 			this.config = config;
+			
 		}
 		public void play() {
 			util.debugWriteLine("play");
-			
+			isUsePlayer = bool.Parse(config.get("IsUsePlayer"));
+			isUseCommentViewer = bool.Parse(config.get("IsUseCommentViewer"));
 			
 			if (form.playerBtn.Text == "視聴") {
 				form.playerBtn.Text = "視聴停止";
@@ -63,8 +69,10 @@ namespace namaichi.play
 		         		return;
 		         	}
 					
-					videoPlay(true);
-					commentPlay(true);
+					if (isUsePlayer)
+						videoPlay(true);
+					if (isUseCommentViewer)
+						commentPlay(true);
 				});
 			} else {
 				end();
@@ -75,16 +83,15 @@ namespace namaichi.play
 			Task.Run(() => {
 			    setPlayerBtnText("視聴");
 				stopPlaying(true, true);
-				if (isDefaultPlayer) ctrlFormClose();
-				if (isDefaultCommentPlayer) defaultCommentFormClose();
+				if (isDefaultPlayer && isUsePlayer) ctrlFormClose();
+				if (isDefaultCommentPlayer && isUseCommentViewer) defaultCommentFormClose();
 				
 				form.Invoke((MethodInvoker)delegate() {
-					form.rec.isPlayOnlyMode = false;
-					
 					if (!form.recBtn.Enabled) {
 						form.recBtn.Enabled = true;
 						form.rec.rec();
 					}
+				    form.rec.isPlayOnlyMode = false;
 				});
 			});
 		}
@@ -112,28 +119,33 @@ namespace namaichi.play
 						//isRecording = true;
 						sendPlayCommand(isDefaultPlayer);
 						
-						while (true) {
-							if ((form.rec.hlsUrl == "end" ||
-							     form.rec.hlsUrl == null) && 
-						        process.HasExited) break;
-							if (form.playerBtn.Text != "視聴停止") break;
-							if (form.rec.rfu == null) break;
-						    
-							Thread.Sleep(300);
-							if ((form.rec.hlsUrl != lastPlayUrl 
-								&& form.rec.hlsUrl != null    
-								&& form.rec.hlsUrl.StartsWith("http")) || isReconnect) {
-								isReconnect = false;
-								
-								stopPlaying(true, false);
-
-								lastPlayUrl = form.rec.hlsUrl;
-								sendPlayCommand(isDefaultPlayer);
-//								if (isDefaultPlayer) {
-//									ctrlFormClose();
-//								}
-								var aaa = process.HasExited;
+						try {
+							while (true) {
+								if ((form.rec.hlsUrl == "end" ||
+								     form.rec.hlsUrl == null) && 
+							        process.HasExited) break;
+								if (form.playerBtn.Text != "視聴停止") break;
+								if (form.rec.rfu == null) break;
+							    
+								Thread.Sleep(300);
+								//var isChangeUrlOk = !DefaultPlayer || form.rec.hlsUrl != lastPlayUrl;
+								var isChangeUrlOk = form.rec.hlsUrl != lastPlayUrl;								
+								if (isChangeUrlOk && form.rec.hlsUrl != null    
+									&& (form.rec.hlsUrl.StartsWith("http") || form.rec.hlsUrl.StartsWith("-vr")) || isReconnect) {
+									isReconnect = false;
+									
+									stopPlaying(true, false);
+	
+									lastPlayUrl = form.rec.hlsUrl;
+									sendPlayCommand(isDefaultPlayer);
+	//								if (isDefaultPlayer) {
+	//									ctrlFormClose();
+	//								}
+									var aaa = process.HasExited;
+								}
 							}
+						} catch (Exception e) {
+							util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 						}
 						stopPlaying(true, false);
 				    	if (isDefaultPlayer) ctrlFormClose();
@@ -151,11 +163,18 @@ namespace namaichi.play
 			
 		}
 		private void sendPlayCommand(bool isDefaultPlayer) {
+			Environment.SetEnvironmentVariable("SDL_AUDIODRIVER", "directsound", EnvironmentVariableTarget.Process);
 			if (isDefaultPlayer) {
-				Environment.SetEnvironmentVariable("SDL_AUDIODRIVER", "directsound", EnvironmentVariableTarget.Process);
+				
 				var volume = (ctrl != null) ? ((ctrl.volume == -10) ? 0 : ctrl.volume) : int.Parse(config.get("volume"));
 				util.debugWriteLine("kia 00 " + form.rec.hlsUrl);
-				playCommand("ffplay", form.rec.hlsUrl + " -autoexit -volume " + volume);
+				
+				if (form.rec.hlsUrl.StartsWith("http"))
+					playCommand("ffplay", form.rec.hlsUrl + " -autoexit -volume " + volume);
+				else 
+//					playCommandStd("MPC-HC.1.7.13.x86/mpc-hc.exe", "-");
+					playCommandStd("ffplay.exe", form.rec.hlsUrl);
+				
 				util.debugWriteLine("kia 0 " + ctrl);
 				form.Invoke((MethodInvoker)delegate() {
 					if (ctrl == null) {
@@ -167,13 +186,18 @@ namespace namaichi.play
 	            	}
 				});
 				util.debugWriteLine("kia 1 " + ctrl);
+				
 			} else {
-				playCommand(config.get("anotherPlayerPath"), form.rec.hlsUrl);
+				if (form.rec.hlsUrl.StartsWith("http"))
+					playCommand(config.get("anotherPlayerPath"), form.rec.hlsUrl);
+				else
+					playCommandStd(config.get("anotherPlayerPath"), form.rec.hlsUrl);
 			}
 		}
 		
 		private void commentPlay(bool isStart) {
 			isDefaultCommentPlayer = bool.Parse(config.get("IsDefaultCommentViewer"));
+			isRecording = true;
 			if (isStart) {
 				Task.Run(() => {
 					if (isDefaultCommentPlayer) {
@@ -237,6 +261,77 @@ namespace namaichi.play
 				form.addLogText("プレイヤーを開始できませんでした " + exe + " " + args);
 			}
 		}
+		private void playCommandStd(string exe, string args) {
+			try {
+				
+				var arg = (args.StartsWith("http")) ? ("-i " + form.rec.hlsUrl + " -f matroska -") : form.rec.hlsUrl;
+				process = new Process();
+				var si = new ProcessStartInfo();
+				si.FileName = (args.StartsWith("http")) ? "ffmpeg.exe" : "rtmpdump.exe";
+				si.Arguments = arg;
+				si.RedirectStandardOutput = true;
+				si.UseShellExecute = false;
+				si.CreateNoWindow = true;
+				process.StartInfo = si;
+				process.Start();
+				
+				process2 = new Process();
+				var ffmpegSi = new ProcessStartInfo();
+//				ffmpegSi.FileName = "vlc.exe";
+//				exe = "C:\\Users\\zack\\Downloads\\MPC-HomeCinema.1.4.2824.0.x86\\MPC-HomeCinema.1.4.2824.0.x86\\mpc-hc.exe";
+				ffmpegSi.FileName = exe;
+//				ffmpegSi.FileName = "C:\\Users\\zack\\Desktop\\c#project\\nicoNewStreamRecorderKakkoKariRepo2 10.12 tuujou s\\nicoNewStreamRecorderKakkoKari\\namaichi\\bin\\Debug\\mpc\\mpc-be.exe";
+//				ffmpegSi.FileName = "C:\\Users\\zack\\Downloads\\MPC-HC.1.7.13.x64\\MPC-HC.1.7.13.x64\\mpc-hc64.exe";
+//				var ffmpegArg = "- /new";
+				
+				var ffmpegArg = "-";
+//				ffmpegArg = "-i " + args;
+				if (exe.ToLower().IndexOf("mpc-hc") > -1) ffmpegArg += " /new";
+				ffmpegSi.Arguments = ffmpegArg;
+				ffmpegSi.RedirectStandardInput = true;
+				ffmpegSi.RedirectStandardOutput = true;
+				ffmpegSi.UseShellExecute = false;
+				ffmpegSi.CreateNoWindow = true;
+				process2.StartInfo = ffmpegSi;
+				process2.Start();
+				
+				var o = process.StandardOutput.BaseStream;
+				var _is = process2.StandardInput.BaseStream;
+				
+	//			var f = new FileStream("aa.ts", FileMode.Create);
+				var head = new byte[16*16];
+				var isFirst = true;
+				var cc = 0;
+				
+				var d = DateTime.Now;
+//				Task.Run(() => readFfmpeg(ffmpegP));
+				var b = new byte[100000000];
+				while (!process.HasExited && !process2.HasExited) {
+					try {
+						var i = o.Read(b, 0, b.Length);
+	//					if (isFirst) 
+//						Debug.WriteLine(i);
+						/*
+						using (var _wf = new FileStream(cc + ".flv", FileMode.Create)) {
+							_wf.Write(b, 0, i);
+							_wf.Flush();
+							cc++;
+						}
+						*/
+						
+						_is.Write(b, 0, i);
+						_is.Flush();
+							
+					} catch (Exception ee) {
+						Debug.WriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+					}
+				}
+			} catch (Exception eee) {
+				Debug.WriteLine(eee.Message + eee.Source + eee.StackTrace + eee.TargetSite);
+			}
+			stopPlaying(true, false);
+			
+		}
 		private void commentCommand(string exe, string args) {
 			commentProcess = new System.Diagnostics.Process();
 			commentProcess.StartInfo.FileName = exe;
@@ -257,22 +352,23 @@ namespace namaichi.play
 			}
 		}
 		public void stopPlaying(bool isVideoStop, bool isCommentStop) {
-			
-			try {
-				if (process != null && !process.HasExited && isVideoStop) 
-					process.Kill();
-				
-			} catch (Exception e) {
-				util.debugWriteLine("play stop " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+			if (isVideoStop) {
+				stopProcessCore(process);
+				stopProcessCore(process2);
 			}
+			if (isCommentStop)
+				stopProcessCore(commentProcess);
+			
+				
+		}
+		private void stopProcessCore(Process p) {
 			try {
-				if (commentProcess != null && !commentProcess.HasExited && isCommentStop) 
-					commentProcess.Kill();
+				if (p != null && !p.HasExited) 
+					p.Kill();
 				
 			} catch (Exception ee) {
-				util.debugWriteLine("play stop " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+				util.debugWriteLine("stop process " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
-				
 		}
 		private void setPlayerBtnText(string s) {
 			form.Invoke((MethodInvoker)delegate() {

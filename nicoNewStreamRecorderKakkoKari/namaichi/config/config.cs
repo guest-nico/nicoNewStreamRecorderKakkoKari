@@ -121,12 +121,15 @@ public class config
 			{"IsautoFollowComgen","false"},
 			{"qualityRank","0,1,2,3,4,5"},
 			{"IsLogFile","false"},
+			{"IsSegmentNukeInfo","true"},
 			{"segmentSaveType","0"},
 			{"IsRenketuAfter","true"},
 			{"IsAfterRenketuFFmpeg","false"},
 			{"IsDefaultEngine","true"},
 			{"anotherEngineCommand",""},
+			{"IsUsePlayer","true"},
 			{"IsDefaultPlayer","true"},
+			{"IsUseCommentViewer","true"},
 			{"IsDefaultCommentViewer","true"},
 			{"anotherPlayerPath",""},
 			{"anotherCommentViewerPath",""},
@@ -136,6 +139,7 @@ public class config
 			{"M3u8UpdateSeconds","5"},
 			{"IsOpenUrlList","false"},
 			{"openUrlListCommand","notepad {i}"},
+			{"IsVposStartTime","true"},
 			{"afterConvertMode","0"},
 			
 			{"cookieFile",""},
@@ -159,6 +163,8 @@ public class config
 			
 			{"rokugaTourokuWidth","950"},
 			{"rokugaTourokuHeight","500"},
+			{"rokugaTourokuMaxRecordingNum","10"},
+			{"rokugaTourokuQualityRank","0,1,2,3,4,5"},
 		};
 
 		var buf = new Dictionary<string,string>();

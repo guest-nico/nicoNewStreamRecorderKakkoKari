@@ -39,6 +39,7 @@ namespace namaichi.rec
 		string[] recFolderFile;
 		string lvid;
 		string programType;
+		int startSecond;
 		CookieContainer container;
 		string ticket;
 		string waybackKey;
@@ -60,8 +61,9 @@ namespace namaichi.rec
 		
 		int gotCount = 0;
 		public string[] sortedComments;
+		public TimeShiftConfig tsConfig;
 		
-		public TimeShiftCommentGetter(string message, string userId, RecordingManager rm, RecordFromUrl rfu, MainForm form, long openTime, string[] recFolderFile, string lvid, CookieContainer container, string programType, long _openTime, WebSocketRecorder rp)
+		public TimeShiftCommentGetter(string message, string userId, RecordingManager rm, RecordFromUrl rfu, MainForm form, long openTime, string[] recFolderFile, string lvid, CookieContainer container, string programType, long _openTime, WebSocketRecorder rp, int startSecond, TimeShiftConfig tsConfig)
 		{
 			this.uri = util.getRegGroup(message, "messageServerUri\"\\:\"(ws.+?)\"");
 			this.thread = util.getRegGroup(message, "threadId\":\"(.+?)\"");
@@ -77,32 +79,44 @@ namespace namaichi.rec
 			this.programType = programType;
 			this._openTime = _openTime;
 			this.rp = rp;
+			this.startSecond = startSecond;
+			this.tsConfig = tsConfig;
 		}
 		public void save() {
 			if (!bool.Parse(rm.cfg.get("IsgetComment"))) {
 				isEnd = true;
 				return;
 			}
-			try {
-				fileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, true);
-				var isExists = File.Exists(fileName);
-				commentSW = new StreamWriter(fileName, false, System.Text.Encoding.UTF8);
-				if (isGetXml && !isExists) {
-					//commentSW.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
-				    //commentSW.WriteLine("<packet>");
-				    //commentSW.Flush();
+
+			
+				try {
+//					if (!rm.isPlayOnlyMode)
+//						fileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, true);
+					/*
+					var isExists = File.Exists(fileName);
+					commentSW = new StreamWriter(fileName, false, System.Text.Encoding.UTF8);
+					if (isGetXml && !isExists) {
+						//commentSW.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
+					    //commentSW.WriteLine("<packet>");
+					    //commentSW.Flush();
+					}
+					*/
+				} catch (Exception ee) {
+					util.debugWriteLine(ee.Message + " " + ee.StackTrace);
 				}
-			} catch (Exception ee) {
-				util.debugWriteLine(ee.Message + " " + ee.StackTrace);
-			}
 			
 			when = util.getUnixTime();//(int)openTime;
 			gotMinTime = when;
 	        
-			connect();
-			util.debugWriteLine("ms start");
 			
-
+			Task.Run(() => {
+			    while (true) {
+					if (rp.firstSegmentSecond != -1) break;
+					Thread.Sleep(500);
+				}
+				connect();
+				util.debugWriteLine("ms start");
+			});
 		}
 		bool connect() {
 			util.debugWriteLine("connect tscg ms");
@@ -192,9 +206,10 @@ namespace namaichi.rec
 			var chatinfo = new namaichi.info.ChatInfo(xml);
 			
 			XDocument chatXml;
+			var vposStartTime = (tsConfig.isVposStartTime) ? (long)rp.firstSegmentSecond : 0;
 			if (programType == "official")
-				chatXml = chatinfo.getFormatXml(_openTime);
-			else chatXml = chatinfo.getFormatXml(openTime);
+				chatXml = chatinfo.getFormatXml(_openTime + vposStartTime);
+			else chatXml = chatinfo.getFormatXml(openTime + vposStartTime);
 //			else chatXml = chatinfo.getFormatXml(serverTime);
 //			util.debugWriteLine("xml " + chatXml.ToString());
 			
@@ -226,7 +241,7 @@ namespace namaichi.rec
 			
 
 			try {
-				if (commentSW != null) {
+//				if (commentSW != null) {
 					string s;
 					if (isGetXml) {
 						s = chatXml.ToString();
@@ -240,15 +255,20 @@ namespace namaichi.rec
 		            if (chatinfo.root == "thread") {
 						if (threadLine == null) {
 							threadLine = s;
-							form.addLogText(chatinfo.lastRes + "件ぐらいのコメントが見つかりました");
+							if (!rm.isPlayOnlyMode)
+								form.addLogText(chatinfo.lastRes + "件ぐらいのコメントが見つかりました(追い出しコメント含む)");
 						}
 		            } else {
-		            	commentSW.WriteLine(s + "}>");
-		            	commentSW.Flush();
-		            	gotCount++;
-		            	if (gotCount % 2000 == 0) form.addLogText(gotCount + "件のコメントを保存しました");
+//		            	commentSW.WriteLine(s + "}>");
+//		            	commentSW.Flush();
+//		            	gotCount++;
+//		            	if (gotCount % 2000 == 0) form.addLogText(gotCount + "件のコメントを保存しました");
+		            	gotCommentList.Add(s);
+						gotCount++;
+		            	
+		            	if (gotCount % 2000 == 0 && !rm.isPlayOnlyMode) form.addLogText(gotCount + "件のコメントを保存しました");
 		            }
-				}
+//				}
            
 			} catch (Exception ee) {util.debugWriteLine(ee.Message + " " + ee.StackTrace);}
 			
@@ -282,28 +302,32 @@ namespace namaichi.rec
 			var isWrite = (rm.cfg.get("IsgetComment") == "true" && !rm.isPlayOnlyMode);
 			if (isWrite)
 				form.addLogText("コメントの後処理を開始します");
+			/*
 			try {
 				if (commentSW != null) commentSW.Close();
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
-			string[] chats;
-			using(var r = new StreamReader(fileName)) {
-				chats = r.ReadToEnd().Split(new string[]{"}>\r\n"}, StringSplitOptions.RemoveEmptyEntries);
-		    }
+			*/
+//			string[] chats;
+//			using(var r = new StreamReader(fileName)) {
+//				chats = r.ReadToEnd().Split(new string[]{"}>\r\n"}, StringSplitOptions.RemoveEmptyEntries);
+//		    }
 			//var isXml = bool.Parse(rm.cfg.get("IsgetcommentXml"));
 			var keys = new List<int>();
-			foreach (var c in chats) {
+			foreach (var c in gotCommentList) {
 //				util.debugWriteLine(c);
 //				util.debugWriteLine(util.getRegGroup(c, "date.+?(\\d+)"));
 				var date = int.Parse(util.getRegGroup(c, "date.+?(\\d+)"));
 				keys.Add(date);
 			}
+			var chats = gotCommentList.ToArray();
 			Array.Sort(keys.ToArray(), chats);
 			
 			rp.gotTsCommentList = chats;
 			if (!isWrite) return;
 			
+			fileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, true);
 			var w = new StreamWriter(fileName + "_", false, System.Text.Encoding.UTF8);
 			if (isGetXml) {
 				w.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");

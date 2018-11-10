@@ -16,6 +16,7 @@ using System.Threading;
 using namaichi;
 using Newtonsoft.Json;
 using System.Configuration;
+using System.IO;
 using SunokoLibrary.Application;
 using SunokoLibrary.Application.Browsers;
 using namaichi.info;
@@ -32,6 +33,7 @@ namespace namaichi.rec
 		public RecordFromUrl rfu;
 		public bool isClickedRecBtn = false;
 		public string hlsUrl = null;
+		public Stream rtmpPipe = null;
 		public IRecorderProcess wsr = null;
 		static readonly Uri TargetUrl = new Uri("http://live.nicovideo.jp/");
 		public config.config cfg;
@@ -236,7 +238,8 @@ namespace namaichi.rec
 				        	    form.recBtn.Text = "録画開始";
 								form.urlText.Enabled = true;
 								form.optionMenuItem.Enabled = true;
-								form.addLogText("録画を中断しました");
+								var _m = (isPlayOnlyMode) ? "視聴" : "録画";
+								form.addLogText(_m + "を中断しました");
 								
 							} catch (Exception e) {
 								util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);

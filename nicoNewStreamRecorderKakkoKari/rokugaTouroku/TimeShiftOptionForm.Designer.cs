@@ -37,6 +37,7 @@ namespace rokugaTouroku
 		private void InitializeComponent()
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.isSetVposStartTime = new System.Windows.Forms.CheckBox();
 			this.isRenketuLastFile = new System.Windows.Forms.CheckBox();
 			this.sLabel = new System.Windows.Forms.Label();
 			this.sText = new System.Windows.Forms.TextBox();
@@ -77,6 +78,7 @@ namespace rokugaTouroku
 			// groupBox1
 			// 
 			this.groupBox1.BackColor = System.Drawing.SystemColors.Window;
+			this.groupBox1.Controls.Add(this.isSetVposStartTime);
 			this.groupBox1.Controls.Add(this.isRenketuLastFile);
 			this.groupBox1.Controls.Add(this.sLabel);
 			this.groupBox1.Controls.Add(this.sText);
@@ -88,10 +90,21 @@ namespace rokugaTouroku
 			this.groupBox1.Controls.Add(this.isStartTimeRadioBtn);
 			this.groupBox1.Location = new System.Drawing.Point(5, 10);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(299, 130);
+			this.groupBox1.Size = new System.Drawing.Size(299, 152);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "録画開始時間";
+			// 
+			// isSetVposStartTime
+			// 
+			this.isSetVposStartTime.Checked = true;
+			this.isSetVposStartTime.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.isSetVposStartTime.Location = new System.Drawing.Point(6, 121);
+			this.isSetVposStartTime.Name = "isSetVposStartTime";
+			this.isSetVposStartTime.Size = new System.Drawing.Size(244, 17);
+			this.isSetVposStartTime.TabIndex = 6;
+			this.isSetVposStartTime.Text = "コメントのvposを録画開始時間を起点にする";
+			this.isSetVposStartTime.UseVisualStyleBackColor = true;
 			// 
 			// isRenketuLastFile
 			// 
@@ -177,7 +190,7 @@ namespace rokugaTouroku
 			// 
 			// cancelBtn
 			// 
-			this.cancelBtn.Location = new System.Drawing.Point(215, 427);
+			this.cancelBtn.Location = new System.Drawing.Point(215, 449);
 			this.cancelBtn.Name = "cancelBtn";
 			this.cancelBtn.Size = new System.Drawing.Size(74, 23);
 			this.cancelBtn.TabIndex = 16;
@@ -187,7 +200,7 @@ namespace rokugaTouroku
 			// 
 			// okBtn
 			// 
-			this.okBtn.Location = new System.Drawing.Point(135, 427);
+			this.okBtn.Location = new System.Drawing.Point(135, 449);
 			this.okBtn.Name = "okBtn";
 			this.okBtn.Size = new System.Drawing.Size(74, 23);
 			this.okBtn.TabIndex = 15;
@@ -205,7 +218,7 @@ namespace rokugaTouroku
 			this.groupBox2.Controls.Add(this.endMText);
 			this.groupBox2.Controls.Add(this.label8);
 			this.groupBox2.Controls.Add(this.endHText);
-			this.groupBox2.Location = new System.Drawing.Point(5, 146);
+			this.groupBox2.Location = new System.Drawing.Point(5, 168);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(299, 62);
 			this.groupBox2.TabIndex = 27;
@@ -281,7 +294,7 @@ namespace rokugaTouroku
 			this.groupBox3.Controls.Add(this.isOpenListCommandChkBox);
 			this.groupBox3.Controls.Add(this.openListCommandText);
 			this.groupBox3.Controls.Add(this.isUrlListChkBox);
-			this.groupBox3.Location = new System.Drawing.Point(5, 214);
+			this.groupBox3.Location = new System.Drawing.Point(5, 236);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(299, 197);
 			this.groupBox3.TabIndex = 27;
@@ -393,7 +406,7 @@ namespace rokugaTouroku
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Window;
-			this.ClientSize = new System.Drawing.Size(311, 459);
+			this.ClientSize = new System.Drawing.Size(311, 481);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.cancelBtn);
@@ -412,6 +425,7 @@ namespace rokugaTouroku
 			this.panel2.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox isSetVposStartTime;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.CheckBox isUrlListChkBox;
 		private System.Windows.Forms.TextBox openListCommandText;

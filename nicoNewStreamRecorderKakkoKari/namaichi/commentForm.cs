@@ -26,7 +26,7 @@ namespace namaichi
 	{
 		private int commentListclickedRowIndex = -1;
 		private config.config config;
-		private MainForm form;
+		public MainForm form;
 		private CommentPlayerWebSocket2 cpws;
 		private int nowVpos;
 		

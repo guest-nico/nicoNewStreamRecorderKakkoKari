@@ -31,6 +31,7 @@ namespace namaichi.info
 		public string ticket;
 		public string lastRes;
 		public bool isPingRf;
+		public long vposOriginal;
 		
 		public ChatInfo(XDocument xml, string json)
 		{
@@ -83,7 +84,7 @@ namespace namaichi.info
 			}
 			
 			if (root == "chat" || root == "control") {
-				vpos = (date - serverTime) * 100;
+				vposOriginal = vpos = (date - serverTime) * 100;
 				if (vpos < 0) vpos = 0;
 				_xml.Root.SetAttributeValue("vpos", vpos);
 			}

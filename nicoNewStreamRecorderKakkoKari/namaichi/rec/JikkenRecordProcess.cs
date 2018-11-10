@@ -41,6 +41,7 @@ namespace namaichi.rec
 		public WatchingInfo wi;
 		private Record rec;
 		private WebSocket wsc;
+		private RtmpRecorder rr;
 		private StreamWriter commentSW;
 //		override public string msUri;
 //		public string[] msReq;
@@ -77,6 +78,7 @@ namespace namaichi.rec
 		private TimeShiftCommentGetter_jikken tscgControl;
 		
 		private bool isSub;
+		private bool isRtmp;
 		
 		public JikkenRecordProcess( 
 				CookieContainer container, string[] recFolderFile, 
@@ -85,7 +87,7 @@ namespace namaichi.rec
 				bool isTimeShift, string lvid, 
 				TimeShiftConfig tsConfig, string userId, 
 				bool isPremium, TimeSpan programTime, 
-				WatchingInfo wi, long releaseTime, bool isSub)
+				WatchingInfo wi, long releaseTime, bool isSub, bool isRtmp)
 		{
 			this.container = container;
 			this.recFolderFile = recFolderFile;
@@ -105,6 +107,7 @@ namespace namaichi.rec
 			isJikken = true;
 			this.releaseTime = releaseTime;
 			this.isSub = isSub;
+			this.isRtmp = isRtmp;
 		}
 		public void start() {
 			util.debugWriteLine("jrp start" + util.getMainSubStr(isSub, true));
@@ -125,6 +128,7 @@ namespace namaichi.rec
 			//	System.Threading.Thread.Sleep(300);
 			
 			isRetry = false;
+			if (rr != null) rr.retryMode = (isEndProgram) ? 2 : 1;
 			
 			if (rm.rfu != rfu) {
 				if (tscgChat != null) tscgChat.setIsRetry(false);
@@ -136,7 +140,7 @@ namespace namaichi.rec
 					Thread.Sleep(1000);
 				}
 			}
-			
+			//if (rr != null) rr.isRetry = false;
 			stopRecording();
 			if (rec != null) 
 				rec.waitForEnd();			
@@ -153,10 +157,18 @@ namespace namaichi.rec
 			}
 			*/
 			//util.debugWriteLine(System.Diagnostics.FileVersionInfo.GetVersionInfo("websocket4net.dll").
-			Task.Run(() => {record();});
+			if (isRtmp) {
+				rr = new RtmpRecorder(lvid, container, rm, rfu, isSub, recFolderFile, this, releaseTime);
+				Task.Run(() => {
+					rr.record();
+					rm.hlsUrl = "end";
+				});
+			} else {
+				Task.Run(() => {record();});
+				Task.Run(() => {connectKeeper();});
+			}
 			if (!isSub)
 				Task.Run(() => {getMessage();});
-			Task.Run(() => {connectKeeper();});
 		}
 		private void record() {
 			Task.Run(() => {
@@ -166,6 +178,7 @@ namespace namaichi.rec
 				if (rec.isEndProgram) {
 					util.debugWriteLine("stop jrp recd" + util.getMainSubStr(isSub, true));
 					isRetry = false;
+					if (rr != null) rr.retryMode = 2;
 					isEndProgram = true;
 				}
 		    });
@@ -174,8 +187,8 @@ namespace namaichi.rec
 			//if (rm.isPlayOnlyMode) return;
 			
 			if (isTimeShift) {
-				tscgChat = new TimeShiftCommentGetter_jikken(this, userId, rm, rfu, rm.form, openTime, recFolderFile, lvid, container, wi.chatThread, wi.chatKey, true, wi);
-				tscgControl = new TimeShiftCommentGetter_jikken(this, userId, rm, rfu, rm.form, openTime, recFolderFile, lvid, container, wi.controlThread, wi.controlKey, false, wi);
+				tscgChat = new TimeShiftCommentGetter_jikken(this, userId, rm, rfu, rm.form, openTime, recFolderFile, lvid, container, wi.chatThread, wi.chatKey, true, wi, tsConfig.timeSeconds, tsConfig);
+				tscgControl = new TimeShiftCommentGetter_jikken(this, userId, rm, rfu, rm.form, openTime, recFolderFile, lvid, container, wi.controlThread, wi.controlKey, false, wi, tsConfig.timeSeconds, tsConfig);
 				tscgChat.save();
 				tscgControl.save();
 //				if (rm.isPlayOnlyMode) return;
@@ -186,7 +199,7 @@ namespace namaichi.rec
 				}
 				
 				tscgChat.gotCommentList.AddRange(tscgControl.gotCommentList);
-				var fName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, true);
+				var fName = (rm.isPlayOnlyMode) ? null : util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, true);
 				TimeShiftCommentGetter_jikken.endProcess(tscgChat.gotCommentList, fName, rm.form, tscgChat.isGetXml, tscgChat.threadLine, tscgControl.threadLine, this);
 			} else connectMessageServer();
 		}
@@ -284,6 +297,7 @@ namespace namaichi.rec
 					Task.Run(() => {
 						if (!isTimeShift && isEndedProgram()) {
 							isRetry = false;
+							if (rr != null) rr.retryMode = 2;
 							isEndProgram = true;
 						}
 					});
@@ -293,8 +307,11 @@ namespace namaichi.rec
 				rm.form.setStatistics(wi.visit, wi.comment);
 				break;
 			}
+			
+			util.debugWriteLine("reconnect got watch res " + wi.hlsUrl);
 			if (!isTimeShift && wi.hlsUrl.IndexOf("hlsarchive") > -1) {
 				isRetry = false;
+				if (rr != null) rr.retryMode = 2;
 				isEndProgram = true;
 				return;
 			}
@@ -325,7 +342,7 @@ namespace namaichi.rec
 				return;
 			}			
 			try {
-				if (bool.Parse(rm.cfg.get("IsgetComment")) && commentSW == null) {
+				if (bool.Parse(rm.cfg.get("IsgetComment")) && commentSW == null && !rm.isPlayOnlyMode) {
 					var commentFileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, isTimeShift);
 					
 					var isExists = File.Exists(commentFileName);
@@ -658,7 +675,9 @@ namespace namaichi.rec
 			util.debugWriteLine("isendedprogram url " + url + " res==null " + (res == null) + util.getMainSubStr(isSub, true));
 //			util.debugWriteLine("isendedprogram res " + res + util.getMainSubStr(isSub, true));
 			if (res == null) return false;
-			var isEnd = res.IndexOf("\"content_status\":\"closed\"") != -1; 
+			var isEnd = res.IndexOf("\"content_status\":\"closed\"") != -1 ||
+					res.IndexOf("<title>番組がみつかりません") != -1 ||
+					res.IndexOf("番組が見つかりません</span>") != -1;
 			util.debugWriteLine("is ended program " + isEnd + util.getMainSubStr(isSub, true));
 			return isEnd; 
 		}

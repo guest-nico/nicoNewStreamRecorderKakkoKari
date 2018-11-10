@@ -57,7 +57,7 @@ namespace rokugaTouroku
 			rec = new RecListManager(this, recListDataSource, config);
 			recList.DataSource = recListDataSource;
 			
-			qualityRank = config.get("qualityRank");
+			qualityRank = config.get("rokugaTourokuQualityRank");
 			qualityBtn.Text = getQualityRankStr(qualityRank);
 			setConvertList(int.Parse(config.get("afterConvertMode")));
 		}
@@ -113,6 +113,7 @@ namespace rokugaTouroku
 					config.set("rokugaTourokuWidth", RestoreBounds.Width.ToString());
 					config.set("rokugaTourokuHeight", RestoreBounds.Height.ToString());
 				}
+				config.set("rokugaTourokuQualityRank", qualityRank);
 
 			} catch(Exception e) {
 				util.debugWriteLine(e.Message + " " + e.StackTrace);
@@ -161,7 +162,10 @@ namespace rokugaTouroku
 		}
 		object lo = new object();
 		public void resetBindingList(int row, string column = null, string val = null) {
-			lock (lo) {
+			var a = new object();
+			lock (a) {
+				if (row >= recListDataSource.Count) return;
+				
 				var ri = (RecInfo)recListDataSource[row];
 				this.Invoke((MethodInvoker)delegate() {
 	            	if (column != null) {
@@ -266,15 +270,19 @@ namespace rokugaTouroku
 			var isChange = displayingRi != ri;
 			displayingRi = ri;
 			//util.debugWriteLine("display c " + recList.RowCount + " " + recListDataSource.Count);
+			
 			this.Invoke((MethodInvoker)delegate() {
 				if (ctrl == "startTime" || ctrl == null) startTimeLabel.Text = ri.startTime;
 				if (ctrl == "endTime" || ctrl == null) endTimeLabel.Text = ri.endTime;
 				if (ctrl == "programTime" || ctrl == null) programTimeLabel.Text = ri.programTime;
+				
 				if (ctrl == "keikaTime" || ctrl == null) {
 					if (isChange) {
 						Task.Run(() => displayKeikaTime(ri));
+//						Task.Run(() => util.debugWriteLine("aa"));
 					}
 				}
+				
 				if (ctrl == "title" || ctrl == null) titleLabel.Text = ri.title;
 				if (ctrl == "host" || ctrl == null) hostLabel.Text = ri.host;
 				if (ctrl == "communityName" || ctrl == null) communityLabel.Text = ri.communityName;
@@ -442,6 +450,15 @@ namespace rokugaTouroku
 			lock(lo) {
 				Invoke((MethodInvoker)delegate() {
 					ret = recListDataSource.Count;
+				});
+			}
+			return ret;
+		}
+		public int getRecListSelectedCount() {
+			var ret = 0;
+			lock(lo) {
+				Invoke((MethodInvoker)delegate() {
+					ret = recList.SelectedCells.Count;
 				});
 			}
 			return ret;

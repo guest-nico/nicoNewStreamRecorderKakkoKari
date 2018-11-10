@@ -57,6 +57,7 @@ namespace rokugaTouroku
 				isM3u8RadioBtn.Checked = true;
 			updateListSecondText.Text = config.get("M3u8UpdateSeconds");
 			isOpenListCommandChkBox.Checked = bool.Parse(config.get("IsOpenUrlList"));
+			isSetVposStartTime.Checked = bool.Parse(config.get("IsVposStartTime"));
 			
 			updateIsM3u8RadioBtn_CheckedChanged();
 			updateIsOpenListCommandChkBoxCheckedChanged();
@@ -142,13 +143,15 @@ namespace rokugaTouroku
 			var isOpenUrlList = isOpenListCommandChkBox.Checked;
 			ret = new TimeShiftConfig(startType, 
 				h, m, s, endH, endM, endS, isRenketuLastFile.Checked, isUrlList, 
-				openListCommand, isM3u8List, m3u8UpdateSeconds, isOpenUrlList);
+				openListCommand, isM3u8List, m3u8UpdateSeconds, isOpenUrlList,
+				isSetVposStartTime.Checked);
 			
 			config.set("IsUrlList", isUrlList.ToString().ToLower());
 			config.set("IsM3u8List", isM3u8List.ToString().ToLower());
 			config.set("M3u8UpdateSeconds", m3u8UpdateSeconds.ToString());
 			config.set("IsOpenUrlList", isOpenUrlList.ToString().ToLower());
 			config.set("openUrlListCommand", openListCommand);
+			config.set("IsVposStartTime", isSetVposStartTime.Checked.ToString().ToLower());
 			
 			Close();
 		}

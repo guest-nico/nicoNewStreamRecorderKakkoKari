@@ -55,6 +55,8 @@ namespace namaichi
 		
 		public MainForm(string[] args)
 		{
+			//args = "-nowindo -stdIO -IsmessageBox=false -IscloseExit=true lv316762771 -ts-start=1785s -ts-end=0s -ts-list=false -ts-list-m3u8=false -ts-list-update=5 -ts-list-open=false -ts-list-command=\"notepad{i}\" -ts-vpos-starttime=true -afterConvertMode=4 -qualityRank=0,1,2,3,4,5 -IsLogFile=true".Split(' ');
+			
 			#if !DEBUG
 				if (config.get("IsLogFile") == "true") 
 					config.set("IsLogFile", "false");
@@ -481,7 +483,8 @@ namespace namaichi
 		}
 		bool kakuninClose() {
 			if (rec.rfu != null) {
-				DialogResult res = MessageBox.Show("録画中ですが終了しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				var _m = (rec.isPlayOnlyMode) ? "視聴" : "録画";
+				DialogResult res = MessageBox.Show(_m + "中ですが終了しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 				if (res == DialogResult.No) return false;
 			}
 			try{

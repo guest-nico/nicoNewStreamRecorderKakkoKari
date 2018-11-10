@@ -38,8 +38,11 @@ namespace namaichi.rec
 		private string groupUrl;
 		private string hostUrl;
 		private string samuneUrl;
+		private string tag;
+		
+		private bool isPlayOnlyMode = false;
 			
-		public RecordStateSetter(MainForm form, RecordingManager rm, RecordFromUrl rfu, bool isTimeShift, bool isJikken, string[] recFolderFile)
+		public RecordStateSetter(MainForm form, RecordingManager rm, RecordFromUrl rfu, bool isTimeShift, bool isJikken, string[] recFolderFile, bool isPlayOnlyMode)
 		{
 			this.form = form;
 			this.rm = rm;
@@ -47,6 +50,7 @@ namespace namaichi.rec
 			this.isTimeShift = isTimeShift;
 			this.isJikken = isJikken;
 			this.recFolderFile = recFolderFile;
+			this.isPlayOnlyMode = isPlayOnlyMode;
 		}
 		public void set(string data, string type, string[] recFolderFileInfo) {
 			setInfo(data, form, type, recFolderFileInfo);
@@ -112,7 +116,7 @@ namespace namaichi.rec
 			endTime = endTimeDt.ToString("MM/dd(ddd) HH:mm:ss");
 			
 			samuneUrl = util.getRegGroup(data, "\"program\".+?\"thumbnail\":{\"imageUrl\":\"(.+?)\"");
-			
+			tag = getTag(data);
 			form.setInfo(host, hostUrl, group, groupUrl, title, url, gentei, openTime, description);
 		}
 		private void setSamune(string data, MainForm form) {
@@ -135,6 +139,7 @@ namespace namaichi.rec
 				sw.WriteLine("[コミュニティURL] " + groupUrl);
 			if (hostUrl != null)
 				sw.WriteLine("[放送者URL] " + hostUrl);
+			sw.WriteLine("[タグ] " + tag);
 			sw.Close();
 		}
 		private void writeStdIOInfo() {
@@ -151,6 +156,17 @@ namespace namaichi.rec
 //			var a = "info.programTime:" + ts.ToString("h'時間'mm'分'ss'秒'");
 //			util.debugWriteLine(a);
 			Console.WriteLine("info.samuneUrl:" + samuneUrl);
+		}
+		private string getTag(string data) {
+			var _t = util.getRegGroup(data, "\"tag\":\\{\"list\":\\[(.+?)\\]");
+			if (_t == null) return "取得できませんでした";
+			var m = Regex.Matches(data, "\"text\":\"(.*?)\"");
+			var ret = "";
+			foreach (var _m in m) {
+				if (ret != "") ret += ",";
+				ret += ((Match)_m).Groups[1];
+			}
+			return ret;	
 		}
 	}
 }
