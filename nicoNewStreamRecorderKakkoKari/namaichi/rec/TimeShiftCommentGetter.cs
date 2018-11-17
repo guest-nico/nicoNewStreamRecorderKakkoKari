@@ -61,9 +61,14 @@ namespace namaichi.rec
 		
 		int gotCount = 0;
 		public string[] sortedComments;
+<<<<<<< HEAD
 		public TimeShiftConfig tsConfig;
 		
 		public TimeShiftCommentGetter(string message, string userId, RecordingManager rm, RecordFromUrl rfu, MainForm form, long openTime, string[] recFolderFile, string lvid, CookieContainer container, string programType, long _openTime, WebSocketRecorder rp, int startSecond, TimeShiftConfig tsConfig)
+=======
+		
+		public TimeShiftCommentGetter(string message, string userId, RecordingManager rm, RecordFromUrl rfu, MainForm form, long openTime, string[] recFolderFile, string lvid, CookieContainer container, string programType, long _openTime, WebSocketRecorder rp)
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 		{
 			this.uri = util.getRegGroup(message, "messageServerUri\"\\:\"(ws.+?)\"");
 			this.thread = util.getRegGroup(message, "threadId\":\"(.+?)\"");
@@ -79,8 +84,11 @@ namespace namaichi.rec
 			this.programType = programType;
 			this._openTime = _openTime;
 			this.rp = rp;
+<<<<<<< HEAD
 			this.startSecond = startSecond;
 			this.tsConfig = tsConfig;
+=======
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 		}
 		public void save() {
 			if (!bool.Parse(rm.cfg.get("IsgetComment"))) {
@@ -302,7 +310,10 @@ namespace namaichi.rec
 			var isWrite = (rm.cfg.get("IsgetComment") == "true" && !rm.isPlayOnlyMode);
 			if (isWrite)
 				form.addLogText("コメントの後処理を開始します");
+<<<<<<< HEAD
 			/*
+=======
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			try {
 				if (commentSW != null) commentSW.Close();
 			} catch (Exception e) {
@@ -327,7 +338,10 @@ namespace namaichi.rec
 			rp.gotTsCommentList = chats;
 			if (!isWrite) return;
 			
+<<<<<<< HEAD
 			fileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, true);
+=======
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			var w = new StreamWriter(fileName + "_", false, System.Text.Encoding.UTF8);
 			if (isGetXml) {
 				w.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");

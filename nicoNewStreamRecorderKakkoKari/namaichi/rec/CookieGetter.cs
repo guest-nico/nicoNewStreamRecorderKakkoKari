@@ -26,20 +26,34 @@ namespace namaichi.rec
 		public bool isHtml5 = false;
 		private config.config cfg;
 		public string log = "";
+<<<<<<< HEAD
 		public string id = null;
+=======
+<<<<<<< HEAD
+		public string id = null;
+=======
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 		static readonly Uri TargetUrl = new Uri("http://live.nicovideo.jp/");
 		static readonly Uri TargetUrl2 = new Uri("http://live2.nicovideo.jp");
 		static readonly Uri TargetUrl3 = new Uri("https://com.nicovideo.jp");
 		private bool isSub;
+<<<<<<< HEAD
 		private bool isRtmp;
+=======
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 		
 		public CookieGetter(config.config cfg)
 		{
 			this.cfg = cfg;
 		}
 		async public Task<CookieContainer[]> getHtml5RecordCookie(string url, bool isSub) {
+<<<<<<< HEAD
 			this.isSub = isSub;
 			
+=======
+			this.isSub = isSub; 
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			CookieContainer cc;
 			if (!isSub) {
 				cc = await getCookieContainer(cfg.get("BrowserNum"),
@@ -50,6 +64,7 @@ namespace namaichi.rec
 				if (cc != null) {
 					var c = cc.GetCookies(TargetUrl)["user_session"];
 					var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
+<<<<<<< HEAD
 					
 					var l = new List<KeyValuePair<string, string>>();
 					if (c != null)
@@ -59,6 +74,12 @@ namespace namaichi.rec
 //						cfg.set("user_session_secure", secureC.Value);
 						l.Add(new KeyValuePair<string, string>("user_session_secure", secureC.Value));
 					cfg.set(l);
+=======
+					if (c != null)
+						cfg.set("user_session", c.Value);
+					if (secureC != null)
+						cfg.set("user_session_secure", secureC.Value);
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 				}
 				
 			} else {
@@ -70,6 +91,7 @@ namespace namaichi.rec
 				if (cc != null) {
 					var c = cc.GetCookies(TargetUrl)["user_session2"];
 					var secureC = cc.GetCookies(TargetUrl)["user_session_secure2"];
+<<<<<<< HEAD
 					
 					var l = new List<KeyValuePair<string, string>>();
 					if (c != null)
@@ -79,6 +101,12 @@ namespace namaichi.rec
 //						cfg.set("user_session_secure2", secureC.Value);
 						l.Add(new KeyValuePair<string, string>("user_session_secure2", secureC.Value));
 					cfg.set(l);
+=======
+					if (c != null)
+						cfg.set("user_session2", c.Value);
+					if (secureC != null)
+						cfg.set("user_session_secure2", secureC.Value);
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 				}
 			}
 			
@@ -91,7 +119,15 @@ namespace namaichi.rec
 				bool isSub, string url) {
 			
 			var userSessionCC = getUserSessionCC(userSession, userSessionSecure);
+<<<<<<< HEAD
 			log += (userSessionCC == null) ? "前回のユーザーセッションが見つかりませんでした。" : "前回のユーザーセッションが見つかりました。";
+=======
+<<<<<<< HEAD
+			log += (userSessionCC == null) ? "前回のユーザーセッションが見つかりませんでした。" : "前回のユーザーセッションが見つかりました。";
+=======
+			log += (userSessionCC == null) ? "前回のユーザーセッションが見つかりませんでした。\n" : "前回のユーザーセッションが見つかりました。\n";
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			if (userSessionCC != null && true) {
 //				util.debugWriteLine(userSessionCC.GetCookieHeader(TargetUrl));
 				util.debugWriteLine("usersessioncc ishtml5login" + util.getMainSubStr(isSub));
@@ -112,7 +148,15 @@ namespace namaichi.rec
 			
 			if (browserNum == "2") {
 				CookieContainer cc = await getBrowserCookie(isSub).ConfigureAwait(false);
+<<<<<<< HEAD
 				log += (cc == null) ? "ブラウザからユーザーセッションを取得できませんでした。" : "ブラウザからユーザーセッションを取得しました。";
+=======
+<<<<<<< HEAD
+				log += (cc == null) ? "ブラウザからユーザーセッションを取得できませんでした。" : "ブラウザからユーザーセッションを取得しました。";
+=======
+				log += (cc == null) ? "ブラウザからユーザーセッションを取得できませんでした。\n" : "ブラウザからユーザーセッションを取得しました。\n";
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 				if (cc != null) {
 					util.debugWriteLine("browser ishtml5login" + util.getMainSubStr(isSub));
 					if (isHtml5Login(cc, url)) {
@@ -140,7 +184,15 @@ namespace namaichi.rec
 				var mail = accountId;
 				var pass = accountPass;
 				var accCC = await getAccountCookie(mail, pass).ConfigureAwait(false);
+<<<<<<< HEAD
 				log += (accCC == null) ? "アカウントログインからユーザーセッションを取得できませんでした。" : "アカウントログインからユーザーセッションを取得しました。";
+=======
+<<<<<<< HEAD
+				log += (accCC == null) ? "アカウントログインからユーザーセッションを取得できませんでした。" : "アカウントログインからユーザーセッションを取得しました。";
+=======
+				log += (accCC == null) ? "アカウントログインからユーザーセッションを取得できませんでした。\n" : "アカウントログインからユーザーセッションを取得しました。\n";
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 				if (accCC != null) {
 					util.debugWriteLine("account ishtml5login" + util.getMainSubStr(isSub));
 					if (isHtml5Login(accCC, url)) {
@@ -222,6 +274,7 @@ namespace namaichi.rec
 			
 		}
 		private bool isHtml5Login(CookieContainer cc, string url) {
+<<<<<<< HEAD
 			for (var i = 0; i < 10; i++) {
 				var headers = new WebHeaderCollection();
 				try {
@@ -258,6 +311,39 @@ namespace namaichi.rec
 				return isLogin;
 			}
 			return false;
+=======
+			var headers = new WebHeaderCollection();
+			try {
+				util.debugWriteLine("ishtml5login getpage " + url);
+				pageSource = util.getPageSource(url + "", ref headers, cc);
+				util.debugWriteLine("ishtml5login getpage ok");
+			} catch (Exception e) {
+				util.debugWriteLine("cookiegetter ishtml5login " + e.Message+e.StackTrace);
+				pageSource = "";
+				log += "ページの取得中にエラーが発生しました。" + e.Message + e.Source + e.TargetSite + e.StackTrace;
+				return false;
+			}
+//			isHtml5 = (headers.Get("Location") == null) ? false : true;
+			if (pageSource == null) {
+				log += "ページが取得できませんでした。";
+				return false;
+			}
+			var isLogin = !(pageSource.IndexOf("\"login_status\":\"login\"") < 0 &&
+			   	pageSource.IndexOf("login_status = 'login'") < 0); 
+			util.debugWriteLine("islogin " + isLogin);
+<<<<<<< HEAD
+			log += (isLogin) ? "ログインに成功しました。" : "ログインに失敗しました";
+//			if (!isLogin) log += pageSource;
+			if (isLogin) {
+				id = util.getRegGroup(pageSource, "\"user_id\":(\\d+)");
+				if (id == null) id = util.getRegGroup(pageSource, "user_id = (\\d+)");
+			}
+=======
+			log += (isLogin) ? "ログインに成功しました。\n" : "ログインに失敗しました\n";
+			if (!isLogin) log += pageSource;
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+			return isLogin;
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 		}
 		async public Task<CookieContainer> getAccountCookie(string mail, string pass) {
 			

@@ -17,7 +17,15 @@ namespace namaichi
 	/// </summary>
 	internal sealed class Program
 	{
+<<<<<<< HEAD
 		public static string arg = "";
+=======
+<<<<<<< HEAD
+		public static string arg = "";
+=======
+		static string arg = "";
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 		
 		/// <summary>
 		/// Program entry point.
@@ -25,7 +33,15 @@ namespace namaichi
 		[STAThread]
 		private static void Main(string[] args)
 		{
+<<<<<<< HEAD
 			if (args.Length > 0) arg = util.getRegGroup(args[0], "(lv.+)");
+=======
+<<<<<<< HEAD
+			if (args.Length > 0) arg = util.getRegGroup(args[0], "(lv.+)");
+=======
+			if (args.Length > 0) arg = args[0];
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandleExceptionHandler);
 			System.Threading.Thread.GetDomain().UnhandledException += new UnhandledExceptionEventHandler(UnhandleExceptionHandler);
@@ -75,10 +91,22 @@ namespace namaichi
 			var frameCount = new System.Diagnostics.StackTrace().FrameCount;
 			#if DEBUG
 				if (util.isLogFile) {
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 					if (frameCount > 150) {
 //						util.debugWriteLine("exception stacktrace framecount " + frameCount);
 						MessageBox.Show("first chance framecount stack " + e.Exception.Message + e.Exception.StackTrace, frameCount.ToString() + " " + DateTime.Now + " " + arg);
 //						if (e.Exception.GetType() == System.IO.IOException
+<<<<<<< HEAD
+=======
+=======
+					if (frameCount > 50) {
+//						util.debugWriteLine("exception stacktrace framecount " + frameCount);
+						MessageBox.Show("first chance framecount stack", frameCount.ToString() + " " + DateTime.Now + " " + arg);
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 						return;
 					}
 				}

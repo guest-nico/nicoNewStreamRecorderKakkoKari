@@ -10,13 +10,19 @@ using System;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Collections.Generic;
+<<<<<<< HEAD
 using System.Security.Authentication;
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 using System.Xml.Linq;
 using WebSocket4Net;
 using Newtonsoft.Json;
 
 using namaichi.rec;
+<<<<<<< HEAD
 using namaichi.info;
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 
 namespace namaichi.play
 {
@@ -25,17 +31,28 @@ namespace namaichi.play
 	/// </summary>
 	public class CommentPlayerWebSocket2
 	{
+<<<<<<< HEAD
 		private IRecorderProcess wsr;
+=======
+		private WebSocketRecorder wsr;
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		private commentForm cf;
 		
 		private WebSocket wsc;
 		private DateTime lastWebsocketConnectTime;
 		
+<<<<<<< HEAD
 		public bool isEnd = false;
 		private string ticket;
 		private DeflateDecoder deflateDecoder = new DeflateDecoder();
 		
 		public CommentPlayerWebSocket2(IRecorderProcess wsr, commentForm cf)
+=======
+		private bool isEnd = false;
+		private string ticket;
+		
+		public CommentPlayerWebSocket2(WebSocketRecorder wsr, commentForm cf)
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		{
 			this.wsr = wsr;
 			this.cf = cf;
@@ -45,12 +62,16 @@ namespace namaichi.play
 		}
 		public void connect() {
 	    	util.debugWriteLine("connect message server player");
+<<<<<<< HEAD
 	    	if (wsr == null)
 	    		return;
 	    	while (wsr.msUri  == null && wsr != null) 
 	    		Thread.Sleep(100);
 			var msUri = wsr.msUri;
 			util.debugWriteLine("msuri player2 " + msUri);
+=======
+			var msUri = wsr.msUri;
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			
 			lock (this) {
 				var  isPass = (TimeSpan.FromSeconds(3) > (DateTime.Now - lastWebsocketConnectTime));
@@ -74,11 +95,15 @@ namespace namaichi.play
 			try {
 				var header =  new List<KeyValuePair<string, string>>();
 				header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Protocol", "msg.nicovideo.jp#json"));
+<<<<<<< HEAD
 				if (wsr.isJikken) {
 					header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Extensions", "permessage-deflate"));
 					header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Version", "13"));
 				}
 				wsc = new WebSocket(msUri,  "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
+=======
+				wsc = new WebSocket(msUri,  "", null, header, "", "", WebSocketVersion.Rfc6455);
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 				wsc.Opened += onWscOpen;
 				wsc.Closed += onWscClose;
 				wsc.MessageReceived += onWscMessageReceive;
@@ -100,6 +125,7 @@ namespace namaichi.play
 		
 		}
 		private void onWscOpen(object sender, EventArgs e) {
+<<<<<<< HEAD
 			util.debugWriteLine("player ms open a");
 			util.debugWriteLine("player wsr " + wsr);
 			util.debugWriteLine("player wsr msreq " + wsr.msReq);
@@ -122,6 +148,13 @@ namespace namaichi.play
 				var res_from2 = (wsr.isTimeShift) ? "1" : "-10";
 				var msReq2 = Regex.Replace(wsr.msReq[1], "res_from\"\\:.+?,", "res_from\":" + res_from2 + ",");
 			}
+=======
+			util.debugWriteLine("ms open a");
+			
+			var res_from = (wsr.isTimeShift) ? "1" : "-100";
+			var msReq = Regex.Replace(wsr.msReq, "res_from\"\\:.+?,", "res_from\":" + res_from + ",");
+			wsc.Send(msReq);
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 
 		}
 		
@@ -130,8 +163,12 @@ namespace namaichi.play
 //			closeWscProcess();
 			wsc = null;
 			try {
+<<<<<<< HEAD
 				if (!isEnd)
 					connect();
+=======
+				connect();
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			} catch (Exception ee) {
 				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
@@ -144,7 +181,11 @@ namespace namaichi.play
 //			endStreamProcess();
 		}
 		private void onWscMessageReceive(object sender, MessageReceivedEventArgs e) {
+<<<<<<< HEAD
 			util.debugWriteLine("on wsc message ");
+=======
+			util.debugWriteLine("on wsc message " + e.Message);
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			
 			if (cf.form.recBtn.Text == "録画開始") {
 				isEnd = true;
@@ -172,6 +213,7 @@ namespace namaichi.play
 				return;
 			}
 			*/
+<<<<<<< HEAD
 			List<ChatInfo> chatInfoList;
 			if (wsr.isJikken) {
 				chatInfoList = ((JikkenRecordProcess)wsr).getChatInfoList(deflateDecoder.decode(e.Data));
@@ -216,6 +258,39 @@ namespace namaichi.play
 				//if (!isTimeShift)
 				addDisplayComment(chatinfo);
 			}
+=======
+			
+			
+			var xml = JsonConvert.DeserializeXNode(e.Message);
+			var chatinfo = new namaichi.info.ChatInfo(xml);
+			
+			XDocument chatXml;
+			chatXml = chatinfo.getFormatXml(wsr.openTime);
+			
+			util.debugWriteLine("xml " + chatXml.ToString());
+			
+			if (chatinfo.root == "chat" && (chatinfo.contents.IndexOf("/hb ifseetno") != -1 && 
+					chatinfo.premium == "3")) return;
+			if (chatinfo.root != "chat" && chatinfo.root != "thread") return;
+			
+			if (chatinfo.root == "thread") {
+//				serverTime = chatinfo.serverTime;
+				ticket = chatinfo.ticket;
+			}
+			
+			util.debugWriteLine("wsc message " + wsc);
+			
+//			Newtonsoft.Json
+			//if (e.Message.IndexOf("chat") < 0 &&
+			//    	e.Message.IndexOf("thread") < 0) return;
+			
+			
+//            util.debugWriteLine(jsonCommentToXML(text));
+			
+			//if (!isTimeShift)
+				addDisplayComment(chatinfo);
+
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		}
 		private void addDisplayComment(namaichi.info.ChatInfo chat) {
 			
@@ -228,7 +303,10 @@ namespace namaichi.play
 //			var time = util.getUnixToDatetime(chat.vpos / 100);
 //			var unixKijunDt = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 			var __time = chat.date - wsr.openTime; //- (60 * 60 * 9);
+<<<<<<< HEAD
 			if (__time < 0) __time = 0;
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 
 //			var __timeDt = util.getUnixToDatetime(__time);
 //			var openTimeDt = util.getUnixToDatetime(openTime);
@@ -251,7 +329,11 @@ namespace namaichi.play
 //			- new TimeSpan(9,0,0);
 			var c = (chat.premium == "3") ? "red" :
 				((chat.premium == "7") ? "blue" : "black");
+<<<<<<< HEAD
 			if (chat.root == "control") c = "red";
+=======
+			
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			
 			cf.addComment(keikaTime, chat.contents, chat.userId, chat.score, c);
 			

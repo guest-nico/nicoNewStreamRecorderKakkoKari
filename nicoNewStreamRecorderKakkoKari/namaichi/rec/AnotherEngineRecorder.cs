@@ -28,7 +28,11 @@ namespace namaichi.rec
 			this.rfu = rfu;
 		}
 		public void record(string hlsSegM3uUrl, string recFolderFile, string command) {
+<<<<<<< HEAD
 			util.debugWriteLine("another rec start");
+=======
+			util.debugWriteLine("rec start");
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			util.debugWriteLine("command "  + command);
 
 			var _command = command.Replace("{i}", hlsSegM3uUrl);
@@ -98,7 +102,10 @@ namespace namaichi.rec
 		public void stopRecording() {
 			util.debugWriteLine("stop recording another engine");
 	
+<<<<<<< HEAD
 			
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			if (process == null || process.HasExited) return;
 
 			try {

@@ -41,12 +41,16 @@ namespace namaichi.play
 		
 		private bool isRecording = false;
 		public bool isReconnect = false;
+<<<<<<< HEAD
 		
 		private bool isUsePlayer = false;
 		private bool isUseCommentViewer = false;
 		
 		public StreamWriter pipeWriter;
 		
+=======
+			
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 		public Player(MainForm form, config.config config)
 		{
 			this.form = form;
@@ -55,12 +59,21 @@ namespace namaichi.play
 		}
 		public void play() {
 			util.debugWriteLine("play");
+<<<<<<< HEAD
 			isUsePlayer = bool.Parse(config.get("IsUsePlayer"));
 			isUseCommentViewer = bool.Parse(config.get("IsUseCommentViewer"));
+=======
+<<<<<<< HEAD
+			
+=======
+			if (form.rec.rfu == null) return;
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			
 			if (form.playerBtn.Text == "視聴") {
 				form.playerBtn.Text = "視聴停止";
 				lastPlayUrl = null;
+<<<<<<< HEAD
 				
 				Task.Run(() => {
 		         	if (!getHlsUrl()) {
@@ -101,6 +114,21 @@ namespace namaichi.play
 		}
 		private void videoPlay(bool isStart) {
 			isRecording = true;
+=======
+				videoPlay(true);
+				commentPlay(true);
+			} else {
+				Task.Run(() => {
+				    setPlayerBtnText("視聴");
+					stopPlaying(true, true);
+					if (isDefaultPlayer) ctrlFormClose();
+					if (isDefaultCommentPlayer) defaultCommentFormClose();
+				});
+				
+			}
+		}
+		private void videoPlay(bool isStart) {
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			isDefaultPlayer = bool.Parse(config.get("IsDefaultPlayer"));
 			if (isStart) {
 				Task.Run(() => {
@@ -120,9 +148,14 @@ namespace namaichi.play
 						
 						lastPlayUrl = form.rec.hlsUrl;
 						
+<<<<<<< HEAD
 						//isRecording = true;
+=======
+						isRecording = true;
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 						sendPlayCommand(isDefaultPlayer);
 						
+<<<<<<< HEAD
 						try {
 							while (true) {
 								if ((form.rec.hlsUrl == "end" ||
@@ -147,16 +180,46 @@ namespace namaichi.play
 	//								}
 									var aaa = process.HasExited;
 								}
+=======
+						while (true) {
+							if ((form.rec.hlsUrl == "end" ||
+							     form.rec.hlsUrl == null) && 
+						        process.HasExited) break;
+							if (form.playerBtn.Text != "視聴停止") break;
+							if (form.rec.rfu == null) break;
+						    
+							Thread.Sleep(300);
+							if ((form.rec.hlsUrl != lastPlayUrl 
+								&& form.rec.hlsUrl != null    
+								&& form.rec.hlsUrl.StartsWith("http")) || isReconnect) {
+								isReconnect = false;
+								
+								stopPlaying(true, false);
+
+								lastPlayUrl = form.rec.hlsUrl;
+								sendPlayCommand(isDefaultPlayer);
+//								if (isDefaultPlayer) {
+//									ctrlFormClose();
+//								}
+								var aaa = process.HasExited;
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 							}
 						} catch (Exception e) {
 							util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 						}
 						stopPlaying(true, false);
 				    	if (isDefaultPlayer) ctrlFormClose();
+<<<<<<< HEAD
 				    	//isRecording = false;
 						break;
 					}
 				    isRecording = false;
+=======
+				    	isRecording = false;
+						break;
+					}
+				    
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 				    setPlayerBtnText("視聴");
 				    
 				});
@@ -169,6 +232,7 @@ namespace namaichi.play
 		private void sendPlayCommand(bool isDefaultPlayer) {
 			Environment.SetEnvironmentVariable("SDL_AUDIODRIVER", "directsound", EnvironmentVariableTarget.Process);
 			if (isDefaultPlayer) {
+<<<<<<< HEAD
 				
 				var volume = (ctrl != null) ? ((ctrl.volume == -10) ? 0 : ctrl.volume) : int.Parse(config.get("volume"));
 				util.debugWriteLine("kia 00 " + form.rec.hlsUrl);
@@ -179,6 +243,12 @@ namespace namaichi.play
 //					playCommandStd("MPC-HC.1.7.13.x86/mpc-hc.exe", "-");
 					Task.Run(() => playCommandStd("ffplay.exe", form.rec.hlsUrl));
 				
+=======
+				Environment.SetEnvironmentVariable("SDL_AUDIODRIVER", "directsound", EnvironmentVariableTarget.Process);
+				var volume = (ctrl != null) ? ((ctrl.volume == -10) ? 0 : ctrl.volume) : int.Parse(config.get("volume"));
+				util.debugWriteLine("kia 00 " + form.rec.hlsUrl);
+				playCommand("ffplay", form.rec.hlsUrl + " -autoexit -volume " + volume);
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 				util.debugWriteLine("kia 0 " + ctrl);
 				form.Invoke((MethodInvoker)delegate() {
 					if (ctrl == null) {
@@ -190,7 +260,10 @@ namespace namaichi.play
 	            	}
 				});
 				util.debugWriteLine("kia 1 " + ctrl);
+<<<<<<< HEAD
 				
+=======
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			} else {
 				if (form.rec.hlsUrl.StartsWith("http"))
 					playCommand(config.get("anotherPlayerPath"), form.rec.hlsUrl);
@@ -436,6 +509,7 @@ namespace namaichi.play
 		public void setStatistics(string visit, string comment) {
 			if (commentForm != null) commentForm.setStatistics(visit, comment);
 		}
+<<<<<<< HEAD
 		private bool getHlsUrl() {
 			if (form.rec.rfu == null) {
 				form.rec.hlsUrl = null;
@@ -457,6 +531,7 @@ namespace namaichi.play
 			}
 			return true;
 		}
+<<<<<<< HEAD
 		private void setPipeName(Process p) {
 			var pn = ((int)(new Random().NextDouble() * 10000)).ToString();
 			p.StandardInput.WriteLine(pn);
@@ -471,5 +546,9 @@ namespace namaichi.play
 //        	pipeWriter.Flush();
 			
 		}
+=======
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 	}
 }

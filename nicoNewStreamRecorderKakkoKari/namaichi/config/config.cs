@@ -147,7 +147,11 @@ public class config
 			{"IsSegmentNukeInfo","true"},
 			{"segmentSaveType","0"},
 			{"IsRenketuAfter","true"},
+<<<<<<< HEAD
 			{"IsAfterRenketuFFmpeg","false"},
+=======
+			{"IsAfterRenketuFFmpeg","true"},
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			{"IsDefaultEngine","true"},
 			{"anotherEngineCommand",""},
 			{"IsUsePlayer","true"},
@@ -157,13 +161,24 @@ public class config
 			{"anotherPlayerPath",""},
 			{"anotherCommentViewerPath",""},
 			{"Is184","true"},
+<<<<<<< HEAD
 			{"IsUrlList","false"},
 			{"IsM3u8List","false"},
 			{"M3u8UpdateSeconds","5"},
 			{"IsOpenUrlList","false"},
 			{"openUrlListCommand","notepad {i}"},
+<<<<<<< HEAD
 			{"IsVposStartTime","true"},
 			{"afterConvertMode","0"},
+=======
+<<<<<<< HEAD
+			{"afterConvertMode","0"},
+=======
+			//{"afterConvertMode","0"},
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			
 			{"cookieFile",""},
 			{"iscookie","false"},
@@ -183,11 +198,22 @@ public class config
 			{"defaultCommentFormY","100"},
 			{"defaultCommentFormWidth","500"},
 			{"defaultCommentFormHeight","520"},
+<<<<<<< HEAD
 			
 			{"rokugaTourokuWidth","950"},
+<<<<<<< HEAD
 			{"rokugaTourokuHeight","500"},
 			{"rokugaTourokuMaxRecordingNum","10"},
 			{"rokugaTourokuQualityRank","0,1,2,3,4,5"},
+=======
+<<<<<<< HEAD
+			{"rokugaTourokuHeight","500"},
+=======
+			{"rokugaTourokuHeight","350"},
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 		};
 
 		var buf = new Dictionary<string,string>();

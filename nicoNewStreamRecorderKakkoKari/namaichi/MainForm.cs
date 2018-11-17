@@ -33,7 +33,10 @@ using namaichi.rec;
 using namaichi.config;
 using namaichi.play;
 using namaichi.utility;
+<<<<<<< HEAD
 using SuperSocket.ClientEngine;
+=======
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 
 //using System.Diagnostics.Process;
 
@@ -52,14 +55,20 @@ namespace namaichi
 		private string[] args;
 		private play.Player player;
 		
+<<<<<<< HEAD
 		
 		
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		public MainForm(string[] args)
 		{
+<<<<<<< HEAD
 			//args = "-nowindo -stdIO -IsmessageBox=false -IscloseExit=true lv316762771 -ts-start=1785s -ts-end=0s -ts-list=false -ts-list-m3u8=false -ts-list-update=5 -ts-list-open=false -ts-list-command=\"notepad{i}\" -ts-vpos-starttime=true -afterConvertMode=4 -qualityRank=0,1,2,3,4,5 -IsLogFile=true".Split(' ');
 			//read std
 			if (Array.IndexOf(args, "-std-read") > -1) startStdRead();
 			
+=======
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			#if !DEBUG
 				if (config.get("IsLogFile") == "true") 
 					config.set("IsLogFile", "false");
@@ -107,6 +116,21 @@ namespace namaichi
 			util.debugWriteLine("arg len " + args.Length);
 			util.debugWriteLine("arg join " + string.Join(" ", args));
 			
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+			InitializeComponent();
+<<<<<<< HEAD
+			Text = "ニコ生新配信録画ツール（仮 " + util.versionStr;
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+			
+			rec = new rec.RecordingManager(this, config);
+			player = new Player(this, config);
+			//player = new play.Player(rec);
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			
             //nicoSessionComboBox1.Selector.PropertyChanged += Selector_PropertyChanged;
 //            checkBoxShowAll.Checked = bool.Parse(config.get("isAllBrowserMode"));
@@ -118,6 +142,39 @@ namespace namaichi
 				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 			}
 			
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+			if (args.Length > 0) {
+<<<<<<< HEAD
+				if (bool.Parse(config.get("Isminimized"))) {
+					this.WindowState = FormWindowState.Minimized;
+				}
+				if (args.Length == 9 && args[0] == "redist") {
+					urlText.Text = args[1];
+					rec.setRedistInfo(args);
+					rec.rec();
+				} else {
+					urlText.Text = string.Join("|", args);
+	//            	rec = new rec.RecordingManager(this);
+	            	rec.rec();
+				}
+=======
+				
+				
+				    
+				if (bool.Parse(config.get("Isminimized"))) {
+					this.WindowState = FormWindowState.Minimized;
+				}
+				urlText.Text = string.Join("|", args);
+//            	rec = new rec.RecordingManager(this);
+            	rec.rec();
+
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+            }
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 		}
 
 		private void recBtnAction(object sender, EventArgs e) {
@@ -221,6 +278,10 @@ namespace namaichi
        		if (util.isStdIO) Console.WriteLine("info.log:" + t);
        		if (!util.isShowWindow) return;
        		try {
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 	       		if (this.IsDisposed) return;
 	       		if (!this.IsHandleCreated) return;
 	       		if (isInvoke) {
@@ -251,10 +312,39 @@ namespace namaichi
 	   		       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 	   		       	}
 	       		}
+<<<<<<< HEAD
+=======
+	       	} catch (Exception e) {
+	       		util.showException(e);
+	       	}
+       		
+=======
+	       		if (IsDisposed) return;
+	        	Invoke((MethodInvoker)delegate() {
+	       		       	try {
+			        	    string _t = "";
+					    	if (logText.Text.Length != 0) _t += "\r\n";
+					    	_t += t;
+					    	
+				    		logText.AppendText(_t);
+							if (logText.Text.Length > 200000) 
+								logText.Text = logText.Text.Substring(logText.TextLength - 10000);
+	       		       	} catch (Exception e) {
+	       		       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+	       		       	}
+	
+				});
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 	       	} catch (Exception e) {
 	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 	       	}
+<<<<<<< HEAD
        		
+=======
+<<<<<<< HEAD
+       		if (rec.ri != null) Console.WriteLine(t);
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 		}
         public void addLogTextTest(string t) {
        		addLogText(t);
@@ -269,6 +359,16 @@ namespace namaichi
 	       		    try {
 		        	    recordStateLabel.Text = t;
 		        	    if (rec.isTitleBarInfo) {
+=======
+		}
+		public void setRecordState(String t) {
+	       	try {
+	       		if (IsDisposed) return;
+	        	Invoke((MethodInvoker)delegate() {
+	       		    try {
+		        	    recordStateLabel.Text = t;
+		        	    if (bool.Parse(config.get("IstitlebarInfo"))) {
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		        	    	Text = t;
 		        	    }
 	       		    } catch (Exception e) {
@@ -280,7 +380,10 @@ namespace namaichi
 	       	} catch (Exception e) {
        			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 	       	}
+<<<<<<< HEAD
        		//util.debugWriteLine("setRecordState ok");
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		}
         private void initRec() {
         	//util.debugWriteLine(int.Parse(config.get("browserName")));
@@ -304,9 +407,19 @@ namespace namaichi
 		public void setInfo(string host, string hostUrl, 
         		string group, string groupUrl, string title, string url, 
         		string gentei, string openTime, string description) {
+<<<<<<< HEAD
        		if (!util.isShowWindow) return;
+=======
+<<<<<<< HEAD
+       		if (!util.isShowWindow) return;
+=======
+<<<<<<< HEAD
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
        		util.debugWriteLine(hostUrl);
        		
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 	       	try {
 	       		if (IsDisposed) return;
 	        	Invoke((MethodInvoker)delegate() {
@@ -318,6 +431,7 @@ namespace namaichi
 			        	    titleLabel.Text = title;
 			        	    titleLabel.Links.Add(0, titleLabel.Text.Length, url);
 			        	    hostLabel.Text = host;
+<<<<<<< HEAD
 			        	    if (hostUrl != null) {
 				        	    hostLabel.Links.Add(0, hostLabel.Text.Length, hostUrl);
 //				        	    hostLabel.LinkArea = new LinkArea(0, hostLabel.Text.Length);
@@ -326,6 +440,12 @@ namespace namaichi
 			        	    if (groupUrl != null) {
 			        	    	communityLabel.Links.Add(0, groupLabel.Text.Length, groupUrl);
 			        	    }
+=======
+			        	    hostLabel.Links.Add(0, (hostUrl != null) ? hostLabel.Text.Length : 0, hostUrl);
+			        	    hostLabel.LinkArea = new LinkArea(0, (hostUrl == null) ? 0 : hostLabel.Text.Length);
+			        	    communityLabel.Text = group;
+			        	    communityLabel.Links.Add(0, groupLabel.Text.Length, groupUrl);
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			        	    genteiLabel.Text = gentei;
 			        	    startTimeLabel.Text = openTime;
 			        	    descriptLabel.Text = description;
@@ -336,7 +456,10 @@ namespace namaichi
 	       	} catch (Exception e) {
 	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 	       	}
+<<<<<<< HEAD
        		//util.debugWriteLine(hostLabel.Text + " " + hostLabel.Links);
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		}
 		public void setSamune(string url) {
        		if (!util.isShowWindow) return;
@@ -523,7 +646,10 @@ namespace namaichi
 			commentList.Rows.Clear();
 			Text = "ニコ生新配信録画ツール（仮";
 			Icon = null;
+<<<<<<< HEAD
 			recordStateLabel.Text = "";
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		}
 		public void setTitle(string s) {
 			if (!util.isShowWindow) return;
@@ -563,6 +689,7 @@ namespace namaichi
 	       	}
 		}
 		
+<<<<<<< HEAD
 		
 		void mainForm_Load(object sender, EventArgs e)
 		{
@@ -581,6 +708,7 @@ namespace namaichi
 			var v = new VersionForm();
 			v.ShowDialog();
 		}
+<<<<<<< HEAD
 		void startStdRead() {
 			Task.Run(() => {
 	         	while (true) {
@@ -598,5 +726,9 @@ namespace namaichi
 				}
 			});
 		}
+=======
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 	}
 }

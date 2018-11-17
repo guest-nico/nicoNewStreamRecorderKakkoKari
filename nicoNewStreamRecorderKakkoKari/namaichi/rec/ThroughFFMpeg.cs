@@ -32,6 +32,10 @@ namespace namaichi.rec
 			string tmp = dir + "_" + fName;
 			util.debugWriteLine("through ffmpeg tmp " + tmp);
 			
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			var afterConvertMode = int.Parse(rm.cfg.get("afterConvertMode"));
 			string outPath = path;
 			if (isConvert) 
@@ -46,7 +50,19 @@ namespace namaichi.rec
 			else if (afterConvertMode == 3)
 				_command = ("-i \"" + path + "\" -c copy -bsf:a aac_adtstoasc \"" + tmp + "\"");
 			else _command = ("-i \"" + path + "\" -c copy \"" + tmp + "\"");
+<<<<<<< HEAD
+=======
+=======
+<<<<<<< HEAD
+			var _command = getCommand(path, tmp);
 			
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
+			
+=======
+			string _command = "-i \"" + path + "\" -c copy \"" + tmp + "\"";
+//			string _command = "-i \"" + path + "\" -movflags faststart -c copy \"" + tmp + "\"";
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			
 			util.debugWriteLine("through command " + _command);
 			
@@ -104,11 +120,19 @@ namespace namaichi.rec
 		private void appExitHandler(object sender, EventArgs e) {
 //			stopRecording();
 		}
+<<<<<<< HEAD
 		private void getConvertPaths(string path, ref string tmp, ref string outPath, int afterConvertMode) {
 			var ext = "";
 //			if (afterConvertMode == 0 &&
 //			    rm.cfg.get("IsRenketuAfter") == "true") ext = "ts";
 			if (afterConvertMode == 0) ext = "ts";
+=======
+<<<<<<< HEAD
+		private void getConvertPaths(string path, ref string tmp, ref string outPath, int afterConvertMode) {
+			var ext = "";
+			if (afterConvertMode == 0 &&
+			    rm.cfg.get("IsRenketuAfter") == "true") ext = "ts";
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			if (afterConvertMode == 1) ext = "avi";
 			if (afterConvertMode == 2) ext = "mp4";
 			if (afterConvertMode == 3) ext = "flv";
@@ -121,11 +145,41 @@ namespace namaichi.rec
 			if (afterConvertMode == 10) ext = "wma";
 			if (afterConvertMode == 11) ext = "aac";
 			if (afterConvertMode == 12) ext = "ogg";
+<<<<<<< HEAD
 			var originalExtLen = tmp.EndsWith("ts") ? 2 : 3;
 			tmp = tmp.Substring(0, tmp.Length - originalExtLen) + ext;
 //			tmp = tmp.Substring(0, tmp.Length - 2) + ext;
 			outPath = path.Substring(0, path.Length - originalExtLen) + ext;
+=======
+			tmp = tmp.Substring(0, tmp.Length - 2) + ext;
+			outPath = path.Substring(0, path.Length - 2) + ext;
+=======
+<<<<<<< HEAD
+		private string getCommand(string path, string tmp) {
+			var def = "-i \"" + path + "\" -c copy \"" + tmp + "\"";
+			if (rm.ri == null)
+				return def;
+//			string _command = "-i \"" + path + "\" -movflags faststart -c copy \"" + tmp + "\"";
+			if (rm.ri.afterFFmpegMode == 0)
+				return "-i \"" + path + "\" -c copy \"" + tmp + "\"";
+			else if (rm.ri.afterFFmpegMode == 1)
+				return "-i \"" + path + "\" -c copy \"" + tmp + "\"";
+			else if (rm.ri.afterFFmpegMode == 1)
+				return "-i \"" + path + "\" -c copy \"" + tmp + "\"";
+			else if (rm.ri.afterFFmpegMode == 1)
+				return "-i \"" + path + "\" -c copy \"" + tmp + "\"";
+			else if (rm.ri.afterFFmpegMode == 1)
+				return "-i \"" + path + "\" -c copy \"" + tmp + "\"";
+			else if (rm.ri.afterFFmpegMode == 1)
+				return "-i \"" + path + "\" -c copy \"" + tmp + "\"";
+			else if (rm.ri.afterFFmpegMode == 1)
+				return "-i \"" + path + "\" -c copy \"" + tmp + "\"";
+			return def;
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 		}
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		/*
 		public void stopRecording() {
 			util.debugWriteLine("stop recording through ffmpeg");
