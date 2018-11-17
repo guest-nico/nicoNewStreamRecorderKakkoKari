@@ -63,6 +63,29 @@ public class config
 			}
 		}
 	}
+	public void set(List<KeyValuePair<string, string>> l) {
+		foreach (var _l in l)
+			util.debugWriteLine("config set " + _l.Key + " " + _l.Value);
+		for (var i = 0; i < 100; i++) {
+			cfg = getConfig();
+			
+			var keys = cfg.AppSettings.Settings.AllKeys;
+			
+			foreach (var _l in l) {
+				if (System.Array.IndexOf(keys, _l.Key) < 0)
+					cfg.AppSettings.Settings.Add(_l.Key, _l.Value);
+				else cfg.AppSettings.Settings[_l.Key].Value = _l.Value;
+			}
+			try {
+				cfg.Save();
+				return;
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + " " + e.StackTrace);
+				System.Threading.Thread.Sleep(500);
+				continue;
+			}
+		}
+	}
 	public string get(string key) {
 		util.debugWriteLine("config get " + key);
 		try {
