@@ -9,6 +9,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using namaichi.info;
 
 namespace namaichi
@@ -132,13 +133,22 @@ namespace namaichi
 				openListCommand, isM3u8List, m3u8UpdateSeconds, isOpenUrlList, 
 				isSetVposStartTime.Checked);
 			
+			var l = new List<KeyValuePair<string, string>>();
+			l.Add(new KeyValuePair<string, string>("IsUrlList", isUrlList.ToString().ToLower()));
+			l.Add(new KeyValuePair<string, string>("IsM3u8List", isM3u8List.ToString().ToLower()));
+			l.Add(new KeyValuePair<string, string>("M3u8UpdateSeconds", m3u8UpdateSeconds.ToString()));
+			l.Add(new KeyValuePair<string, string>("IsOpenUrlList", isOpenUrlList.ToString().ToLower()));
+			l.Add(new KeyValuePair<string, string>("openUrlListCommand", openListCommand));
+			l.Add(new KeyValuePair<string, string>("IsVposStartTime", isSetVposStartTime.Checked.ToString().ToLower()));
+			config.set(l);
+			/*
 			config.set("IsUrlList", isUrlList.ToString().ToLower());
 			config.set("IsM3u8List", isM3u8List.ToString().ToLower());
 			config.set("M3u8UpdateSeconds", m3u8UpdateSeconds.ToString());
 			config.set("IsOpenUrlList", isOpenUrlList.ToString().ToLower());
 			config.set("openUrlListCommand", openListCommand);
 			config.set("IsVposStartTime", isSetVposStartTime.Checked.ToString().ToLower());
-			
+			*/
 			Close();
 		}
 		

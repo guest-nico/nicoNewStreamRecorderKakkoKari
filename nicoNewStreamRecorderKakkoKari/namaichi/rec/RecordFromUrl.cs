@@ -47,8 +47,8 @@ namespace namaichi.rec
 			util.debugWriteLine(url + " " + lvid);
 			this.lvid = lvid;
 			
-			isSubAccountHokan = true;
-			isRtmpMain = false;
+			isSubAccountHokan = false;
+			isRtmpMain = true;
 			
 			var mainT = Task.Run<int>(() => {return _rec(url, false);});
 			Task subT = null;
@@ -93,7 +93,7 @@ namespace namaichi.rec
 						               	MessageBox.Show("ログインに失敗しました。(" + util.getMainSubStr(isSub) + ")\n" + lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None);
 						});
 					} catch (Exception e) {
-			       		util.showException(e);
+			       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 			       	}
 				}
 				if (bool.Parse(rm.cfg.get("IsfailExit"))) {
@@ -107,7 +107,7 @@ namespace namaichi.rec
 			       	       		}
 							});
 						} catch (Exception e) {
-				       		util.showException(e);
+				       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 				       	}
 					}
 				}
@@ -221,7 +221,7 @@ namespace namaichi.rec
 				       			MessageBox.Show("コミュニティに入る必要があります：\nrequire_community_menber/" + lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None);
 							});
 						} catch (Exception e) {
-				       		util.showException(e);
+				       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 				       	}
 					}
 					if (bool.Parse(rm.cfg.get("IsfailExit"))) {
@@ -235,7 +235,7 @@ namespace namaichi.rec
 				       	       		}
 								});
 							} catch (Exception e) {
-					       		util.showException(e);
+					       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 					       	}
 						}
 					}
@@ -302,7 +302,7 @@ namespace namaichi.rec
 				       	       		}
 								});
 							} catch (Exception e) {
-					       		util.showException(e);
+					       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 					       	}
 						}
 					}

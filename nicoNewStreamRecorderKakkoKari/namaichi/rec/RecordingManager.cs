@@ -14,9 +14,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 using namaichi;
-using Newtonsoft.Json;
+//using Newtonsoft.Json;
 using System.Configuration;
 using System.IO;
+using System.Collections.Generic;
 using SunokoLibrary.Application;
 using SunokoLibrary.Application.Browsers;
 using namaichi.info;
@@ -30,6 +31,7 @@ namespace namaichi.rec
 	{
 		public MainForm form;
 		public bool isRecording = false;
+		public List<int> recordRunningList = new List<int>();
 		public RecordFromUrl rfu;
 		public bool isClickedRecBtn = false;
 		public string hlsUrl = null;
@@ -49,6 +51,7 @@ namespace namaichi.rec
 		public bool isPlayOnlyMode = false;
 		
 		public TimeShiftConfig argTsConfig;
+		public utility.RegGetter regGetter = new namaichi.utility.RegGetter();
 		
 		public RecordingManager(MainForm form, config.config cfg)
 		{
@@ -64,19 +67,8 @@ namespace namaichi.rec
 		*/
 		async public void rec() {
             util.debugWriteLine("rm");
-            /*
-            var c = 0;
-            var l = new System.Collections.Generic.List<Task<int>>();
-            for (var a = 0; a < 10000; a++) {
-            	//var _a = a;
-            	//Task.Run(() => c+= _a);
-            	//c += a;
-            	l.Add(test(a));
-            }
-            foreach (var b in l) c += b.Result;
-            //Thread.Sleep(3000);
-            util.debugWriteLine(c);//4950
-            */
+           
+            
             
             var lv = util.getRegGroup(form.urlText.Text, "(lv\\d+)");
 			util.setLog(cfg, lv);
@@ -144,9 +136,12 @@ namespace namaichi.rec
 					    util.debugWriteLine(form.urlText);
 					    util.debugWriteLine(form.urlText.Text);
 					    
+					    var rfuCode = rfu.GetHashCode();
+					    recordRunningList.Add(rfuCode);
 					    //endcode 0-その他の理由 1-stop 2-最初に終了 3-始まった後に番組終了
 	                	var endCode = rfu.rec(form.urlText.Text, lvid);
 	                	util.debugWriteLine("endcode " + endCode);
+	                	recordRunningList.Remove(rfuCode);
 	                	
 	                	if (rfu == _rfu) {
 		                	isRecording = false;
@@ -163,7 +158,7 @@ namespace namaichi.rec
 				       	       			}
 									});
 								} catch (Exception e) {
-						       		util.showException(e);
+						       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 						       	}
 							}
 							
@@ -180,7 +175,7 @@ namespace namaichi.rec
 						       	       		}
 										});
 			                		} catch (Exception e) {
-							       		util.showException(e);
+							       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 							       	}
 		                		}
 							}
@@ -201,7 +196,7 @@ namespace namaichi.rec
 					       	       		}
 									});
 		                		} catch (Exception e) {
-						       		util.showException(e);
+						       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 						       	}
 	                		}
 	                	}
@@ -231,29 +226,8 @@ namespace namaichi.rec
 				});
 		         
 			} else {
-				if (util.isShowWindow) {
-	            	try {
-		            	form.Invoke((MethodInvoker)delegate() {
-							try {
-				        	    form.recBtn.Text = "録画開始";
-								form.urlText.Enabled = true;
-								form.optionMenuItem.Enabled = true;
-								var _m = (isPlayOnlyMode) ? "視聴" : "録画";
-								form.addLogText(_m + "を中断しました");
-								
-							} catch (Exception e) {
-								util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-							}
-						});
-	            	} catch (Exception e) {
-			       		util.showException(e);
-			       	}
-				}
-				isRecording = false;
-				rfu = null;
-				hlsUrl = null;
+				stopRecording();
 				
-            	recordingUrl = null;
 				
 			}
 
@@ -261,6 +235,30 @@ namespace namaichi.rec
 		public void setRedistInfo(string[] args) {
 			ri = new RedistInfo(args);
 		}
-		
+		public void stopRecording() {
+			if (util.isShowWindow) {
+            	try {
+	            	form.Invoke((MethodInvoker)delegate() {
+						try {
+			        	    form.recBtn.Text = "録画開始";
+							form.urlText.Enabled = true;
+							form.optionMenuItem.Enabled = true;
+							var _m = (isPlayOnlyMode) ? "視聴" : "録画";
+							form.addLogText(_m + "を中断しました");
+							
+						} catch (Exception e) {
+							util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+						}
+					});
+            	} catch (Exception e) {
+		       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+		       	}
+			}
+			isRecording = false;
+			rfu = null;
+			hlsUrl = null;
+			
+        	recordingUrl = null;
+		}
 	}
 }

@@ -106,8 +106,9 @@ namespace namaichi.rec
 		}
 		private void getConvertPaths(string path, ref string tmp, ref string outPath, int afterConvertMode) {
 			var ext = "";
-			if (afterConvertMode == 0 &&
-			    rm.cfg.get("IsRenketuAfter") == "true") ext = "ts";
+//			if (afterConvertMode == 0 &&
+//			    rm.cfg.get("IsRenketuAfter") == "true") ext = "ts";
+			if (afterConvertMode == 0) ext = "ts";
 			if (afterConvertMode == 1) ext = "avi";
 			if (afterConvertMode == 2) ext = "mp4";
 			if (afterConvertMode == 3) ext = "flv";
@@ -120,8 +121,10 @@ namespace namaichi.rec
 			if (afterConvertMode == 10) ext = "wma";
 			if (afterConvertMode == 11) ext = "aac";
 			if (afterConvertMode == 12) ext = "ogg";
-			tmp = tmp.Substring(0, tmp.Length - 2) + ext;
-			outPath = path.Substring(0, path.Length - 2) + ext;
+			var originalExtLen = tmp.EndsWith("ts") ? 2 : 3;
+			tmp = tmp.Substring(0, tmp.Length - originalExtLen) + ext;
+//			tmp = tmp.Substring(0, tmp.Length - 2) + ext;
+			outPath = path.Substring(0, path.Length - originalExtLen) + ext;
 		}
 		/*
 		public void stopRecording() {

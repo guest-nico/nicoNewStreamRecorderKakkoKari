@@ -15,19 +15,20 @@ class app {
 		Console.WriteLine(util.getPath());
 		Console.WriteLine(util.getTime());
 		Console.WriteLine(util.getJarPath());
-		Console.WriteLine(util.getOkFileName(".a\\\"aa|a"));
+		Console.WriteLine(util.getOkFileName(".a\\\"aa|a", false));
 		//Console.WriteLine(util.getRecFolderFilePath("host", "group", "title", "lvid", "comnum")[0]);
 		//Console.WriteLine(util.getRecFolderFilePath("host", "group", "title", "lvid", "comnum")[1]);
 	}
 }
 class util {
-	public static string versionStr = "ver0.87.7";
-	public static string versionDayStr = "2018/11/10";
+	public static string versionStr = "ver0.87.9";
+	public static string versionDayStr = "2018/11/17";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	
-	public static string getRegGroup(string target, string reg, int group = 1) {
-		Regex r = new Regex(reg);
+	public static string getRegGroup(string target, string reg, int group = 1, Regex r = null) {
+		if (r == null)
+			 r = new Regex(reg);
 		var m = r.Match(target);
 //		Console.WriteLine(m.Groups.Count +""+ m.Groups[0]);
 		if (m.Groups.Count>group) {
@@ -74,11 +75,11 @@ class util {
 			string group, string title, string lvId, 
 			string communityNum, string userId, config cfg, 
 			bool isTimeShift, TimeShiftConfig tsConfig, 
-			long _openTime) {
+			long _openTime, bool isRtmp) {
 		
-		host = getOkFileName(host);
-		group = getOkFileName(group);
-		title = getOkFileName(title);
+		host = getOkFileName(host, isRtmp);
+		group = getOkFileName(group, isRtmp);
+		title = getOkFileName(title, isRtmp);
 		
 		string[] jarpath = getJarPath();
 //		util.debugWriteLine(jarpath);
@@ -97,7 +98,7 @@ class util {
 
 
 		var segmentSaveType = cfg.get("segmentSaveType");
-		if (cfg.get("IsDefaultEngine") == "false") segmentSaveType = "0";
+		if (cfg.get("IsDefaultEngine") == "false" || isRtmp) segmentSaveType = "0";
 		
 		bool _isTimeShift = isTimeShift;
 		if (cfg.get("IsDefaultEngine") == "false") _isTimeShift = false;
@@ -183,7 +184,9 @@ class util {
 		}
 		return null;
 	}
-	public static string getOkFileName(string name) {
+	public static string getOkFileName(string name, bool isRtmp) {
+		if (isRtmp) name = getOkSJisOut(name);
+		
 		string[] replaceCharacter = {"\\", "/", ":", "*", "?", "\"", "<", ">", "|"};
 		foreach (string s in replaceCharacter) {
 			name = name.Replace(s, "_");
@@ -287,9 +290,9 @@ class util {
 	public static string getLastTimeshiftFileName(string host, 
 			string group, string title, string lvId, string communityNum, 
 			string userId, config cfg, long _openTime) {
-		host = getOkFileName(host);
-		group = getOkFileName(group);
-		title = getOkFileName(title);
+		host = getOkFileName(host, false);
+		group = getOkFileName(group, false);
+		title = getOkFileName(title, false);
 		
 		string[] jarpath = getJarPath();
 //		util.debugWriteLine(jarpath);
@@ -665,6 +668,10 @@ class util {
        }
 //		w.Close();
 //		f.Close();
+	}
+	public static string getOkSJisOut(string s) {
+		var a = System.Text.Encoding.GetEncoding("shift_jis");
+		return a.GetString(a.GetBytes(s)).Replace("?", "_");
 	}
 	public static bool isLogFile = false;
 	public static List<string> debugWriteBuf = new List<string>();

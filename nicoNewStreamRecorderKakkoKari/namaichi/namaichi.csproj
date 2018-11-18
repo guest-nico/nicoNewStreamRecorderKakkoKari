@@ -199,6 +199,7 @@
       <DependentUpon>TimeShiftOptionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="util\ArgReader.cs" />
+    <Compile Include="util\RegGetter.cs" />
     <Compile Include="util\SourceInfoSerialize.cs" />
     <Compile Include="util\util.cs" />
     <Compile Include="VersionForm.cs" />
