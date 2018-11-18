@@ -47,13 +47,11 @@ namespace namaichi.rec
 			util.debugWriteLine(url + " " + lvid);
 			this.lvid = lvid;
 			
-<<<<<<< HEAD
+
 			isSubAccountHokan = true;
 			isRtmpMain = false;
-=======
-			isSubAccountHokan = false;
-			isRtmpMain = true;
->>>>>>> fee0d0e09501d3dc7af30e73409c32ddb0f932c8
+
+
 			
 			var mainT = Task.Run<int>(() => {return _rec(url, false);});
 			Task subT = null;
