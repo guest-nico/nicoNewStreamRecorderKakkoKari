@@ -83,7 +83,7 @@ public class config
 //			{"isAllBrowserMode","true"},
 			{"issecondlogin","false"},
 			
-			{"IsHokan","true"},
+			{"IsHokan","false"},
 			{"accountId2",""},
 			{"accountPass2",""},
 			{"user_session2",""},

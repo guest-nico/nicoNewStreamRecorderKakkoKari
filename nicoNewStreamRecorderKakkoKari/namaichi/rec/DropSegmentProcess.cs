@@ -86,9 +86,10 @@ namespace namaichi.rec
 				while (rfu.subGotNumTaskInfo.Count > 0) {
 					if (nti != null && rfu.subGotNumTaskInfo[0].dt > nti.dt + TimeSpan.FromSeconds(15)) break;
 					fs.Write(rfu.subGotNumTaskInfo[0].res, 0, rfu.subGotNumTaskInfo[0].res.Length);
+					rfu.subGotNumTaskInfo.Remove(rfu.subGotNumTaskInfo[0]);
 				}
 				fs.Close();
-				rfu.subGotNumTaskInfo.RemoveRange(0, i);
+//				rfu.subGotNumTaskInfo.RemoveRange(0, i);
 				return name;
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
@@ -114,14 +115,18 @@ namespace namaichi.rec
 			}
 		}
 		public void writeRemaining() {
-			rec.addDebugBuf("write remaining dropSegment process lastWrote dt " + lastWroteSegmentDt.ToString() + " lastSegmentNo " + lastSegmentNo + " now " + DateTime.Now.ToString() + " sub got list len " + rfu.subGotNumTaskInfo.Count);
-			rec.addDebugBuf("write remaing drop segment process subGotListcount " + rfu.subGotNumTaskInfo.Count);
-			
+			util.debugWriteLine("write remaining dropSegment process lastWrote dt " + lastWroteSegmentDt.ToString() + " lastSegmentNo " + lastSegmentNo + " now " + DateTime.Now.ToString() + " sub got list len " + rfu.subGotNumTaskInfo.Count);
+			util.debugWriteLine("write remaing drop segment process subGotListcount " + rfu.subGotNumTaskInfo.Count);
+			var second = (rfu.subGotNumTaskInfo.Count == 0) ? -1 : rfu.subGotNumTaskInfo[0].second;
+			if (second == -1) {
+				rm.form.addLogText("補完用データがありませんでした。");
+				return;
+			}
 			//var baseSecond = (rfu.subGotNumTaskInfo.Count > 1) ? rfu.subGotNumTaskInfo[0].second : -1;
 			var fName = writeNukeSegment();
 			//var dropTime = (baseSecond == -1) ? "最終セグメントまで" : (((nti.no - lastSegmentNo - 1) * nti.second).ToString() + "秒");
 			//var dropTime = "最終セグメントまで";
-			var msg = lastWroteSegmentDt.ToString() + "ぐらいから" + "最終セグメントまでの動画データが取得できませんでした。(" + (rfu.subGotNumTaskInfo.Count * rfu.subGotNumTaskInfo[0].second) + ")";
+			var msg = lastWroteSegmentDt.ToString() + "ぐらいから" + "最終セグメントまでの動画データが取得できませんでした。(" + (rfu.subGotNumTaskInfo.Count * second) + ")";
 			string hokanMsg = (fName == null) ? "補完設定がされていませんでした。" : 
 				((fName == "") ? "補完用データがありませんでした。" : ("補完を試みました。" + fName));
 			writeNukeInfo(msg, fName, -1, hokanMsg);

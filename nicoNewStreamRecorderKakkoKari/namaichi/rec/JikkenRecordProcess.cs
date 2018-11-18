@@ -162,6 +162,8 @@ namespace namaichi.rec
 				Task.Run(() => {
 					rr.record();
 					rm.hlsUrl = "end";
+					if (rr.isEndProgram) isEndProgram = true;
+					isRetry = false;
 				});
 			} else {
 				Task.Run(() => {record();});
@@ -246,7 +248,7 @@ namespace namaichi.rec
 	         		}
 	         		//if (!isTimeShift && jisa == TimeSpan.MinValue) {
 	         		if (jisa == TimeSpan.MinValue) {
-	         			Thread.Sleep(300);
+	         			Thread.Sleep(1000);
 	         			continue;
 	         		}
 	         		DateTime _keikaTimeStart = (!isTimeShift) ? (util.getUnixToDatetime(openTime) - jisa) : (tsHlsRequestTime - tsStartTime - jisa);
@@ -276,12 +278,12 @@ namespace namaichi.rec
 					//var keikaJikan = _keikaJikanDt.ToString("H'時間'm'分's'秒'");
 					//var programTimeStr = programTime.ToString("h'時間'm'分's'秒'");
 					rm.form.setKeikaJikan(keikaJikan, timeLabelKeika + "/" + programTimeStr, _keikaJikanDt.ToString("h'時間'mm'分'ss'秒'"), _keikaTimeStart);
-					System.Threading.Thread.Sleep(100);
+					System.Threading.Thread.Sleep(1000);
 				}
 			});
 		}
 		override public string[] getRecFilePath(long releaseTime) {
-			return jr.getRecFilePath(releaseTime);
+			return jr.getRecFilePath(releaseTime, isRtmp);
 		}
 		override public void reConnect() {
 			util.debugWriteLine("reconnect" + util.getMainSubStr(isSub, true));

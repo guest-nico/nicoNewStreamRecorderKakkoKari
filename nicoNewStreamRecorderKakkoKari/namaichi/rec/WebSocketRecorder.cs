@@ -134,6 +134,8 @@ namespace namaichi.rec
 				Task.Run(() => {
 					rr.record();
 					rm.hlsUrl = "end";
+					if (rr.isEndProgram) isEndProgram = true;
+					isRetry = false;
 				});
 			}
 			
@@ -219,7 +221,7 @@ namespace namaichi.rec
 					Thread.Sleep(500);
 			}
 			if (isWaitNextConnection) {
-				Thread.Sleep(5000);
+				Thread.Sleep(65000);
 				resetWebsocketInfo();
 				isWaitNextConnection = false;
 				addDebugBuf("after wait reset  " + " wsList " + wsList.Count);
@@ -391,10 +393,10 @@ namespace namaichi.rec
 			    || e.Message.IndexOf("\"TOO_MANY_CONNECTIONS\"") >= 0
 			    || e.Message.IndexOf("\"TEMPORARILY_CROWDED\"") >= 0
 			   	|| e.Message.IndexOf("\"CONNECT_ERROR\"") >= 0) {
-				if (e.Message.IndexOf("\"TAKEOVER\"") >= 0) rm.form.addLogText("追い出されました。" + util.getMainSubStr(isSub, true));
+				if (e.Message.IndexOf("\"TAKEOVER\"") >= 0 && !isRtmp) rm.form.addLogText("追い出されました。" + util.getMainSubStr(isSub, true));
 				
 				//SERVICE_TEMPORARILY_UNAVAILABLE 予約枠開始後に何らかの問題？
-				if (e.Message.IndexOf("\"SERVICE_TEMPORARILY_UNAVAILABLE\"") > 0) 
+				if (e.Message.IndexOf("\"SERVICE_TEMPORARILY_UNAVAILABLE\"") > 0 && !isRtmp) 
 					rm.form.addLogText("サーバーからデータの受信ができませんでした。リトライします。" + util.getMainSubStr(isSub, true));
 			
 				if (e.Message.IndexOf("\"END_PROGRAM\"") > 0) {
@@ -412,10 +414,10 @@ namespace namaichi.rec
 					isWaitNextConnection = true;
 					//{"type":"error","body":{"code":"CONNECT_ERROR"}}
 					
-					if (e.Message.IndexOf("\"TEMPORARILY_CROWDED\"") >= 0)
+					if (e.Message.IndexOf("\"TEMPORARILY_CROWDED\"") >= 0 && !isRtmp)
 						rm.form.addLogText("満員でした" + util.getMainSubStr(isSub, true));
 					
-					if (e.Message.IndexOf("\"CONNECT_ERROR\"") >= 0)
+					if (e.Message.IndexOf("\"CONNECT_ERROR\"") >= 0 && !isRtmp)
 						rm.form.addLogText("接続エラーでした" + util.getMainSubStr(isSub, true));
 					#if DEBUG
 					#endif
@@ -453,7 +455,8 @@ namespace namaichi.rec
 					addDebugBuf("notify ws close exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 				}
 				#if DEBUG
-					rm.form.addLogText("notify reconnect");
+					if (!isRtmp)
+						rm.form.addLogText("notify reconnect");
 				#endif
 				
 				
@@ -491,7 +494,7 @@ namespace namaichi.rec
 			Task.Run(() => {
 				while (rm.rfu == rfu && isRetry) {
 	         		if (isTimeShift && tsHlsRequestTime == DateTime.MinValue) {
-	         			Thread.Sleep(300);
+	         			Thread.Sleep(1000);
 	         			continue;
 	         		}       
 			        DateTime _keikaTimeStart = (!isTimeShift) ? (util.getUnixToDatetime(openTime) - jisa) : (tsHlsRequestTime - tsStartTime - jisa);
@@ -521,7 +524,7 @@ namespace namaichi.rec
 					//var keikaJikan = _keikaJikanDt.ToString("H'時間'm'分's'秒'");
 					//var programTimeStr = programTime.ToString("h'時間'm'分's'秒'");
 					rm.form.setKeikaJikan(keikaJikan, timeLabelKeika + "/" + programTimeStr, _keikaJikanDt.ToString("h'時間'mm'分'ss'秒'"), _keikaTimeStart);
-					System.Threading.Thread.Sleep(100);
+					System.Threading.Thread.Sleep(1000);
 				}
 			});
 		}
@@ -670,8 +673,8 @@ namespace namaichi.rec
 		}
 		*/
 		private void displayStatistics(string e) {
-			var visit = util.getRegGroup(e, "{\"type\":\"watch\",\"body\":{\"command\":\"statistics\",\"params\":\\[\"(\\d+?)\",\"\\d+?\"");
-			var comment = util.getRegGroup(e, "{\"type\":\"watch\",\"body\":{\"command\":\"statistics\",\"params\":\\[\"\\d+?\",\"(\\d+?)\"");
+			var visit = util.getRegGroup(e, "{\"type\":\"watch\",\"body\":{\"command\":\"statistics\",\"params\":\\[\"(\\d+?)\",\"\\d+?\"", 1, rm.regGetter.getWrVisit());
+			var comment = util.getRegGroup(e, "{\"type\":\"watch\",\"body\":{\"command\":\"statistics\",\"params\":\\[\"\\d+?\",\"(\\d+?)\"", 1, rm.regGetter.getWrComment());
 			try {
 				if (visit != null)
 					visit = int.Parse(visit).ToString("n0");
@@ -966,7 +969,7 @@ namespace namaichi.rec
 			sendCommentBuf = null;
 		}
 		override public string[] getRecFilePath(long openTime) {
-			return h5r.getRecFilePath(openTime);
+			return h5r.getRecFilePath(openTime, isRtmp);
 		}
 		private void startDebugWriter() {
 			#if !DEBUG
@@ -988,7 +991,7 @@ namespace namaichi.rec
 							debugWriteBuf.Remove(b);
 						}
 					}
-					Thread.Sleep(100);
+					Thread.Sleep(500);
 				} catch (Exception e) {
 					addDebugBuf("debug writer exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}

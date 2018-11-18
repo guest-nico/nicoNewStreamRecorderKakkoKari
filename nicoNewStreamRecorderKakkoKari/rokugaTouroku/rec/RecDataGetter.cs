@@ -99,7 +99,7 @@ namespace rokugaTouroku.rec
 				var si = new ProcessStartInfo();
 				si.FileName = "ニコ生新配信録画ツール（仮.exe";
 				//si.FileName = "nicoNewStreamRecorderKakkoKari.exe";
-				si.Arguments = "-nowindo -stdIO -IsmessageBox=false -IscloseExit=true " + ri.id + " -ts-start=" + ri.tsConfig.startTimeStr + " -ts-end=" + ri.tsConfig.endTimeSeconds + "s -ts-list=" + ri.tsConfig.isOutputUrlList.ToString().ToLower() + " -ts-list-m3u8=" + ri.tsConfig.isM3u8List.ToString().ToLower() + " -ts-list-update=" + (int)ri.tsConfig.m3u8UpdateSeconds + " -ts-list-open=" + ri.tsConfig.isOpenUrlList.ToString().ToLower() + " -ts-list-command=\"" + ri.tsConfig.openListCommand + "\" -ts-vpos-starttime=" + ri.tsConfig.isVposStartTime.ToString().ToLower() + " -afterConvertMode=" + ri.getAfterConvertTypeNum() + " -qualityRank=" + ri.qualityRank + " -IsLogFile=false";
+				si.Arguments = "-nowindo -stdIO -IsmessageBox=false -IscloseExit=true " + ri.id + " -ts-start=" + ri.tsConfig.startTimeStr + " -ts-end=" + ri.tsConfig.endTimeSeconds + "s -ts-list=" + ri.tsConfig.isOutputUrlList.ToString().ToLower() + " -ts-list-m3u8=" + ri.tsConfig.isM3u8List.ToString().ToLower() + " -ts-list-update=" + (int)ri.tsConfig.m3u8UpdateSeconds + " -ts-list-open=" + ri.tsConfig.isOpenUrlList.ToString().ToLower() + " -ts-list-command=\"" + ri.tsConfig.openListCommand + "\" -ts-vpos-starttime=" + ri.tsConfig.isVposStartTime.ToString().ToLower() + " -afterConvertMode=" + ri.getAfterConvertTypeNum() + " -qualityRank=" + ri.qualityRank + " -IsLogFile=false -std-read";
 				util.debugWriteLine(si.Arguments);
 				//si.CreateNoWindow = true;
 				si.UseShellExecute = false;
@@ -180,7 +180,8 @@ namespace rokugaTouroku.rec
 				try {
 					if (ri.state == "録画中") {
 						if (ri.process.HasExited) continue;
-						ri.process.Kill();
+						//ri.process.Kill();
+						ri.process.StandardInput.WriteLine("stop end");
 					}
 				} catch (Exception e) {
 					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);

@@ -231,15 +231,15 @@ namespace namaichi.rec
 						} else {
 							timeShiftConfig = getTimeShiftConfig(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, openTime);
 							if (timeShiftConfig == null) return 2;
-							rm.cfg.set("IsUrlList", timeShiftConfig.isOutputUrlList.ToString().ToLower());
-							rm.cfg.set("openUrlListCommand", timeShiftConfig.openListCommand);
+//							rm.cfg.set("IsUrlList", timeShiftConfig.isOutputUrlList.ToString().ToLower());
+//							rm.cfg.set("openUrlListCommand", timeShiftConfig.openListCommand);
 						}
 					}
 				
 					if (!rm.isPlayOnlyMode) {
 						util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode());
 						if (recFolderFile == null)
-							recFolderFile = getRecFilePath(openTime);
+							recFolderFile = getRecFilePath(openTime, isRtmp);
 						if (recFolderFile == null || recFolderFile[0] == null) {
 							//パスが長すぎ
 							rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);
@@ -378,7 +378,7 @@ namespace namaichi.rec
 			       			MessageBox.Show("コミュニティに入る必要があります：\nrequire_community_menber/" + lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None);
 						});
 					} catch (Exception e) {
-			       		util.showException(e);
+			       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 			       	}
 				}
 				if (bool.Parse(rm.cfg.get("IsfailExit")) && util.isShowWindow) {
@@ -392,7 +392,7 @@ namespace namaichi.rec
 
 						});
 					} catch (Exception e) {
-			       		util.showException(e);
+			       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 			       	}
 					
 				}
@@ -415,7 +415,7 @@ namespace namaichi.rec
 		       	       		}
 						});
 					} catch (Exception e) {
-			       		util.showException(e);
+			       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 			       	}
 					
 				}
@@ -459,9 +459,9 @@ namespace namaichi.rec
 	        }
 			return null;
 		}
-		public string[] getRecFilePath(long openTime) {
+		public string[] getRecFilePath(long openTime, bool isRtmp) {
 			util.debugWriteLine(openTime + " c " + recFolderFileInfo[0] + " b " + " a " + timeShiftConfig);
-			return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, isTimeShift, timeShiftConfig, openTime);
+			return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, isTimeShift, timeShiftConfig, openTime, isRtmp);
 		}
 		private TimeShiftConfig getReadyArgTsConfig(
 				TimeShiftConfig _tsConfig, string host, 
