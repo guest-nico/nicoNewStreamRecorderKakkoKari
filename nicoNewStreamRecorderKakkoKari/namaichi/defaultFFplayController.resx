@@ -226,4 +226,28 @@
         AABJRU5ErkJggg==
 </value>
   </data>
+  <data name="reconnectBtn.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAIAAABL1vtsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADr0AAA69AUf7kK0AAAFeSURBVDhP3ZQxjoJAFIahJ0C4ATGBADYSG0Vu4DG4AfYW
+        aGjopdFoCUeQingGpaER8B77784rJmHWbLb06+Z///DevJmH9Nms1+uyLNu2fb1eTdNUVZUkiWmaFH6P
+        pmnn8xk7xwzDEMexLMtkFaKq6u12g/v5fG63W8/z8EXDMMIwzLKs6zqEDocDuYUcj0eYHo+H67okcSwW
+        CxwKht1uF0URqTzL5ZLln81mJI0IggAeBkk8aZoigLbRWsTlcmH7AUk8lmXBgZPTWgSahUx934s/8Xds
+        2xb3AipitPgfqA0Vok5US5IInBTnFSf76dE3cJAkYr/fw4NMtOZh+wFul6QRvu/j1n/1oBcsA97PfD4n
+        lcNxnPv9DsPpdCJJSJ7nMCEVXvRqtdJ1Ha2ZTqd47yx/XdfvmyVhijabDSYK7jGYQEVRyPqeyWSCZ3q9
+        XjEv2ImpL4oCfwAKfySS9AWdNOs/Yv1aXgAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="reconnectOnBtn.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAIAAABL1vtsAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADr4AAA6+AepCscAAAAFDSURBVDhPYxjmQDuUIX4fQ/VXhob/DBUfGDIvMnhOYhBW
+        hcoSABwCDJGbQDoxUf0/BocGBkZGqErsgIOfIfcWSHXdbwb3PgYJA5CJXCIMSi4MfnMY6v6ApEJWQBVj
+        BxHrQYoq3jNI6ENFkIGCPchTQAVekxks8qGCKEDBAWq/tBlUBBMoOoHUQBAW4D0NJAEMNjwgagteI0S1
+        QCqAPscDgIEFtKn+Lw4jiAdi2jjCAigKlKMIAN0GdCHQnUDX4gFAnwL9i90yeDhFbYaKYAVeU0BqgDZh
+        AXAjgLGLC8hYgGIdpxpgWEBsAKYfWSuoIDIQ12UofwdSELEBKoIdhK4EKQJaBUzRSs4MnEKgoJE0BKV3
+        iP051wkEFigXOTaCchRQNSYC5kB2XqhKAkBEHZRMMy6A8gtQJzDXx+8FlQDDGDAwAAB5NoMrAOg4FgAA
+        AABJRU5ErkJggg==
+</value>
+  </data>
 </root>

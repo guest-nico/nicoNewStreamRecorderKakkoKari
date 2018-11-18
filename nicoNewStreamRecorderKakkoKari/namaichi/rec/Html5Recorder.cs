@@ -32,7 +32,10 @@ namespace namaichi.rec
 		private bool isTimeShift;
 		private TimeShiftConfig timeShiftConfig;
 		private string[] recFolderFileInfo;
+<<<<<<< HEAD
 		private bool isSub;
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 	
 		public Html5Recorder(string url, CookieContainer container, 
 				string lvid, RecordingManager rm, RecordFromUrl rfu,
@@ -201,15 +204,21 @@ namespace namaichi.rec
 				    !long.TryParse(util.getRegGroup(data, "\"endTime\":(\\d+)"), out endTime))
 						return 3;				
 				var programTime = util.getUnixToDatetime(endTime) - util.getUnixToDatetime(openTime);
+<<<<<<< HEAD
 				long _openTime = 0;
 				if (data == null || 
 				    !long.TryParse(util.getRegGroup(data, "\"openTime\":(\\d+)"), out _openTime))
 						return 3;
+<<<<<<< HEAD
 				long serverTime = 0;
 				if (data == null || 
 				    !long.TryParse(util.getRegGroup(data, "\"serverTime\":(\\d+)"), out serverTime))
 						return 3;
 				var jisa = util.getUnixToDatetime(serverTime / 1000) - DateTime.Now;
+=======
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 	//			util.debugWriteLine(data);
 				
 				//0-wsUrl 1-request
@@ -225,6 +234,7 @@ namespace namaichi.rec
 					//timeshift option
 					timeShiftConfig = null;
 					if (isTimeShift) {
+<<<<<<< HEAD
 //						if (rm.ri != null) timeShiftConfig = rm.ri.tsConfig;
 						if (rm.argTsConfig != null) {
 							timeShiftConfig = getReadyArgTsConfig(rm.argTsConfig.clone(), recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], openTime);
@@ -250,12 +260,43 @@ namespace namaichi.rec
 				
 					//display set
 					var b = new RecordStateSetter(rm.form, rm, rfu, isTimeShift, false, recFolderFile, rm.isPlayOnlyMode);
+=======
+						if (rm.ri != null) timeShiftConfig = rm.ri.tsConfig;
+						if (rm.argTsConfig != null) {
+							timeShiftConfig = getReadyArgTsConfig(rm.argTsConfig, recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], openTime);
+						} else {
+							timeShiftConfig = getTimeShiftConfig(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, openTime);
+							if (timeShiftConfig == null) return 2;
+							rm.cfg.set("IsUrlList", timeShiftConfig.isOutputUrlList.ToString().ToLower());
+							rm.cfg.set("openUrlListCommand", timeShiftConfig.openListCommand);
+						}
+					}
+				
+				
+					util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode());
+					if (recFolderFile == null)
+						recFolderFile = getRecFilePath(openTime);
+					if (recFolderFile == null || recFolderFile[0] == null) {
+						//パスが長すぎ
+						rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);
+						util.debugWriteLine("too long path? " + recFolderFile[1]);
+						return 2;
+					}
+				
+<<<<<<< HEAD
+					//display set
+					var b = new RecordStateSetter(rm.form, rm, rfu, isTimeShift, false, recFolderFile);
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 					Task.Run(() => {
 					       	b.set(data, type, recFolderFileInfo);
 						});
 					
 					//hosoInfo
+<<<<<<< HEAD
 					if (rm.cfg.get("IshosoInfo") == "true" && !rm.isPlayOnlyMode)
+=======
+					if (rm.cfg.get("IshosoInfo") == "true")
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 						Task.Run(() => {b.writeHosoInfo();});
 					
 					util.debugWriteLine("form disposed" + rm.form.IsDisposed);
@@ -272,11 +313,40 @@ namespace namaichi.rec
 					
 				} else {
 					recFolderFile = new string[]{"", "", ""};
+<<<<<<< HEAD
+=======
+=======
+				util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode());
+				if (recFolderFile == null)
+<<<<<<< HEAD
+					recFolderFile = getRecFilePath(openTime);
+=======
+					recFolderFile = getRecFilePath();
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+				if (recFolderFile == null || recFolderFile[0] == null) {
+					//パスが長すぎ
+					rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);
+					util.debugWriteLine("too long path? " + recFolderFile[1]);
+					return 2;
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 				}
 				
 				var userId = util.getRegGroup(res, "\"user\"\\:\\{\"user_id\"\\:(.+?),");
 				var isPremium = res.IndexOf("\"member_status\":\"premium\"") > -1;
+<<<<<<< HEAD
 				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, lastSegmentNo, isTimeShift, lvid, timeShiftConfig, userId, isPremium, programTime, type, _openTime, isSub, isRtmp);
+=======
+<<<<<<< HEAD
+				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, lastSegmentNo, isTimeShift, lvid, timeShiftConfig, userId, isPremium, programTime, type, _openTime, isSub);
+=======
+<<<<<<< HEAD
+				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, lastSegmentNo, isTimeShift, lvid, timeShiftConfig, userId, isPremium, programTime, type, _openTime);
+=======
+				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, lastSegmentNo, isTimeShift, lvid, timeShiftConfig, userId, isPremium, programTime);
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 				rm.wsr = wsr;
 				try {
 					isNoPermission = wsr.start();
@@ -459,20 +529,44 @@ namespace namaichi.rec
 	        }
 			return null;
 		}
+<<<<<<< HEAD
 		public string[] getRecFilePath(long openTime, bool isRtmp) {
 			util.debugWriteLine(openTime + " c " + recFolderFileInfo[0] + " b " + " a " + timeShiftConfig);
 			return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, isTimeShift, timeShiftConfig, openTime, isRtmp);
+=======
+<<<<<<< HEAD
+		public string[] getRecFilePath(long openTime, bool isRtmp) {
+			util.debugWriteLine(openTime + " c " + recFolderFileInfo[0] + " b " + " a " + timeShiftConfig);
+			return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, isTimeShift, timeShiftConfig, openTime, isRtmp);
+=======
+<<<<<<< HEAD
+		public string[] getRecFilePath(long openTime) {
+			util.debugWriteLine(openTime + " c " + recFolderFileInfo[0] + " b " + " a " + timeShiftConfig);
+			return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, isTimeShift, timeShiftConfig, openTime);
+=======
+		public string[] getRecFilePath() {
+			return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, isTimeShift, timeShiftConfig);
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
+>>>>>>> 7626697f2a2b755bc0d503452dc12ba5710be7f0
 		}
 		private TimeShiftConfig getReadyArgTsConfig(
 				TimeShiftConfig _tsConfig, string host, 
 				string group, string title, string lvId, 
 				string communityNum, string userId, 
 				long _openTime) {
+<<<<<<< HEAD
 			
 			var segmentSaveType = rm.cfg.get("segmentSaveType");
 			var lastFile = util.getLastTimeshiftFileName(host,
 					group, title, lvId, communityNum, userId, rm.cfg, _openTime);
 			util.debugWriteLine("timeshift lastfile " + lastFile + " host " + host + " title " + title);
+=======
+			var segmentSaveType = rm.cfg.get("segmentSaveType");
+			var lastFile = util.getLastTimeshiftFileName(host,
+					group, title, lvId, communityNum, userId, rm.cfg, _openTime);
+			util.debugWriteLine("timeshift lastfile " + lastFile);
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			
 			var lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType);
 			if (lastFileTime == null) {
@@ -485,7 +579,10 @@ namespace namaichi.rec
 						int.Parse(lastFileTime[2]);
 			}
 			if (_tsConfig.timeType == 0) _tsConfig.isContinueConcat = false;
+<<<<<<< HEAD
 			util.debugWriteLine("ready arg ts iscontinueconcat " + _tsConfig.isContinueConcat + " startType " + _tsConfig.timeType + " lastfiletime " + lastFileTime + " lastfile " + lastFile);
+=======
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			return _tsConfig;
 		}
 	}

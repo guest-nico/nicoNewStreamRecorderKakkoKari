@@ -88,10 +88,13 @@ namespace namaichi.rec
 			if (!bool.Parse(rm.cfg.get("IsgetComment"))) {
 //				isEnd = true;
 //				return;
+<<<<<<< HEAD
 			}
 			
 			while (jrp.firstSegmentSecond == -1) {
 				Thread.Sleep(500);
+=======
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			}
 			util.debugWriteLine("firstSegmentSecond " + jrp.firstSegmentSecond);
 			try {

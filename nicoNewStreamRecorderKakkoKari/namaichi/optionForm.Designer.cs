@@ -154,7 +154,21 @@ namespace namaichi
 			this.useDefaultRecFolderChk = new System.Windows.Forms.CheckBox();
 			this.recFolderSanshouBtn = new System.Windows.Forms.Button();
 			this.recordDirectoryText = new System.Windows.Forms.TextBox();
+<<<<<<< HEAD
 			this.isLogFileChkBox = new System.Windows.Forms.CheckBox();
+=======
+<<<<<<< HEAD
+			this.isLogFileChkBox = new System.Windows.Forms.CheckBox();
+=======
+<<<<<<< HEAD
+=======
+			this.tabPage4 = new System.Windows.Forms.TabPage();
+			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.label3 = new System.Windows.Forms.Label();
+			this.ffmpegoptText = new System.Windows.Forms.TextBox();
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
 			this.isSegmentNukeInfoChkBox = new System.Windows.Forms.CheckBox();
@@ -179,6 +193,11 @@ namespace namaichi
 			this.tabPage3.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox1.SuspendLayout();
+<<<<<<< HEAD
+=======
+			this.tabPage4.SuspendLayout();
+			this.groupBox4.SuspendLayout();
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			this.SuspendLayout();
 			// 
 			// tabControl1
@@ -190,6 +209,10 @@ namespace namaichi
 			this.tabControl1.Controls.Add(this.tabPage4);
 			this.tabControl1.Controls.Add(this.tabPage7);
 			this.tabControl1.Controls.Add(this.tabPage3);
+<<<<<<< HEAD
+=======
+			this.tabControl1.Controls.Add(this.tabPage4);
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			this.tabControl1.Location = new System.Drawing.Point(9, 10);
 			this.tabControl1.Margin = new System.Windows.Forms.Padding(2);
 			this.tabControl1.Name = "tabControl1";
@@ -217,7 +240,10 @@ namespace namaichi
 			this.groupBox6.Controls.Add(this.isCommentXML);
 			this.groupBox6.Controls.Add(this.isAutoFollowComGen);
 			this.groupBox6.Controls.Add(this.isDescriptionTagChkBox);
+<<<<<<< HEAD
 			this.groupBox6.Controls.Add(this.isSegmentNukeInfoChkBox);
+=======
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			this.groupBox6.Controls.Add(this.isHosoInfoChkBox);
 			this.groupBox6.Controls.Add(this.isTitleBarSamune);
 			this.groupBox6.Controls.Add(this.isTitleBarInfoChkBox);
@@ -270,7 +296,11 @@ namespace namaichi
 			this.isDescriptionTagChkBox.Name = "isDescriptionTagChkBox";
 			this.isDescriptionTagChkBox.Size = new System.Drawing.Size(271, 19);
 			this.isDescriptionTagChkBox.TabIndex = 2;
+<<<<<<< HEAD
 			this.isDescriptionTagChkBox.Text = "[説明]にHTMLタグを含める";
+=======
+			this.isDescriptionTagChkBox.Text = "[説明]にタグを含める";
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			this.isDescriptionTagChkBox.UseVisualStyleBackColor = true;
 			// 
 			// isHosoInfoChkBox
@@ -504,7 +534,11 @@ namespace namaichi
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(205, 13);
 			this.label8.TabIndex = 25;
+<<<<<<< HEAD
 			this.label8.Text = "(例) ffmpeg -i {i} -c copy {o}";
+=======
+			this.label8.Text = "(例) ffmpeg -i {i} -c copy \"{o}\"";
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			// 
 			// anotherEngineCommandText
 			// 
@@ -627,7 +661,11 @@ namespace namaichi
 			// 
 			// downBtn
 			// 
+<<<<<<< HEAD
 			this.downBtn.Location = new System.Drawing.Point(290, 63);
+=======
+			this.downBtn.Location = new System.Drawing.Point(184, 63);
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			this.downBtn.Name = "downBtn";
 			this.downBtn.Size = new System.Drawing.Size(42, 30);
 			this.downBtn.TabIndex = 4;
@@ -637,7 +675,11 @@ namespace namaichi
 			// 
 			// upBtn
 			// 
+<<<<<<< HEAD
 			this.upBtn.Location = new System.Drawing.Point(290, 27);
+=======
+			this.upBtn.Location = new System.Drawing.Point(184, 27);
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			this.upBtn.Name = "upBtn";
 			this.upBtn.Size = new System.Drawing.Size(42, 30);
 			this.upBtn.TabIndex = 4;
@@ -650,6 +692,7 @@ namespace namaichi
 			this.qualityListBox.FormattingEnabled = true;
 			this.qualityListBox.ItemHeight = 12;
 			this.qualityListBox.Items.AddRange(new object[] {
+<<<<<<< HEAD
 									"1. 自動(abr) (実験放送:auto)",
 									"2. 3Mbps(super_high) (実験放送:ultrahigh)",
 									"3. 2Mbps(high・高画質) (実験放送:superhigh)",
@@ -659,6 +702,17 @@ namespace namaichi
 			this.qualityListBox.Location = new System.Drawing.Point(26, 27);
 			this.qualityListBox.Name = "qualityListBox";
 			this.qualityListBox.Size = new System.Drawing.Size(247, 112);
+=======
+									"1. 自動(abr)",
+									"2. 3Mbps(super_high)",
+									"3. 2Mbps(high・高画質)",
+									"4. 1Mbps(normal・低画質)",
+									"5. 384kbps(low)",
+									"6. 192kbps(super_low)"});
+			this.qualityListBox.Location = new System.Drawing.Point(26, 27);
+			this.qualityListBox.Name = "qualityListBox";
+			this.qualityListBox.Size = new System.Drawing.Size(143, 112);
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			this.qualityListBox.TabIndex = 3;
 			// 
 			// lowRankBtn
@@ -1465,6 +1519,10 @@ namespace namaichi
 			this.recordDirectoryText.Size = new System.Drawing.Size(304, 19);
 			this.recordDirectoryText.TabIndex = 0;
 			// 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			// isLogFileChkBox
 			// 
 			this.isLogFileChkBox.Location = new System.Drawing.Point(37, 514);
@@ -1475,6 +1533,54 @@ namespace namaichi
 			this.isLogFileChkBox.UseVisualStyleBackColor = true;
 			this.isLogFileChkBox.Visible = false;
 			// 
+<<<<<<< HEAD
+=======
+=======
+<<<<<<< HEAD
+=======
+			// tabPage4
+			// 
+			this.tabPage4.Controls.Add(this.groupBox4);
+			this.tabPage4.Location = new System.Drawing.Point(4, 22);
+			this.tabPage4.Margin = new System.Windows.Forms.Padding(2);
+			this.tabPage4.Name = "tabPage4";
+			this.tabPage4.Padding = new System.Windows.Forms.Padding(2);
+			this.tabPage4.Size = new System.Drawing.Size(403, 459);
+			this.tabPage4.TabIndex = 3;
+			this.tabPage4.Text = "ffmpeg";
+			this.tabPage4.UseVisualStyleBackColor = true;
+			// 
+			// groupBox4
+			// 
+			this.groupBox4.Controls.Add(this.label3);
+			this.groupBox4.Controls.Add(this.ffmpegoptText);
+			this.groupBox4.Location = new System.Drawing.Point(5, 10);
+			this.groupBox4.Margin = new System.Windows.Forms.Padding(2);
+			this.groupBox4.Name = "groupBox4";
+			this.groupBox4.Padding = new System.Windows.Forms.Padding(2);
+			this.groupBox4.Size = new System.Drawing.Size(385, 156);
+			this.groupBox4.TabIndex = 1;
+			this.groupBox4.TabStop = false;
+			this.groupBox4.Text = "ffmpegの追加引数（上級者向け）";
+			// 
+			// label3
+			// 
+			this.label3.Location = new System.Drawing.Point(15, 45);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(230, 24);
+			this.label3.TabIndex = 1;
+			// 
+			// ffmpegoptText
+			// 
+			this.ffmpegoptText.Location = new System.Drawing.Point(4, 17);
+			this.ffmpegoptText.Margin = new System.Windows.Forms.Padding(2);
+			this.ffmpegoptText.Name = "ffmpegoptText";
+			this.ffmpegoptText.Size = new System.Drawing.Size(358, 19);
+			this.ffmpegoptText.TabIndex = 0;
+			// 
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			// button3
 			// 
 			this.button3.Location = new System.Drawing.Point(249, 500);
@@ -1547,8 +1653,15 @@ namespace namaichi
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
+<<<<<<< HEAD
+=======
+			this.tabPage4.ResumeLayout(false);
+			this.groupBox4.ResumeLayout(false);
+			this.groupBox4.PerformLayout();
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			this.ResumeLayout(false);
 		}
+<<<<<<< HEAD
 		private System.Windows.Forms.CheckBox isSegmentNukeInfoChkBox;
 		private System.Windows.Forms.CheckBox isUsePlayerChkBox;
 		private System.Windows.Forms.Button anotherCommentViewerSanshouBtn;
@@ -1557,6 +1670,8 @@ namespace namaichi
 		private System.Windows.Forms.RadioButton isAnotherCommentViewerRadioBtn;
 		private System.Windows.Forms.CheckBox isUseCommentViewerChkBox;
 		private System.Windows.Forms.GroupBox groupBox13;
+=======
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 		private System.Windows.Forms.CheckBox isHokanChkBox;
 		private System.Windows.Forms.CheckBox useSecondLoginChkBox2;
 		private System.Windows.Forms.Button btnReload2;
@@ -1630,6 +1745,12 @@ namespace namaichi
 		private System.Windows.Forms.GroupBox groupBox5;
 		private System.Windows.Forms.GroupBox groupBox6;
 		private System.Windows.Forms.CheckBox useSecondLoginChkBox;
+<<<<<<< HEAD
+=======
+		private System.Windows.Forms.TextBox ffmpegoptText;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.GroupBox groupBox4;
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		private System.Windows.Forms.Button loginBtn;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label2;
@@ -1672,6 +1793,10 @@ namespace namaichi
 		private System.Windows.Forms.TextBox recordDirectoryText;
 		private System.Windows.Forms.Button recFolderSanshouBtn;
 		private System.Windows.Forms.GroupBox groupBox1;
+<<<<<<< HEAD
+=======
+		private System.Windows.Forms.TabPage tabPage4;
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		private System.Windows.Forms.TabPage tabPage3;
 		private System.Windows.Forms.TabPage tabPage2;
 		private System.Windows.Forms.TabPage tabPage1;

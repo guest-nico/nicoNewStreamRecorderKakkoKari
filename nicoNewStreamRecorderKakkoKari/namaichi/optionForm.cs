@@ -148,7 +148,11 @@ namespace namaichi
 				{"subFolderNameType",getSubFolderNameType() + ""},
 				{"fileNameType",getFileNameType() + ""},
 				{"filenameformat",fileNameFormat},
+<<<<<<< HEAD
 				//{"ffmpegopt",ffmpegoptText.Text},
+=======
+				{"ffmpegopt",ffmpegoptText.Text},
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 				{"user_session",""},
 				{"user_session_secure",""},
 				
@@ -352,11 +356,14 @@ namespace namaichi
 			setCommentViewerType();
 			anotherPlayerPathText.Text = cfg.get("anotherPlayerPath");
 			anotherCommentViewerPathText.Text = cfg.get("anotherCommentViewerPath");
+<<<<<<< HEAD
 			isUsePlayerChkBox.Checked = bool.Parse(cfg.get("IsUsePlayer"));
 			isUseCommentViewerChkBox.Checked = bool.Parse(cfg.get("IsUseCommentViewer"));
 			isUsePlayerChkBox_UpdateAction();
 			isUseCommentViewerChkBox_UpdateAction();
 			
+=======
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			setConvertList(int.Parse(cfg.get("afterConvertMode")));
 			
         	isCookieFileSiteiChkBox.Checked = bool.Parse(cfg.get("iscookie"));
@@ -371,7 +378,11 @@ namespace namaichi
         	setFileNameType(int.Parse(cfg.get("fileNameType")));
         	fileNameFormat = cfg.get("filenameformat");
         	fileNameTypeDokujiSetteiBtn.Text = util.getFileNameTypeSample(fileNameFormat);
+<<<<<<< HEAD
         	//ffmpegoptText.Text = cfg.get("ffmpegopt");
+=======
+        	ffmpegoptText.Text = cfg.get("ffmpegopt");
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
         	
         	isHokanChkBox.Checked = bool.Parse(cfg.get("IsHokan"));
         	isSubHokanChkBox_updateAction();
@@ -795,6 +806,7 @@ namespace namaichi
 			subMailLabel2.Enabled = _checked;
 			subPassLabel2.Enabled = _checked;
 		}
+<<<<<<< HEAD
 		void IsUsePlayerChkBoxCheckedChanged(object sender, EventArgs e)
 		{
 			isUsePlayerChkBox_UpdateAction();
@@ -817,5 +829,7 @@ namespace namaichi
 			anotherCommentViewerPathText.Enabled = c && isAnotherCommentViewerRadioBtn.Checked;
 			anotherCommentViewerSanshouBtn.Enabled = c && isAnotherCommentViewerRadioBtn.Checked;
 		}
+=======
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 	}
 }

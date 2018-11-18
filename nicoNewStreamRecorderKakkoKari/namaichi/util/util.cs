@@ -21,10 +21,25 @@ class app {
 	}
 }
 class util {
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 7626697f2a2b755bc0d503452dc12ba5710be7f0
 	public static string versionStr = "ver0.87.9";
 	public static string versionDayStr = "2018/11/17";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
+=======
+<<<<<<< HEAD
+	public static string versionStr = "ver0.87.1";
+	public static string versionDayStr = "2018/10/22";
+	public static bool isShowWindow = true;
+	public static bool isStdIO = false;
+=======
+	public static string versionStr = "ver0.86.17.4 debug ";
+	public static string versionDayStr = "2018/09/28";
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 	
 	public static string getRegGroup(string target, string reg, int group = 1, Regex r = null) {
 		if (r == null)

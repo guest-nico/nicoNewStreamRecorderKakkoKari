@@ -20,13 +20,17 @@ namespace namaichi.info
 		private int h = 0;
 		private int m = 0;
 		private int s = 0;
+<<<<<<< HEAD
 		private int endH = 0;
 		private int endM = 0;
 		private int endS = 0;
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 		
 		public bool isContinueConcat = false;
 		public int timeSeconds = 0;
 		public int timeType = 0; //0-record from 1-recorded until
+<<<<<<< HEAD
 		public int endTimeSeconds = 0;
 		public bool isOutputUrlList;
 		public string openListCommand;
@@ -39,13 +43,23 @@ namespace namaichi.info
 				int h, int m, int s, int endH, int endM, int endS,
 				bool isContinueConcat, bool isOutputUrlList, 
 				string openListCommand, bool isM3u8List, 
+<<<<<<< HEAD
 				double m3u8UpdateSeconds, bool isOpenUrlList,
 				bool isVposStartTime)
+=======
+				double m3u8UpdateSeconds, bool isOpenUrlList)
+=======
+		
+		public TimeShiftConfig(int startType, 
+				int h, int m, int s, bool isContinueConcat)
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 		{
 			this.startType = startType;
 			this.h = h;
 			this.m = m;
 			this.s = s;
+<<<<<<< HEAD
 			this.endH = endH;
 			this.endM = endM;
 			this.endS = endS;
@@ -60,6 +74,7 @@ namespace namaichi.info
 			timeSeconds = h * 3600 + m * 60 + s;
 			timeType = (startType == 0) ? 0 : 1;
 			endTimeSeconds = endH * 3600 + endM * 60 + endS;
+<<<<<<< HEAD
 			if (startType == 0) this.isContinueConcat = false;
 		}
 		public TimeShiftConfig() : this(0, 0, 0, 0, 0, 0, 0, 
@@ -94,6 +109,21 @@ namespace namaichi.info
 			this.m3u8UpdateSeconds = m3u8UpdateSeconds;
 			this.isOutputUrlList = isOpenUrlList;
 			this.isVposStartTime = isVposStartTime;
+=======
+<<<<<<< HEAD
+			if (startType == 0) this.isContinueConcat = false;
+=======
+=======
+			this.isContinueConcat = isContinueConcat;
+			
+			timeSeconds = h * 3600 + m * 60 + s;
+			timeType = (startType == 0) ? 0 : 1;
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 		}
+		public TimeShiftConfig() : this(0, 0, 0, 0, 0, 0, 0, 
+				false, false, "notepad {i}", false, 5, false) {}
+			
 	}
 }

@@ -170,8 +170,18 @@
     <Compile Include="Properties\Settings.Designer.cs" />
     <Compile Include="rec\ArgConcat.cs" />
     <Compile Include="rec\AnotherEngineRecorder.cs" />
+<<<<<<< HEAD
     <Compile Include="rec\DeflateDecoder.cs" />
+<<<<<<< HEAD
     <Compile Include="rec\DropSegmentProcess.cs" />
+=======
+<<<<<<< HEAD
+    <Compile Include="rec\DropSegmentProcess.cs" />
+=======
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
     <Compile Include="rec\FFMpegConcat.cs" />
     <Compile Include="rec\FFMpegRecord.cs" />
     <Compile Include="rec\CookieGetter.cs" />
@@ -199,7 +209,14 @@
       <DependentUpon>TimeShiftOptionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="util\ArgReader.cs" />
+<<<<<<< HEAD
     <Compile Include="util\RegGetter.cs" />
+=======
+<<<<<<< HEAD
+    <Compile Include="util\RegGetter.cs" />
+=======
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
+>>>>>>> 7626697f2a2b755bc0d503452dc12ba5710be7f0
     <Compile Include="util\SourceInfoSerialize.cs" />
     <Compile Include="util\util.cs" />
     <Compile Include="VersionForm.cs" />

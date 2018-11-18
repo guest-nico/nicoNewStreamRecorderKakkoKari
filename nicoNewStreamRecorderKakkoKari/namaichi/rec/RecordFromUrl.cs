@@ -30,9 +30,13 @@ namespace namaichi.rec
 		private string lvid;
 		public List<numTaskInfo> subGotNumTaskInfo = null;
 		public string[] id = new string[2];
+<<<<<<< HEAD
 		//public bool isWaitMainTask = true;
 		private bool isSubAccountHokan = true;
 		private bool isRtmpMain = false;
+=======
+		public bool isWaitMainTask = true;
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 		
 		public RecordFromUrl(RecordingManager rm)
 		{
@@ -47,6 +51,10 @@ namespace namaichi.rec
 			util.debugWriteLine(url + " " + lvid);
 			this.lvid = lvid;
 			
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 7626697f2a2b755bc0d503452dc12ba5710be7f0
 			isSubAccountHokan = false;
 			isRtmpMain = true;
 			
@@ -69,24 +77,77 @@ namespace namaichi.rec
 				//return mainT.Result;
 				return 1;
 			}
+=======
+<<<<<<< HEAD
+			
+			var mainT = Task.Run<int>(() => {return _rec(url, false);});
+			Task subT = null;
+//			var isSecond = true;
+			if (rm.cfg.get("IsHokan") == "true") {
+				subGotNumTaskInfo = new List<numTaskInfo>();
+				subT = Task.Run(() => {_rec(url, true);});
+				
+//				mainT.Wait();
+//				subT.Wait();
+			}
+			try {
+				while (isWaitMainTask) {
+					if (mainT.Wait(1000)) break;
+				}
+				var ret = mainT.Result;
+				if (ret == 3 && subT != null) subT.Wait();
+				return ret;
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				return mainT.Result;
+			}
+=======
+			var mainT = Task.Run<int>(() => {return _rec(url, false);});
+			try {
+				mainT.Wait();
+				return mainT.Result;
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				return mainT.Result;
+			}
+			
+			
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 		}
 		
 		private int _rec(string url, bool isSub) {
 			JikkenRecorder jr = null;
+<<<<<<< HEAD
 			RtmpRecorder rr = null;
 			var isRtmp = !isSubAccountHokan && (isRtmpMain || isSub);
 			CookieContainer cc;
 			
 			var pageType = this.getPageType(url, true, isSub, ref jr, out cc);
+=======
+			var pageType = this.getPageType(url, true, isSub, ref jr);
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			if (pageType == -2 && isSub) return 2;
 			if (pageType == -1) return 2;
 			
 			//var ccInd = (isSub) ? 1 : 0;
 			var ccInd = 0;
+<<<<<<< HEAD
 			util.debugWriteLine("pagetype " + pageType + " container " + cc + " isSub " + isSub);
 			if (cc == null || cc == null) {
 				rm.form.addLogText("ログインに失敗しました。(" + util.getMainSubStr(isSub) + ")");
 				if (bool.Parse(rm.cfg.get("IsmessageBox")) && util.isShowWindow) {
+=======
+			util.debugWriteLine("pagetype " + pageType + " container " + container + " isSub " + isSub);
+			if (container == null || container[ccInd] == null) {
+<<<<<<< HEAD
+				rm.form.addLogText("ログインに失敗しました。(" + util.getMainSubStr(isSub) + ")");
+				if (bool.Parse(rm.cfg.get("IsmessageBox")) && util.isShowWindow) {
+=======
+				rm.form.addLogText("ログインに失敗しました。");
+				if (bool.Parse(rm.cfg.get("IsmessageBox"))) {
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 					if (rm.form.IsDisposed) return 2;
 					try {
 			        	rm.form.Invoke((MethodInvoker)delegate() {
@@ -107,7 +168,15 @@ namespace namaichi.rec
 			       	       		}
 							});
 						} catch (Exception e) {
+<<<<<<< HEAD
 				       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+=======
+<<<<<<< HEAD
+				       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+=======
+				       		util.showException(e);
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
+>>>>>>> 7626697f2a2b755bc0d503452dc12ba5710be7f0
 				       	}
 					}
 				}
@@ -125,7 +194,11 @@ namespace namaichi.rec
 					
 					if (isJikken) {
 						if (!jr.isLive && isSub) return 2;
+<<<<<<< HEAD
 						recResult = jr.record(res, isRtmp);
+=======
+						recResult = jr.record(res);
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 					} else {
 						var isTimeShift = pageType == 7;
 						if (isTimeShift && isSub) return 2;
@@ -147,7 +220,11 @@ namespace namaichi.rec
 								res = util.getPageSource(url, ref wc, cc);
 								
 								isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
+<<<<<<< HEAD
 								var _pageType = (isJikken) ? getJikkenPageType(res, isSub, out jr, cc) : util.getPageType(res);
+=======
+								var _pageType = (isJikken) ? getJikkenPageType(res, isSub, out jr) : util.getPageType(res);
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 								util.debugWriteLine(_pageType);
 								if (pageType != 1) continue;
 								
@@ -172,7 +249,11 @@ namespace namaichi.rec
 //							var wc = new WebHeaderCollection();
 //							res = util.getPageSource(url, ref wc, container);
 //							pageType = util.getPageType(res);
+<<<<<<< HEAD
 							pageType = getPageType(url, false, isSub, ref jr, out cc);
+=======
+							pageType = getPageType(url, false, isSub, ref jr);
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 							util.debugWriteLine("pagetype_ " + pageType);
 						} catch (Exception e) {
 							util.debugWriteLine(e.Message + " " + e.StackTrace + " ");
@@ -188,7 +269,11 @@ namespace namaichi.rec
 					util.debugWriteLine("pagetype6process");
 					System.Threading.Thread.Sleep(3000);
 					try {
+<<<<<<< HEAD
 						pageType = getPageType(url, false, isSub, ref jr, out cc);
+=======
+						pageType = getPageType(url, false, isSub, ref jr);
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 						util.debugWriteLine("pagetype_ " + pageType);
 					} catch (Exception e) {
 						util.debugWriteLine(e.Message + " " + e.StackTrace + " ");
@@ -209,7 +294,11 @@ namespace namaichi.rec
 						if (isFollow) {
 //							var wc = new WebHeaderCollection();
 //							var referer = "http://live.nicovideo.jp/gate/" + lvid;
+<<<<<<< HEAD
 							pageType = getPageAfterFollow(url, lvid, isSub, ref jr, out cc);
+=======
+							pageType = getPageAfterFollow(url, lvid, isSub, ref jr);
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 							util.debugWriteLine("pagetype_ " + pageType);
 							continue;
 						}
@@ -235,7 +324,15 @@ namespace namaichi.rec
 				       	       		}
 								});
 							} catch (Exception e) {
+<<<<<<< HEAD
 					       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+=======
+<<<<<<< HEAD
+					       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+=======
+					       		util.showException(e);
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
+>>>>>>> 7626697f2a2b755bc0d503452dc12ba5710be7f0
 					       	}
 						}
 					}
@@ -245,8 +342,11 @@ namespace namaichi.rec
 					rm.form.addLogText("この番組の視聴にはシリアル番号が必要です。(" + util.getMainSubStr(isSub) + ")");
 					return 2;
 				} else if (pageType == 9) {
+<<<<<<< HEAD
 					if (isSub) return 2;
 					
+=======
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 					rm.form.addLogText("この番組の視聴には予約が必要です。(" + util.getMainSubStr(isSub) + ")");
 					DialogResult isYoyakuRes = DialogResult.None;
 					if (util.isShowWindow) {
@@ -263,7 +363,11 @@ namespace namaichi.rec
 					if (reserveRet == "ok") {
 						rm.form.addLogText("予約しました");
 						//res = util.getPageSource(url, container, null, false, 2000);
+<<<<<<< HEAD
 						pageType = getPageType(url, false, isSub, ref jr, out cc);
+=======
+						pageType = getPageType(url, false, isSub, ref jr);
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 						continue;
 					} else {
 						rm.form.addLogText(reserveRet);
@@ -287,7 +391,10 @@ namespace namaichi.rec
 					var mes = "";
 					if (pageType == 2) mes = "この放送は終了しています。(" + util.getMainSubStr(isSub) + ")";
 					if (pageType == 3) mes = "この放送は終了しています。(" + util.getMainSubStr(isSub) + ")";
+<<<<<<< HEAD
 					if (pageType == 7 && isRtmp) mes = "この放送は終了しています。(" + util.getMainSubStr(isSub) + ")";
+=======
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 					rm.form.addLogText(mes);
 					util.debugWriteLine("pagetype " + pageType + " 終了");
 					
@@ -302,7 +409,15 @@ namespace namaichi.rec
 				       	       		}
 								});
 							} catch (Exception e) {
+<<<<<<< HEAD
 					       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+=======
+<<<<<<< HEAD
+					       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+=======
+					       		util.showException(e);
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
+>>>>>>> 7626697f2a2b755bc0d503452dc12ba5710be7f0
 					       	}
 						}
 					}
@@ -315,15 +430,23 @@ namespace namaichi.rec
             
 
 		}
+<<<<<<< HEAD
 		public int getPageType(string url, bool isLogin, bool isSub, ref JikkenRecorder jr, out CookieContainer cc) {
+=======
+		public int getPageType(string url, bool isLogin, bool isSub, ref JikkenRecorder jr) {
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			var dt = DateTime.Now;
 			var isFirst = true;
 			while (this == rm.rfu) {
 				try {
+<<<<<<< HEAD
 					if (isLogin && DateTime.Now - dt > TimeSpan.FromSeconds(15)) {
 						cc = null;
 						return -1;
 					}
+=======
+					if (isLogin && DateTime.Now - dt > TimeSpan.FromSeconds(30)) return -1;
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 					
 					var cg = new CookieGetter(rm.cfg);
 					var cgret = cg.getHtml5RecordCookie(url, isSub);
@@ -334,17 +457,33 @@ namespace namaichi.rec
 					if (id[0] != null && id[1] != null && id[0] == id[1]) {
 						rm.form.addLogText("メインアカウントとサブアカウントのIDが同じでした");
 						util.debugWriteLine("メインアカウントとサブアカウントのIDが同じでした");
+<<<<<<< HEAD
 						cc = null;
+=======
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 						return -2;
 					}
 					
 		//			cgret.ConfigureAwait(false);
 					if (cgret == null || cgret.Result[0] == null) {
 						util.debugWriteLine("cgret " + cgret);
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 						if (isLogin && isFirst) {
 							rm.form.addLogText(cg.log + "(" + util.getMainSubStr(isSub) + ")");
 //							rm.form.addLogText("ログインに失敗しました。");
 							isFirst = false;
+<<<<<<< HEAD
+=======
+=======
+						if (isLogin) {
+							rm.form.addLogText(cg.log);
+//							rm.form.addLogText("ログインに失敗しました。");
+							isLogin = false;
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 						}
 						System.Threading.Thread.Sleep(3000);
 						continue;
@@ -365,7 +504,11 @@ namespace namaichi.rec
 //					if (isRtmp) return getRtmpPageType(res, isSub, out rr, cc);
 					var isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
 					if (isJikken) {
+<<<<<<< HEAD
 						return getJikkenPageType(res, isSub, out jr, cc);
+=======
+						return getJikkenPageType(res, isSub, out jr);
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 					} else {
 						var _pageType = util.getPageType(res);
 						util.debugWriteLine(_pageType);
@@ -375,7 +518,15 @@ namespace namaichi.rec
 					util.debugWriteLine(e.Message + " " + e.StackTrace);
 					System.Threading.Thread.Sleep(3000);
 					if (isLogin) {	
+<<<<<<< HEAD
 						rm.form.addLogText("ページの取得に失敗しました。(" + util.getMainSubStr(isSub) + ")");
+=======
+<<<<<<< HEAD
+						rm.form.addLogText("ページの取得に失敗しました。(" + util.getMainSubStr(isSub) + ")");
+=======
+						rm.form.addLogText("ページの取得に失敗しました。");
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 						isLogin = false;
 					}
 				}
@@ -393,7 +544,11 @@ namespace namaichi.rec
             return (res.Headers.Get("Location") == null) ? false : true;
             */
 		}
+<<<<<<< HEAD
 		private int getPageAfterFollow(string url, string lvid, bool isSub, ref JikkenRecorder jr, out CookieContainer cc) {
+=======
+		private int getPageAfterFollow(string url, string lvid, bool isSub, ref JikkenRecorder jr) {
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			Uri TargetUrl = new Uri("http://live.nicovideo.jp");
 			Uri TargetUrl2 = new Uri("http://live2.nicovideo.jp");
 			for (int i = 0; this == rm.rfu; i++) {
@@ -431,8 +586,13 @@ namespace namaichi.rec
 					req.Referer = "http://live.nicovideo.jp/gate/" + lvid;
 					//var ccInd = (isSub) ? 1 : 0;
 					var ccInd = 0;
+<<<<<<< HEAD
 					cc.Add(TargetUrl, new Cookie("_gali", "box" + lvid));
 					if (cc != null) req.CookieContainer = cc;
+=======
+					container[ccInd].Add(TargetUrl, new Cookie("_gali", "box" + lvid));
+					if (container[ccInd] != null) req.CookieContainer = container[ccInd];
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 					var _res = (HttpWebResponse)req.GetResponse();
 					var dataStream = _res.GetResponseStream();
 					var reader = new StreamReader(dataStream);
@@ -443,10 +603,15 @@ namespace namaichi.rec
 	//				if (res.IndexOf("会場のご案内") < 0) break;
 					  
 					isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
+<<<<<<< HEAD
 					int pagetype;
 //					if (isRtmp) pagetype = getRtmpPageType(res, isSub, out rr, cc);
 					pagetype = (isJikken) ? getJikkenPageType(res, isSub, out jr, cc) : util.getPageType(res); 
 					
+=======
+					var pagetype = (isJikken) ? getJikkenPageType(res, isSub, out jr) : util.getPageType(res);
+								
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 //					var pagetype = util.getPageType(res);
 					if (!isJikken && pagetype != 5) return pagetype;
 					if (isJikken && pagetype != 4) return pagetype;
@@ -459,6 +624,7 @@ namespace namaichi.rec
 			cc = null;
 			return -1;
 		}
+<<<<<<< HEAD
 		private int getJikkenPageType(string res, bool isSub, out JikkenRecorder jr, CookieContainer cc) {
 //			if (jr == null)
 			//var ccInd = (isSub) ? 1 : 0;
@@ -473,5 +639,16 @@ namespace namaichi.rec
 			return rr.getPageType();
 		}
 		*/
+=======
+		private int getJikkenPageType(string res, bool isSub, out JikkenRecorder jr) {
+//			if (jr == null)
+			//var ccInd = (isSub) ? 1 : 0;
+			var ccInd = 0;
+			jr = new JikkenRecorder(res, lvid, container[ccInd], rm.cfg, rm, this, isSub);
+//			rm.jr = jr;
+			return jr.getPageType();
+		}
+		
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 	}
 }

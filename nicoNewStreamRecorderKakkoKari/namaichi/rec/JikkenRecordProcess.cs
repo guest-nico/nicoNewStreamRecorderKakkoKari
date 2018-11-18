@@ -78,7 +78,10 @@ namespace namaichi.rec
 		private TimeShiftCommentGetter_jikken tscgControl;
 		
 		private bool isSub;
+<<<<<<< HEAD
 		private bool isRtmp;
+=======
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 		
 		public JikkenRecordProcess( 
 				CookieContainer container, string[] recFolderFile, 
@@ -87,7 +90,11 @@ namespace namaichi.rec
 				bool isTimeShift, string lvid, 
 				TimeShiftConfig tsConfig, string userId, 
 				bool isPremium, TimeSpan programTime, 
+<<<<<<< HEAD
 				WatchingInfo wi, long releaseTime, bool isSub, bool isRtmp)
+=======
+				WatchingInfo wi, long releaseTime, bool isSub)
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 		{
 			this.container = container;
 			this.recFolderFile = recFolderFile;
@@ -107,7 +114,10 @@ namespace namaichi.rec
 			isJikken = true;
 			this.releaseTime = releaseTime;
 			this.isSub = isSub;
+<<<<<<< HEAD
 			this.isRtmp = isRtmp;
+=======
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 		}
 		public void start() {
 			util.debugWriteLine("jrp start" + util.getMainSubStr(isSub, true));
@@ -157,6 +167,7 @@ namespace namaichi.rec
 			}
 			*/
 			//util.debugWriteLine(System.Diagnostics.FileVersionInfo.GetVersionInfo("websocket4net.dll").
+<<<<<<< HEAD
 			if (isRtmp) {
 				rr = new RtmpRecorder(lvid, container, rm, rfu, isSub, recFolderFile, this, releaseTime);
 				Task.Run(() => {
@@ -171,6 +182,12 @@ namespace namaichi.rec
 			}
 			if (!isSub)
 				Task.Run(() => {getMessage();});
+=======
+			Task.Run(() => {record();});
+			if (!isSub)
+				Task.Run(() => {getMessage();});
+			Task.Run(() => {connectKeeper();});
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 		}
 		private void record() {
 			Task.Run(() => {
@@ -201,7 +218,11 @@ namespace namaichi.rec
 				}
 				
 				tscgChat.gotCommentList.AddRange(tscgControl.gotCommentList);
+<<<<<<< HEAD
 				var fName = (rm.isPlayOnlyMode) ? null : util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, true);
+=======
+				var fName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, true);
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 				TimeShiftCommentGetter_jikken.endProcess(tscgChat.gotCommentList, fName, rm.form, tscgChat.isGetXml, tscgChat.threadLine, tscgControl.threadLine, this);
 			} else connectMessageServer();
 		}
@@ -278,7 +299,15 @@ namespace namaichi.rec
 					//var keikaJikan = _keikaJikanDt.ToString("H'時間'm'分's'秒'");
 					//var programTimeStr = programTime.ToString("h'時間'm'分's'秒'");
 					rm.form.setKeikaJikan(keikaJikan, timeLabelKeika + "/" + programTimeStr, _keikaJikanDt.ToString("h'時間'mm'分'ss'秒'"), _keikaTimeStart);
+<<<<<<< HEAD
 					System.Threading.Thread.Sleep(1000);
+=======
+<<<<<<< HEAD
+					System.Threading.Thread.Sleep(1000);
+=======
+					System.Threading.Thread.Sleep(100);
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
+>>>>>>> 7626697f2a2b755bc0d503452dc12ba5710be7f0
 				}
 			});
 		}
@@ -677,9 +706,13 @@ namespace namaichi.rec
 			util.debugWriteLine("isendedprogram url " + url + " res==null " + (res == null) + util.getMainSubStr(isSub, true));
 //			util.debugWriteLine("isendedprogram res " + res + util.getMainSubStr(isSub, true));
 			if (res == null) return false;
+<<<<<<< HEAD
 			var isEnd = res.IndexOf("\"content_status\":\"closed\"") != -1 ||
 					res.IndexOf("<title>番組がみつかりません") != -1 ||
 					res.IndexOf("番組が見つかりません</span>") != -1;
+=======
+			var isEnd = res.IndexOf("\"content_status\":\"closed\"") != -1; 
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			util.debugWriteLine("is ended program " + isEnd + util.getMainSubStr(isSub, true));
 			return isEnd; 
 		}

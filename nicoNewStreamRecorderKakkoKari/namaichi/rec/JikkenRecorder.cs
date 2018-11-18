@@ -120,7 +120,11 @@ namespace namaichi.rec
 				if (!isLive) {
 					if (rm.ri != null) timeShiftConfig = rm.ri.tsConfig;
 					if (rm.argTsConfig != null) {
+<<<<<<< HEAD
 						timeShiftConfig = getReadyArgTsConfig(rm.argTsConfig.clone(), recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], releaseTime);
+=======
+						timeShiftConfig = getReadyArgTsConfig(rm.argTsConfig, recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], releaseTime);
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 					} else {
 						timeShiftConfig = getTimeShiftConfig(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, releaseTime);
 						if (timeShiftConfig == null) return 2;
@@ -128,6 +132,7 @@ namespace namaichi.rec
 					}
 				}
 				
+<<<<<<< HEAD
 				if (!rm.isPlayOnlyMode) {
 		//			util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode() + util.getMainSubStr(isSub, true));
 		//			if (recFolderFile == null)
@@ -142,12 +147,30 @@ namespace namaichi.rec
 					
 				//display set
 				var b = new RecordStateSetter(rm.form, rm, rfu, !isLive, true, recFolderFile, rm.isPlayOnlyMode);
+=======
+	//			util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode() + util.getMainSubStr(isSub, true));
+	//			if (recFolderFile == null)
+					recFolderFile = getRecFilePath(releaseTime);
+				if (recFolderFile == null || recFolderFile[0] == null) {
+					//パスが長すぎ
+					rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);
+					util.debugWriteLine("too long path? " + recFolderFile[1] + util.getMainSubStr(isSub, true));
+					return 2;
+				}
+					
+				//display set
+				var b = new RecordStateSetter(rm.form, rm, rfu, !isLive, true, recFolderFile);
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 				Task.Run(() => {
 					b.set(data, type, recFolderFileInfo);
 				});
 				
 				//hosoInfo
+<<<<<<< HEAD
 				if (rm.cfg.get("IshosoInfo") == "true" && !rm.isPlayOnlyMode)
+=======
+				if (rm.cfg.get("IshosoInfo") == "true")
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 					Task.Run(() => {b.writeHosoInfo();});
 					
 				
@@ -165,7 +188,11 @@ namespace namaichi.rec
 			var userId = util.getRegGroup(res, "\"user\"\\:\\{\"user_id\"\\:(.+?),");
 			var isPremium = res.IndexOf("\"member_status\":\"premium\"") > -1;
 			wi = new WatchingInfo(watchingRes);
+<<<<<<< HEAD
 			var jrp = new JikkenRecordProcess(container, recFolderFile, rm, rfu, this, openTime, !isLive, lvid, timeShiftConfig, userId, isPremium, programTime, wi, releaseTime, isSub, isRtmp);
+=======
+			var jrp = new JikkenRecordProcess(container, recFolderFile, rm, rfu, this, openTime, !isLive, lvid, timeShiftConfig, userId, isPremium, programTime, wi, releaseTime, isSub);
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			rm.wsr = jrp;
 			try {
 				jrp.start();
@@ -190,7 +217,15 @@ namespace namaichi.rec
 			var _res = getWatching();
 			_res.Wait();
 			watchingRes = _res.Result;
+<<<<<<< HEAD
 			util.debugWriteLine("watching res " + watchingRes + util.getMainSubStr(isSub, true));
+=======
+<<<<<<< HEAD
+			util.debugWriteLine("watching res " + watchingRes + util.getMainSubStr(isSub, true));
+=======
+			util.debugWriteLine("watching res " + watchingRes);
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			
 			var ret = getPageTypeFromWatching(watchingRes);
 			util.debugWriteLine("pagetype cas " + ret + util.getMainSubStr(isSub, true));
@@ -258,7 +293,10 @@ namespace namaichi.rec
 				http.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0");
 				http.DefaultRequestHeaders.Add("Accept", "application/json");
 				
+<<<<<<< HEAD
 //				var contentStr = "{\"actionTrackId\":\"" + actionTrackId + "\",\"streamProtocol\":\"rtmp\",\"streamQuality\":\"" + requestQuality + "\"";
+=======
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 				var contentStr = "{\"actionTrackId\":\"" + actionTrackId + "\",\"streamProtocol\":\"https\",\"streamQuality\":\"" + requestQuality + "\"";
 				if (streamCapacity != "ultrahigh") contentStr += ", \"streamCapacity\":\"" + streamCapacity + "\"";
 				if (isLive) contentStr += ",\"isBroadcaster\":" + isBroadcaster.ToString().ToLower() + ",\"isLowLatencyStream\":false";
@@ -376,9 +414,21 @@ namespace namaichi.rec
 			else if (res.IndexOf("\"errorCode\":\"INTERNAL_SERVER_ERROR\"") > -1) return 5;
 			else if (res.IndexOf("\"errorCode\":\"INVALID_PARAMETER\"") > -1) return 5;
 			else if (res.IndexOf("\"errorCode\":\"NOT_PLAYABLE\"") > -1) return 2;
+<<<<<<< HEAD
 			else if (res.IndexOf("errorMessage\":\"program ended.\"") > -1) return 2;
 //			else if (res.IndexOf("errorMessage\":\"Bad request") > -1) return 5;
 			rm.form.addLogText(res + util.getMainSubStr(isSub, true));
+=======
+<<<<<<< HEAD
+			else if (res.IndexOf("errorMessage\":\"program ended.\"") > -1) return 2;
+//			else if (res.IndexOf("errorMessage\":\"Bad request") > -1) return 5;
+			rm.form.addLogText(res + util.getMainSubStr(isSub, true));
+=======
+			else if (res.IndexOf("errorMessage\":\"program ended\"") > -1) return 2;
+//			else if (res.IndexOf("errorMessage\":\"Bad request") > -1) return 5;
+			rm.form.addLogText(res);
+>>>>>>> 1faa06f1cca31cbe7e39015381b5150050941e1c
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			return 5;
 		}
 		private string getActionTrackId() {
@@ -450,11 +500,17 @@ namespace namaichi.rec
 			var isChannel = communityNum.IndexOf("ch") > -1;
 			var url = (isChannel) ? 
 				("http://ch.nicovideo.jp/" + communityNum) :
+<<<<<<< HEAD
 				("https://com.nicovideo.jp/community/" + communityNum);
+=======
+				("https://com.nicovideo.jp/motion/" + communityNum);
+				
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			
 			var wc = new WebHeaderCollection();
 			var res = util.getPageSource(url, ref wc, container);
 			util.debugWriteLine(container.GetCookieHeader(new Uri(url)) + util.getMainSubStr(isSub, true));
+<<<<<<< HEAD
 			
 			if (res == null) {
 				url = (isChannel) ? 
@@ -462,6 +518,8 @@ namespace namaichi.rec
 					("https://com.nicovideo.jp/motion/" + communityNum);
 				res = util.getPageSource(url, ref wc, container);
 			}
+=======
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
 			if (res == null) return "com";
 			var title = (isChannel) ? 
 				util.getRegGroup(res, "<meta property=\"og\\:title\" content=\"(.+?) - ニコニコチャンネル") :
@@ -502,6 +560,12 @@ namespace namaichi.rec
 	        }
 			return null;
 		}
+<<<<<<< HEAD
+		public string[] getRecFilePath(long releaseTime, bool isRtmp) {
+			util.debugWriteLine(releaseTime + " c " + recFolderFileInfo[0] + " b " + !isLive + " a " + timeShiftConfig + util.getMainSubStr(isSub, true));
+			return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, !isLive, timeShiftConfig, releaseTime, isRtmp);
+=======
+<<<<<<< HEAD
 		public string[] getRecFilePath(long releaseTime, bool isRtmp) {
 			util.debugWriteLine(releaseTime + " c " + recFolderFileInfo[0] + " b " + !isLive + " a " + timeShiftConfig + util.getMainSubStr(isSub, true));
 			return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, !isLive, timeShiftConfig, releaseTime, isRtmp);
@@ -516,6 +580,35 @@ namespace namaichi.rec
 					group, title, lvId, communityNum, userId, rm.cfg, _openTime);
 			util.debugWriteLine("timeshift lastfile " + lastFile + util.getMainSubStr(isSub, true));
 			util.debugWriteLine("arg tsconfig vpos " + _tsConfig.isVposStartTime);
+			
+			var lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType);
+			if (lastFileTime == null) {
+				_tsConfig.timeType = 0;
+			} else {
+				if (_tsConfig.timeType == 1)
+					_tsConfig.timeSeconds = 
+						int.Parse(lastFileTime[0]) * 3600 + 
+						int.Parse(lastFileTime[1]) * 60 +
+						int.Parse(lastFileTime[2]);
+			}
+			if (_tsConfig.timeType == 0) _tsConfig.isContinueConcat = false;
+			return _tsConfig;
+=======
+		public string[] getRecFilePath(long releaseTime) {
+			util.debugWriteLine(releaseTime + " c " + recFolderFileInfo[0] + " b " + !isLive + " a " + timeShiftConfig + util.getMainSubStr(isSub, true));
+			return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, !isLive, timeShiftConfig, releaseTime);
+>>>>>>> b77d287f700e628ca0b621134ab8ddd993dbb4fc
+>>>>>>> 7626697f2a2b755bc0d503452dc12ba5710be7f0
+		}
+		private TimeShiftConfig getReadyArgTsConfig(
+				TimeShiftConfig _tsConfig, string host, 
+				string group, string title, string lvId, 
+				string communityNum, string userId, 
+				long _openTime) {
+			var segmentSaveType = rm.cfg.get("segmentSaveType");
+			var lastFile = util.getLastTimeshiftFileName(host,
+					group, title, lvId, communityNum, userId, rm.cfg, _openTime);
+			util.debugWriteLine("timeshift lastfile " + lastFile + util.getMainSubStr(isSub, true));
 			
 			var lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType);
 			if (lastFileTime == null) {

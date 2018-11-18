@@ -216,13 +216,20 @@ namespace namaichi
 			this.helpMenuItem.ShowShortcutKeys = false;
 			this.helpMenuItem.Size = new System.Drawing.Size(75, 22);
 			this.helpMenuItem.Text = "ヘルプ(&H)";
+<<<<<<< HEAD
+=======
+			this.helpMenuItem.Visible = false;
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			// 
 			// バージョン情報VToolStripMenuItem
 			// 
 			this.バージョン情報VToolStripMenuItem.Name = "バージョン情報VToolStripMenuItem";
 			this.バージョン情報VToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
 			this.バージョン情報VToolStripMenuItem.Text = "バージョン情報(&A)";
+<<<<<<< HEAD
 			this.バージョン情報VToolStripMenuItem.Click += new System.EventHandler(this.versionMenu_Click);
+=======
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			// 
 			// groupBox5
 			// 
@@ -459,6 +466,10 @@ namespace namaichi
 			// 
 			// playerBtn
 			// 
+<<<<<<< HEAD
+=======
+			this.playerBtn.Enabled = false;
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			this.playerBtn.Location = new System.Drawing.Point(397, 35);
 			this.playerBtn.Name = "playerBtn";
 			this.playerBtn.Size = new System.Drawing.Size(64, 24);
@@ -487,9 +498,14 @@ namespace namaichi
 			this.MainMenuStrip = this.menuStrip1;
 			this.Margin = new System.Windows.Forms.Padding(2);
 			this.Name = "MainForm";
+<<<<<<< HEAD
 			this.Text = "ニコ生新配信録画ツール（仮 ver0.86.15";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.form_Close);
 			this.Load += new System.EventHandler(this.mainForm_Load);
+=======
+			this.Text = "ニコ生新配信録画ツール（仮";
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.form_Close);
+>>>>>>> 41df14c80172b3ccda9b7c5de41ef417f8572ea0
 			((System.ComponentModel.ISupportInitialize)(this.samuneBox)).EndInit();
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
