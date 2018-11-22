@@ -139,7 +139,7 @@
     <Compile Include="info\RedistInfo.cs" />
     <Compile Include="info\TimeShiftConfig.cs" />
     <Compile Include="info\WatchingInfo.cs" />
-    <Compile Include="log\TraceListener.cs" />
+    <Compile Include="Logger\TraceListener.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
