@@ -21,26 +21,26 @@ halxxxx様、うつろ様、にょんにょん様、炬燵犬様
 WebSocket4Net  
 <https://github.com/kerryjiang/WebSocket4Net>  
 kerryjiang様  
-一部編集しております
-<https://github.com/guest-nico/WebSocket4Net_deflate>
+一部編集しております  
+<https://github.com/guest-nico/WebSocket4Net_deflate>  
 
 ffmpeg  
 <http://www.ffmpeg.org/>  
 GNU Lesser General Public License (_LGPL_) version 2.1  
-同梱のffplayは一部編集しております
-<https://github.com/guest-nico/settableVolumeUsingNamedPipeFFplay>
+同梱のffplayは一部編集しております  
+<https://github.com/guest-nico/settableVolumeUsingNamedPipeFFplay>  
 
 Json.NET  
 <https://www.newtonsoft.com/json>  
 
-RtmpSharp2
-<https://github.com/ashindlecker/RtmpSharp2>
-一部編集しております
-<https://github.com/guest-nico/RtmpSharp2_connectSendData>
+RtmpSharp2  
+<https://github.com/ashindlecker/RtmpSharp2>  
+一部編集しております  
+<https://github.com/guest-nico/RtmpSharp2_connectSendData>  
 
-RTMPDump
-<https://rtmpdump.mplayerhq.hu/>
-Andrej Stepanchuk, Howard Chu, The Flvstreamer Team
+RTMPDump  
+<https://rtmpdump.mplayerhq.hu/>  
+Andrej Stepanchuk, Howard Chu, The Flvstreamer Team  
 
 ## クラス
 <dl>
