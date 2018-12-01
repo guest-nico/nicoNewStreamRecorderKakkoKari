@@ -14,8 +14,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading;
-using System.Globalization;
 using WebSocket4Net;
+using System.Globalization;
 using namaichi.info;
 
 namespace namaichi.rec
@@ -56,7 +56,7 @@ namespace namaichi.rec
 		private int gotTsMaxNo = -1;
 		public bool isEndProgram = false;
 		private double allDuration = -1;
-		private bool isDefaultEngine = true;
+		private string engineMode = "0";
 		private string anotherEngineCommand = ""; 
 		private Html5Recorder h5r;
 		private double targetDuration = 2;
@@ -95,8 +95,8 @@ namespace namaichi.rec
 			this.wr = wr;
 			this.lvid = lvid;
 			this.tsConfig = tsConfig;
-			isDefaultEngine = bool.Parse(rm.cfg.get("IsDefaultEngine"));
-			if (rm.isPlayOnlyMode) isDefaultEngine = true;
+			engineMode = rm.cfg.get("EngineMode");
+			if (rm.isPlayOnlyMode) engineMode = "0";
 			anotherEngineCommand = rm.cfg.get("anotherEngineCommand");
 			targetDuration = (isTimeShift) ? 5 : 2;
 			
@@ -130,7 +130,7 @@ namespace namaichi.rec
 			rm.hlsUrl = hlsSegM3uUrl;
 			rm.form.setPlayerBtnEnable(true);
 			
-			if (isDefaultEngine) {
+			if (engineMode == "0") {
 				m3u8GetterTask = Task.Run(() => {startM3u8Getter();});
 				tsGetterTask = Task.Run(() => {startTsGetter();});
 				if (!isSub)
@@ -160,14 +160,14 @@ namespace namaichi.rec
 					break;
 				}
 				
-				if (isDefaultEngine) {
+				if (engineMode == "0") {
 					Thread.Sleep(500);
 					
 				} else {
 					var aer = new AnotherEngineRecorder(rm, rfu);
 					aer.record(hlsSegM3uUrl, recFolderFile, anotherEngineCommand);
 					
-					recFolderFile = wr.getRecFilePath(_openTime)[1];
+					recFolderFile = wr.getRecFilePath()[1];
 					setReconnecting(true);
 //					if (!isReConnecting) 
 						reConnect();
@@ -185,7 +185,7 @@ namespace namaichi.rec
 //			rm.form.setPlayerBtnEnable(false);
 			
 			
-			if (isDefaultEngine && !isPlayOnlyMode) {
+			if (engineMode == "0" && !isPlayOnlyMode) {
 				addDebugBuf("rec end shori gottslist count " + gotTsList.Count);
 				if (rfu.subGotNumTaskInfo != null)
 					addDebugBuf("subgot " + rfu.subGotNumTaskInfo.Count);
@@ -195,8 +195,14 @@ namespace namaichi.rec
 				}
 				waitForRecording();
 				
-				if (rfu.subGotNumTaskInfo != null && rfu.subGotNumTaskInfo.Count > 20) {
+				if (rfu.subGotNumTaskInfo != null)
+					addDebugBuf("rfu.subGotNumTaskInfo.count " + rfu.subGotNumTaskInfo.Count);
+				var isManyNti = (rfu.subGotNumTaskInfo == null || rfu.subGotNumTaskInfo.Count == 0) ? false : (rfu.subGotNumTaskInfo[rfu.subGotNumTaskInfo.Count - 1].dt - rfu.subGotNumTaskInfo[0].dt > TimeSpan.FromSeconds(25));
+				if (isManyNti) addDebugBuf("isManyNti subgot [0].dt + " + rfu.subGotNumTaskInfo[0].dt + " [count - 1] " + rfu.subGotNumTaskInfo[rfu.subGotNumTaskInfo.Count - 1].dt);
+//				isManyNti = true;
+				if (rfu.subGotNumTaskInfo != null && isManyNti) {
 					rm.form.addLogText("抜けセグメントの補完を試みます");
+					addDebugBuf("抜けセグメントの補完を試みます");
 					var dsp = new DropSegmentProcess(lastWroteSegmentDt, lastSegmentNo, this, recFolderFileOrigin, rfu, rm);
 					dsp.writeRemaining();
 				}
@@ -205,12 +211,14 @@ namespace namaichi.rec
 					rm.form.addLogText("録画を完了しました");
 				if (segmentSaveType == 1 && 
 				    	(rm.cfg.get("IsRenketuAfter") == "true" ||
-				     int.Parse(rm.cfg.get("afterConvertMode")) != 0)) {
+				     (int.Parse(rm.cfg.get("afterConvertMode")) != 0 &&
+				     	int.Parse(rm.cfg.get("afterConvertMode")) != 1))) {
 					addDebugBuf("renketu after");
 					renketuAfter();
 				} else if (segmentSaveType == 0) {
 					if (rm.cfg.get("IsAfterRenketuFFmpeg") == "true" || 
-					    int.Parse(rm.cfg.get("afterConvertMode")) != 0) {
+					    (int.Parse(rm.cfg.get("afterConvertMode")) != 0 &&
+					     	int.Parse(rm.cfg.get("afterConvertMode")) != 1)) {
 						var tf = new ThroughFFMpeg(rm);
 						tf.start(recFolderFile + ".ts", true);
 					}
@@ -223,12 +231,14 @@ namespace namaichi.rec
 		}
 		private void startM3u8Getter() {
 			while (rm.rfu == rfu && isRetry) {
+//				if (DateTime.Now.Minute % 5 == 0) Thread.Sleep(50 * 1000);
+				
 //				util.debugWriteLine("gc count " + GC.CollectionCount(0) + " " + GC.CollectionCount(1) + " " + GC.CollectionCount(2) + " " + GC.CollectionCount(3));
 				//util.debugWriteLine("isreconnecting " + isReConnecting);
 				addDebugBuf("isreconnecting " + isReConnecting);
 
 				if (isReConnecting) {
-					Thread.Sleep(100);
+					Thread.Sleep(500);
 				
 					continue;
 				}
@@ -262,7 +272,7 @@ namespace namaichi.rec
 				}
 				//util.debugWriteLine(res);
 				addDebugBuf(res);
-				var isTimeShiftPlaylist = util.getRegGroup(res, "(#STREAM-DURATION)") != null;
+				var isTimeShiftPlaylist = res.IndexOf("#STREAM-DURATION") > -1;
 				if (!isTimeShift && isTimeShiftPlaylist) {
 					isRetry = false;
 					return;
@@ -281,7 +291,7 @@ namespace namaichi.rec
 				//util.debugWriteLine("seg m3u8 add");
 				addDebugBuf("seg m3u8 add");
 				
-				var _targetDuration = util.getRegGroup(res, "#EXT-X-TARGETDURATION:(\\d+(\\.\\d+)*)");
+				var _targetDuration = util.getRegGroup(res, "#EXT-X-TARGETDURATION:(\\d+(\\.\\d+)*)", 1, rm.regGetter.getExtXTargetDuration());
 				if (_targetDuration != null) {
 					targetDuration = double.Parse(_targetDuration);
 				}
@@ -291,6 +301,7 @@ namespace namaichi.rec
 				//util.debugWriteLine("targetduration " + targetDuration);
 				addDebugBuf("targetduration " + targetDuration);
 			}
+			addDebugBuf("m3u8 getter end segm8u8List len " + segM3u8List.Count);
 		}
 		private void startTsGetter() {
 			while (true) {
@@ -305,6 +316,7 @@ namespace namaichi.rec
 				
 
 				foreach (var _s in new List<string>(segM3u8List)) {
+//					var sss = new List<string>(segM3u8List);
 					var baseTime = getBaseTimeFromPlaylist(_s);
 					var second = 0.0;
 					var secondSum = 0.0;
@@ -313,27 +325,27 @@ namespace namaichi.rec
 						var getFileBytesTasks = new List<Task<numTaskInfo>>();
 						foreach (var s in _s.Split('\n')) {
 							//var _second = util.getRegGroup(s, "^#EXTINF:(\\d+(\\.\\d+)*)");
-							var _second = util.getRegGroup(s, "^#EXTINF:(.+),");
+							var _second = util.getRegGroup(s, "^#EXTINF:(.+),", 1, rm.regGetter.getExtInf());
 							if (_second != null) {
 								second = double.Parse(_second, NumberStyles.Float);
 								secondSum += second;
 							}
-							var _targetDuration = util.getRegGroup(s, "^#EXT-X-TARGETDURATION:(\\d+(\\.\\d+)*)");
+							var _targetDuration = util.getRegGroup(s, "^#EXT-X-TARGETDURATION:(\\d+(\\.\\d+)*)", 1, rm.regGetter.get_ExtXTargetDuration());
 							if (_targetDuration != null) {
 								targetDuration = double.Parse(_targetDuration);
 							}
-							var _endList = util.getRegGroup(s, "^(#EXT-X-ENDLIST)$");
+							var _endList = util.getRegGroup(s, "^(#EXT-X-ENDLIST)$", 1, rm.regGetter.getExtXEndlist());
 							if (_endList != null) {
 								isRetry = false;
 								isEndProgram = true;
 							}
-							var _allDuration = util.getRegGroup(s, "^#STREAM-DURATION:(.+)");
+							var _allDuration = util.getRegGroup(s, "^#STREAM-DURATION:(.+)", 1, rm.regGetter.getStreamDuration());
 							if (_allDuration != null) {
 								allDuration = double.Parse(_allDuration, NumberStyles.Float);
 							}
 							
 							if (s.IndexOf(".ts") < 0) continue;
-							var no = int.Parse(util.getRegGroup(s, "(\\d+).ts"));
+							var no = int.Parse(util.getRegGroup(s, "(\\d+).ts", 1, rm.regGetter.getTs()));
 							var url = baseUrl + s;
 							
 							var isInList = false;
@@ -349,7 +361,7 @@ namespace namaichi.rec
 							var startTimeStr = util.getSecondsToStr(startTime);
 							
 							if (no + baseNo > lastSegmentNo && !isInList && no + baseNo > gotTsMaxNo) {
-								var fileName = util.getRegGroup(s, "(.+?.ts)\\?");
+								var fileName = util.getRegGroup(s, "(.+?.ts)\\?", 1, rm.regGetter.getTs2());
 								//fileName = util.getRegGroup(fileName, "(\\d+)") + ".ts";
 								//fileName = util.getRegGroup(fileName, "(\\d+)\\.") + "_" + startTimeStr + ".ts";
 								fileName = (no + baseNo).ToString() + "_" + startTimeStr + ".ts";
@@ -393,6 +405,7 @@ namespace namaichi.rec
 //				segM3u8List.Clear();
 				Thread.Sleep(300);
 			}
+			addDebugBuf("ts getter end gotTsList len " + gotTsList.Count);
 		}
 		
 		
@@ -449,7 +462,7 @@ namespace namaichi.rec
 						recordedNo.Add(s.fileName);
 						lastSegmentNo = s.no;
 						lastWroteSegmentDt = s.dt;
-						var fName = util.getRegGroup(s.fileName, ".*(\\\\|/|^)(.+)", 2);
+						var fName = util.getRegGroup(s.fileName, ".*(\\\\|/|^)(.+)", 2, rm.regGetter.getFName());
 //							if (fName == 
 						lastRecordedSeconds = util.getSecondsFromStr(fName);
 						
@@ -464,6 +477,7 @@ namespace namaichi.rec
 				
 				Thread.Sleep(300);
 			}
+			addDebugBuf("ts writer end gotTsList len " + gotTsList.Count);
 		}
 		private void syncCheck() {
 			while (!isEnd) {
@@ -605,7 +619,7 @@ namespace namaichi.rec
 			
 			
 			//shuusei? 
-			int min = (res == null) ? -1 : int.Parse(util.getRegGroup(res, "(\\d+).ts"));
+			int min = (res == null) ? -1 : int.Parse(util.getRegGroup(res, "(\\d+).ts", 1, rm.regGetter.getTs()));
 			//if (res == null || (lastSegmentNo != -1 && res.IndexOf(lastSegmentNo.ToString()) == -1)) {
 			if (res == null || (lastSegmentNo != -1 && min != -1 && min > lastSegmentNo)) {
 			//if (res == null) {
@@ -617,7 +631,7 @@ namespace namaichi.rec
 				
 				return 1.0;
 			}
-			var isTimeShiftPlaylist = util.getRegGroup(res, "(#STREAM-DURATION)") != null;
+			var isTimeShiftPlaylist = res.IndexOf("#STREAM-DURATION") > -1;
 			if (!isTimeShift && isTimeShiftPlaylist) {
 				return -1;
 			}
@@ -640,8 +654,8 @@ namespace namaichi.rec
 					if (_targetDuration != null) {
 						targetDuration = double.Parse(_targetDuration);
 					}
-					var _endList = util.getRegGroup(s, "(#EXT-X-ENDLIST)");
-					if (_endList != null) {
+					var isEndList = s.IndexOf("(#EXT-X-ENDLIST)") > -1;
+					if (isEndList) {
 						isRetry = false;
 						isEndProgram = true;
 					}
@@ -947,7 +961,7 @@ namespace namaichi.rec
 				rm.form.addLogText("連結処理を完了しました");
 				
 				if (rm.cfg.get("IsAfterRenketuFFmpeg") == "true" ||
-				   	int.Parse(rm.cfg.get("afterConvertMode")) != 0) {
+				   	int.Parse(rm.cfg.get("afterConvertMode")) > 1) {
 					var tf = new ThroughFFMpeg(rm);
 					tf.start(outFName, true);
 					
@@ -1044,7 +1058,7 @@ namespace namaichi.rec
 					continue;
 				}
 				
-				if (isDefaultEngine) {
+				if (engineMode == "0") {
 
 					    	targetDuration = addNewTsTaskList(hlsSegM3uUrl);
 
@@ -1054,6 +1068,8 @@ namespace namaichi.rec
 					var recStartTime = DateTime.Now;
 					var startPlayList = util.getPageSource(hlsSegM3uUrl, container, null, false, 2000);
 					
+					var _currentPos = util.getRegGroup(startPlayList, "#CURRENT-POSITION:(\\d+)");
+					wr.firstSegmentSecond = (_currentPos == null) ? 0 : double.Parse(_currentPos);
 					var aer = new AnotherEngineRecorder(rm, rfu);
 					aer.record(hlsSegM3uUrl, recFolderFile, anotherEngineCommand);
 					
@@ -1062,7 +1078,7 @@ namespace namaichi.rec
 						break;
 					}
 					
-					recFolderFile = wr.getRecFilePath(_openTime)[1];
+					recFolderFile = wr.getRecFilePath()[1];
 					 
 					setReconnecting(true);
 					reConnect();
@@ -1077,19 +1093,19 @@ namespace namaichi.rec
 			if (isEndProgram) {
 				rm.form.addLogText("録画を完了しました");
 			}
-			if (isDefaultEngine && !isPlayOnlyMode) {
+			if (engineMode == "0" && !isPlayOnlyMode) {
 				if (isEndProgram && segmentSaveType == 0) {
 					renameWithoutTime(recFolderFile);
 					
 				}
 				if (segmentSaveType == 1 &&
 				    	(rm.cfg.get("IsRenketuAfter") == "true" || 
-				     int.Parse(rm.cfg.get("afterConvertMode")) != 0)) {
+				     int.Parse(rm.cfg.get("afterConvertMode")) > 1)) {
 					addDebugBuf("renketu after");
 					renketuAfter();
 				} else if (segmentSaveType == 0) {
 					if (rm.cfg.get("IsAfterRenketuFFmpeg") == "true" || 
-				    	    int.Parse(rm.cfg.get("afterConvertMode")) != 0) {
+				    	    int.Parse(rm.cfg.get("afterConvertMode")) > 1) {
 						var tf = new ThroughFFMpeg(rm);
 						tf.start(recFolderFile + ".ts", true);
 						
@@ -1102,14 +1118,15 @@ namespace namaichi.rec
 			//most extinf second
 			var mostSegmentSecond = getMostSegmentSecond(res);
 			
-			var mediaSequenceNum = util.getRegGroup(res, "#EXT-X-MEDIA-SEQUENCE\\:(.+)");
+			var mediaSequenceNum = util.getRegGroup(res, "#EXT-X-MEDIA-SEQUENCE\\:(.+)", 1, rm.regGetter.getExtXMediaSequence());
 			if (mediaSequenceNum == null) return -1;
 			return mostSegmentSecond * double.Parse(mediaSequenceNum);
 		}
 		private double getMostSegmentSecond(string res) {
 			var timeArr = new List<double[]>();
 			foreach (var l in res.Split('\n')) {
-				var _second = util.getRegGroup(l, "^#EXTINF:(\\d+(\\.\\d+)*)");
+				//var _second = util.getRegGroup(l, "^#EXTINF:(\\d+(\\.\\d+)*)");
+				var _second = util.getRegGroup(l, "^#EXTINF:(.+),", 1, rm.regGetter.getExtInf());
 				if (_second == null) continue;
 				var inKey = false;
 				for (var i = 0; i < timeArr.Count; i++) {
@@ -1150,7 +1167,7 @@ namespace namaichi.rec
 				return;
 			#endif
 			
-			while (rm.rfu == rfu && isRetry) {
+			while ((rm.rfu == rfu && isRetry) || debugWriteBuf.Count != 0) {
 				try {
 					lock (debugWriteBuf) {
 						string[] l = new String[debugWriteBuf.Count + 10];
@@ -1192,7 +1209,7 @@ namespace namaichi.rec
 			var minNo = 0;
 			foreach (var l in res.Split('\n')) {
 				if (l.IndexOf(".ts") != -1) {
-					maxNo = int.Parse(util.getRegGroup(l, "(\\d+)\\.ts"));
+					maxNo = int.Parse(util.getRegGroup(l, "(\\d+)\\.ts", 1, rm.regGetter.getMaxNo()));
 					maxLine = l;
 					if (minNo == 0) minNo = maxNo; 
 				}
@@ -1209,13 +1226,13 @@ namespace namaichi.rec
 				addDebugBuf("nuke? minNo " + minNo + " lastSegmentNo " + lastSegmentNo + "lastGetPlayListMaxNo " + lastGetPlayListMaxNo.ToString() + " gottsmaxno " + gotTsMaxNo);
 				var inf = getMostSegmentSecond(res);
 				var ins = "";
-				var startNo = (minNo + baseNo - gotTsMaxNo > 7) ? (minNo - 7) : (gotTsMaxNo - baseNo + 1);
+				var startNo = (minNo + baseNo - gotTsMaxNo > 5) ? (minNo - 5) : (gotTsMaxNo - baseNo + 1);
 				for (var i = startNo; i < minNo; i++) {
 					if (i < 0) continue;
 					ins += "#EXTINF:" + inf + ",\n";
 					ins += maxLine.Replace(maxNo.ToString() + ".ts", i.ToString() + ".ts") + "\n";
 				}
-				res = res.Insert(res.IndexOf("EXTINF:"), ins);
+				res = res.Insert(res.IndexOf("EXTINF:") - 1, ins);
 				addDebugBuf("added list " + res);
 			}
 			lastGetPlayListMaxNo = maxNo + baseNo;
@@ -1256,18 +1273,18 @@ namespace namaichi.rec
 		}
 		private bool isAnotherEngineTimeShiftEnd(DateTime recStartTime, string hlsSegM3uUrl, string startPlayList) {
 			if (startPlayList == null) return false;
-			var lastTsNum = util.getRegGroup(startPlayList, "[\\s\\S]+\n(\\d+).ts");
+			var lastTsNum = util.getRegGroup(startPlayList, "[\\s\\S]+\n(\\d+).ts", 1, rm.regGetter.getLastTsNum());
 			if (lastTsNum == null) 
 				return false;
 			
 			double streamDuration = -1;
-			var _streamDuration = (startPlayList == null) ? null : util.getRegGroup(startPlayList, "#STREAM-DURATION:(.+)");
+			var _streamDuration = (startPlayList == null) ? null : util.getRegGroup(startPlayList, "#STREAM-DURATION:(.+)", 1, rm.regGetter.getStreamDuration());
 			if (_streamDuration == null) return false;
 			streamDuration = double.Parse(_streamDuration, NumberStyles.Float);
 			
 			TimeSpan diffTime = DateTime.Now - recStartTime;
 			addDebugBuf(diffTime.TotalMilliseconds.ToString());
-			if (int.Parse(lastTsNum) + diffTime.TotalMilliseconds > streamDuration * 1000)
+			if (int.Parse(lastTsNum) + diffTime.TotalMilliseconds + 10000 > streamDuration * 1000)
 				return true;
 			return false;
 			/*
@@ -1290,19 +1307,32 @@ namespace namaichi.rec
 			dsp.start(s);
 		}
 		private void deleteOldSubTs() {
+			var i = 0;
 			try {
 				var c = rfu.subGotNumTaskInfo.Count;
-				for (var i = 0; i < c; i++) {
-					var t = (lastFileSecond != 0) ? (lastFileSecond * 7) : 10;
-					addDebugBuf("delete old subts i " + i + " c " + c + " count " + rfu.subGotNumTaskInfo.Count);
-					if (rfu.subGotNumTaskInfo[0].dt < 
+				for (i = 0; i < c; i++) {
+					if (rfu.subGotNumTaskInfo[0] == null) {
+						rfu.subGotNumTaskInfo.RemoveAt(0);
+						#if DEBUG
+							rm.form.addLogText("delete old SubTs Exception");
+						#endif
+						continue;
+					}
+					var t = (lastFileSecond != 0) ? (lastFileSecond * 13) : 15;
+//					addDebugBuf("delete old subts i " + i + " c " + c + " count " + rfu.subGotNumTaskInfo.Count);
+					if (rfu.subGotNumTaskInfo[0].dt <
 					    	lastWroteSegmentDt - TimeSpan.FromSeconds(t)) {
-						addDebugBuf("delete subGotTs subTs.dt " + rfu.subGotNumTaskInfo[0].dt + " " + rfu.subGotNumTaskInfo[0].no + " originNo " + rfu.subGotNumTaskInfo[0].originNo + " lastWroteDt " + lastWroteSegmentDt);
+//						addDebugBuf("delete subGotTs subTs.dt " + rfu.subGotNumTaskInfo[0].dt + " " + rfu.subGotNumTaskInfo[0].no + " originNo " + rfu.subGotNumTaskInfo[0].originNo + " lastWroteDt " + lastWroteSegmentDt);
 						rfu.subGotNumTaskInfo.Remove(rfu.subGotNumTaskInfo[0]);
 					}
 				}
 			} catch (Exception e) {
 				addDebugBuf("delete old sub ts exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+				addDebugBuf("lastFileSecond " + lastFileSecond + " lastWroteSegmentDt " + lastWroteSegmentDt + " i " + i);
+				addDebugBuf("subgotNumTaskInfo.count " + rfu.subGotNumTaskInfo.Count + " [0] " + ((rfu.subGotNumTaskInfo.Count > 0) ? rfu.subGotNumTaskInfo[0] : null));
+				#if DEBUG
+					rm.form.addLogText("delete old SubTs Exception");
+				#endif
 			}
 		}
 		async Task<numTaskInfo> getFileBytesNti(numTaskInfo nti) {
@@ -1321,14 +1351,15 @@ namespace namaichi.rec
 //			});
 		}
 		private void renameWithoutTime(string name) {
-			var time = util.getRegGroup(name, "(\\d+h\\d+m\\d+s)");
-			var num = util.getRegGroup(name, "\\d+h\\d+m\\d+s_(\\d+)");
+			var time = util.getRegGroup(name, "(\\d+h\\d+m\\d+s)", 1, rm.regGetter.getRenameWithoutTime_time());
+			var num = util.getRegGroup(name, "\\d+h\\d+m\\d+s_(\\d+)", 1, rm.regGetter.getRenameWithoutTime_num());
 			
 			try {
 				for (int i = int.Parse(num); i < 1000; i++) {
 					var newName = name.Replace("_" + time + "_" + num, i.ToString());
 					if (File.Exists(newName + ".ts")) continue;
 					File.Move(recFolderFile + ".ts", newName + ".ts");
+					recFolderFile = newName;
 					return;
 				}
 			} catch (Exception e) {

@@ -61,9 +61,18 @@ namespace namaichi.rec
 		
 		int gotCount = 0;
 		public string[] sortedComments;
-		public TimeShiftConfig tsConfig;
+//		public TimeShiftConfig tsConfig;
+		private bool isVposStartTime;
+		private bool isRtmp;
 		
-		public TimeShiftCommentGetter(string message, string userId, RecordingManager rm, RecordFromUrl rfu, MainForm form, long openTime, string[] recFolderFile, string lvid, CookieContainer container, string programType, long _openTime, WebSocketRecorder rp, int startSecond, TimeShiftConfig tsConfig)
+		public TimeShiftCommentGetter(string message, 
+				string userId, RecordingManager rm, 
+				RecordFromUrl rfu, MainForm form, 
+				long openTime, string[] recFolderFile, 
+				string lvid, CookieContainer container, 
+				string programType, long _openTime, 
+				WebSocketRecorder rp, int startSecond, 
+				bool isVposStartTime, bool isRtmp)
 		{
 			this.uri = util.getRegGroup(message, "messageServerUri\"\\:\"(ws.+?)\"");
 			this.thread = util.getRegGroup(message, "threadId\":\"(.+?)\"");
@@ -80,7 +89,9 @@ namespace namaichi.rec
 			this._openTime = _openTime;
 			this.rp = rp;
 			this.startSecond = startSecond;
-			this.tsConfig = tsConfig;
+			//this.tsConfig = tsConfig;
+			this.isVposStartTime = isVposStartTime;
+			this.isRtmp = isRtmp;
 		}
 		public void save() {
 			if (!bool.Parse(rm.cfg.get("IsgetComment"))) {
@@ -111,7 +122,7 @@ namespace namaichi.rec
 			
 			Task.Run(() => {
 			    while (true) {
-					if (rp.firstSegmentSecond != -1) break;
+			         		if (rp.isRtmp || rp.firstSegmentSecond != -1) break;
 					Thread.Sleep(500);
 				}
 				connect();
@@ -206,7 +217,7 @@ namespace namaichi.rec
 			var chatinfo = new namaichi.info.ChatInfo(xml);
 			
 			XDocument chatXml;
-			var vposStartTime = (tsConfig.isVposStartTime) ? (long)rp.firstSegmentSecond : 0;
+			var vposStartTime = (isVposStartTime) ? (long)rp.firstSegmentSecond : 0;
 			if (programType == "official")
 				chatXml = chatinfo.getFormatXml(_openTime + vposStartTime);
 			else chatXml = chatinfo.getFormatXml(openTime + vposStartTime);
@@ -327,7 +338,7 @@ namespace namaichi.rec
 			rp.gotTsCommentList = chats;
 			if (!isWrite) return;
 			
-			fileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, true);
+			fileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, true, isRtmp);
 			var w = new StreamWriter(fileName + "_", false, System.Text.Encoding.UTF8);
 			if (isGetXml) {
 				w.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");

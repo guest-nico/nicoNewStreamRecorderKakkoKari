@@ -37,16 +37,26 @@ namespace namaichi.rec
 			if (isConvert) 
 				getConvertPaths(path, ref tmp, ref outPath, afterConvertMode);
 			string _command;
-			if (afterConvertMode == 8 || afterConvertMode == 6 || afterConvertMode == 9)
+			//9-mp3 7-vob -10-wav
+			if (afterConvertMode == 9 || afterConvertMode == 7 || afterConvertMode == 10)
 				_command = ("-i \"" + path + "\" \"" + tmp + "\"");
-			else if (afterConvertMode == 10)
+			//11-wma
+			else if (afterConvertMode == 11)
 				_command =  ("-i \"" + path + "\" -vn -c copy \"" + tmp + "\"");
-			else if (afterConvertMode == 12)
+			//13-ogg
+			else if (afterConvertMode == 13)
 				_command =  ("-i \"" + path + "\" -vn \"" + tmp + "\"");
-			else if (afterConvertMode == 3)
+			//4-flv
+			else if (afterConvertMode == 4)
 				_command = ("-i \"" + path + "\" -c copy -bsf:a aac_adtstoasc \"" + tmp + "\"");
 			else _command = ("-i \"" + path + "\" -c copy \"" + tmp + "\"");
 			
+			//flv
+			if (path.EndsWith("flv")) {
+				//avi
+				if (afterConvertMode == 2)
+					_command = ("-i \"" + path + "\" \"" + tmp + "\""); 
+			}
 			
 			util.debugWriteLine("through command " + _command);
 			
@@ -106,22 +116,26 @@ namespace namaichi.rec
 		}
 		private void getConvertPaths(string path, ref string tmp, ref string outPath, int afterConvertMode) {
 			var ext = "";
-			if (afterConvertMode == 0 &&
-			    rm.cfg.get("IsRenketuAfter") == "true") ext = "ts";
-			if (afterConvertMode == 1) ext = "avi";
-			if (afterConvertMode == 2) ext = "mp4";
-			if (afterConvertMode == 3) ext = "flv";
-			if (afterConvertMode == 4) ext = "mov";
-			if (afterConvertMode == 5) ext = "wmv";
-			if (afterConvertMode == 6) ext = "vob";
-			if (afterConvertMode == 7) ext = "mkv";
-			if (afterConvertMode == 8) ext = "mp3";
-			if (afterConvertMode == 9) ext = "wav";
-			if (afterConvertMode == 10) ext = "wma";
-			if (afterConvertMode == 11) ext = "aac";
-			if (afterConvertMode == 12) ext = "ogg";
-			tmp = tmp.Substring(0, tmp.Length - 2) + ext;
-			outPath = path.Substring(0, path.Length - 2) + ext;
+//			if (afterConvertMode == 0 &&
+//			    rm.cfg.get("IsRenketuAfter") == "true") ext = "ts";
+			if (afterConvertMode == 0) ext = (tmp.EndsWith("ts") ? "ts" : "flv");
+			if (afterConvertMode == 1) ext = "ts";
+			if (afterConvertMode == 2) ext = "avi";
+			if (afterConvertMode == 3) ext = "mp4";
+			if (afterConvertMode == 4) ext = "flv";
+			if (afterConvertMode == 5) ext = "mov";
+			if (afterConvertMode == 6) ext = "wmv";
+			if (afterConvertMode == 7) ext = "vob";
+			if (afterConvertMode == 8) ext = "mkv";
+			if (afterConvertMode == 9) ext = "mp3";
+			if (afterConvertMode == 10) ext = "wav";
+			if (afterConvertMode == 11) ext = "wma";
+			if (afterConvertMode == 12) ext = "aac";
+			if (afterConvertMode == 13) ext = "ogg";
+			var originalExtLen = tmp.EndsWith("ts") ? 2 : 3;
+			tmp = tmp.Substring(0, tmp.Length - originalExtLen) + ext;
+//			tmp = tmp.Substring(0, tmp.Length - 2) + ext;
+			outPath = path.Substring(0, path.Length - originalExtLen) + ext;
 		}
 		/*
 		public void stopRecording() {

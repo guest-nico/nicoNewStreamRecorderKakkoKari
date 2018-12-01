@@ -13,7 +13,6 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using System.ComponentModel;
 using SunokoLibrary.Application;
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,10 +28,12 @@ using System.Windows.Forms;
 using System.Configuration;
 using System.IO;
 using System.Text;
+using System.Threading;
 using namaichi.rec;
 using namaichi.config;
 using namaichi.play;
 using namaichi.utility;
+using SuperSocket.ClientEngine;
 
 //using System.Diagnostics.Process;
 
@@ -56,6 +57,8 @@ namespace namaichi
 		public MainForm(string[] args)
 		{
 			//args = "-nowindo -stdIO -IsmessageBox=false -IscloseExit=true lv316762771 -ts-start=1785s -ts-end=0s -ts-list=false -ts-list-m3u8=false -ts-list-update=5 -ts-list-open=false -ts-list-command=\"notepad{i}\" -ts-vpos-starttime=true -afterConvertMode=4 -qualityRank=0,1,2,3,4,5 -IsLogFile=true".Split(' ');
+			//read std
+			if (Array.IndexOf(args, "-std-read") > -1) startStdRead();
 			
 			#if !DEBUG
 				if (config.get("IsLogFile") == "true") 
@@ -63,7 +66,7 @@ namespace namaichi
 			#endif
 					
 			System.Diagnostics.Debug.Listeners.Clear();
-			System.Diagnostics.Debug.Listeners.Add(new log.TraceListener());
+			System.Diagnostics.Debug.Listeners.Add(new Logger.TraceListener());
 		    
 			InitializeComponent();
 			Text = "ニコ生新配信録画ツール（仮 " + util.versionStr;
@@ -77,7 +80,7 @@ namespace namaichi
 //			args = new string[]{"Debug_1.ts"};
 			if (Array.IndexOf(args, "-stdIO") > -1) util.isStdIO = true;
 			
-			var lv = (args.Length == 0) ? null : util.getRegGroup(args[0], "(lv\\d+)");
+			var lv = (args.Length == 0) ? null : util.getRegGroup(args[0], "(lv\\d+(,\\d+)*)");
 			util.setLog(config, lv);
 			
 			if (args.Length > 0) {
@@ -249,7 +252,7 @@ namespace namaichi
 	   		       	}
 	       		}
 	       	} catch (Exception e) {
-	       		util.showException(e);
+	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 	       	}
        		
 		}
@@ -408,7 +411,7 @@ namespace namaichi
 			   	       	}
 					});
 			} catch (Exception e) {
-				util.showException(e);
+				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 			}
 			player.setStatistics(visit, comment);
 		}
@@ -535,7 +538,7 @@ namespace namaichi
 					});
 				}
 			} catch (Exception e) {
-	       		util.showException(e);
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 	       	}
 		}
 		
@@ -556,7 +559,7 @@ namespace namaichi
 					});
 				}
 			} catch (Exception e) {
-	       		util.showException(e);
+	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 	       	}
 		}
 		
@@ -577,6 +580,23 @@ namespace namaichi
 		{
 			var v = new VersionForm();
 			v.ShowDialog();
+		}
+		void startStdRead() {
+			Task.Run(() => {
+	         	while (true) {
+					var a = Console.ReadLine();
+					if (a == null || a.Length == 0) continue;
+					if (a == "stop end") {
+						if (rec.rfu != null) {
+							rec.stopRecording();
+						}
+						while (rec.recordRunningList.Count > 0) {
+							Thread.Sleep(1000);
+						}
+						Close();
+					}
+				}
+			});
 		}
 	}
 }

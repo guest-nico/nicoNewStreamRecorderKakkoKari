@@ -120,7 +120,8 @@ namespace rokugaTouroku
 			this.afterConvertModeList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.afterConvertModeList.FormattingEnabled = true;
 			this.afterConvertModeList.Items.AddRange(new object[] {
-									"ts(変換無し)",
+									"変換無し",
+									"ts",
 									"avi",
 									"mp4",
 									"flv",
@@ -283,7 +284,7 @@ namespace rokugaTouroku
 			this.openCommunityUrlMenu.Name = "openCommunityUrlMenu";
 			this.openCommunityUrlMenu.Size = new System.Drawing.Size(220, 22);
 			this.openCommunityUrlMenu.Text = "コミュニティページへ移動";
-			this.openCommunityUrlMenu.Click += new System.EventHandler(this.openWatchUrlMenu_Click);
+			this.openCommunityUrlMenu.Click += new System.EventHandler(this.openCommunityUrlMenu_Click);
 			// 
 			// copyWatchUrlMenu
 			// 

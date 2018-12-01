@@ -21,8 +21,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3";
-	public static string versionDayStr = "2018/11/05";
+	public static string versionStr = "ver0.1.3.2";
+	public static string versionDayStr = "2018/11/25";
 	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);
@@ -94,10 +94,10 @@ class util {
 
 
 		var segmentSaveType = cfg.get("segmentSaveType");
-		if (cfg.get("IsDefaultEngine") == "false") segmentSaveType = "0";
+		if (cfg.get("EngineMode") != "0") segmentSaveType = "0";
 		
 		bool _isTimeShift = isTimeShift;
-		if (cfg.get("IsDefaultEngine") == "false") _isTimeShift = false;
+		if (cfg.get("EngineMode") != "0") _isTimeShift = false;
 
 		var name = getFileName(host, group, title, lvId, communityNum,  cfg);
 		if (name.Length > 200) name = name.Substring(0, 200);
@@ -261,10 +261,10 @@ class util {
 		}
 	public static string getOkCommentFileName(config cfg, string fName, string lvid, bool isTimeShift) {
 		var kakutyousi = (cfg.get("IsgetcommentXml") == "true") ? ".xml" : ".json";
-		var isDefaultEngine = cfg.get("IsDefaultEngine");
-		if (cfg.get("segmentSaveType") == "0" || isDefaultEngine == "false") {
+		var engineMode = cfg.get("EngineMode");
+		if (cfg.get("segmentSaveType") == "0" || engineMode != "0") {
 			//renketu
-			if (isTimeShift && isDefaultEngine == "true") {
+			if (isTimeShift && engineMode == "0") {
 				var time = getRegGroup(fName, "(_\\d+h\\d+m\\d+s_)");
 				fName = fName.Replace(time, "");
 			}

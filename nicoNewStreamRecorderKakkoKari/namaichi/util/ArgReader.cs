@@ -78,7 +78,7 @@ namespace namaichi.utility
 					//argConfig.Add(setName, setVal);
 					argConfig[setName] = setVal;
 				} else {
-					if (lvid == null) lvid = util.getRegGroup(a, "(lv\\d+)");
+					if (lvid == null) lvid = util.getRegGroup(a, "(lv\\d+(,\\d+)*)");
 				}
 			}
 		}
@@ -189,6 +189,17 @@ namespace namaichi.utility
 						return true;
 					} else {
 						form.addLogText(name + "の値が設定できませんでした(0から12の整数) " + val, false);
+						return false;
+					}
+				}
+				if (lowKeys[i] == "EngineMode") {
+					int _s = 0;
+					if (int.TryParse(val, out _s) && _s >= 0 && _s <= 2) {
+						setVal = val;
+						setName = keys[i];
+						return true;
+					} else {
+						form.addLogText(name + "の値が設定できませんでした(0から2の整数) " + val, false);
 						return false;
 					}
 				}

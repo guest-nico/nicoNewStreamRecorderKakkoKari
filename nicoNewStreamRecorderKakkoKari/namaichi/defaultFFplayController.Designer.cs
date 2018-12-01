@@ -8,6 +8,7 @@
  */
 using System.Windows.Forms;
 using System.Drawing;
+using System;
 
 namespace namaichi
 {
@@ -326,8 +327,12 @@ namespace namaichi
 		}
 		void volumeBarArea_SizeChanged(object sender, System.EventArgs e)
 		{
-			if (process == null) return;
-			volumeSet(volumeBarArea.Width);
+			try {
+//				if (process == null) return;
+				volumeSet(volumeBarArea.Width);
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+			}
 		}
 	}
 	

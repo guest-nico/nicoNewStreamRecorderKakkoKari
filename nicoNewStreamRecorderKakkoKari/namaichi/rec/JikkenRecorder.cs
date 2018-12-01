@@ -117,7 +117,7 @@ namespace namaichi.rec
 			recFolderFileInfo = getRecFolderFileInfo(data, type);
 			if (!isSub) {
 				timeShiftConfig = null;
-				if (!isLive) {
+				if (!isLive && !isRtmp) {
 					if (rm.ri != null) timeShiftConfig = rm.ri.tsConfig;
 					if (rm.argTsConfig != null) {
 						timeShiftConfig = getReadyArgTsConfig(rm.argTsConfig.clone(), recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], releaseTime);
@@ -131,7 +131,7 @@ namespace namaichi.rec
 				if (!rm.isPlayOnlyMode) {
 		//			util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode() + util.getMainSubStr(isSub, true));
 		//			if (recFolderFile == null)
-						recFolderFile = getRecFilePath(releaseTime);
+						recFolderFile = getRecFilePath(releaseTime, isRtmp);
 					if (recFolderFile == null || recFolderFile[0] == null) {
 						//パスが長すぎ
 						rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);
@@ -502,9 +502,9 @@ namespace namaichi.rec
 	        }
 			return null;
 		}
-		public string[] getRecFilePath(long releaseTime) {
+		public string[] getRecFilePath(long releaseTime, bool isRtmp) {
 			util.debugWriteLine(releaseTime + " c " + recFolderFileInfo[0] + " b " + !isLive + " a " + timeShiftConfig + util.getMainSubStr(isSub, true));
-			return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, !isLive, timeShiftConfig, releaseTime);
+			return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, !isLive, timeShiftConfig, releaseTime, isRtmp);
 		}
 		private TimeShiftConfig getReadyArgTsConfig(
 				TimeShiftConfig _tsConfig, string host, 

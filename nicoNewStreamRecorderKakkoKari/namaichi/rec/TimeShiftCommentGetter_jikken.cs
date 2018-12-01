@@ -62,9 +62,10 @@ namespace namaichi.rec
 		
 		int gotCount = 0;
 		bool isChat;
-		public TimeShiftConfig tsConfig;
+//		public TimeShiftConfig tsConfig;
+		bool isVposStartTime;
 		
-		public TimeShiftCommentGetter_jikken(JikkenRecordProcess jrp, string userId, RecordingManager rm, RecordFromUrl rfu, MainForm form, long openTime, string[] recFolderFile, string lvid, CookieContainer container, string thread, string key, bool isChat, WatchingInfo wi, int startSecond, TimeShiftConfig tsConfig)
+		public TimeShiftCommentGetter_jikken(JikkenRecordProcess jrp, string userId, RecordingManager rm, RecordFromUrl rfu, MainForm form, long openTime, string[] recFolderFile, string lvid, CookieContainer container, string thread, string key, bool isChat, WatchingInfo wi, int startSecond, bool isVposStartTime)
 		{
 			this.jrp = jrp;
 			this.uri = jrp.msUri;
@@ -82,7 +83,7 @@ namespace namaichi.rec
 			this.isChat = isChat;
 			this.wi = wi;
 			this.startSecond = startSecond;
-			this.tsConfig = tsConfig;
+			this.isVposStartTime = isVposStartTime;
 		}
 		public void save() {
 			if (!bool.Parse(rm.cfg.get("IsgetComment"))) {
@@ -90,7 +91,7 @@ namespace namaichi.rec
 //				return;
 			}
 			
-			while (jrp.firstSegmentSecond == -1) {
+			while (jrp.firstSegmentSecond == -1 && !jrp.isRtmp) {
 				Thread.Sleep(500);
 			}
 			util.debugWriteLine("firstSegmentSecond " + jrp.firstSegmentSecond);
@@ -211,7 +212,7 @@ namespace namaichi.rec
 //				var chatinfo = new namaichi.info.ChatInfo(xml);
 				
 				XDocument chatXml;
-				var vposStartTime = (tsConfig.isVposStartTime) ? (long)jrp.firstSegmentSecond : 0;
+				var vposStartTime = (isVposStartTime) ? (long)jrp.firstSegmentSecond : 0;
 				chatXml = chatinfo.getFormatXml(openTime + vposStartTime);
 	//			else chatXml = chatinfo.getFormatXml(serverTime);
 	//			util.debugWriteLine("xml " + chatXml.ToString());

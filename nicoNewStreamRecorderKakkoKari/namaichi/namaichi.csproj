@@ -60,6 +60,9 @@
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="RtmpSharp2">
+      <HintPath>..\..\..\..\..\Downloads\RtmpSharp2-master\RtmpSharp2-master\RtmpSharp2\RtmpSharp2\bin\Release\RtmpSharp2.dll</HintPath>
+    </Reference>
     <Reference Include="SnkLib.App.CookieGetter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SnkLib.App.CookieGetter.2.3.1.0\lib\net45\SnkLib.App.CookieGetter.dll</HintPath>
       <Private>True</Private>
@@ -139,7 +142,7 @@
     <Compile Include="info\RedistInfo.cs" />
     <Compile Include="info\TimeShiftConfig.cs" />
     <Compile Include="info\WatchingInfo.cs" />
-    <Compile Include="log\TraceListener.cs" />
+    <Compile Include="Logger\TraceListener.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -187,6 +190,7 @@
     <Compile Include="rec\RecordingManager.cs" />
     <Compile Include="rec\RecordStateSetter.cs" />
     <Compile Include="rec\Reservation.cs" />
+    <Compile Include="rec\RtmpClient.cs" />
     <Compile Include="rec\RtmpRecorder.cs" />
     <Compile Include="rec\ThroughFFMpeg.cs" />
     <Compile Include="rec\TimeShiftCommentGetter.cs" />
@@ -199,6 +203,7 @@
       <DependentUpon>TimeShiftOptionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="util\ArgReader.cs" />
+    <Compile Include="util\RegGetter.cs" />
     <Compile Include="util\SourceInfoSerialize.cs" />
     <Compile Include="util\util.cs" />
     <Compile Include="VersionForm.cs" />

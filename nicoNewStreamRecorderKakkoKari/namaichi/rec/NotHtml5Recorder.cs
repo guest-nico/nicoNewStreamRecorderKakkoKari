@@ -123,7 +123,7 @@ namespace namaichi.rec
 			
 	//		System.out.println(String.join(" ", util.getRecFolderFilePath(host, group, title, lvid, communityNum)));
 			
-			return util.getRecFolderFilePath(host, group, title, lvid, communityNum, userId, rm.cfg, false, null, 0);
+			return util.getRecFolderFilePath(host, group, title, lvid, communityNum, userId, rm.cfg, false, null, 0, false);
 		}
 		private string[] getGetPlayerStatusCommand(string getPlayerStatusInfo, string[] recFolderFile) {
 			//0-ticket 1-contentsUrl 2-rtmpUrl 3-lvid

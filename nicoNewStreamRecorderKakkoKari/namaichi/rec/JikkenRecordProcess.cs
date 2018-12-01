@@ -78,7 +78,7 @@ namespace namaichi.rec
 		private TimeShiftCommentGetter_jikken tscgControl;
 		
 		private bool isSub;
-		private bool isRtmp;
+		public bool isRtmp;
 		
 		public JikkenRecordProcess( 
 				CookieContainer container, string[] recFolderFile, 
@@ -157,16 +157,25 @@ namespace namaichi.rec
 			}
 			*/
 			//util.debugWriteLine(System.Diagnostics.FileVersionInfo.GetVersionInfo("websocket4net.dll").
-			if (isRtmp) {
-				rr = new RtmpRecorder(lvid, container, rm, rfu, isSub, recFolderFile, this, releaseTime);
+			if (isRtmp || 
+				    (rm.cfg.get("IsHokan") == "true" && 
+				    !rfu.isRtmpMain && !rm.isPlayOnlyMode && 
+					!rfu.isSubAccountHokan && 
+					rm.cfg.get("EngineMode") == "0" && !isTimeShift)) {
+					rfu.subGotNumTaskInfo = new List<numTaskInfo>();
+				
+				rr = new RtmpRecorder(lvid, container, rm, rfu, !isRtmp, recFolderFile, this, releaseTime);
 				Task.Run(() => {
 					rr.record();
 					rm.hlsUrl = "end";
+					if (rr.isEndProgram) isEndProgram = true;
+					isRetry = false;
 				});
-			} else {
-				Task.Run(() => {record();});
-				Task.Run(() => {connectKeeper();});
 			}
+			Task.Run(() => {connectKeeper();});
+			if (!isRtmp)
+				Task.Run(() => {record();});
+			
 			if (!isSub)
 				Task.Run(() => {getMessage();});
 		}
@@ -187,8 +196,8 @@ namespace namaichi.rec
 			//if (rm.isPlayOnlyMode) return;
 			
 			if (isTimeShift) {
-				tscgChat = new TimeShiftCommentGetter_jikken(this, userId, rm, rfu, rm.form, openTime, recFolderFile, lvid, container, wi.chatThread, wi.chatKey, true, wi, tsConfig.timeSeconds, tsConfig);
-				tscgControl = new TimeShiftCommentGetter_jikken(this, userId, rm, rfu, rm.form, openTime, recFolderFile, lvid, container, wi.controlThread, wi.controlKey, false, wi, tsConfig.timeSeconds, tsConfig);
+				tscgChat = new TimeShiftCommentGetter_jikken(this, userId, rm, rfu, rm.form, openTime, recFolderFile, lvid, container, wi.chatThread, wi.chatKey, true, wi, (isRtmp) ? 0 : tsConfig.timeSeconds, (isRtmp) ? false : tsConfig.isVposStartTime);
+				tscgControl = new TimeShiftCommentGetter_jikken(this, userId, rm, rfu, rm.form, openTime, recFolderFile, lvid, container, wi.controlThread, wi.controlKey, false, wi, (isRtmp) ? 0 : tsConfig.timeSeconds, (isRtmp) ? false : tsConfig.isVposStartTime);
 				tscgChat.save();
 				tscgControl.save();
 //				if (rm.isPlayOnlyMode) return;
@@ -199,7 +208,7 @@ namespace namaichi.rec
 				}
 				
 				tscgChat.gotCommentList.AddRange(tscgControl.gotCommentList);
-				var fName = (rm.isPlayOnlyMode) ? null : util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, true);
+				var fName = (rm.isPlayOnlyMode) ? null : util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, true, isRtmp);
 				TimeShiftCommentGetter_jikken.endProcess(tscgChat.gotCommentList, fName, rm.form, tscgChat.isGetXml, tscgChat.threadLine, tscgControl.threadLine, this);
 			} else connectMessageServer();
 		}
@@ -220,7 +229,7 @@ namespace namaichi.rec
 		private void connectKeeper() {
 			var start = DateTime.Now;
 			while (rm.rfu == rfu && isRetry) {
-				Thread.Sleep(500);
+				Thread.Sleep(1000);
 				if (DateTime.Now - start < 
 				    TimeSpan.FromMilliseconds((double)wi.expireIn)) continue;
 				start = DateTime.Now;
@@ -231,6 +240,7 @@ namespace namaichi.rec
 					if (w.Result == null) continue;
 					wi.setPutWatching(w.Result);
 					rm.form.setStatistics(wi.visit, wi.comment);
+					
 				} catch (Exception e) {
 					util.debugWriteLine("watching put exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
@@ -246,7 +256,7 @@ namespace namaichi.rec
 	         		}
 	         		//if (!isTimeShift && jisa == TimeSpan.MinValue) {
 	         		if (jisa == TimeSpan.MinValue) {
-	         			Thread.Sleep(300);
+	         			Thread.Sleep(1000);
 	         			continue;
 	         		}
 	         		DateTime _keikaTimeStart = (!isTimeShift) ? (util.getUnixToDatetime(openTime) - jisa) : (tsHlsRequestTime - tsStartTime - jisa);
@@ -276,12 +286,13 @@ namespace namaichi.rec
 					//var keikaJikan = _keikaJikanDt.ToString("H'時間'm'分's'秒'");
 					//var programTimeStr = programTime.ToString("h'時間'm'分's'秒'");
 					rm.form.setKeikaJikan(keikaJikan, timeLabelKeika + "/" + programTimeStr, _keikaJikanDt.ToString("h'時間'mm'分'ss'秒'"), _keikaTimeStart);
-					System.Threading.Thread.Sleep(100);
+					System.Threading.Thread.Sleep(1000);
 				}
 			});
 		}
-		override public string[] getRecFilePath(long releaseTime) {
-			return jr.getRecFilePath(releaseTime);
+		//override public string[] getRecFilePath(long releaseTime) {
+		override public string[] getRecFilePath() {
+			return jr.getRecFilePath(releaseTime, isRtmp);
 		}
 		override public void reConnect() {
 			util.debugWriteLine("reconnect" + util.getMainSubStr(isSub, true));
@@ -343,7 +354,7 @@ namespace namaichi.rec
 			}			
 			try {
 				if (bool.Parse(rm.cfg.get("IsgetComment")) && commentSW == null && !rm.isPlayOnlyMode) {
-					var commentFileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, isTimeShift);
+					var commentFileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, isTimeShift, isRtmp);
 					
 					var isExists = File.Exists(commentFileName);
 					commentSW = new StreamWriter(commentFileName, false, System.Text.Encoding.UTF8);

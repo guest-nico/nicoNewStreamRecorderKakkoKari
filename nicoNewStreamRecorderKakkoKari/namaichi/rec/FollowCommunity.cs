@@ -111,7 +111,7 @@ namespace namaichi.rec
 						try {
 							stream.Write(postDataBytes, 0, postDataBytes.Length);
 						} catch (Exception e) {
-				       		util.showException(e);
+				       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 				       	}
 					}
 	//					stream.Close();

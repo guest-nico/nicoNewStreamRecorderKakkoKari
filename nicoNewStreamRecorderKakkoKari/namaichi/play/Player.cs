@@ -13,6 +13,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using System.IO;
+using System.IO.Pipes;
 
 using namaichi.rec;
 using namaichi;
@@ -42,7 +44,9 @@ namespace namaichi.play
 		
 		private bool isUsePlayer = false;
 		private bool isUseCommentViewer = false;
-			
+		
+		public StreamWriter pipeWriter;
+		
 		public Player(MainForm form, config.config config)
 		{
 			this.form = form;
@@ -109,8 +113,16 @@ namespace namaichi.play
 		         			if (isDefaultPlayer) ctrlFormClose();
 		         			break;
 				        }
+						if (form.rec.hlsUrl == "timeshift") {
+							form.addLogText("RTMPのタイムシフト録画中はツールでの視聴ができません。");
+		         			form.rec.hlsUrl = null;
+		         			stopPlaying(true, true);
+		         			if (isDefaultPlayer) ctrlFormClose();
+		         			break;
+				        }
+						
 						if (!isPlayable() && !isStarted) {
-							Thread.Sleep(300);
+							Thread.Sleep(500);
 							continue;
 						} else isStarted = true;
 						
@@ -118,6 +130,7 @@ namespace namaichi.play
 						
 						//isRecording = true;
 						sendPlayCommand(isDefaultPlayer);
+						while (process == null) Thread.Sleep(500);
 						
 						try {
 							while (true) {
@@ -173,7 +186,7 @@ namespace namaichi.play
 					playCommand("ffplay", form.rec.hlsUrl + " -autoexit -volume " + volume);
 				else 
 //					playCommandStd("MPC-HC.1.7.13.x86/mpc-hc.exe", "-");
-					playCommandStd("ffplay.exe", form.rec.hlsUrl);
+					Task.Run(() => playCommandStd("ffplay.exe", form.rec.hlsUrl + " -autoexit -volume " + volume));
 				
 				util.debugWriteLine("kia 0 " + ctrl);
 				form.Invoke((MethodInvoker)delegate() {
@@ -255,6 +268,8 @@ namespace namaichi.play
 			
 			try {
 				process.Start();
+				Thread.Sleep(1000);
+				setPipeName(process);
 				
 			} catch (Exception ee) {
 				util.debugWriteLine(ee.Message + ee.StackTrace);
@@ -275,6 +290,7 @@ namespace namaichi.play
 				process.StartInfo = si;
 				process.Start();
 				
+				
 				process2 = new Process();
 				var ffmpegSi = new ProcessStartInfo();
 //				ffmpegSi.FileName = "vlc.exe";
@@ -294,6 +310,9 @@ namespace namaichi.play
 				ffmpegSi.CreateNoWindow = true;
 				process2.StartInfo = ffmpegSi;
 				process2.Start();
+				Thread.Sleep(1000);
+				if (isDefaultPlayer)
+					setPipeName(process2);
 				
 				var o = process.StandardOutput.BaseStream;
 				var _is = process2.StandardInput.BaseStream;
@@ -405,6 +424,7 @@ namespace namaichi.play
 			}
 		}
 		public void setCtrlFormKeikaJikan(string s) {
+			if (ctrl == null && commentForm == null) return;
 			if (ctrl != null) ctrl.setTimeLabel(s);
 			
 			if (util.getRegGroup(s, "(\\d+:\\d+)/") != null) {
@@ -446,6 +466,20 @@ namespace namaichi.play
 				return false;
 			}
 			return true;
+		}
+		private void setPipeName(Process p) {
+			var pn = ((int)(new Random().NextDouble() * 10000)).ToString();
+			p.StandardInput.WriteLine(pn);
+			p.StandardInput.Flush();
+			Thread.Sleep(1000);
+			var server = new NamedPipeClientStream(pn);
+			server.Connect();
+		    pipeWriter = new StreamWriter(server);
+			
+	//                while (server.IsConnected) {
+//        	pipeWriter.WriteLine();
+//        	pipeWriter.Flush();
+			
 		}
 	}
 }

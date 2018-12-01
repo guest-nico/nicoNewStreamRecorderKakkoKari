@@ -138,7 +138,11 @@ namespace namaichi
 		private void volumeSet(int v) {
 			//v 0-100 mute -10
 			try {
-				process.StandardInput.WriteLine(v.ToString());
+				//process.StandardInput.WriteLine(v.ToString());
+//				util.debugWriteLine("volume set " + v);
+				while (player == null || player.pipeWriter == null) System.Threading.Thread.Sleep(1000);
+				player.pipeWriter.WriteLine(v.ToString());
+				player.pipeWriter.Flush();
 			} catch (Exception e) {
 				util.debugWriteLine("volume set exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}

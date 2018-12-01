@@ -115,7 +115,9 @@ namespace namaichi.rec
 			endTimeDt = getUnixToDt(_endTime);
 			endTime = endTimeDt.ToString("MM/dd(ddd) HH:mm:ss");
 			
-			samuneUrl = util.getRegGroup(data, "\"program\".+?\"thumbnail\":{\"imageUrl\":\"(.+?)\"");
+			//samuneUrl = util.getRegGroup(data, "\"program\".+?\"thumbnail\":{\"imageUrl\":\"(.+?)\"");
+			samuneUrl = util.getRegGroup(data, "\"thumbnailImageUrl\":\"(.+?)\"");
+			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "\"small\":\"(.+?)\"");
 			tag = getTag(data);
 			form.setInfo(host, hostUrl, group, groupUrl, title, url, gentei, openTime, description);
 		}

@@ -43,6 +43,7 @@ namespace namaichi
 			this.isCommentXML = new System.Windows.Forms.RadioButton();
 			this.isAutoFollowComGen = new System.Windows.Forms.CheckBox();
 			this.isDescriptionTagChkBox = new System.Windows.Forms.CheckBox();
+			this.isSegmentNukeInfoChkBox = new System.Windows.Forms.CheckBox();
 			this.isHosoInfoChkBox = new System.Windows.Forms.CheckBox();
 			this.isTitleBarSamune = new System.Windows.Forms.CheckBox();
 			this.isTitleBarInfoChkBox = new System.Windows.Forms.CheckBox();
@@ -64,6 +65,7 @@ namespace namaichi
 			this.label4 = new System.Windows.Forms.Label();
 			this.isAfterRenketuFFmpegChkBox = new System.Windows.Forms.CheckBox();
 			this.groupBox10 = new System.Windows.Forms.GroupBox();
+			this.isRtmpEngine = new System.Windows.Forms.RadioButton();
 			this.label8 = new System.Windows.Forms.Label();
 			this.anotherEngineCommandText = new System.Windows.Forms.TextBox();
 			this.label5 = new System.Windows.Forms.Label();
@@ -157,7 +159,6 @@ namespace namaichi
 			this.isLogFileChkBox = new System.Windows.Forms.CheckBox();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
-			this.isSegmentNukeInfoChkBox = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox6.SuspendLayout();
@@ -272,6 +273,16 @@ namespace namaichi
 			this.isDescriptionTagChkBox.TabIndex = 2;
 			this.isDescriptionTagChkBox.Text = "[説明]にHTMLタグを含める";
 			this.isDescriptionTagChkBox.UseVisualStyleBackColor = true;
+			// 
+			// isSegmentNukeInfoChkBox
+			// 
+			this.isSegmentNukeInfoChkBox.Location = new System.Drawing.Point(19, 333);
+			this.isSegmentNukeInfoChkBox.Name = "isSegmentNukeInfoChkBox";
+			this.isSegmentNukeInfoChkBox.Size = new System.Drawing.Size(271, 19);
+			this.isSegmentNukeInfoChkBox.TabIndex = 2;
+			this.isSegmentNukeInfoChkBox.Text = "セグメントが抜けた際にテキストに出力する";
+			this.isSegmentNukeInfoChkBox.UseVisualStyleBackColor = true;
+			this.isSegmentNukeInfoChkBox.CheckedChanged += new System.EventHandler(this.isHosoInfoChkBox_CheckedChanged);
 			// 
 			// isHosoInfoChkBox
 			// 
@@ -420,7 +431,7 @@ namespace namaichi
 			// groupBox4
 			// 
 			this.groupBox4.Controls.Add(this.afterConvertModeList);
-			this.groupBox4.Location = new System.Drawing.Point(5, 355);
+			this.groupBox4.Location = new System.Drawing.Point(5, 383);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(385, 52);
 			this.groupBox4.TabIndex = 2;
@@ -433,7 +444,8 @@ namespace namaichi
 			this.afterConvertModeList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.afterConvertModeList.FormattingEnabled = true;
 			this.afterConvertModeList.Items.AddRange(new object[] {
-									"ts(変換無し)",
+									"変換無し",
+									"ts",
 									"avi",
 									"mp4",
 									"flv",
@@ -455,7 +467,7 @@ namespace namaichi
 			// 
 			this.groupBox9.Controls.Add(this.label4);
 			this.groupBox9.Controls.Add(this.isAfterRenketuFFmpegChkBox);
-			this.groupBox9.Location = new System.Drawing.Point(5, 248);
+			this.groupBox9.Location = new System.Drawing.Point(5, 276);
 			this.groupBox9.Name = "groupBox9";
 			this.groupBox9.Size = new System.Drawing.Size(385, 101);
 			this.groupBox9.TabIndex = 1;
@@ -477,11 +489,12 @@ namespace namaichi
 			this.isAfterRenketuFFmpegChkBox.Name = "isAfterRenketuFFmpegChkBox";
 			this.isAfterRenketuFFmpegChkBox.Size = new System.Drawing.Size(169, 18);
 			this.isAfterRenketuFFmpegChkBox.TabIndex = 0;
-			this.isAfterRenketuFFmpegChkBox.Text = "連結後にFFmpegで処理する";
+			this.isAfterRenketuFFmpegChkBox.Text = "録画後にFFmpegで処理する";
 			this.isAfterRenketuFFmpegChkBox.UseVisualStyleBackColor = true;
 			// 
 			// groupBox10
 			// 
+			this.groupBox10.Controls.Add(this.isRtmpEngine);
 			this.groupBox10.Controls.Add(this.label8);
 			this.groupBox10.Controls.Add(this.anotherEngineCommandText);
 			this.groupBox10.Controls.Add(this.label5);
@@ -493,10 +506,20 @@ namespace namaichi
 			this.groupBox10.Controls.Add(this.segmentRadioBtnPanel);
 			this.groupBox10.Location = new System.Drawing.Point(5, 10);
 			this.groupBox10.Name = "groupBox10";
-			this.groupBox10.Size = new System.Drawing.Size(385, 232);
+			this.groupBox10.Size = new System.Drawing.Size(385, 260);
 			this.groupBox10.TabIndex = 0;
 			this.groupBox10.TabStop = false;
 			this.groupBox10.Text = "録画エンジン";
+			// 
+			// isRtmpEngine
+			// 
+			this.isRtmpEngine.Location = new System.Drawing.Point(6, 233);
+			this.isRtmpEngine.Name = "isRtmpEngine";
+			this.isRtmpEngine.Size = new System.Drawing.Size(252, 15);
+			this.isRtmpEngine.TabIndex = 27;
+			this.isRtmpEngine.Text = "RTMP録画エンジンを使う";
+			this.isRtmpEngine.UseVisualStyleBackColor = true;
+			this.isRtmpEngine.CheckedChanged += new System.EventHandler(this.isDefaultEngineChkBox_CheckedChanged);
 			// 
 			// label8
 			// 
@@ -553,8 +576,9 @@ namespace namaichi
 			this.isAnotherEngineChkBox.Name = "isAnotherEngineChkBox";
 			this.isAnotherEngineChkBox.Size = new System.Drawing.Size(252, 15);
 			this.isAnotherEngineChkBox.TabIndex = 0;
-			this.isAnotherEngineChkBox.Text = "外部録画エンジンを使う";
+			this.isAnotherEngineChkBox.Text = "外部のHLS録画エンジンを使う";
 			this.isAnotherEngineChkBox.UseVisualStyleBackColor = true;
+			this.isAnotherEngineChkBox.CheckedChanged += new System.EventHandler(this.isDefaultEngineChkBox_CheckedChanged);
 			// 
 			// isDefaultEngineChkBox
 			// 
@@ -564,7 +588,7 @@ namespace namaichi
 			this.isDefaultEngineChkBox.Size = new System.Drawing.Size(273, 15);
 			this.isDefaultEngineChkBox.TabIndex = 0;
 			this.isDefaultEngineChkBox.TabStop = true;
-			this.isDefaultEngineChkBox.Text = "標準の録画エンジンを使う";
+			this.isDefaultEngineChkBox.Text = "標準のHLS録画エンジンを使う";
 			this.isDefaultEngineChkBox.UseVisualStyleBackColor = true;
 			this.isDefaultEngineChkBox.CheckedChanged += new System.EventHandler(this.isDefaultEngineChkBox_CheckedChanged);
 			// 
@@ -885,7 +909,7 @@ namespace namaichi
 			this.groupBox12.Controls.Add(this.useSecondLoginChkBox2);
 			this.groupBox12.Location = new System.Drawing.Point(5, 10);
 			this.groupBox12.Name = "groupBox12";
-			this.groupBox12.Size = new System.Drawing.Size(385, 330);
+			this.groupBox12.Size = new System.Drawing.Size(385, 74);
 			this.groupBox12.TabIndex = 19;
 			this.groupBox12.TabStop = false;
 			this.groupBox12.Text = "ニコニコ動画アカウントの共有　(普段ニコニコ生放送を見ているブラウザ)";
@@ -1495,16 +1519,6 @@ namespace namaichi
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
 			// 
-			// isSegmentNukeInfoChkBox
-			// 
-			this.isSegmentNukeInfoChkBox.Location = new System.Drawing.Point(19, 333);
-			this.isSegmentNukeInfoChkBox.Name = "isSegmentNukeInfoChkBox";
-			this.isSegmentNukeInfoChkBox.Size = new System.Drawing.Size(271, 19);
-			this.isSegmentNukeInfoChkBox.TabIndex = 2;
-			this.isSegmentNukeInfoChkBox.Text = "セグメントが抜けた際にテキストに出力する";
-			this.isSegmentNukeInfoChkBox.UseVisualStyleBackColor = true;
-			this.isSegmentNukeInfoChkBox.CheckedChanged += new System.EventHandler(this.isHosoInfoChkBox_CheckedChanged);
-			// 
 			// optionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1549,6 +1563,7 @@ namespace namaichi
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.RadioButton isRtmpEngine;
 		private System.Windows.Forms.CheckBox isSegmentNukeInfoChkBox;
 		private System.Windows.Forms.CheckBox isUsePlayerChkBox;
 		private System.Windows.Forms.Button anotherCommentViewerSanshouBtn;

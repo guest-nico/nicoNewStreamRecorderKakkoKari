@@ -82,7 +82,7 @@ namespace namaichi.rec
 		private List<string> debugWriteBuf = new List<string>();
 		private Task tsWriterTask = null;
 		private bool isSub;
-		private bool isRtmp;
+		public bool isRtmp;
 		private RtmpRecorder rr;
 		
 		private string qualityRank = null;
@@ -129,11 +129,17 @@ namespace namaichi.rec
 			tsWriterTask = Task.Run(() => {startDebugWriter();});
 			
 //			connect(webSocketInfo[0]);
-			if (isRtmp) {
-				rr = new RtmpRecorder(lvid, container, rm, rfu, isSub, recFolderFile, this, openTime);
+			if (isRtmp || 
+			    (rm.cfg.get("IsHokan") == "true" && 
+			     !rfu.isRtmpMain && !rm.isPlayOnlyMode && 
+			     !rfu.isSubAccountHokan && rm.cfg.get("EngineMode") == "0" && !isTimeShift)) {
+				rfu.subGotNumTaskInfo = new List<numTaskInfo>();
+				rr = new RtmpRecorder(lvid, container, rm, rfu, !isRtmp, recFolderFile, this, openTime);
 				Task.Run(() => {
 					rr.record();
 					rm.hlsUrl = "end";
+					if (rr.isEndProgram) isEndProgram = true;
+					isRetry = false;
 				});
 			}
 			
@@ -171,7 +177,7 @@ namespace namaichi.rec
 //				GC.Collect();
 //				GC.WaitForPendingFinalizers();
 				
-				System.Threading.Thread.Sleep(100);
+				System.Threading.Thread.Sleep(1000);
 			}
 //			while (isTimeShift && rm.rfu == rfu) 
 //				System.Threading.Thread.Sleep(300);
@@ -219,7 +225,7 @@ namespace namaichi.rec
 					Thread.Sleep(500);
 			}
 			if (isWaitNextConnection) {
-				Thread.Sleep(5000);
+				Thread.Sleep(90000);
 				resetWebsocketInfo();
 				isWaitNextConnection = false;
 				addDebugBuf("after wait reset  " + " wsList " + wsList.Count);
@@ -238,9 +244,16 @@ namespace namaichi.rec
 				ws.Error += onError;
 				
 				ws.Open();
+			} catch (Exception ee) {
+				addDebugBuf("ws connect exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+				return false;
+			}
+			
+			var _ws = ws;
+			try {
 				wsList.Add(ws);
 				
-				var _ws = ws; 
+//				var _ws = ws; 
 				Thread.Sleep(5000);
 				if (_ws != null && _ws.State == WebSocketState.Connecting) {
 					addDebugBuf("ws connect 5 seconds close");
@@ -252,6 +265,12 @@ namespace namaichi.rec
 				}
 				
 			} catch (Exception ee) {
+				try {
+					ws.Close();
+					_ws.Close();
+				} catch (Exception eee) {
+					addDebugBuf("ws connect exception " + eee.Message + eee.Source + eee.StackTrace + eee.TargetSite);
+				}
 				addDebugBuf("ws connect exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 				return false;
 			}
@@ -296,7 +315,9 @@ namespace namaichi.rec
 		}
 		private void onClose(object sender, EventArgs e) {
 			addDebugBuf("on close " + e.ToString() + " ws hash " + sender.GetHashCode() + " istimeshift " + isTimeShift + " wsList " + wsList.Count);
-			wsList.Remove((WebSocket)sender);
+			try {
+				wsList.Remove((WebSocket)sender);
+			} catch (Exception ee) {util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);}
 			addDebugBuf("on close2 " + " wsList " + wsList.Count);
 			
 			Task.Run(() => {  
@@ -355,7 +376,12 @@ namespace namaichi.rec
 				setMsInfo(e.Message);
 				if (isTimeShift) {
 					if (tscg == null) {
-						tscg = new TimeShiftCommentGetter(e.Message, userId, rm, rfu, rm.form, openTime, recFolderFile, lvid, container, programType, _openTime, this, tsConfig.timeSeconds, tsConfig);
+						tscg = new TimeShiftCommentGetter(e.Message, 
+								userId, rm, rfu, rm.form, openTime, 
+								recFolderFile, lvid, container, 
+								programType, _openTime, this, 
+								(isRtmp) ? 0 : tsConfig.timeSeconds, 
+								(isRtmp) ? false : tsConfig.isVposStartTime, isRtmp);
 						tscg.save();
 						
 					}
@@ -385,18 +411,17 @@ namespace namaichi.rec
 			//new stream retry
 			if (e.Message.IndexOf("\"NO_PERMISSION\"") >= 0
 			    || e.Message.IndexOf("\"TAKEOVER\"") >= 0
-			    || e.Message.IndexOf("\"INTERNAL_SERVERERROR\"") >= 0
 			    || e.Message.IndexOf("\"SERVICE_TEMPORARILY_UNAVAILABLE\"") >= 0
 			   	|| e.Message.IndexOf("\"END_PROGRAM\"") >= 0
 			    || e.Message.IndexOf("\"TOO_MANY_CONNECTIONS\"") >= 0
 			    || e.Message.IndexOf("\"TEMPORARILY_CROWDED\"") >= 0
 			   	|| e.Message.IndexOf("\"CONNECT_ERROR\"") >= 0) {
-				if (e.Message.IndexOf("\"TAKEOVER\"") >= 0) rm.form.addLogText("追い出されました。" + util.getMainSubStr(isSub, true));
+				if (e.Message.IndexOf("\"TAKEOVER\"") >= 0 && !isRtmp) rm.form.addLogText("追い出されました。" + util.getMainSubStr(isSub, true));
 				
 				//SERVICE_TEMPORARILY_UNAVAILABLE 予約枠開始後に何らかの問題？
-				if (e.Message.IndexOf("\"SERVICE_TEMPORARILY_UNAVAILABLE\"") > 0) 
+				if (e.Message.IndexOf("\"SERVICE_TEMPORARILY_UNAVAILABLE\"") > 0 && !isRtmp) 
 					rm.form.addLogText("サーバーからデータの受信ができませんでした。リトライします。" + util.getMainSubStr(isSub, true));
-			
+				
 				if (e.Message.IndexOf("\"END_PROGRAM\"") > 0) {
 					isEndProgram = true;
 					isRetry = false;
@@ -412,10 +437,10 @@ namespace namaichi.rec
 					isWaitNextConnection = true;
 					//{"type":"error","body":{"code":"CONNECT_ERROR"}}
 					
-					if (e.Message.IndexOf("\"TEMPORARILY_CROWDED\"") >= 0)
+					if (e.Message.IndexOf("\"TEMPORARILY_CROWDED\"") >= 0 && !isRtmp)
 						rm.form.addLogText("満員でした" + util.getMainSubStr(isSub, true));
 					
-					if (e.Message.IndexOf("\"CONNECT_ERROR\"") >= 0)
+					if (e.Message.IndexOf("\"CONNECT_ERROR\"") >= 0 && !isRtmp)
 						rm.form.addLogText("接続エラーでした" + util.getMainSubStr(isSub, true));
 					#if DEBUG
 					#endif
@@ -425,6 +450,12 @@ namespace namaichi.rec
 //				Task.Run(() => {
 //				         	sendIntervalPong();
 //				         });
+				}
+			} else if (e.Message.IndexOf("\"INTERNAL_SERVERERROR\"") >= 0) {
+				try {
+					ws.Close();
+				} catch (Exception ee) {
+					addDebugBuf("notify ws close exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 				}
 			} else if (e.Message.IndexOf("\"disconnect\"") >= 0) {
 				addDebugBuf("unknown disconnect");
@@ -453,7 +484,8 @@ namespace namaichi.rec
 					addDebugBuf("notify ws close exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 				}
 				#if DEBUG
-					rm.form.addLogText("notify reconnect");
+					if (!isRtmp)
+						rm.form.addLogText("notify reconnect");
 				#endif
 				
 				
@@ -491,7 +523,7 @@ namespace namaichi.rec
 			Task.Run(() => {
 				while (rm.rfu == rfu && isRetry) {
 	         		if (isTimeShift && tsHlsRequestTime == DateTime.MinValue) {
-	         			Thread.Sleep(300);
+	         			Thread.Sleep(1000);
 	         			continue;
 	         		}       
 			        DateTime _keikaTimeStart = (!isTimeShift) ? (util.getUnixToDatetime(openTime) - jisa) : (tsHlsRequestTime - tsStartTime - jisa);
@@ -521,7 +553,7 @@ namespace namaichi.rec
 					//var keikaJikan = _keikaJikanDt.ToString("H'時間'm'分's'秒'");
 					//var programTimeStr = programTime.ToString("h'時間'm'分's'秒'");
 					rm.form.setKeikaJikan(keikaJikan, timeLabelKeika + "/" + programTimeStr, _keikaJikanDt.ToString("h'時間'mm'分'ss'秒'"), _keikaTimeStart);
-					System.Threading.Thread.Sleep(100);
+					System.Threading.Thread.Sleep(1000);
 				}
 			});
 		}
@@ -670,8 +702,8 @@ namespace namaichi.rec
 		}
 		*/
 		private void displayStatistics(string e) {
-			var visit = util.getRegGroup(e, "{\"type\":\"watch\",\"body\":{\"command\":\"statistics\",\"params\":\\[\"(\\d+?)\",\"\\d+?\"");
-			var comment = util.getRegGroup(e, "{\"type\":\"watch\",\"body\":{\"command\":\"statistics\",\"params\":\\[\"\\d+?\",\"(\\d+?)\"");
+			var visit = util.getRegGroup(e, "{\"type\":\"watch\",\"body\":{\"command\":\"statistics\",\"params\":\\[\"(\\d+?)\",\"\\d+?\"", 1, rm.regGetter.getWrVisit());
+			var comment = util.getRegGroup(e, "{\"type\":\"watch\",\"body\":{\"command\":\"statistics\",\"params\":\\[\"\\d+?\",\"(\\d+?)\"", 1, rm.regGetter.getWrComment());
 			try {
 				if (visit != null)
 					visit = int.Parse(visit).ToString("n0");
@@ -694,7 +726,7 @@ namespace namaichi.rec
 			}			
 			try {
 				if (bool.Parse(isGetComment) && commentSW == null && !rm.isPlayOnlyMode) {
-					var commentFileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, isTimeShift);
+					var commentFileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, isTimeShift, isRtmp);
 					var isExists = File.Exists(commentFileName);
 					commentSW = new StreamWriter(commentFileName, false, System.Text.Encoding.UTF8);
 					if (bool.Parse(isGetCommentXml) && !isExists) {
@@ -965,8 +997,12 @@ namespace namaichi.rec
 			
 			sendCommentBuf = null;
 		}
-		override public string[] getRecFilePath(long openTime) {
-			return h5r.getRecFilePath(openTime);
+		//override public string[] getRecFilePath(long openTime) {
+		public string[] getRecFilePath(long openTime) {
+			return getRecFilePath();
+		}
+		override public string[] getRecFilePath() {
+			return h5r.getRecFilePath(isRtmp);
 		}
 		private void startDebugWriter() {
 			#if !DEBUG
@@ -988,7 +1024,7 @@ namespace namaichi.rec
 							debugWriteBuf.Remove(b);
 						}
 					}
-					Thread.Sleep(100);
+					Thread.Sleep(500);
 				} catch (Exception e) {
 					addDebugBuf("debug writer exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}

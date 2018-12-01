@@ -83,7 +83,7 @@ public class config
 //			{"isAllBrowserMode","true"},
 			{"issecondlogin","false"},
 			
-			{"IsHokan","true"},
+			{"IsHokan","false"},
 			{"accountId2",""},
 			{"accountPass2",""},
 			{"user_session2",""},
@@ -116,7 +116,7 @@ public class config
 			{"segmentSaveType","0"},
 			{"IsRenketuAfter","true"},
 			{"IsAfterRenketuFFmpeg","false"},
-			{"IsDefaultEngine","true"},
+			{"EngineMode","0"},
 			{"anotherEngineCommand",""},
 			{"IsUsePlayer","true"},
 			{"IsDefaultPlayer","true"},

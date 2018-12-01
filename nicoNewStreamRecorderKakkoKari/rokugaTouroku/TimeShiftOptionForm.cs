@@ -136,11 +136,19 @@ namespace rokugaTouroku
 				MessageBox.Show("M3U8の更新間隔に0.5以下を指定することはできません");
 				return;
 			}
+			/*
 			var isUrlList = isUrlListChkBox.Checked;
 			var openListCommand = openListCommandText.Text;
 			var isM3u8List = isM3u8RadioBtn.Checked;
 			var m3u8UpdateSeconds = updateSecond;
 			var isOpenUrlList = isOpenListCommandChkBox.Checked;
+			*/
+			var isUrlList = false;
+			var openListCommand = "";
+			var isM3u8List = false;
+			var m3u8UpdateSeconds = 5.1;
+			var isOpenUrlList = false;
+			
 			ret = new TimeShiftConfig(startType, 
 				h, m, s, endH, endM, endS, isRenketuLastFile.Checked, isUrlList, 
 				openListCommand, isM3u8List, m3u8UpdateSeconds, isOpenUrlList,

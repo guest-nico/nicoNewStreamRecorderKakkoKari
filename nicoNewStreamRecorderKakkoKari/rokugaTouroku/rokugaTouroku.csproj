@@ -67,7 +67,7 @@
     </Compile>
     <Compile Include="info\RecInfo.cs" />
     <Compile Include="info\TimeShiftConfig.cs" />
-    <Compile Include="log\TraceListener.cs" />
+    <Compile Include="Logger\TraceListener.cs" />
     <Compile Include="MainForm.cs" />
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -109,7 +109,7 @@
   <ItemGroup>
     <Folder Include="config" />
     <Folder Include="info" />
-    <Folder Include="log" />
+    <Folder Include="Logger" />
     <Folder Include="rec" />
     <Folder Include="util" />
   </ItemGroup>
