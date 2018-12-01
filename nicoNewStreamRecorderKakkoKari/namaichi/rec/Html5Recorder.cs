@@ -33,6 +33,8 @@ namespace namaichi.rec
 		private TimeShiftConfig timeShiftConfig;
 		private string[] recFolderFileInfo;
 		private bool isSub;
+		
+		private long openTime;
 	
 		public Html5Recorder(string url, CookieContainer container, 
 				string lvid, RecordingManager rm, RecordFromUrl rfu,
@@ -191,7 +193,7 @@ namespace namaichi.rec
 				
 				
 				data = System.Web.HttpUtility.HtmlDecode(data);
-				long openTime = 0;
+				openTime = 0;
 				if (data == null || 
 				    !long.TryParse(util.getRegGroup(data, "\"beginTime\":(\\d+)"), out openTime))
 						return 3;
@@ -224,7 +226,7 @@ namespace namaichi.rec
 				if (!isSub) {
 					//timeshift option
 					timeShiftConfig = null;
-					if (isTimeShift) {
+					if (isTimeShift && !isRtmp) {
 //						if (rm.ri != null) timeShiftConfig = rm.ri.tsConfig;
 						if (rm.argTsConfig != null) {
 							timeShiftConfig = getReadyArgTsConfig(rm.argTsConfig.clone(), recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], openTime);
@@ -239,7 +241,7 @@ namespace namaichi.rec
 					if (!rm.isPlayOnlyMode) {
 						util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode());
 						if (recFolderFile == null)
-							recFolderFile = getRecFilePath(openTime, isRtmp);
+							recFolderFile = getRecFilePath(isRtmp);
 						if (recFolderFile == null || recFolderFile[0] == null) {
 							//パスが長すぎ
 							rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);
@@ -295,7 +297,7 @@ namespace namaichi.rec
 //				System.Threading.Thread.Sleep(2000);
 				
 				util.debugWriteLine(rm.rfu + " " + rfu + " " + (rm.rfu == rfu));
-				if (rm.rfu != rfu) break;
+				if (rm.rfu != rfu || isRtmp) break;
 				
 				res = getPageSourceFromNewCookie();
 				
@@ -459,8 +461,9 @@ namespace namaichi.rec
 	        }
 			return null;
 		}
-		public string[] getRecFilePath(long openTime, bool isRtmp) {
-			util.debugWriteLine(openTime + " c " + recFolderFileInfo[0] + " b " + " a " + timeShiftConfig);
+		//public string[] getRecFilePath(long openTime, bool isRtmp) {
+		public string[] getRecFilePath(bool isRtmp) {
+			util.debugWriteLine(openTime + " c " + recFolderFileInfo[0] + " timeshiftConfig " + timeShiftConfig);
 			return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, isTimeShift, timeShiftConfig, openTime, isRtmp);
 		}
 		private TimeShiftConfig getReadyArgTsConfig(

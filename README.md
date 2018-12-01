@@ -1,4 +1,4 @@
-
+﻿
 ## ニコ生 新配信録画ツール（仮）
 
 ニコ生のHLS新配信を録画するツールです。  
@@ -55,17 +55,7 @@ Json.NET
   <dd>optionForm: オプション画面のフォーム</dd>
   <dd>fileNameOptionForm: オプション画面中のファイル名設定のフォーム</dd>
 </dl>
-```mermaid
-graph TD;
- MainForm-->optionForm;
- optionForm-->fileNameOptionForm;
- fileNameOptionForm-->optionForm;
- optionForm-->MainForm;
- MainForm-->RecordingManager;
- RecordingManager-->RecordFromUrl;
- RecordFromUrl-->Html5Recorder;
- Html5Recorder-->WebSocketRecorder;
- WebSocketRecorder-->Record;
-```
 
-
+##開発環境
+SharpDevelop4.4.2
+（VisualStudioではビルドできませんでした。）

@@ -66,7 +66,7 @@ namespace namaichi.utility
 		}
 		public Regex getStreamDuration() {
 			if (streamDuration == null)
-				streamDuration = new Regex("^#STREAM-DURATION:(.+)");
+				streamDuration = new Regex("#STREAM-DURATION:(.+)");
 			return streamDuration;
 		}
 		public Regex getTs() {

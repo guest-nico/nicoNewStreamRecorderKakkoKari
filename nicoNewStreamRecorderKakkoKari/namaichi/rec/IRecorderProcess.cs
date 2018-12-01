@@ -30,7 +30,8 @@ namespace namaichi.rec
 		{
 		}
 		abstract public void reConnect();
-		abstract public string[] getRecFilePath(long _openTime);
+//		abstract public string[] getRecFilePath(long _openTime);
+		abstract public string[] getRecFilePath();
 		abstract public void sendComment(string s, bool is184);
 	}
 }

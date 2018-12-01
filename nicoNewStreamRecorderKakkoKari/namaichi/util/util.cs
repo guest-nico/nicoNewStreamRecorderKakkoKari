@@ -21,8 +21,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.87.9";
-	public static string versionDayStr = "2018/11/17";
+	public static string versionStr = "ver0.87.12";
+	public static string versionDayStr = "2018/11/30";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	
@@ -98,10 +98,10 @@ class util {
 
 
 		var segmentSaveType = cfg.get("segmentSaveType");
-		if (cfg.get("IsDefaultEngine") == "false" || isRtmp) segmentSaveType = "0";
+		if (cfg.get("EngineMode") != "0" || isRtmp) segmentSaveType = "0";
 		
 		bool _isTimeShift = isTimeShift;
-		if (cfg.get("IsDefaultEngine") == "false") _isTimeShift = false;
+		if (cfg.get("EngineMode") != "0") _isTimeShift = false;
 
 		var name = getFileName(host, group, title, lvId, communityNum,  cfg, _openTime);
 		if (name.Length > 200) name = name.Substring(0, 200);
@@ -125,38 +125,53 @@ class util {
 		
 		var files = Directory.GetFiles(dirPath);
 		string existFile = null;
+		string existDt = null;
+		string existDtFile = null;
 		for (int i = 0; i < 1000000; i++) {
 			var fName = dirPath + "/" + name + "_" + ((_isTimeShift) ? "ts" : "") + i.ToString();
 			var originName = dirPath + "/" + name;
 			util.debugWriteLine(dirPath + " " + fName);
 			
 			if (!_isTimeShift) {
-				if (segmentSaveType == "0" && (File.Exists(fName + ".ts") ||
-						File.Exists(fName + ".xml"))) continue;
+				if (segmentSaveType == "0" && isExistAllExt(fName)) continue;
 				else if (segmentSaveType == "1") {
 					if (Directory.Exists(fName)) continue;
 					Directory.CreateDirectory(fName);
 					if (!Directory.Exists(fName)) return null;
 				}
 				
-				
 				string[] reta = {dirPath, fName, originName};
 				return reta;
 			} else {
+				if (isRtmp) {
+					if (isExistAllExt(fName)) continue;
+					string[] reta = {dirPath, fName, originName};
+					return reta;
+				}
+				
 				if (segmentSaveType == "0") {
-					var _existFile = util.existFile(files, "_ts(_\\d+h\\d+m\\d+s_)*" + i.ToString(), name);
+					var _existFile = util.existFile(files, "_ts(_\\d+h\\d+m\\d+s_)*" + i.ToString() + "", name);
+					var _existDt = util.existFile(files, "_ts_(\\d+h\\d+m\\d+s)_" + i.ToString() + ".ts", name);
+					var reg = "_ts_(\\d+h\\d+m\\d+s)_" + i.ToString() + ".ts";
+					if (_existDt != null) {
+						existDt = util.getRegGroup(_existDt, "(\\d+h\\d+m\\d+s)");
+						existDtFile = _existDt;
+					}
 					if (_existFile != null) {
 						existFile = _existFile;
 						continue;
 					}
 					if (tsConfig.isContinueConcat) {
-						if (i == 0) {
+						if (i == 0 || existDt == null) {
 							var firstFile = dirPath + "/" + name + "_ts_0h0m0s_" + i.ToString();
 							string[] retb = {dirPath, firstFile, originName};
 							return retb;
 						} else {
 							//fName = dirPath + "/" + name + "_" + ((isTimeShift) ? "ts" : "") + (i - 1).ToString();
-							existFile = existFile.Substring(0, existFile.Length - 3);
+//							if (_existDt == null) existFile = dirPath + "/" + name + "_ts_" + existDt + "_" + i.ToString() + ".ts";
+//							existFile = Regex.Replace(existDtFile, "\\d+h\\d+m\\d+s", existDt);
+							existFile = existDtFile.Substring(0, existDtFile.LastIndexOf("."));
+//							existFile = existFile.Substring(0, existFile.Length - 3);
 							string[] retc = {dirPath, existFile, originName};
 							return retc;
 						}
@@ -166,8 +181,7 @@ class util {
 						return retd;
 					}
 //					continue;
-				}
-				else if (segmentSaveType == "1") {
+				} else if (segmentSaveType == "1") {
 					if (Directory.Exists(fName)) {
 						string[] rete = {dirPath, fName, originName};
 						return rete;
@@ -268,12 +282,12 @@ class util {
 			//var format = cfg.get("filenameformat");
 			return getDokujiSetteiFileName("放送者名", "コミュ名", "タイトル", "lv12345", "co9876", filenametype, DateTime.Now);
 		}
-	public static string getOkCommentFileName(config cfg, string fName, string lvid, bool isTimeShift) {
+	public static string getOkCommentFileName(config cfg, string fName, string lvid, bool isTimeShift, bool isRtmp) {
 		var kakutyousi = (cfg.get("IsgetcommentXml") == "true") ? ".xml" : ".json";
-		var isDefaultEngine = cfg.get("IsDefaultEngine");
-		if (cfg.get("segmentSaveType") == "0" || isDefaultEngine == "false") {
+		var engineMode = cfg.get("EngineMode");
+		if (cfg.get("segmentSaveType") == "0" || engineMode != "0" || isRtmp) {
 			//renketu
-			if (isTimeShift && isDefaultEngine == "true") {
+			if (isTimeShift && engineMode == "0" && !isRtmp) {
 				var time = getRegGroup(fName, "(_\\d+h\\d+m\\d+s_)");
 				fName = fName.Replace(time, "");
 			}
@@ -354,7 +368,7 @@ class util {
 			
 			if (segmentSaveType == "0") {
 				//util.existFile(dirPath, name + "_ts_\\d+h\\d+m\\d+s_" + i.ToString());
-				var _existFile = util.existFile(files, "_ts_(\\d+h\\d+m\\d+s)_" + i.ToString(), name);
+				var _existFile = util.existFile(files, "_ts_(\\d+h\\d+m\\d+s)_" + i.ToString() + ".ts", name);
 				util.debugWriteLine("getLastTimeshiftFileName existfile " + _existFile);
 				if (_existFile != null) {
 					existFile = _existFile;
@@ -428,6 +442,14 @@ class util {
 		var ret = new string[]{h, m, s};
 		return ret;
 	}
+	private static bool isExistAllExt(string fName) {
+		var ext = new string[] {".ts", ".xml", ".flv", ".avi", ".mp4",
+				".mov", ".wmv", ".vob", ".mkv", ".mp3",
+				".wav", ".wma", ".aac", ".ogg"};
+		foreach (var e in ext) 
+			if (File.Exists(fName + e)) return true;
+		return false;
+	}
 	public static string getPageSource(string _url, ref WebHeaderCollection getheaders, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 5000) {
 		//util.debugWriteLine("getpage 01");
 		timeoutMs = 2000;
@@ -490,7 +512,6 @@ class util {
 	}
 	public static string getPageSource(string _url, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 5000) {
 		timeoutMs = 2000;
-//		util.debugWriteLine("getpage 01");
 		/*
 		string a = "";
 		try {
@@ -590,6 +611,20 @@ class util {
 			}
 		}
 		return null;
+	}
+	public static bool isEndedProgram(string lvid, CookieContainer container, bool isSub) {
+		var url = "http://live2.nicovideo.jp/watch/" + lvid;
+		
+		var a = new System.Net.WebHeaderCollection();
+		var res = util.getPageSource(url, ref a, container);
+		util.debugWriteLine("isendedprogram url " + url + " res==null " + (res == null) + util.getMainSubStr(isSub, true));
+//			util.debugWriteLine("isendedprogram res " + res + util.getMainSubStr(isSub, true));
+		if (res == null) return false;
+		var isEnd = res.IndexOf("\"content_status\":\"closed\"") != -1 ||
+				res.IndexOf("<title>番組がみつかりません") != -1 ||
+				res.IndexOf("番組が見つかりません</span>") != -1;
+		util.debugWriteLine("is ended program " + isEnd + util.getMainSubStr(isSub, true));
+		return isEnd; 
 	}
 	public static string existFile(string[] files, string reg, string startWith) {
 //		var files = Directory.GetFiles(dirPath);

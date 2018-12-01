@@ -148,7 +148,7 @@ namespace namaichi.play
 			
 			if (cf.form.recBtn.Text == "録画開始") {
 				isEnd = true;
-				wsc.Close();
+				if (wsc != null) wsc.Close();
 				return;
 			}
 			

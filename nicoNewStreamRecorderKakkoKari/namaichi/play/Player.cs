@@ -113,8 +113,16 @@ namespace namaichi.play
 		         			if (isDefaultPlayer) ctrlFormClose();
 		         			break;
 				        }
+						if (form.rec.hlsUrl == "timeshift") {
+							form.addLogText("RTMPのタイムシフト録画中はツールでの視聴ができません。");
+		         			form.rec.hlsUrl = null;
+		         			stopPlaying(true, true);
+		         			if (isDefaultPlayer) ctrlFormClose();
+		         			break;
+				        }
+						
 						if (!isPlayable() && !isStarted) {
-							Thread.Sleep(300);
+							Thread.Sleep(500);
 							continue;
 						} else isStarted = true;
 						
@@ -122,6 +130,7 @@ namespace namaichi.play
 						
 						//isRecording = true;
 						sendPlayCommand(isDefaultPlayer);
+						while (process == null) Thread.Sleep(500);
 						
 						try {
 							while (true) {
@@ -177,7 +186,7 @@ namespace namaichi.play
 					playCommand("ffplay", form.rec.hlsUrl + " -autoexit -volume " + volume);
 				else 
 //					playCommandStd("MPC-HC.1.7.13.x86/mpc-hc.exe", "-");
-					Task.Run(() => playCommandStd("ffplay.exe", form.rec.hlsUrl));
+					Task.Run(() => playCommandStd("ffplay.exe", form.rec.hlsUrl + " -autoexit -volume " + volume));
 				
 				util.debugWriteLine("kia 0 " + ctrl);
 				form.Invoke((MethodInvoker)delegate() {
@@ -302,7 +311,8 @@ namespace namaichi.play
 				process2.StartInfo = ffmpegSi;
 				process2.Start();
 				Thread.Sleep(1000);
-				setPipeName(process2);
+				if (isDefaultPlayer)
+					setPipeName(process2);
 				
 				var o = process.StandardOutput.BaseStream;
 				var _is = process2.StandardInput.BaseStream;

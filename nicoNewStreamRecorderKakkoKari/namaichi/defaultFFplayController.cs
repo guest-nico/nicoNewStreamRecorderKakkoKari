@@ -140,6 +140,7 @@ namespace namaichi
 			try {
 				//process.StandardInput.WriteLine(v.ToString());
 //				util.debugWriteLine("volume set " + v);
+				while (player == null || player.pipeWriter == null) System.Threading.Thread.Sleep(1000);
 				player.pipeWriter.WriteLine(v.ToString());
 				player.pipeWriter.Flush();
 			} catch (Exception e) {

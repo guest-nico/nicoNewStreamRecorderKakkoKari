@@ -80,7 +80,7 @@ namespace namaichi
 //			args = new string[]{"Debug_1.ts"};
 			if (Array.IndexOf(args, "-stdIO") > -1) util.isStdIO = true;
 			
-			var lv = (args.Length == 0) ? null : util.getRegGroup(args[0], "(lv\\d+)");
+			var lv = (args.Length == 0) ? null : util.getRegGroup(args[0], "(lv\\d+(,\\d+)*)");
 			util.setLog(config, lv);
 			
 			if (args.Length > 0) {

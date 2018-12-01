@@ -228,6 +228,7 @@ namespace namaichi.rec
 					util.debugWriteLine("ishtml5login getpage " + url + util.getMainSubStr(isSub));
 					var _url = (isRtmp) ? ("http://live.nicovideo.jp/api/getplayerstatus/" + util.getRegGroup(url, "(lv\\d+)")) : url;
 					pageSource = util.getPageSource(_url, ref headers, cc);
+					util.debugWriteLine(cc.GetCookieHeader(new Uri(_url)));
 					util.debugWriteLine("ishtml5login getpage ok" + util.getMainSubStr(isSub));
 				} catch (Exception e) {
 					util.debugWriteLine("cookiegetter ishtml5login " + e.Message+e.StackTrace + util.getMainSubStr(isSub));

@@ -70,7 +70,7 @@ namespace namaichi.rec
            
             
             
-            var lv = util.getRegGroup(form.urlText.Text, "(lv\\d+)");
+            var lv = util.getRegGroup(form.urlText.Text, "(lv\\d+(,\\d+)*)");
 			util.setLog(cfg, lv);
 			util.debugWriteLine(util.versionStr + " " + util.versionDayStr);
 			
@@ -88,7 +88,7 @@ namespace namaichi.rec
             	}
 				
 
-				var lvid = util.getRegGroup(form.urlText.Text, "(lv\\d+)", 1);
+				var lvid = util.getRegGroup(form.urlText.Text, "(lv\\d+(,\\d+)*)", 1);
 				if (lvid != null) {
 					if (isPlayOnlyMode) {
 						form.Invoke((MethodInvoker)delegate() {
@@ -196,6 +196,7 @@ namespace namaichi.rec
 					       	       		}
 									});
 		                		} catch (Exception e) {
+	                				
 						       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 						       	}
 	                		}

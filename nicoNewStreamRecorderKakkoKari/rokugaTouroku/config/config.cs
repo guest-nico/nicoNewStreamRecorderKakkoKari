@@ -116,7 +116,7 @@ public class config
 			{"segmentSaveType","0"},
 			{"IsRenketuAfter","true"},
 			{"IsAfterRenketuFFmpeg","false"},
-			{"IsDefaultEngine","true"},
+			{"EngineMode","0"},
 			{"anotherEngineCommand",""},
 			{"IsUsePlayer","true"},
 			{"IsDefaultPlayer","true"},

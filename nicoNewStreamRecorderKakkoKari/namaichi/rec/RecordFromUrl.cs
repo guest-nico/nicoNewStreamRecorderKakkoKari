@@ -22,17 +22,21 @@ namespace namaichi.rec
 	/// </summary>
 	public class RecordFromUrl
 	{
+		public string url;
 //		private CookieContainer[] container;
 		private RecordingManager rm;
 		private string res;
 		private bool isJikken = false;
 //		private JikkenRecorder jr;
 		private string lvid;
+		public int[] tsRecNumArr;
 		public List<numTaskInfo> subGotNumTaskInfo = null;
 		public string[] id = new string[2];
 		//public bool isWaitMainTask = true;
-		private bool isSubAccountHokan = true;
-		private bool isRtmpMain = false;
+		public bool isSubAccountHokan = true;
+		public bool isRtmpMain = false;
+		public bool isRtmpTimeShiftEnabled = true;
+		public byte[] firstFlvData = null;
 		
 		public RecordFromUrl(RecordingManager rm)
 		{
@@ -45,20 +49,25 @@ namespace namaichi.rec
 			//endcode 0-その他の理由 1-stop 2-最初に終了 3-始まった後に番組終了
 			util.debugWriteLine("RecordFromUrl rec");
 			util.debugWriteLine(url + " " + lvid);
-			this.lvid = lvid;
+			this.lvid = util.getRegGroup(lvid, "(lv\\d+)");
+			tsRecNumArr = (this.lvid == lvid) ? null : Array.ConvertAll<string, int>(util.getRegGroup(lvid, ",(.+)").Split(','), (i) => {return int.Parse(i);});
+			this.url = util.getRegGroup(url, "([^,]+)");
 			
-
-			isSubAccountHokan = true;
-			isRtmpMain = false;
-
-
+			isSubAccountHokan = false;
+			if (rm.cfg.get("EngineMode") != "2") {
+				isRtmpMain = false;
+			} else {
+				isRtmpMain = true;
+			}
+			isRtmpTimeShiftEnabled = isRtmpMain;
 			
-			var mainT = Task.Run<int>(() => {return _rec(url, false);});
+			
+			var mainT = Task.Run<int>(() => {return _rec(this.url, false);});
 			Task subT = null;
 //			var isSecond = true;
-			if (rm.cfg.get("IsHokan") == "true" && !isRtmpMain && !rm.isPlayOnlyMode) {
+			if (rm.cfg.get("IsHokan") == "true" && !isRtmpMain && !rm.isPlayOnlyMode && isSubAccountHokan) {
 				subGotNumTaskInfo = new List<numTaskInfo>();
-				subT = Task.Run(() => {_rec(url, true);});
+				subT = Task.Run(() => {_rec(this.url, true);});
 			}
 			try {
 				while (true) {
@@ -122,9 +131,11 @@ namespace namaichi.rec
 			
 			while (true && this == rm.rfu) {
 				util.debugWriteLine("pagetype " + pageType);
-				if (pageType == 0 || (!isRtmp && pageType == 7)) {
+				if (pageType == 0 || ((!isRtmp || isRtmpTimeShiftEnabled) && pageType == 7)) {
 					var isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
 					int recResult = 0;
+					
+					if (rm.isPlayOnlyMode && pageType == 7 && isRtmp) isRtmp = false;
 					
 					if (isJikken) {
 						if (!jr.isLive && isSub) return 2;

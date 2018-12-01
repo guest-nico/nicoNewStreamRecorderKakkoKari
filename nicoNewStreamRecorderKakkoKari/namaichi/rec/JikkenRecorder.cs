@@ -117,7 +117,7 @@ namespace namaichi.rec
 			recFolderFileInfo = getRecFolderFileInfo(data, type);
 			if (!isSub) {
 				timeShiftConfig = null;
-				if (!isLive) {
+				if (!isLive && !isRtmp) {
 					if (rm.ri != null) timeShiftConfig = rm.ri.tsConfig;
 					if (rm.argTsConfig != null) {
 						timeShiftConfig = getReadyArgTsConfig(rm.argTsConfig.clone(), recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], releaseTime);

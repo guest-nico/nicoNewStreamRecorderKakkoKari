@@ -190,7 +190,7 @@ namespace rokugaTouroku
 			// 
 			// cancelBtn
 			// 
-			this.cancelBtn.Location = new System.Drawing.Point(215, 449);
+			this.cancelBtn.Location = new System.Drawing.Point(215, 246);
 			this.cancelBtn.Name = "cancelBtn";
 			this.cancelBtn.Size = new System.Drawing.Size(74, 23);
 			this.cancelBtn.TabIndex = 16;
@@ -200,7 +200,7 @@ namespace rokugaTouroku
 			// 
 			// okBtn
 			// 
-			this.okBtn.Location = new System.Drawing.Point(135, 449);
+			this.okBtn.Location = new System.Drawing.Point(135, 246);
 			this.okBtn.Name = "okBtn";
 			this.okBtn.Size = new System.Drawing.Size(74, 23);
 			this.okBtn.TabIndex = 15;
@@ -300,6 +300,7 @@ namespace rokugaTouroku
 			this.groupBox3.TabIndex = 27;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "セグメントURLリスト";
+			this.groupBox3.Visible = false;
 			// 
 			// isUrlListLabelText2
 			// 
@@ -406,12 +407,12 @@ namespace rokugaTouroku
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Window;
-			this.ClientSize = new System.Drawing.Size(311, 481);
-			this.Controls.Add(this.groupBox3);
+			this.ClientSize = new System.Drawing.Size(311, 278);
 			this.Controls.Add(this.groupBox2);
+			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.cancelBtn);
 			this.Controls.Add(this.okBtn);
-			this.Controls.Add(this.groupBox1);
+			this.Controls.Add(this.groupBox3);
 			this.Name = "TimeShiftOptionForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "タイムシフト録画設定";
