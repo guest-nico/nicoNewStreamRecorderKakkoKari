@@ -102,6 +102,6 @@ Andrej Stepanchuk, Howard Chu, The Flvstreamer Team
   <dd>TimeShiftOptionForm: タイムシフト設定画面</dd>
 </dl>
 
-##開発環境
+## 開発環境
 SharpDevelop4.4.2
 （VisualStudioではビルドできませんでした。）
