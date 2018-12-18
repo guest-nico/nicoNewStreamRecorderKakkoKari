@@ -37,6 +37,7 @@ namespace namaichi.rec
 			if (isConvert && afterConvertMode > 0) 
 				getConvertPaths(path, ref tmp, ref outPath, afterConvertMode);
 			string _command;
+<<<<<<< HEAD
 			//10-mp3 8-vob 11-wav
 			if (afterConvertMode == 10 || afterConvertMode == 8 || afterConvertMode == 11)
 				_command = ("-i \"" + path + "\" \"" + tmp + "\"");
@@ -48,13 +49,31 @@ namespace namaichi.rec
 				_command =  ("-i \"" + path + "\" -vn \"" + tmp + "\"");
 			//5-flv
 			else if (afterConvertMode == 5)
+=======
+			//9-mp3 7-vob -10-wav
+			if (afterConvertMode == 9 || afterConvertMode == 7 || afterConvertMode == 10)
+				_command = ("-i \"" + path + "\" \"" + tmp + "\"");
+			//11-wma
+			else if (afterConvertMode == 11)
+				_command =  ("-i \"" + path + "\" -vn -c copy \"" + tmp + "\"");
+			//13-ogg
+			else if (afterConvertMode == 13)
+				_command =  ("-i \"" + path + "\" -vn \"" + tmp + "\"");
+			//4-flv
+			else if (afterConvertMode == 4)
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 				_command = ("-i \"" + path + "\" -c copy -bsf:a aac_adtstoasc \"" + tmp + "\"");
 			else _command = ("-i \"" + path + "\" -c copy \"" + tmp + "\"");
 			
 			//flv
 			if (path.EndsWith("flv")) {
+<<<<<<< HEAD
 				//avi 3
 				if (afterConvertMode == 3)
+=======
+				//avi
+				if (afterConvertMode == 2)
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 					_command = ("-i \"" + path + "\" \"" + tmp + "\""); 
 			}
 			
@@ -121,6 +140,7 @@ namespace namaichi.rec
 //			if (afterConvertMode == 0 &&
 //			    rm.cfg.get("IsRenketuAfter") == "true") ext = "ts";
 			if (afterConvertMode == 0) ext = (tmp.EndsWith("ts") ? "ts" : "flv");
+<<<<<<< HEAD
 			if (afterConvertMode == 1) ext = (tmp.EndsWith("ts") ? "ts" : "flv");
 			if (afterConvertMode == 2) ext = "ts";
 			if (afterConvertMode == 3) ext = "avi";
@@ -135,6 +155,21 @@ namespace namaichi.rec
 			if (afterConvertMode == 12) ext = "wma";
 			if (afterConvertMode == 13) ext = "aac";
 			if (afterConvertMode == 14) ext = "ogg";
+=======
+			if (afterConvertMode == 1) ext = "ts";
+			if (afterConvertMode == 2) ext = "avi";
+			if (afterConvertMode == 3) ext = "mp4";
+			if (afterConvertMode == 4) ext = "flv";
+			if (afterConvertMode == 5) ext = "mov";
+			if (afterConvertMode == 6) ext = "wmv";
+			if (afterConvertMode == 7) ext = "vob";
+			if (afterConvertMode == 8) ext = "mkv";
+			if (afterConvertMode == 9) ext = "mp3";
+			if (afterConvertMode == 10) ext = "wav";
+			if (afterConvertMode == 11) ext = "wma";
+			if (afterConvertMode == 12) ext = "aac";
+			if (afterConvertMode == 13) ext = "ogg";
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 			var originalExtLen = tmp.EndsWith("ts") ? 2 : 3;
 			tmp = tmp.Substring(0, tmp.Length - originalExtLen) + ext;
 //			tmp = tmp.Substring(0, tmp.Length - 2) + ext;

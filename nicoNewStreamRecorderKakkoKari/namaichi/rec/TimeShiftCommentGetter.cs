@@ -66,7 +66,10 @@ namespace namaichi.rec
 //		public TimeShiftConfig tsConfig;
 		private bool isVposStartTime;
 		private bool isRtmp;
+<<<<<<< HEAD
 		private int[] quePosTimeList;
+=======
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 		
 		public TimeShiftCommentGetter(string message, 
 				string userId, RecordingManager rm, 
@@ -227,8 +230,12 @@ namespace namaichi.rec
 			
 			XDocument chatXml;
 			var vposStartTime = (isVposStartTime) ? (long)rp.firstSegmentSecond : 0;
+<<<<<<< HEAD
 			
 			if (isRtmp) {
+=======
+			if (programType == "official")
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 				chatXml = chatinfo.getFormatXml(_openTime + vposStartTime);
 			} else {
 				if (programType == "official") {
@@ -355,6 +362,7 @@ namespace namaichi.rec
 			rp.gotTsCommentList = chats;
 			if (!isWrite) return;
 			
+<<<<<<< HEAD
 			var fileNum = (quePosTimeList != null) ? quePosTimeList.Length : 1;
 			for (int j = 0; j < fileNum; j++) {
 				if (j != 0) recFolderFile = incrementRecFolderFile(recFolderFile);
@@ -397,6 +405,15 @@ namespace namaichi.rec
 				
 				File.Delete(fileName);
 				File.Move(fileName + "_", fileName);
+=======
+			fileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, true, isRtmp);
+			var w = new StreamWriter(fileName + "_", false, System.Text.Encoding.UTF8);
+			if (isGetXml) {
+				w.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
+			    w.WriteLine("<packet>");
+			    
+			    w.Flush();
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 			}
 			form.addLogText("コメントの保存を完了しました");
 		}

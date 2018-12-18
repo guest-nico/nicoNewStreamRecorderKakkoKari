@@ -16,7 +16,10 @@ using System.Net;
 using System.Threading;
 using WebSocket4Net;
 using System.Globalization;
+<<<<<<< HEAD
 using System.Diagnostics;
+=======
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 using namaichi.info;
 
 namespace namaichi.rec
@@ -179,7 +182,11 @@ namespace namaichi.rec
 					var aer = new AnotherEngineRecorder(rm, rfu);
 					aer.record(hlsSegM3uUrl, recFolderFile, anotherEngineCommand);
 					
+<<<<<<< HEAD
 					recFolderFile = util.incrementRecFolderFile(recFolderFile);//wr.getRecFilePath()[1];
+=======
+					recFolderFile = wr.getRecFilePath()[1];
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 					setReconnecting(true);
 //					if (!isReConnecting) 
 					reConnect();
@@ -222,6 +229,7 @@ namespace namaichi.rec
 				if (isEndProgram)
 					rm.form.addLogText("録画を完了しました");
 				if (segmentSaveType == 1 && 
+<<<<<<< HEAD
 				    	(rm.cfg.get("IsRenketuAfter") == "true"
 //				     || (int.Parse(rm.cfg.get("afterConvertMode")) != 0 &&
 //				     	int.Parse(rm.cfg.get("afterConvertMode")) != 1))) {
@@ -233,6 +241,17 @@ namespace namaichi.rec
 //					    (int.Parse(rm.cfg.get("afterConvertMode")) != 0 &&
 //					     	int.Parse(rm.cfg.get("afterConvertMode")) != 1)) {
 					if (int.Parse(rm.cfg.get("afterConvertMode")) > 0) {
+=======
+				    	(rm.cfg.get("IsRenketuAfter") == "true" ||
+				     (int.Parse(rm.cfg.get("afterConvertMode")) != 0 &&
+				     	int.Parse(rm.cfg.get("afterConvertMode")) != 1))) {
+					addDebugBuf("renketu after");
+					renketuAfter();
+				} else if (segmentSaveType == 0) {
+					if (rm.cfg.get("IsAfterRenketuFFmpeg") == "true" || 
+					    (int.Parse(rm.cfg.get("afterConvertMode")) != 0 &&
+					     	int.Parse(rm.cfg.get("afterConvertMode")) != 1)) {
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 						var tf = new ThroughFFMpeg(rm);
 						tf.start(recFolderFile + ".ts", true);
 					}
@@ -491,7 +510,10 @@ namespace namaichi.rec
 						recordedNo.Add(s.fileName);
 						lastSegmentNo = s.no;
 						lastWroteSegmentDt = s.dt;
+<<<<<<< HEAD
 						lastWroteFileSecond = s.second;
+=======
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 						var fName = util.getRegGroup(s.fileName, ".*(\\\\|/|^)(.+)", 2, rm.regGetter.getFName());
 //							if (fName == 
 						lastRecordedSeconds = util.getSecondsFromStr(fName);
@@ -684,8 +706,13 @@ namespace namaichi.rec
 					if (_targetDuration != null) {
 						targetDuration = double.Parse(_targetDuration);
 					}
+<<<<<<< HEAD
 					var isEndList = s.IndexOf("#EXT-X-ENDLIST") > -1;
 					if (isEndList && false) {
+=======
+					var isEndList = s.IndexOf("(#EXT-X-ENDLIST)") > -1;
+					if (isEndList) {
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 						isRetry = false;
 						isEndProgram = true;
 					}
@@ -993,9 +1020,14 @@ namespace namaichi.rec
 				var outFName = streamRenketuAfter();
 				rm.form.addLogText("連結処理を完了しました");
 				
+<<<<<<< HEAD
 //				if (rm.cfg.get("IsAfterRenketuFFmpeg") == "true" ||
 //				   	int.Parse(rm.cfg.get("afterConvertMode")) > 1) {
 				if (int.Parse(rm.cfg.get("afterConvertMode")) > 0) {
+=======
+				if (rm.cfg.get("IsAfterRenketuFFmpeg") == "true" ||
+				   	int.Parse(rm.cfg.get("afterConvertMode")) > 1) {
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 					var tf = new ThroughFFMpeg(rm);
 					tf.start(outFName, true);
 					
@@ -1135,6 +1167,7 @@ namespace namaichi.rec
 					
 				}
 				if (segmentSaveType == 1 &&
+<<<<<<< HEAD
 				    	(rm.cfg.get("IsRenketuAfter") == "true" 
 //				     || int.Parse(rm.cfg.get("afterConvertMode")) > 1)
 				    )) {
@@ -1144,6 +1177,15 @@ namespace namaichi.rec
 //					if (rm.cfg.get("IsAfterRenketuFFmpeg") == "true" || 
 //				    	    int.Parse(rm.cfg.get("afterConvertMode")) > 1) {
 					if (int.Parse(rm.cfg.get("afterConvertMode")) > 0) {
+=======
+				    	(rm.cfg.get("IsRenketuAfter") == "true" || 
+				     int.Parse(rm.cfg.get("afterConvertMode")) > 1)) {
+					addDebugBuf("renketu after");
+					renketuAfter();
+				} else if (segmentSaveType == 0) {
+					if (rm.cfg.get("IsAfterRenketuFFmpeg") == "true" || 
+				    	    int.Parse(rm.cfg.get("afterConvertMode")) > 1) {
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 						var tf = new ThroughFFMpeg(rm);
 						tf.start(recFolderFile + ".ts", true);
 						
@@ -1205,7 +1247,11 @@ namespace namaichi.rec
 				return;
 			#endif
 			
+<<<<<<< HEAD
 			while ((rm.rfu == rfu || !isEnd) || debugWriteBuf.Count != 0) {
+=======
+			while ((rm.rfu == rfu && isRetry) || debugWriteBuf.Count != 0) {
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 				try {
 					lock (debugWriteBuf) {
 						string[] l = new String[debugWriteBuf.Count + 10];
@@ -1265,8 +1311,12 @@ namespace namaichi.rec
 				addDebugBuf("nuke? minNo " + minNo + " lastSegmentNo " + lastSegmentNo + "lastGetPlayListMaxNo " + lastGetPlayListMaxNo.ToString() + " gottsmaxno " + gotTsMaxNo);
 				var inf = getMostSegmentSecond(res);
 				var ins = "";
+<<<<<<< HEAD
 				var sakanoboriNo = 5;
 				var startNo = (minNo + baseNo - gotTsMaxNo > sakanoboriNo) ? (minNo - sakanoboriNo) : (gotTsMaxNo - baseNo + 1);
+=======
+				var startNo = (minNo + baseNo - gotTsMaxNo > 5) ? (minNo - 5) : (gotTsMaxNo - baseNo + 1);
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 				for (var i = startNo; i < minNo; i++) {
 					if (i < 0) continue;
 					ins += "#EXTINF:" + inf + ",\n";

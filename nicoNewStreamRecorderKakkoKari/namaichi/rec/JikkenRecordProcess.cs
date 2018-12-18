@@ -356,12 +356,16 @@ namespace namaichi.rec
 			}
 			try {
 				if (bool.Parse(rm.cfg.get("IsgetComment")) && commentSW == null && !rm.isPlayOnlyMode) {
+<<<<<<< HEAD
 					var fName = (commentFileName == null) ? recFolderFile[1] : incrementRecFolderFile(commentFileName);
 					commentFileName = fName;
 					var _commentFileName = util.getOkCommentFileName(rm.cfg, fName, lvid, isTimeShift, isRtmp);
 					var isExists = File.Exists(_commentFileName);
 					commentSW = new StreamWriter(_commentFileName, false, System.Text.Encoding.UTF8);
 					
+=======
+					var commentFileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, isTimeShift, isRtmp);
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 					
 					if (isGetCommentXml && !isExists) {
 						commentSW.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");

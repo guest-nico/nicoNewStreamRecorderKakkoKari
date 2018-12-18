@@ -153,6 +153,7 @@ namespace rokugaTouroku.info
         }
         public string getAfterConvertTypeNum() {
         	var t = afterConvertType;
+<<<<<<< HEAD
 			if (t == "処理しない") return "0";
 			if (t == "形式を変更せず処理する") return "1";
 			if (t == "ts") return "2";
@@ -168,6 +169,22 @@ namespace rokugaTouroku.info
 			if (t == "wma(音声)") return "12";
 			if (t == "aac(音声)") return "13";
 			if (t == "ogg(音声)") return "14";
+=======
+			if (t == "変換無し") return "0";
+			if (t == "ts") return "1";
+			if (t == "avi") return "2";
+			if (t == "mp4") return "3";
+			if (t == "flv") return "4";
+			if (t == "mov") return "5";
+			if (t == "wmv") return "6";
+			if (t == "vob") return "7";
+			if (t == "mkv") return "8";
+			if (t == "mp3(音声)") return "9";
+			if (t == "wav(音声)") return "10";
+			if (t == "wma(音声)") return "11";
+			if (t == "aac(音声)") return "12";
+			if (t == "ogg(音声)") return "13";
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 			return "0";
         }      
 	}

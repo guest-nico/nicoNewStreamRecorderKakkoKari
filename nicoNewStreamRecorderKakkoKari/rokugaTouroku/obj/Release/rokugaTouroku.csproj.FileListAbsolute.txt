@@ -184,6 +184,7 @@ C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou j\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.VersionForm.resources
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou j\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.csproj.GenerateResource.Cache
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou j\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.exe
+<<<<<<< HEAD
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou k\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\rokugaTouroku.exe.config
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou k\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\rokugaTouroku.exe
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou k\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.dll
@@ -214,3 +215,5 @@ C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou l\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.VersionForm.resources
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou l\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.csproj.GenerateResource.Cache
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou l\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.exe
+=======
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936

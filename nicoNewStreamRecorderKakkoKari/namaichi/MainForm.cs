@@ -651,7 +651,10 @@ namespace namaichi
 				}
 			});
 		}
+<<<<<<< HEAD
 		
 		
+=======
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 	}
 }

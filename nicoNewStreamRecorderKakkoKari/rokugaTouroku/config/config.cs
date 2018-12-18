@@ -115,7 +115,11 @@ public class config
 			{"IsSegmentNukeInfo","true"},
 			{"segmentSaveType","0"},
 			{"IsRenketuAfter","true"},
+<<<<<<< HEAD
 //			{"IsAfterRenketuFFmpeg","false"},
+=======
+			{"IsAfterRenketuFFmpeg","false"},
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 			{"EngineMode","0"},
 			{"anotherEngineCommand",""},
 			{"IsUsePlayer","true"},

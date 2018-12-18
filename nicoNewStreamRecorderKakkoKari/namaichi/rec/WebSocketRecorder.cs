@@ -146,11 +146,14 @@ namespace namaichi.rec
 					rm.hlsUrl = "end";
 					if (rr.isEndProgram) isEndProgram = true;
 					isRetry = false;
+<<<<<<< HEAD
 				});
 				/*
 				Task.Run(() => {
 				    xcg = new XmlCommentGetter(lvid, container, rm, rfu, recFolderFile[1], this, isTimeShift, isRtmp, openTime, _openTime, serverTime);
 				    xcg.get();
+=======
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 				});
 				while (rm.rfu == rfu && isRetry) Thread.Sleep(1000);
 				*/
@@ -735,12 +738,18 @@ namespace namaichi.rec
 			}			
 			try {
 				if (bool.Parse(isGetComment) && commentSW == null && !rm.isPlayOnlyMode) {
+<<<<<<< HEAD
 					var fName = (commentFileName == null) ? recFolderFile[1] : incrementRecFolderFile(commentFileName);
 					commentFileName = fName;
 					var _commentFileName = util.getOkCommentFileName(rm.cfg, fName, lvid, isTimeShift, isRtmp);
 					var isExists = File.Exists(_commentFileName);
 					commentSW = new StreamWriter(_commentFileName, false, System.Text.Encoding.UTF8);
 					
+=======
+					var commentFileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, isTimeShift, isRtmp);
+					var isExists = File.Exists(commentFileName);
+					commentSW = new StreamWriter(commentFileName, false, System.Text.Encoding.UTF8);
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 					if (bool.Parse(isGetCommentXml) && !isExists) {
 						commentSW.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
 				        commentSW.WriteLine("<packet>");

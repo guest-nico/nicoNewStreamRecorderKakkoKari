@@ -428,7 +428,11 @@ namespace namaichi
 			// 
 			this.groupBox4.Controls.Add(this.label4);
 			this.groupBox4.Controls.Add(this.afterConvertModeList);
+<<<<<<< HEAD
 			this.groupBox4.Location = new System.Drawing.Point(5, 288);
+=======
+			this.groupBox4.Location = new System.Drawing.Point(5, 383);
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(385, 121);
 			this.groupBox4.TabIndex = 2;
@@ -450,8 +454,12 @@ namespace namaichi
 			this.afterConvertModeList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.afterConvertModeList.FormattingEnabled = true;
 			this.afterConvertModeList.Items.AddRange(new object[] {
+<<<<<<< HEAD
 									"処理しない",
 									"形式を変更せず処理する",
+=======
+									"変換無し",
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 									"ts",
 									"avi",
 									"mp4",
@@ -470,6 +478,38 @@ namespace namaichi
 			this.afterConvertModeList.Size = new System.Drawing.Size(149, 20);
 			this.afterConvertModeList.TabIndex = 6;
 			// 
+<<<<<<< HEAD
+=======
+			// groupBox9
+			// 
+			this.groupBox9.Controls.Add(this.label4);
+			this.groupBox9.Controls.Add(this.isAfterRenketuFFmpegChkBox);
+			this.groupBox9.Location = new System.Drawing.Point(5, 276);
+			this.groupBox9.Name = "groupBox9";
+			this.groupBox9.Size = new System.Drawing.Size(385, 101);
+			this.groupBox9.TabIndex = 1;
+			this.groupBox9.TabStop = false;
+			this.groupBox9.Text = "連結処理";
+			// 
+			// label4
+			// 
+			this.label4.Location = new System.Drawing.Point(19, 39);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(360, 59);
+			this.label4.TabIndex = 1;
+			this.label4.Text = "（ファイルサイズが若干小さくなることが多く、音声や映像の問題も減りますが、処理のための時間がかかります。後からエクスプローラ上で.tsファイルや.tsファイルの入" +
+			"ったフォルダをexeファイルにドロップしても同様の処理を行うことができます。）\r\n";
+			// 
+			// isAfterRenketuFFmpegChkBox
+			// 
+			this.isAfterRenketuFFmpegChkBox.Location = new System.Drawing.Point(19, 18);
+			this.isAfterRenketuFFmpegChkBox.Name = "isAfterRenketuFFmpegChkBox";
+			this.isAfterRenketuFFmpegChkBox.Size = new System.Drawing.Size(169, 18);
+			this.isAfterRenketuFFmpegChkBox.TabIndex = 0;
+			this.isAfterRenketuFFmpegChkBox.Text = "録画後にFFmpegで処理する";
+			this.isAfterRenketuFFmpegChkBox.UseVisualStyleBackColor = true;
+			// 
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 			// groupBox10
 			// 
 			this.groupBox10.Controls.Add(this.isRtmpEngine);
@@ -484,14 +524,22 @@ namespace namaichi
 			this.groupBox10.Controls.Add(this.segmentRadioBtnPanel);
 			this.groupBox10.Location = new System.Drawing.Point(5, 10);
 			this.groupBox10.Name = "groupBox10";
+<<<<<<< HEAD
 			this.groupBox10.Size = new System.Drawing.Size(385, 272);
+=======
+			this.groupBox10.Size = new System.Drawing.Size(385, 260);
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 			this.groupBox10.TabIndex = 0;
 			this.groupBox10.TabStop = false;
 			this.groupBox10.Text = "録画エンジン";
 			// 
 			// isRtmpEngine
 			// 
+<<<<<<< HEAD
 			this.isRtmpEngine.Location = new System.Drawing.Point(6, 245);
+=======
+			this.isRtmpEngine.Location = new System.Drawing.Point(6, 233);
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 			this.isRtmpEngine.Name = "isRtmpEngine";
 			this.isRtmpEngine.Size = new System.Drawing.Size(252, 15);
 			this.isRtmpEngine.TabIndex = 27;

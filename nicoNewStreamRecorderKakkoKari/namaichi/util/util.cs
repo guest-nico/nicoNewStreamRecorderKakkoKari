@@ -22,8 +22,18 @@ class app {
 	}
 }
 class util {
+<<<<<<< HEAD
 	public static string versionStr = "ver0.87.21";
 	public static string versionDayStr = "2018/12/18";
+=======
+<<<<<<< HEAD
+	public static string versionStr = "ver0.87.13";
+	public static string versionDayStr = "2018/12/02";
+=======
+	public static string versionStr = "ver0.87.12";
+	public static string versionDayStr = "2018/11/30";
+>>>>>>> 8166bb2e0a37940c9e6ca0bcf8eb0ff0cadcc265
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	
@@ -202,6 +212,7 @@ class util {
 	public static string getOkFileName(string name, bool isRtmp) {
 		if (isRtmp) name = getOkSJisOut(name);
 		
+<<<<<<< HEAD
 		name = name.Replace("\\", "");
 		name = name.Replace("/", "^");
 		name = name.Replace(":", "F");
@@ -212,6 +223,8 @@ class util {
 		name = name.Replace(">", "„");
 		name = name.Replace("|", "b");
 		/*
+=======
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 		string[] replaceCharacter = {"\\", "/", ":", "*", "?", "\"", "<", ">", "|"};
 		foreach (string s in replaceCharacter) {
 			name = name.Replace(s, "_");
@@ -462,6 +475,7 @@ class util {
 			if (File.Exists(fName + e)) return true;
 		return false;
 	}
+<<<<<<< HEAD
 	public static string incrementRecFolderFile(string recFolderFile) {
 		if (recFolderFile.EndsWith("xml") || recFolderFile.EndsWith("json")) {
 			var r = new Regex("(\\d+)\\.(xml|json)$");
@@ -488,6 +502,8 @@ class util {
 		}
 		return null;
 	}
+=======
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 	public static string getPageSource(string _url, ref WebHeaderCollection getheaders, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 5000) {
 		//util.debugWriteLine("getpage 01");
 		timeoutMs = 2000;

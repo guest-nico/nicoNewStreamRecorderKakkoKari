@@ -120,8 +120,12 @@ namespace rokugaTouroku
 			this.afterConvertModeList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.afterConvertModeList.FormattingEnabled = true;
 			this.afterConvertModeList.Items.AddRange(new object[] {
+<<<<<<< HEAD
 									"処理しない",
 									"形式を変更せず処理する",
+=======
+									"変換無し",
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 									"ts",
 									"avi",
 									"mp4",

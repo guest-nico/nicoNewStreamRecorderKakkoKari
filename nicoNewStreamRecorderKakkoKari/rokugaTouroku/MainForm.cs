@@ -481,6 +481,7 @@ namespace rokugaTouroku
 			var i = 0;
 		}
 		void setConvertList(int afterConvertMode) {
+<<<<<<< HEAD
 			var t = "処理しない";
 			if (afterConvertMode == 1) t = "形式を変更せず処理する";
 			if (afterConvertMode == 2) t = "ts";
@@ -496,6 +497,22 @@ namespace rokugaTouroku
 			if (afterConvertMode == 12) t = "wma(音声)";
 			if (afterConvertMode == 13) t = "aac(音声)";
 			if (afterConvertMode == 14) t = "ogg(音声)";
+=======
+			var t = "変換無し";
+			if (afterConvertMode == 1) t = "ts";
+			if (afterConvertMode == 2) t = "avi";			
+			if (afterConvertMode == 3) t = "mp4";
+			if (afterConvertMode == 4) t = "flv";
+			if (afterConvertMode == 5) t = "mov";
+			if (afterConvertMode == 6) t = "wmv";
+			if (afterConvertMode == 7) t = "vob";
+			if (afterConvertMode == 8) t = "mkv";
+			if (afterConvertMode == 9) t = "mp3(音声)";
+			if (afterConvertMode == 10) t = "wav(音声)";
+			if (afterConvertMode == 11) t = "wma(音声)";
+			if (afterConvertMode == 12) t = "aac(音声)";
+			if (afterConvertMode == 13) t = "ogg(音声)";
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 			afterConvertModeList.Text = t;
 		}
 		void versionMenu_Click(object sender, EventArgs e)

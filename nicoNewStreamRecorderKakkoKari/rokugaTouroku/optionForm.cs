@@ -129,7 +129,11 @@ namespace rokugaTouroku
 				{"IsSegmentNukeInfo",isSegmentNukeInfoChkBox.Checked.ToString().ToLower()},
 				{"segmentSaveType",getSegmentSaveType()},
 				{"IsRenketuAfter",isRenketuAfterChkBox.Checked.ToString().ToLower()},
+<<<<<<< HEAD
 //				{"IsAfterRenketuFFmpeg",isAfterRenketuFFmpegChkBox.Checked.ToString().ToLower()},
+=======
+				{"IsAfterRenketuFFmpeg",isAfterRenketuFFmpegChkBox.Checked.ToString().ToLower()},
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 //				{"IsDefaultEngine",isDefaultEngineChkBox.Checked.ToString().ToLower()},
 				{"EngineMode",getEngineMode()},
 				{"anotherEngineCommand",anotherEngineCommandText.Text},
@@ -349,7 +353,11 @@ namespace rokugaTouroku
         	setSegmentSaveType(cfg.get("segmentSaveType"));
         	isRenketuAfterChkBox.Checked = bool.Parse(cfg.get("IsRenketuAfter"));
         	isRenketuAfterChkBox_UpdateAction();
+<<<<<<< HEAD
 //        	isAfterRenketuFFmpegChkBox.Checked = bool.Parse(cfg.get("IsAfterRenketuFFmpeg"));
+=======
+        	isAfterRenketuFFmpegChkBox.Checked = bool.Parse(cfg.get("IsAfterRenketuFFmpeg"));
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 //        	isDefaultEngineChkBox.Checked = bool.Parse(cfg.get("IsDefaultEngine"));
         	setEngineType(cfg.get("EngineMode"));
         	isDefaultEngineChkBox_UpdateAction();
@@ -754,6 +762,7 @@ namespace rokugaTouroku
 			anotherCommentViewerPathText.Text = dialog.FileName;
 		}
 		void setConvertList(int afterConvertMode) {
+<<<<<<< HEAD
 			var t = "処理しない";
 			if (afterConvertMode == 1) t = "形式を変更せず処理する";
 			if (afterConvertMode == 2) t = "ts";
@@ -769,10 +778,27 @@ namespace rokugaTouroku
 			if (afterConvertMode == 12) t = "wma(音声)";
 			if (afterConvertMode == 13) t = "aac(音声)";
 			if (afterConvertMode == 14) t = "ogg(音声)";
+=======
+			var t = "変換無し";
+			if (afterConvertMode == 1) t = "ts";
+			if (afterConvertMode == 2) t = "avi";			
+			if (afterConvertMode == 3) t = "mp4";
+			if (afterConvertMode == 4) t = "flv";
+			if (afterConvertMode == 5) t = "mov";
+			if (afterConvertMode == 6) t = "wmv";
+			if (afterConvertMode == 7) t = "vob";
+			if (afterConvertMode == 8) t = "mkv";
+			if (afterConvertMode == 9) t = "mp3(音声)";
+			if (afterConvertMode == 10) t = "wav(音声)";
+			if (afterConvertMode == 11) t = "wma(音声)";
+			if (afterConvertMode == 12) t = "aac(音声)";
+			if (afterConvertMode == 13) t = "ogg(音声)";
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 			afterConvertModeList.Text = t;
 		}
 		private string getAfterConvertType() {
 			var t = afterConvertModeList.Text;
+<<<<<<< HEAD
 			if (t == "処理しない") return "0";
 			if (t == "形式を変更せず処理する") return "1";
 			if (t == "ts") return "2";
@@ -789,6 +815,23 @@ namespace rokugaTouroku
 			if (t == "aac(音声)") return "13";
 			if (t == "ogg(音声)") return "14";
 			return t;
+=======
+			if (t == "変換無し") return "0";
+			if (t == "ts") return "1";
+			if (t == "avi") return "2";
+			if (t == "mp4") return "3";
+			if (t == "flv") return "4";
+			if (t == "mov") return "5";
+			if (t == "wmv") return "6";
+			if (t == "vob") return "7";
+			if (t == "mkv") return "8";
+			if (t == "mp3(音声)") return "9";
+			if (t == "wav(音声)") return "10";
+			if (t == "wma(音声)") return "11";
+			if (t == "aac(音声)") return "12";
+			if (t == "ogg(音声)") return "13";
+			return "0";
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 		}
 		
 		

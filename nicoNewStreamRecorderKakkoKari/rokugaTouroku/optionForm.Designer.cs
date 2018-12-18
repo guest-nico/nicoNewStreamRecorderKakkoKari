@@ -158,9 +158,12 @@ namespace rokugaTouroku
 			this.isLogFileChkBox = new System.Windows.Forms.CheckBox();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
+<<<<<<< HEAD
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.afterConvertModeList = new System.Windows.Forms.ComboBox();
+=======
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox6.SuspendLayout();
@@ -432,6 +435,73 @@ namespace rokugaTouroku
 			this.tabPage6.Text = "録画方法";
 			this.tabPage6.UseVisualStyleBackColor = true;
 			// 
+<<<<<<< HEAD
+=======
+			// groupBox4
+			// 
+			this.groupBox4.Controls.Add(this.afterConvertModeList);
+			this.groupBox4.Location = new System.Drawing.Point(5, 383);
+			this.groupBox4.Name = "groupBox4";
+			this.groupBox4.Size = new System.Drawing.Size(385, 52);
+			this.groupBox4.TabIndex = 2;
+			this.groupBox4.TabStop = false;
+			this.groupBox4.Text = "変換処理";
+			// 
+			// afterConvertModeList
+			// 
+			this.afterConvertModeList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.afterConvertModeList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.afterConvertModeList.FormattingEnabled = true;
+			this.afterConvertModeList.Items.AddRange(new object[] {
+									"変換無し",
+									"ts",
+									"avi",
+									"mp4",
+									"flv",
+									"mov",
+									"wmv",
+									"vob",
+									"mkv",
+									"mp3(音声)",
+									"wav(音声)",
+									"wma(音声)",
+									"aac(音声)",
+									"ogg(音声)"});
+			this.afterConvertModeList.Location = new System.Drawing.Point(12, 18);
+			this.afterConvertModeList.Name = "afterConvertModeList";
+			this.afterConvertModeList.Size = new System.Drawing.Size(90, 20);
+			this.afterConvertModeList.TabIndex = 6;
+			// 
+			// groupBox9
+			// 
+			this.groupBox9.Controls.Add(this.label4);
+			this.groupBox9.Controls.Add(this.isAfterRenketuFFmpegChkBox);
+			this.groupBox9.Location = new System.Drawing.Point(5, 276);
+			this.groupBox9.Name = "groupBox9";
+			this.groupBox9.Size = new System.Drawing.Size(385, 101);
+			this.groupBox9.TabIndex = 1;
+			this.groupBox9.TabStop = false;
+			this.groupBox9.Text = "連結処理";
+			// 
+			// label4
+			// 
+			this.label4.Location = new System.Drawing.Point(19, 39);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(360, 59);
+			this.label4.TabIndex = 1;
+			this.label4.Text = "（ファイルサイズが若干小さくなることが多く、音声や映像の問題も減りますが、処理のための時間がかかります。後からエクスプローラ上で.tsファイルや.tsファイルの入" +
+			"ったフォルダをexeファイルにドロップしても同様の処理を行うことができます。）\r\n";
+			// 
+			// isAfterRenketuFFmpegChkBox
+			// 
+			this.isAfterRenketuFFmpegChkBox.Location = new System.Drawing.Point(19, 18);
+			this.isAfterRenketuFFmpegChkBox.Name = "isAfterRenketuFFmpegChkBox";
+			this.isAfterRenketuFFmpegChkBox.Size = new System.Drawing.Size(169, 18);
+			this.isAfterRenketuFFmpegChkBox.TabIndex = 0;
+			this.isAfterRenketuFFmpegChkBox.Text = "連結後にFFmpegで処理する";
+			this.isAfterRenketuFFmpegChkBox.UseVisualStyleBackColor = true;
+			// 
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 			// groupBox10
 			// 
 			this.groupBox10.Controls.Add(this.isRtmpEngine);
@@ -446,14 +516,22 @@ namespace rokugaTouroku
 			this.groupBox10.Controls.Add(this.segmentRadioBtnPanel);
 			this.groupBox10.Location = new System.Drawing.Point(5, 10);
 			this.groupBox10.Name = "groupBox10";
+<<<<<<< HEAD
 			this.groupBox10.Size = new System.Drawing.Size(385, 272);
+=======
+			this.groupBox10.Size = new System.Drawing.Size(385, 260);
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 			this.groupBox10.TabIndex = 0;
 			this.groupBox10.TabStop = false;
 			this.groupBox10.Text = "録画エンジン";
 			// 
 			// isRtmpEngine
 			// 
+<<<<<<< HEAD
 			this.isRtmpEngine.Location = new System.Drawing.Point(6, 245);
+=======
+			this.isRtmpEngine.Location = new System.Drawing.Point(6, 233);
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 			this.isRtmpEngine.Name = "isRtmpEngine";
 			this.isRtmpEngine.Size = new System.Drawing.Size(252, 15);
 			this.isRtmpEngine.TabIndex = 28;
@@ -1506,6 +1584,7 @@ namespace rokugaTouroku
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
 			// 
+<<<<<<< HEAD
 			// groupBox4
 			// 
 			this.groupBox4.Controls.Add(this.label4);
@@ -1552,6 +1631,8 @@ namespace rokugaTouroku
 			this.afterConvertModeList.Size = new System.Drawing.Size(149, 20);
 			this.afterConvertModeList.TabIndex = 6;
 			// 
+=======
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 			// optionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1598,7 +1679,10 @@ namespace rokugaTouroku
 			this.groupBox4.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+<<<<<<< HEAD
 		private System.Windows.Forms.Label label4;
+=======
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 		private System.Windows.Forms.RadioButton isRtmpEngine;
 		private System.Windows.Forms.CheckBox isSegmentNukeInfoChkBox;
 		private System.Windows.Forms.Label label3;

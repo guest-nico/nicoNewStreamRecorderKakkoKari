@@ -15,7 +15,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
+<<<<<<< HEAD
 using System.Text.RegularExpressions;
+=======
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 using namaichi.info;
 using SuperSocket.ClientEngine;
 
@@ -32,7 +35,11 @@ namespace namaichi.rec
 		private config.config cfg;
 		private RecordingManager rm;
 		private RecordFromUrl rfu;
+<<<<<<< HEAD
 		private string recFolderFile;
+=======
+		private string[] recFolderFile;
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 		private IRecorderProcess wr;
 		private long openTime;
 		
@@ -48,7 +55,11 @@ namespace namaichi.rec
 		public bool isEndProgram = false;
 		private DateTime lastEndProgramCheckTime = DateTime.Now;
 		public int subNtiGroupNum = 0;
+<<<<<<< HEAD
 		private int afterConvertMode;
+=======
+		private string afterConvertMode;
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 		private int tsRecordIndex = 0;
 		private int tsRecordNum = 0;
 		
@@ -68,9 +79,15 @@ namespace namaichi.rec
 			this.isSub = isSub;
 			this.wr = wr;
 			this.openTime = openTime;
+<<<<<<< HEAD
 			this.recFolderFile = recFolderFile[1];
 			rm.isTitleBarInfo = bool.Parse(rm.cfg.get("IstitlebarInfo"));
 			afterConvertMode = int.Parse(rm.cfg.get("afterConvertMode"));
+=======
+			this.recFolderFile = recFolderFile;
+			rm.isTitleBarInfo = bool.Parse(rm.cfg.get("IstitlebarInfo"));
+			afterConvertMode = rm.cfg.get("afterConvertMode");
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 		}
 		public void record() {
 			//endcode 0-その他の理由 1-stop 2-最初に終了 3-始まった後に番組終了
@@ -111,10 +128,20 @@ namespace namaichi.rec
 					return;
 				}
 				
+<<<<<<< HEAD
+=======
+				
+				if (!rm.isPlayOnlyMode && !isTimeshift)
+					getProcess(out rtmpdumpP, out ffmpegP, rtmpdumpArg);
+				
+				
+				
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 				if (isTimeshift) {
 					timeshiftRecord(rtmpdumpArg);
 					return;
 				}
+<<<<<<< HEAD
 				
 				if (!rm.isPlayOnlyMode)
 					getProcess(out rtmpdumpP, out ffmpegP, rtmpdumpArg);
@@ -122,6 +149,12 @@ namespace namaichi.rec
 				if (!isSub) {
 					if (!isFirst && !rm.isPlayOnlyMode) wr.resetCommentFile();
 					isFirst = false;
+=======
+				if (!isSub) {
+//					if (!isFirst)
+//						rm.form.addLogText("");
+//					isFirst = false;
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 					
 					Task.Run(() => errorReadProcess(rtmpdumpP));
 					
@@ -141,6 +174,7 @@ namespace namaichi.rec
 						}
 					}
 					try {
+<<<<<<< HEAD
 						var f = new FileInfo(util.getOkSJisOut(recFolderFile) + ".flv");
 						if (f != null && f.Exists && f.Length == 0) 
 							File.Delete(f.FullName + ".flv");
@@ -151,6 +185,17 @@ namespace namaichi.rec
 								convertList.Add(recFolderFile + ".flv");
 							}
 							recFolderFile = wr.getRecFilePath()[1];
+=======
+						var f = new FileInfo(util.getOkSJisOut(recFolderFile[1]) + ".flv");
+						if (f != null && f.Exists && f.Length == 0) 
+							File.Delete(f.FullName + ".flv");
+						else {
+							if (rm.cfg.get("IsAfterRenketuFFmpeg") == "true" ||
+							   		(afterConvertMode != "0" && afterConvertMode != "4")) {
+								convertList.Add(recFolderFile[1] + ".flv");
+							}
+							recFolderFile = wr.getRecFilePath();
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 						}
 					} catch (Exception e) {
 						util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
@@ -176,7 +221,12 @@ namespace namaichi.rec
 //							stopRecording();
 //							break;
 						}
+<<<<<<< HEAD
 						
+=======
+						//test
+//						if (DateTime.Now.Second % 10 == 0) stopRecording();
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 						
 						Thread.Sleep(500);
 					}
@@ -246,12 +296,17 @@ namespace namaichi.rec
 				var xml = new XmlDocument();
 				xml.LoadXml(res);
 				
+<<<<<<< HEAD
 				util.debugWriteLine(container.GetCookieHeader(new Uri(url)));
 				var type = util.getRegGroup(res, "<provider_type>(.+?)</provider_type>");
 //				string rtmpurl = null, ticket = null;
 				getTicketUrl(out rtmpUrl, out ticket);
 				 
 				var arg = getArgFromRes(xml, pageType, type, ticket, rtmpUrl);
+=======
+				var type = util.getRegGroup(res, "<provider_type>(.+?)</provider_type>");
+				var arg = getArgFromRes(xml, pageType, type);
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 				if (arg == null) continue;
 				return arg;
 			}
@@ -259,6 +314,7 @@ namespace namaichi.rec
 			Thread.Sleep(3000);
 			return null;
 		}
+<<<<<<< HEAD
 		private void getTicketUrl(out string url, out string ticket) {
 			var edgeurl = "http://watch.live.nicovideo.jp/api/getedgestatus?v=" + lvid;
 			util.debugWriteLine(container.GetCookieHeader(new Uri(edgeurl)));
@@ -272,6 +328,13 @@ namespace namaichi.rec
 				if (type == "official") {
 					var _ticket = xml.SelectSingleNode("/getplayerstatus/tickets");
 //					string ticket = null;
+=======
+		private string getArgFromRes(XmlDocument xml, int pageType, string type) {
+			if (pageType == 0) {
+				if (type == "official") {
+					var _ticket = xml.SelectSingleNode("/getplayerstatus/tickets");
+					string ticket = null;
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 					if (_ticket != null) {
 						var name = _ticket.ChildNodes[0].Attributes["name"];
 						if (name != null) {
@@ -289,7 +352,11 @@ namespace namaichi.rec
 								return null;
 							}
 							if (!isSub) rm.hlsUrl = arg;
+<<<<<<< HEAD
 							if (!isSub && !rm.isPlayOnlyMode) arg += " -o \"" + util.getOkSJisOut(recFolderFile) + ".flv\"";
+=======
+							if (!isSub && !rm.isPlayOnlyMode) arg += " -o \"" + util.getOkSJisOut(recFolderFile[1]) + ".flv\"";
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 							util.debugWriteLine(arg + util.getMainSubStr(isSub, true));
 							return arg;
 						}
@@ -300,17 +367,27 @@ namespace namaichi.rec
 				} else {
 					var _contentsUrl = xml.SelectSingleNode("/getplayerstatus/stream/contents_list/contents");
 					var contentsUrl = (_contentsUrl == null) ? null : _contentsUrl.InnerText.Substring(5);
+<<<<<<< HEAD
 					/*
+=======
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 					var _rtmpUrl = xml.SelectSingleNode("/getplayerstatus/rtmp/url");
 					var rtmpUrl = (_rtmpUrl == null) ? null : _rtmpUrl.InnerText;
 					var _ticket = xml.SelectSingleNode("/getplayerstatus/rtmp/ticket");
 					var ticket = (_ticket == null) ? null : _ticket.InnerText;
+<<<<<<< HEAD
 					*/
+=======
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 					util.debugWriteLine(type + " contentsUrl " + contentsUrl + " rtmpUrl " + rtmpUrl + " ticket " + ticket + util.getMainSubStr(isSub, true));
 					var arg = "-vr " + rtmpUrl + "/" + lvid + " -N " + contentsUrl + " -C S:" + ticket;
 					if (!isSub) rm.hlsUrl = arg;
 					
+<<<<<<< HEAD
 					if (!isSub && !rm.isPlayOnlyMode) arg += " -o \"" + util.getOkSJisOut(recFolderFile) + ".flv\"";
+=======
+					if (!isSub && !rm.isPlayOnlyMode) arg += " -o \"" + util.getOkSJisOut(recFolderFile[1]) + ".flv\"";
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 					util.debugWriteLine(arg + util.getMainSubStr(isSub, true));
 					if (contentsUrl == null || rtmpUrl == null || ticket == null) {
 						Thread.Sleep(3000);
@@ -326,12 +403,18 @@ namespace namaichi.rec
 				//timeshift
 				var isPremium = xml.SelectSingleNode("/getplayerstatus/user/is_premium").InnerText == "1";
 				if (type == "official" || type == "channel") {
+<<<<<<< HEAD
 					/*
+=======
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 					var _url = xml.SelectSingleNode("/getplayerstatus/rtmp/url");
 					rtmpUrl = (_url == null) ? null : _url.InnerText;
 					var _ticket = xml.SelectSingleNode("/getplayerstatus/rtmp/ticket");
 					ticket = (_ticket == null) ? null : _ticket.InnerText;
+<<<<<<< HEAD
 					*/
+=======
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 					var que = xml.SelectSingleNode("/getplayerstatus/stream/quesheet");
 					if (rtmpUrl == null || ticket == null || que == null) {
 						Thread.Sleep(3000);
@@ -359,6 +442,7 @@ namespace namaichi.rec
 					return arg;
 					
 				} else {
+<<<<<<< HEAD
 					/*
 					var _url = xml.SelectSingleNode("/getplayerstatus/rtmp/url");
 					var __url = (_url == null) ? null : _url.InnerText;
@@ -367,6 +451,14 @@ namespace namaichi.rec
 					*/
 					var que = xml.SelectSingleNode("/getplayerstatus/stream/quesheet");
 					if (rtmpUrl == null || ticket == null || que == null) {
+=======
+					var _url = xml.SelectSingleNode("/getplayerstatus/rtmp/url");
+					var url = (_url == null) ? null : _url.InnerText;
+					var _ticket = xml.SelectSingleNode("/getplayerstatus/rtmp/ticket");
+					var ticket = (_ticket == null) ? null : _ticket.InnerText;
+					var que = xml.SelectSingleNode("/getplayerstatus/stream/quesheet");
+					if (url == null || ticket == null || que == null) {
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 						Thread.Sleep(3000);
 						return null;
 					}
@@ -382,7 +474,11 @@ namespace namaichi.rec
 					var arg = "";
 					foreach (var a in publishList) {
 						if (arg != "") arg += "$";
+<<<<<<< HEAD
 						arg += "-vr " + rtmpUrl + " -N " + a + " -C S:" + ticket + " -p http://live.nicovideo.jp/watch/" + lvid + " -s http://live.nicovideo.jp/nicoliveplayer.swf?180116154229 -f \"WIN 29,0,0,113\" " + " -o ";
+=======
+						arg += "-vr " + url + " -N " + a + " -C S:" + ticket + " -p http://live.nicovideo.jp/watch/" + lvid + " -s http://live.nicovideo.jp/nicoliveplayer.swf?180116154229 -f \"WIN 29,0,0,113\" " + " -o ";
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 					}
 					rm.hlsUrl = "timeshift";
 					util.debugWriteLine(arg + util.getMainSubStr(isSub, true));
@@ -634,7 +730,13 @@ namespace namaichi.rec
 //					if (isFirst) 
 //					Debug.WriteLine("rtmpdump " + i);
 //					if (rm.isPlayOnlyMode) continue;
+<<<<<<< HEAD
 					
+=======
+					//test
+//					_is.Write(b, 0, i);
+//					_is.Flush();
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 					if (i == null || i == 0) {
 						util.debugWriteLine("rtmpdump read i " + ((i == null) ? "null" : " get 0"));
 					}
@@ -726,11 +828,16 @@ namespace namaichi.rec
 //			Process rtmpdumpP, ffmpegP;
 			var convertList = new List<string>();
 			var argList = rtmpdumpArg.Split('$');
+<<<<<<< HEAD
 			tsRecordNum = argList.Length;
+=======
+			tsRecordNum =argList.Length;
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 			try {
 				for (tsRecordIndex = 0; tsRecordIndex < argList.Length; tsRecordIndex++) {
 					if (rfu.tsRecNumArr != null && 
 					    	Array.IndexOf(rfu.tsRecNumArr, tsRecordIndex + 1) == -1) continue;
+<<<<<<< HEAD
 					if (tsRecordIndex != 0) {
 						var _args = getRtmpDumpArgs();
 						if (_args != null) argList = _args.Split('$');
@@ -742,6 +849,10 @@ namespace namaichi.rec
 					
 					
 					var _arg = argList[tsRecordIndex] + "\"" + recFolderFile + ".flv\"";
+=======
+					if (tsRecordIndex != 0) recFolderFile = wr.getRecFilePath();
+					var _arg = argList[tsRecordIndex] + "\"" + recFolderFile[1] + ".flv\"";
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 					
 					if (_arg.StartsWith("-r")) {
 						makeTs(_arg);
@@ -759,10 +870,16 @@ namespace namaichi.rec
 						stopRecording();
 					}
 					try {
+<<<<<<< HEAD
 //						if (rm.cfg.get("IsAfterRenketuFFmpeg") == "true" ||
 //						   		(afterConvertMode != "0" && afterConvertMode != "4")) {
 						if (afterConvertMode > 0) {
 							convertList.Add(recFolderFile + ".flv");
+=======
+						if (rm.cfg.get("IsAfterRenketuFFmpeg") == "true" ||
+						   		(afterConvertMode != "0" && afterConvertMode != "4")) {
+							convertList.Add(recFolderFile[1] + ".flv");
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 						}
 					} catch (Exception e) {
 						util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
@@ -825,6 +942,7 @@ namespace namaichi.rec
 		private void makeTs(string _arg) {
 			util.debugWriteLine("make ts " + _arg);
 			var que = util.getRegGroup(_arg, "(/content.+?) ");
+<<<<<<< HEAD
 			while (rm.rfu == rfu) {
 				var cl = new RtmpClient(rtmpUrl, que, ticket, rm);
 				if (cl.makeTs()) break;
@@ -839,5 +957,11 @@ namespace namaichi.rec
 			return r.Replace(recFolderFile, _new);
 //			return recFolderFile.Replace(m.Groups[0].Value, _new);
 		}
+=======
+			var cl = new RtmpClient(rtmpUrl, que, ticket, rm);
+			cl.makeTs();
+			util.debugWriteLine("make ts end");
+		}
+>>>>>>> e3edae2ec07ab179fa97cf190ec2270511655936
 	}
 }
