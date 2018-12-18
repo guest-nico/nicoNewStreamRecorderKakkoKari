@@ -9,7 +9,7 @@
 using System;
 using System.Diagnostics;
 
-namespace rokugaTouroku.log
+namespace namaichi.Logger
 {
 	/// <summary>
 	/// Description of TraceListener.

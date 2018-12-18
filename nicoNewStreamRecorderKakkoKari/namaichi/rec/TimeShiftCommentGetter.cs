@@ -19,6 +19,8 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using System.Threading;
 using System.Drawing;
+using System.Xml;
+using System.Text.RegularExpressions;
 using namaichi.info;
 
 namespace namaichi.rec
@@ -36,7 +38,7 @@ namespace namaichi.rec
 		RecordFromUrl rfu;
 		long openTime = 0;
 		long _openTime = 0;
-		string[] recFolderFile;
+		string recFolderFile;
 		string lvid;
 		string programType;
 		int startSecond;
@@ -61,9 +63,19 @@ namespace namaichi.rec
 		
 		int gotCount = 0;
 		public string[] sortedComments;
-		public TimeShiftConfig tsConfig;
+//		public TimeShiftConfig tsConfig;
+		private bool isVposStartTime;
+		private bool isRtmp;
+		private int[] quePosTimeList;
 		
-		public TimeShiftCommentGetter(string message, string userId, RecordingManager rm, RecordFromUrl rfu, MainForm form, long openTime, string[] recFolderFile, string lvid, CookieContainer container, string programType, long _openTime, WebSocketRecorder rp, int startSecond, TimeShiftConfig tsConfig)
+		public TimeShiftCommentGetter(string message, 
+				string userId, RecordingManager rm, 
+				RecordFromUrl rfu, MainForm form, 
+				long openTime, string[] recFolderFile, 
+				string lvid, CookieContainer container, 
+				string programType, long _openTime, 
+				WebSocketRecorder rp, int startSecond, 
+				bool isVposStartTime, bool isRtmp)
 		{
 			this.uri = util.getRegGroup(message, "messageServerUri\"\\:\"(ws.+?)\"");
 			this.thread = util.getRegGroup(message, "threadId\":\"(.+?)\"");
@@ -72,7 +84,7 @@ namespace namaichi.rec
 			this.userId = userId;
 			this.form = form;
 			this.openTime = openTime;
-			this.recFolderFile = recFolderFile;
+			this.recFolderFile = recFolderFile[1];
 			this.lvid = lvid;
 			this.container = container;
 			this.isGetXml = bool.Parse(rm.cfg.get("IsgetcommentXml"));
@@ -80,7 +92,9 @@ namespace namaichi.rec
 			this._openTime = _openTime;
 			this.rp = rp;
 			this.startSecond = startSecond;
-			this.tsConfig = tsConfig;
+			//this.tsConfig = tsConfig;
+			this.isVposStartTime = isVposStartTime;
+			this.isRtmp = isRtmp;
 		}
 		public void save() {
 			if (!bool.Parse(rm.cfg.get("IsgetComment"))) {
@@ -88,7 +102,12 @@ namespace namaichi.rec
 				return;
 			}
 
-			
+			if (isRtmp) {
+				if (!setQuePosList()) {
+					isEnd = true;
+					return;
+				}
+			}
 				try {
 //					if (!rm.isPlayOnlyMode)
 //						fileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, true);
@@ -111,7 +130,7 @@ namespace namaichi.rec
 			
 			Task.Run(() => {
 			    while (true) {
-					if (rp.firstSegmentSecond != -1) break;
+			         		if (rp.isRtmp || rp.firstSegmentSecond != -1) break;
 					Thread.Sleep(500);
 				}
 				connect();
@@ -127,7 +146,8 @@ namespace namaichi.rec
 				var header =  new List<KeyValuePair<string, string>>();
 				header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Protocol", "msg.nicovideo.jp#json"));
 				//wsc = new WebSocket(msUri,  "", null, header, "", "", WebSocketVersion.Rfc6455);
-				wsc = new WebSocket(uri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
+				//wsc = new WebSocket(uri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
+				wsc = new WebSocket(uri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.None);
 				wsc.Opened += onWscOpen;
 				wsc.Closed += onWscClose;
 				wsc.MessageReceived += onWscMessageReceive;
@@ -206,10 +226,16 @@ namespace namaichi.rec
 			var chatinfo = new namaichi.info.ChatInfo(xml);
 			
 			XDocument chatXml;
-			var vposStartTime = (tsConfig.isVposStartTime) ? (long)rp.firstSegmentSecond : 0;
-			if (programType == "official")
+			var vposStartTime = (isVposStartTime) ? (long)rp.firstSegmentSecond : 0;
+			
+			if (isRtmp) {
 				chatXml = chatinfo.getFormatXml(_openTime + vposStartTime);
-			else chatXml = chatinfo.getFormatXml(openTime + vposStartTime);
+			} else {
+				if (programType == "official") {
+					chatXml = chatinfo.getFormatXml(0, true, vposStartTime);
+//					chatXml = chatinfo.getFormatXml(_openTime + vposStartTime);
+				} else chatXml = chatinfo.getFormatXml(openTime + vposStartTime);
+			}
 //			else chatXml = chatinfo.getFormatXml(serverTime);
 //			util.debugWriteLine("xml " + chatXml.ToString());
 			
@@ -314,6 +340,8 @@ namespace namaichi.rec
 //				chats = r.ReadToEnd().Split(new string[]{"}>\r\n"}, StringSplitOptions.RemoveEmptyEntries);
 //		    }
 			//var isXml = bool.Parse(rm.cfg.get("IsgetcommentXml"));
+			
+				
 			var keys = new List<int>();
 			foreach (var c in gotCommentList) {
 //				util.debugWriteLine(c);
@@ -327,26 +355,99 @@ namespace namaichi.rec
 			rp.gotTsCommentList = chats;
 			if (!isWrite) return;
 			
-			fileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, true);
-			var w = new StreamWriter(fileName + "_", false, System.Text.Encoding.UTF8);
-			if (isGetXml) {
-				w.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
-			    w.WriteLine("<packet>");
-			    
-			    w.Flush();
+			var fileNum = (quePosTimeList != null) ? quePosTimeList.Length : 1;
+			for (int j = 0; j < fileNum; j++) {
+				if (j != 0) recFolderFile = incrementRecFolderFile(recFolderFile);
+				
+				
+				fileName = util.getOkCommentFileName(rm.cfg, recFolderFile, lvid, true, isRtmp);
+				var w = new StreamWriter(fileName + "_", false, System.Text.Encoding.UTF8);
+				if (isGetXml) {
+					w.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
+				    w.WriteLine("<packet>");
+				    
+				    w.Flush();
+				}
+				w.WriteLine(threadLine);
+				for (var i = 0; i < chats.Length; i++) {
+					if (quePosTimeList != null) {
+						if (chats[i] == null) continue;
+						var _vpos = util.getRegGroup(chats[i], "vpos.+?(-*\\d+)");
+						if (_vpos == null) continue;
+						var vpos = int.Parse(_vpos);
+						
+						if (isRtmp) {
+							
+						}
+						if (j == fileNum - 1 || vpos < quePosTimeList[j + 1]) {
+							var oriVposPart = util.getRegGroup(chats[i], "(vpos.+?-*\\d+)");
+							var newVposPart = oriVposPart.Replace(vpos.ToString(), (vpos - quePosTimeList[j]).ToString());
+							w.WriteLine(chats[i].Replace(oriVposPart, newVposPart));
+							chats[i] = null;
+						}
+					} else {
+						w.WriteLine(chats[i]);
+					}
+					
+				}
+				if (isGetXml) {
+					w.WriteLine("</packet>");
+				}
+				w.Close();
+				
+				File.Delete(fileName);
+				File.Move(fileName + "_", fileName);
 			}
-			w.WriteLine(threadLine);
-			for (var i = 0; i < chats.Length; i++) {
-				w.WriteLine(chats[i]);
-			}
-			if (isGetXml) {
-				w.WriteLine("</packet>");
-			}
-			w.Close();
-			
-			File.Delete(fileName);
-			File.Move(fileName + "_", fileName);
 			form.addLogText("コメントの保存を完了しました");
+		}
+		private bool setQuePosList() {
+			var url = "http://live.nicovideo.jp/api/getplayerstatus/" + lvid;
+			var res = util.getPageSource(url, container, null, false, 5000);
+			
+			var xml = new XmlDocument();
+			xml.LoadXml(res);
+			var que = xml.SelectSingleNode("/getplayerstatus/stream/quesheet");
+			if (que == null) return false;
+			var play = getPlay(que);
+			if (play == null) {
+				Thread.Sleep(3000);
+				quePosTimeList = new int[]{0};
+				return false;
+			}
+			quePosTimeList = getPublishList(que, play);
+			return true;
+//			if (publishList.Count == 0) quePosTimeList = new int[]{0};
+		}
+		private string getPlay(XmlNode ques) {
+			string defaultP = null;
+			string premiumP = null;
+			foreach (XmlNode q in ques.ChildNodes) {
+				var qi = q.InnerText;
+				if (qi.StartsWith("/play case")) {
+					if (qi.IndexOf("default:rtmp:") > -1)
+						defaultP = util.getRegGroup(qi, "default:rtmp:(.+?)[, $]");
+					if (qi.IndexOf("premium:rtmp:") > -1)
+						premiumP = util.getRegGroup(qi, "premium:rtmp:(.+?)[, $]");
+				} else 
+					if (qi.StartsWith("/play")) return util.getRegGroup(qi, "rtmp:(.+?)[, $]");
+			}
+			if (premiumP != null) return premiumP;
+			else if (defaultP != null) return defaultP;
+			return null;
+		}
+		private int[] getPublishList(XmlNode que, string play) {
+			var l = new List<int>();
+			foreach (XmlNode q in que.ChildNodes) {
+				var qi = q.InnerText;
+				if (qi.StartsWith("/publish " + play))
+					l.Add(int.Parse(q.Attributes["vpos"].Value));
+			}
+			return l.ToArray();
+		}
+		private string incrementRecFolderFile(string recFolderFile) {
+			var r = util.incrementRecFolderFile(recFolderFile);
+			if (r == null) return rp.getRecFilePath()[1];
+			return r;
 		}
 	}
 }

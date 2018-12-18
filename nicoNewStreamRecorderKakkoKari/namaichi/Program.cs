@@ -72,7 +72,12 @@ namespace namaichi
 		}
 		static private void firstChanceException(object sender,
 			System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e) {
-			var frameCount = new System.Diagnostics.StackTrace().FrameCount;
+			var frameCount = 0;
+			try {
+				frameCount = new System.Diagnostics.StackTrace().FrameCount;
+			} catch (StackOverflowException ee) {
+				return;
+			}
 			#if DEBUG
 				if (util.isLogFile) {
 					if (frameCount > 150) {

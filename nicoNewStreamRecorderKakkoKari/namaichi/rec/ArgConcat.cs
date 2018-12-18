@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace namaichi.rec
 {
@@ -27,8 +28,13 @@ namespace namaichi.rec
 			this.arr = arr;
 		}
 		public void concat() {
+			Thread.Sleep(500);
 			rm.form.addLogText("結合モードに入ります");
 			var files = getFiles();
+			if (files.Count == 0) {
+				rm.form.addLogText(".tsファイルが見つかりませんでした");
+				return;
+			}
 			
 			foreach (var a in files)
 				util.debugWriteLine(a);
@@ -37,9 +43,11 @@ namespace namaichi.rec
 			rm.form.addLogText(files.Count() + "のファイルが見つかりました");
 			var outPath = concatFiles(files);
 			
-			if (rm.cfg.get("IsAfterRenketuFFmpeg") == "true") {
+//			if (rm.cfg.get("IsAfterRenketuFFmpeg") == "true" ||
+//			    int.Parse(rm.cfg.get("afterConvertMode")) > 1) {
+			if (int.Parse(rm.cfg.get("afterConvertMode")) > 0) {
 				var tf = new ThroughFFMpeg(rm);
-				tf.start(outPath, false);
+				tf.start(outPath, true);
 			}
 			rm.form.addLogText("結合を完了しました");
 			rm.form.addLogText(outPath);

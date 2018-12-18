@@ -153,19 +153,21 @@ namespace rokugaTouroku.info
         }
         public string getAfterConvertTypeNum() {
         	var t = afterConvertType;
-			if (t == "ts(変換無し)") return "0";
-			if (t == "avi") return "1";
-			if (t == "mp4") return "2";
-			if (t == "flv") return "3";
-			if (t == "mov") return "4";
-			if (t == "wmv") return "5";
-			if (t == "vob") return "6";
-			if (t == "mkv") return "7";
-			if (t == "mp3(音声)") return "8";
-			if (t == "wav(音声)") return "9";
-			if (t == "wma(音声)") return "10";
-			if (t == "aac(音声)") return "11";
-			if (t == "ogg(音声)") return "12";
+			if (t == "処理しない") return "0";
+			if (t == "形式を変更せず処理する") return "1";
+			if (t == "ts") return "2";
+			if (t == "avi") return "3";
+			if (t == "mp4") return "4";
+			if (t == "flv") return "5";
+			if (t == "mov") return "6";
+			if (t == "wmv") return "7";
+			if (t == "vob") return "8";
+			if (t == "mkv") return "9";
+			if (t == "mp3(音声)") return "10";
+			if (t == "wav(音声)") return "11";
+			if (t == "wma(音声)") return "12";
+			if (t == "aac(音声)") return "13";
+			if (t == "ogg(音声)") return "14";
 			return "0";
         }      
 	}

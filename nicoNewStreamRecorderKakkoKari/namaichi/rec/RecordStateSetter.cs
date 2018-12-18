@@ -41,6 +41,7 @@ namespace namaichi.rec
 		private string tag;
 		
 		private bool isPlayOnlyMode = false;
+		private bool isDescriptionTag;
 			
 		public RecordStateSetter(MainForm form, RecordingManager rm, RecordFromUrl rfu, bool isTimeShift, bool isJikken, string[] recFolderFile, bool isPlayOnlyMode)
 		{
@@ -51,6 +52,7 @@ namespace namaichi.rec
 			this.isJikken = isJikken;
 			this.recFolderFile = recFolderFile;
 			this.isPlayOnlyMode = isPlayOnlyMode;
+			this.isDescriptionTag = bool.Parse(rm.cfg.get("IsDescriptionTag"));
 		}
 		public void set(string data, string type, string[] recFolderFileInfo) {
 			setInfo(data, form, type, recFolderFileInfo);
@@ -83,8 +85,10 @@ namespace namaichi.rec
 			title = recFolderFileInfo[2];
 			url = util.getRegGroup(data, "\"watchPageUrl\":\"(.+?)\"");
 			description = util.getRegGroup(data, "\"program\".+?\"description\":\"(.+?)\",\"");
-			if (rm.cfg.get("IsDescriptionTag") == "false") {
-				description = description.Replace("\\n", " ");
+			
+			description = description.Replace("\\n", " ");
+			if (!isDescriptionTag) {
+				
 				try {
 					description = Regex.Replace(description, "<script>.*?</script>", "");
 					description = Regex.Replace(description, "<.*?>", "");
@@ -115,9 +119,11 @@ namespace namaichi.rec
 			endTimeDt = getUnixToDt(_endTime);
 			endTime = endTimeDt.ToString("MM/dd(ddd) HH:mm:ss");
 			
-			samuneUrl = util.getRegGroup(data, "\"program\".+?\"thumbnail\":{\"imageUrl\":\"(.+?)\"");
+			//samuneUrl = util.getRegGroup(data, "\"program\".+?\"thumbnail\":{\"imageUrl\":\"(.+?)\"");
+			samuneUrl = util.getRegGroup(data, "\"thumbnailImageUrl\":\"(.+?)\"");
+			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "\"small\":\"(.+?)\"");
 			tag = getTag(data);
-			form.setInfo(host, hostUrl, group, groupUrl, title, url, gentei, openTime, description);
+			form.setInfo(host, hostUrl, group, groupUrl, title, url, gentei, openTime, description, isJikken);
 		}
 		private void setSamune(string data, MainForm form) {
 			form.setSamune(samuneUrl);
@@ -126,20 +132,29 @@ namespace namaichi.rec
 			while (openTime == null) 
 				System.Threading.Thread.Sleep(100);
 			
-			var sw = new StreamWriter(recFolderFile[2] + ".txt", false);
-			sw.WriteLine("[放送開始時間] " + openTime);
-			sw.WriteLine("[タイトル] " + title);
-			sw.WriteLine("[限定] " + gentei);
-			sw.WriteLine("[放送タイプ] " + ((isJikken) ? "nicocas" : "nicolive2"));
-			sw.WriteLine("[放送者] " + host);
-			sw.WriteLine("[コミュニティ名] " + group);
-			sw.WriteLine("[説明] " + description);
-			sw.WriteLine("[放送URL] " + url);
+			var ext = (isDescriptionTag) ? ".html" : ".txt";
+			StreamWriter sw;
+			try {
+				sw = new StreamWriter(recFolderFile[2] + ext, false);
+			} catch (Exception e) {
+				rm.form.addLogText(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				rm.form.addLogText(recFolderFile[2] + ext);
+				return;
+			}
+			var br = (isDescriptionTag) ? "<br />" : "";
+			sw.WriteLine("[放送開始時間] " + openTime + br);
+			sw.WriteLine("[タイトル] " + title + br);
+			sw.WriteLine("[限定] " + gentei + br);
+			sw.WriteLine("[放送タイプ] " + ((isJikken) ? "nicocas" : "nicolive2") + br);
+			sw.WriteLine("[放送者] " + host + br);
+			sw.WriteLine("[コミュニティ名] " + group + br);
+			sw.WriteLine("[説明] " + description + br);
+			sw.WriteLine("[放送URL] " + url + br);
 			if (groupUrl != null)
-				sw.WriteLine("[コミュニティURL] " + groupUrl);
+				sw.WriteLine("[コミュニティURL] " + groupUrl + br);
 			if (hostUrl != null)
-				sw.WriteLine("[放送者URL] " + hostUrl);
-			sw.WriteLine("[タグ] " + tag);
+				sw.WriteLine("[放送者URL] " + hostUrl + br);
+			sw.WriteLine("[タグ] " + tag + br);
 			sw.Close();
 		}
 		private void writeStdIOInfo() {

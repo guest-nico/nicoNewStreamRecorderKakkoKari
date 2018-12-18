@@ -30,6 +30,7 @@ namespace namaichi.rec
 		static readonly Uri TargetUrl = new Uri("http://live.nicovideo.jp/");
 		static readonly Uri TargetUrl2 = new Uri("http://live2.nicovideo.jp");
 		static readonly Uri TargetUrl3 = new Uri("https://com.nicovideo.jp");
+		static readonly Uri TargetUrl4 = new Uri("http://watch.live.nicovideo.jp/api/");
 		private bool isSub;
 		private bool isRtmp;
 		
@@ -50,10 +51,15 @@ namespace namaichi.rec
 				if (cc != null) {
 					var c = cc.GetCookies(TargetUrl)["user_session"];
 					var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
+					
+					var l = new List<KeyValuePair<string, string>>();
 					if (c != null)
-						cfg.set("user_session", c.Value);
+//						cfg.set("user_session", c.Value);
+						l.Add(new KeyValuePair<string, string>("user_session", c.Value));
 					if (secureC != null)
-						cfg.set("user_session_secure", secureC.Value);
+//						cfg.set("user_session_secure", secureC.Value);
+						l.Add(new KeyValuePair<string, string>("user_session_secure", secureC.Value));
+					cfg.set(l);
 				}
 				
 			} else {
@@ -65,10 +71,15 @@ namespace namaichi.rec
 				if (cc != null) {
 					var c = cc.GetCookies(TargetUrl)["user_session2"];
 					var secureC = cc.GetCookies(TargetUrl)["user_session_secure2"];
+					
+					var l = new List<KeyValuePair<string, string>>();
 					if (c != null)
-						cfg.set("user_session2", c.Value);
+//						cfg.set("user_session2", c.Value);
+						l.Add(new KeyValuePair<string, string>("user_session2", c.Value));
 					if (secureC != null)
-						cfg.set("user_session_secure2", secureC.Value);
+//						cfg.set("user_session_secure2", secureC.Value);
+						l.Add(new KeyValuePair<string, string>("user_session_secure2", secureC.Value));
+					cfg.set(l);
 				}
 			}
 			
@@ -218,6 +229,7 @@ namespace namaichi.rec
 					util.debugWriteLine("ishtml5login getpage " + url + util.getMainSubStr(isSub));
 					var _url = (isRtmp) ? ("http://live.nicovideo.jp/api/getplayerstatus/" + util.getRegGroup(url, "(lv\\d+)")) : url;
 					pageSource = util.getPageSource(_url, ref headers, cc);
+					util.debugWriteLine(cc.GetCookieHeader(new Uri(_url)));
 					util.debugWriteLine("ishtml5login getpage ok" + util.getMainSubStr(isSub));
 				} catch (Exception e) {
 					util.debugWriteLine("cookiegetter ishtml5login " + e.Message+e.StackTrace + util.getMainSubStr(isSub));
@@ -304,11 +316,13 @@ namespace namaichi.rec
 				cc.Add(TargetUrl, new Cookie(c.Name, c.Value));
 				cc.Add(TargetUrl2, new Cookie(c.Name, c.Value));
 				cc.Add(TargetUrl3, new Cookie(c.Name, c.Value));
+				cc.Add(TargetUrl4, new Cookie(c.Name, c.Value));
 			}
 			if (secureC != null && secureC.Value != "") {
 				cc.Add(TargetUrl, new Cookie(secureC.Name, secureC.Value));
 				cc.Add(TargetUrl2, new Cookie(secureC.Name, secureC.Value));
 				cc.Add(TargetUrl3, new Cookie(secureC.Name, secureC.Value));
+				cc.Add(TargetUrl4, new Cookie(secureC.Name, secureC.Value));
 			}
 			return cc;
 		}

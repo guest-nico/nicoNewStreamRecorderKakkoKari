@@ -37,6 +37,7 @@ namespace namaichi
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.urlText = new System.Windows.Forms.TextBox();
 			this.recBtn = new System.Windows.Forms.Button();
@@ -54,6 +55,8 @@ namespace namaichi
 			this.helpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.バージョン情報VToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
+			this.typeLabel = new System.Windows.Forms.Label();
+			this.label7 = new System.Windows.Forms.Label();
 			this.label10 = new System.Windows.Forms.Label();
 			this.descriptLabel = new System.Windows.Forms.Label();
 			this.keikaTimeLabel = new System.Windows.Forms.Label();
@@ -68,6 +71,12 @@ namespace namaichi
 			this.label5 = new System.Windows.Forms.Label();
 			this.communityLabel = new System.Windows.Forms.LinkLabel();
 			this.label1 = new System.Windows.Forms.Label();
+			this.mainWindowRightClickMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
 			this.label12 = new System.Windows.Forms.Label();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.label15 = new System.Windows.Forms.Label();
@@ -82,6 +91,7 @@ namespace namaichi
 			((System.ComponentModel.ISupportInitialize)(this.samuneBox)).BeginInit();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox5.SuspendLayout();
+			this.mainWindowRightClickMenu.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.commentList)).BeginInit();
@@ -228,6 +238,8 @@ namespace namaichi
 			// 
 			this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 									| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox5.Controls.Add(this.typeLabel);
+			this.groupBox5.Controls.Add(this.label7);
 			this.groupBox5.Controls.Add(this.label10);
 			this.groupBox5.Controls.Add(this.descriptLabel);
 			this.groupBox5.Controls.Add(this.keikaTimeLabel);
@@ -244,10 +256,25 @@ namespace namaichi
 			this.groupBox5.Controls.Add(this.label1);
 			this.groupBox5.Location = new System.Drawing.Point(179, 76);
 			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(519, 161);
+			this.groupBox5.Size = new System.Drawing.Size(519, 180);
 			this.groupBox5.TabIndex = 17;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "番組情報";
+			// 
+			// typeLabel
+			// 
+			this.typeLabel.Location = new System.Drawing.Point(78, 106);
+			this.typeLabel.Name = "typeLabel";
+			this.typeLabel.Size = new System.Drawing.Size(118, 19);
+			this.typeLabel.TabIndex = 6;
+			// 
+			// label7
+			// 
+			this.label7.Location = new System.Drawing.Point(6, 106);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(56, 19);
+			this.label7.TabIndex = 5;
+			this.label7.Text = "放送種別";
 			// 
 			// label10
 			// 
@@ -263,26 +290,26 @@ namespace namaichi
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.descriptLabel.Location = new System.Drawing.Point(214, 106);
 			this.descriptLabel.Name = "descriptLabel";
-			this.descriptLabel.Size = new System.Drawing.Size(290, 53);
+			this.descriptLabel.Size = new System.Drawing.Size(290, 72);
 			this.descriptLabel.TabIndex = 3;
 			// 
 			// keikaTimeLabel
 			// 
-			this.keikaTimeLabel.Location = new System.Drawing.Point(78, 125);
+			this.keikaTimeLabel.Location = new System.Drawing.Point(78, 144);
 			this.keikaTimeLabel.Name = "keikaTimeLabel";
 			this.keikaTimeLabel.Size = new System.Drawing.Size(118, 25);
 			this.keikaTimeLabel.TabIndex = 3;
 			// 
 			// startTimeLabel
 			// 
-			this.startTimeLabel.Location = new System.Drawing.Point(78, 106);
+			this.startTimeLabel.Location = new System.Drawing.Point(78, 125);
 			this.startTimeLabel.Name = "startTimeLabel";
 			this.startTimeLabel.Size = new System.Drawing.Size(118, 19);
 			this.startTimeLabel.TabIndex = 3;
 			// 
 			// label8
 			// 
-			this.label8.Location = new System.Drawing.Point(6, 125);
+			this.label8.Location = new System.Drawing.Point(6, 144);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(56, 19);
 			this.label8.TabIndex = 0;
@@ -297,7 +324,7 @@ namespace namaichi
 			// 
 			// label6
 			// 
-			this.label6.Location = new System.Drawing.Point(6, 106);
+			this.label6.Location = new System.Drawing.Point(6, 125);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(56, 19);
 			this.label6.TabIndex = 0;
@@ -362,6 +389,50 @@ namespace namaichi
 			this.label1.Size = new System.Drawing.Size(66, 19);
 			this.label1.TabIndex = 0;
 			this.label1.Text = "コミュニティ";
+			// 
+			// mainWindowRightClickMenu
+			// 
+			this.mainWindowRightClickMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+									this.toolStripMenuItem1,
+									this.toolStripMenuItem2,
+									this.toolStripMenuItem3,
+									this.toolStripSeparator2,
+									this.toolStripMenuItem4});
+			this.mainWindowRightClickMenu.Name = "contextMenuStrip1";
+			this.mainWindowRightClickMenu.Size = new System.Drawing.Size(221, 120);
+			// 
+			// toolStripMenuItem1
+			// 
+			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(220, 22);
+			this.toolStripMenuItem1.Text = "放送URLをコピー";
+			this.toolStripMenuItem1.Click += new System.EventHandler(this.copyUrlMenu_Clicked);
+			// 
+			// toolStripMenuItem2
+			// 
+			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(220, 22);
+			this.toolStripMenuItem2.Text = "コミュニティURLをコピー";
+			this.toolStripMenuItem2.Click += new System.EventHandler(this.copyCommunityUrlMenu_Clicked);
+			// 
+			// toolStripMenuItem3
+			// 
+			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+			this.toolStripMenuItem3.Size = new System.Drawing.Size(220, 22);
+			this.toolStripMenuItem3.Text = "放送者と放送URLをコピー";
+			this.toolStripMenuItem3.Click += new System.EventHandler(this.copyHost_UrlMenu_Clicked);
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(217, 6);
+			// 
+			// toolStripMenuItem4
+			// 
+			this.toolStripMenuItem4.Name = "toolStripMenuItem4";
+			this.toolStripMenuItem4.Size = new System.Drawing.Size(220, 22);
+			this.toolStripMenuItem4.Text = "録画フォルダを開く";
+			this.toolStripMenuItem4.Click += new System.EventHandler(this.openRecFolderMenu_Click);
 			// 
 			// label12
 			// 
@@ -436,11 +507,11 @@ namespace namaichi
 			this.commentList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
 									this.時間,
 									this.Column1});
-			this.commentList.Location = new System.Drawing.Point(262, 243);
+			this.commentList.Location = new System.Drawing.Point(262, 262);
 			this.commentList.Name = "commentList";
 			this.commentList.RowHeadersVisible = false;
 			this.commentList.RowTemplate.Height = 21;
-			this.commentList.Size = new System.Drawing.Size(430, 107);
+			this.commentList.Size = new System.Drawing.Size(430, 88);
 			this.commentList.TabIndex = 21;
 			// 
 			// 時間
@@ -473,6 +544,7 @@ namespace namaichi
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Window;
 			this.ClientSize = new System.Drawing.Size(699, 362);
+			this.ContextMenuStrip = this.mainWindowRightClickMenu;
 			this.Controls.Add(this.playerBtn);
 			this.Controls.Add(this.commentList);
 			this.Controls.Add(this.groupBox2);
@@ -494,12 +566,21 @@ namespace namaichi
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.groupBox5.ResumeLayout(false);
+			this.mainWindowRightClickMenu.ResumeLayout(false);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.commentList)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+		private System.Windows.Forms.ContextMenuStrip mainWindowRightClickMenu;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.Label typeLabel;
 		public System.Windows.Forms.Button playerBtn;
 		public System.Windows.Forms.Label commentLabel;
 		private System.Windows.Forms.DataGridViewTextBoxColumn Column1;

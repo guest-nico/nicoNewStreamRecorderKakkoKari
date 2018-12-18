@@ -129,8 +129,9 @@ namespace rokugaTouroku
 				{"IsSegmentNukeInfo",isSegmentNukeInfoChkBox.Checked.ToString().ToLower()},
 				{"segmentSaveType",getSegmentSaveType()},
 				{"IsRenketuAfter",isRenketuAfterChkBox.Checked.ToString().ToLower()},
-				{"IsAfterRenketuFFmpeg",isAfterRenketuFFmpegChkBox.Checked.ToString().ToLower()},
-				{"IsDefaultEngine",isDefaultEngineChkBox.Checked.ToString().ToLower()},
+//				{"IsAfterRenketuFFmpeg",isAfterRenketuFFmpegChkBox.Checked.ToString().ToLower()},
+//				{"IsDefaultEngine",isDefaultEngineChkBox.Checked.ToString().ToLower()},
+				{"EngineMode",getEngineMode()},
 				{"anotherEngineCommand",anotherEngineCommandText.Text},
 				{"IsUsePlayer",isUsePlayerChkBox.Checked.ToString().ToLower()},
 				{"IsUseCommentViewer",isUseCommentViewerChkBox.Checked.ToString().ToLower()},
@@ -170,41 +171,44 @@ namespace rokugaTouroku
 		async void Selector_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
 			//if (isInitRun) initRec();
-			
-            switch(e.PropertyName)
-            {
-                case "SelectedIndex":
-                    var cookieContainer = new CookieContainer();
-                    var currentGetter = nicoSessionComboBox1.Selector.SelectedImporter;
-                    if (currentGetter != null)
-                    {
-                        var result = await currentGetter.GetCookiesAsync(TargetUrl);
-                        
-                        var cookie = result.Status == CookieImportState.Success ? result.Cookies["user_session"] : null;
-//                        foreach (var c in result.Cookies)
-//                        	util.debugWriteLine(c);
-                        //logText.Text += cookie.Name + cookie.Value+ cookie.Expires;
-                        
-                        //UI更新
-//                        txtCookiePath.Text = currentGetter.SourceInfo.CookiePath;
-//                        btnOpenCookieFileDialog.Enabled = true;
-//                        txtUserSession.Text = cookie != null ? cookie.Value : null;
-//                        txtUserSession.Enabled = result.Status == CookieImportState.Success;
-                        //Properties.Settings.Default.SelectedSourceInfo = currentGetter.SourceInfo;
-                        //Properties.Settings.Default.Save();
-                        //cfg.set("browserNum", nicoSessionComboBox1.Selector.SelectedIndex.ToString());
-                        //if (cookie != null) cfg.set("user_session", cookie.Value);
-                        //cfg.set("isAllBrowserMode", nicoSessionComboBox1.Selector.IsAllBrowserMode.ToString());
-                    }
-                    else
-                    {
-//                        txtCookiePath.Text = null;
-//                        txtUserSession.Text = null;
-//                        txtUserSession.Enabled = false;
-//                        btnOpenCookieFileDialog.Enabled = false;
-                    }
-                    break;
-            }
+			try {
+	            switch(e.PropertyName)
+	            {
+	                case "SelectedIndex":
+	                    var cookieContainer = new CookieContainer();
+	                    var currentGetter = nicoSessionComboBox1.Selector.SelectedImporter;
+	                    if (currentGetter != null)
+	                    {
+	                        var result = await currentGetter.GetCookiesAsync(TargetUrl);
+	                        
+	                        var cookie = result.Status == CookieImportState.Success ? result.Cookies["user_session"] : null;
+	//                        foreach (var c in result.Cookies)
+	//                        	util.debugWriteLine(c);
+	                        //logText.Text += cookie.Name + cookie.Value+ cookie.Expires;
+	                        
+	                        //UI更新
+	//                        txtCookiePath.Text = currentGetter.SourceInfo.CookiePath;
+	//                        btnOpenCookieFileDialog.Enabled = true;
+	//                        txtUserSession.Text = cookie != null ? cookie.Value : null;
+	//                        txtUserSession.Enabled = result.Status == CookieImportState.Success;
+	                        //Properties.Settings.Default.SelectedSourceInfo = currentGetter.SourceInfo;
+	                        //Properties.Settings.Default.Save();
+	                        //cfg.set("browserNum", nicoSessionComboBox1.Selector.SelectedIndex.ToString());
+	                        //if (cookie != null) cfg.set("user_session", cookie.Value);
+	                        //cfg.set("isAllBrowserMode", nicoSessionComboBox1.Selector.IsAllBrowserMode.ToString());
+	                    }
+	                    else
+	                    {
+	//                        txtCookiePath.Text = null;
+	//                        txtUserSession.Text = null;
+	//                        txtUserSession.Enabled = false;
+	//                        btnOpenCookieFileDialog.Enabled = false;
+	                    }
+	                    break;
+	            }
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+			}
         }
 		async void Selector2_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -345,9 +349,9 @@ namespace rokugaTouroku
         	setSegmentSaveType(cfg.get("segmentSaveType"));
         	isRenketuAfterChkBox.Checked = bool.Parse(cfg.get("IsRenketuAfter"));
         	isRenketuAfterChkBox_UpdateAction();
-        	isAfterRenketuFFmpegChkBox.Checked = bool.Parse(cfg.get("IsAfterRenketuFFmpeg"));
-        	isDefaultEngineChkBox.Checked = bool.Parse(cfg.get("IsDefaultEngine"));
-        	setEngineType(bool.Parse(cfg.get("IsDefaultEngine")));
+//        	isAfterRenketuFFmpegChkBox.Checked = bool.Parse(cfg.get("IsAfterRenketuFFmpeg"));
+//        	isDefaultEngineChkBox.Checked = bool.Parse(cfg.get("IsDefaultEngine"));
+        	setEngineType(cfg.get("EngineMode"));
         	isDefaultEngineChkBox_UpdateAction();
 			anotherEngineCommandText.Text = cfg.get("anotherEngineCommand");
 			setPlayerType();
@@ -661,16 +665,22 @@ namespace rokugaTouroku
 				isSegmentRenketuRadioBtn.Enabled = true;
 				isSegmentNotRenketuRadioBtn.Enabled = true;
 				isRenketuAfterChkBox_UpdateAction();
-			} else {
+			} else if (isAnotherEngineChkBox.Checked) {
 				anotherEngineCommandText.Enabled = true;
+				isSegmentRenketuRadioBtn.Enabled = false;
+				isSegmentNotRenketuRadioBtn.Enabled = false;
+				isRenketuAfterChkBox.Enabled = false;
+			} else {
+				anotherEngineCommandText.Enabled = false;
 				isSegmentRenketuRadioBtn.Enabled = false;
 				isSegmentNotRenketuRadioBtn.Enabled = false;
 				isRenketuAfterChkBox.Enabled = false;
 			}
 		}
-		void setEngineType(bool isDefaultEngine) {
-			if (isDefaultEngine) isDefaultEngineChkBox.Checked = true;
-			else isAnotherEngineChkBox.Checked = true;
+		void setEngineType(string EngineMode) {
+			if (EngineMode == "0") isDefaultEngineChkBox.Checked = true;
+			else if (EngineMode == "1") isAnotherEngineChkBox.Checked = true;
+			else isRtmpEngine.Checked = true;
 			isDefaultEngineChkBox_UpdateAction();
 		}
 		
@@ -744,36 +754,40 @@ namespace rokugaTouroku
 			anotherCommentViewerPathText.Text = dialog.FileName;
 		}
 		void setConvertList(int afterConvertMode) {
-			var t = "ts(変換無し)";
-			if (afterConvertMode == 1) t = "avi";  
-			if (afterConvertMode == 2) t = "mp4";
-			if (afterConvertMode == 3) t = "flv";
-			if (afterConvertMode == 4) t = "mov";
-			if (afterConvertMode == 5) t = "wmv";
-			if (afterConvertMode == 6) t = "vob";
-			if (afterConvertMode == 7) t = "mkv";
-			if (afterConvertMode == 8) t = "mp3(音声)";
-			if (afterConvertMode == 9) t = "wav(音声)";
-			if (afterConvertMode == 10) t = "wma(音声)";
-			if (afterConvertMode == 11) t = "aac(音声)";
-			if (afterConvertMode == 12) t = "ogg(音声)";
+			var t = "処理しない";
+			if (afterConvertMode == 1) t = "形式を変更せず処理する";
+			if (afterConvertMode == 2) t = "ts";
+			if (afterConvertMode == 3) t = "avi";			
+			if (afterConvertMode == 4) t = "mp4";
+			if (afterConvertMode == 5) t = "flv";
+			if (afterConvertMode == 6) t = "mov";
+			if (afterConvertMode == 7) t = "wmv";
+			if (afterConvertMode == 8) t = "vob";
+			if (afterConvertMode == 9) t = "mkv";
+			if (afterConvertMode == 10) t = "mp3(音声)";
+			if (afterConvertMode == 11) t = "wav(音声)";
+			if (afterConvertMode == 12) t = "wma(音声)";
+			if (afterConvertMode == 13) t = "aac(音声)";
+			if (afterConvertMode == 14) t = "ogg(音声)";
 			afterConvertModeList.Text = t;
 		}
 		private string getAfterConvertType() {
 			var t = afterConvertModeList.Text;
-			if (t == "ts(変換無し)") return "0";
-			if (t == "avi") return "1";
-			if (t == "mp4") return "2";
-			if (t == "flv") return "3";
-			if (t == "mov") return "4";
-			if (t == "wmv") return "5";
-			if (t == "vob") return "6";
-			if (t == "mkv") return "7";
-			if (t == "mp3(音声)") return "8";
-			if (t == "wav(音声)") return "9";
-			if (t == "wma(音声)") return "10";
-			if (t == "aac(音声)") return "11";
-			if (t == "ogg(音声)") return "12";
+			if (t == "処理しない") return "0";
+			if (t == "形式を変更せず処理する") return "1";
+			if (t == "ts") return "2";
+			if (t == "avi") return "3";
+			if (t == "mp4") return "4";
+			if (t == "flv") return "5";
+			if (t == "mov") return "6";
+			if (t == "wmv") return "7";
+			if (t == "vob") return "8";
+			if (t == "mkv") return "9";
+			if (t == "mp3(音声)") return "10";
+			if (t == "wav(音声)") return "11";
+			if (t == "wma(音声)") return "12";
+			if (t == "aac(音声)") return "13";
+			if (t == "ogg(音声)") return "14";
 			return t;
 		}
 		
@@ -820,6 +834,11 @@ namespace rokugaTouroku
 			isAnotherCommentViewerRadioBtn.Enabled = c;
 			anotherCommentViewerPathText.Enabled = c && isAnotherCommentViewerRadioBtn.Checked;
 			anotherCommentViewerSanshouBtn.Enabled = c && isAnotherCommentViewerRadioBtn.Checked;
+		}
+		string getEngineMode() {
+			if (isDefaultEngineChkBox.Checked) return "0";
+			if (isAnotherEngineChkBox.Checked) return "1";
+			return "2";
 		}
 	}
 }

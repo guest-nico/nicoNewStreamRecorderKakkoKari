@@ -13,7 +13,6 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using System.ComponentModel;
 using SunokoLibrary.Application;
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,10 +28,12 @@ using System.Windows.Forms;
 using System.Configuration;
 using System.IO;
 using System.Text;
+using System.Threading;
 using namaichi.rec;
 using namaichi.config;
 using namaichi.play;
 using namaichi.utility;
+using SuperSocket.ClientEngine;
 
 //using System.Diagnostics.Process;
 
@@ -50,12 +51,14 @@ namespace namaichi
 		private namaichi.config.config config = new namaichi.config.config();
 		private string[] args;
 		private play.Player player;
-		
+		private string labelUrl;
 		
 		
 		public MainForm(string[] args)
 		{
 			//args = "-nowindo -stdIO -IsmessageBox=false -IscloseExit=true lv316762771 -ts-start=1785s -ts-end=0s -ts-list=false -ts-list-m3u8=false -ts-list-update=5 -ts-list-open=false -ts-list-command=\"notepad{i}\" -ts-vpos-starttime=true -afterConvertMode=4 -qualityRank=0,1,2,3,4,5 -IsLogFile=true".Split(' ');
+			//read std
+			if (Array.IndexOf(args, "-std-read") > -1) startStdRead();
 			
 			#if !DEBUG
 				if (config.get("IsLogFile") == "true") 
@@ -63,7 +66,7 @@ namespace namaichi
 			#endif
 					
 			System.Diagnostics.Debug.Listeners.Clear();
-			System.Diagnostics.Debug.Listeners.Add(new log.TraceListener());
+			System.Diagnostics.Debug.Listeners.Add(new Logger.TraceListener());
 		    
 			InitializeComponent();
 			Text = "ニコ生新配信録画ツール（仮 " + util.versionStr;
@@ -77,7 +80,7 @@ namespace namaichi
 //			args = new string[]{"Debug_1.ts"};
 			if (Array.IndexOf(args, "-stdIO") > -1) util.isStdIO = true;
 			
-			var lv = (args.Length == 0) ? null : util.getRegGroup(args[0], "(lv\\d+)");
+			var lv = (args.Length == 0) ? null : util.getRegGroup(args[0], "(lv\\d+(,\\d+)*)");
 			util.setLog(config, lv);
 			
 			if (args.Length > 0) {
@@ -249,7 +252,7 @@ namespace namaichi
 	   		       	}
 	       		}
 	       	} catch (Exception e) {
-	       		util.showException(e);
+	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 	       	}
        		
 		}
@@ -300,7 +303,7 @@ namespace namaichi
         }
 		public void setInfo(string host, string hostUrl, 
         		string group, string groupUrl, string title, string url, 
-        		string gentei, string openTime, string description) {
+        		string gentei, string openTime, string description, bool isJikken) {
        		if (!util.isShowWindow) return;
        		util.debugWriteLine(hostUrl);
        		
@@ -326,6 +329,7 @@ namespace namaichi
 			        	    genteiLabel.Text = gentei;
 			        	    startTimeLabel.Text = openTime;
 			        	    descriptLabel.Text = description;
+			        	    typeLabel.Text = (isJikken) ? "実験放送" : "ニコニコ生放送";
 	       		       	} catch (Exception e) {
 	       		       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 	       		       	}
@@ -408,7 +412,7 @@ namespace namaichi
 			   	       	}
 					});
 			} catch (Exception e) {
-				util.showException(e);
+				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 			}
 			player.setStatistics(visit, comment);
 		}
@@ -440,6 +444,9 @@ namespace namaichi
 		
 		void openRecFolderMenu_Click(object sender, EventArgs e)
 		{
+			openRecFolder();
+		}
+		void openRecFolder() {
 			string[] jarpath = util.getJarPath();
 			string dirPath = (config.get("IsdefaultRecordDir") == "true") ?
 					(jarpath[0] + "\\rec") : config.get("recordDir");
@@ -450,22 +457,54 @@ namespace namaichi
 				util.debugWriteLine(ee.Message + " " + ee.StackTrace);
 			}
 		}
-		
 		void titleLabel_Click(object _sender, LinkLabelLinkClickedEventArgs e)
 		{
+			util.debugWriteLine("click");
 			LinkLabel sender = (LinkLabel)_sender;
-			if (sender.Links.Count > 0 && sender.Links[0].Length != 0) {
-				string url = (string)sender.Links[0].LinkData;
-				if (bool.Parse(config.get("IsdefaultBrowserPath"))) {
-					System.Diagnostics.Process.Start(url);
-				} else {
-					var p = config.get("browserPath");
-					System.Diagnostics.Process.Start(p, url);
+			if (e.Button == MouseButtons.Left) {
+				if (sender.Links.Count > 0 && sender.Links[0].Length != 0) {
+					string url = (string)sender.Links[0].LinkData;
+					if (bool.Parse(config.get("IsdefaultBrowserPath"))) {
+						System.Diagnostics.Process.Start(url);
+					} else {
+						var p = config.get("browserPath");
+						System.Diagnostics.Process.Start(p, url);
+					}
 				}
+			} else {
+//				if (sender.Links.Count > 0 && sender.Links[0].Length != 0) {
+//					labelUrl = (string)sender.Links[0].LinkData;
+//					mainWindowRightClickMenu.Show(Cursor.Position);
+//				}
 			}
-			
 		}
-		
+		void copyUrlMenu_Clicked(object sender, EventArgs e)
+		{
+			if (titleLabel.Links.Count > 0 && titleLabel.Links[0].Length != 0) {
+				string url = (string)titleLabel.Links[0].LinkData;
+				Clipboard.SetText(url);
+			}
+		}
+		void copyCommunityUrlMenu_Clicked(object sender, EventArgs e)
+		{
+			if (communityLabel.Links.Count > 0 && communityLabel.Links[0].Length != 0) {
+				string url = (string)communityLabel.Links[0].LinkData;
+				Clipboard.SetText(url);
+			}
+		}
+		void copyHost_UrlMenu_Clicked(object sender, EventArgs e)
+		{
+			if (hostLabel.Text.Length > 0 &&
+					titleLabel.Links.Count > 0 && titleLabel.Links[0].Length != 0) {
+				var host = hostLabel.Text;
+				var url = (string)titleLabel.Links[0].LinkData;
+				Clipboard.SetText(host + " " + url);
+			}
+		}
+		void openRecFolderMenu_Clicked(object sender, EventArgs e)
+		{
+			openRecFolder();
+		}
 		void endMenu_Click(object sender, EventArgs e)
 		{
 			try {
@@ -517,6 +556,7 @@ namespace namaichi
 			startTimeLabel.Text = "";
 			keikaTimeLabel.Text = "";
 			descriptLabel.Text = "";
+			typeLabel.Text = "";
 			commentList.Rows.Clear();
 			Text = "ニコ生新配信録画ツール（仮";
 			Icon = null;
@@ -535,7 +575,7 @@ namespace namaichi
 					});
 				}
 			} catch (Exception e) {
-	       		util.showException(e);
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 	       	}
 		}
 		
@@ -556,7 +596,7 @@ namespace namaichi
 					});
 				}
 			} catch (Exception e) {
-	       		util.showException(e);
+	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 	       	}
 		}
 		
@@ -572,11 +612,46 @@ namespace namaichi
 					System.Windows.Forms.MessageBox.Show("「WebSocket4Net.dll」をver0.86.9以降に同梱されているものと置き換えてください");
 				});
 			}
+			
+			
+			
+			//.net
+			var ver = util.Get45PlusFromRegistry();  
+			if (ver < 4.52) {
+				
+				Task.Run(() => {
+				    Invoke((MethodInvoker)delegate() {
+						var b = new DotNetMessageBox(ver);
+						b.Show(this); 
+//						System.Windows.Forms.MessageBox.Show("「動作には.NET 4.5.2以上が推奨です。現在は" + ver + "です。");
+					});
+				});
+			}
 		}
+		
 		void versionMenu_Click(object sender, EventArgs e)
 		{
 			var v = new VersionForm();
 			v.ShowDialog();
 		}
+		void startStdRead() {
+			Task.Run(() => {
+	         	while (true) {
+					var a = Console.ReadLine();
+					if (a == null || a.Length == 0) continue;
+					if (a == "stop end") {
+						if (rec.rfu != null) {
+							rec.stopRecording();
+						}
+						while (rec.recordRunningList.Count > 0) {
+							Thread.Sleep(1000);
+						}
+						Close();
+					}
+				}
+			});
+		}
+		
+		
 	}
 }

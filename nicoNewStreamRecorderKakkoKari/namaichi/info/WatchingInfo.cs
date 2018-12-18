@@ -29,8 +29,12 @@ namespace namaichi.info
 		
 		public WatchingInfo(string res)
 		{
+			var ver = System.Environment.OSVersion.Version;
+			var isSecure = ver.Major >= 6 && ver.Minor >= 1;
+			
 			hlsUrl = util.getRegGroup(res, "streamServer\".+?\"url\":\"(.+?)\"");
-			msUri = util.getRegGroup(res, "\"messageServer\".+?\"wss\"\\:\"(.+?)\"");
+			msUri = util.getRegGroup(res, "\"messageServer\".+?\"" + 
+					((isSecure) ? "wss" : "ws") + "\"\\:\"(.+?)\"");
 			chatThread = util.getRegGroup(res, "\"threads\".+?\"chat\"\\:\"(.+?)\"");
 			chatKey = util.getRegGroup(res, "\"chatThreadKey\"\\:\"(.+?)\"");
 			controlThread = util.getRegGroup(res, "\"threads\".+?\"control\"\\:\"(.+?)\"");

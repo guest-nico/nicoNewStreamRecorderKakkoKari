@@ -62,9 +62,10 @@ namespace namaichi.rec
 		
 		int gotCount = 0;
 		bool isChat;
-		public TimeShiftConfig tsConfig;
+//		public TimeShiftConfig tsConfig;
+		bool isVposStartTime;
 		
-		public TimeShiftCommentGetter_jikken(JikkenRecordProcess jrp, string userId, RecordingManager rm, RecordFromUrl rfu, MainForm form, long openTime, string[] recFolderFile, string lvid, CookieContainer container, string thread, string key, bool isChat, WatchingInfo wi, int startSecond, TimeShiftConfig tsConfig)
+		public TimeShiftCommentGetter_jikken(JikkenRecordProcess jrp, string userId, RecordingManager rm, RecordFromUrl rfu, MainForm form, long openTime, string[] recFolderFile, string lvid, CookieContainer container, string thread, string key, bool isChat, WatchingInfo wi, int startSecond, bool isVposStartTime)
 		{
 			this.jrp = jrp;
 			this.uri = jrp.msUri;
@@ -82,7 +83,7 @@ namespace namaichi.rec
 			this.isChat = isChat;
 			this.wi = wi;
 			this.startSecond = startSecond;
-			this.tsConfig = tsConfig;
+			this.isVposStartTime = isVposStartTime;
 		}
 		public void save() {
 			if (!bool.Parse(rm.cfg.get("IsgetComment"))) {
@@ -90,7 +91,7 @@ namespace namaichi.rec
 //				return;
 			}
 			
-			while (jrp.firstSegmentSecond == -1) {
+			while (jrp.firstSegmentSecond == -1 && !jrp.isRtmp) {
 				Thread.Sleep(500);
 			}
 			util.debugWriteLine("firstSegmentSecond " + jrp.firstSegmentSecond);
@@ -126,7 +127,8 @@ namespace namaichi.rec
 				//wsc = new WebSocket(msUri,  "", null, header, "", "", WebSocketVersion.Rfc6455);
 				header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Extensions", "permessage-deflate"));
 				header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Version", "13"));
-				wsc = new WebSocket(uri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
+				wsc = new WebSocket(uri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, uri.StartsWith("wss") ? SslProtocols.Tls12 : SslProtocols.None);
+				//wsc = new WebSocket(uri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
 				wsc.Opened += onWscOpen;
 				wsc.Closed += onWscClose;
 				wsc.MessageReceived += onWscMessageReceive;
@@ -211,7 +213,7 @@ namespace namaichi.rec
 //				var chatinfo = new namaichi.info.ChatInfo(xml);
 				
 				XDocument chatXml;
-				var vposStartTime = (tsConfig.isVposStartTime) ? (long)jrp.firstSegmentSecond : 0;
+				var vposStartTime = (isVposStartTime) ? (long)jrp.firstSegmentSecond : 0;
 				chatXml = chatinfo.getFormatXml(openTime + vposStartTime);
 	//			else chatXml = chatinfo.getFormatXml(serverTime);
 	//			util.debugWriteLine("xml " + chatXml.ToString());

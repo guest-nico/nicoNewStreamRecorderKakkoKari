@@ -9,6 +9,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using namaichi.info;
 
 namespace namaichi
@@ -122,23 +123,40 @@ namespace namaichi
 				MessageBox.Show("M3U8の更新間隔に0.5以下を指定することはできません");
 				return;
 			}
+			/*
 			var isUrlList = isUrlListChkBox.Checked;
 			var openListCommand = openListCommandText.Text;
 			var isM3u8List = isM3u8RadioBtn.Checked;
 			var m3u8UpdateSeconds = updateSecond;
 			var isOpenUrlList = isOpenListCommandChkBox.Checked;
+			*/
+			var isUrlList = false;
+			var openListCommand = "";
+			var isM3u8List = false;
+			var m3u8UpdateSeconds = 5.1;
+			var isOpenUrlList = false;
+			
 			ret = new TimeShiftConfig(startType, 
 				h, m, s, endH, endM, endS, isRenketuLastFile.Checked, isUrlList, 
 				openListCommand, isM3u8List, m3u8UpdateSeconds, isOpenUrlList, 
 				isSetVposStartTime.Checked);
 			
+			var l = new List<KeyValuePair<string, string>>();
+			l.Add(new KeyValuePair<string, string>("IsUrlList", isUrlList.ToString().ToLower()));
+			l.Add(new KeyValuePair<string, string>("IsM3u8List", isM3u8List.ToString().ToLower()));
+			l.Add(new KeyValuePair<string, string>("M3u8UpdateSeconds", m3u8UpdateSeconds.ToString()));
+			l.Add(new KeyValuePair<string, string>("IsOpenUrlList", isOpenUrlList.ToString().ToLower()));
+			l.Add(new KeyValuePair<string, string>("openUrlListCommand", openListCommand));
+			l.Add(new KeyValuePair<string, string>("IsVposStartTime", isSetVposStartTime.Checked.ToString().ToLower()));
+			config.set(l);
+			/*
 			config.set("IsUrlList", isUrlList.ToString().ToLower());
 			config.set("IsM3u8List", isM3u8List.ToString().ToLower());
 			config.set("M3u8UpdateSeconds", m3u8UpdateSeconds.ToString());
 			config.set("IsOpenUrlList", isOpenUrlList.ToString().ToLower());
 			config.set("openUrlListCommand", openListCommand);
 			config.set("IsVposStartTime", isSetVposStartTime.Checked.ToString().ToLower());
-			
+			*/
 			Close();
 		}
 		

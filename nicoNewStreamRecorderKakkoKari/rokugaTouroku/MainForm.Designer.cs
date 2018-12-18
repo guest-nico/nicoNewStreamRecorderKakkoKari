@@ -120,7 +120,9 @@ namespace rokugaTouroku
 			this.afterConvertModeList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.afterConvertModeList.FormattingEnabled = true;
 			this.afterConvertModeList.Items.AddRange(new object[] {
-									"ts(変換無し)",
+									"処理しない",
+									"形式を変更せず処理する",
+									"ts",
 									"avi",
 									"mp4",
 									"flv",
@@ -135,7 +137,7 @@ namespace rokugaTouroku
 									"ogg(音声)"});
 			this.afterConvertModeList.Location = new System.Drawing.Point(551, 39);
 			this.afterConvertModeList.Name = "afterConvertModeList";
-			this.afterConvertModeList.Size = new System.Drawing.Size(90, 20);
+			this.afterConvertModeList.Size = new System.Drawing.Size(149, 20);
 			this.afterConvertModeList.TabIndex = 5;
 			// 
 			// recList
@@ -283,7 +285,7 @@ namespace rokugaTouroku
 			this.openCommunityUrlMenu.Name = "openCommunityUrlMenu";
 			this.openCommunityUrlMenu.Size = new System.Drawing.Size(220, 22);
 			this.openCommunityUrlMenu.Text = "コミュニティページへ移動";
-			this.openCommunityUrlMenu.Click += new System.EventHandler(this.openWatchUrlMenu_Click);
+			this.openCommunityUrlMenu.Click += new System.EventHandler(this.openCommunityUrlMenu_Click);
 			// 
 			// copyWatchUrlMenu
 			// 

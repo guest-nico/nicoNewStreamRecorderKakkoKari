@@ -21,8 +21,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3";
-	public static string versionDayStr = "2018/11/05";
+	public static string versionStr = "ver0.1.3.3";
+	public static string versionDayStr = "2018/12/17";
 	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);
@@ -94,18 +94,18 @@ class util {
 
 
 		var segmentSaveType = cfg.get("segmentSaveType");
-		if (cfg.get("IsDefaultEngine") == "false") segmentSaveType = "0";
+		if (cfg.get("EngineMode") != "0") segmentSaveType = "0";
 		
 		bool _isTimeShift = isTimeShift;
-		if (cfg.get("IsDefaultEngine") == "false") _isTimeShift = false;
+		if (cfg.get("EngineMode") != "0") _isTimeShift = false;
 
 		var name = getFileName(host, group, title, lvId, communityNum,  cfg);
 		if (name.Length > 200) name = name.Substring(0, 200);
 		
 		//長いパス調整
-		if (name.Length + dirPath.Length > 235) {
+		if (name.Length + dirPath.Length > 234) {
 			name = lvId;
-			if (name.Length + dirPath.Length > 240 && sfn != null) {
+			if (name.Length + dirPath.Length > 234 && sfn != null) {
 				sfn = sfn.Substring(0, 3);
 				dirPath = _dirPath + "/" + sfn;
 								
@@ -114,7 +114,7 @@ class util {
 				
 			}
 		}
-		if (name.Length + dirPath.Length > 235) return new string[]{null, name + " " + dirPath};
+		if (name.Length + dirPath.Length > 234) return new string[]{null, name + " " + dirPath};
 		
 		if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
 		if (!Directory.Exists(dirPath)) return null;
@@ -261,10 +261,10 @@ class util {
 		}
 	public static string getOkCommentFileName(config cfg, string fName, string lvid, bool isTimeShift) {
 		var kakutyousi = (cfg.get("IsgetcommentXml") == "true") ? ".xml" : ".json";
-		var isDefaultEngine = cfg.get("IsDefaultEngine");
-		if (cfg.get("segmentSaveType") == "0" || isDefaultEngine == "false") {
+		var engineMode = cfg.get("EngineMode");
+		if (cfg.get("segmentSaveType") == "0" || engineMode != "0") {
 			//renketu
-			if (isTimeShift && isDefaultEngine == "true") {
+			if (isTimeShift && engineMode == "0") {
 				var time = getRegGroup(fName, "(_\\d+h\\d+m\\d+s_)");
 				fName = fName.Replace(time, "");
 			}
@@ -307,9 +307,9 @@ class util {
 		if (name.Length > 200) name = name.Substring(0, 200);
 		
 		//長いパス調整
-		if (name.Length + dirPath.Length > 235) {
+		if (name.Length + dirPath.Length > 234) {
 			name = lvId;
-			if (name.Length + dirPath.Length > 240 && sfn != null) {
+			if (name.Length + dirPath.Length > 234 && sfn != null) {
 				sfn = sfn.Substring(0, 3);
 				dirPath = _dirPath + "/" + sfn;
 								
@@ -318,7 +318,7 @@ class util {
 				
 			}
 		}
-		if (name.Length + dirPath.Length > 230) return null;
+		if (name.Length + dirPath.Length > 234) return null;
 		
 		if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
 		if (!Directory.Exists(dirPath)) return null;

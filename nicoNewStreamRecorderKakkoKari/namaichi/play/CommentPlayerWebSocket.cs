@@ -78,7 +78,8 @@ namespace namaichi.play
 					header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Extensions", "permessage-deflate"));
 					header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Version", "13"));
 				}
-				wsc = new WebSocket(msUri,  "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
+				wsc = new WebSocket(msUri,  "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.None);
+				//wsc = new WebSocket(msUri,  "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
 				wsc.Opened += onWscOpen;
 				wsc.Closed += onWscClose;
 				wsc.MessageReceived += onWscMessageReceive;
@@ -148,7 +149,7 @@ namespace namaichi.play
 			
 			if (cf.form.recBtn.Text == "録画開始") {
 				isEnd = true;
-				wsc.Close();
+				if (wsc != null) wsc.Close();
 				return;
 			}
 			

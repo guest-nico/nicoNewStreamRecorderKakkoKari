@@ -10,6 +10,7 @@ using System;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace namaichi.rec
 {
@@ -32,9 +33,9 @@ namespace namaichi.rec
 			util.debugWriteLine("command "  + command);
 
 			var _command = command.Replace("{i}", hlsSegM3uUrl);
-			var o = recFolderFile + ".ts";
-			if (recFolderFile.IndexOf(" ") > -1) o = "\"" + o + "\"";
-			_command = _command.Replace("{o}", o);
+			_command = getAddedExtRecFilePath(recFolderFile, _command);
+			
+			
 			util.debugWriteLine("_command " + _command);
 			EventHandler e = new EventHandler(appExitHandler);
 			Application.ApplicationExit += e;
@@ -108,7 +109,7 @@ namespace namaichi.rec
 			}
 		
 			while(!process.HasExited) {
-				System.Threading.Thread.Sleep(200);
+				System.Threading.Thread.Sleep(1000);
 			}
 			
 			util.debugWriteLine("destroy " + process.ExitCode);
@@ -121,12 +122,19 @@ namespace namaichi.rec
 			
 			while (!process.HasExited) {
 				//if (process.WaitForExit(100)) break;
-				Thread.Sleep(100);
+				Thread.Sleep(1000);
 				
 				if (rm.rfu != rfu) stopRecording();
 			}
 			
 		}
-		
+		private string getAddedExtRecFilePath(string recFolderFile, string command) {
+			var r = new Regex("\\{o\\}(\\.\\S+)");
+			command = r.Replace(command, "\"" + recFolderFile + "${1}\"");
+			command = command.Replace("{o}", "\"" + recFolderFile + ".ts\"");
+//			if (recFolderFile.IndexOf(" ") > -1) o = "\"" + o + "\"";
+//			_command = _command.Replace("{o}", o);
+			return command;
+		}
 	}
 }

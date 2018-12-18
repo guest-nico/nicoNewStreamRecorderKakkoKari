@@ -33,7 +33,7 @@ namespace rokugaTouroku
 		public MainForm(string[] args)
 		{
 			System.Diagnostics.Debug.Listeners.Clear();
-			System.Diagnostics.Debug.Listeners.Add(new log.TraceListener());
+			System.Diagnostics.Debug.Listeners.Add(new Logger.TraceListener());
 		    util.setLog(config, null);
 			
 		    util.debugWriteLine(util.versionStr + " " + util.versionDayStr);
@@ -377,7 +377,7 @@ namespace rokugaTouroku
 //					Clipboard.SetText("http://live.nicovideo.jp/");
 				return;
 			}
-			System.Diagnostics.Process.Start(ri.communityUrl);
+			Clipboard.SetText(ri.communityUrl);
 		}
 		
 		void reAddRowMenu_Click(object sender, EventArgs e)
@@ -481,19 +481,21 @@ namespace rokugaTouroku
 			var i = 0;
 		}
 		void setConvertList(int afterConvertMode) {
-			var t = "ts(変換無し)";
-			if (afterConvertMode == 1) t = "avi";  
-			if (afterConvertMode == 2) t = "mp4";
-			if (afterConvertMode == 3) t = "flv";
-			if (afterConvertMode == 4) t = "mov";
-			if (afterConvertMode == 5) t = "wmv";
-			if (afterConvertMode == 6) t = "vob";
-			if (afterConvertMode == 7) t = "mkv";
-			if (afterConvertMode == 8) t = "mp3(音声)";
-			if (afterConvertMode == 9) t = "wav(音声)";
-			if (afterConvertMode == 10) t = "wma(音声)";
-			if (afterConvertMode == 11) t = "aac(音声)";
-			if (afterConvertMode == 12) t = "ogg(音声)";
+			var t = "処理しない";
+			if (afterConvertMode == 1) t = "形式を変更せず処理する";
+			if (afterConvertMode == 2) t = "ts";
+			if (afterConvertMode == 3) t = "avi";			
+			if (afterConvertMode == 4) t = "mp4";
+			if (afterConvertMode == 5) t = "flv";
+			if (afterConvertMode == 6) t = "mov";
+			if (afterConvertMode == 7) t = "wmv";
+			if (afterConvertMode == 8) t = "vob";
+			if (afterConvertMode == 9) t = "mkv";
+			if (afterConvertMode == 10) t = "mp3(音声)";
+			if (afterConvertMode == 11) t = "wav(音声)";
+			if (afterConvertMode == 12) t = "wma(音声)";
+			if (afterConvertMode == 13) t = "aac(音声)";
+			if (afterConvertMode == 14) t = "ogg(音声)";
 			afterConvertModeList.Text = t;
 		}
 		void versionMenu_Click(object sender, EventArgs e)

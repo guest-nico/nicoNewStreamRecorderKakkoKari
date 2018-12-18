@@ -70,15 +70,17 @@ namespace namaichi.rec
 //		public DateTime tsHlsRequestTime = DateTime.MinValue;
 //		public TimeSpan tsStartTime;
 		
-		private DeflateDecoder deflateDecoder = new DeflateDecoder();
+		private DeflateDecoder deflateDecoder;// = new DeflateDecoder();
 		CancellationTokenSource wscPongCancelToken;
 		
 		private bool isGetCommentXml;
 		private TimeShiftCommentGetter_jikken tscgChat;
 		private TimeShiftCommentGetter_jikken tscgControl;
+		private string commentFileName = null;
+		private string commentHead = null;
 		
 		private bool isSub;
-		private bool isRtmp;
+		public bool isRtmp;
 		
 		public JikkenRecordProcess( 
 				CookieContainer container, string[] recFolderFile, 
@@ -122,7 +124,7 @@ namespace namaichi.rec
 //				GC.Collect();
 //				GC.WaitForPendingFinalizers();
 				
-				System.Threading.Thread.Sleep(100);
+				System.Threading.Thread.Sleep(1000);
 			}
 			//while (isTimeShift && !isTimeShiftCommentGetEnd && rm.rfu == rfu) 
 			//	System.Threading.Thread.Sleep(300);
@@ -157,16 +159,25 @@ namespace namaichi.rec
 			}
 			*/
 			//util.debugWriteLine(System.Diagnostics.FileVersionInfo.GetVersionInfo("websocket4net.dll").
-			if (isRtmp) {
-				rr = new RtmpRecorder(lvid, container, rm, rfu, isSub, recFolderFile, this, releaseTime);
+			if (isRtmp || 
+				    (rm.cfg.get("IsHokan") == "true" && 
+				    !rfu.isRtmpMain && !rm.isPlayOnlyMode && 
+					!rfu.isSubAccountHokan && 
+					rm.cfg.get("EngineMode") == "0" && !isTimeShift)) {
+					rfu.subGotNumTaskInfo = new List<numTaskInfo>();
+				
+				rr = new RtmpRecorder(lvid, container, rm, rfu, !isRtmp, recFolderFile, this, releaseTime);
 				Task.Run(() => {
 					rr.record();
 					rm.hlsUrl = "end";
+					if (rr.isEndProgram) isEndProgram = true;
+					isRetry = false;
 				});
-			} else {
-				Task.Run(() => {record();});
-				Task.Run(() => {connectKeeper();});
 			}
+			Task.Run(() => {connectKeeper();});
+			if (!isRtmp)
+				Task.Run(() => {record();});
+			
 			if (!isSub)
 				Task.Run(() => {getMessage();});
 		}
@@ -187,19 +198,19 @@ namespace namaichi.rec
 			//if (rm.isPlayOnlyMode) return;
 			
 			if (isTimeShift) {
-				tscgChat = new TimeShiftCommentGetter_jikken(this, userId, rm, rfu, rm.form, openTime, recFolderFile, lvid, container, wi.chatThread, wi.chatKey, true, wi, tsConfig.timeSeconds, tsConfig);
-				tscgControl = new TimeShiftCommentGetter_jikken(this, userId, rm, rfu, rm.form, openTime, recFolderFile, lvid, container, wi.controlThread, wi.controlKey, false, wi, tsConfig.timeSeconds, tsConfig);
+				tscgChat = new TimeShiftCommentGetter_jikken(this, userId, rm, rfu, rm.form, openTime, recFolderFile, lvid, container, wi.chatThread, wi.chatKey, true, wi, (isRtmp) ? 0 : tsConfig.timeSeconds, (isRtmp) ? false : tsConfig.isVposStartTime);
+				tscgControl = new TimeShiftCommentGetter_jikken(this, userId, rm, rfu, rm.form, openTime, recFolderFile, lvid, container, wi.controlThread, wi.controlKey, false, wi, (isRtmp) ? 0 : tsConfig.timeSeconds, (isRtmp) ? false : tsConfig.isVposStartTime);
 				tscgChat.save();
 				tscgControl.save();
 //				if (rm.isPlayOnlyMode) return;
 				
 				while (rm.rfu == rfu && isRetry) {
 					if (tscgChat.isEnd && tscgControl.isEnd) break;
-					Thread.Sleep(500);
+					Thread.Sleep(1000);
 				}
 				
 				tscgChat.gotCommentList.AddRange(tscgControl.gotCommentList);
-				var fName = (rm.isPlayOnlyMode) ? null : util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, true);
+				var fName = (rm.isPlayOnlyMode) ? null : util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, true, isRtmp);
 				TimeShiftCommentGetter_jikken.endProcess(tscgChat.gotCommentList, fName, rm.form, tscgChat.isGetXml, tscgChat.threadLine, tscgControl.threadLine, this);
 			} else connectMessageServer();
 		}
@@ -220,7 +231,7 @@ namespace namaichi.rec
 		private void connectKeeper() {
 			var start = DateTime.Now;
 			while (rm.rfu == rfu && isRetry) {
-				Thread.Sleep(500);
+				Thread.Sleep(1000);
 				if (DateTime.Now - start < 
 				    TimeSpan.FromMilliseconds((double)wi.expireIn)) continue;
 				start = DateTime.Now;
@@ -231,6 +242,7 @@ namespace namaichi.rec
 					if (w.Result == null) continue;
 					wi.setPutWatching(w.Result);
 					rm.form.setStatistics(wi.visit, wi.comment);
+					
 				} catch (Exception e) {
 					util.debugWriteLine("watching put exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
@@ -241,12 +253,12 @@ namespace namaichi.rec
 			Task.Run(() => {
 				while (rm.rfu == rfu && isRetry) {
 	         		if (isTimeShift && tsHlsRequestTime == DateTime.MinValue) {
-	         			Thread.Sleep(300);
+	         			Thread.Sleep(1000);
 	         			continue;
 	         		}
 	         		//if (!isTimeShift && jisa == TimeSpan.MinValue) {
 	         		if (jisa == TimeSpan.MinValue) {
-	         			Thread.Sleep(300);
+	         			Thread.Sleep(1000);
 	         			continue;
 	         		}
 	         		DateTime _keikaTimeStart = (!isTimeShift) ? (util.getUnixToDatetime(openTime) - jisa) : (tsHlsRequestTime - tsStartTime - jisa);
@@ -276,12 +288,13 @@ namespace namaichi.rec
 					//var keikaJikan = _keikaJikanDt.ToString("H'時間'm'分's'秒'");
 					//var programTimeStr = programTime.ToString("h'時間'm'分's'秒'");
 					rm.form.setKeikaJikan(keikaJikan, timeLabelKeika + "/" + programTimeStr, _keikaJikanDt.ToString("h'時間'mm'分'ss'秒'"), _keikaTimeStart);
-					System.Threading.Thread.Sleep(100);
+					System.Threading.Thread.Sleep(1000);
 				}
 			});
 		}
-		override public string[] getRecFilePath(long releaseTime) {
-			return jr.getRecFilePath(releaseTime);
+		//override public string[] getRecFilePath(long releaseTime) {
+		override public string[] getRecFilePath() {
+			return jr.getRecFilePath(releaseTime, isRtmp);
 		}
 		override public void reConnect() {
 			util.debugWriteLine("reconnect" + util.getMainSubStr(isSub, true));
@@ -340,13 +353,16 @@ namespace namaichi.rec
 				//stopRecording();
 //				wsc.Close();
 				return;
-			}			
+			}
 			try {
 				if (bool.Parse(rm.cfg.get("IsgetComment")) && commentSW == null && !rm.isPlayOnlyMode) {
-					var commentFileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, isTimeShift);
+					var fName = (commentFileName == null) ? recFolderFile[1] : incrementRecFolderFile(commentFileName);
+					commentFileName = fName;
+					var _commentFileName = util.getOkCommentFileName(rm.cfg, fName, lvid, isTimeShift, isRtmp);
+					var isExists = File.Exists(_commentFileName);
+					commentSW = new StreamWriter(_commentFileName, false, System.Text.Encoding.UTF8);
 					
-					var isExists = File.Exists(commentFileName);
-					commentSW = new StreamWriter(commentFileName, false, System.Text.Encoding.UTF8);
+					
 					if (isGetCommentXml && !isExists) {
 						commentSW.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
 				        commentSW.WriteLine("<packet>");
@@ -360,6 +376,8 @@ namespace namaichi.rec
 			
 			if (wscPongCancelToken == null) 
 				Task.Run(() => {messageServerPong();});
+			
+			deflateDecoder = new DeflateDecoder();
 		}
 		
 		private void onWscClose(object sender, EventArgs e) {
@@ -471,6 +489,12 @@ namespace namaichi.rec
 					serverTime = chatinfo.serverTime;
 					ticket = chatinfo.ticket;
 					jisa = util.getUnixToDatetime(serverTime) - DateTime.Now;
+					
+					if (isGetCommentXml) {
+						commentHead = chatXml.ToString();
+					} else {
+						commentHead = chatinfo.json;
+					}
 				}
 				
 //				util.debugWriteLine("wsc message " + wsc + util.getMainSubStr(isSub, true));
@@ -524,8 +548,8 @@ namespace namaichi.rec
 					var chatinfo = new namaichi.info.ChatInfo(xml, decodedMsg);
 					ret.Add(chatinfo);
 				} catch (Exception e) {
-					util.debugWriteLine("decode msg exception " + decodedMsg + util.getMainSubStr(isSub, true));
-					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite + util.getMainSubStr(isSub, true));
+//					util.debugWriteLine("decode msg exception " + decodedMsg + util.getMainSubStr(isSub, true));
+//					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite + util.getMainSubStr(isSub, true));
 				}
 			}
 			return ret;
@@ -609,7 +633,8 @@ namespace namaichi.rec
 //				foreach (Cookie kv in container.GetCookies(new Uri(wi.msUri)))
 //					cookieKV.Add(new KeyValuePair<string, string>(kv.Name, kv.Value));
 //				msUri = "ws://nmsg.nicovideo.jp:2581/websocket";
-				wsc = new WebSocket(msUri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "https://cas.nicovideo.jp", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
+				wsc = new WebSocket(msUri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "https://cas.nicovideo.jp", WebSocketVersion.Rfc6455, null, msUri.StartsWith("wss") ? SslProtocols.Tls12 : SslProtocols.None);
+				//wsc = new WebSocket(msUri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "https://cas.nicovideo.jp", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
 //				wsc = new WebSocket(msUri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "https://cas.nicovideo.jp", WebSocketVersion.Rfc6455);
 //				wsc.Security.AllowUnstrustedCertificate = true;
 //				wsc.Security.
@@ -628,9 +653,11 @@ namespace namaichi.rec
 		        
 				util.debugWriteLine("ms start" + util.getMainSubStr(isSub, true));
 				var _ws = wsc; 
+				Task.Run(() => {
 					Thread.Sleep(5000);
 					if (_ws.State == WebSocketState.Connecting) 
 						wsc.Close();
+				});
 	    	} catch (Exception ee) {
 	    		util.debugWriteLine("wsc connect exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite + util.getMainSubStr(isSub, true));
 	    		return false;
@@ -680,6 +707,52 @@ namespace namaichi.rec
 					res.IndexOf("番組が見つかりません</span>") != -1;
 			util.debugWriteLine("is ended program " + isEnd + util.getMainSubStr(isSub, true));
 			return isEnd; 
+		}
+		override public void resetCommentFile() {
+//			wsc.Close();
+			try {
+				commentSW.WriteLine("</packet>");
+				commentSW.Close();
+				commentSW = null;
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
+			
+			
+			
+			try {
+				if (bool.Parse(rm.cfg.get("IsgetComment")) && commentSW == null && !rm.isPlayOnlyMode) {
+					var fName = (commentFileName == null) ? recFolderFile[1] : incrementRecFolderFile(commentFileName);
+					commentFileName = fName;
+					var _commentFileName = util.getOkCommentFileName(rm.cfg, fName, lvid, isTimeShift, isRtmp);
+					var isExists = File.Exists(_commentFileName);
+					commentSW = new StreamWriter(_commentFileName, false, System.Text.Encoding.UTF8);
+					
+					
+					if (isGetCommentXml && !isExists) {
+						commentSW.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
+				        commentSW.WriteLine("<packet>");
+//				        if (commentHead != null)
+//				        	commentSW.WriteLine(commentHead);
+				        commentSW.Flush();
+					} 
+			       
+				}
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + " " + ee.StackTrace + util.getMainSubStr(isSub, true));
+			}
+			try {
+				wsc.Send(msReq[0]);
+				wsc.Send(msReq[1]);
+			} catch (Exception ee) {
+				util.debugWriteLine("on open wsc req send exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite + util.getMainSubStr(isSub, true));
+			}
+			
+		}
+		private string incrementRecFolderFile(string recFolderFile) {
+			var r = util.incrementRecFolderFile(recFolderFile);
+			if (r == null) return getRecFilePath()[1];
+			return r;
 		}
 	}
 }
