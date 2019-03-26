@@ -29,7 +29,7 @@ namespace rokugaTouroku
 	{
 		private config.config cfg;
 		
-		static readonly Uri TargetUrl = new Uri("http://live.nicovideo.jp/");
+		static readonly Uri TargetUrl = new Uri("https://live.nicovideo.jp/");
 		private string fileNameFormat;
 //		private string 
 		
@@ -122,9 +122,11 @@ namespace rokugaTouroku
 				{"Isretry",isRetryChkBox.Checked.ToString().ToLower()},
 				{"IsdeleteExit",isDeleteExitChkBox.Checked.ToString().ToLower()},
 				{"IsgetcommentXml",isCommentXML.Checked.ToString().ToLower()},
+				{"IsDisplayComment",isDisplayCommentChkbox.Checked.ToString().ToLower()},
 				{"IstitlebarSamune",isTitleBarSamune.Checked.ToString().ToLower()},
 				{"IsautoFollowComgen",isAutoFollowComGen.Checked.ToString().ToLower()},
 				{"qualityRank",getQualityRank()},
+				{"IsMiniStart",isMiniStartChkBox.Checked.ToString().ToLower()},
 				{"IsLogFile",isLogFileChkBox.Checked.ToString().ToLower()},
 				{"IsSegmentNukeInfo",isSegmentNukeInfoChkBox.Checked.ToString().ToLower()},
 				{"segmentSaveType",getSegmentSaveType()},
@@ -133,6 +135,9 @@ namespace rokugaTouroku
 //				{"IsDefaultEngine",isDefaultEngineChkBox.Checked.ToString().ToLower()},
 				{"EngineMode",getEngineMode()},
 				{"anotherEngineCommand",anotherEngineCommandText.Text},
+				{"IsDefaultRtmpPath",isDefaultRtmpChkBox.Checked.ToString().ToLower()},
+				{"rtmpPath",rtmpPathText.Text},
+				
 				{"IsUsePlayer",isUsePlayerChkBox.Checked.ToString().ToLower()},
 				{"IsUseCommentViewer",isUseCommentViewerChkBox.Checked.ToString().ToLower()},
 				{"IsDefaultPlayer",isDefaultPlayerRadioBtn.Checked.ToString().ToLower()},
@@ -140,6 +145,10 @@ namespace rokugaTouroku
 				{"anotherPlayerPath",anotherPlayerPathText.Text},
 				{"anotherCommentViewerPath",anotherCommentViewerPathText.Text},
 				{"afterConvertMode",getAfterConvertType()},
+				{"IsSoundEnd",isSoundEndChkBox.Checked.ToString().ToLower()},
+				{"soundPath",soundPathText.Text},
+				{"IsSoundDefault",isDefaultSoundChkBtn.Checked.ToString().ToLower()},
+				{"soundVolume",volumeBar.Value.ToString()},
 				
 				{"cookieFile",cookieFileText.Text},
 				{"iscookie",isCookieFileSiteiChkBox.Checked.ToString().ToLower()},
@@ -341,9 +350,11 @@ namespace rokugaTouroku
         	isCommentXML.Checked = bool.Parse(cfg.get("IsgetcommentXml"));
         	isCommentJson.Checked = !bool.Parse(cfg.get("IsgetcommentXml"));
         	isGetCommentChkBox_UpdateAction();
+        	isDisplayCommentChkbox.Checked = bool.Parse(cfg.get("IsDisplayComment"));
         	isTitleBarSamune.Checked = bool.Parse(cfg.get("IstitlebarSamune"));
         	isAutoFollowComGen.Checked = bool.Parse(cfg.get("IsautoFollowComgen"));
         	setInitQualityRankList(cfg.get("qualityRank"));
+        	isMiniStartChkBox.Checked = bool.Parse(cfg.get("IsMiniStart"));
         	isLogFileChkBox.Checked = bool.Parse(cfg.get("IsLogFile"));
         	isSegmentNukeInfoChkBox.Checked = bool.Parse(cfg.get("IsSegmentNukeInfo"));
         	setSegmentSaveType(cfg.get("segmentSaveType"));
@@ -352,8 +363,11 @@ namespace rokugaTouroku
 //        	isAfterRenketuFFmpegChkBox.Checked = bool.Parse(cfg.get("IsAfterRenketuFFmpeg"));
 //        	isDefaultEngineChkBox.Checked = bool.Parse(cfg.get("IsDefaultEngine"));
         	setEngineType(cfg.get("EngineMode"));
-        	isDefaultEngineChkBox_UpdateAction();
 			anotherEngineCommandText.Text = cfg.get("anotherEngineCommand");
+			isDefaultRtmpChkBox.Checked = bool.Parse(cfg.get("IsDefaultRtmpPath"));
+			rtmpPathText.Text = cfg.get("rtmpPath");
+			isDefaultEngineChkBox_UpdateAction();
+			
 			setPlayerType();
 			setCommentViewerType();
 			anotherPlayerPathText.Text = cfg.get("anotherPlayerPath");
@@ -364,6 +378,11 @@ namespace rokugaTouroku
 			isUseCommentViewerChkBox_UpdateAction();
 			
 			setConvertList(int.Parse(cfg.get("afterConvertMode")));
+			isSoundEndChkBox.Checked = bool.Parse(cfg.get("IsSoundEnd"));
+			soundPathText.Text = cfg.get("soundPath");
+			isDefaultSoundChkBtn.Checked = bool.Parse(cfg.get("IsSoundDefault"));
+			volumeBar.Value = int.Parse(cfg.get("soundVolume"));
+			updateIsSoundEndChkBox();
 			
         	isCookieFileSiteiChkBox.Checked = bool.Parse(cfg.get("iscookie"));
         	isCookieFileSiteiChkBox_UpdateAction();
@@ -569,7 +588,7 @@ namespace rokugaTouroku
 		public object[] getRanksToItems(int[] ranks, ListBox owner) {
 			var items = new Dictionary<int, string> {
 				{0, "自動(abr)"}, {1, "3Mbps(super_high)"},
-				{2, "2Mbps(high・高画質)"}, {3, "1Mbps(normal・低画質)"},
+				{2, "2Mbps(high)"}, {3, "1Mbps(normal)"},
 				{4, "384kbps(low)"}, {5, "192kbps(super_low)"},
 			};
 //			var ret = new ListBox.ObjectCollection(owner);
@@ -612,7 +631,7 @@ namespace rokugaTouroku
 		List<int> getItemsToRanks(ListBox.ObjectCollection items) {
 			var itemsDic = new Dictionary<int, string> {
 				{0, "自動(abr)"}, {1, "3Mbps(super_high)"},
-				{2, "2Mbps(high・高画質)"}, {3, "1Mbps(normal・低画質)"},
+				{2, "2Mbps(high)"}, {3, "1Mbps(normal)"},
 				{4, "384kbps(low)"}, {5, "192kbps(super_low)"},
 			};
 			var ret = new List<int>();
@@ -664,23 +683,44 @@ namespace rokugaTouroku
 				anotherEngineCommandText.Enabled = false;
 				isSegmentRenketuRadioBtn.Enabled = true;
 				isSegmentNotRenketuRadioBtn.Enabled = true;
-				isRenketuAfterChkBox_UpdateAction();
+				isRenketuAfterChkBox.Enabled = isDefaultEngineChkBox.Checked
+						&& isSegmentNotRenketuRadioBtn.Checked;
+				//isRenketuAfterChkBox_UpdateAction();
+				
+				rtmpPathText.Enabled = rtmpPathSanshouBtn.Enabled = 
+					isDefaultRtmpChkBox.Enabled = false;
 			} else if (isAnotherEngineChkBox.Checked) {
 				anotherEngineCommandText.Enabled = true;
 				isSegmentRenketuRadioBtn.Enabled = false;
 				isSegmentNotRenketuRadioBtn.Enabled = false;
 				isRenketuAfterChkBox.Enabled = false;
+				
+				rtmpPathText.Enabled = rtmpPathSanshouBtn.Enabled = 
+					isDefaultRtmpChkBox.Enabled = false;
+			} else if (isRtmpEngine.Checked) {
+				anotherEngineCommandText.Enabled = false;
+				isSegmentRenketuRadioBtn.Enabled = false;
+				isSegmentNotRenketuRadioBtn.Enabled = false;
+				isRenketuAfterChkBox.Enabled = false;
+				
+				rtmpPathText.Enabled = rtmpPathSanshouBtn.Enabled =
+						isRtmpEngine.Checked && !isDefaultRtmpChkBox.Checked;
+				isDefaultRtmpChkBox.Enabled = true;
 			} else {
 				anotherEngineCommandText.Enabled = false;
 				isSegmentRenketuRadioBtn.Enabled = false;
 				isSegmentNotRenketuRadioBtn.Enabled = false;
 				isRenketuAfterChkBox.Enabled = false;
+				
+				rtmpPathText.Enabled = rtmpPathSanshouBtn.Enabled = 
+					isDefaultRtmpChkBox.Enabled = false;
 			}
 		}
 		void setEngineType(string EngineMode) {
 			if (EngineMode == "0") isDefaultEngineChkBox.Checked = true;
 			else if (EngineMode == "1") isAnotherEngineChkBox.Checked = true;
-			else isRtmpEngine.Checked = true;
+			else if (EngineMode == "2") isRtmpEngine.Checked = true;
+			else isNoEngine.Checked = true;
 			isDefaultEngineChkBox_UpdateAction();
 		}
 		
@@ -836,9 +876,58 @@ namespace rokugaTouroku
 			anotherCommentViewerSanshouBtn.Enabled = c && isAnotherCommentViewerRadioBtn.Checked;
 		}
 		string getEngineMode() {
-			if (isDefaultEngineChkBox.Checked) return "0";
 			if (isAnotherEngineChkBox.Checked) return "1";
-			return "2";
+			if (isRtmpEngine.Checked) return "2";
+			if (isNoEngine.Checked) return "3";
+			if (isDefaultEngineChkBox.Checked) return "0";
+			return "0";
+		}
+		void IsSoundEndChkBoxCheckedChanged(object sender, EventArgs e)
+		{
+			updateIsSoundEndChkBox();
+		}
+		void updateIsSoundEndChkBox() {
+			soundPathText.Enabled = 
+				isSoundEndChkBox.Checked && !isDefaultSoundChkBtn.Checked;
+			soundSanshouBtn.Enabled = 
+				isSoundEndChkBox.Checked && !isDefaultSoundChkBtn.Checked;
+			isDefaultSoundChkBtn.Enabled = isSoundEndChkBox.Checked;
+			volumeBar.Enabled = isSoundEndChkBox.Checked;
+			volumeText.Enabled = isSoundEndChkBox.Checked;
+		}
+		
+		void IsDefaultSoundChkBtnCheckedChanged(object sender, EventArgs e)
+		{
+			updateIsSoundEndChkBox();
+		}
+		void SoundSanshouBtnClick(object sender, EventArgs e)
+		{
+			var f = new OpenFileDialog();
+			f.DefaultExt = ".wav";
+			f.FileName = "se_soc02.wav";
+			f.Filter = "WAV形式(*.wav)|*.wav*";
+			f.Multiselect = false;
+			var a = f.ShowDialog();
+			if (a == DialogResult.OK) {
+				soundPathText.Text = f.FileName;
+			}
+		}
+		void RtmpPathSanshouBtnClick(object sender, EventArgs e)
+		{
+			var f = new OpenFileDialog();
+			f.DefaultExt = ".exe";
+			f.FileName = "rtmpdump.exe";
+			f.Filter = "EXE形式(*.exe)|*.exe*";
+			f.Multiselect = false;
+			var a = f.ShowDialog();
+			if (a == DialogResult.OK) {
+				rtmpPathText.Text = f.FileName;
+			}
+		}
+		void VolumeBarValueChanged(object sender, EventArgs e)
+		{
+			util.debugWriteLine(volumeBar.Value);
+			volumeText.Text = "音量：" + volumeBar.Value;
 		}
 	}
 }

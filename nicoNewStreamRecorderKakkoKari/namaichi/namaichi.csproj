@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>WinExe</OutputType>
     <RootNamespace>namaichi</RootNamespace>
-    <AssemblyName>nicoNewStreamRecorderKakkoKari</AssemblyName>
+    <AssemblyName>ニコ生新配信録画ツール（仮</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -16,6 +16,7 @@
     <StartupObject>namaichi.Program</StartupObject>
     <StartAction>Project</StartAction>
     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
+    <ApplicationIcon>..\%28rec.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -65,6 +66,9 @@
   <ItemGroup>
     <Reference Include="Microsoft.Web.XmlTransform">
       <HintPath>..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
+    </Reference>
+    <Reference Include="NAudio">
+      <HintPath>..\packages\NAudio.1.8.5\lib\net35\NAudio.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -209,8 +213,9 @@
     <Compile Include="rec\ThroughFFMpeg.cs" />
     <Compile Include="rec\TimeShiftCommentGetter.cs" />
     <Compile Include="rec\TimeShiftCommentGetter_jikken.cs" />
+    <Compile Include="rec\TimeShiftCommentGetter_xml.cs" />
     <Compile Include="rec\WebSocketRecorder.cs" />
-    <Compile Include="rec\XmlCommentGetter.cs" />
+    <Compile Include="rec\XmlCommentGetter_ontime.cs" />
     <Compile Include="TimeShiftOptionForm.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -27,8 +27,8 @@ namespace rokugaTouroku.rec
 		private config.config cfg;
 		public string log = "";
 		public string id = null;
-		static readonly Uri TargetUrl = new Uri("http://live.nicovideo.jp/");
-		static readonly Uri TargetUrl2 = new Uri("http://live2.nicovideo.jp");
+		static readonly Uri TargetUrl = new Uri("https://live.nicovideo.jp/");
+		static readonly Uri TargetUrl2 = new Uri("https://live2.nicovideo.jp");
 		static readonly Uri TargetUrl3 = new Uri("https://com.nicovideo.jp");
 		private bool isSub;
 		
@@ -105,7 +105,7 @@ namespace rokugaTouroku.rec
 					util.debugWriteLine("browser ishtml5login");
 					if (isHtml5Login(cc, url)) {
 //						util.debugWriteLine("browser 1 " + cc.GetCookieHeader(TargetUrl));
-//						util.debugWriteLine("browser 2 " + cc.GetCookieHeader(new Uri("http://live2.nicovideo.jp")));
+//						util.debugWriteLine("browser 2 " + cc.GetCookieHeader(new Uri("https://live2.nicovideo.jp")));
 						util.debugWriteLine("browser login ok");
 						/*
 						var c = cc.GetCookies(TargetUrl)["user_session"];

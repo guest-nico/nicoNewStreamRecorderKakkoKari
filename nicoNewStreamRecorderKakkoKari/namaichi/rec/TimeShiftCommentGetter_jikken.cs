@@ -264,7 +264,7 @@ namespace namaichi.rec
 							if (threadLine == null) {
 								threadLine = s;
 								if (!rm.isPlayOnlyMode)
-									form.addLogText(chatinfo.lastRes + "件ぐらいのコメントが見つかりました(追い出しコメント含む)" + ((isChat) ? "(chat)" : "(control)"));
+									form.addLogText("アリーナ席に" + chatinfo.lastRes + "件ぐらいのコメントが見つかりました(追い出しコメント含む)" + ((isChat) ? "(chat)" : "(control)"));
 							}
 			            } else {
 	//		            	commentSW.WriteLine(s + "}>");

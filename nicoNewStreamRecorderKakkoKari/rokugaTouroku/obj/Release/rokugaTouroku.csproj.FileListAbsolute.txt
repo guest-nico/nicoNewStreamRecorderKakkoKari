@@ -214,21 +214,105 @@ C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou l\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.VersionForm.resources
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou l\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.csproj.GenerateResource.Cache
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou l\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.exe
-<<<<<<< HEAD
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n commit\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\rokugaTouroku.exe.config
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n commit\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\rokugaTouroku.exe
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n commit\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.dll
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n commit\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.Forms.dll
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n commit\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.xml
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n commit\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.Forms.xml
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n commit\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.csprojResolveAssemblyReference.cache
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n commit\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.fileNameOptionForm.resources
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n commit\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.MainForm.resources
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n commit\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.optionForm.resources
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n commit\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.QualityForm.resources
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n commit\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.TimeShiftOptionForm.resources
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n commit\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.VersionForm.resources
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n commit\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.csproj.GenerateResource.Cache
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n commit\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.exe
-=======
->>>>>>> 8cb9023b26eabe28922f9199aa9ac5d7ae543656
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\rokugaTouroku.exe.config
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\rokugaTouroku.exe
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.dll
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.Forms.dll
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.xml
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.Forms.xml
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.csprojResolveAssemblyReference.cache
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.fileNameOptionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.MainForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.optionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.QualityForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.TimeShiftOptionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.VersionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.csproj.GenerateResource.Cache
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.exe
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.UrlBulkRegistForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou n\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.UrlListSaveForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a2\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\rokugaTouroku.exe.config
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a2\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\rokugaTouroku.exe
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a2\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.dll
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a2\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.Forms.dll
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a2\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.xml
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a2\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.Forms.xml
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a2\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.csprojResolveAssemblyReference.cache
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a2\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.fileNameOptionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a2\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.MainForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a2\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.optionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a2\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.QualityForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a2\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.TimeShiftOptionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a2\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.UrlBulkRegistForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a2\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.UrlListSaveForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a2\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.VersionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a2\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.csproj.GenerateResource.Cache
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a2\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.exe
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a4\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\rokugaTouroku.exe.config
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a4\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\rokugaTouroku.exe
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a4\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.dll
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a4\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.Forms.dll
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a4\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.xml
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a4\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.Forms.xml
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a4\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.csprojResolveAssemblyReference.cache
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a4\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.fileNameOptionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a4\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.MainForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a4\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.optionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a4\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.QualityForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a4\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.TimeShiftOptionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a4\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.UrlBulkRegistForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a4\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.UrlListSaveForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a4\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.VersionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a4\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.csproj.GenerateResource.Cache
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a4\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.exe
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a6\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\rokugaTouroku.exe.config
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a6\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\rokugaTouroku.exe
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a6\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.dll
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a6\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.Forms.dll
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a6\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.xml
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a6\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.Forms.xml
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a6\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.csprojResolveAssemblyReference.cache
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a6\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.fileNameOptionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a6\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.MainForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a6\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.optionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a6\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.QualityForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a6\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.TimeShiftOptionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a6\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.UrlBulkRegistForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a6\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.UrlListSaveForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a6\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.VersionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a6\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.csproj.GenerateResource.Cache
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a6\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.exe
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a13\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\rokugaTouroku.exe.config
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a13\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\rokugaTouroku.exe
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a13\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.dll
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a13\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.Forms.dll
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a13\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.xml
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a13\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.Forms.xml
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a13\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.csprojResolveAssemblyReference.cache
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a13\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.fileNameOptionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a13\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.MainForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a13\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.optionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a13\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.QualityForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a13\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.TimeShiftOptionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a13\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.UrlBulkRegistForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a13\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.UrlListSaveForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a13\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.VersionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a13\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.csproj.GenerateResource.Cache
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a13\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.exe
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a20\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\rokugaTouroku.exe.config
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a20\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\rokugaTouroku.exe
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a20\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.dll
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a20\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.Forms.dll
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a20\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.xml
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a20\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Release\SnkLib.App.CookieGetter.Forms.xml
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a20\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.csprojResolveAssemblyReference.cache
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a20\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.fileNameOptionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a20\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.MainForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a20\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.optionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a20\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.QualityForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a20\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.TimeShiftOptionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a20\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.UrlBulkRegistForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a20\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.UrlListSaveForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a20\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.VersionForm.resources
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a20\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.csproj.GenerateResource.Cache
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a20\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Release\rokugaTouroku.exe

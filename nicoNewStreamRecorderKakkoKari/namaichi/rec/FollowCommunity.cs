@@ -21,28 +21,29 @@ namespace namaichi.rec
 	/// </summary>
 	public class FollowCommunity
 	{
-		private bool isSub;
-		public FollowCommunity(bool isSub)
+		//private bool isSub = false;
+		public FollowCommunity()
 		{
-			this.isSub = isSub;
+			//this.isSub = isSub;
 		}
-		public bool followCommunity(string res, CookieContainer cc, MainForm form, config.config cfg) {
+		public bool 
+			followCommunity(string res, CookieContainer cc, MainForm form, config.config cfg) {
 			var isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
 			var comId = (isJikken) ? util.getRegGroup(res, "&quot;followPageUrl&quot;\\:&quot;.+?motion/(.+?)&quot;") :
 					util.getRegGroup(res, "Nicolive_JS_Conf\\.Recommend = \\{type\\: 'community', community_id\\: '(co\\d+)'");
 			if (comId == null) {
-				form.addLogText("この放送はフォローできませんでした。" + util.getMainSubStr(isSub, true));
+				form.addLogText("この放送はフォローできませんでした。");
 				return false;
 			}
 			
-			var isJoinedTask = join(comId, cc, form, cfg, isSub);
+			var isJoinedTask = join(comId, cc, form, cfg);
 //			isJoinedTask.Wait();
 			return isJoinedTask;
 //			return false;
 		}
-		private bool join(string comId, CookieContainer cc, MainForm form, config.config cfg, bool isSub) {
+		private bool join(string comId, CookieContainer cc, MainForm form, config.config cfg) {
 			for (int i = 0; i < 5; i++) {
-				var myPageUrl = "http://www.nicovideo.jp/my";
+				var myPageUrl = "https://www.nicovideo.jp/my";
 				var comUrl = "https://com.nicovideo.jp/community/" + comId; 
 				var url = "https://com.nicovideo.jp/motion/" + comId;
 				var headers = new WebHeaderCollection();
@@ -50,7 +51,7 @@ namespace namaichi.rec
 				headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36");
 				try {
 					var cg = new CookieGetter(cfg);
-					var cgret = cg.getHtml5RecordCookie(url, isSub);
+					var cgret = cg.getHtml5RecordCookie(url);
 					cgret.Wait();
 					                                  
 					
@@ -68,8 +69,8 @@ namespace namaichi.rec
 	//				var gateurl = "http://live.nicovideo.jp/gate/lv313793991";
 	//				var __gatePage = util.getPageSource(gateurl, ref headers, cc);
 	//				var _compage2 = util.getPageSource(url, ref headers, cc);
-					util.debugWriteLine(cc.GetCookieHeader(new Uri(url)));
-					var msg = (isJidouShounin ? "フォローを試みます。" : "自動承認ではありませんでした。") + util.getMainSubStr(isSub, true);
+//					util.debugWriteLine(cc.GetCookieHeader(new Uri(url)));
+					var msg = (isJidouShounin ? "フォローを試みます。" : "自動承認ではありませんでした。");
 					form.addLogText(msg);
 					
 					if (!isJidouShounin) return false;
@@ -125,7 +126,7 @@ namespace namaichi.rec
 					var isSuccess = resStr.IndexOf("フォローしました") > -1;
 					var _m = (form.rec.isPlayOnlyMode) ? "視聴" : "録画";
 					form.addLogText((isSuccess ?
-					                 "フォローしました。" + _m + "開始までしばらくお待ちください。" : "フォローに失敗しました。") + util.getMainSubStr(isSub, true));
+					                 "フォローしました。" + _m + "開始までしばらくお待ちください。" : "フォローに失敗しました。"));
 					return isSuccess;
 					
 	//				resStream.Close();
@@ -146,13 +147,13 @@ namespace namaichi.rec
 	//				var cc = handler.CookieContainer;
 					
 				} catch (Exception e) {
-					form.addLogText("フォローに失敗しました。" + util.getMainSubStr(isSub, true));
+					form.addLogText("フォローに失敗しました。");
 					util.debugWriteLine(e.Message+e.StackTrace);
 					continue;
 //					return false;
 				}
 			}
-			form.addLogText("フォローに失敗しました。" + util.getMainSubStr(isSub, true));
+			form.addLogText("フォローに失敗しました。");
 			util.debugWriteLine("フォロー失敗");
 			return false;
 		}

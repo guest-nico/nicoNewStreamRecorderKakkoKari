@@ -79,7 +79,7 @@ namespace namaichi.rec
 		private string commentFileName = null;
 		private string commentHead = null;
 		
-		private bool isSub;
+		//private bool isSub;
 		public bool isRtmp;
 		
 		public JikkenRecordProcess( 
@@ -108,15 +108,15 @@ namespace namaichi.rec
 			isGetCommentXml = bool.Parse(rm.cfg.get("IsgetcommentXml"));
 			isJikken = true;
 			this.releaseTime = releaseTime;
-			this.isSub = isSub;
+			//this.isSub = isSub;
 			this.isRtmp = isRtmp;
 		}
 		public void start() {
-			util.debugWriteLine("jrp start" + util.getMainSubStr(isSub, true));
+			util.debugWriteLine("jrp start");
 			
 			process();
-			if (!isSub)
-				displaySchedule();
+			//if (!isSub)
+				Task.Run(() => displaySchedule());
 			rm.form.setStatistics(wi.visit, wi.comment);
 			
 			while (rm.rfu == rfu && isRetry) {
@@ -125,6 +125,7 @@ namespace namaichi.rec
 //				GC.WaitForPendingFinalizers();
 				
 				System.Threading.Thread.Sleep(1000);
+				
 			}
 			//while (isTimeShift && !isTimeShiftCommentGetEnd && rm.rfu == rfu) 
 			//	System.Threading.Thread.Sleep(300);
@@ -140,6 +141,8 @@ namespace namaichi.rec
 			if (isTimeShift && rm.rfu == rfu) {
 				while (rm.rfu == rfu && (!tscgChat.isEnd || !tscgControl.isEnd)) {
 					Thread.Sleep(1000);
+					
+					
 				}
 			}
 			//if (rr != null) rr.isRetry = false;
@@ -147,7 +150,7 @@ namespace namaichi.rec
 			if (rec != null) 
 				rec.waitForEnd();			
 			
-			util.debugWriteLine("closed saikai" + util.getMainSubStr(isSub, true));
+			util.debugWriteLine("closed saikai");
 
 		}
 		private void process() {
@@ -162,7 +165,7 @@ namespace namaichi.rec
 			if (isRtmp || 
 				    (rm.cfg.get("IsHokan") == "true" && 
 				    !rfu.isRtmpMain && !rm.isPlayOnlyMode && 
-					!rfu.isSubAccountHokan && 
+					 
 					rm.cfg.get("EngineMode") == "0" && !isTimeShift)) {
 					rfu.subGotNumTaskInfo = new List<numTaskInfo>();
 				
@@ -178,16 +181,20 @@ namespace namaichi.rec
 			if (!isRtmp)
 				Task.Run(() => {record();});
 			
-			if (!isSub)
+			//if (!isSub)
 				Task.Run(() => {getMessage();});
 		}
 		private void record() {
 			Task.Run(() => {
-			         	rec = new Record(rm, true, rfu, wi.hlsUrl, recFolderFile[1], -1, container, isTimeShift, this, lvid, tsConfig, releaseTime, null, recFolderFile[2], isSub);
-				
-				rec.record(jr.requestQuality);
+			         	rec = new Record(rm, true, rfu, wi.hlsUrl, recFolderFile[1], -1, container, isTimeShift, this, lvid, tsConfig, releaseTime, null, recFolderFile[2]);
+			    try {
+					rec.record(jr.requestQuality);
+	         	} catch (Exception e) {
+	         		util.debugWriteLine("record exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+	         		rm.form.addLogText(e.Message + e.Source + e.StackTrace + e.TargetSite);
+	         	}
 				if (rec.isEndProgram) {
-					util.debugWriteLine("stop jrp recd" + util.getMainSubStr(isSub, true));
+					util.debugWriteLine("stop jrp recd");
 					isRetry = false;
 					if (rr != null) rr.retryMode = 2;
 					isEndProgram = true;
@@ -223,7 +230,7 @@ namespace namaichi.rec
 					t.Wait();
 					wsc.Send("");
 				} catch (Exception e) {
-					util.debugWriteLine("wsc pong cancel? " + e.Message + e.Source + e.StackTrace + e.TargetSite + util.getMainSubStr(isSub, true));
+					util.debugWriteLine("wsc pong cancel? " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 					break;
 				}
 			}
@@ -250,7 +257,7 @@ namespace namaichi.rec
 		}
 		public void displaySchedule() {
 			DateTime keikaTimeStart = DateTime.MinValue;
-			Task.Run(() => {
+			//Task.Run(() => {
 				while (rm.rfu == rfu && isRetry) {
 	         		if (isTimeShift && tsHlsRequestTime == DateTime.MinValue) {
 	         			Thread.Sleep(1000);
@@ -290,14 +297,14 @@ namespace namaichi.rec
 					rm.form.setKeikaJikan(keikaJikan, timeLabelKeika + "/" + programTimeStr, _keikaJikanDt.ToString("h'時間'mm'分'ss'秒'"), _keikaTimeStart);
 					System.Threading.Thread.Sleep(1000);
 				}
-			});
+			//});
 		}
 		//override public string[] getRecFilePath(long releaseTime) {
 		override public string[] getRecFilePath() {
 			return jr.getRecFilePath(releaseTime, isRtmp);
 		}
 		override public void reConnect() {
-			util.debugWriteLine("reconnect" + util.getMainSubStr(isSub, true));
+			util.debugWriteLine("reconnect");
 			while (true) {
 				if (rfu != rm.rfu || !isRetry) return;
 				
@@ -337,7 +344,7 @@ namespace namaichi.rec
 			jr.sendComment(s, is184);
 		}
 		private void onWscOpen(object sender, EventArgs e) {
-			util.debugWriteLine("ms open a" + util.getMainSubStr(isSub, true));
+			util.debugWriteLine("ms open a");
 			var res_from = (isTimeShift) ? 1 : -15;
 			msReq = wi.getMessageRequest(userId, res_from);
 			
@@ -345,7 +352,7 @@ namespace namaichi.rec
 				wsc.Send(msReq[0]);
 				wsc.Send(msReq[1]);
 			} catch (Exception ee) {
-				util.debugWriteLine("on open wsc req send exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite + util.getMainSubStr(isSub, true));
+				util.debugWriteLine("on open wsc req send exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
 			
 			
@@ -371,7 +378,7 @@ namespace namaichi.rec
 			       
 				}
 			} catch (Exception ee) {
-				util.debugWriteLine(ee.Message + " " + ee.StackTrace + util.getMainSubStr(isSub, true));
+				util.debugWriteLine(ee.Message + " " + ee.StackTrace);
 			}
 			
 			if (wscPongCancelToken == null) 
@@ -381,7 +388,7 @@ namespace namaichi.rec
 		}
 		
 		private void onWscClose(object sender, EventArgs e) {
-			util.debugWriteLine("ms onclose" + util.getMainSubStr(isSub, true));
+			util.debugWriteLine("ms onclose");
 			closeWscProcess();
 			//wsc = null;
 			
@@ -391,7 +398,7 @@ namespace namaichi.rec
 						if (!connectMessageServer()) continue;
 						break;
 					} catch (Exception ee) {
-						util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite + util.getMainSubStr(isSub, true));
+						util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 					}
 				}
 //				ws.Open();
@@ -406,10 +413,11 @@ namespace namaichi.rec
 			}
 		}
 		private void closeWscProcess() {
-			util.debugWriteLine("close wsc process" + util.getMainSubStr(isSub, true));
+			util.debugWriteLine("close wsc process");
 			if (isTimeShift && isTimeShiftCommentGetEnd) return;
 			
 			if (commentSW != null) {
+//			if (commentSW != null) {
 				if (isGetCommentXml) {
 					try {
 						commentSW.WriteLine("</packet>");
@@ -418,7 +426,7 @@ namespace namaichi.rec
 						commentSW.Close();
 						commentSW = null;
 					} catch (Exception ee) {
-						util.debugWriteLine(ee.Message + " " + ee.StackTrace + " " + ee.TargetSite + util.getMainSubStr(isSub, true));
+						util.debugWriteLine(ee.Message + " " + ee.StackTrace + " " + ee.TargetSite);
 					}
 				}
 			}
@@ -428,18 +436,18 @@ namespace namaichi.rec
 //			endStreamProcess();
 		}
 		private void onWscError(object sender, SuperSocket.ClientEngine.ErrorEventArgs e) {
-			util.debugWriteLine("ms onerror" + util.getMainSubStr(isSub, true));
+			util.debugWriteLine("ms onerror");
 			//stopRecording();
 //			endStreamProcess();
 		}
 		private void onWscDataReceive(object sender, DataReceivedEventArgs e) {
-			util.debugWriteLine("kiteru a" + util.getMainSubStr(isSub, true));
-			util.debugWriteLine(e.Data.ToString() + util.getMainSubStr(isSub, true));
+			util.debugWriteLine("kiteru a");
+			util.debugWriteLine(e.Data.ToString());
 			int a = 3;
 		}
 		
 		private void onWscMessageReceive(object sender, MessageReceivedEventArgs e) {
-			util.debugWriteLine("on wsc message " + util.getMainSubStr(isSub, true));
+			util.debugWriteLine("on wsc message ");
 			
 			if (isTimeShift && e.Message.StartsWith("{\"ping\":{\"content\":\"rf:")) {
 //				closeWscProcess();
@@ -454,10 +462,10 @@ namespace namaichi.rec
 				try {
 					if (wsc != null) wsc.Close();
 				} catch (Exception ee) {
-					util.debugWriteLine("wsc message receive exception " + ee.Source + " " + ee.StackTrace + " " + ee.TargetSite + " " + ee.Message + util.getMainSubStr(isSub, true));
+					util.debugWriteLine("wsc message receive exception " + ee.Source + " " + ee.StackTrace + " " + ee.TargetSite + " " + ee.Message);
 				}
 				//stopRecording();
-				util.debugWriteLine("tigau rfu comment" + e.Message + util.getMainSubStr(isSub, true));
+				util.debugWriteLine("tigau rfu comment" + e.Message);
 				return;
 			}
 			
@@ -473,30 +481,35 @@ namespace namaichi.rec
 			
 			
 			foreach (var chatinfo in chatInfoList) {
-			
-				XDocument chatXml;
-				if (isTimeShift) chatXml = chatinfo.getFormatXml(openTime);
-				else chatXml = chatinfo.getFormatXml(serverTime);
-				util.debugWriteLine("xml " + chatXml.ToString() + util.getMainSubStr(isSub, true));
-				
-				if (chatinfo.root == "chat" && (chatinfo.contents.IndexOf("/hb ifseetno") != -1 && 
-						chatinfo.premium == "3")) continue;
-				if (chatinfo.root != "chat" && chatinfo.root != "thread" 
-				    	&& chatinfo.root != "control") 
+				if (chatinfo == null) 
 					continue;
-				
-				if (chatinfo.root == "thread") {
-					serverTime = chatinfo.serverTime;
-					ticket = chatinfo.ticket;
-					jisa = util.getUnixToDatetime(serverTime) - DateTime.Now;
+				XDocument chatXml = null;
+				try {
 					
-					if (isGetCommentXml) {
-						commentHead = chatXml.ToString();
-					} else {
-						commentHead = chatinfo.json;
+					if (isTimeShift) chatXml = chatinfo.getFormatXml(openTime);
+					else chatXml = chatinfo.getFormatXml(serverTime);
+					util.debugWriteLine("xml " + chatXml.ToString());
+					
+					if (chatinfo.root == "chat" && (chatinfo.contents.IndexOf("/hb ifseetno") != -1 && 
+							chatinfo.premium == "3")) continue;
+					if (chatinfo.root != "chat" && chatinfo.root != "thread" 
+					    	&& chatinfo.root != "control") 
+						continue;
+					
+					if (chatinfo.root == "thread") {
+						serverTime = chatinfo.serverTime;
+						ticket = chatinfo.ticket;
+						jisa = util.getUnixToDatetime(serverTime) - DateTime.Now;
+						
+						if (isGetCommentXml) {
+							commentHead = chatXml.ToString();
+						} else {
+							commentHead = chatinfo.json;
+						}
 					}
+				} catch (Exception ee) {
+					util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 				}
-				
 //				util.debugWriteLine("wsc message " + wsc + util.getMainSubStr(isSub, true));
 				
 	//			Newtonsoft.Json
@@ -518,7 +531,7 @@ namespace namaichi.rec
 			            commentSW.Flush();
 					}
 	           
-				} catch (Exception ee) {util.debugWriteLine(ee.Message + " " + ee.StackTrace + util.getMainSubStr(isSub, true));}
+				} catch (Exception ee) {util.debugWriteLine(ee.Message + " " + ee.StackTrace);}
 				
 				//if (!isTimeShift)
 					addDisplayComment(chatinfo);
@@ -538,7 +551,7 @@ namespace namaichi.rec
 						var chatinfo = new namaichi.info.ChatInfo(xml, j);
 						ret.Add(chatinfo);
 					} catch (Exception e) {
-						util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite + util.getMainSubStr(isSub, true));
+						util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 					}
 					
 				}
@@ -557,9 +570,9 @@ namespace namaichi.rec
 
 		private void addDisplayComment(namaichi.info.ChatInfo chat) {
 			
-			if (chat.root.Equals("thread")) return;
+			if (chat.root == null || chat.root.Equals("thread")) return;
 			if (chat.contents == "再読み込みを行いました<br>読み込み中のままの方はお手数ですがプレイヤー下の更新ボタンをお試し下さい") {
-				util.debugWriteLine("chat 再読み込みを行いました" + util.getMainSubStr(isSub, true));
+				util.debugWriteLine("chat 再読み込みを行いました");
 				return;
 			}
 			if (chat.contents == null) return;
@@ -595,8 +608,8 @@ namespace namaichi.rec
 			
 		}
 		private bool connectMessageServer() {
-	    	util.debugWriteLine("connect message server" + util.getMainSubStr(isSub, true));
-	    	util.debugWriteLine("isretry " + isRetry + " isend " + isEndProgram + util.getMainSubStr(isSub, true));
+	    	util.debugWriteLine("connect message server");
+	    	util.debugWriteLine("isretry " + isRetry + " isend " + isEndProgram);
 	    	
 	    	try {
 		    	lock (this) {
@@ -620,7 +633,7 @@ namespace namaichi.rec
 //				string msAddr = util.getRegGroup(message, "://(.+?):");
 				
 //				util.debugWriteLine(msAddr + " " + wi.msPort + util.getMainSubStr(isSub, true));
-				util.debugWriteLine("msuri " + wi.msUri + util.getMainSubStr(isSub, true));
+				util.debugWriteLine("msuri " + wi.msUri);
 //				util.debugWriteLine("msreq " + wi.msReq + util.getMainSubStr(isSub, true));
 				
 				var header =  new List<KeyValuePair<string, string>>();
@@ -646,12 +659,12 @@ namespace namaichi.rec
 	//			himodukeWS[0] = _ws;
 	//			himodukeWS[1] = wsc;
 				
-		        util.debugWriteLine("wi msuri " + wi.msUri + util.getMainSubStr(isSub, true));
+		        util.debugWriteLine("wi msuri " + wi.msUri);
 		        
 		        wsc.Open();
 		        	        
 		        
-				util.debugWriteLine("ms start" + util.getMainSubStr(isSub, true));
+				util.debugWriteLine("ms start");
 				var _ws = wsc; 
 				Task.Run(() => {
 					Thread.Sleep(5000);
@@ -659,27 +672,27 @@ namespace namaichi.rec
 						wsc.Close();
 				});
 	    	} catch (Exception ee) {
-	    		util.debugWriteLine("wsc connect exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite + util.getMainSubStr(isSub, true));
+	    		util.debugWriteLine("wsc connect exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 	    		return false;
 	    	}
 	    	return true;
 		}
 		public void stopRecording() {
-			util.debugWriteLine("stop recording" + util.getMainSubStr(isSub, true));
+			util.debugWriteLine("stop recording");
 			try {
 				if (wsc != null && wsc.State != WebSocketState.Closed && wsc.State != WebSocketState.Closing) {
-					util.debugWriteLine("state close wsc " + WebSocketState.Closed + " " + wsc.State + util.getMainSubStr(isSub, true));					
+					util.debugWriteLine("state close wsc " + WebSocketState.Closed + " " + wsc.State);					
 					wsc.Close();
 				}
 			} catch (Exception e) {
-				util.debugWriteLine("wsc close error" + util.getMainSubStr(isSub, true));
-				util.debugWriteLine(e.Message + e.StackTrace + util.getMainSubStr(isSub, true));
+				util.debugWriteLine("wsc close error");
+				util.debugWriteLine(e.Message + e.StackTrace);
 			}
 			try {
 				if (wscPongCancelToken != null) wscPongCancelToken.Cancel();
 			} catch (Exception e) {
-				util.debugWriteLine("comment sw close error" + util.getMainSubStr(isSub, true));
-				util.debugWriteLine(e.Message + e.StackTrace + util.getMainSubStr(isSub, true));
+				util.debugWriteLine("comment sw close error");
+				util.debugWriteLine(e.Message + e.StackTrace);
 			}
 			/*
 			try {
@@ -692,20 +705,20 @@ namespace namaichi.rec
 			*/
 		}
 		private bool isEndedProgram() {
-			var url = "http://live2.nicovideo.jp/watch/" + lvid;
+			var url = "https://live2.nicovideo.jp/watch/" + lvid;
 			var isPass = (DateTime.Now - lastEndProgramCheckTime < TimeSpan.FromSeconds(5)); 
 			if (isPass) return false;
 			lastEndProgramCheckTime = DateTime.Now;
 			
 			var a = new System.Net.WebHeaderCollection();
 			var res = util.getPageSource(url, ref a, container);
-			util.debugWriteLine("isendedprogram url " + url + " res==null " + (res == null) + util.getMainSubStr(isSub, true));
+			util.debugWriteLine("isendedprogram url " + url + " res==null " + (res == null));
 //			util.debugWriteLine("isendedprogram res " + res + util.getMainSubStr(isSub, true));
 			if (res == null) return false;
 			var isEnd = res.IndexOf("\"content_status\":\"closed\"") != -1 ||
 					res.IndexOf("<title>番組がみつかりません") != -1 ||
 					res.IndexOf("番組が見つかりません</span>") != -1;
-			util.debugWriteLine("is ended program " + isEnd + util.getMainSubStr(isSub, true));
+			util.debugWriteLine("is ended program " + isEnd);
 			return isEnd; 
 		}
 		override public void resetCommentFile() {
@@ -714,6 +727,7 @@ namespace namaichi.rec
 				commentSW.WriteLine("</packet>");
 				commentSW.Close();
 				commentSW = null;
+				
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
@@ -739,13 +753,13 @@ namespace namaichi.rec
 			       
 				}
 			} catch (Exception ee) {
-				util.debugWriteLine(ee.Message + " " + ee.StackTrace + util.getMainSubStr(isSub, true));
+				util.debugWriteLine(ee.Message + " " + ee.StackTrace);
 			}
 			try {
 				wsc.Send(msReq[0]);
 				wsc.Send(msReq[1]);
 			} catch (Exception ee) {
-				util.debugWriteLine("on open wsc req send exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite + util.getMainSubStr(isSub, true));
+				util.debugWriteLine("on open wsc req send exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
 			
 		}

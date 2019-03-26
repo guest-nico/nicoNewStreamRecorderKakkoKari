@@ -44,11 +44,26 @@ namespace namaichi.rec
 			string arg = null;
 			if (_command.StartsWith("\"")) {
 				f = util.getRegGroup(_command, "\"(.+?)\"");
+				arg = util.getRegGroup(_command, "\".+?\"(.*)");
+			} else {
+				f = util.getRegGroup(_command, "(.+?) ");
+				arg = util.getRegGroup(_command, ".+? (.*)");
+				if (f == null) {
+					f = _command;
+					arg = "";
+				}
+			}
+			if (arg == null) arg = "";
+				
+			/*
+			if (_command.StartsWith("\"")) {
+				f = util.getRegGroup(_command, "\"(.+?)\"");
 				arg = util.getRegGroup(_command, "\".+?\"(.+)");
 			} else {
 				f = util.getRegGroup(_command, "(.+?) ");
 				arg = util.getRegGroup(_command, ".+? (.+)");
 			}
+			*/
 			if (f == null || arg == null) return;
 			
 			process = new System.Diagnostics.Process();
@@ -60,6 +75,8 @@ namespace namaichi.rec
 			//process.StartInfo.UseShellExecute = false;
 			//process.StartInfo.CreateNoWindow = true;
 			process.StartInfo.Arguments = arg;
+			process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Minimized;
+			//process.StartInfo.UseShellExecute = true;
 			
 //			util.debugWriteLine(command[command.Length - 2].Trim('\"'));
 			/*

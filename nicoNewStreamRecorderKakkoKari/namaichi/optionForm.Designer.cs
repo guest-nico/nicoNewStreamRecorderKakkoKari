@@ -39,16 +39,18 @@ namespace namaichi
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.isMiniStartChkBox = new System.Windows.Forms.CheckBox();
 			this.isCommentJson = new System.Windows.Forms.RadioButton();
 			this.isCommentXML = new System.Windows.Forms.RadioButton();
 			this.isAutoFollowComGen = new System.Windows.Forms.CheckBox();
+			this.isLogFileChkBox = new System.Windows.Forms.CheckBox();
 			this.isDescriptionTagChkBox = new System.Windows.Forms.CheckBox();
 			this.isSegmentNukeInfoChkBox = new System.Windows.Forms.CheckBox();
 			this.isHosoInfoChkBox = new System.Windows.Forms.CheckBox();
 			this.isTitleBarSamune = new System.Windows.Forms.CheckBox();
 			this.isTitleBarInfoChkBox = new System.Windows.Forms.CheckBox();
+			this.isDisplayCommentChkbox = new System.Windows.Forms.CheckBox();
 			this.isGetCommentChkBox = new System.Windows.Forms.CheckBox();
-			this.isCloseExitChkBox = new System.Windows.Forms.CheckBox();
 			this.isDeleteExitChkBox = new System.Windows.Forms.CheckBox();
 			this.isFailExit = new System.Windows.Forms.CheckBox();
 			this.isMessageBoxChkBox = new System.Windows.Forms.CheckBox();
@@ -58,11 +60,24 @@ namespace namaichi
 			this.isDefaultBrowserPathChkBox = new System.Windows.Forms.CheckBox();
 			this.browserPathSanshouBtn = new System.Windows.Forms.Button();
 			this.browserPathText = new System.Windows.Forms.TextBox();
+			this.tabPage8 = new System.Windows.Forms.TabPage();
+			this.groupBox9 = new System.Windows.Forms.GroupBox();
+			this.volumeText = new System.Windows.Forms.Label();
+			this.volumeBar = new System.Windows.Forms.TrackBar();
+			this.isSoundEndChkBox = new System.Windows.Forms.CheckBox();
+			this.isCloseExitChkBox = new System.Windows.Forms.CheckBox();
+			this.isDefaultSoundChkBtn = new System.Windows.Forms.CheckBox();
+			this.soundSanshouBtn = new System.Windows.Forms.Button();
+			this.soundPathText = new System.Windows.Forms.TextBox();
 			this.tabPage6 = new System.Windows.Forms.TabPage();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.afterConvertModeList = new System.Windows.Forms.ComboBox();
 			this.groupBox10 = new System.Windows.Forms.GroupBox();
+			this.rtmpPathSanshouBtn = new System.Windows.Forms.Button();
+			this.isDefaultRtmpChkBox = new System.Windows.Forms.CheckBox();
+			this.rtmpPathText = new System.Windows.Forms.TextBox();
+			this.isNoEngine = new System.Windows.Forms.RadioButton();
 			this.isRtmpEngine = new System.Windows.Forms.RadioButton();
 			this.label8 = new System.Windows.Forms.Label();
 			this.anotherEngineCommandText = new System.Windows.Forms.TextBox();
@@ -154,13 +169,15 @@ namespace namaichi
 			this.useDefaultRecFolderChk = new System.Windows.Forms.CheckBox();
 			this.recFolderSanshouBtn = new System.Windows.Forms.Button();
 			this.recordDirectoryText = new System.Windows.Forms.TextBox();
-			this.isLogFileChkBox = new System.Windows.Forms.CheckBox();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox6.SuspendLayout();
 			this.groupBox5.SuspendLayout();
+			this.tabPage8.SuspendLayout();
+			this.groupBox9.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.volumeBar)).BeginInit();
 			this.tabPage6.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.groupBox10.SuspendLayout();
@@ -182,6 +199,7 @@ namespace namaichi
 			// tabControl1
 			// 
 			this.tabControl1.Controls.Add(this.tabPage1);
+			this.tabControl1.Controls.Add(this.tabPage8);
 			this.tabControl1.Controls.Add(this.tabPage6);
 			this.tabControl1.Controls.Add(this.tabPage5);
 			this.tabControl1.Controls.Add(this.tabPage2);
@@ -192,7 +210,7 @@ namespace namaichi
 			this.tabControl1.Margin = new System.Windows.Forms.Padding(2);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(411, 485);
+			this.tabControl1.Size = new System.Drawing.Size(416, 525);
 			this.tabControl1.TabIndex = 1;
 			this.tabControl1.Click += new System.EventHandler(this.btnReload_Click);
 			// 
@@ -204,23 +222,25 @@ namespace namaichi
 			this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(2);
-			this.tabPage1.Size = new System.Drawing.Size(403, 459);
+			this.tabPage1.Size = new System.Drawing.Size(408, 499);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "一般";
 			this.tabPage1.UseVisualStyleBackColor = true;
 			// 
 			// groupBox6
 			// 
+			this.groupBox6.Controls.Add(this.isMiniStartChkBox);
 			this.groupBox6.Controls.Add(this.isCommentJson);
 			this.groupBox6.Controls.Add(this.isCommentXML);
 			this.groupBox6.Controls.Add(this.isAutoFollowComGen);
+			this.groupBox6.Controls.Add(this.isLogFileChkBox);
 			this.groupBox6.Controls.Add(this.isDescriptionTagChkBox);
 			this.groupBox6.Controls.Add(this.isSegmentNukeInfoChkBox);
 			this.groupBox6.Controls.Add(this.isHosoInfoChkBox);
 			this.groupBox6.Controls.Add(this.isTitleBarSamune);
 			this.groupBox6.Controls.Add(this.isTitleBarInfoChkBox);
+			this.groupBox6.Controls.Add(this.isDisplayCommentChkbox);
 			this.groupBox6.Controls.Add(this.isGetCommentChkBox);
-			this.groupBox6.Controls.Add(this.isCloseExitChkBox);
 			this.groupBox6.Controls.Add(this.isDeleteExitChkBox);
 			this.groupBox6.Controls.Add(this.isFailExit);
 			this.groupBox6.Controls.Add(this.isMessageBoxChkBox);
@@ -228,14 +248,23 @@ namespace namaichi
 			this.groupBox6.Controls.Add(this.isMinimizedChkBox);
 			this.groupBox6.Location = new System.Drawing.Point(5, 83);
 			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(385, 361);
+			this.groupBox6.Size = new System.Drawing.Size(385, 395);
 			this.groupBox6.TabIndex = 0;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Recorder設定";
 			// 
+			// isMiniStartChkBox
+			// 
+			this.isMiniStartChkBox.Location = new System.Drawing.Point(19, 355);
+			this.isMiniStartChkBox.Name = "isMiniStartChkBox";
+			this.isMiniStartChkBox.Size = new System.Drawing.Size(271, 19);
+			this.isMiniStartChkBox.TabIndex = 4;
+			this.isMiniStartChkBox.Text = "縮小画面で起動する";
+			this.isMiniStartChkBox.UseVisualStyleBackColor = true;
+			// 
 			// isCommentJson
 			// 
-			this.isCommentJson.Location = new System.Drawing.Point(144, 171);
+			this.isCommentJson.Location = new System.Drawing.Point(144, 149);
 			this.isCommentJson.Name = "isCommentJson";
 			this.isCommentJson.Size = new System.Drawing.Size(91, 16);
 			this.isCommentJson.TabIndex = 3;
@@ -245,7 +274,7 @@ namespace namaichi
 			// isCommentXML
 			// 
 			this.isCommentXML.Checked = true;
-			this.isCommentXML.Location = new System.Drawing.Point(47, 171);
+			this.isCommentXML.Location = new System.Drawing.Point(47, 149);
 			this.isCommentXML.Name = "isCommentXML";
 			this.isCommentXML.Size = new System.Drawing.Size(91, 16);
 			this.isCommentXML.TabIndex = 3;
@@ -261,6 +290,15 @@ namespace namaichi
 			this.isAutoFollowComGen.TabIndex = 2;
 			this.isAutoFollowComGen.Text = "コミュニティが自動承認の場合、自動でフォローしてコミュ限を録画する\r\n（フォローから視聴可能までラグがあるため、録画開始まで数秒から数分かかります。）";
 			this.isAutoFollowComGen.UseVisualStyleBackColor = true;
+			// 
+			// isLogFileChkBox
+			// 
+			this.isLogFileChkBox.Location = new System.Drawing.Point(19, 377);
+			this.isLogFileChkBox.Name = "isLogFileChkBox";
+			this.isLogFileChkBox.Size = new System.Drawing.Size(271, 19);
+			this.isLogFileChkBox.TabIndex = 2;
+			this.isLogFileChkBox.Text = "ログをファイルに出力する(通常時は非推奨)";
+			this.isLogFileChkBox.UseVisualStyleBackColor = true;
 			// 
 			// isDescriptionTagChkBox
 			// 
@@ -309,24 +347,25 @@ namespace namaichi
 			this.isTitleBarInfoChkBox.Text = "ダウンロード状況をタイトルバーに表示する";
 			this.isTitleBarInfoChkBox.UseVisualStyleBackColor = true;
 			// 
+			// isDisplayCommentChkbox
+			// 
+			this.isDisplayCommentChkbox.Location = new System.Drawing.Point(19, 171);
+			this.isDisplayCommentChkbox.Name = "isDisplayCommentChkbox";
+			this.isDisplayCommentChkbox.Size = new System.Drawing.Size(271, 19);
+			this.isDisplayCommentChkbox.TabIndex = 2;
+			this.isDisplayCommentChkbox.Text = "右下にコメントを表示する";
+			this.isDisplayCommentChkbox.UseVisualStyleBackColor = true;
+			this.isDisplayCommentChkbox.CheckedChanged += new System.EventHandler(this.isGetCommentChkBox_CheckedChanged);
+			// 
 			// isGetCommentChkBox
 			// 
-			this.isGetCommentChkBox.Location = new System.Drawing.Point(19, 150);
+			this.isGetCommentChkBox.Location = new System.Drawing.Point(19, 128);
 			this.isGetCommentChkBox.Name = "isGetCommentChkBox";
 			this.isGetCommentChkBox.Size = new System.Drawing.Size(271, 19);
 			this.isGetCommentChkBox.TabIndex = 2;
 			this.isGetCommentChkBox.Text = "同時にコメントも取得し保存する";
 			this.isGetCommentChkBox.UseVisualStyleBackColor = true;
 			this.isGetCommentChkBox.CheckedChanged += new System.EventHandler(this.isGetCommentChkBox_CheckedChanged);
-			// 
-			// isCloseExitChkBox
-			// 
-			this.isCloseExitChkBox.Location = new System.Drawing.Point(19, 128);
-			this.isCloseExitChkBox.Name = "isCloseExitChkBox";
-			this.isCloseExitChkBox.Size = new System.Drawing.Size(271, 19);
-			this.isCloseExitChkBox.TabIndex = 2;
-			this.isCloseExitChkBox.Text = "放送終了(close)時にRecorderを閉じる";
-			this.isCloseExitChkBox.UseVisualStyleBackColor = true;
 			// 
 			// isDeleteExitChkBox
 			// 
@@ -412,6 +451,98 @@ namespace namaichi
 			this.browserPathText.Size = new System.Drawing.Size(291, 19);
 			this.browserPathText.TabIndex = 0;
 			// 
+			// tabPage8
+			// 
+			this.tabPage8.Controls.Add(this.groupBox9);
+			this.tabPage8.Location = new System.Drawing.Point(4, 22);
+			this.tabPage8.Name = "tabPage8";
+			this.tabPage8.Size = new System.Drawing.Size(408, 499);
+			this.tabPage8.TabIndex = 8;
+			this.tabPage8.Text = "一般2";
+			this.tabPage8.UseVisualStyleBackColor = true;
+			// 
+			// groupBox9
+			// 
+			this.groupBox9.Controls.Add(this.volumeText);
+			this.groupBox9.Controls.Add(this.volumeBar);
+			this.groupBox9.Controls.Add(this.isSoundEndChkBox);
+			this.groupBox9.Controls.Add(this.isCloseExitChkBox);
+			this.groupBox9.Controls.Add(this.isDefaultSoundChkBtn);
+			this.groupBox9.Controls.Add(this.soundSanshouBtn);
+			this.groupBox9.Controls.Add(this.soundPathText);
+			this.groupBox9.Location = new System.Drawing.Point(5, 10);
+			this.groupBox9.Name = "groupBox9";
+			this.groupBox9.Size = new System.Drawing.Size(372, 147);
+			this.groupBox9.TabIndex = 1;
+			this.groupBox9.TabStop = false;
+			this.groupBox9.Text = "録画終了時";
+			// 
+			// volumeText
+			// 
+			this.volumeText.Location = new System.Drawing.Point(45, 117);
+			this.volumeText.Name = "volumeText";
+			this.volumeText.Size = new System.Drawing.Size(57, 18);
+			this.volumeText.TabIndex = 7;
+			this.volumeText.Text = "音量：100";
+			// 
+			// volumeBar
+			// 
+			this.volumeBar.AutoSize = false;
+			this.volumeBar.BackColor = System.Drawing.SystemColors.Window;
+			this.volumeBar.Location = new System.Drawing.Point(98, 112);
+			this.volumeBar.Maximum = 100;
+			this.volumeBar.Name = "volumeBar";
+			this.volumeBar.Size = new System.Drawing.Size(167, 28);
+			this.volumeBar.TabIndex = 6;
+			this.volumeBar.TickStyle = System.Windows.Forms.TickStyle.None;
+			this.volumeBar.ValueChanged += new System.EventHandler(this.VolumeBarValueChanged);
+			// 
+			// isSoundEndChkBox
+			// 
+			this.isSoundEndChkBox.Location = new System.Drawing.Point(19, 40);
+			this.isSoundEndChkBox.Name = "isSoundEndChkBox";
+			this.isSoundEndChkBox.Size = new System.Drawing.Size(271, 19);
+			this.isSoundEndChkBox.TabIndex = 5;
+			this.isSoundEndChkBox.Text = "録画終了時に音を鳴らす";
+			this.isSoundEndChkBox.UseVisualStyleBackColor = true;
+			this.isSoundEndChkBox.CheckedChanged += new System.EventHandler(this.IsSoundEndChkBoxCheckedChanged);
+			// 
+			// isCloseExitChkBox
+			// 
+			this.isCloseExitChkBox.Location = new System.Drawing.Point(19, 18);
+			this.isCloseExitChkBox.Name = "isCloseExitChkBox";
+			this.isCloseExitChkBox.Size = new System.Drawing.Size(271, 19);
+			this.isCloseExitChkBox.TabIndex = 3;
+			this.isCloseExitChkBox.Text = "放送終了(close)時にRecorderを閉じる";
+			this.isCloseExitChkBox.UseVisualStyleBackColor = true;
+			// 
+			// isDefaultSoundChkBtn
+			// 
+			this.isDefaultSoundChkBtn.Location = new System.Drawing.Point(45, 87);
+			this.isDefaultSoundChkBtn.Name = "isDefaultSoundChkBtn";
+			this.isDefaultSoundChkBtn.Size = new System.Drawing.Size(201, 19);
+			this.isDefaultSoundChkBtn.TabIndex = 2;
+			this.isDefaultSoundChkBtn.Text = "デフォルトの音を使う(se_soc02.wav)";
+			this.isDefaultSoundChkBtn.UseVisualStyleBackColor = true;
+			this.isDefaultSoundChkBtn.CheckedChanged += new System.EventHandler(this.IsDefaultSoundChkBtnCheckedChanged);
+			// 
+			// soundSanshouBtn
+			// 
+			this.soundSanshouBtn.Location = new System.Drawing.Point(316, 60);
+			this.soundSanshouBtn.Name = "soundSanshouBtn";
+			this.soundSanshouBtn.Size = new System.Drawing.Size(40, 23);
+			this.soundSanshouBtn.TabIndex = 1;
+			this.soundSanshouBtn.Text = "参照";
+			this.soundSanshouBtn.UseVisualStyleBackColor = true;
+			this.soundSanshouBtn.Click += new System.EventHandler(this.SoundSanshouBtnClick);
+			// 
+			// soundPathText
+			// 
+			this.soundPathText.Location = new System.Drawing.Point(45, 62);
+			this.soundPathText.Name = "soundPathText";
+			this.soundPathText.Size = new System.Drawing.Size(265, 19);
+			this.soundPathText.TabIndex = 0;
+			// 
 			// tabPage6
 			// 
 			this.tabPage6.Controls.Add(this.groupBox4);
@@ -419,7 +550,7 @@ namespace namaichi
 			this.tabPage6.Location = new System.Drawing.Point(4, 22);
 			this.tabPage6.Name = "tabPage6";
 			this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage6.Size = new System.Drawing.Size(403, 459);
+			this.tabPage6.Size = new System.Drawing.Size(408, 499);
 			this.tabPage6.TabIndex = 5;
 			this.tabPage6.Text = "録画方法";
 			this.tabPage6.UseVisualStyleBackColor = true;
@@ -428,7 +559,7 @@ namespace namaichi
 			// 
 			this.groupBox4.Controls.Add(this.label4);
 			this.groupBox4.Controls.Add(this.afterConvertModeList);
-			this.groupBox4.Location = new System.Drawing.Point(5, 288);
+			this.groupBox4.Location = new System.Drawing.Point(5, 363);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(385, 121);
 			this.groupBox4.TabIndex = 2;
@@ -472,6 +603,10 @@ namespace namaichi
 			// 
 			// groupBox10
 			// 
+			this.groupBox10.Controls.Add(this.rtmpPathSanshouBtn);
+			this.groupBox10.Controls.Add(this.isDefaultRtmpChkBox);
+			this.groupBox10.Controls.Add(this.rtmpPathText);
+			this.groupBox10.Controls.Add(this.isNoEngine);
 			this.groupBox10.Controls.Add(this.isRtmpEngine);
 			this.groupBox10.Controls.Add(this.label8);
 			this.groupBox10.Controls.Add(this.anotherEngineCommandText);
@@ -484,10 +619,47 @@ namespace namaichi
 			this.groupBox10.Controls.Add(this.segmentRadioBtnPanel);
 			this.groupBox10.Location = new System.Drawing.Point(5, 10);
 			this.groupBox10.Name = "groupBox10";
-			this.groupBox10.Size = new System.Drawing.Size(385, 272);
+			this.groupBox10.Size = new System.Drawing.Size(385, 347);
 			this.groupBox10.TabIndex = 0;
 			this.groupBox10.TabStop = false;
 			this.groupBox10.Text = "録画エンジン";
+			// 
+			// rtmpPathSanshouBtn
+			// 
+			this.rtmpPathSanshouBtn.Location = new System.Drawing.Point(303, 265);
+			this.rtmpPathSanshouBtn.Name = "rtmpPathSanshouBtn";
+			this.rtmpPathSanshouBtn.Size = new System.Drawing.Size(40, 23);
+			this.rtmpPathSanshouBtn.TabIndex = 30;
+			this.rtmpPathSanshouBtn.Text = "参照";
+			this.rtmpPathSanshouBtn.UseVisualStyleBackColor = true;
+			this.rtmpPathSanshouBtn.Click += new System.EventHandler(this.RtmpPathSanshouBtnClick);
+			// 
+			// isDefaultRtmpChkBox
+			// 
+			this.isDefaultRtmpChkBox.Location = new System.Drawing.Point(32, 292);
+			this.isDefaultRtmpChkBox.Name = "isDefaultRtmpChkBox";
+			this.isDefaultRtmpChkBox.Size = new System.Drawing.Size(201, 19);
+			this.isDefaultRtmpChkBox.TabIndex = 29;
+			this.isDefaultRtmpChkBox.Text = "デフォルトのrtmpdumpを使う";
+			this.isDefaultRtmpChkBox.UseVisualStyleBackColor = true;
+			this.isDefaultRtmpChkBox.CheckedChanged += new System.EventHandler(this.isDefaultEngineChkBox_CheckedChanged);
+			// 
+			// rtmpPathText
+			// 
+			this.rtmpPathText.Location = new System.Drawing.Point(32, 267);
+			this.rtmpPathText.Name = "rtmpPathText";
+			this.rtmpPathText.Size = new System.Drawing.Size(265, 19);
+			this.rtmpPathText.TabIndex = 28;
+			// 
+			// isNoEngine
+			// 
+			this.isNoEngine.Location = new System.Drawing.Point(6, 321);
+			this.isNoEngine.Name = "isNoEngine";
+			this.isNoEngine.Size = new System.Drawing.Size(252, 15);
+			this.isNoEngine.TabIndex = 27;
+			this.isNoEngine.Text = "動画データを取得しない";
+			this.isNoEngine.UseVisualStyleBackColor = true;
+			this.isNoEngine.CheckedChanged += new System.EventHandler(this.isDefaultEngineChkBox_CheckedChanged);
 			// 
 			// isRtmpEngine
 			// 
@@ -606,7 +778,7 @@ namespace namaichi
 			this.tabPage5.Location = new System.Drawing.Point(4, 22);
 			this.tabPage5.Name = "tabPage5";
 			this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage5.Size = new System.Drawing.Size(403, 459);
+			this.tabPage5.Size = new System.Drawing.Size(408, 499);
 			this.tabPage5.TabIndex = 4;
 			this.tabPage5.Text = "画質";
 			this.tabPage5.UseVisualStyleBackColor = true;
@@ -690,7 +862,7 @@ namespace namaichi
 			this.tabPage2.Margin = new System.Windows.Forms.Padding(2);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(2);
-			this.tabPage2.Size = new System.Drawing.Size(403, 459);
+			this.tabPage2.Size = new System.Drawing.Size(408, 499);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "アカウント設定";
 			this.tabPage2.UseVisualStyleBackColor = true;
@@ -863,7 +1035,7 @@ namespace namaichi
 			this.tabPage4.Location = new System.Drawing.Point(4, 22);
 			this.tabPage4.Name = "tabPage4";
 			this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage4.Size = new System.Drawing.Size(403, 459);
+			this.tabPage4.Size = new System.Drawing.Size(408, 499);
 			this.tabPage4.TabIndex = 7;
 			this.tabPage4.Text = "補完設定";
 			this.tabPage4.UseVisualStyleBackColor = true;
@@ -890,7 +1062,7 @@ namespace namaichi
 			this.groupBox12.Size = new System.Drawing.Size(385, 74);
 			this.groupBox12.TabIndex = 19;
 			this.groupBox12.TabStop = false;
-			this.groupBox12.Text = "ニコニコ動画アカウントの共有　(普段ニコニコ生放送を見ているブラウザ)";
+			this.groupBox12.Text = "補完設定";
 			// 
 			// isHokanChkBox
 			// 
@@ -898,7 +1070,7 @@ namespace namaichi
 			this.isHokanChkBox.Name = "isHokanChkBox";
 			this.isHokanChkBox.Size = new System.Drawing.Size(365, 28);
 			this.isHokanChkBox.TabIndex = 21;
-			this.isHokanChkBox.Text = "メインアカウントでデータが取得できなかった場合にサブアカウントで補完を試みる";
+			this.isHokanChkBox.Text = "HLSでデータが取得できなかった場合にRTMPで補完を試みる(標準のHLS録画エンジンを選択している時のみ有効)";
 			this.isHokanChkBox.UseVisualStyleBackColor = true;
 			this.isHokanChkBox.CheckedChanged += new System.EventHandler(this.isSubHokanChkBox_CheckedChanged);
 			// 
@@ -1048,7 +1220,7 @@ namespace namaichi
 			this.tabPage7.Location = new System.Drawing.Point(4, 22);
 			this.tabPage7.Name = "tabPage7";
 			this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage7.Size = new System.Drawing.Size(403, 459);
+			this.tabPage7.Size = new System.Drawing.Size(408, 499);
 			this.tabPage7.TabIndex = 6;
 			this.tabPage7.Text = "視聴";
 			this.tabPage7.UseVisualStyleBackColor = true;
@@ -1187,7 +1359,7 @@ namespace namaichi
 			this.tabPage3.Margin = new System.Windows.Forms.Padding(2);
 			this.tabPage3.Name = "tabPage3";
 			this.tabPage3.Padding = new System.Windows.Forms.Padding(2);
-			this.tabPage3.Size = new System.Drawing.Size(403, 459);
+			this.tabPage3.Size = new System.Drawing.Size(408, 499);
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "録画";
 			this.tabPage3.UseVisualStyleBackColor = true;
@@ -1467,19 +1639,9 @@ namespace namaichi
 			this.recordDirectoryText.Size = new System.Drawing.Size(304, 19);
 			this.recordDirectoryText.TabIndex = 0;
 			// 
-			// isLogFileChkBox
-			// 
-			this.isLogFileChkBox.Location = new System.Drawing.Point(37, 514);
-			this.isLogFileChkBox.Name = "isLogFileChkBox";
-			this.isLogFileChkBox.Size = new System.Drawing.Size(271, 19);
-			this.isLogFileChkBox.TabIndex = 2;
-			this.isLogFileChkBox.Text = "ログをファイルに出力する";
-			this.isLogFileChkBox.UseVisualStyleBackColor = true;
-			this.isLogFileChkBox.Visible = false;
-			// 
 			// button3
 			// 
-			this.button3.Location = new System.Drawing.Point(249, 500);
+			this.button3.Location = new System.Drawing.Point(249, 540);
 			this.button3.Name = "button3";
 			this.button3.Size = new System.Drawing.Size(74, 23);
 			this.button3.TabIndex = 1;
@@ -1489,7 +1651,7 @@ namespace namaichi
 			// 
 			// button4
 			// 
-			this.button4.Location = new System.Drawing.Point(329, 500);
+			this.button4.Location = new System.Drawing.Point(329, 540);
 			this.button4.Name = "button4";
 			this.button4.Size = new System.Drawing.Size(74, 23);
 			this.button4.TabIndex = 1;
@@ -1501,11 +1663,10 @@ namespace namaichi
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(423, 545);
+			this.ClientSize = new System.Drawing.Size(428, 585);
 			this.Controls.Add(this.button4);
 			this.Controls.Add(this.button3);
 			this.Controls.Add(this.tabControl1);
-			this.Controls.Add(this.isLogFileChkBox);
 			this.Location = new System.Drawing.Point(600, 100);
 			this.Margin = new System.Windows.Forms.Padding(2);
 			this.MaximizeBox = false;
@@ -1516,6 +1677,10 @@ namespace namaichi
 			this.groupBox6.ResumeLayout(false);
 			this.groupBox5.ResumeLayout(false);
 			this.groupBox5.PerformLayout();
+			this.tabPage8.ResumeLayout(false);
+			this.groupBox9.ResumeLayout(false);
+			this.groupBox9.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.volumeBar)).EndInit();
 			this.tabPage6.ResumeLayout(false);
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox10.ResumeLayout(false);
@@ -1540,6 +1705,20 @@ namespace namaichi
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox isMiniStartChkBox;
+		private System.Windows.Forms.CheckBox isDisplayCommentChkbox;
+		private System.Windows.Forms.Label volumeText;
+		private System.Windows.Forms.TrackBar volumeBar;
+		private System.Windows.Forms.Button rtmpPathSanshouBtn;
+		private System.Windows.Forms.CheckBox isDefaultRtmpChkBox;
+		private System.Windows.Forms.TextBox rtmpPathText;
+		private System.Windows.Forms.TextBox soundPathText;
+		private System.Windows.Forms.Button soundSanshouBtn;
+		private System.Windows.Forms.CheckBox isDefaultSoundChkBtn;
+		private System.Windows.Forms.GroupBox groupBox9;
+		private System.Windows.Forms.TabPage tabPage8;
+		private System.Windows.Forms.CheckBox isSoundEndChkBox;
+		private System.Windows.Forms.RadioButton isNoEngine;
 		private System.Windows.Forms.RadioButton isRtmpEngine;
 		private System.Windows.Forms.CheckBox isSegmentNukeInfoChkBox;
 		private System.Windows.Forms.CheckBox isUsePlayerChkBox;

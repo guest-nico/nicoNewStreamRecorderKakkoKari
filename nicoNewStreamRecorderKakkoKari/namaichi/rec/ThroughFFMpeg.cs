@@ -48,7 +48,7 @@ namespace namaichi.rec
 				_command =  ("-i \"" + path + "\" -vn \"" + tmp + "\"");
 			//5-flv
 			else if (afterConvertMode == 5)
-				_command = ("-i \"" + path + "\" -c copy -bsf:a aac_adtstoasc \"" + tmp + "\"");
+				_command = ("-i \"" + path + "\" -c:v copy -c:a aac -bsf:a aac_adtstoasc \"" + tmp + "\"");
 			else _command = ("-i \"" + path + "\" -c copy \"" + tmp + "\"");
 			
 			//flv

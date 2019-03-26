@@ -203,8 +203,15 @@ namespace namaichi.rec
 						if (a.IndexOf("error") > -1 && a.IndexOf("/content/") > -1)
 						    return false;
 							
-						if (a.IndexOf("/content/") > -1 && a.IndexOf("error") == -1 && a.IndexOf("Success") == -1)
+						if (a.IndexOf("/content/") > -1 && a.IndexOf("error") == -1 && a.IndexOf("Success") == -1) {
+							client.Close();
 							return true;
+						}
+							
+						if (a == "") {
+							client.Close();
+							return true;
+						}
 						System.Diagnostics.Debug.WriteLine("rtmp client c " + i);
 						//System.Diagnostics.Debug.WriteLine(Encoding.ASCII.GetString(b));
 						if (i == 2) rm.form.addLogText("タイムシフト動画データを取得します...");

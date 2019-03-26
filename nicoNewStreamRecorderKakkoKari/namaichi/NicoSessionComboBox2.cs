@@ -70,7 +70,7 @@ namespace namaichi
             {
                 try
                 {
-                    var url = new Uri("http://www.nicovideo.jp/my/channel");
+                    var url = new Uri("https://www.nicovideo.jp/my/channel");
                     var container = new CookieContainer();
                     var client = new HttpClient(new HttpClientHandler() { CookieContainer = container });
                     var result = await cookieImporter.GetCookiesAsync(url);

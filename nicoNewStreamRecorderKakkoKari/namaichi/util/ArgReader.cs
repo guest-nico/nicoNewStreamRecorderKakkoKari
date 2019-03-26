@@ -31,6 +31,7 @@ namespace namaichi.utility
 		public string lvid = null;
 		public config.config config;
 		public TimeShiftConfig tsConfig;
+		public bool isPlayMode = false;
 		
 		public ArgReader(string[] args, config.config config, MainForm form)
 		{
@@ -46,7 +47,7 @@ namespace namaichi.utility
 			setArgConfig();
 			util.debugWriteLine("args " + string.Join(" ", args));
 			foreach(var a in argConfig) util.debugWriteLine(a.Key + " " + a.Value);
-			
+			isPlayMode = Array.IndexOf(args, "-play") > -1;
 		}
 		private bool isAllPath() {
 			var isAllPath = true;
@@ -194,12 +195,12 @@ namespace namaichi.utility
 				}
 				if (lowKeys[i] == "EngineMode") {
 					int _s = 0;
-					if (int.TryParse(val, out _s) && _s >= 0 && _s <= 2) {
+					if (int.TryParse(val, out _s) && _s >= 0 && _s <= 3) {
 						setVal = val;
 						setName = keys[i];
 						return true;
 					} else {
-						form.addLogText(name + "の値が設定できませんでした(0から2の整数) " + val, false);
+						form.addLogText(name + "の値が設定できませんでした(0から3の整数) " + val, false);
 						return false;
 					}
 				}

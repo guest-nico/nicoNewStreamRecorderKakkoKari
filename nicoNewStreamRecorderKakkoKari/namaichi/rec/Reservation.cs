@@ -27,11 +27,11 @@ namespace namaichi.rec
 		}
 		public string reserve() {
 			var id = util.getRegGroup(lv, "(\\d+)");
-			//var url = "http://live.nicovideo.jp/api/watchingreservation?mode=confirm_watch_my&vid=" + id + "&next_url&analytic";
+			//var url = "https://live.nicovideo.jp/api/watchingreservation?mode=confirm_watch_my&vid=" + id + "&next_url&analytic";
 			var getMode = "watchNum";
 			var url = "";
 			if (getMode == "watchNum") {
-				url = "http://live.nicovideo.jp/api/watchingreservation?mode=watch_num&vid=" + id + "&next_url=gate%2F" + lv + "&analytic=gate_modal_0_official_" + lv + "_closed";
+				url = "https://live.nicovideo.jp/api/watchingreservation?mode=watch_num&vid=" + id + "&next_url=gate%2F" + lv + "&analytic=gate_modal_0_official_" + lv + "_closed";
 			} else {
  
 			}
@@ -113,7 +113,7 @@ namespace namaichi.rec
 				//content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
 
 				http.Timeout = TimeSpan.FromSeconds(3);
-				var url = "http://live.nicovideo.jp/api/watchingreservation";
+				var url = "https://live.nicovideo.jp/api/watchingreservation";
 				var _t = http.PostAsync(url, content);
 				_t.Wait();
 				var _res = _t.Result;

@@ -26,6 +26,8 @@ namespace namaichi.rec
 		public string[] gotTsCommentList;
 		public double firstSegmentSecond = -1;
 		
+		public DateTime endTime = DateTime.MinValue;
+		
 		public IRecorderProcess()
 		{
 		}

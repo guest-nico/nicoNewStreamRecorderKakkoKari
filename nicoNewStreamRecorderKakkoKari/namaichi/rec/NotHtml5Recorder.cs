@@ -55,7 +55,7 @@ namespace namaichi.rec
 				util.debugWriteLine("isffmpeg " + isFFmpeg);
 				
 				
-				var rec = new Record(rm, isFFmpeg, rfu, "", "", 0, null, false, null, null, null, 0, null, null, false);
+				var rec = new Record(rm, isFFmpeg, rfu, "", "", 0, null, false, null, null, null, 0, null, null);
 				commentGetter = new NotHtmlCommentGetter(messageInfo, rm, rfu, recFolderFile);
 				
 				/*
@@ -75,7 +75,7 @@ namespace namaichi.rec
 		}
 		public string getGetPlayerStatusInfo() {
 			var a = new WebHeaderCollection();
-			var res = util.getPageSource("http://live.nicovideo.jp/api/getplayerstatus?v=" + lvid, ref a, container);
+			var res = util.getPageSource("https://live.nicovideo.jp/api/getplayerstatus?v=" + lvid, ref a, container);
 //			util.debugWriteLine(res);
 			return res;
 		}

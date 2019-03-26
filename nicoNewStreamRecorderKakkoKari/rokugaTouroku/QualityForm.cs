@@ -47,7 +47,7 @@ namespace rokugaTouroku
 		public object[] getRanksToItems(int[] ranks, ListBox owner) {
 			var items = new Dictionary<int, string> {
 				{0, "自動(abr)"}, {1, "3Mbps(super_high)"},
-				{2, "2Mbps(high・高画質)"}, {3, "1Mbps(normal・低画質)"},
+				{2, "2Mbps(high)"}, {3, "1Mbps(normal)"},
 				{4, "384kbps(low)"}, {5, "192kbps(super_low)"},
 			};
 //			var ret = new ListBox.ObjectCollection(owner);
@@ -90,7 +90,7 @@ namespace rokugaTouroku
 		List<int> getItemsToRanks(ListBox.ObjectCollection items) {
 			var itemsDic = new Dictionary<int, string> {
 				{0, "自動(abr)"}, {1, "3Mbps(super_high)"},
-				{2, "2Mbps(high・高画質)"}, {3, "1Mbps(normal・低画質)"},
+				{2, "2Mbps(high)"}, {3, "1Mbps(normal)"},
 				{4, "384kbps(low)"}, {5, "192kbps(super_low)"},
 			};
 			var ret = new List<int>();

@@ -45,6 +45,7 @@ namespace rokugaTouroku
 			this.mText = new System.Windows.Forms.TextBox();
 			this.hLabel = new System.Windows.Forms.Label();
 			this.hText = new System.Windows.Forms.TextBox();
+			this.isMostStartTimeRadioBtn = new System.Windows.Forms.RadioButton();
 			this.isFromLastTimeRadioBtn = new System.Windows.Forms.RadioButton();
 			this.isStartTimeRadioBtn = new System.Windows.Forms.RadioButton();
 			this.cancelBtn = new System.Windows.Forms.Button();
@@ -57,6 +58,8 @@ namespace rokugaTouroku
 			this.endMText = new System.Windows.Forms.TextBox();
 			this.label8 = new System.Windows.Forms.Label();
 			this.endHText = new System.Windows.Forms.TextBox();
+			this.isManualEndTimeRadioBtn = new System.Windows.Forms.RadioButton();
+			this.isEndTimeRadioBtn = new System.Windows.Forms.RadioButton();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.isUrlListLabelText2 = new System.Windows.Forms.Label();
 			this.isUrlListLabelText3 = new System.Windows.Forms.Label();
@@ -69,6 +72,9 @@ namespace rokugaTouroku
 			this.isOpenListCommandChkBox = new System.Windows.Forms.CheckBox();
 			this.openListCommandText = new System.Windows.Forms.TextBox();
 			this.isUrlListChkBox = new System.Windows.Forms.CheckBox();
+			this.resetBtn = new System.Windows.Forms.Button();
+			this.lastSettingBtn = new System.Windows.Forms.Button();
+			this.label2 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -86,11 +92,12 @@ namespace rokugaTouroku
 			this.groupBox1.Controls.Add(this.mText);
 			this.groupBox1.Controls.Add(this.hLabel);
 			this.groupBox1.Controls.Add(this.hText);
+			this.groupBox1.Controls.Add(this.isMostStartTimeRadioBtn);
 			this.groupBox1.Controls.Add(this.isFromLastTimeRadioBtn);
 			this.groupBox1.Controls.Add(this.isStartTimeRadioBtn);
-			this.groupBox1.Location = new System.Drawing.Point(5, 10);
+			this.groupBox1.Location = new System.Drawing.Point(5, 32);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(299, 152);
+			this.groupBox1.Size = new System.Drawing.Size(329, 176);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "録画開始時間";
@@ -99,7 +106,7 @@ namespace rokugaTouroku
 			// 
 			this.isSetVposStartTime.Checked = true;
 			this.isSetVposStartTime.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.isSetVposStartTime.Location = new System.Drawing.Point(6, 121);
+			this.isSetVposStartTime.Location = new System.Drawing.Point(6, 145);
 			this.isSetVposStartTime.Name = "isSetVposStartTime";
 			this.isSetVposStartTime.Size = new System.Drawing.Size(244, 17);
 			this.isSetVposStartTime.TabIndex = 6;
@@ -108,7 +115,7 @@ namespace rokugaTouroku
 			// 
 			// isRenketuLastFile
 			// 
-			this.isRenketuLastFile.Location = new System.Drawing.Point(26, 99);
+			this.isRenketuLastFile.Location = new System.Drawing.Point(26, 123);
 			this.isRenketuLastFile.Name = "isRenketuLastFile";
 			this.isRenketuLastFile.Size = new System.Drawing.Size(231, 17);
 			this.isRenketuLastFile.TabIndex = 5;
@@ -117,7 +124,7 @@ namespace rokugaTouroku
 			// 
 			// sLabel
 			// 
-			this.sLabel.Location = new System.Drawing.Point(188, 44);
+			this.sLabel.Location = new System.Drawing.Point(188, 68);
 			this.sLabel.Name = "sLabel";
 			this.sLabel.Size = new System.Drawing.Size(69, 12);
 			this.sLabel.TabIndex = 2;
@@ -125,7 +132,7 @@ namespace rokugaTouroku
 			// 
 			// sText
 			// 
-			this.sText.Location = new System.Drawing.Point(153, 41);
+			this.sText.Location = new System.Drawing.Point(153, 65);
 			this.sText.Name = "sText";
 			this.sText.Size = new System.Drawing.Size(29, 19);
 			this.sText.TabIndex = 3;
@@ -134,7 +141,7 @@ namespace rokugaTouroku
 			// 
 			// mLabel
 			// 
-			this.mLabel.Location = new System.Drawing.Point(130, 44);
+			this.mLabel.Location = new System.Drawing.Point(130, 68);
 			this.mLabel.Name = "mLabel";
 			this.mLabel.Size = new System.Drawing.Size(39, 12);
 			this.mLabel.TabIndex = 2;
@@ -142,7 +149,7 @@ namespace rokugaTouroku
 			// 
 			// mText
 			// 
-			this.mText.Location = new System.Drawing.Point(95, 41);
+			this.mText.Location = new System.Drawing.Point(95, 65);
 			this.mText.Name = "mText";
 			this.mText.Size = new System.Drawing.Size(29, 19);
 			this.mText.TabIndex = 2;
@@ -151,7 +158,7 @@ namespace rokugaTouroku
 			// 
 			// hLabel
 			// 
-			this.hLabel.Location = new System.Drawing.Point(60, 44);
+			this.hLabel.Location = new System.Drawing.Point(60, 68);
 			this.hLabel.Name = "hLabel";
 			this.hLabel.Size = new System.Drawing.Size(39, 12);
 			this.hLabel.TabIndex = 2;
@@ -159,38 +166,48 @@ namespace rokugaTouroku
 			// 
 			// hText
 			// 
-			this.hText.Location = new System.Drawing.Point(25, 41);
+			this.hText.Location = new System.Drawing.Point(25, 65);
 			this.hText.Name = "hText";
 			this.hText.Size = new System.Drawing.Size(29, 19);
 			this.hText.TabIndex = 1;
 			this.hText.Text = "0";
 			this.hText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
+			// isMostStartTimeRadioBtn
+			// 
+			this.isMostStartTimeRadioBtn.Checked = true;
+			this.isMostStartTimeRadioBtn.Location = new System.Drawing.Point(6, 18);
+			this.isMostStartTimeRadioBtn.Name = "isMostStartTimeRadioBtn";
+			this.isMostStartTimeRadioBtn.Size = new System.Drawing.Size(182, 18);
+			this.isMostStartTimeRadioBtn.TabIndex = 4;
+			this.isMostStartTimeRadioBtn.TabStop = true;
+			this.isMostStartTimeRadioBtn.Text = "最初から";
+			this.isMostStartTimeRadioBtn.UseVisualStyleBackColor = true;
+			// 
 			// isFromLastTimeRadioBtn
 			// 
-			this.isFromLastTimeRadioBtn.Location = new System.Drawing.Point(6, 75);
+			this.isFromLastTimeRadioBtn.Location = new System.Drawing.Point(6, 99);
 			this.isFromLastTimeRadioBtn.Name = "isFromLastTimeRadioBtn";
 			this.isFromLastTimeRadioBtn.Size = new System.Drawing.Size(182, 18);
 			this.isFromLastTimeRadioBtn.TabIndex = 4;
 			this.isFromLastTimeRadioBtn.TabStop = true;
 			this.isFromLastTimeRadioBtn.Text = "前回の続きから録画";
 			this.isFromLastTimeRadioBtn.UseVisualStyleBackColor = true;
+			this.isFromLastTimeRadioBtn.CheckedChanged += new System.EventHandler(this.IsFromLastTimeRadioBtnCheckedChanged);
 			// 
 			// isStartTimeRadioBtn
 			// 
-			this.isStartTimeRadioBtn.Checked = true;
-			this.isStartTimeRadioBtn.Location = new System.Drawing.Point(6, 18);
+			this.isStartTimeRadioBtn.Location = new System.Drawing.Point(6, 42);
 			this.isStartTimeRadioBtn.Name = "isStartTimeRadioBtn";
 			this.isStartTimeRadioBtn.Size = new System.Drawing.Size(182, 18);
 			this.isStartTimeRadioBtn.TabIndex = 0;
-			this.isStartTimeRadioBtn.TabStop = true;
 			this.isStartTimeRadioBtn.Text = "録画開始時間を指定";
 			this.isStartTimeRadioBtn.UseVisualStyleBackColor = true;
 			this.isStartTimeRadioBtn.CheckedChanged += new System.EventHandler(this.isStartTimeRadioBtn_CheckedChanged);
 			// 
 			// cancelBtn
 			// 
-			this.cancelBtn.Location = new System.Drawing.Point(215, 246);
+			this.cancelBtn.Location = new System.Drawing.Point(245, 338);
 			this.cancelBtn.Name = "cancelBtn";
 			this.cancelBtn.Size = new System.Drawing.Size(74, 23);
 			this.cancelBtn.TabIndex = 16;
@@ -200,7 +217,7 @@ namespace rokugaTouroku
 			// 
 			// okBtn
 			// 
-			this.okBtn.Location = new System.Drawing.Point(135, 246);
+			this.okBtn.Location = new System.Drawing.Point(165, 338);
 			this.okBtn.Name = "okBtn";
 			this.okBtn.Size = new System.Drawing.Size(74, 23);
 			this.okBtn.TabIndex = 15;
@@ -218,16 +235,18 @@ namespace rokugaTouroku
 			this.groupBox2.Controls.Add(this.endMText);
 			this.groupBox2.Controls.Add(this.label8);
 			this.groupBox2.Controls.Add(this.endHText);
-			this.groupBox2.Location = new System.Drawing.Point(5, 168);
+			this.groupBox2.Controls.Add(this.isManualEndTimeRadioBtn);
+			this.groupBox2.Controls.Add(this.isEndTimeRadioBtn);
+			this.groupBox2.Location = new System.Drawing.Point(5, 214);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(299, 62);
+			this.groupBox2.Size = new System.Drawing.Size(329, 108);
 			this.groupBox2.TabIndex = 27;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "録画終了時間";
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(60, 43);
+			this.label1.Location = new System.Drawing.Point(60, 89);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(234, 16);
 			this.label1.TabIndex = 9;
@@ -235,7 +254,7 @@ namespace rokugaTouroku
 			// 
 			// label6
 			// 
-			this.label6.Location = new System.Drawing.Point(188, 21);
+			this.label6.Location = new System.Drawing.Point(188, 67);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(69, 12);
 			this.label6.TabIndex = 2;
@@ -243,7 +262,7 @@ namespace rokugaTouroku
 			// 
 			// endSText
 			// 
-			this.endSText.Location = new System.Drawing.Point(153, 18);
+			this.endSText.Location = new System.Drawing.Point(153, 64);
 			this.endSText.Name = "endSText";
 			this.endSText.Size = new System.Drawing.Size(29, 19);
 			this.endSText.TabIndex = 8;
@@ -252,7 +271,7 @@ namespace rokugaTouroku
 			// 
 			// label7
 			// 
-			this.label7.Location = new System.Drawing.Point(130, 21);
+			this.label7.Location = new System.Drawing.Point(130, 67);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(39, 12);
 			this.label7.TabIndex = 2;
@@ -260,7 +279,7 @@ namespace rokugaTouroku
 			// 
 			// endMText
 			// 
-			this.endMText.Location = new System.Drawing.Point(95, 18);
+			this.endMText.Location = new System.Drawing.Point(95, 64);
 			this.endMText.Name = "endMText";
 			this.endMText.Size = new System.Drawing.Size(29, 19);
 			this.endMText.TabIndex = 7;
@@ -269,7 +288,7 @@ namespace rokugaTouroku
 			// 
 			// label8
 			// 
-			this.label8.Location = new System.Drawing.Point(60, 21);
+			this.label8.Location = new System.Drawing.Point(60, 67);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(39, 12);
 			this.label8.TabIndex = 2;
@@ -277,12 +296,34 @@ namespace rokugaTouroku
 			// 
 			// endHText
 			// 
-			this.endHText.Location = new System.Drawing.Point(25, 18);
+			this.endHText.Location = new System.Drawing.Point(25, 64);
 			this.endHText.Name = "endHText";
 			this.endHText.Size = new System.Drawing.Size(29, 19);
 			this.endHText.TabIndex = 6;
 			this.endHText.Text = "0";
 			this.endHText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			// 
+			// isManualEndTimeRadioBtn
+			// 
+			this.isManualEndTimeRadioBtn.Location = new System.Drawing.Point(6, 42);
+			this.isManualEndTimeRadioBtn.Name = "isManualEndTimeRadioBtn";
+			this.isManualEndTimeRadioBtn.Size = new System.Drawing.Size(182, 18);
+			this.isManualEndTimeRadioBtn.TabIndex = 0;
+			this.isManualEndTimeRadioBtn.Text = "録画終了時間を指定";
+			this.isManualEndTimeRadioBtn.UseVisualStyleBackColor = true;
+			this.isManualEndTimeRadioBtn.CheckedChanged += new System.EventHandler(this.IsManualEndTimeRadioBtnCheckedChanged);
+			// 
+			// isEndTimeRadioBtn
+			// 
+			this.isEndTimeRadioBtn.Checked = true;
+			this.isEndTimeRadioBtn.Location = new System.Drawing.Point(6, 18);
+			this.isEndTimeRadioBtn.Name = "isEndTimeRadioBtn";
+			this.isEndTimeRadioBtn.Size = new System.Drawing.Size(182, 18);
+			this.isEndTimeRadioBtn.TabIndex = 0;
+			this.isEndTimeRadioBtn.TabStop = true;
+			this.isEndTimeRadioBtn.Text = "最後まで";
+			this.isEndTimeRadioBtn.UseVisualStyleBackColor = true;
+			this.isEndTimeRadioBtn.CheckedChanged += new System.EventHandler(this.isStartTimeRadioBtn_CheckedChanged);
 			// 
 			// groupBox3
 			// 
@@ -402,16 +443,47 @@ namespace rokugaTouroku
 			this.isUrlListChkBox.UseVisualStyleBackColor = true;
 			this.isUrlListChkBox.CheckedChanged += new System.EventHandler(this.isUrlListChkBox_CheckedChanged);
 			// 
+			// resetBtn
+			// 
+			this.resetBtn.Location = new System.Drawing.Point(85, 338);
+			this.resetBtn.Name = "resetBtn";
+			this.resetBtn.Size = new System.Drawing.Size(74, 23);
+			this.resetBtn.TabIndex = 30;
+			this.resetBtn.Text = "リセット";
+			this.resetBtn.UseVisualStyleBackColor = true;
+			this.resetBtn.Click += new System.EventHandler(this.ResetBtnClick);
+			// 
+			// lastSettingBtn
+			// 
+			this.lastSettingBtn.Location = new System.Drawing.Point(5, 338);
+			this.lastSettingBtn.Name = "lastSettingBtn";
+			this.lastSettingBtn.Size = new System.Drawing.Size(74, 23);
+			this.lastSettingBtn.TabIndex = 29;
+			this.lastSettingBtn.Text = "前回の設定";
+			this.lastSettingBtn.UseVisualStyleBackColor = true;
+			this.lastSettingBtn.Click += new System.EventHandler(this.LastSettingBtnClick);
+			// 
+			// label2
+			// 
+			this.label2.Location = new System.Drawing.Point(5, 10);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(266, 19);
+			this.label2.TabIndex = 28;
+			this.label2.Text = "この設定はタイムシフト録画時にのみ使用されます。";
+			// 
 			// TimeShiftOptionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Window;
-			this.ClientSize = new System.Drawing.Size(311, 278);
+			this.ClientSize = new System.Drawing.Size(341, 370);
+			this.Controls.Add(this.label2);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.cancelBtn);
 			this.Controls.Add(this.okBtn);
+			this.Controls.Add(this.resetBtn);
+			this.Controls.Add(this.lastSettingBtn);
 			this.Controls.Add(this.groupBox3);
 			this.Name = "TimeShiftOptionForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -426,6 +498,12 @@ namespace rokugaTouroku
 			this.panel2.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Button lastSettingBtn;
+		private System.Windows.Forms.Button resetBtn;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.RadioButton isEndTimeRadioBtn;
+		private System.Windows.Forms.RadioButton isManualEndTimeRadioBtn;
+		private System.Windows.Forms.RadioButton isMostStartTimeRadioBtn;
 		private System.Windows.Forms.CheckBox isSetVposStartTime;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.CheckBox isUrlListChkBox;
@@ -459,5 +537,7 @@ namespace rokugaTouroku
 		private System.Windows.Forms.TextBox sText;
 		private System.Windows.Forms.Label sLabel;
 		private System.Windows.Forms.GroupBox groupBox1;
+		
+		
 	}
 }

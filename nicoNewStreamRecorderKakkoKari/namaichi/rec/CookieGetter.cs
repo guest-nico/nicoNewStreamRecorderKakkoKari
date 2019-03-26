@@ -27,22 +27,23 @@ namespace namaichi.rec
 		private config.config cfg;
 		public string log = "";
 		public string id = null;
-		static readonly Uri TargetUrl = new Uri("http://live.nicovideo.jp/");
-		static readonly Uri TargetUrl2 = new Uri("http://live2.nicovideo.jp");
+		static readonly Uri TargetUrl = new Uri("https://live.nicovideo.jp/");
+		static readonly Uri TargetUrl2 = new Uri("https://live2.nicovideo.jp");
 		static readonly Uri TargetUrl3 = new Uri("https://com.nicovideo.jp");
-		static readonly Uri TargetUrl4 = new Uri("http://watch.live.nicovideo.jp/api/");
-		private bool isSub;
+		static readonly Uri TargetUrl4 = new Uri("https://watch.live.nicovideo.jp/api/");
+		static readonly Uri TargetUrl5 = new Uri("https://www.nicovideo.jp/");
+		//private bool isSub;
 		private bool isRtmp;
 		
 		public CookieGetter(config.config cfg)
 		{
 			this.cfg = cfg;
 		}
-		async public Task<CookieContainer[]> getHtml5RecordCookie(string url, bool isSub) {
-			this.isSub = isSub;
+		async public Task<CookieContainer[]> getHtml5RecordCookie(string url) {
+			//this.isSub = isSub;
 			
 			CookieContainer cc;
-			if (!isSub) {
+			//if (!isSub) {
 				cc = await getCookieContainer(cfg.get("BrowserNum"),
 						cfg.get("issecondlogin"), cfg.get("accountId"), 
 						cfg.get("accountPass"), cfg.get("user_session"),
@@ -62,7 +63,10 @@ namespace namaichi.rec
 					cfg.set(l);
 				}
 				
-			} else {
+			
+			/*
+			}
+			else {
 				cc = await getCookieContainer(cfg.get("BrowserNum2"),
 						cfg.get("issecondlogin2"), cfg.get("accountId2"), 
 						cfg.get("accountPass2"), cfg.get("user_session2"),
@@ -82,7 +86,7 @@ namespace namaichi.rec
 					cfg.set(l);
 				}
 			}
-			
+			*/
 			var ret = new CookieContainer[]{cc};
 			return ret;
 		}
@@ -95,7 +99,7 @@ namespace namaichi.rec
 			log += (userSessionCC == null) ? "前回のユーザーセッションが見つかりませんでした。" : "前回のユーザーセッションが見つかりました。";
 			if (userSessionCC != null && true) {
 //				util.debugWriteLine(userSessionCC.GetCookieHeader(TargetUrl));
-				util.debugWriteLine("usersessioncc ishtml5login" + util.getMainSubStr(isSub));
+				util.debugWriteLine("usersessioncc ishtml5login");
 				if (isHtml5Login(userSessionCC, url)) {
 					/*
 					var c = userSessionCC.GetCookies(TargetUrl)["user_session"];
@@ -115,11 +119,11 @@ namespace namaichi.rec
 				CookieContainer cc = await getBrowserCookie(isSub).ConfigureAwait(false);
 				log += (cc == null) ? "ブラウザからユーザーセッションを取得できませんでした。" : "ブラウザからユーザーセッションを取得しました。";
 				if (cc != null) {
-					util.debugWriteLine("browser ishtml5login" + util.getMainSubStr(isSub));
+					util.debugWriteLine("browser ishtml5login");
 					if (isHtml5Login(cc, url)) {
 //						util.debugWriteLine("browser 1 " + cc.GetCookieHeader(TargetUrl));
 //						util.debugWriteLine("browser 2 " + cc.GetCookieHeader(new Uri("http://live2.nicovideo.jp")));
-						util.debugWriteLine("browser login ok" + util.getMainSubStr(isSub));
+						util.debugWriteLine("browser login ok");
 						/*
 						var c = cc.GetCookies(TargetUrl)["user_session"];
 						var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
@@ -143,9 +147,9 @@ namespace namaichi.rec
 				var accCC = await getAccountCookie(mail, pass).ConfigureAwait(false);
 				log += (accCC == null) ? "アカウントログインからユーザーセッションを取得できませんでした。" : "アカウントログインからユーザーセッションを取得しました。";
 				if (accCC != null) {
-					util.debugWriteLine("account ishtml5login" + util.getMainSubStr(isSub));
+					util.debugWriteLine("account ishtml5login");
 					if (isHtml5Login(accCC, url)) {
-						util.debugWriteLine("account login ok" + util.getMainSubStr(isSub));
+						util.debugWriteLine("account login ok");
 						/*
 						var c = accCC.GetCookies(TargetUrl)["user_session"];
 						var secureC = accCC.GetCookies(TargetUrl)["user_session_secure"];
@@ -209,7 +213,7 @@ namespace namaichi.rec
 				try {
 					cc.Add(_c);
 				} catch (Exception e) {
-					util.debugWriteLine("cookie add browser " + _c.ToString() + e.Message + e.Source + e.StackTrace + e.TargetSite + util.getMainSubStr(isSub));
+					util.debugWriteLine("cookie add browser " + _c.ToString() + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
 			}
 //			result.AddTo(cc);
@@ -226,13 +230,13 @@ namespace namaichi.rec
 			for (var i = 0; i < 10; i++) {
 				var headers = new WebHeaderCollection();
 				try {
-					util.debugWriteLine("ishtml5login getpage " + url + util.getMainSubStr(isSub));
-					var _url = (isRtmp) ? ("http://live.nicovideo.jp/api/getplayerstatus/" + util.getRegGroup(url, "(lv\\d+)")) : url;
+					util.debugWriteLine("ishtml5login getpage " + url);
+					var _url = (isRtmp) ? ("https://live.nicovideo.jp/api/getplayerstatus/" + util.getRegGroup(url, "(lv\\d+)")) : url;
 					pageSource = util.getPageSource(_url, ref headers, cc);
-					util.debugWriteLine(cc.GetCookieHeader(new Uri(_url)));
-					util.debugWriteLine("ishtml5login getpage ok" + util.getMainSubStr(isSub));
+//					util.debugWriteLine(cc.GetCookieHeader(new Uri(_url)));
+					util.debugWriteLine("ishtml5login getpage ok");
 				} catch (Exception e) {
-					util.debugWriteLine("cookiegetter ishtml5login " + e.Message+e.StackTrace + util.getMainSubStr(isSub));
+					util.debugWriteLine("cookiegetter ishtml5login " + e.Message+e.StackTrace);
 					pageSource = "";
 					log += "ページの取得中にエラーが発生しました。" + e.Message + e.Source + e.TargetSite + e.StackTrace;
 					continue;
@@ -240,13 +244,13 @@ namespace namaichi.rec
 	//			isHtml5 = (headers.Get("Location") == null) ? false : true;
 				if (pageSource == null) {
 					log += "ページが取得できませんでした。";
-					util.debugWriteLine("not get page" + util.getMainSubStr(isSub));
+					util.debugWriteLine("not get page");
 					continue;
 				}
 				var isLogin = !(pageSource.IndexOf("\"login_status\":\"login\"") < 0 &&
 				   	pageSource.IndexOf("login_status = 'login'") < 0);
 				if (isRtmp) isLogin = pageSource.IndexOf("<code>notlogin</code>") == -1;
-				util.debugWriteLine("islogin " + isLogin + util.getMainSubStr(isSub));
+				util.debugWriteLine("islogin " + isLogin);
 				log += (isLogin) ? "ログインに成功しました。" : "ログインに失敗しました";
 	//			if (!isLogin) log += pageSource;
 				if (isLogin) {
@@ -254,8 +258,9 @@ namespace namaichi.rec
 	//					: util.getRegGroup(pageSource, "\"user_id\":(\\d+)");
 					id = util.getRegGroup(pageSource, "\"user_id\":(\\d+)");
 					if (id == null) id = util.getRegGroup(pageSource, "user_id = (\\d+)");
+					util.debugWriteLine("id " + id);
 				} else {
-					util.debugWriteLine("not login " + pageSource.Substring(0, 1000) + util.getMainSubStr(isSub));
+					util.debugWriteLine("not login " + pageSource.Substring(0, 1000));
 				}
 				return isLogin;
 			}
@@ -287,7 +292,7 @@ namespace namaichi.rec
 				
 //				return cc;
 			} catch (Exception e) {
-				util.debugWriteLine(e.Message+e.StackTrace + util.getMainSubStr(isSub));
+				util.debugWriteLine(e.Message+e.StackTrace);
 				return null;
 			}
 			
@@ -317,12 +322,14 @@ namespace namaichi.rec
 				cc.Add(TargetUrl2, new Cookie(c.Name, c.Value));
 				cc.Add(TargetUrl3, new Cookie(c.Name, c.Value));
 				cc.Add(TargetUrl4, new Cookie(c.Name, c.Value));
+				cc.Add(TargetUrl5, new Cookie(c.Name, c.Value));
 			}
 			if (secureC != null && secureC.Value != "") {
 				cc.Add(TargetUrl, new Cookie(secureC.Name, secureC.Value));
 				cc.Add(TargetUrl2, new Cookie(secureC.Name, secureC.Value));
 				cc.Add(TargetUrl3, new Cookie(secureC.Name, secureC.Value));
 				cc.Add(TargetUrl4, new Cookie(secureC.Name, secureC.Value));
+				cc.Add(TargetUrl5, new Cookie(secureC.Name, secureC.Value));
 			}
 			return cc;
 		}

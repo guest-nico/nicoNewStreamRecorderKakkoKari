@@ -43,7 +43,7 @@ namespace namaichi
 				isFromLastTimeRadioBtn.Enabled = false;
 			}
 			isRenketuLastFile.Visible = (segmentSaveType == "0");
-			updateTimeShiftStartTimeChkBox();
+			
 			
 			var isUrlList = bool.Parse(config.get("IsUrlList"));
 			var openListCommand = config.get("openUrlListCommand");
@@ -57,14 +57,15 @@ namespace namaichi
 			updateListSecondText.Text = config.get("M3u8UpdateSeconds");
 			isOpenListCommandChkBox.Checked = bool.Parse(config.get("IsOpenUrlList"));
 			isSetVposStartTime.Checked = bool.Parse(config.get("IsVposStartTime"));
-			
+			updateTimeShiftStartTimeChkBox();
 			updateIsM3u8RadioBtn_CheckedChanged();
 			updateIsOpenListCommandChkBoxCheckedChanged();
 			updateUrlListChkBoxCheckedChanged();
+			updateIsManualEndTimeRadioBtn();
 			this.config = config;
 		}
 		private void updateTimeShiftStartTimeChkBox() {
-			isRenketuLastFile.Enabled = !isStartTimeRadioBtn.Checked;
+			//isRenketuLastFile.Enabled = !isStartTimeRadioBtn.Checked;
 			hText.Enabled = isStartTimeRadioBtn.Checked;
 			//hLabel.Enabled = isStartTimeRadioBtn.Checked;
 			mText.Enabled = isStartTimeRadioBtn.Checked;
@@ -79,14 +80,22 @@ namespace namaichi
 		
 		void okBtn_Click(object sender, EventArgs e)
 		{
-			var startType = (isStartTimeRadioBtn.Checked) ? 0 : 1;
+			var startType = (isStartTimeRadioBtn.Checked || isMostStartTimeRadioBtn.Checked) ? 0 : 1;
+			var startTimeMode = (isMostStartTimeRadioBtn.Checked ? 0 :((isStartTimeRadioBtn.Checked) ? 1 : 2));
+			var endTimeMode = isEndTimeRadioBtn.Checked ? 0 : 1;
+			
+			
 			var _h = (startType == 0) ? hText.Text : lastFileTime[0];
 			var _m = (startType == 0) ? mText.Text : lastFileTime[1];
 			var _s = (startType == 0) ? sText.Text : lastFileTime[2];
-			int h;
-			int m;
-			int s;
-			if (!int.TryParse(_h, out h) ||
+			if (startTimeMode == 0) _h = _m = _s = "0";
+			int h, formH;
+			int m, formM;
+			int s, formS;
+			if (!int.TryParse(hText.Text, out formH) ||
+			   	!int.TryParse(mText.Text, out formM) ||
+			   	!int.TryParse(sText.Text, out formS) ||
+			   	!int.TryParse(_h, out h) ||
 			   	!int.TryParse(_m, out m) ||
 			   	!int.TryParse(_s, out s)) {
 				MessageBox.Show("開始時間に数字以外が指定されています");
@@ -96,19 +105,24 @@ namespace namaichi
 			var _endH = endHText.Text;
 			var _endM = endMText.Text;
 			var _endS = endSText.Text;
-			int endH;
-			int endM;
-			int endS;
-			if (!int.TryParse(_endH, out endH) ||
+			if (endTimeMode == 0) _endH = _endM = _endS = "0";
+			int endH, formEndH;
+			int endM, formEndM;
+			int endS, formEndS;
+			if (!int.TryParse(endHText.Text, out formEndH) ||
+			   	!int.TryParse(endMText.Text, out formEndM) ||
+			   	!int.TryParse(endSText.Text, out formEndS) ||
+			   	!int.TryParse(_endH, out endH) ||
 			   	!int.TryParse(_endM, out endM) ||
 			   	!int.TryParse(_endS, out endS)) {
 				MessageBox.Show("終了時間に数字以外が指定されています");
 				return;
 			}
 			
-			var timeSeconds = h * 3600 + m * 60 + s;
+			var timeSeconds = (startTimeMode == 1) ? (h * 3600 + m * 60 + s) : 0;
 			var endTimeSeconds = endH * 3600 + endM * 60 + endS;
-			if ((endH != 0 || endM != 0 || endS != 0) && 
+			if (endTimeMode == 0) endTimeSeconds = 0;
+			if (endTimeMode == 1 && (endH != 0 || endM != 0 || endS != 0) && 
 			    	endTimeSeconds < timeSeconds) {
 				MessageBox.Show("終了時間が開始時間より前に設定されています");
 				return;
@@ -138,8 +152,8 @@ namespace namaichi
 			
 			ret = new TimeShiftConfig(startType, 
 				h, m, s, endH, endM, endS, isRenketuLastFile.Checked, isUrlList, 
-				openListCommand, isM3u8List, m3u8UpdateSeconds, isOpenUrlList, 
-				isSetVposStartTime.Checked);
+				openListCommand, isM3u8List, m3u8UpdateSeconds, isOpenUrlList,
+				isSetVposStartTime.Checked, startTimeMode, endTimeMode);
 			
 			var l = new List<KeyValuePair<string, string>>();
 			l.Add(new KeyValuePair<string, string>("IsUrlList", isUrlList.ToString().ToLower()));
@@ -147,6 +161,12 @@ namespace namaichi
 			l.Add(new KeyValuePair<string, string>("M3u8UpdateSeconds", m3u8UpdateSeconds.ToString()));
 			l.Add(new KeyValuePair<string, string>("IsOpenUrlList", isOpenUrlList.ToString().ToLower()));
 			l.Add(new KeyValuePair<string, string>("openUrlListCommand", openListCommand));
+			
+			l.Add(new KeyValuePair<string, string>("tsStartTimeMode", startTimeMode.ToString()));
+			l.Add(new KeyValuePair<string, string>("tsEndTimeMode", endTimeMode.ToString()));
+			l.Add(new KeyValuePair<string, string>("tsStartSecond", (formH * 3600 + formM * 60 + formS).ToString()));
+			l.Add(new KeyValuePair<string, string>("tsEndSecond", (formEndH * 3600 + formEndM * 60 + formEndS).ToString()));
+			l.Add(new KeyValuePair<string, string>("tsIsRenketu", isRenketuLastFile.Checked.ToString().ToLower()));
 			l.Add(new KeyValuePair<string, string>("IsVposStartTime", isSetVposStartTime.Checked.ToString().ToLower()));
 			config.set(l);
 			/*
@@ -196,6 +216,63 @@ namespace namaichi
 		}
 		void updateIsOpenListCommandChkBoxCheckedChanged() {
 			openListCommandText.Enabled = isOpenListCommandChkBox.Checked;
+		}
+		
+		void IsFromLastTimeRadioBtnCheckedChanged(object sender, EventArgs e)
+		{
+			updateIsFromLastTimeRadioBtn();
+		}
+		void updateIsFromLastTimeRadioBtn() {
+			isRenketuLastFile.Enabled = isFromLastTimeRadioBtn.Checked;
+		}
+		
+		void IsManualEndTimeRadioBtnCheckedChanged(object sender, EventArgs e)
+		{
+			updateIsManualEndTimeRadioBtn();
+		}
+		void updateIsManualEndTimeRadioBtn() {
+			endHText.Enabled = endMText.Enabled = 
+					endSText.Enabled = isManualEndTimeRadioBtn.Checked;
+			
+		}
+		private void setFormFromConfig() {
+			var startMode = config.get("tsStartTimeMode");
+			if (startMode == "0") isMostStartTimeRadioBtn.Checked = true;
+			else if (startMode == "1") isStartTimeRadioBtn.Checked = true;
+			else isFromLastTimeRadioBtn.Checked = true;
+			if (config.get("tsEndTimeMode") == "0") isEndTimeRadioBtn.Checked = true;
+			else isManualEndTimeRadioBtn.Checked = true;
+			
+			var startSeconds = int.Parse(config.get("tsStartSecond"));
+			hText.Text = ((int)(startSeconds / 3600)).ToString();
+			mText.Text = ((int)((startSeconds % 3600) / 60)).ToString();
+			sText.Text = ((int)((startSeconds % 60) / 1)).ToString();
+			var endSeconds = int.Parse(config.get("tsEndSecond"));
+			endHText.Text = ((int)(endSeconds / 3600)).ToString();
+			endMText.Text = ((int)((endSeconds % 3600) / 60)).ToString();
+			endSText.Text = ((int)((endSeconds % 60) / 1)).ToString();
+			isRenketuLastFile.Checked = bool.Parse(config.get("tsIsRenketu"));
+			isSetVposStartTime.Checked = bool.Parse(config.get("IsVposStartTime"));
+			
+		}
+		
+		void ResetBtnClick(object sender, EventArgs e)
+		{
+			isMostStartTimeRadioBtn.Checked = true;
+			isEndTimeRadioBtn.Checked = true;
+			hText.Text = "0";
+			mText.Text = "0";
+			sText.Text = "0";
+			endHText.Text = "0";
+			endMText.Text = "0";
+			endSText.Text = "0";
+			isRenketuLastFile.Checked = false;
+			isSetVposStartTime.Checked = true;
+		}
+		
+		void LastSettingBtnClick(object sender, EventArgs e)
+		{
+			setFormFromConfig();
 		}
 	}
 }

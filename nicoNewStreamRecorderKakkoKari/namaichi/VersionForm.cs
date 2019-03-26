@@ -38,7 +38,7 @@ namespace namaichi
 		
 		void communityLinkLabel_Click(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			System.Diagnostics.Process.Start("http://com.nicovideo.jp/community/co2414037");
+			System.Diagnostics.Process.Start("https://com.nicovideo.jp/community/co2414037");
 		}
 	}
 }

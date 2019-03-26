@@ -15,6 +15,9 @@ namespace rokugaTouroku.info
 	/// </summary>
 	public class TimeShiftConfig
 	{
+		public int startTimeMode = 0;
+		public int endTimeMode = 0;
+		
 		//0-start time 1-continue
 		private int startType = 0;
 		public int h = 0;
@@ -39,7 +42,8 @@ namespace rokugaTouroku.info
 		public string startTimeStr;
 
 		public TimeShiftConfig(int startType, 
-				int h, int m, int s, bool isContinueConcat, bool isVposStartTime)
+				int h, int m, int s, bool isContinueConcat, 
+				bool isVposStartTime, int startTimeMode, int endTimeMode)
 		{
 			this.startType = startType;
 			this.h = h;
@@ -47,6 +51,8 @@ namespace rokugaTouroku.info
 			this.s = s;
 			this.isContinueConcat = isContinueConcat;
 			this.isVposStartTime = isVposStartTime;
+			this.startTimeMode = startTimeMode;
+			this.endTimeMode = endTimeMode;
 			
 			timeSeconds = h * 3600 + m * 60 + s;
 			timeType = (startType == 0) ? 0 : 1;
@@ -58,7 +64,7 @@ namespace rokugaTouroku.info
 				bool isContinueConcat, bool isOutputUrlList, 
 				string openListCommand, bool isM3u8List, 
 				double m3u8UpdateSeconds, bool isOpenUrlList,
-				bool isVposStartTime)
+				bool isVposStartTime, int startTimeMode, int endTimeMode)
 		{
 			this.startType = startType;
 			this.h = h;
@@ -74,15 +80,17 @@ namespace rokugaTouroku.info
 			this.m3u8UpdateSeconds = m3u8UpdateSeconds;
 			this.isOpenUrlList = isOpenUrlList;
 			this.isVposStartTime = isVposStartTime;
+			this.startTimeMode = startTimeMode;
+			this.endTimeMode = endTimeMode;
 			
-			timeSeconds = h * 3600 + m * 60 + s;
+			timeSeconds = (startTimeMode == 0) ? 0 : (h * 3600 + m * 60 + s);
 			timeType = (startType == 0) ? 0 : 1;
-			endTimeSeconds = endH * 3600 + endM * 60 + endS;
+			endTimeSeconds = (endTimeMode == 0) ? 0 : (endH * 3600 + endM * 60 + endS);
 			
 			startTimeStr = (startType == 0) ? (timeSeconds + "s") :
 				((isContinueConcat) ? "continue-concat" : "continue");
 		}
 		public TimeShiftConfig() : this(0, 0, 0, 0, 0, 0, 0, 
-				false, false, "notepad {i}", false, 5, false, false) {}
+				false, false, "notepad {i}", false, 5, false, false, 0, 0) {}
 	}
 }

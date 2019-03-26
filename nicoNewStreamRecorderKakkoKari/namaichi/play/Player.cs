@@ -178,28 +178,31 @@ namespace namaichi.play
 		private void sendPlayCommand(bool isDefaultPlayer) {
 			Environment.SetEnvironmentVariable("SDL_AUDIODRIVER", "directsound", EnvironmentVariableTarget.Process);
 			if (isDefaultPlayer) {
-				
-				var volume = (ctrl != null) ? ((ctrl.volume == -10) ? 0 : ctrl.volume) : int.Parse(config.get("volume"));
-				util.debugWriteLine("kia 00 " + form.rec.hlsUrl);
-				
-				if (form.rec.hlsUrl.StartsWith("http"))
-					playCommand("ffplay", form.rec.hlsUrl + " -autoexit -volume " + volume);
-				else 
-//					playCommandStd("MPC-HC.1.7.13.x86/mpc-hc.exe", "-");
-					Task.Run(() => playCommandStd("ffplay.exe", form.rec.hlsUrl + " -autoexit -volume " + volume));
-				
-				util.debugWriteLine("kia 0 " + ctrl);
-				form.Invoke((MethodInvoker)delegate() {
-					if (ctrl == null) {
-						ctrl = new defaultFFplayController(config, process, this);
-						ctrl.Show();
-	            	} else {
-	            		ctrl.process = process;
-	            		ctrl.reset();
-	            	}
-				});
-				util.debugWriteLine("kia 1 " + ctrl);
-				
+				try {
+					var volume = (ctrl != null) ? ((ctrl.volume == -10) ? 0 : ctrl.volume) : int.Parse(config.get("volume"));
+					util.debugWriteLine("kia 00 " + form.rec.hlsUrl);
+					
+					if (form.rec.hlsUrl.StartsWith("http"))
+						playCommand("ffplay", form.rec.hlsUrl + " -autoexit -volume " + volume);
+					else 
+	//					playCommandStd("MPC-HC.1.7.13.x86/mpc-hc.exe", "-");
+						Task.Run(() => playCommandStd("ffplay.exe", form.rec.hlsUrl + " -autoexit -volume " + volume));
+					
+					util.debugWriteLine("kia 0 " + ctrl);
+					form.Invoke((MethodInvoker)delegate() {
+						if (ctrl == null) {
+							ctrl = new defaultFFplayController(config, process, this);
+							ctrl.Show();
+		            	} else {
+		            		ctrl.process = process;
+		            		ctrl.reset();
+		            	}
+					});
+					util.debugWriteLine("kia 1 " + ctrl);
+				} catch (Exception e) {
+					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.StackTrace + e.TargetSite);
+					
+				}
 			} else {
 				if (form.rec.hlsUrl.StartsWith("http"))
 					playCommand(config.get("anotherPlayerPath"), form.rec.hlsUrl);
@@ -268,11 +271,15 @@ namespace namaichi.play
 			
 			try {
 				process.Start();
+				//c
+				//Thread.Sleep(5000);
+				//moto
 				Thread.Sleep(1000);
-				setPipeName(process);
+				if (isDefaultPlayer)
+					setPipeName(process);
 				
 			} catch (Exception ee) {
-				util.debugWriteLine(ee.Message + ee.StackTrace);
+				util.debugWriteLine(ee.Message + ee.StackTrace + ee.Source + ee.TargetSite);
 				form.addLogText("プレイヤーを開始できませんでした " + exe + " " + args);
 			}
 		}
@@ -282,7 +289,9 @@ namespace namaichi.play
 				var arg = (args.StartsWith("http")) ? ("-i " + form.rec.hlsUrl + " -f matroska -") : form.rec.hlsUrl;
 				process = new Process();
 				var si = new ProcessStartInfo();
-				si.FileName = (args.StartsWith("http")) ? "ffmpeg.exe" : "rtmpdump.exe";
+				var rtmpPath = (bool.Parse(config.get("IsDefaultRtmpPath"))) ? 
+						"rtmpdump.exe" : config.get("rtmpPath");
+				si.FileName = (args.StartsWith("http")) ? "ffmpeg.exe" : rtmpPath;
 				si.Arguments = arg;
 				si.RedirectStandardOutput = true;
 				si.UseShellExecute = false;
@@ -469,12 +478,55 @@ namespace namaichi.play
 		}
 		private void setPipeName(Process p) {
 			var pn = ((int)(new Random().NextDouble() * 10000)).ToString();
+			form.addLogText(pn);
 			p.StandardInput.WriteLine(pn);
 			p.StandardInput.Flush();
+			//a
+			/*
+			for (var i = 0; i < 10; i++) {
+				Thread.Sleep(1000);
+				try {
+					var server = new NamedPipeClientStream(pn);
+					server.Connect(3000);
+					pipeWriter = new StreamWriter(server);
+				} catch (Exception e) {
+					util.debugWriteLine("named pipe sleep i " + i + " " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+					continue;
+				}
+			    break;
+			}
+			*/
+			//b
+			/*
+			Thread.Sleep(7000);
+			try {
+				var server = new NamedPipeClientStream(pn);
+				server.Connect(5000);
+				pipeWriter = new StreamWriter(server);
+			} catch (Exception e) {
+				util.debugWriteLine("named pipe sleep  " + " " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
+			*/
+			/*
+			//c
 			Thread.Sleep(1000);
-			var server = new NamedPipeClientStream(pn);
-			server.Connect();
-		    pipeWriter = new StreamWriter(server);
+			try {
+				var server = new NamedPipeClientStream(pn);
+				server.Connect(5000);
+				pipeWriter = new StreamWriter(server);
+			} catch (Exception e) {
+				util.debugWriteLine("named pipe sleep  " + " " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
+			*/
+			//moto
+			Thread.Sleep(1000);
+			try {
+				var server = new NamedPipeClientStream(pn);
+				server.Connect(5000);
+				pipeWriter = new StreamWriter(server);
+			} catch (Exception e) {
+				util.debugWriteLine("named pipe sleep  " + " " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
 			
 	//                while (server.IsConnected) {
 //        	pipeWriter.WriteLine();
