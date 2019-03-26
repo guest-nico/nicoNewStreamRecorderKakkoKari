@@ -55,7 +55,7 @@ namespace namaichi.rec
 				util.debugWriteLine("isffmpeg " + isFFmpeg);
 				
 				
-				var rec = new Record(rm, isFFmpeg, rfu, "", "", 0, null, false, null, null, null, 0, null, null, false);
+				var rec = new Record(rm, isFFmpeg, rfu, "", "", 0, null, false, null, null, null, 0, null, null);
 				commentGetter = new NotHtmlCommentGetter(messageInfo, rm, rfu, recFolderFile);
 				
 				/*

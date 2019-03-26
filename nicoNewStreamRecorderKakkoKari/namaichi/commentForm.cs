@@ -253,6 +253,10 @@ namespace namaichi
 			nowVpos = (h * 3600 + m * 60 + s) * 100;
 		}
 		private void connectMessageServer() {
+			while (form.rec.wsr == null) {
+				if (IsDisposed) return;
+				Thread.Sleep(300);
+			}
 			if (form.rec.wsr.isTimeShift) {
 				displayTsComment();
 			} else {

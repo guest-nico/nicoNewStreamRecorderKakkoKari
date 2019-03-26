@@ -32,38 +32,36 @@ namespace rokugaTouroku.rec
 			this.recListData = recListData;
 			this.cfg = cfg;
 		}
-		public void add() {
+		public bool add(string t) {
 			util.debugWriteLine("rlm add");
             
-            var lvid = util.getRegGroup(form.urlText.Text, "(lv\\d+)");
+            var lvid = util.getRegGroup(t, "(lv\\d+(,\\d+)*)");
 			//util.setLog(cfg, lv);
-			util.debugWriteLine("ver 0.1.0");
 			
+			var url = "";
 			if (lvid != null) {
-				form.urlText.Text = "http://live2.nicovideo.jp/watch/" + lvid;
+				url = "http://live2.nicovideo.jp/watch/" + lvid;
 			}
 //				if (lvid != null) form.urlText.Text = "https://cas.nicovideo.jp/user/77252622/lv313508832";
 				
 			else {
 				MessageBox.Show("not found lvID");
-				return;
+				return false;
 			}
+				
+			var rdg = new RecDataGetter(this);
+			var ri = new RecInfo(lvid, t, rdg, form.afterConvertModeList.Text, form.setTsConfig, form.setTimeshiftBtn.Text, form.qualityBtn.Text, form.qualityRank, form.recCommmentList.Text);
+			form.addList(ri);
 			
-			//Task.Run(() => {
-				
-				var rdg = new RecDataGetter(this);
-				var ri = new RecInfo(lvid, form.urlText.Text, rdg, form.afterConvertModeList.Text, form.setTsConfig, form.setTimeshiftBtn.Text, form.qualityBtn.Text, form.qualityRank);
-				form.addList(ri);
-				
-				form.urlText.Text = "";
+			return true;
 				
 		}
 		public void record() {
-			util.debugWriteLine("ver 0.1.0");
-			if (util.getRegGroup(form.urlText.Text, "(lv\\d+)") == null) {
+			if (util.getRegGroup(form.urlText.Text, "(lv\\d+(,\\d+)*)") == null) {
 				form.urlText.Text = "";
 			} else {
-				add();
+				if (add(form.urlText.Text))
+					form.urlText.Text = "";
 			}
 			
 			if (rdg == null) {

@@ -399,7 +399,7 @@ namespace namaichi
 									this.toolStripSeparator2,
 									this.toolStripMenuItem4});
 			this.mainWindowRightClickMenu.Name = "contextMenuStrip1";
-			this.mainWindowRightClickMenu.Size = new System.Drawing.Size(221, 120);
+			this.mainWindowRightClickMenu.Size = new System.Drawing.Size(221, 98);
 			// 
 			// toolStripMenuItem1
 			// 
@@ -540,6 +540,7 @@ namespace namaichi
 			// 
 			// MainForm
 			// 
+			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Window;
@@ -562,6 +563,8 @@ namespace namaichi
 			this.Text = "ニコ生新配信録画ツール（仮 ver0.86.15";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.form_Close);
 			this.Load += new System.EventHandler(this.mainForm_Load);
+			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MainFormDragDrop);
+			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.MainFormDragEnter);
 			((System.ComponentModel.ISupportInitialize)(this.samuneBox)).EndInit();
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
@@ -616,7 +619,7 @@ namespace namaichi
 		private System.Windows.Forms.ToolStripMenuItem toolMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem fileMenuItem;
 		private System.Windows.Forms.MenuStrip menuStrip1;
-		private System.Windows.Forms.Label recordStateLabel;
+		public System.Windows.Forms.Label recordStateLabel;
 		public System.Windows.Forms.TextBox logText;
 		public System.Windows.Forms.Button recBtn;
 		public System.Windows.Forms.TextBox urlText;

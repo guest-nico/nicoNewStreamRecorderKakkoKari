@@ -113,6 +113,14 @@
     <Compile Include="TimeShiftOptionForm.Designer.cs">
       <DependentUpon>TimeShiftOptionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UrlBulkRegistForm.cs" />
+    <Compile Include="UrlBulkRegistForm.Designer.cs">
+      <DependentUpon>UrlBulkRegistForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UrlListSaveForm.cs" />
+    <Compile Include="UrlListSaveForm.Designer.cs">
+      <DependentUpon>UrlListSaveForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="util\SourceInfoSerialize.cs" />
     <Compile Include="util\util.cs" />
     <Compile Include="VersionForm.cs" />
@@ -147,6 +155,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TimeShiftOptionForm.resx">
       <DependentUpon>TimeShiftOptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UrlBulkRegistForm.resx">
+      <DependentUpon>UrlBulkRegistForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UrlListSaveForm.resx">
+      <DependentUpon>UrlListSaveForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="VersionForm.resx">
       <DependentUpon>VersionForm.cs</DependentUpon>

@@ -44,6 +44,7 @@ namespace rokugaTouroku
 			this.形式 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.画質 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.タイムシフト設定 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.recComment = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.状態 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.タイトル = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.放送者 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -66,12 +67,17 @@ namespace rokugaTouroku
 			this.fileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.録画フォルダを開くToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.urlBulkRegist = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.終了ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.バージョン情報VToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.label2 = new System.Windows.Forms.Label();
+			this.recCommmentList = new System.Windows.Forms.ComboBox();
 			this.label18 = new System.Windows.Forms.Label();
 			this.label16 = new System.Windows.Forms.Label();
 			this.label14 = new System.Windows.Forms.Label();
@@ -142,6 +148,7 @@ namespace rokugaTouroku
 			// 
 			// recList
 			// 
+			this.recList.AllowDrop = true;
 			this.recList.AllowUserToAddRows = false;
 			this.recList.AllowUserToDeleteRows = false;
 			this.recList.AllowUserToResizeRows = false;
@@ -154,6 +161,7 @@ namespace rokugaTouroku
 									this.形式,
 									this.画質,
 									this.タイムシフト設定,
+									this.recComment,
 									this.状態,
 									this.タイトル,
 									this.放送者,
@@ -172,6 +180,8 @@ namespace rokugaTouroku
 			this.recList.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.recListCell_MouseDown);
 			this.recList.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.recList_DataError);
 			this.recList.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.recList_FocusRowEnter);
+			this.recList.DragDrop += new System.Windows.Forms.DragEventHandler(this.RecListDragDrop);
+			this.recList.DragEnter += new System.Windows.Forms.DragEventHandler(this.RecListDragEnter);
 			// 
 			// 放送ID
 			// 
@@ -205,6 +215,16 @@ namespace rokugaTouroku
 			this.タイムシフト設定.Resizable = System.Windows.Forms.DataGridViewTriState.True;
 			this.タイムシフト設定.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.タイムシフト設定.Width = 195;
+			// 
+			// recComment
+			// 
+			this.recComment.DataPropertyName = "recComment";
+			this.recComment.HeaderText = "映像・コメント";
+			this.recComment.MinimumWidth = 85;
+			this.recComment.Name = "recComment";
+			this.recComment.ReadOnly = true;
+			this.recComment.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+			this.recComment.Width = 85;
 			// 
 			// 状態
 			// 
@@ -355,6 +375,9 @@ namespace rokugaTouroku
 			this.fileMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 									this.録画フォルダを開くToolStripMenuItem,
 									this.toolStripSeparator1,
+									this.urlBulkRegist,
+									this.toolStripMenuItem1,
+									this.toolStripSeparator5,
 									this.終了ToolStripMenuItem});
 			this.fileMenuItem.Name = "fileMenuItem";
 			this.fileMenuItem.ShowShortcutKeys = false;
@@ -372,6 +395,25 @@ namespace rokugaTouroku
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
 			this.toolStripSeparator1.Size = new System.Drawing.Size(200, 6);
+			// 
+			// urlBulkRegist
+			// 
+			this.urlBulkRegist.Name = "urlBulkRegist";
+			this.urlBulkRegist.Size = new System.Drawing.Size(203, 22);
+			this.urlBulkRegist.Text = "URL一括登録(&R)";
+			this.urlBulkRegist.Click += new System.EventHandler(this.urlBulkRegistMenu_Click);
+			// 
+			// toolStripMenuItem1
+			// 
+			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(203, 22);
+			this.toolStripMenuItem1.Text = "URLリストの保存(&S)";
+			this.toolStripMenuItem1.Click += new System.EventHandler(this.urlListSaveMenu_Click);
+			// 
+			// toolStripSeparator5
+			// 
+			this.toolStripSeparator5.Name = "toolStripSeparator5";
+			this.toolStripSeparator5.Size = new System.Drawing.Size(200, 6);
 			// 
 			// 終了ToolStripMenuItem
 			// 
@@ -420,6 +462,8 @@ namespace rokugaTouroku
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.panel1.AutoSize = true;
 			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panel1.Controls.Add(this.label2);
+			this.panel1.Controls.Add(this.recCommmentList);
 			this.panel1.Controls.Add(this.label18);
 			this.panel1.Controls.Add(this.label16);
 			this.panel1.Controls.Add(this.label14);
@@ -437,6 +481,28 @@ namespace rokugaTouroku
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(911, 301);
 			this.panel1.TabIndex = 13;
+			// 
+			// label2
+			// 
+			this.label2.Location = new System.Drawing.Point(723, 40);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(75, 17);
+			this.label2.TabIndex = 13;
+			this.label2.Text = "映像・コメント：";
+			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// recCommmentList
+			// 
+			this.recCommmentList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.recCommmentList.FormattingEnabled = true;
+			this.recCommmentList.Items.AddRange(new object[] {
+									"映像＋コメント",
+									"映像のみ",
+									"コメントのみ"});
+			this.recCommmentList.Location = new System.Drawing.Point(805, 39);
+			this.recCommmentList.Name = "recCommmentList";
+			this.recCommmentList.Size = new System.Drawing.Size(92, 20);
+			this.recCommmentList.TabIndex = 12;
 			// 
 			// label18
 			// 
@@ -471,7 +537,7 @@ namespace rokugaTouroku
 			this.setTimeshiftBtn.Name = "setTimeshiftBtn";
 			this.setTimeshiftBtn.Size = new System.Drawing.Size(199, 23);
 			this.setTimeshiftBtn.TabIndex = 3;
-			this.setTimeshiftBtn.Text = "0時間0分0秒-0時間0分0秒";
+			this.setTimeshiftBtn.Text = "最初から-最後まで";
 			this.setTimeshiftBtn.UseVisualStyleBackColor = true;
 			this.setTimeshiftBtn.Click += new System.EventHandler(this.setTimeshiftBtn_Click);
 			// 
@@ -819,6 +885,12 @@ namespace rokugaTouroku
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+		private System.Windows.Forms.ToolStripMenuItem urlBulkRegist;
+		private System.Windows.Forms.DataGridViewTextBoxColumn recComment;
+		public System.Windows.Forms.ComboBox recCommmentList;
+		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.ToolStripMenuItem deleteRowMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 		private System.Windows.Forms.ToolStripMenuItem reAddRowMenu;

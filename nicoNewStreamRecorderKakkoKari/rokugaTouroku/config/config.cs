@@ -118,6 +118,8 @@ public class config
 //			{"IsAfterRenketuFFmpeg","false"},
 			{"EngineMode","0"},
 			{"anotherEngineCommand",""},
+			{"IsDefaultRtmpPath","true"},
+			{"rtmpPath",""},
 			{"IsUsePlayer","true"},
 			{"IsDefaultPlayer","true"},
 			{"IsUseCommentViewer","true"},
@@ -125,13 +127,24 @@ public class config
 			{"anotherPlayerPath",""},
 			{"anotherCommentViewerPath",""},
 			{"Is184","true"},
+			
+			{"tsStartTimeMode","0"},
+			{"tsEndTimeMode","0"},
+			{"tsStartSecond","0"},
+			{"tsEndSecond","0"},
+			{"tsIsRenketu","false"},
+			{"IsVposStartTime","true"},
+			
 			{"IsUrlList","false"},
 			{"IsM3u8List","false"},
 			{"M3u8UpdateSeconds","5"},
 			{"IsOpenUrlList","false"},
 			{"openUrlListCommand","notepad {i}"},
-			{"IsVposStartTime","true"},
 			{"afterConvertMode","0"},
+			{"IsSoundEnd","false"},
+			{"soundPath",""},
+			{"IsSoundDefault","true"},
+			{"soundVolume","50"},
 			
 			{"cookieFile",""},
 			{"iscookie","false"},
@@ -181,8 +194,9 @@ public class config
 		cfg = getConfig();
 		
 		foreach (var k in formData.Keys) {
+			util.debugWriteLine(k + formData[k]);
 			cfg.AppSettings.Settings[k].Value = formData[k];
-			//util.debugWriteLine(k + formData[k]);
+			
 		}		
 		try {
 			cfg.Save();

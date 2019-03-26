@@ -47,9 +47,9 @@ namespace namaichi.rec
 		private string[] recFolderFileInfo;
 		private TimeShiftConfig timeShiftConfig;
 		
-		private bool isSub;
+		//private bool isSub;
 			
-		public JikkenRecorder(string res, string lvid, CookieContainer container, config.config config, RecordingManager rm, RecordFromUrl rfu, bool isSub)
+		public JikkenRecorder(string res, string lvid, CookieContainer container, config.config config, RecordingManager rm, RecordFromUrl rfu)
 		{
 			this.lvid = lvid;
 			this.container = container;
@@ -71,14 +71,14 @@ namespace namaichi.rec
 			watchingUrl = "https://api.cas.nicovideo.jp/v1/services/live/programs/" + lvid + "/watching" + 
 				((isLive) ? "" : "-archive");
 			this.streamCapacity = util.getRegGroup(data, "&quot;maxQuality&quot;\\:&quot;(.+?)&quot;");
-			util.debugWriteLine("maxQuality " + streamCapacity + util.getMainSubStr(isSub, true));
+			util.debugWriteLine("maxQuality " + streamCapacity);
 			//var wc = new WebHeaderCollection();
 			//var watchingRes = util.getPageSource
 //				public static int getPageTypeJikken(string res) {
 		
 //			if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ON_AIR") return 0;
 //			else if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ENDED") return 7;
-			this.isSub = isSub;
+			//this.isSub = isSub;
 		}
 		public int record(string res, bool isRtmp) {
 			//endcode 0-その他の理由 1-stop 2-最初に終了 3-始まった後に番組終了
@@ -115,7 +115,7 @@ namespace namaichi.rec
 //			util.debugWriteLine(data + util.getMainSubStr(isSub, true));
 			
 			recFolderFileInfo = getRecFolderFileInfo(data, type);
-			if (!isSub) {
+			//if (!isSub) {
 				timeShiftConfig = null;
 				if (!isLive && !isRtmp) {
 					if (rm.ri != null) timeShiftConfig = rm.ri.tsConfig;
@@ -135,13 +135,13 @@ namespace namaichi.rec
 					if (recFolderFile == null || recFolderFile[0] == null) {
 						//パスが長すぎ
 						rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);
-						util.debugWriteLine("too long path? " + recFolderFile[1] + util.getMainSubStr(isSub, true));
+						util.debugWriteLine("too long path? " + recFolderFile[1]);
 						return 2;
 					}
 				} else recFolderFile = new string[]{"", "", ""};
 					
 				//display set
-				var b = new RecordStateSetter(rm.form, rm, rfu, !isLive, true, recFolderFile, rm.isPlayOnlyMode);
+				var b = new RecordStateSetter(rm.form, rm, rfu, !isLive, true, recFolderFile, rm.isPlayOnlyMode, false);
 				Task.Run(() => {
 					b.set(data, type, recFolderFileInfo);
 				});
@@ -151,21 +151,21 @@ namespace namaichi.rec
 					Task.Run(() => {b.writeHosoInfo();});
 					
 				
-				util.debugWriteLine("form disposed" + rm.form.IsDisposed + util.getMainSubStr(isSub, true));
-				util.debugWriteLine("recfolderfile test " + recFolderFileInfo + util.getMainSubStr(isSub, true));
+				util.debugWriteLine("form disposed" + rm.form.IsDisposed);
+				util.debugWriteLine("recfolderfile test " + recFolderFileInfo);
 				
 				var fileName = System.IO.Path.GetFileName(recFolderFile[1]);
 				rm.form.setTitle(fileName);
-			} else {
-				recFolderFile = new string[]{"", "", ""};
-			}
+			//} else {
+			//	recFolderFile = new string[]{"", "", ""};
+			//}
 			
 			for (int i = 0; i < recFolderFile.Length; i++)
-				util.debugWriteLine("recd " + i + " " + recFolderFileInfo[i] + util.getMainSubStr(isSub, true));
+				util.debugWriteLine("recd " + i + " " + recFolderFileInfo[i]);
 			var userId = util.getRegGroup(res, "\"user\"\\:\\{\"user_id\"\\:(.+?),");
 			var isPremium = res.IndexOf("\"member_status\":\"premium\"") > -1;
 			wi = new WatchingInfo(watchingRes);
-			var jrp = new JikkenRecordProcess(container, recFolderFile, rm, rfu, this, openTime, !isLive, lvid, timeShiftConfig, userId, isPremium, programTime, wi, releaseTime, isSub, isRtmp);
+			var jrp = new JikkenRecordProcess(container, recFolderFile, rm, rfu, this, openTime, !isLive, lvid, timeShiftConfig, userId, isPremium, programTime, wi, releaseTime, false, isRtmp);
 			rm.wsr = jrp;
 			try {
 				jrp.start();
@@ -174,7 +174,7 @@ namespace namaichi.rec
 				if (rm.rfu != rfu) return 1;
 				return 3;
 			} catch (Exception e) {
-				util.debugWriteLine("jsp start exception " + e.Message + e.StackTrace + util.getMainSubStr(isSub, true));
+				util.debugWriteLine("jsp start exception " + e.Message + e.StackTrace);
 			}
 			return 1;
 		}
@@ -190,10 +190,10 @@ namespace namaichi.rec
 			var _res = getWatching();
 			_res.Wait();
 			watchingRes = _res.Result;
-			util.debugWriteLine("watching res " + watchingRes + util.getMainSubStr(isSub, true));
+			util.debugWriteLine("watching res " + watchingRes);
 			
 			var ret = getPageTypeFromWatching(watchingRes);
-			util.debugWriteLine("pagetype cas " + ret + util.getMainSubStr(isSub, true));
+			util.debugWriteLine("pagetype cas " + ret);
 			return ret;
 		}
 		private bool setAvailableQuality() {
@@ -245,7 +245,7 @@ namespace namaichi.rec
 			return bestGettableQuality;
 		}
 		async public Task<string> getWatching() {
-			util.debugWriteLine("watching post" + util.getMainSubStr(isSub, true));
+			util.debugWriteLine("watching post");
 			try {
 				var handler = new System.Net.Http.HttpClientHandler();
 				handler.UseCookies = true;
@@ -263,7 +263,7 @@ namespace namaichi.rec
 				if (streamCapacity != "ultrahigh") contentStr += ", \"streamCapacity\":\"" + streamCapacity + "\"";
 				if (isLive) contentStr += ",\"isBroadcaster\":" + isBroadcaster.ToString().ToLower() + ",\"isLowLatencyStream\":false";
 				contentStr += "}";
-				util.debugWriteLine(contentStr + util.getMainSubStr(isSub, true));
+				util.debugWriteLine(contentStr);
 				
 				var content = new System.Net.Http.StringContent(contentStr);
 				content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
@@ -282,12 +282,12 @@ namespace namaichi.rec
 				return res;
 //				return cc;
 			} catch (Exception e) {
-				util.debugWriteLine("get watching exception " + e.Message+e.StackTrace + util.getMainSubStr(isSub, true));
+				util.debugWriteLine("get watching exception " + e.Message+e.StackTrace);
 				return null;
 			}
 		}
 		async public Task<string> getWatchingPut() {
-			util.debugWriteLine("watching put" + util.getMainSubStr(isSub, true));
+			util.debugWriteLine("watching put");
 			for (var i = 0; i < 3; i++) {
 				try {
 					var handler = new System.Net.Http.HttpClientHandler();
@@ -324,7 +324,7 @@ namespace namaichi.rec
 					return res;
 	//				return cc;
 				} catch (Exception e) {
-					util.debugWriteLine("watching put exception " + e.Message+e.StackTrace + e.Source + e.TargetSite + util.getMainSubStr(isSub, true));
+					util.debugWriteLine("watching put exception " + e.Message+e.StackTrace + e.Source + e.TargetSite);
 //					return null;
 				}
 			}
@@ -364,12 +364,12 @@ namespace namaichi.rec
 				return res;
 //				return cc;
 			} catch (Exception e) {
-				util.debugWriteLine(e.Message+e.StackTrace + util.getMainSubStr(isSub, true));
+				util.debugWriteLine(e.Message+e.StackTrace);
 				return null;
 			}
 		}
 		private int getPageTypeFromWatching(string res) {
-			if (res.IndexOf("\"status\":201") > -1) return 0;
+			if (res.IndexOf("\"status\":201") > -1) return (isLive) ? 0 : 7;
 			else if (res.IndexOf("\"errorCode\":\"MEMBER_ONLY\"") > -1) return 4;
 			else if (res.IndexOf("\"errorCode\":\"EXPIRED_REGULAR_USER\"") > -1) return 2;
 			else if (res.IndexOf("\"errorCode\":\"EXPIRED_ARCHIVE_WATCH\"") > -1) return 2;
@@ -378,7 +378,7 @@ namespace namaichi.rec
 			else if (res.IndexOf("\"errorCode\":\"NOT_PLAYABLE\"") > -1) return 2;
 			else if (res.IndexOf("errorMessage\":\"program ended.\"") > -1) return 2;
 //			else if (res.IndexOf("errorMessage\":\"Bad request") > -1) return 5;
-			rm.form.addLogText(res + util.getMainSubStr(isSub, true));
+			rm.form.addLogText(res);
 			return 5;
 		}
 		private string getActionTrackId() {
@@ -402,9 +402,9 @@ namespace namaichi.rec
 				if (communityNum == null) communityNum = "official";
 				userId = "official";
 				
-				util.debugWriteLine(host + " " + group + " " + title + " " + communityNum + util.getMainSubStr(isSub, true));
+				util.debugWriteLine(host + " " + group + " " + title + " " + communityNum);
 				if (host == null || group == null || title == null || communityNum == null) return null;
-				util.debugWriteLine(host + " " + group + " " + title + " " + communityNum + util.getMainSubStr(isSub, true));
+				util.debugWriteLine(host + " " + group + " " + title + " " + communityNum);
 			} else {
 				bool isAPI = false;
 				if (isAPI) {
@@ -429,16 +429,16 @@ namespace namaichi.rec
 					group = getCommunityName(communityNum);
 					userId = util.getRegGroup(data, "\"broadcaster\"..\"id\".\"(.+?)\"");
 					//userId = (isChannel) ? "channel" : (util.getRegGroup(data, "supplier\":{\"name\".+?pageUrl\":\"http://www.nicovideo.jp/user/(\\d+?)\""));
-					util.debugWriteLine("userid " + userId + util.getMainSubStr(isSub, true));
+					util.debugWriteLine("userid " + userId);
 		
-					util.debugWriteLine("title " + title + util.getMainSubStr(isSub, true));
-					util.debugWriteLine("community " + communityNum + util.getMainSubStr(isSub, true));
+					util.debugWriteLine("title " + title);
+					util.debugWriteLine("community " + communityNum);
 		//			community = util.getRegGroup(res, "socialGr(oup:)");
 		//			title = util.getRegGroup(res, "\\\"programHeader\\\"\\:\\{\\\"thumbnailUrl\\\".+?\\\"title\\\"\\:\\\"(.*?)\\\"");
 					//  ,\"programHeader\":{\"thumbnailUrl\":\"http:\/\/icon.nimg.jp\/community\/s\/123\/co1231728.jpg?1373210036\",\"title\":\"\u56F2\u7881\",\"provider
 		//			title = util.uniToOriginal(title);
 					
-					util.debugWriteLine(host + " " + group + " " + title + " " + communityNum + " userid " + userId + util.getMainSubStr(isSub, true));
+					util.debugWriteLine(host + " " + group + " " + title + " " + communityNum + " userid " + userId);
 					if (host == null || group == null || title == null || communityNum == null || userId == null) return null;
 				}
 			}
@@ -454,7 +454,7 @@ namespace namaichi.rec
 			
 			var wc = new WebHeaderCollection();
 			var res = util.getPageSource(url, ref wc, container);
-			util.debugWriteLine(container.GetCookieHeader(new Uri(url)) + util.getMainSubStr(isSub, true));
+//			util.debugWriteLine(container.GetCookieHeader(new Uri(url)) + util.getMainSubStr(isSub, true));
 			
 			if (res == null) {
 				url = (isChannel) ? 
@@ -474,7 +474,7 @@ namespace namaichi.rec
 			var segmentSaveType = cfg.get("segmentSaveType");
 			var lastFile = util.getLastTimeshiftFileName(host,
 					group, title, lvId, communityNum, userId, cfg, _openTime);
-			util.debugWriteLine("timeshift lastfile " + lastFile + util.getMainSubStr(isSub, true));
+			util.debugWriteLine("timeshift lastfile " + lastFile);
 			string[] lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType);
 			if (lastFileTime == null)
 				util.debugWriteLine("timeshift lastfiletime " + 
@@ -488,22 +488,22 @@ namespace namaichi.rec
 		       		       	try {
 				        	    o.ShowDialog(rm.form);
 		       		       	} catch (Exception e) {
-		       		       		util.debugWriteLine("timeshift option form invoke " + e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite + util.getMainSubStr(isSub, true));
+		       		       		util.debugWriteLine("timeshift option form invoke " + e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 		       		       	}
 					});
 				} catch (Exception e) {
-					util.debugWriteLine("timeshift option form invoke try " + e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite + util.getMainSubStr(isSub, true));
+					util.debugWriteLine("timeshift option form invoke try " + e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 				}
 				
 				//if (o.ret == null) return null;
 				return o.ret;
 	        } catch (Exception ee) {
-        		util.debugWriteLine(ee.Message + " " + ee.StackTrace + util.getMainSubStr(isSub, true));
+        		util.debugWriteLine(ee.Message + " " + ee.StackTrace);
 	        }
 			return null;
 		}
 		public string[] getRecFilePath(long releaseTime, bool isRtmp) {
-			util.debugWriteLine(releaseTime + " c " + recFolderFileInfo[0] + " b " + !isLive + " a " + timeShiftConfig + util.getMainSubStr(isSub, true));
+			util.debugWriteLine(releaseTime + " c " + recFolderFileInfo[0] + " b " + !isLive + " a " + timeShiftConfig);
 			return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, !isLive, timeShiftConfig, releaseTime, isRtmp);
 		}
 		private TimeShiftConfig getReadyArgTsConfig(
@@ -514,7 +514,7 @@ namespace namaichi.rec
 			var segmentSaveType = rm.cfg.get("segmentSaveType");
 			var lastFile = util.getLastTimeshiftFileName(host,
 					group, title, lvId, communityNum, userId, rm.cfg, _openTime);
-			util.debugWriteLine("timeshift lastfile " + lastFile + util.getMainSubStr(isSub, true));
+			util.debugWriteLine("timeshift lastfile " + lastFile);
 			util.debugWriteLine("arg tsconfig vpos " + _tsConfig.isVposStartTime);
 			
 			var lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType);

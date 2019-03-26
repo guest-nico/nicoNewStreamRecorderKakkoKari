@@ -46,7 +46,7 @@ namespace namaichi.utility
 		*/
 		public Regex getExtXTargetDuration() {
 			if (extXTargetDuration == null)
-				extXTargetDuration = new Regex("#EXT-X-TARGETDURATION:(\\d+(\\.\\d+)*)");
+				extXTargetDuration = new Regex("#EXT-X-TARGETDURATION:(\\d+(\\.\\d+)*(e\\d+)*)");
 			return extXTargetDuration;
 		}
 		public Regex getExtInf() {
@@ -56,7 +56,7 @@ namespace namaichi.utility
 		}
 		public Regex get_ExtXTargetDuration() {
 			if (_extXTargetDuration == null)
-				_extXTargetDuration = new Regex("^#EXT-X-TARGETDURATION:(\\d+(\\.\\d+)*)");
+				_extXTargetDuration = new Regex("^#EXT-X-TARGETDURATION:(\\d+(\\.\\d+)*(e\\d+)*)");
 			return _extXTargetDuration;
 		}
 		public Regex getExtXEndlist() {

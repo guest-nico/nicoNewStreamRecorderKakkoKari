@@ -36,13 +36,14 @@ namespace rokugaTouroku.info
 		public string timeShift;
 		public Image samune;
 		public string quality;
+		public string recComment = "";
 		
 		public info.TimeShiftConfig tsConfig;
 		public Process process;
 		public RecDataGetter rdg;
 		public DateTime keikaTimeStart;
 		
-		public RecInfo(string id, string url, RecDataGetter rdg, string afterConvertType, info.TimeShiftConfig tsConfig, string tsStr, string qualityRankStr, string qualityRank) {
+		public RecInfo(string id, string url, RecDataGetter rdg, string afterConvertType, info.TimeShiftConfig tsConfig, string tsStr, string qualityRankStr, string qualityRank, string recComment) {
 			this.id = id;
 			this.url = url;
 			this.rdg = rdg;
@@ -56,7 +57,7 @@ namespace rokugaTouroku.info
 			//quality = "sHigh,High,Normal,Llow,sLow,abr";
 			quality = qualityRankStr;
 			this.qualityRank = qualityRank;
-			
+			this.recComment = recComment;
 		}
 		public RecInfo(string id, string title, 
 				string host, string communityName,
@@ -64,7 +65,7 @@ namespace rokugaTouroku.info
 				string programTime, string url, 
 				string communityUrl, string description,
 				string qualityRank, TimeShiftConfig tsConfig, 
-				RecDataGetter rdg) {
+				RecDataGetter rdg, string recComment) {
 			this.id = id;
 			this.title = title;
 			this.host = host;
@@ -78,6 +79,7 @@ namespace rokugaTouroku.info
 			this.qualityRank = qualityRank;
 			this.tsConfig = tsConfig;
 			this.rdg = rdg;
+			this.recComment = recComment;
 		}
 		public string Id
         {
@@ -144,6 +146,10 @@ namespace rokugaTouroku.info
         public string Quality  {
         	get { return quality; }
         	set {this.quality = value; }
+        }
+        public string RecComment  {
+        	get { return recComment; }
+        	set {this.recComment = value; }
         }
         public void addLog(string s) {
         	if (log != "") log += "\r\n";

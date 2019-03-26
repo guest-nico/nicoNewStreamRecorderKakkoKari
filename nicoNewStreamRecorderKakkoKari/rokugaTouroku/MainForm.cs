@@ -60,6 +60,7 @@ namespace rokugaTouroku
 			qualityRank = config.get("rokugaTourokuQualityRank");
 			qualityBtn.Text = getQualityRankStr(qualityRank);
 			setConvertList(int.Parse(config.get("afterConvertMode")));
+			recCommmentList.Text = "映像＋コメント";
 		}
 		void optionItem_Select(object sender, EventArgs e)
         { 
@@ -145,7 +146,8 @@ namespace rokugaTouroku
 		}
 		void addListBtn_Click(object sender, EventArgs e)
 		{
-			rec.add();
+			if (rec.add(urlText.Text))
+				urlText.Text = "";
 			urlText.Focus();
 			//var b = new info.TimeShiftConfig(0,1,2,3,true);
 			//var g = new RecInfo("id", "title", "host", "comname", "start", "end", "proTime", "url", "comurl", "des", "0,1,2", b);
@@ -231,20 +233,24 @@ namespace rokugaTouroku
 			}
 		}
 		private string getSetTsBtnText(TimeShiftConfig tsConfig) {
-			if (tsConfig.timeType == 0) {
-				var start = ((tsConfig.h < 1000) ? 
+			string start = "", end = "";
+			
+			if (tsConfig.startTimeMode == 0) start = "最初から";
+			else if (tsConfig.startTimeMode == 1) {
+				start = ((tsConfig.h < 1000) ?
 						tsConfig.h.ToString("0") : tsConfig.h.ToString()) +
 						"時間" + tsConfig.m.ToString("") + "分" +
 						tsConfig.s.ToString("") + "秒";
-				var end = ((tsConfig.endH < 1000) ? 
+			} else start = "前回の続きから";
+			
+			if (tsConfig.endTimeMode == 0) end = "最後まで";
+			else if (tsConfig.endTimeMode == 1) {
+				end = ((tsConfig.endH < 1000) ?
 						tsConfig.endH.ToString("0") : tsConfig.endH.ToString()) +
 						"時間" + tsConfig.endM.ToString("") + "分" +
 						tsConfig.endS.ToString("") + "秒";
-				return start + "-" + end;
-			} else {
-				//return (tsConfig.isContinueConcat) ? 
-				return "前回の続きから録画";
 			}
+			return start + "-" + end;
 		}
 		
 		void qualityBtn_Click(object sender, EventArgs e)
@@ -398,7 +404,7 @@ namespace rokugaTouroku
 				*/
 				return;
 			}
-			var _ri = new RecInfo(ri.id, ri.url, ri.rdg, ri.afterConvertType, ri.tsConfig, ri.timeShift, ri.quality, ri.qualityRank);
+			var _ri = new RecInfo(ri.id, ri.url, ri.rdg, ri.afterConvertType, ri.tsConfig, ri.timeShift, ri.quality, ri.qualityRank, ri.recComment);
 			recListDataSource[selectedCell.RowIndex] = _ri;
 			resetBindingList(selectedCell.RowIndex);
 			displayRiInfo(_ri);
@@ -502,6 +508,48 @@ namespace rokugaTouroku
 		{
 			var v = new VersionForm();
 			v.ShowDialog();
+		}
+		
+		void urlBulkRegistMenu_Click(object sender, EventArgs e)
+		{
+			var f = new UrlBulkRegistForm();
+			f.ShowDialog();
+			if (f.res == null) return;
+			
+			foreach(var r in f.res) {
+				util.debugWriteLine(r);
+				rec.add(r);
+			}
+		}
+		
+		void urlListSaveMenu_Click(object sender, EventArgs e)
+		{
+			var t = "";
+			foreach (var d in recListDataSource) {
+				t += ((RecInfo)d).url += "\r\n";
+			}
+			var f = new UrlListSaveForm(t);
+			f.ShowDialog();
+		}
+		
+		void RecListDragDrop(object sender, DragEventArgs e)
+		{
+			try {
+				var url = e.Data.GetData(DataFormats.Text).ToString();
+				rec.add(url);
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+			}
+		}
+		void RecListDragEnter(object sender, DragEventArgs e)
+		{
+			if (e.Data.GetDataPresent("UniformResourceLocator") ||
+			    e.Data.GetDataPresent("UniformResourceLocatorW") ||
+			    e.Data.GetDataPresent(DataFormats.Text)) {
+				util.debugWriteLine(e.Effect);
+				e.Effect = DragDropEffects.Copy;
+				
+			}
 		}
 	}
 }

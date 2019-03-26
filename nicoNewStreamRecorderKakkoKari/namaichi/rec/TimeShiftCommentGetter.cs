@@ -67,6 +67,7 @@ namespace namaichi.rec
 		private bool isVposStartTime;
 		private bool isRtmp;
 		private int[] quePosTimeList;
+		private RtmpRecorder rr;
 		
 		public TimeShiftCommentGetter(string message, 
 				string userId, RecordingManager rm, 
@@ -75,7 +76,8 @@ namespace namaichi.rec
 				string lvid, CookieContainer container, 
 				string programType, long _openTime, 
 				WebSocketRecorder rp, int startSecond, 
-				bool isVposStartTime, bool isRtmp)
+				bool isVposStartTime, bool isRtmp, 
+				RtmpRecorder rr)
 		{
 			this.uri = util.getRegGroup(message, "messageServerUri\"\\:\"(ws.+?)\"");
 			this.thread = util.getRegGroup(message, "threadId\":\"(.+?)\"");
@@ -95,6 +97,7 @@ namespace namaichi.rec
 			//this.tsConfig = tsConfig;
 			this.isVposStartTime = isVposStartTime;
 			this.isRtmp = isRtmp;
+			this.rr = rr;
 		}
 		public void save() {
 			if (!bool.Parse(rm.cfg.get("IsgetComment"))) {
@@ -130,7 +133,7 @@ namespace namaichi.rec
 			
 			Task.Run(() => {
 			    while (true) {
-			         		if (rp.isRtmp || rp.firstSegmentSecond != -1) break;
+			        if (rp.isRtmp || rp.firstSegmentSecond != -1) break;
 					Thread.Sleep(500);
 				}
 				connect();
@@ -178,7 +181,7 @@ namespace namaichi.rec
 		}
 		
 		private void onWscClose(object sender, EventArgs e) {
-			util.debugWriteLine("ms tscg onclose");
+			util.debugWriteLine("ms tscg onclose " + lastLastRes);
 			//closeWscProcess();
 			wsc = null;
 			try {
@@ -249,8 +252,8 @@ namespace namaichi.rec
 			if (chatinfo.root == "thread") {
 //				serverTime = chatinfo.serverTime;
 				ticket = chatinfo.ticket;
-				lastLastRes = (chatinfo.lastRes == null) ? 0 : int.Parse(chatinfo.lastRes);
-				
+//				lastLastRes = (chatinfo.lastRes == null) ? 0 : int.Parse(chatinfo.lastRes);
+				if (chatinfo.lastRes != null) lastLastRes = int.Parse(chatinfo.lastRes);
 			}
 //			util.debugWriteLine(chatXml.ToString());
 //			util.debugWriteLine(gotMinXml[1]);
@@ -282,7 +285,7 @@ namespace namaichi.rec
 						if (threadLine == null) {
 							threadLine = s;
 							if (!rm.isPlayOnlyMode)
-								form.addLogText(chatinfo.lastRes + "件ぐらいのコメントが見つかりました(追い出しコメント含む)");
+								form.addLogText("アリーナ席に" + chatinfo.lastRes + "件ぐらいのコメントが見つかりました(追い出しコメント含む)");
 						}
 		            } else {
 //		            	commentSW.WriteLine(s + "}>");
@@ -340,7 +343,9 @@ namespace namaichi.rec
 //				chats = r.ReadToEnd().Split(new string[]{"}>\r\n"}, StringSplitOptions.RemoveEmptyEntries);
 //		    }
 			//var isXml = bool.Parse(rm.cfg.get("IsgetcommentXml"));
-			
+			while (isRtmp && rr.fileNameList == null) {
+				Thread.Sleep(1000);
+			}
 				
 			var keys = new List<int>();
 			foreach (var c in gotCommentList) {
@@ -359,8 +364,14 @@ namespace namaichi.rec
 			for (int j = 0; j < fileNum; j++) {
 				if (j != 0) recFolderFile = incrementRecFolderFile(recFolderFile);
 				
-				
 				fileName = util.getOkCommentFileName(rm.cfg, recFolderFile, lvid, true, isRtmp);
+				if (isRtmp) {
+					//fileName = getTsRecordIndexRecFolderFile(fileName, j + 1);
+					fileName = rr.fileNameList[j] + 
+						((rm.cfg.get("IsgetcommentXml") == "true") ? ".xml" : ".json");
+				}
+				
+				
 				var w = new StreamWriter(fileName + "_", false, System.Text.Encoding.UTF8);
 				if (isGetXml) {
 					w.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
@@ -448,6 +459,16 @@ namespace namaichi.rec
 			var r = util.incrementRecFolderFile(recFolderFile);
 			if (r == null) return rp.getRecFilePath()[1];
 			return r;
+		}
+		private string getTsRecordIndexRecFolderFile(string recFolderFile, int recordIndex) {
+			var r = new Regex("(\\d+).xml$");
+			var m = r.Match(recFolderFile);
+			if (m == null || m.Length <= 0) return recFolderFile;
+			//var _new = (int.Parse(m.Groups[1].Value) + 1).ToString();
+			var _new = recordIndex.ToString();
+			
+			
+			return r.Replace(recFolderFile, _new + ".xml");
 		}
 	}
 }

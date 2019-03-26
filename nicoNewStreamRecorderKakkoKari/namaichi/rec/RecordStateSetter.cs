@@ -42,8 +42,9 @@ namespace namaichi.rec
 		
 		private bool isPlayOnlyMode = false;
 		private bool isDescriptionTag;
+		private bool isRtmpOnlyPage = false;
 			
-		public RecordStateSetter(MainForm form, RecordingManager rm, RecordFromUrl rfu, bool isTimeShift, bool isJikken, string[] recFolderFile, bool isPlayOnlyMode)
+		public RecordStateSetter(MainForm form, RecordingManager rm, RecordFromUrl rfu, bool isTimeShift, bool isJikken, string[] recFolderFile, bool isPlayOnlyMode, bool isRtmpOnlyPage)
 		{
 			this.form = form;
 			this.rm = rm;
@@ -53,6 +54,7 @@ namespace namaichi.rec
 			this.recFolderFile = recFolderFile;
 			this.isPlayOnlyMode = isPlayOnlyMode;
 			this.isDescriptionTag = bool.Parse(rm.cfg.get("IsDescriptionTag"));
+			this.isRtmpOnlyPage = isRtmpOnlyPage;
 		}
 		public void set(string data, string type, string[] recFolderFileInfo) {
 			setInfo(data, form, type, recFolderFileInfo);
@@ -84,7 +86,9 @@ namespace namaichi.rec
 			group = recFolderFileInfo[1];
 			title = recFolderFileInfo[2];
 			url = util.getRegGroup(data, "\"watchPageUrl\":\"(.+?)\"");
+			if (url == null) url = util.getRegGroup(data, "og:url\" content=\"(.+?)\"");
 			description = util.getRegGroup(data, "\"program\".+?\"description\":\"(.+?)\",\"");
+			if (description == null) description = util.getRegGroup(data, "<description>(.+?)</description>");
 			
 			description = description.Replace("\\n", " ");
 			if (!isDescriptionTag) {
@@ -100,13 +104,23 @@ namespace namaichi.rec
 			}
 //			string hostUrl, groupUrl, gentei;
 			long _openTime, _endTime;
+			
 			if (!isJikken) {
 				hostUrl = (type == "community" || type == "user") ? util.getRegGroup(data, "supplier\":{\"name\".\".+?\",\"pageUrl\":\"(.+?)\"") : null;
 				groupUrl = util.getRegGroup(data, "\"socialGroupPageUrl\":\"(.+?)\"");
 				gentei = (data.IndexOf("\"isFollowerOnly\":true") > -1) ? "限定" : "オープン";
 	//			var _openTime = long.Parse(util.getRegGroup(data, "\"openTime\":(\\d+)"));
-				_openTime = long.Parse(util.getRegGroup(data, "\"beginTime\":(\\d+)"));
-				_endTime = long.Parse(util.getRegGroup(data, "\"endTime\":(\\d+)"));
+				var _openTimeStr = util.getRegGroup(data, "\"beginTime\":(\\d+)");
+				var _endTimeStr = util.getRegGroup(data, "\"endTime\":(\\d+)");
+				
+				if (_openTimeStr == null) _openTimeStr = util.getRegGroup(data, "<start_time>(\\d+)");
+				if (_endTimeStr == null) _endTimeStr = util.getRegGroup(data, "<end_time>(\\d+)");
+				if (_openTimeStr == null) {
+					_openTimeStr = "0";
+					_endTimeStr = "0";
+				}
+				_openTime = long.Parse(_openTimeStr);
+				_endTime = long.Parse(_endTimeStr);
 			} else {
 				hostUrl = (type == "community" || type == "user") ? util.getRegGroup(data, "broadcaster\":{.+?\"pageUrl\":\"(.+?)\"") : null;
 				groupUrl = "https://com.nicovideo.jp/community/" + recFolderFileInfo[4];
@@ -122,6 +136,8 @@ namespace namaichi.rec
 			//samuneUrl = util.getRegGroup(data, "\"program\".+?\"thumbnail\":{\"imageUrl\":\"(.+?)\"");
 			samuneUrl = util.getRegGroup(data, "\"thumbnailImageUrl\":\"(.+?)\"");
 			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "\"small\":\"(.+?)\"");
+			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "thumbnail:.+?'(http://.+?)'");
+			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "<thumb_url>(.+?)</thumb_url>");
 			tag = getTag(data);
 			form.setInfo(host, hostUrl, group, groupUrl, title, url, gentei, openTime, description, isJikken);
 		}
@@ -145,7 +161,7 @@ namespace namaichi.rec
 			sw.WriteLine("[放送開始時間] " + openTime + br);
 			sw.WriteLine("[タイトル] " + title + br);
 			sw.WriteLine("[限定] " + gentei + br);
-			sw.WriteLine("[放送タイプ] " + ((isJikken) ? "nicocas" : "nicolive2") + br);
+			sw.WriteLine("[放送タイプ] " + ((isJikken) ? "nicocas" : (isRtmpOnlyPage) ? "nicolive" : "nicolive2") + br);
 			sw.WriteLine("[放送者] " + host + br);
 			sw.WriteLine("[コミュニティ名] " + group + br);
 			sw.WriteLine("[説明] " + description + br);
@@ -174,8 +190,17 @@ namespace namaichi.rec
 		}
 		private string getTag(string data) {
 			var _t = util.getRegGroup(data, "\"tag\":\\{\"list\":\\[(.+?)\\]");
-			if (_t == null) return "取得できませんでした";
-			var m = Regex.Matches(data, "\"text\":\"(.*?)\"");
+			MatchCollection m;
+			if (_t == null) {
+//				var __t = util.getRegGroup(data, "<ul id=\"livetags\"(.+?)</ul>");
+//				if (__t == null) return "取得できませんでした";
+				m = new Regex("keyword=(.+?)&amp").Matches(data);
+//				if (mm.Count == 0) return "取得できませんでした";
+//				foreach (Match _m in m) 
+//					util.debugWriteLine(_m.Groups[1]);
+			} else {
+				m = Regex.Matches(data, "\"text\":\"(.*?)\"");
+			}
 			var ret = "";
 			foreach (var _m in m) {
 				if (ret != "") ret += ",";

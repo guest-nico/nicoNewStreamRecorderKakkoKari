@@ -37,6 +37,7 @@ namespace namaichi
 		private void InitializeComponent()
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.isMostStartTimeRadioBtn = new System.Windows.Forms.RadioButton();
 			this.isSetVposStartTime = new System.Windows.Forms.CheckBox();
 			this.isRenketuLastFile = new System.Windows.Forms.CheckBox();
 			this.lastFileInfoLabel = new System.Windows.Forms.Label();
@@ -50,14 +51,6 @@ namespace namaichi
 			this.isStartTimeRadioBtn = new System.Windows.Forms.RadioButton();
 			this.cancelBtn = new System.Windows.Forms.Button();
 			this.okBtn = new System.Windows.Forms.Button();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label6 = new System.Windows.Forms.Label();
-			this.endSText = new System.Windows.Forms.TextBox();
-			this.label7 = new System.Windows.Forms.Label();
-			this.endMText = new System.Windows.Forms.TextBox();
-			this.label8 = new System.Windows.Forms.Label();
-			this.endHText = new System.Windows.Forms.TextBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.isUrlListLabelText2 = new System.Windows.Forms.Label();
 			this.isUrlListLabelText3 = new System.Windows.Forms.Label();
@@ -70,15 +63,28 @@ namespace namaichi
 			this.isOpenListCommandChkBox = new System.Windows.Forms.CheckBox();
 			this.openListCommandText = new System.Windows.Forms.TextBox();
 			this.isUrlListChkBox = new System.Windows.Forms.CheckBox();
+			this.resetBtn = new System.Windows.Forms.Button();
+			this.lastSettingBtn = new System.Windows.Forms.Button();
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.label1 = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
+			this.endSText = new System.Windows.Forms.TextBox();
+			this.label7 = new System.Windows.Forms.Label();
+			this.endMText = new System.Windows.Forms.TextBox();
+			this.label8 = new System.Windows.Forms.Label();
+			this.endHText = new System.Windows.Forms.TextBox();
+			this.isManualEndTimeRadioBtn = new System.Windows.Forms.RadioButton();
+			this.isEndTimeRadioBtn = new System.Windows.Forms.RadioButton();
 			this.groupBox1.SuspendLayout();
-			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.panel2.SuspendLayout();
+			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
 			// 
 			this.groupBox1.BackColor = System.Drawing.SystemColors.Window;
+			this.groupBox1.Controls.Add(this.isMostStartTimeRadioBtn);
 			this.groupBox1.Controls.Add(this.isSetVposStartTime);
 			this.groupBox1.Controls.Add(this.isRenketuLastFile);
 			this.groupBox1.Controls.Add(this.lastFileInfoLabel);
@@ -92,16 +98,27 @@ namespace namaichi
 			this.groupBox1.Controls.Add(this.isStartTimeRadioBtn);
 			this.groupBox1.Location = new System.Drawing.Point(5, 10);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(299, 165);
+			this.groupBox1.Size = new System.Drawing.Size(329, 190);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "録画開始時間";
+			// 
+			// isMostStartTimeRadioBtn
+			// 
+			this.isMostStartTimeRadioBtn.Checked = true;
+			this.isMostStartTimeRadioBtn.Location = new System.Drawing.Point(6, 18);
+			this.isMostStartTimeRadioBtn.Name = "isMostStartTimeRadioBtn";
+			this.isMostStartTimeRadioBtn.Size = new System.Drawing.Size(182, 18);
+			this.isMostStartTimeRadioBtn.TabIndex = 6;
+			this.isMostStartTimeRadioBtn.TabStop = true;
+			this.isMostStartTimeRadioBtn.Text = "最初から";
+			this.isMostStartTimeRadioBtn.UseVisualStyleBackColor = true;
 			// 
 			// isSetVposStartTime
 			// 
 			this.isSetVposStartTime.Checked = true;
 			this.isSetVposStartTime.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.isSetVposStartTime.Location = new System.Drawing.Point(6, 135);
+			this.isSetVposStartTime.Location = new System.Drawing.Point(6, 159);
 			this.isSetVposStartTime.Name = "isSetVposStartTime";
 			this.isSetVposStartTime.Size = new System.Drawing.Size(244, 17);
 			this.isSetVposStartTime.TabIndex = 5;
@@ -110,7 +127,7 @@ namespace namaichi
 			// 
 			// isRenketuLastFile
 			// 
-			this.isRenketuLastFile.Location = new System.Drawing.Point(26, 113);
+			this.isRenketuLastFile.Location = new System.Drawing.Point(26, 137);
 			this.isRenketuLastFile.Name = "isRenketuLastFile";
 			this.isRenketuLastFile.Size = new System.Drawing.Size(231, 17);
 			this.isRenketuLastFile.TabIndex = 5;
@@ -119,7 +136,7 @@ namespace namaichi
 			// 
 			// lastFileInfoLabel
 			// 
-			this.lastFileInfoLabel.Location = new System.Drawing.Point(25, 96);
+			this.lastFileInfoLabel.Location = new System.Drawing.Point(25, 120);
 			this.lastFileInfoLabel.Name = "lastFileInfoLabel";
 			this.lastFileInfoLabel.Size = new System.Drawing.Size(250, 17);
 			this.lastFileInfoLabel.TabIndex = 3;
@@ -127,7 +144,7 @@ namespace namaichi
 			// 
 			// sLabel
 			// 
-			this.sLabel.Location = new System.Drawing.Point(188, 44);
+			this.sLabel.Location = new System.Drawing.Point(188, 68);
 			this.sLabel.Name = "sLabel";
 			this.sLabel.Size = new System.Drawing.Size(69, 12);
 			this.sLabel.TabIndex = 2;
@@ -135,7 +152,7 @@ namespace namaichi
 			// 
 			// sText
 			// 
-			this.sText.Location = new System.Drawing.Point(153, 41);
+			this.sText.Location = new System.Drawing.Point(153, 65);
 			this.sText.Name = "sText";
 			this.sText.Size = new System.Drawing.Size(29, 19);
 			this.sText.TabIndex = 3;
@@ -144,7 +161,7 @@ namespace namaichi
 			// 
 			// mLabel
 			// 
-			this.mLabel.Location = new System.Drawing.Point(130, 44);
+			this.mLabel.Location = new System.Drawing.Point(130, 68);
 			this.mLabel.Name = "mLabel";
 			this.mLabel.Size = new System.Drawing.Size(39, 12);
 			this.mLabel.TabIndex = 2;
@@ -152,7 +169,7 @@ namespace namaichi
 			// 
 			// mText
 			// 
-			this.mText.Location = new System.Drawing.Point(95, 41);
+			this.mText.Location = new System.Drawing.Point(95, 65);
 			this.mText.Name = "mText";
 			this.mText.Size = new System.Drawing.Size(29, 19);
 			this.mText.TabIndex = 2;
@@ -161,7 +178,7 @@ namespace namaichi
 			// 
 			// hLabel
 			// 
-			this.hLabel.Location = new System.Drawing.Point(60, 44);
+			this.hLabel.Location = new System.Drawing.Point(60, 68);
 			this.hLabel.Name = "hLabel";
 			this.hLabel.Size = new System.Drawing.Size(39, 12);
 			this.hLabel.TabIndex = 2;
@@ -169,7 +186,7 @@ namespace namaichi
 			// 
 			// hText
 			// 
-			this.hText.Location = new System.Drawing.Point(25, 41);
+			this.hText.Location = new System.Drawing.Point(25, 65);
 			this.hText.Name = "hText";
 			this.hText.Size = new System.Drawing.Size(29, 19);
 			this.hText.TabIndex = 1;
@@ -178,29 +195,27 @@ namespace namaichi
 			// 
 			// isFromLastTimeRadioBtn
 			// 
-			this.isFromLastTimeRadioBtn.Location = new System.Drawing.Point(6, 75);
+			this.isFromLastTimeRadioBtn.Location = new System.Drawing.Point(6, 99);
 			this.isFromLastTimeRadioBtn.Name = "isFromLastTimeRadioBtn";
 			this.isFromLastTimeRadioBtn.Size = new System.Drawing.Size(182, 18);
 			this.isFromLastTimeRadioBtn.TabIndex = 4;
-			this.isFromLastTimeRadioBtn.TabStop = true;
 			this.isFromLastTimeRadioBtn.Text = "前回の続きから録画";
 			this.isFromLastTimeRadioBtn.UseVisualStyleBackColor = true;
+			this.isFromLastTimeRadioBtn.CheckedChanged += new System.EventHandler(this.IsFromLastTimeRadioBtnCheckedChanged);
 			// 
 			// isStartTimeRadioBtn
 			// 
-			this.isStartTimeRadioBtn.Checked = true;
-			this.isStartTimeRadioBtn.Location = new System.Drawing.Point(6, 18);
+			this.isStartTimeRadioBtn.Location = new System.Drawing.Point(6, 42);
 			this.isStartTimeRadioBtn.Name = "isStartTimeRadioBtn";
 			this.isStartTimeRadioBtn.Size = new System.Drawing.Size(182, 18);
 			this.isStartTimeRadioBtn.TabIndex = 0;
-			this.isStartTimeRadioBtn.TabStop = true;
 			this.isStartTimeRadioBtn.Text = "録画開始時間を指定";
 			this.isStartTimeRadioBtn.UseVisualStyleBackColor = true;
 			this.isStartTimeRadioBtn.CheckedChanged += new System.EventHandler(this.isStartTimeRadioBtn_CheckedChanged);
 			// 
 			// cancelBtn
 			// 
-			this.cancelBtn.Location = new System.Drawing.Point(215, 259);
+			this.cancelBtn.Location = new System.Drawing.Point(245, 330);
 			this.cancelBtn.Name = "cancelBtn";
 			this.cancelBtn.Size = new System.Drawing.Size(74, 23);
 			this.cancelBtn.TabIndex = 16;
@@ -210,89 +225,13 @@ namespace namaichi
 			// 
 			// okBtn
 			// 
-			this.okBtn.Location = new System.Drawing.Point(135, 259);
+			this.okBtn.Location = new System.Drawing.Point(165, 330);
 			this.okBtn.Name = "okBtn";
 			this.okBtn.Size = new System.Drawing.Size(74, 23);
 			this.okBtn.TabIndex = 15;
 			this.okBtn.Text = "OK";
 			this.okBtn.UseVisualStyleBackColor = true;
 			this.okBtn.Click += new System.EventHandler(this.okBtn_Click);
-			// 
-			// groupBox2
-			// 
-			this.groupBox2.BackColor = System.Drawing.SystemColors.Window;
-			this.groupBox2.Controls.Add(this.label1);
-			this.groupBox2.Controls.Add(this.label6);
-			this.groupBox2.Controls.Add(this.endSText);
-			this.groupBox2.Controls.Add(this.label7);
-			this.groupBox2.Controls.Add(this.endMText);
-			this.groupBox2.Controls.Add(this.label8);
-			this.groupBox2.Controls.Add(this.endHText);
-			this.groupBox2.Location = new System.Drawing.Point(5, 181);
-			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(299, 62);
-			this.groupBox2.TabIndex = 27;
-			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "録画終了時間";
-			// 
-			// label1
-			// 
-			this.label1.Location = new System.Drawing.Point(60, 43);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(234, 16);
-			this.label1.TabIndex = 9;
-			this.label1.Text = "0時間0分0秒を指定すると最後まで録画します";
-			// 
-			// label6
-			// 
-			this.label6.Location = new System.Drawing.Point(188, 21);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(69, 12);
-			this.label6.TabIndex = 2;
-			this.label6.Text = "秒時点まで";
-			// 
-			// endSText
-			// 
-			this.endSText.Location = new System.Drawing.Point(153, 18);
-			this.endSText.Name = "endSText";
-			this.endSText.Size = new System.Drawing.Size(29, 19);
-			this.endSText.TabIndex = 8;
-			this.endSText.Text = "0";
-			this.endSText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-			// 
-			// label7
-			// 
-			this.label7.Location = new System.Drawing.Point(130, 21);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(39, 12);
-			this.label7.TabIndex = 2;
-			this.label7.Text = "分";
-			// 
-			// endMText
-			// 
-			this.endMText.Location = new System.Drawing.Point(95, 18);
-			this.endMText.Name = "endMText";
-			this.endMText.Size = new System.Drawing.Size(29, 19);
-			this.endMText.TabIndex = 7;
-			this.endMText.Text = "0";
-			this.endMText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-			// 
-			// label8
-			// 
-			this.label8.Location = new System.Drawing.Point(60, 21);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(39, 12);
-			this.label8.TabIndex = 2;
-			this.label8.Text = "時間";
-			// 
-			// endHText
-			// 
-			this.endHText.Location = new System.Drawing.Point(25, 18);
-			this.endHText.Name = "endHText";
-			this.endHText.Size = new System.Drawing.Size(29, 19);
-			this.endHText.TabIndex = 6;
-			this.endHText.Text = "0";
-			this.endHText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
 			// 
 			// groupBox3
 			// 
@@ -412,30 +351,156 @@ namespace namaichi
 			this.isUrlListChkBox.UseVisualStyleBackColor = true;
 			this.isUrlListChkBox.CheckedChanged += new System.EventHandler(this.isUrlListChkBox_CheckedChanged);
 			// 
+			// resetBtn
+			// 
+			this.resetBtn.Location = new System.Drawing.Point(85, 330);
+			this.resetBtn.Name = "resetBtn";
+			this.resetBtn.Size = new System.Drawing.Size(74, 23);
+			this.resetBtn.TabIndex = 32;
+			this.resetBtn.Text = "リセット";
+			this.resetBtn.UseVisualStyleBackColor = true;
+			this.resetBtn.Click += new System.EventHandler(this.ResetBtnClick);
+			// 
+			// lastSettingBtn
+			// 
+			this.lastSettingBtn.Location = new System.Drawing.Point(5, 330);
+			this.lastSettingBtn.Name = "lastSettingBtn";
+			this.lastSettingBtn.Size = new System.Drawing.Size(74, 23);
+			this.lastSettingBtn.TabIndex = 31;
+			this.lastSettingBtn.Text = "前回の設定";
+			this.lastSettingBtn.UseVisualStyleBackColor = true;
+			this.lastSettingBtn.Click += new System.EventHandler(this.LastSettingBtnClick);
+			// 
+			// groupBox2
+			// 
+			this.groupBox2.BackColor = System.Drawing.SystemColors.Window;
+			this.groupBox2.Controls.Add(this.label1);
+			this.groupBox2.Controls.Add(this.label6);
+			this.groupBox2.Controls.Add(this.endSText);
+			this.groupBox2.Controls.Add(this.label7);
+			this.groupBox2.Controls.Add(this.endMText);
+			this.groupBox2.Controls.Add(this.label8);
+			this.groupBox2.Controls.Add(this.endHText);
+			this.groupBox2.Controls.Add(this.isManualEndTimeRadioBtn);
+			this.groupBox2.Controls.Add(this.isEndTimeRadioBtn);
+			this.groupBox2.Location = new System.Drawing.Point(6, 206);
+			this.groupBox2.Name = "groupBox2";
+			this.groupBox2.Size = new System.Drawing.Size(329, 108);
+			this.groupBox2.TabIndex = 28;
+			this.groupBox2.TabStop = false;
+			this.groupBox2.Text = "録画終了時間";
+			// 
+			// label1
+			// 
+			this.label1.Location = new System.Drawing.Point(60, 89);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(234, 16);
+			this.label1.TabIndex = 9;
+			this.label1.Text = "0時間0分0秒を指定すると最後まで録画します";
+			// 
+			// label6
+			// 
+			this.label6.Location = new System.Drawing.Point(188, 67);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(69, 12);
+			this.label6.TabIndex = 2;
+			this.label6.Text = "秒時点まで";
+			// 
+			// endSText
+			// 
+			this.endSText.Location = new System.Drawing.Point(153, 64);
+			this.endSText.Name = "endSText";
+			this.endSText.Size = new System.Drawing.Size(29, 19);
+			this.endSText.TabIndex = 8;
+			this.endSText.Text = "0";
+			this.endSText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			// 
+			// label7
+			// 
+			this.label7.Location = new System.Drawing.Point(130, 67);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(39, 12);
+			this.label7.TabIndex = 2;
+			this.label7.Text = "分";
+			// 
+			// endMText
+			// 
+			this.endMText.Location = new System.Drawing.Point(95, 64);
+			this.endMText.Name = "endMText";
+			this.endMText.Size = new System.Drawing.Size(29, 19);
+			this.endMText.TabIndex = 7;
+			this.endMText.Text = "0";
+			this.endMText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			// 
+			// label8
+			// 
+			this.label8.Location = new System.Drawing.Point(60, 67);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(39, 12);
+			this.label8.TabIndex = 2;
+			this.label8.Text = "時間";
+			// 
+			// endHText
+			// 
+			this.endHText.Location = new System.Drawing.Point(25, 64);
+			this.endHText.Name = "endHText";
+			this.endHText.Size = new System.Drawing.Size(29, 19);
+			this.endHText.TabIndex = 6;
+			this.endHText.Text = "0";
+			this.endHText.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+			// 
+			// isManualEndTimeRadioBtn
+			// 
+			this.isManualEndTimeRadioBtn.Location = new System.Drawing.Point(6, 42);
+			this.isManualEndTimeRadioBtn.Name = "isManualEndTimeRadioBtn";
+			this.isManualEndTimeRadioBtn.Size = new System.Drawing.Size(182, 18);
+			this.isManualEndTimeRadioBtn.TabIndex = 0;
+			this.isManualEndTimeRadioBtn.Text = "録画終了時間を指定";
+			this.isManualEndTimeRadioBtn.UseVisualStyleBackColor = true;
+			this.isManualEndTimeRadioBtn.CheckedChanged += new System.EventHandler(this.IsManualEndTimeRadioBtnCheckedChanged);
+			// 
+			// isEndTimeRadioBtn
+			// 
+			this.isEndTimeRadioBtn.Checked = true;
+			this.isEndTimeRadioBtn.Location = new System.Drawing.Point(6, 18);
+			this.isEndTimeRadioBtn.Name = "isEndTimeRadioBtn";
+			this.isEndTimeRadioBtn.Size = new System.Drawing.Size(182, 18);
+			this.isEndTimeRadioBtn.TabIndex = 0;
+			this.isEndTimeRadioBtn.TabStop = true;
+			this.isEndTimeRadioBtn.Text = "最後まで";
+			this.isEndTimeRadioBtn.UseVisualStyleBackColor = true;
+			// 
 			// TimeShiftOptionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Window;
-			this.ClientSize = new System.Drawing.Size(311, 291);
+			this.ClientSize = new System.Drawing.Size(341, 362);
+			this.Controls.Add(this.resetBtn);
+			this.Controls.Add(this.lastSettingBtn);
+			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.cancelBtn);
 			this.Controls.Add(this.okBtn);
 			this.Controls.Add(this.groupBox3);
-			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Name = "TimeShiftOptionForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "タイムシフト録画設定";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
-			this.groupBox2.ResumeLayout(false);
-			this.groupBox2.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
 			this.panel2.ResumeLayout(false);
 			this.panel2.PerformLayout();
+			this.groupBox2.ResumeLayout(false);
+			this.groupBox2.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Button lastSettingBtn;
+		private System.Windows.Forms.Button resetBtn;
+		private System.Windows.Forms.RadioButton isMostStartTimeRadioBtn;
+		private System.Windows.Forms.RadioButton isEndTimeRadioBtn;
+		private System.Windows.Forms.RadioButton isManualEndTimeRadioBtn;
 		private System.Windows.Forms.CheckBox isSetVposStartTime;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.CheckBox isUrlListChkBox;

@@ -8,6 +8,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml.Serialization;
@@ -29,6 +30,7 @@ using System.Configuration;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Security.AccessControl;
 using namaichi.rec;
 using namaichi.config;
 using namaichi.play;
@@ -52,19 +54,31 @@ namespace namaichi
 		private string[] args;
 		private play.Player player;
 		private string labelUrl;
-		
+		private Thread madeThread;
 		
 		public MainForm(string[] args)
 		{
+			madeThread = Thread.CurrentThread;
+			
+			//test
+			app.form = this;
+			
 			//args = "-nowindo -stdIO -IsmessageBox=false -IscloseExit=true lv316762771 -ts-start=1785s -ts-end=0s -ts-list=false -ts-list-m3u8=false -ts-list-update=5 -ts-list-open=false -ts-list-command=\"notepad{i}\" -ts-vpos-starttime=true -afterConvertMode=4 -qualityRank=0,1,2,3,4,5 -IsLogFile=true".Split(' ');
 			//read std
 			if (Array.IndexOf(args, "-std-read") > -1) startStdRead();
 			
-			#if !DEBUG
-				if (config.get("IsLogFile") == "true") 
-					config.set("IsLogFile", "false");
-			#endif
-					
+//			#if !DEBUGE
+//				if (config.get("IsLogFile") == "true") 
+//					config.set("IsLogFile", "false");
+//			#endif
+			
+			if (false && !isFullAccessDirectory()) {
+				MessageBox.Show("このディレクトリーにはファイルの読み書き権限がありませんでした。別のフォルダに移すかフォルダに権限を付与してください。");
+				System.Environment.Exit(0);
+			}
+			
+				
+			
 			System.Diagnostics.Debug.Listeners.Clear();
 			System.Diagnostics.Debug.Listeners.Add(new Logger.TraceListener());
 		    
@@ -95,14 +109,13 @@ namespace namaichi
 					rec.argTsConfig = ar.tsConfig;
 					rec.isRecording = true;
 //					rec.setArgConfig(args);
-					rec.rec();
+					if (ar.isPlayMode) player.play();
+					else rec.rec();
 				}
 				if (bool.Parse(config.get("Isminimized"))) {
 					this.WindowState = FormWindowState.Minimized;
 				}
             }
-			
-			
 
 			util.debugWriteLine("arg len " + args.Length);
 			util.debugWriteLine("arg join " + string.Join(" ", args));
@@ -270,6 +283,30 @@ namespace namaichi
 		        	    recordStateLabel.Text = t;
 		        	    if (rec.isTitleBarInfo) {
 		        	    	Text = t;
+		        	    }
+	       		    } catch (Exception e) {
+	       		       	util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+	       		    }
+		        	   
+	        	    //recordStateLabel.AutoSize
+				});
+	       	} catch (Exception e) {
+       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+	       	}
+       		//util.debugWriteLine("setRecordState ok");
+		}
+       public void setRecordStateComplete() {
+       		if (!util.isShowWindow) return;
+       		//util.debugWriteLine("setRecordState form");
+	       	try {
+	       		if (IsDisposed) return;
+	        	Invoke((MethodInvoker)delegate() {
+	       		    //util.debugWriteLine("setRecordState form after invoke");
+	       		    try {
+	       		    	var t = "(complete)";
+		        	    recordStateLabel.Text += t;
+		        	    if (rec.isTitleBarInfo) {
+		        	    	Text += t;
 		        	    }
 	       		    } catch (Exception e) {
 	       		       	util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
@@ -617,6 +654,7 @@ namespace namaichi
 			
 			//.net
 			var ver = util.Get45PlusFromRegistry();  
+			util.debugWriteLine(".net ver " + ver);
 			if (ver < 4.52) {
 				
 				Task.Run(() => {
@@ -637,21 +675,154 @@ namespace namaichi
 		void startStdRead() {
 			Task.Run(() => {
 	         	while (true) {
-					var a = Console.ReadLine();
-					if (a == null || a.Length == 0) continue;
-					if (a == "stop end") {
-						if (rec.rfu != null) {
-							rec.stopRecording();
+					try {
+						var a = Console.ReadLine();
+						if (a == null || a.Length == 0) continue;
+						if (a == "stop end") {
+							if (rec.rfu != null) {
+								rec.stopRecording();
+							}
+							while (rec.recordRunningList.Count > 0) {
+								Thread.Sleep(1000);
+							}
+							Close();
 						}
-						while (rec.recordRunningList.Count > 0) {
-							Thread.Sleep(1000);
-						}
-						Close();
-					}
+	         		} catch (Exception e) {
+	         			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+	         		}
 				}
 			});
 		}
-		
-		
+		void MainFormDragDrop(object sender, DragEventArgs e)
+		{
+			try {
+				var url = e.Data.GetData(DataFormats.Text).ToString();
+				if (urlText.Enabled) urlText.Text = url;
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+			}
+		}
+		void MainFormDragEnter(object sender, DragEventArgs e)
+		{
+			if (e.Data.GetDataPresent("UniformResourceLocator") ||
+			    e.Data.GetDataPresent("UniformResourceLocatorW") ||
+			    e.Data.GetDataPresent(DataFormats.Text)) {
+				util.debugWriteLine(e.Effect);
+				e.Effect = DragDropEffects.Copy;
+				
+			}
+		}
+		bool isFullAccessDirectory() {
+			//return true;
+			/*
+			try {
+				var sr = new StreamReader(util.getJarPath()[1] + ".exe");
+				sr.Read();
+				sr.Close();
+				var sw = new StreamWriter(util.getJarPath()[1] + ".exea", false);
+				
+				return true;
+			} catch(Exception e) {
+				return false;
+			}
+			*/
+			//Thread.Sleep(1000);
+			//Thread.Sleep(10000);
+			
+			var cfg = config.getConfig();
+			for (var i = 0; i < 1; i++) {
+				try {
+					cfg.AppSettings.Settings["browserNum2"].Value = (1 - int.Parse(cfg.AppSettings.Settings["browserNum2"].Value)).ToString();
+					cfg.Save();
+					return true;
+				} catch (Exception e) {
+					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+					if (e.Message.IndexOf("アクセスが拒否されました") > -1 ||
+					   e.Message.IndexOf("オブジェクト参照が") > -1) return false;
+				}
+			}
+			return true;
+					
+					
+			
+			
+			var dir = util.getJarPath();
+			var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
+			var security = Directory.GetAccessControl(dir[0]).GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount));
+			//var security = Directory.GetAccessControl(dir[0]).GetAccessRules(true, true, identity);
+		    var principal = new System.Security.Principal.WindowsPrincipal(identity);
+		    var isAdmin = principal.IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator);
+		    util.debugWriteLine("isadmin " + isAdmin);
+		    var ids = principal.Identities;
+		    var _id = principal.Identity;
+		    foreach (var id in ids) util.debugWriteLine("id " + id.Name);
+			
+				
+			foreach(FileSystemAccessRule s in security) {
+				util.debugWriteLine("s idenRef " + s.IdentityReference.ToString() + " " + s.FileSystemRights + " ");
+				
+				//if ((s.IdentityReference.ToString().IndexOf("AUTHORITY") > -1)) {
+				if (s.IdentityReference.ToString() == _id.Name) {
+					if ((s.FileSystemRights & FileSystemRights.CreateFiles) == 0 ||
+					    (s.FileSystemRights & FileSystemRights.Delete) == 0 ||
+					    (s.FileSystemRights & FileSystemRights.AppendData) == 0 ||
+					    (s.FileSystemRights & FileSystemRights.CreateDirectories) == 0 ||
+					    (s.FileSystemRights & FileSystemRights.WriteData) == 0)
+							return false;
+					//else return false;
+					
+					/*
+					if ((s.FileSystemRights & FileSystemRights.CreateFiles) != 0 &&
+					    (s.FileSystemRights & FileSystemRights.Delete) != 0 &&
+					    (s.FileSystemRights & FileSystemRights.AppendData) != 0 &&
+					    (s.FileSystemRights & FileSystemRights.CreateDirectories) != 0 &&
+					    (s.FileSystemRights & FileSystemRights.WriteData) != 0) {
+						return true;
+					} else return false;
+					*/
+				}
+				
+			}
+			return true;
+			
+		}
+		public void addLogTextDebug(string s) {
+			//addLogText(s, true);
+		}
+		public bool formAction(Action a) {
+			if (IsDisposed || !util.isShowWindow) return false;
+			
+			if (Thread.CurrentThread == madeThread) {
+				try {
+					a.Invoke();
+				} catch (Exception e) {
+					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+					return false;
+				}
+			} else {
+				try {
+					Invoke((MethodInvoker)delegate() {
+						try {    
+				       		a.Invoke();
+				       	} catch (Exception e) {
+							util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+						}
+					});
+				} catch (Exception e) {
+					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+					return false;
+				} 
+			}
+			return true;
+		}
+		public void close() {
+			formAction(() => {
+	           	try {
+	       			Close();
+			    } catch (Exception e) {
+   	       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+   	       		}
+        	});
+		}
 	}
 }

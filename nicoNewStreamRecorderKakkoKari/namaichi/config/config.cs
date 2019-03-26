@@ -44,7 +44,10 @@ public class config
 		}
 	}
 	public void set(string key, string value) {
-		util.debugWriteLine("config set " + key);
+		if (key.IndexOf("user_session") == -1 && 
+				key.IndexOf("account") == -1)
+			util.debugWriteLine("config set " + key + " " + value);
+		else util.debugWriteLine("config set " + key);
 		for (var i = 0; i < 100; i++) {
 			cfg = getConfig();
 			
@@ -64,8 +67,12 @@ public class config
 		}
 	}
 	public void set(List<KeyValuePair<string, string>> l) {
-		foreach (var _l in l)
-			util.debugWriteLine("config set " + _l.Key + " " + _l.Value);
+		foreach (var _l in l) {
+			if (_l.Key.IndexOf("user_session") == -1 && 
+					_l.Key.IndexOf("account") == -1)
+				util.debugWriteLine("config set " + _l.Key + " " + _l.Value);
+			else util.debugWriteLine("config set " + _l.Key);
+		}
 		for (var i = 0; i < 100; i++) {
 			cfg = getConfig();
 			
@@ -89,10 +96,10 @@ public class config
 	public string get(string key) {
 		util.debugWriteLine("config get " + key);
 		try {
-			if (key != "accountId" && key != "accountPass" &&
-			   		key != "user_session" && key != "user_session_secure") {
+			if (key.IndexOf("user_session") == -1 && 
+			    	key.IndexOf("account") == -1) {
 				util.debugWriteLine(key + " " + cfg.AppSettings.Settings[key].Value);
-			}
+			} else util.debugWriteLine(key);
 		} catch (Exception e) {
 			util.debugWriteLine("config get exception " + key + " " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 			return null;
@@ -151,6 +158,8 @@ public class config
 //			{"IsDefaultEngine","true"},
 			{"EngineMode","0"},
 			{"anotherEngineCommand",""},
+			{"IsDefaultRtmpPath","true"},
+			{"rtmpPath",""},
 			{"IsUsePlayer","true"},
 			{"IsDefaultPlayer","true"},
 			{"IsUseCommentViewer","true"},
@@ -158,13 +167,24 @@ public class config
 			{"anotherPlayerPath",""},
 			{"anotherCommentViewerPath",""},
 			{"Is184","true"},
+			
+			{"tsStartTimeMode","0"},
+			{"tsEndTimeMode","0"},
+			{"tsStartSecond","0"},
+			{"tsEndSecond","0"},
+			{"tsIsRenketu","false"},
+			{"IsVposStartTime","true"},
+			
 			{"IsUrlList","false"},
 			{"IsM3u8List","false"},
 			{"M3u8UpdateSeconds","5"},
 			{"IsOpenUrlList","false"},
 			{"openUrlListCommand","notepad {i}"},
-			{"IsVposStartTime","true"},
 			{"afterConvertMode","0"},
+			{"IsSoundEnd","false"},
+			{"soundPath",""},
+			{"IsSoundDefault","true"},
+			{"soundVolume","50"},
 			
 			{"cookieFile",""},
 			{"iscookie","false"},

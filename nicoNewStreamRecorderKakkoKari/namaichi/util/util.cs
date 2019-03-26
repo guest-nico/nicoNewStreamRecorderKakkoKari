@@ -6,10 +6,13 @@ using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using Microsoft.Win32;
+using System.Threading;
+
 using namaichi.config;
 using namaichi.info;
 
 class app {
+	public static namaichi.MainForm form;
 	public static void Mains(string[] args) {
 		string a = util.getRegGroup("as32df5gh", "\\d([^0-9]).(.)", 1);
 		Console.WriteLine(a);
@@ -22,8 +25,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.87.21";
-	public static string versionDayStr = "2018/12/18";
+	public static string versionStr = "ver0.87.34";
+	public static string versionDayStr = "2019/03/23";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	
@@ -706,10 +709,12 @@ class util {
 			        util.getRegGroup(res, "(ただいま、満員のため入場できません)") != null) return 1;
 	//		else if (util.getRegGroup(res, "<div id=\"comment_arealv\\d+\">[^<]+この番組は\\d+/\\d+/\\d+\\(.\\) \\d+:\\d+に終了いたしました。<br>") != null) return 2;
 			else if (res.IndexOf(" onclick=\"Nicolive.ProductSerial") > -1) return 8;
+			else if (res.IndexOf("※この放送はタイムシフトに対応しておりません。") > -1 && 
+			         res.IndexOf("に終了いたしました") > -1) return 2;
+			else if (util.getRegGroup(res, "(コミュニティフォロワー限定番組です。<br>)") != null) return 4;
 			else if (util.getRegGroup(res, "(に終了いたしました)") != null && res.IndexOf(" onclick=\"Nicolive.WatchingReservation") > -1) return 9;
 			else if (util.getRegGroup(res, "(に終了いたしました)") != null) return 2;
 			else if (util.getRegGroup(res, "(<archive>1</archive>)") != null) return 3;
-			else if (util.getRegGroup(res, "(コミュニティフォロワー限定番組です。<br>)") != null) return 4;
 			else if (util.getRegGroup(res, "(チャンネル会員限定番組です。<br>)") != null) return 4;
 			else if (util.getRegGroup(res, "(<h3>【会場のご案内】</h3>)") != null) return 6;
 			else if (util.getRegGroup(res, "(この番組は放送者により削除されました。<br />|削除された可能性があります。<br />)") != null) return 2;
@@ -717,7 +722,38 @@ class util {
 		//}
 		//return 5;
 	}
-
+	public static int getPageTypeRtmp(string res, ref bool isTimeshift, bool isSub) {
+//		var res = getPlayerStatusRes;
+		if (res.IndexOf("status=\"ok\"") > -1 && res.IndexOf("<archive>0</archive>") > -1) {
+			isTimeshift = false;
+			return 0;
+		}
+		if (res.IndexOf("status=\"ok\"") > -1 && res.IndexOf("<archive>1</archive>") > -1) {
+			isTimeshift = true;
+			return 7;
+		}
+		else if (res.IndexOf("<code>require_community_member</code>") > -1) return 4;
+		else if (res.IndexOf("<code>closed</code>") > -1) return 2;
+		else if (res.IndexOf("<code>comingsoon</code>") > -1) return 5;
+		else if (res.IndexOf("<code>notfound</code>") > -1) return 2;
+		else if (res.IndexOf("<code>deletedbyuser</code>") > -1) return 2;
+		else if (res.IndexOf("<code>deletedbyvisor</code>") > -1) return 2;
+		else if (res.IndexOf("<code>violated</code>") > -1) return 2;
+		else if (res.IndexOf("<code>usertimeshift</code>") > -1) return 2;
+		else if (res.IndexOf("<code>tsarchive</code>") > -1) return 2;
+		else if (res.IndexOf("<code>unknown_error</code>") > -1) return 5;
+		else if (res.IndexOf("<code>timeshift_ticket_exhaust</code>") > -1) return 2;
+		else if (res.IndexOf("<code>timeshiftfull</code>") > -1) return 1;
+		else if (res.IndexOf("<code>maintenance</code>") > -1) return 5;
+		else if (res.IndexOf("<code>noauth</code>") > -1) return 5;
+		else if (res.IndexOf("<code>full</code>") > -1) return 1;
+		else if (res.IndexOf("<code>block_now_count_overflow</code>") > -1) return 5;
+		else if (res.IndexOf("<code>premium_only</code>") > -1) return 5;
+		else if (res.IndexOf("<code>selected-country</code>") > -1) return 5;
+		else if (res.IndexOf("<code>notlogin</code>") > -1) return 8;
+//		rm.form.addLogText(res + util.getMainSubStr(isSub, true));
+		return 5;
+	}
 	
 	public static DateTime getUnixToDatetime(long unix) {
 		DateTime UNIX_EPOCH = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
@@ -751,7 +787,17 @@ class util {
 	//public static Task debugWriteTask = null;
 	public static void debugWriteLine(object str) {
 		var dt = DateTime.Now.ToLongTimeString();
-//		System.Console.WriteLine(dt + " " + str);
+		
+		//test
+		try {
+			if (str != null && (str.ToString().IndexOf("exception") > -1 ||
+			                    str.ToString().IndexOf("行") > -1)) {
+//				app.form.formAction(() => app.form.testLogText.AppendText(dt + " " + str));
+			}
+		} catch (Exception e) {
+			
+		}
+		
 		try {
 			#if DEBUG
 				System.Diagnostics.Debug.WriteLine(str);
@@ -790,18 +836,17 @@ class util {
 		
 		
 		util.debugWriteLine("exception stacktrace framecount " + frameCount);
-		
 		util.debugWriteLine("show exception eo " + eo);
 		if (eo == null) return;
 		
-		util.debugWriteLine("0 message " + eo.Message + "\nsource " + 
+		util.debugWriteLine("0 message exception " + eo.Message + "\nsource " + 
 				eo.Source + "\nstacktrace " + eo.StackTrace + 
 				"\n targetsite " + eo.TargetSite + "\n\n");
 		
 		var _eo = eo.GetBaseException();
 		util.debugWriteLine("eo " + _eo);
 		if (_eo != null) {
-			util.debugWriteLine("1 message " + _eo.Message + "\nsource " + 
+			util.debugWriteLine("1 message exception " + _eo.Message + "\nsource " + 
 					_eo.Source + "\nstacktrace " + _eo.StackTrace + 
 					"\n targetsite " + _eo.TargetSite + "\n\n");
 		}
@@ -809,7 +854,7 @@ class util {
 		_eo = eo.InnerException;
 		util.debugWriteLine("eo " + _eo);
 		if (_eo != null) {
-			util.debugWriteLine("2 message " + _eo.Message + "\nsource " + 
+			util.debugWriteLine("2 message exception " + _eo.Message + "\nsource " + 
 					_eo.Source + "\nstacktrace " + _eo.StackTrace + 
 					"\n targetsite " + _eo.TargetSite);
 		}
@@ -893,4 +938,39 @@ class util {
 		if (isKakko) ret = "(" + ret + ")";
 		return ret;		
 	}
+	public static void soundEnd(config cfg) {
+		try {
+			var path = (bool.Parse(cfg.get("IsSoundDefault"))) ? 
+				(util.getJarPath()[0] + "/Sound/se_soc02.wav") : cfg.get("soundPath");
+			if (path == "") path = util.getJarPath()[0] + "/Sound/se_soc02.wav";
+			util.debugWriteLine("sound path " + path);
+			
+			var reader = new NAudio.Wave.AudioFileReader(path);
+				
+			var waveOut = new NAudio.Wave.WaveOut();
+			waveOut.Init(reader);
+			var volume = float.Parse(cfg.get("soundVolume")) / 100;
+			if (volume < 0) volume = (float)0;
+			if (volume > 1) volume = (float)1;
+			waveOut.Volume = volume;
+			util.debugWriteLine("volume " + waveOut.Volume);
+			waveOut.Play();
+			while (waveOut.PlaybackState == NAudio.Wave.PlaybackState.Playing) Thread.Sleep(100);
+			//waveOut.Dispose();
+			reader.Close();
+				
+			/*
+			var path = (bool.Parse(cfg.get("IsSoundDefault"))) ? 
+				(util.getJarPath()[0] + "/Sound/se_soc02.wav") : cfg.get("soundPath");
+			util.debugWriteLine(path);
+			var m = new System.Media.SoundPlayer(path);
+			
+			m.PlaySync();
+			*/
+		} catch (Exception e) {
+			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+		}
+		                                     
+	}
+	
 }

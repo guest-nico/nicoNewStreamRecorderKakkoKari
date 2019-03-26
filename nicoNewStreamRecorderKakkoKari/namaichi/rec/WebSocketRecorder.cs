@@ -81,7 +81,7 @@ namespace namaichi.rec
 		
 		private List<string> debugWriteBuf = new List<string>();
 		private Task tsWriterTask = null;
-		private bool isSub;
+		//private bool isSub;
 		public bool isRtmp;
 		private RtmpRecorder rr;
 		
@@ -90,9 +90,11 @@ namespace namaichi.rec
 		private string isGetCommentXml = null;
 		private string commentFileName = null;
 //		private string commentHead = null;
+		private string engineMode = null;
 		
 		private bool isXmlComment = true;
-		private XmlCommentGetter xcg;
+		private XmlCommentGetter_ontime xcg = null;
+		private TimeShiftCommentGetter_xml tscgx = null;
 		
 		public WebSocketRecorder(string[] webSocketInfo, 
 				CookieContainer container, string[] recFolderFile, 
@@ -101,7 +103,7 @@ namespace namaichi.rec
 				int lastSegmentNo, bool isTimeShift, string lvid, 
 				TimeShiftConfig tsConfig, string userId, 
 				bool isPremium, TimeSpan programTime, 
-				string programType, long _openTime, bool isSub, bool isRtmp
+				string programType, long _openTime, bool isRtmp
 			)
 		{
 			this.webSocketInfo = webSocketInfo;
@@ -121,14 +123,15 @@ namespace namaichi.rec
 			isJikken = false;
 			this.programType = programType;
 			this._openTime = _openTime;
-			this.isSub = isSub;
+			//this.isSub = isSub;
 			this.isRtmp = isRtmp;
 			
 			this.qualityRank = rm.cfg.get("qualityRank");
 			this.isGetComment = rm.cfg.get("IsgetComment");
 			this.isGetCommentXml = rm.cfg.get("IsgetcommentXml");
+			this.engineMode = rm.cfg.get("EngineMode");
 		}
-		public bool start() {
+		public bool start(bool isRtmpOnlyPage) {
 			addDebugBuf("ws rec start");
 			
 			isXmlComment = false;
@@ -138,7 +141,7 @@ namespace namaichi.rec
 			if (isRtmp || 
 			    (rm.cfg.get("IsHokan") == "true" && 
 			     !rfu.isRtmpMain && !rm.isPlayOnlyMode && 
-			     !rfu.isSubAccountHokan && rm.cfg.get("EngineMode") == "0" && !isTimeShift)) {
+			     engineMode == "0" && !isTimeShift)) {
 				rfu.subGotNumTaskInfo = new List<numTaskInfo>();
 				rr = new RtmpRecorder(lvid, container, rm, rfu, !isRtmp, recFolderFile, this, openTime);
 				Task.Run(() => {
@@ -154,34 +157,64 @@ namespace namaichi.rec
 				});
 				while (rm.rfu == rfu && isRetry) Thread.Sleep(1000);
 				*/
+				if (isRtmpOnlyPage) {
+					if (isTimeShift) {
+						tscgx = new TimeShiftCommentGetter_xml ( 
+								userId, rm, rfu, rm.form, openTime, 
+								recFolderFile, lvid, container, 
+								programType, _openTime, this, 
+								(isRtmp) ? 0 : tsConfig.timeSeconds, 
+								(isRtmp) ? false : tsConfig.isVposStartTime, isRtmp);
+						tscgx.save();
+						
+					} else {
+						/*
+						xcg = new XmlCommentGetter_ontime( 
+								userId, rm, rfu, rm.form, openTime, 
+								recFolderFile, lvid, container, 
+								programType, _openTime, this);
+						xcg.save();
+						*/
+					}
+				}
 			}
 			
-//			if (!isRtmp)
+			
+			if (!isRtmpOnlyPage) {
 				connect();
+				addDebugBuf("rm.rfu dds1 " + rm.rfu);
 			
-			addDebugBuf("rm.rfu dds1 " + rm.rfu);
+				broadcastId = util.getRegGroup(webSocketInfo[0], "watch/.*?(\\d+?)(\\?|/)");
+			}
 			
-			broadcastId = util.getRegGroup(webSocketInfo[0], "watch/.*?(\\d+?)(\\?|/)");
 //			userId = util.getRegGroup(webSocketInfo[0], "audience_token=.+?_(.+?)_");
 			
 			addDebugBuf("rm.rfu dds6 " + rm.rfu);
 			
 			addDebugBuf("ws main " + ws + " a " + (ws == null));
 			
-			if (!isSub)
+			if (!isRtmpOnlyPage)
 				displaySchedule();
 			
 			
 //			while (ws.State != WebSocket4Net.WebSocketState.Closed) {
 //			while (rm.rfu == rfu && ws != null && isRetry && 
 //			       (rec == null || !rec.isStopRead())) {
+			WebSocket lastWebSocket = null;
+			var stopWsCount = 0;			
 			while (rm.rfu == rfu && isRetry) {
-				
+				/*
+				if (isTimeShift && rm.rfu == rfu && 
+				    	isGetComment == "true" && engineMode == "3" &&
+				    	tscg != null && tscg.isEnd) {
+					break;
+				}
+				*/
 //				if (rec != null) 
 //					addDebugBuf("isStopread " + rec.isStopRead());
 				
 				
-				if (ws.State == WebSocket4Net.WebSocketState.Closed) {
+				if (!isRtmp && ws.State == WebSocket4Net.WebSocketState.Closed) {
 					addDebugBuf("no connect loop ws close");
 //					connect();
 				}
@@ -190,7 +223,26 @@ namespace namaichi.rec
 				//test
 //				GC.Collect();
 //				GC.WaitForPendingFinalizers();
-				
+				if (ws != null) {
+					var a = ws.State == WebSocketState.Open;
+					var b = ws == lastWebSocket;
+					if (ws != null && ws.State != WebSocketState.Open && ws == lastWebSocket) {
+						stopWsCount++;
+						if (stopWsCount > 10) {
+							addDebugBuf("stop ws count " + stopWsCount + " close ws");
+							
+							//test
+							rm.form.addLogText("再接続中");
+							
+							#if DEBUG
+								rm.form.addLogText("stop ws reConnect");
+							#endif
+							connectUntilOk();
+							stopWsCount = 0;
+						}
+					} else stopWsCount = 0;
+					lastWebSocket = ws;
+				}
 				System.Threading.Thread.Sleep(1000);
 			}
 //			while (isTimeShift && rm.rfu == rfu) 
@@ -201,10 +253,14 @@ namespace namaichi.rec
 			
 			isRetry = false;
 			if (rr != null) rr.retryMode = (isEndProgram) ? 2 : 1;
-			if (rm.rfu != rfu && tscg != null) tscg.setIsRetry(false);
+//			if (rm.rfu != rfu && tscg != null) tscg.setIsRetry(false);
 			
-			if (isTimeShift && rm.rfu == rfu && tscg != null) {
-				while (rm.rfu == rfu && !tscg.isEnd) {
+//			if (isTimeShift && rm.rfu == rfu && tscg != null) {
+			if (isTimeShift && rm.rfu == rfu && isGetComment == "true") {
+//				while (rm.rfu == rfu && (tscg == null || !tscg.isEnd)) {
+				while (rm.rfu == rfu && 
+				       ((!isRtmpOnlyPage && tscg != null && !tscg.isEnd) || 
+				       		isRtmpOnlyPage && tscgx != null && !tscgx.isEnd)) {
 					Thread.Sleep(1000);
 				}
 			}
@@ -266,7 +322,7 @@ namespace namaichi.rec
 			
 			var _ws = ws;
 			try {
-				wsList.Add(ws);
+//				wsList.Add(ws);
 				
 //				var _ws = ws; 
 				Thread.Sleep(5000);
@@ -323,12 +379,14 @@ namespace namaichi.rec
 		private void onClose(object sender, EventArgs e) {
 			addDebugBuf("on close " + e.ToString() + " ws hash " + sender.GetHashCode() + " istimeshift " + isTimeShift + " wsList " + wsList.Count);
 			try {
-				wsList.Remove((WebSocket)sender);
+				addDebugBuf("wslist indexof onclose sender " + wsList.IndexOf((WebSocket)sender));
+//				wsList.Remove((WebSocket)sender);
 			} catch (Exception ee) {util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);}
 			addDebugBuf("on close2 " + " wsList " + wsList.Count);
 			
 			Task.Run(() => {  
 				if (!isTimeShift && isEndedProgram()) {
+			        rm.form.addLogTextDebug("isEndprogram websocket");
 					isRetry = false;
 					if (rr != null) rr.retryMode = 2;
 					if (tscg != null) tscg.setIsRetry(false);
@@ -337,15 +395,10 @@ namespace namaichi.rec
 			});
 			
 			//stopRecording();
+			
 			if (rm.rfu == rfu && !isEndProgram && (WebSocket)sender == ws) {
-				while (true) {
-					try {
-						if (!connect()) continue;
-						break;
-					} catch (Exception ee) {
-						addDebugBuf(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
-					}
-				}
+				connectUntilOk();
+				
 //				ws.Open();
 			}
 			
@@ -363,9 +416,11 @@ namespace namaichi.rec
 		}
 		private void onMessageReceive(object sender, MessageReceivedEventArgs e) {
 			addDebugBuf("receive " + e.Message);
-			
-			
-			
+			/*
+			if (e.Message.ToLower().IndexOf("notify") > -1 ||
+			    e.Message.ToLower().IndexOf("error") > -1 ||
+			    e.Message.ToLower().IndexOf("disconnect") > -1) rm.form.addLogText(e.Message);
+			*/
 			if (sender != ws) {
 				((WebSocket)sender).Close();
 				addDebugBuf("hukusuu ws close");
@@ -380,7 +435,7 @@ namespace namaichi.rec
 			
 			//get message
 			if (e.Message.IndexOf("\"messageServerUri\"") >= 0) {
-				if (isSub) return;
+				//if (isSub) return;
 				
 				setMsInfo(e.Message);
 				if (isTimeShift) {
@@ -390,9 +445,8 @@ namespace namaichi.rec
 								recFolderFile, lvid, container, 
 								programType, _openTime, this, 
 								(isRtmp) ? 0 : tsConfig.timeSeconds, 
-								(isRtmp) ? false : tsConfig.isVposStartTime, isRtmp);
+								(isRtmp) ? false : tsConfig.isVposStartTime, isRtmp, rr);
 						tscg.save();
-						
 					}
 					
 				} else {
@@ -406,6 +460,7 @@ namespace namaichi.rec
 			if (e.Message.IndexOf("\"currentStream\"") >= 0) {
 				addDebugBuf("mediaservertype = " + util.getRegGroup(e.Message, "(\"mediaServerType\".\".+?\")"));
 				if (isRtmp) return;
+//				if (engineMode == "3") return;
 				
 				var bestGettableQuolity = getBestGettableQuolity(e.Message);
 				var currentQuality = util.getRegGroup(e.Message, "\"quality\":\"(.+?)\"");
@@ -425,13 +480,14 @@ namespace namaichi.rec
 			    || e.Message.IndexOf("\"TOO_MANY_CONNECTIONS\"") >= 0
 			    || e.Message.IndexOf("\"TEMPORARILY_CROWDED\"") >= 0
 			   	|| e.Message.IndexOf("\"CONNECT_ERROR\"") >= 0) {
-				if (e.Message.IndexOf("\"TAKEOVER\"") >= 0 && !isRtmp) rm.form.addLogText("追い出されました。" + util.getMainSubStr(isSub, true));
+				if (e.Message.IndexOf("\"TAKEOVER\"") >= 0 && !isRtmp) rm.form.addLogText("追い出されました。");
 				
 				//SERVICE_TEMPORARILY_UNAVAILABLE 予約枠開始後に何らかの問題？
 				if (e.Message.IndexOf("\"SERVICE_TEMPORARILY_UNAVAILABLE\"") > 0 && !isRtmp) 
-					rm.form.addLogText("サーバーからデータの受信ができませんでした。リトライします。" + util.getMainSubStr(isSub, true));
+					rm.form.addLogText("サーバーからデータの受信ができませんでした。リトライします。");
 				
 				if (e.Message.IndexOf("\"END_PROGRAM\"") > 0) {
+					rm.form.addLogTextDebug("endprogram receive");
 					isEndProgram = true;
 					isRetry = false;
 					if (rr != null) rr.retryMode = 2;
@@ -447,10 +503,10 @@ namespace namaichi.rec
 					//{"type":"error","body":{"code":"CONNECT_ERROR"}}
 					
 					if (e.Message.IndexOf("\"TEMPORARILY_CROWDED\"") >= 0 && !isRtmp)
-						rm.form.addLogText("満員でした" + util.getMainSubStr(isSub, true));
+						rm.form.addLogText("満員でした");
 					
 					if (e.Message.IndexOf("\"CONNECT_ERROR\"") >= 0 && !isRtmp)
-						rm.form.addLogText("接続エラーでした" + util.getMainSubStr(isSub, true));
+						rm.form.addLogText("接続エラーでした");
 					#if DEBUG
 					#endif
 					
@@ -474,7 +530,7 @@ namespace namaichi.rec
 			}
 			if (e.Message.IndexOf("\"command\":\"statistics\",\"params\"") >= 0
 			   	) {
-				if (isSub) return;
+				//if (isSub) return;
 				
 				displayStatistics(e.Message);
 //				Task.Run(() => {
@@ -505,7 +561,7 @@ namespace namaichi.rec
 				
 			}
 			if (e.Message.IndexOf("\"command\":\"schedule\"") >= 0) {
-				if (isSub) return;
+				//if (isSub) return;
 				
 				var _beginTime = (int)(long.Parse(util.getRegGroup(e.Message, "\"begintime\":(\\d+)")) / 1000);
 				var _endTime = (int)(long.Parse(util.getRegGroup(e.Message, "\"endtime\":(\\d+)")) / 1000);
@@ -589,25 +645,24 @@ namespace namaichi.rec
 			//rm.hlsUrl = hlsUrl;
 			addDebugBuf(hlsUrl);
 				
-			
-			Task.Run(() => {
-			   	if (rec == null) {
-			        rec = new Record(rm, true, rfu, hlsUrl, recFolderFile[1], lastSegmentNo, container, isTimeShift, this, lvid, tsConfig, openTime, ws, recFolderFile[2], isSub);
-					
-					rec.record(currentQuality);
+			if (rec == null) {
+		        rec = new Record(rm, true, rfu, hlsUrl, recFolderFile[1], lastSegmentNo, container, isTimeShift, this, lvid, tsConfig, openTime, ws, recFolderFile[2]);
+		        Task.Run(() => {
+			        rec.record(currentQuality);
 					if (rec.isEndProgram) {
 						addDebugBuf("stop websocket recd");
+						rm.form.addLogTextDebug("end record");
 						isRetry = false;
 						if (rr != null) rr.retryMode = 2;
-//						if (tscg != null) tscg.setIsRetry(false);
+	//						if (tscg != null) tscg.setIsRetry(false);
 						isEndProgram = true;
 					}
-	         	} else {
-			    	rec.reSetHlsUrl(hlsUrl, currentQuality, ws);
-	         	}
-				 
-//				stopRecording();
-			});
+				});
+			} else {
+				//Task.Run(() => {
+					rec.reSetHlsUrl(hlsUrl, currentQuality, ws);
+				//});
+	        }
 		}
 		private void connectMessageServer(string message, WebSocket _ws) {
 	    	addDebugBuf("connect message server");
@@ -971,7 +1026,7 @@ namespace namaichi.rec
 			if (res.IndexOf("user.login_status = 'not_login'") > -1) {
 				addDebugBuf("isendprogram not login");
 				var cg = new CookieGetter(rm.cfg);
-				var cgTask = cg.getHtml5RecordCookie(h5r.url, isSub);
+				var cgTask = cg.getHtml5RecordCookie(h5r.url);
 				cgTask.Wait();
 				container = cgTask.Result[0];
 				res = util.getPageSource(h5r.url, container, null, false, 5000);
@@ -1018,7 +1073,7 @@ namespace namaichi.rec
 		}
 		private void startDebugWriter() {
 			#if !DEBUG
-				return;
+//				return;
 			#endif
 			while ((rm.rfu == rfu && isRetry) || debugWriteBuf.Count > 0) {
 				try {
@@ -1032,7 +1087,7 @@ namespace namaichi.rec
 //						var l = debugWriteBuf.ToList<string>();
 						foreach (var b in l) {
 							if (b == null) continue;
-							util.debugWriteLine(b + " " + util.getMainSubStr(isSub, true));
+							util.debugWriteLine(b);
 							debugWriteBuf.Remove(b);
 						}
 					}
@@ -1044,7 +1099,7 @@ namespace namaichi.rec
 		}
 		private void addDebugBuf(string s) {
 			#if !DEBUG
-				return;
+//				return;
 			#endif
 			var dt = DateTime.Now.ToLongTimeString();
 			debugWriteBuf.Add(dt + " " + s);
@@ -1052,7 +1107,7 @@ namespace namaichi.rec
 		private void resetWebsocketInfo() {
 			try {
 				var cg = new CookieGetter(rm.cfg);
-				var cgTask = cg.getHtml5RecordCookie(h5r.url, isSub);
+				var cgTask = cg.getHtml5RecordCookie(h5r.url);
 				cgTask.Wait();
 				container = cgTask.Result[0];
 				var res = util.getPageSource(h5r.url, container, null, false, 5000);
@@ -1068,6 +1123,7 @@ namespace namaichi.rec
 			}
 		}
 		override public void resetCommentFile() {
+			addDebugBuf("resetCommentFile");
 			if (xcg != null) {
 				xcg.resetCommentFile();
 			} else {
@@ -1098,12 +1154,12 @@ namespace namaichi.rec
 				       
 					}
 				} catch (Exception ee) {
-					util.debugWriteLine(ee.Message + " " + ee.StackTrace + util.getMainSubStr(isSub, true));
+					util.debugWriteLine(ee.Message + " " + ee.StackTrace);
 				}
 				try {
 					wsc.Send(msReq[0]);
 				} catch (Exception ee) {
-					util.debugWriteLine("on open wsc req send exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite + util.getMainSubStr(isSub, true));
+					util.debugWriteLine("on open wsc req send exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 				}
 			}
 		}
@@ -1111,6 +1167,19 @@ namespace namaichi.rec
 			var r = util.incrementRecFolderFile(recFolderFile);
 			if (r == null) return getRecFilePath()[1];
 			return r;
+		}
+		private void connectUntilOk() {
+			while (true) {
+				try {
+					if (!connect()) {
+						Thread.Sleep(3000);
+						continue;
+					}
+					break;
+				} catch (Exception ee) {
+					addDebugBuf(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+				}
+			}
 		}
 	}
 }
