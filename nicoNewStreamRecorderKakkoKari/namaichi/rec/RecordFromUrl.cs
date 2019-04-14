@@ -363,8 +363,13 @@ namespace namaichi.rec
             */
 		}
 		private int getPageAfterFollow(string url, string lvid, ref JikkenRecorder jr, out CookieContainer cc) {
+<<<<<<< HEAD
 			Uri TargetUrl = new Uri("https://live.nicovideo.jp");
 			Uri TargetUrl2 = new Uri("https://live2.nicovideo.jp");
+=======
+			Uri TargetUrl = new Uri("http://live.nicovideo.jp");
+			Uri TargetUrl2 = new Uri("http://live2.nicovideo.jp");
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 			for (int i = 0; this == rm.rfu; i++) {
 				try {
 					var cg = new CookieGetter(rm.cfg);

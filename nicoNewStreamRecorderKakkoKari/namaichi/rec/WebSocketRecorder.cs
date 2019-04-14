@@ -95,8 +95,11 @@ namespace namaichi.rec
 		private bool isXmlComment = true;
 		private XmlCommentGetter_ontime xcg = null;
 		private TimeShiftCommentGetter_xml tscgx = null;
+<<<<<<< HEAD
 		
 		
+=======
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 		
 		public WebSocketRecorder(string[] webSocketInfo, 
 				CookieContainer container, string[] recFolderFile, 

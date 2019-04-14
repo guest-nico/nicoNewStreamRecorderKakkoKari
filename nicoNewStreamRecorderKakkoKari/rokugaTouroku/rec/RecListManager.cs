@@ -40,7 +40,11 @@ namespace rokugaTouroku.rec
 			
 			var url = "";
 			if (lvid != null) {
+<<<<<<< HEAD
 				url = "https://live2.nicovideo.jp/watch/" + lvid;
+=======
+				url = "http://live2.nicovideo.jp/watch/" + lvid;
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 			}
 //				if (lvid != null) form.urlText.Text = "https://cas.nicovideo.jp/user/77252622/lv313508832";
 				

@@ -248,7 +248,11 @@ namespace namaichi
 			this.groupBox6.Controls.Add(this.isMinimizedChkBox);
 			this.groupBox6.Location = new System.Drawing.Point(5, 83);
 			this.groupBox6.Name = "groupBox6";
+<<<<<<< HEAD
 			this.groupBox6.Size = new System.Drawing.Size(385, 395);
+=======
+			this.groupBox6.Size = new System.Drawing.Size(385, 373);
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 			this.groupBox6.TabIndex = 0;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Recorder設定";
@@ -284,7 +288,7 @@ namespace namaichi
 			// 
 			// isAutoFollowComGen
 			// 
-			this.isAutoFollowComGen.Location = new System.Drawing.Point(19, 237);
+			this.isAutoFollowComGen.Location = new System.Drawing.Point(19, 215);
 			this.isAutoFollowComGen.Name = "isAutoFollowComGen";
 			this.isAutoFollowComGen.Size = new System.Drawing.Size(351, 46);
 			this.isAutoFollowComGen.TabIndex = 2;
@@ -293,7 +297,11 @@ namespace namaichi
 			// 
 			// isLogFileChkBox
 			// 
+<<<<<<< HEAD
 			this.isLogFileChkBox.Location = new System.Drawing.Point(19, 377);
+=======
+			this.isLogFileChkBox.Location = new System.Drawing.Point(19, 333);
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 			this.isLogFileChkBox.Name = "isLogFileChkBox";
 			this.isLogFileChkBox.Size = new System.Drawing.Size(271, 19);
 			this.isLogFileChkBox.TabIndex = 2;
@@ -302,7 +310,7 @@ namespace namaichi
 			// 
 			// isDescriptionTagChkBox
 			// 
-			this.isDescriptionTagChkBox.Location = new System.Drawing.Point(47, 311);
+			this.isDescriptionTagChkBox.Location = new System.Drawing.Point(47, 289);
 			this.isDescriptionTagChkBox.Name = "isDescriptionTagChkBox";
 			this.isDescriptionTagChkBox.Size = new System.Drawing.Size(271, 19);
 			this.isDescriptionTagChkBox.TabIndex = 2;
@@ -311,7 +319,7 @@ namespace namaichi
 			// 
 			// isSegmentNukeInfoChkBox
 			// 
-			this.isSegmentNukeInfoChkBox.Location = new System.Drawing.Point(19, 333);
+			this.isSegmentNukeInfoChkBox.Location = new System.Drawing.Point(19, 311);
 			this.isSegmentNukeInfoChkBox.Name = "isSegmentNukeInfoChkBox";
 			this.isSegmentNukeInfoChkBox.Size = new System.Drawing.Size(271, 19);
 			this.isSegmentNukeInfoChkBox.TabIndex = 2;
@@ -321,7 +329,7 @@ namespace namaichi
 			// 
 			// isHosoInfoChkBox
 			// 
-			this.isHosoInfoChkBox.Location = new System.Drawing.Point(19, 289);
+			this.isHosoInfoChkBox.Location = new System.Drawing.Point(19, 267);
 			this.isHosoInfoChkBox.Name = "isHosoInfoChkBox";
 			this.isHosoInfoChkBox.Size = new System.Drawing.Size(271, 19);
 			this.isHosoInfoChkBox.TabIndex = 2;
@@ -331,7 +339,7 @@ namespace namaichi
 			// 
 			// isTitleBarSamune
 			// 
-			this.isTitleBarSamune.Location = new System.Drawing.Point(19, 215);
+			this.isTitleBarSamune.Location = new System.Drawing.Point(19, 193);
 			this.isTitleBarSamune.Name = "isTitleBarSamune";
 			this.isTitleBarSamune.Size = new System.Drawing.Size(271, 19);
 			this.isTitleBarSamune.TabIndex = 2;
@@ -340,7 +348,7 @@ namespace namaichi
 			// 
 			// isTitleBarInfoChkBox
 			// 
-			this.isTitleBarInfoChkBox.Location = new System.Drawing.Point(19, 193);
+			this.isTitleBarInfoChkBox.Location = new System.Drawing.Point(19, 171);
 			this.isTitleBarInfoChkBox.Name = "isTitleBarInfoChkBox";
 			this.isTitleBarInfoChkBox.Size = new System.Drawing.Size(271, 19);
 			this.isTitleBarInfoChkBox.TabIndex = 2;
@@ -1705,8 +1713,11 @@ namespace namaichi
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 		}
+<<<<<<< HEAD
 		private System.Windows.Forms.CheckBox isMiniStartChkBox;
 		private System.Windows.Forms.CheckBox isDisplayCommentChkbox;
+=======
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 		private System.Windows.Forms.Label volumeText;
 		private System.Windows.Forms.TrackBar volumeBar;
 		private System.Windows.Forms.Button rtmpPathSanshouBtn;

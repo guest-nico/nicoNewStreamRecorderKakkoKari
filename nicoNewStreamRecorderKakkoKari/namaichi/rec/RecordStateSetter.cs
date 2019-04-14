@@ -45,7 +45,10 @@ namespace namaichi.rec
 		private bool isDescriptionTag;
 		private bool isRtmpOnlyPage = false;
 			
+<<<<<<< HEAD
 		public bool isWrite = false;
+=======
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 		public RecordStateSetter(MainForm form, RecordingManager rm, RecordFromUrl rfu, bool isTimeShift, bool isJikken, string[] recFolderFile, bool isPlayOnlyMode, bool isRtmpOnlyPage)
 		{
 			this.form = form;
@@ -57,7 +60,10 @@ namespace namaichi.rec
 			this.isPlayOnlyMode = isPlayOnlyMode;
 			this.isDescriptionTag = bool.Parse(rm.cfg.get("IsDescriptionTag"));
 			this.isRtmpOnlyPage = isRtmpOnlyPage;
+<<<<<<< HEAD
 			
+=======
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 		}
 		public void set(string data, string type, string[] recFolderFileInfo) {
 			setInfo(data, form, type, recFolderFileInfo);
@@ -139,7 +145,11 @@ namespace namaichi.rec
 			//samuneUrl = util.getRegGroup(data, "\"program\".+?\"thumbnail\":{\"imageUrl\":\"(.+?)\"");
 			samuneUrl = util.getRegGroup(data, "\"thumbnailImageUrl\":\"(.+?)\"");
 			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "\"small\":\"(.+?)\"");
+<<<<<<< HEAD
 			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "thumbnail:.+?'(https*://.+?)'");
+=======
+			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "thumbnail:.+?'(http://.+?)'");
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "<thumb_url>(.+?)</thumb_url>");
 			tag = getTag(data);
 			form.setInfo(host, hostUrl, group, groupUrl, title, url, gentei, openTime, description, isJikken);

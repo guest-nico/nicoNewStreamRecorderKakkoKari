@@ -25,8 +25,13 @@ class app {
 	}
 }
 class util {
+<<<<<<< HEAD
 	public static string versionStr = "ver0.87.36";
 	public static string versionDayStr = "2019/04/13";
+=======
+	public static string versionStr = "ver0.87.34";
+	public static string versionDayStr = "2019/03/23";
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	
@@ -735,12 +740,20 @@ class util {
 		else if (res.IndexOf("<code>require_community_member</code>") > -1) return 4;
 		else if (res.IndexOf("<code>closed</code>") > -1) return 2;
 		else if (res.IndexOf("<code>comingsoon</code>") > -1) return 5;
+<<<<<<< HEAD
 		else if (res.IndexOf("<code>notfound</code>") > -1) return 5;
+=======
+		else if (res.IndexOf("<code>notfound</code>") > -1) return 2;
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 		else if (res.IndexOf("<code>deletedbyuser</code>") > -1) return 2;
 		else if (res.IndexOf("<code>deletedbyvisor</code>") > -1) return 2;
 		else if (res.IndexOf("<code>violated</code>") > -1) return 2;
 		else if (res.IndexOf("<code>usertimeshift</code>") > -1) return 2;
+<<<<<<< HEAD
 		else if (res.IndexOf("<code>tsarchive</code>") > -1) return 5;
+=======
+		else if (res.IndexOf("<code>tsarchive</code>") > -1) return 2;
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 		else if (res.IndexOf("<code>unknown_error</code>") > -1) return 5;
 		else if (res.IndexOf("<code>timeshift_ticket_exhaust</code>") > -1) return 2;
 		else if (res.IndexOf("<code>timeshiftfull</code>") > -1) return 1;
