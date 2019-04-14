@@ -210,11 +210,16 @@ public class config
 		
 		foreach (var k in formData.Keys) {
 			util.debugWriteLine(k + formData[k]);
+<<<<<<< HEAD
 			try {
 				cfg.AppSettings.Settings[k].Value = formData[k];
 			} catch (Exception e) {
 				util.debugWriteLine("config set exception name " + k + " data " + formData[k] + " " + e.Message + e.TargetSite + e.StackTrace + e.Source);
 			}
+=======
+			cfg.AppSettings.Settings[k].Value = formData[k];
+			
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 		}		
 		try {
 			cfg.Save();

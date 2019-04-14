@@ -92,6 +92,7 @@ namespace namaichi.rec
 			var isFirst = true;
 			var isFailedRec = false;
 			try {
+<<<<<<< HEAD
 				var sleepSec = 1;
 				while (rm.rfu == rfu && retryMode == 0) {
 					testDebugWriteLine("rtmp　録画" + ((isFirst) ? "開始" : "再開"));
@@ -112,6 +113,25 @@ namespace namaichi.rec
 						rm.form.addLogText("RTMPデータが見つかりませんでした");
 						return;
 					}
+=======
+				while (rm.rfu == rfu && retryMode == 0) {
+					testDebugWriteLine("rtmp　録画" + ((isFirst) ? "開始" : "再開"));
+					
+					if (DateTime.Now < lastConnectTime + TimeSpan.FromSeconds(3)) {
+						Thread.Sleep(500);
+						continue;
+					}
+					lastConnectTime = DateTime.Now;
+					
+					var rtmpdumpArg = getRtmpDumpArgs();
+					if (rtmpdumpArg == "end") {
+						isEndProgram = true;
+						break;
+					} else if (rtmpdumpArg == "no") {
+						rm.form.addLogText("RTMPデータが見つかりませんでした");
+						return;
+					}
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 					if (rtmpdumpArg == null) continue;
 					
 					if (rm.isPlayOnlyMode) {
@@ -138,7 +158,11 @@ namespace namaichi.rec
 						
 						testDebugWriteLine("rtmpdump　待機");
 						while(rm.rfu == rfu && retryMode == 0 && !rtmpdumpP.HasExited) {
+<<<<<<< HEAD
 							if (!rm.isPlayOnlyMode && rtmpdumpP.WaitForExit(1000)) break;
+=======
+							if (!rm.isPlayOnlyMode && rtmpdumpP.WaitForExit(300)) break;
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 							if (rm.isPlayOnlyMode) Thread.Sleep(1000);
 						}
 						testDebugWriteLine("rtmpdump　終了準備　" + retryMode);
@@ -151,7 +175,11 @@ namespace namaichi.rec
 						} else {
 							//end program
 							while (rm.rfu == rfu && !rtmpdumpP.HasExited) {
+<<<<<<< HEAD
 								Thread.Sleep(1000);
+=======
+								Thread.Sleep(500);
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 							}
 						}
 						testDebugWriteLine("rtmpdump　終了");
@@ -197,7 +225,11 @@ namespace namaichi.rec
 							}
 							
 							
+<<<<<<< HEAD
 							Thread.Sleep(1000);
+=======
+							Thread.Sleep(500);
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 						}
 						util.debugWriteLine("rtmp rec end isContinue " + isContinue + "(サブ)");
 						if (isContinue || retryMode == 0) {
@@ -214,7 +246,11 @@ namespace namaichi.rec
 							util.debugWriteLine("rtmp endprogram retryMode " + retryMode);
 							while (rm.rfu == rfu) {
 								if ((rtmpdumpP == null || rtmpdumpP.HasExited) && (ffmpegP == null || ffmpegP.HasExited)) break;
+<<<<<<< HEAD
 								Thread.Sleep(1000);
+=======
+								Thread.Sleep(500);
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 							}
 						}
 						util.debugWriteLine("rtmp rec end");
@@ -236,7 +272,11 @@ namespace namaichi.rec
 		private string getRtmpDumpArgs() {
 			testDebugWriteLine("getplayerstatus接続開始");
 			
+<<<<<<< HEAD
 			var url = "https://live.nicovideo.jp/api/getplayerstatus/" + lvid;
+=======
+			var url = "http://live.nicovideo.jp/api/getplayerstatus/" + lvid;
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 			while (rm.rfu == rfu && retryMode == 0
 			      ) {
 				var res = util.getPageSource(url, container, null, false, 3000);
@@ -289,7 +329,11 @@ namespace namaichi.rec
 				 
 				var arg = getArgFromRes(xml, pageType, type, ticket, rtmpUrl);
 				if (arg.IndexOf("?invalid") > -1) {
+<<<<<<< HEAD
 					Thread.Sleep(60000);
+=======
+					Thread.Sleep(20000);
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 					continue;
 				}
 				
@@ -302,7 +346,11 @@ namespace namaichi.rec
 			return null;
 		}
 		private void getTicketUrl(out string url, out string ticket) {
+<<<<<<< HEAD
 			var edgeurl = "https://watch.live.nicovideo.jp/api/getedgestatus?v=" + lvid;
+=======
+			var edgeurl = "http://watch.live.nicovideo.jp/api/getedgestatus?v=" + lvid;
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 //			util.debugWriteLine(container.GetCookieHeader(new Uri(edgeurl)));
 			var res = util.getPageSource(edgeurl, container, null, false, 5000);
 			if (res == null) {
@@ -472,6 +520,7 @@ namespace namaichi.rec
 			}
 			return l;
 		}
+<<<<<<< HEAD
 		private List<int> getQuePosTimeList(XmlNode que, string play) {
 			var l = new List<int>();
 			foreach (XmlNode q in que.ChildNodes) {
@@ -481,6 +530,8 @@ namespace namaichi.rec
 			}
 			return l;
 		}
+=======
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 		/*
 		public int getPageType(string res) {
 //			var res = getPlayerStatusRes;

@@ -169,7 +169,10 @@ public class config
 			{"anotherEngineCommand",""},
 			{"IsDefaultRtmpPath","true"},
 			{"rtmpPath",""},
+<<<<<<< HEAD
 			{"IsNoRecordRtmpBlackScreen","false"},
+=======
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 			{"IsUsePlayer","true"},
 			{"IsDefaultPlayer","true"},
 			{"IsUseCommentViewer","true"},

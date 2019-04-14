@@ -30,8 +30,13 @@ namespace namaichi.rec
 		static readonly Uri TargetUrl = new Uri("https://live.nicovideo.jp/");
 		static readonly Uri TargetUrl2 = new Uri("https://live2.nicovideo.jp");
 		static readonly Uri TargetUrl3 = new Uri("https://com.nicovideo.jp");
+<<<<<<< HEAD
 		static readonly Uri TargetUrl4 = new Uri("https://watch.live.nicovideo.jp/api/");
 		static readonly Uri TargetUrl5 = new Uri("https://www.nicovideo.jp/");
+=======
+		static readonly Uri TargetUrl4 = new Uri("http://watch.live.nicovideo.jp/api/");
+		static readonly Uri TargetUrl5 = new Uri("http://www.nicovideo.jp/");
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 		//private bool isSub;
 		private bool isRtmp;
 		
@@ -231,7 +236,11 @@ namespace namaichi.rec
 				var headers = new WebHeaderCollection();
 				try {
 					util.debugWriteLine("ishtml5login getpage " + url);
+<<<<<<< HEAD
 					var _url = (isRtmp) ? ("https://live.nicovideo.jp/api/getplayerstatus/" + util.getRegGroup(url, "(lv\\d+)")) : url;
+=======
+					var _url = (isRtmp) ? ("http://live.nicovideo.jp/api/getplayerstatus/" + util.getRegGroup(url, "(lv\\d+)")) : url;
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 					pageSource = util.getPageSource(_url, ref headers, cc);
 //					util.debugWriteLine(cc.GetCookieHeader(new Uri(_url)));
 					util.debugWriteLine("ishtml5login getpage ok");

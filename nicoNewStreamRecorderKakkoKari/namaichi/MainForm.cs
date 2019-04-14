@@ -55,7 +55,10 @@ namespace namaichi
 		private play.Player player;
 		private string labelUrl;
 		private Thread madeThread;
+<<<<<<< HEAD
 		private Size originalSize = Size.Empty;
+=======
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 		
 		public MainForm(string[] args)
 		{
@@ -836,6 +839,7 @@ namespace namaichi
    	       		}
         	});
 		}
+<<<<<<< HEAD
 		void MiniBtnClick(object sender, EventArgs e)
 		{
 			if (originalSize == Size.Empty) {
@@ -891,5 +895,7 @@ namespace namaichi
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
 		}
+=======
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 	}
 }

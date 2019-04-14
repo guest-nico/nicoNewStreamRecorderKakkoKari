@@ -3427,6 +3427,7 @@ C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a12\nicoN
 C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a12\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.csproj.GenerateResource.Cache
 C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a12\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\ニコ生新配信録画ツール（仮.exe
 C:\Users\user\Desktop\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a12\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\ニコ生新配信録画ツール（仮.pdb
+<<<<<<< HEAD
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a13\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\ニコ生新配信録画ツール（仮.exe.config
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a13\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\ニコ生新配信録画ツール（仮.exe
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a13\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\ニコ生新配信録画ツール（仮.pdb
@@ -3585,3 +3586,5 @@ C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a20\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.csproj.GenerateResource.Cache
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a20\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\ニコ生新配信録画ツール（仮.exe
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a20\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\ニコ生新配信録画ツール（仮.pdb
+=======
+>>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
