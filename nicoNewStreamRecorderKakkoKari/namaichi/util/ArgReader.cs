@@ -329,8 +329,8 @@ namespace namaichi.utility
 		private bool isValidQualityRank(string val) {
 			try {
 				var l = val.Split(',').Select((x) => int.Parse(x));
-				if (l.Count() != 6) return false;
-				var a = new List<int>{0,1,2,3,4,5};
+				if (l.Count() != 5) return false;
+				var a = new List<int>{0,1,2,3,4};
 				foreach (var _l in l) a.Remove(_l);
 				return a.Count == 0;
 			} catch (Exception e) {

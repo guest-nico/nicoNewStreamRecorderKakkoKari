@@ -48,13 +48,8 @@ namespace rokugaTouroku
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(218, 52);
 			this.label1.TabIndex = 0;
-<<<<<<< HEAD
 			this.label1.Text = "(入力例)\r\nhttps://live.nicovideo.jp/watch/XXXXX\r\nhttps://live.nicovideo.jp/watch/YYYYY" +
 			"\r\nhttps://live.nicovideo.jp/watch/AAAA\r\n";
-=======
-			this.label1.Text = "(入力例)\r\nhttp://live.nicovideo.jp/watch/XXXXX\r\nhttp://live.nicovideo.jp/watch/YYYYY" +
-			"\r\nhttp://live.nicovideo.jp/watch/AAAA\r\n";
->>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 			// 
 			// registText
 			// 

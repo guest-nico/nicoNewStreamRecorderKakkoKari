@@ -91,11 +91,7 @@ namespace namaichi.rec
 		private void startRecording(string lvid) {
 			isRecording = true;
 			form.formAction(() => {
-<<<<<<< HEAD
 			    form.urlText.Text = "https://live2.nicovideo.jp/watch/" + lvid;
-=======
-			    form.urlText.Text = "http://live2.nicovideo.jp/watch/" + lvid;
->>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 			    setRecModeForm(true);
 			
 				form.resetDisplay();
@@ -173,6 +169,7 @@ namespace namaichi.rec
 			        form.recBtn.Text = isRec ? "中断" : "録画開始";
 					form.urlText.Enabled = !isRec;
 					form.optionMenuItem.Enabled = !isRec;
+					form.isChaseChkBtn.Enabled = !isRec;
 				} catch (Exception e) {
        				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
        			}

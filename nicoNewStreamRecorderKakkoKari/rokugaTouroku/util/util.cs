@@ -21,13 +21,8 @@ class app {
 	}
 }
 class util {
-<<<<<<< HEAD
-	public static string versionStr = "ver0.1.3.10";
-	public static string versionDayStr = "2019/04/13";
-=======
-	public static string versionStr = "ver0.1.3.8";
-	public static string versionDayStr = "2019/02/13";
->>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
+	public static string versionStr = "ver0.1.3.10.6";
+	public static string versionDayStr = "2019/06/21";
 	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);
@@ -453,6 +448,64 @@ class util {
 			
 		return null;
 	}
+	public static string getPageSource(string _url, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 5000) {
+		timeoutMs = 2000;
+		/*
+		string a = "";
+		try {
+//			a = container.GetCookieHeader(new Uri(_url));
+		} catch (Exception e) {
+			util.debugWriteLine("getpage get cookie header error " + _url + e.Message+e.StackTrace);
+			return null;
+		}
+		if (isFirstLog)
+			util.debugWriteLine("getpagesource " + _url + " " + a);
+		*/	
+//		util.debugWriteLine("getpage 02");
+		for (int i = 0; i < 1; i++) {
+			try {
+//				util.debugWriteLine("getpage 00");
+				var req = (HttpWebRequest)WebRequest.Create(_url);
+				req.Proxy = null;
+				req.AllowAutoRedirect = true;
+	//			req.Headers = getheaders;
+//				util.debugWriteLine("getpage 03");
+				if (referer != null) req.Referer = referer;
+//				util.debugWriteLine("getpage 04");
+				if (container != null) req.CookieContainer = container;
+//				util.debugWriteLine("getpage 05");
+
+				req.Timeout = timeoutMs;
+//				util.debugWriteLine("getpage 0");
+				var res = (HttpWebResponse)req.GetResponse();
+//				util.debugWriteLine("getpage 1");
+				var dataStream = res.GetResponseStream();
+//				util.debugWriteLine("getpage 2");
+				var reader = new StreamReader(dataStream);
+				
+				/*
+				var resStrTask = reader.ReadToEndAsync();
+				if (!resStrTask.Wait(5000)) return null;
+				string resStr = resStrTask.Result;
+				*/
+//				util.debugWriteLine("getpage 3");
+				var resStr = reader.ReadToEnd();
+//				util.debugWriteLine("getpage 4");
+				
+//				getheaders = res.Headers;
+				return resStr;
+	
+			} catch (Exception e) {
+				System.Threading.Tasks.Task.Run(() => {
+					util.debugWriteLine("getpage error " + _url + e.Message+e.StackTrace);
+				});
+	//				System.Threading.Thread.Sleep(3000);
+				continue;
+			}
+		}
+			
+		return null;
+	}
 	public static byte[] getFileBytes(string url, CookieContainer container) {
 //		var a = container.GetCookieHeader(new Uri(_url));
 		util.debugWriteLine("getfilebyte " + url);
@@ -549,6 +602,69 @@ class util {
 		var hour = ((int)((seconds / 3600) * 1));
 		var _hour = (hour < 100) ? hour.ToString("00") : hour.ToString();;
 		return _hour + "時間" + minute + "分" + second + "秒";
+	}
+	public static string getUserName(string userId, out bool isFollow, CookieContainer container) {
+		isFollow = false; 
+		if (userId == "official" || userId == null || userId == "") return null;
+		
+		//http://ext.nicovideo.jp/thumb_user/10000
+		//var url = "http://seiga.nicovideo.jp/api/user/info?id=" + userId;
+		var url = "https://www.nicovideo.jp/user/" + userId;
+		var res = util.getPageSource(url, container);
+
+		if (res == null) return null;
+		var name = util.getRegGroup(res, "<meta property=\"og:title\" content=\"(.+?)\">"); 
+		if (name == null)
+			name = util.getRegGroup(res, "<meta property=\"og:title\" content=\"(.+?)さんのユーザーページ\">");
+		if (name == null) return null;
+		if (name.EndsWith(" - niconico(ニコニコ)")) 
+			name = name.Replace(" - niconico(ニコニコ)", "");
+		//watching nowatching class
+		if (res.IndexOf("class=\"watching\"") > -1) isFollow = true;
+		return name;
+	}
+	public static string getCommunityName(string communityNum, out bool isFollow, CookieContainer cc) {
+		isFollow = false;
+		if (communityNum == null || communityNum == "" || communityNum == "official") return null;
+		
+		var isChannel = communityNum.IndexOf("ch") > -1;
+		var url = (isChannel) ? 
+			("https://ch.nicovideo.jp/" + communityNum) :
+			("https://com.nicovideo.jp/community/" + communityNum);
+		
+//			var wc = new WebHeaderCollection();
+		var res = util.getPageSource(url, cc);
+//			util.debugWriteLine(container.GetCookieHeader(new Uri(url)) + util.getMainSubStr(isSub, true));
+		
+		if (res == null) {
+			url = (isChannel) ? 
+				("https://ch.nicovideo.jp/" + communityNum) :
+				("https://com.nicovideo.jp/motion/" + communityNum);
+			res = util.getPageSource(url, cc);
+			if (res == null) return null;
+			isFollow = res.IndexOf("<h2 class=\"pageHeader_title\">コミュニティにフォローリクエストを送る</h2>") == -1 &&
+					util.getRegGroup(res, "<p class=\"error_description\">[\\s\\S]*?(コミュニティフォロワー)ではありません。") == null &&
+					res.IndexOf("<h2 class=\"pageHeader_title\">コミュニティをフォローする</h2>") == -1;
+		} else {
+			isFollow = (isChannel) ? 
+				(res.IndexOf("class=\"bookmark following btn_follow\"") > -1):
+				(res.IndexOf("followButton follow\">フォロー") == -1);
+		}
+		if (res == null) return null;
+		var title = (isChannel) ? 
+//			util.getRegGroup(res, "<meta property=\"og\\:title\" content=\"(.+?) - ニコニコチャンネル") :
+			util.getRegGroup(res, "<meta property=\"og:site_name\" content=\"(.+?)\"") :
+			util.getRegGroup(res, "<meta property=\"og\\:title\" content=\"(.+?)-ニコニコミュニティ\"");
+		if (title == null) title = util.getRegGroup(res, "<meta property=\"og:title\" content=\"(.+?)さんのコミュニティ-ニコニコミュニティ\">");
+		
+		//not login
+		if (title == null) {
+			url = "https://ext.nicovideo.jp/thumb_" + ((isChannel) ? "channel" : "community") + "/" + communityNum;
+			res = getPageSource(url, cc, null, false, 3);
+			title = getRegGroup(res, "<p class=\"chcm_tit\">(.+?)</p>");
+		}
+		if (title == null) isFollow = false;
+		return title;
 	}
 	public static void writeFile(string name, string str) {
 		using (var f = new System.IO.FileStream(name, FileMode.Append))

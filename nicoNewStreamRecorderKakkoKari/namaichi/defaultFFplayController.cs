@@ -46,13 +46,23 @@ namespace namaichi
 				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 			}
 			
-			volumeBarArea.Width = int.Parse(config.get("volume"));
-			volumeTip.Text = "音量：" + volumeBarArea.Width;
-			
-			timeLabel.Paint += timeBorderPaint;
-			volumeTip.Paint += volumeTipBorderPaint;
-			muteTip.Paint += muteTipBorderPaint;
-			reconnectTip.Paint += reconnectTipBorderPaint;
+			try {
+				util.debugWriteLine("dfc 0");
+				var a = int.Parse(config.get("volume"));
+				util.debugWriteLine("dfc 2 " + a);
+				volumeBarArea.Width = 9;
+				util.debugWriteLine("dfc 3 " + volumeBarArea.Width);
+				volumeBarArea.Width = int.Parse(config.get("volume"));
+				util.debugWriteLine("dfc 1");
+				volumeTip.Text = "音量：" + volumeBarArea.Width;
+				
+				timeLabel.Paint += timeBorderPaint;
+				volumeTip.Paint += volumeTipBorderPaint;
+				muteTip.Paint += muteTipBorderPaint;
+				reconnectTip.Paint += reconnectTipBorderPaint;
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//

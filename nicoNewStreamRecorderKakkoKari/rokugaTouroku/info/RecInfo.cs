@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.Drawing;
 using rokugaTouroku.rec;
+using System.Threading.Tasks;
 
 namespace rokugaTouroku.info
 {
@@ -80,6 +81,31 @@ namespace rokugaTouroku.info
 			this.tsConfig = tsConfig;
 			this.rdg = rdg;
 			this.recComment = recComment;
+		}
+		public void setHosoInfo(MainForm form) {
+         	var hig = new namaichi.rec.HosoInfoGetter();
+         	var ret = hig.get(url);
+         	if (!ret) return;
+         	if (string.IsNullOrEmpty(title) && 
+         	    	!string.IsNullOrEmpty(hig.title)) 
+         		title = hig.title;
+			if (string.IsNullOrEmpty(host) && 
+         	    	!string.IsNullOrEmpty(hig.userId)) {
+         		var isFollow = false;
+         		var _host = util.getUserName(hig.userId, out isFollow, null);
+         		if (_host != null) host = _host;
+         	}
+         	if (string.IsNullOrEmpty(communityName) && 
+         	    	!string.IsNullOrEmpty(hig.communityId)) {
+         		var isFollow = false;
+         		var _comName = util.getCommunityName(hig.communityId, out isFollow, null);
+         		if (_comName != null) communityName = _comName;
+         		var comUrl = (hig.communityId.StartsWith("ch")) ?
+						("https://ch.nicovideo.jp/" + hig.communityId) :
+						("https://com.nicovideo.jp/community/" + hig.communityId);
+         		communityUrl = comUrl;
+         	}
+         	form.updateRecListCell(this);
 		}
 		public string Id
         {

@@ -189,18 +189,18 @@ namespace namaichi.play
 						Task.Run(() => playCommandStd("ffplay.exe", form.rec.hlsUrl + " -autoexit -volume " + volume));
 					
 					util.debugWriteLine("kia 0 " + ctrl);
-					form.Invoke((MethodInvoker)delegate() {
-						if (ctrl == null) {
-							ctrl = new defaultFFplayController(config, process, this);
-							ctrl.Show();
-		            	} else {
-		            		ctrl.process = process;
-		            		ctrl.reset();
-		            	}
-					});
+					
+					if (ctrl == null) {
+						ctrl = new defaultFFplayController(config, process, this);
+						form.formAction(() => ctrl.Show());
+	            	} else {
+	            		ctrl.process = process;
+	            		ctrl.reset();
+	            	}
+					
 					util.debugWriteLine("kia 1 " + ctrl);
 				} catch (Exception e) {
-					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.StackTrace + e.TargetSite);
+					util.debugWriteLine("sendPlayCommand exception " + e.Message + e.Source + e.StackTrace + e.StackTrace + e.TargetSite);
 					
 				}
 			} else {
@@ -478,7 +478,7 @@ namespace namaichi.play
 		}
 		private void setPipeName(Process p) {
 			var pn = ((int)(new Random().NextDouble() * 10000)).ToString();
-			form.addLogText(pn);
+			//form.addLogText(pn);
 			p.StandardInput.WriteLine(pn);
 			p.StandardInput.Flush();
 			//a

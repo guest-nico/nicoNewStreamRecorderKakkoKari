@@ -30,13 +30,8 @@ namespace namaichi.rec
 		static readonly Uri TargetUrl = new Uri("https://live.nicovideo.jp/");
 		static readonly Uri TargetUrl2 = new Uri("https://live2.nicovideo.jp");
 		static readonly Uri TargetUrl3 = new Uri("https://com.nicovideo.jp");
-<<<<<<< HEAD
 		static readonly Uri TargetUrl4 = new Uri("https://watch.live.nicovideo.jp/api/");
 		static readonly Uri TargetUrl5 = new Uri("https://www.nicovideo.jp/");
-=======
-		static readonly Uri TargetUrl4 = new Uri("http://watch.live.nicovideo.jp/api/");
-		static readonly Uri TargetUrl5 = new Uri("http://www.nicovideo.jp/");
->>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 		//private bool isSub;
 		private bool isRtmp;
 		
@@ -44,54 +39,30 @@ namespace namaichi.rec
 		{
 			this.cfg = cfg;
 		}
-		async public Task<CookieContainer[]> getHtml5RecordCookie(string url) {
-			//this.isSub = isSub;
-			
+		async public Task<CookieContainer[]> getHtml5RecordCookie(string url, bool isSub = false) {
 			CookieContainer cc;
-			//if (!isSub) {
-				cc = await getCookieContainer(cfg.get("BrowserNum"),
-						cfg.get("issecondlogin"), cfg.get("accountId"), 
-						cfg.get("accountPass"), cfg.get("user_session"),
-						cfg.get("user_session_secure"), false, 
-						url);
-				if (cc != null) {
-					var c = cc.GetCookies(TargetUrl)["user_session"];
-					var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
-					
-					var l = new List<KeyValuePair<string, string>>();
-					if (c != null)
-//						cfg.set("user_session", c.Value);
-						l.Add(new KeyValuePair<string, string>("user_session", c.Value));
-					if (secureC != null)
-//						cfg.set("user_session_secure", secureC.Value);
-						l.Add(new KeyValuePair<string, string>("user_session_secure", secureC.Value));
-					cfg.set(l);
-				}
-				
 			
-			/*
+			var num = isSub ? "2" : "";
+			cc = await getCookieContainer(cfg.get("BrowserNum" + num),
+					cfg.get("issecondlogin" + num), cfg.get("accountId" + num), 
+					cfg.get("accountPass" + num), cfg.get("user_session" + num),
+					cfg.get("user_session_secure" + num), isSub, 
+					url);
+			if (cc != null) {
+				var c = cc.GetCookies(TargetUrl)["user_session"];
+				var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
+				
+				var l = new List<KeyValuePair<string, string>>();
+				if (c != null)
+//						cfg.set("user_session", c.Value);
+					l.Add(new KeyValuePair<string, string>("user_session" + num, c.Value));
+				if (secureC != null)
+//						cfg.set("user_session_secure", secureC.Value);
+					l.Add(new KeyValuePair<string, string>("user_session_secure" + num, secureC.Value));
+				cfg.set(l);
 			}
-			else {
-				cc = await getCookieContainer(cfg.get("BrowserNum2"),
-						cfg.get("issecondlogin2"), cfg.get("accountId2"), 
-						cfg.get("accountPass2"), cfg.get("user_session2"),
-						cfg.get("user_session_secure2"), true, 
-						url);
-				if (cc != null) {
-					var c = cc.GetCookies(TargetUrl)["user_session2"];
-					var secureC = cc.GetCookies(TargetUrl)["user_session_secure2"];
-					
-					var l = new List<KeyValuePair<string, string>>();
-					if (c != null)
-//						cfg.set("user_session2", c.Value);
-						l.Add(new KeyValuePair<string, string>("user_session2", c.Value));
-					if (secureC != null)
-//						cfg.set("user_session_secure2", secureC.Value);
-						l.Add(new KeyValuePair<string, string>("user_session_secure2", secureC.Value));
-					cfg.set(l);
-				}
-			}
-			*/
+			
+			
 			var ret = new CookieContainer[]{cc};
 			return ret;
 		}
@@ -236,11 +207,7 @@ namespace namaichi.rec
 				var headers = new WebHeaderCollection();
 				try {
 					util.debugWriteLine("ishtml5login getpage " + url);
-<<<<<<< HEAD
 					var _url = (isRtmp) ? ("https://live.nicovideo.jp/api/getplayerstatus/" + util.getRegGroup(url, "(lv\\d+)")) : url;
-=======
-					var _url = (isRtmp) ? ("http://live.nicovideo.jp/api/getplayerstatus/" + util.getRegGroup(url, "(lv\\d+)")) : url;
->>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 					pageSource = util.getPageSource(_url, ref headers, cc);
 //					util.debugWriteLine(cc.GetCookieHeader(new Uri(_url)));
 					util.debugWriteLine("ishtml5login getpage ok");

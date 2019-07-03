@@ -32,7 +32,7 @@ namespace namaichi.rec
 		private System.Diagnostics.Process process;
 		private DateTime lastReadTime = DateTime.UtcNow;
 		public string hlsMasterUrl;
-		private string recFolderFile;
+		public string recFolderFile;
 		private string lvid;
 		private long _openTime;
 		private int lastSegmentNo = -1;
@@ -41,7 +41,7 @@ namespace namaichi.rec
 		private CookieContainer container;
 		private int segmentSaveType = 0;
 		private bool isTimeShift = false;
-		private TimeShiftConfig tsConfig = null;
+		public TimeShiftConfig tsConfig = null;
 		private List<numTaskInfo> newGetTsTaskList = new List<numTaskInfo>();
 		private List<string> recordedNo = new List<string>();
 		private string baseUrl;
@@ -82,20 +82,23 @@ namespace namaichi.rec
 		private double lastWroteFileSecond = -1;
 		
 //		private RealTimeFFmpeg realtimeFFmpeg = null;
+		private bool isRealtimeChase = false;
+		public DropSegmentProcess dsp = null;
 		
 		public Record(RecordingManager rm, bool isFFmpeg, 
 		              RecordFromUrl rfu, string hlsUrl, 
-		              string recFolderFile, int lastSegmentNo, 
+		              string recFolderFile, //int lastSegmentNo, 
 		              CookieContainer container, bool isTimeShift, 
 		              IRecorderProcess wr, string lvid, 
 		              TimeShiftConfig tsConfig, long _openTime,
-		              WebSocket ws, string recFolderFileOrigin) {
+		              WebSocket ws, string recFolderFileOrigin,
+		              bool isRealtimeChase, Html5Recorder h5r) {
 			this.rm = rm;
 			this.isFFmpeg = isFFmpeg;
 			this.rfu = rfu;
 			this.hlsMasterUrl = hlsUrl;
 			this.recFolderFile = recFolderFile;
-			this.lastSegmentNo = lastSegmentNo;
+			//this.lastSegmentNo = lastSegmentNo;
 			this.container = container;
 			this.isTimeShift = isTimeShift;
 			segmentSaveType = int.Parse(rm.cfg.get("segmentSaveType"));
@@ -113,6 +116,8 @@ namespace namaichi.rec
 			this.ws = ws;
 			this.recFolderFileOrigin = recFolderFileOrigin;
 			//this.isSub = isSub;
+			this.isRealtimeChase = isRealtimeChase;
+			this.h5r = h5r;
 		}
 		public void record(string quality) {
 			recordingQuality = quality;
@@ -120,8 +125,9 @@ namespace namaichi.rec
 			
 			var _m = (isPlayOnlyMode) ? "視聴" : "録画";
 			if (isTimeShift) {
-				if (engineMode != "3")
-					rm.form.addLogText("タイムシフトの" + _m + "を開始します(画質:" + quality + ")");
+				var isHokan = !((WebSocketRecorder)wr).isSaveComment && ((WebSocketRecorder)wr).isChase; 
+				if (engineMode != "3" && !isHokan)
+					rm.form.addLogText((((WebSocketRecorder)wr).isChase ? "追っかけ再生" : "タイムシフト") + "の" + _m + "を開始します(画質:" + quality + ")");
 //				timeShiftMultiRecord();
 				timeShiftOnTimeRecord();
 			} else {
@@ -220,8 +226,11 @@ namespace namaichi.rec
 				if (rfu.subGotNumTaskInfo != null && isManyNti) {
 					rm.form.addLogText("抜けセグメントの補完を試みます");
 					addDebugBuf("抜けセグメントの補完を試みます");
-					var dsp = new DropSegmentProcess(lastWroteSegmentDt, lastSegmentNo, this, recFolderFileOrigin, rfu, rm);
-					dsp.writeRemaining();
+					if (dsp == null) {
+						dsp = new DropSegmentProcess(lastWroteSegmentDt, lastSegmentNo, this, recFolderFileOrigin, rfu, rm, h5r);
+						dsp.writeRemaining();
+						dsp = null;
+					} 
 				}
 				
 				if (isEndProgram) {
@@ -721,7 +730,7 @@ namespace namaichi.rec
 //				if (!isReConnecting) 
 					reConnect();
 				
-				return 1.0;
+				return 3.0;
 			}
 			var isTimeShiftPlaylist = res.IndexOf("#STREAM-DURATION") > -1;
 			if (!isTimeShift && isTimeShiftPlaylist) {
@@ -729,7 +738,11 @@ namespace namaichi.rec
 			}
 			double streamDuration = -1; 
 			var _streamDuration = util.getRegGroup(res, "#STREAM-DURATION:(.+)");
-			if (_streamDuration != null) streamDuration = double.Parse(_streamDuration, NumberStyles.Float);
+			if (_streamDuration != null) {
+				streamDuration = double.Parse(_streamDuration, NumberStyles.Float);
+				if (tsConfig.endTimeSeconds < 0)
+					tsConfig.endTimeSeconds = (int)(streamDuration + 15);
+			}
 			
 			var baseTime = getBaseTimeFromPlaylist(res);
 			var second = 0.0;
@@ -747,7 +760,8 @@ namespace namaichi.rec
 						targetDuration = double.Parse(_targetDuration, NumberStyles.Float);
 					}
 					var isEndList = s.IndexOf("#EXT-X-ENDLIST") > -1;
-					if (isEndList && false) {
+					if (isEndList) {
+//					if (isEndList) {
 						isRetry = false;
 						isEndProgram = true;
 					}
@@ -768,11 +782,18 @@ namespace namaichi.rec
 							if (t.no == no) isInList = true;
 					}
 					
+					if (isEndTimeshift(streamDuration, res, second) && !((WebSocketRecorder)wr).isChase) {
+						addDebugBuf("isEndTimeshift true");
+						isRetry = false;
+						isEndProgram = true;
+					}
+					
 					var startTime = baseTime + secondSum - second;
 					if (isTimeShift && 
 					    	((tsConfig.timeType == 0 && startTime < tsConfig.timeSeconds) ||
 					     	(tsConfig.timeType == 1 && startTime <= tsConfig.timeSeconds))) continue;
-					if (isTimeShift && tsConfig.endTimeSeconds != 0 && startTime > tsConfig.endTimeSeconds) {
+					if (isTimeShift && tsConfig.endTimeSeconds > 0 && startTime > tsConfig.endTimeSeconds) {
+						addDebugBuf("timeshift tsConfig.endtime " + tsConfig.endTimeSeconds + " now starttime " + startTime + " tsConfig.timeseconds " + tsConfig.timeSeconds);
 						isRetry = false;
 						isEndProgram = true;
 						continue;
@@ -797,11 +818,12 @@ namespace namaichi.rec
 						//Task.Run(() => getTsTask(url, startTime));
 						getTsTask(url, startTime);
 					}
-					if (isEndTimeshift(streamDuration, res, second)) {
+					
+					if (((WebSocketRecorder)wr).isChase && hlsSegM3uUrl.IndexOf("hlsarchive") > -1) {
+						addDebugBuf("ischase segM3uUrl hlsarchive end");
 						isRetry = false;
-						isEndProgram = true;
+//						isEndProgram = true;
 					}
-						
 				}
 			}
 			return targetDuration;
@@ -885,7 +907,7 @@ namespace namaichi.rec
 			
 		}
 		private void setRecordState() {
-			addDebugBuf("setRecordState");
+			addDebugBuf("setRecordState " + recordedBytes);
 			var ret = "";
 			var bytes = recordedBytes;
 			long b = bytes % 1000;
@@ -895,7 +917,7 @@ namespace namaichi.rec
 			string _kb = ((int)(bytes / 1000)).ToString();
 			for (var i = 0; i < 9 - _kb.Length; i++)
 				_kb = " " + _kb;
-			ret += "size=" + _kb + "kB";
+			ret += "size=" + _kb + "kB\n";
 			
 //			recordedSecond = 400000;
 			var dotSecond = ((int)((recordedSecond % 1) * 100)).ToString("00");
@@ -904,13 +926,18 @@ namespace namaichi.rec
 			var hour = ((int)((recordedSecond / 3600) * 1));
 			var _hour = (hour < 100) ? hour.ToString("00") : hour.ToString();;
 			var timeStr = _hour + ":" + minute + ":" + second + "." + dotSecond;
-			ret += " time= " + timeStr;
+			ret += "time= " + timeStr + "\n";
 			
 			var bitrate = recordedBytes * 8 / recordedSecond / 1000;
-			ret += " bitrate= " + bitrate.ToString("0.0") + "kbits/s";
-			if (isTimeShift) ret += "(" + (int)((lastSegmentNo / 10) / allDuration) + "%)";
+			ret += "bitrate= " + bitrate.ToString("0.0") + "kbits/s";
+			
+			if (isTimeShift && !((WebSocketRecorder)wr).isChase) {
+				ret = "(" + (int)((lastSegmentNo / 10) / allDuration) + "%) " + ret;
+				//ret += "(" + (int)((lastSegmentNo / 10) / allDuration) + "%)";
+			}
+			var titleT = ret.Replace('\n', ' ');
 			//ret += "(" + percent + ")" + (lastSegmentNo / 10) + " " + allDuration;
-			rm.form.setRecordState(ret);
+			rm.form.setRecordState(ret, titleT);
 			
 		}
 		private bool writeFile(numTaskInfo info) {
@@ -1048,7 +1075,10 @@ namespace namaichi.rec
 				} else {
 					start = ((int)lastRecordedSeconds - 10 < 0) ? 0 : ((int)lastRecordedSeconds - 10);
 				}
+				
 				hlsMasterUrl = hlsMasterUrl + "&start=" + (start.ToString());
+
+				
 				wr.tsHlsRequestTime = DateTime.Now;
 				wr.tsStartTime = TimeSpan.FromSeconds((double)start);
 			}
@@ -1145,13 +1175,16 @@ namespace namaichi.rec
 			}
 			
 			var start = (tsConfig.timeSeconds - 10 < 0) ? 0 : (tsConfig.timeSeconds - 10);
-			var baseMasterUrl = hlsMasterUrl + "&start=" + (start.ToString());
+			var baseMasterUrl = hlsMasterUrl;
+			if (!isRealtimeChase) baseMasterUrl += "&start=" + (start.ToString());
 			wr.tsHlsRequestTime = DateTime.Now;
 			wr.tsStartTime = TimeSpan.FromSeconds((double)start);
 			hlsSegM3uUrl = getHlsSegM3uUrl(baseMasterUrl);
 			rm.hlsUrl = hlsSegM3uUrl;
 			rm.form.setPlayerBtnEnable(true);
 			
+			
+				
 //			if (isFFmpegThrough()) realtimeFFmpeg = new RealTimeFFmpeg();
 			
 			while (rm.rfu == rfu && isRetry) {
@@ -1168,7 +1201,7 @@ namespace namaichi.rec
 				
 				if (engineMode == "0" || engineMode == "3") {
 
-					    	targetDuration = addNewTsTaskList(hlsSegM3uUrl);
+					targetDuration = addNewTsTaskList(hlsSegM3uUrl);
 
 					
 					Thread.Sleep((int)(targetDuration * 500));
@@ -1198,7 +1231,7 @@ namespace namaichi.rec
 			rm.hlsUrl = "end";
 //			rm.form.setPlayerBtnEnable(false);
 			
-			if (isEndProgram) {
+			if (isEndProgram && !((WebSocketRecorder)wr).isHokan) {
 				rm.form.addLogText("録画を完了しました");
 			}
 			if (engineMode == "0" && !isPlayOnlyMode) {
@@ -1393,8 +1426,9 @@ namespace namaichi.rec
 			}
 		}
 		private bool isEndTimeshift(double streamDuration, string res, double second) {
-			var ret = streamDuration - ((double)lastSegmentNo / 1000 + second) < 0.001;
+			var ret = streamDuration - ((double)lastSegmentNo / 1000 + second) < 0.5;
 			if (lastSegmentNo > 5 && lastWroteFileSecond != 5 && lastWroteFileSecond != -1 && ret) ret = true;
+			addDebugBuf("isendTimeshift streamDuration " + streamDuration + " second " + second + " lastSegmentNo " + lastSegmentNo + " " + lastWroteFileSecond + " ret " + ret);
 //			var ret = lastSegmentNo
 //			var rett = streamDuration - (lastSegmentNo / 1000 + second);
 			if (ret)
@@ -1448,8 +1482,11 @@ namespace namaichi.rec
 			*/
 		}
 		private void dropSegmentProcess(numTaskInfo s, DateTime _lastWroteSegmentDt, int _lastSegmentNo) {
-			var dsp = new DropSegmentProcess(_lastWroteSegmentDt, _lastSegmentNo, this, recFolderFileOrigin, rfu, rm);
-			dsp.start(s);
+			if (dsp == null) {
+				dsp = new DropSegmentProcess(_lastWroteSegmentDt, _lastSegmentNo, this, recFolderFileOrigin, rfu, rm, h5r);
+				dsp.start(s);
+				//dsp = null;
+			} else dsp.updateHokanEndtime();
 		}
 		private void deleteOldSubTs() {
 			var i = 0;

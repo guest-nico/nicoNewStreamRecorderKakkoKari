@@ -328,7 +328,7 @@ namespace namaichi.rec
 			isRetry = b;
 		}
 		private void endProcess() {
-			var isWrite = (rm.cfg.get("IsgetComment") == "true" && !rm.isPlayOnlyMode);
+			var isWrite = (rm.cfg.get("IsgetComment") == "true" && !rm.isPlayOnlyMode && !rp.isChase);
 			if (isWrite)
 				form.addLogText("コメントの後処理を開始します");
 			/*
@@ -343,7 +343,7 @@ namespace namaichi.rec
 //				chats = r.ReadToEnd().Split(new string[]{"}>\r\n"}, StringSplitOptions.RemoveEmptyEntries);
 //		    }
 			//var isXml = bool.Parse(rm.cfg.get("IsgetcommentXml"));
-			while (isRtmp && rr.fileNameList == null) {
+			while (isRtmp && (rr == null || rr.fileNameList == null)) {
 				Thread.Sleep(1000);
 			}
 				

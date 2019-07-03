@@ -547,7 +547,7 @@ namespace rokugaTouroku
 			this.qualityBtn.Name = "qualityBtn";
 			this.qualityBtn.Size = new System.Drawing.Size(119, 23);
 			this.qualityBtn.TabIndex = 4;
-			this.qualityBtn.Text = "超高,高,中,低,超低,自";
+			this.qualityBtn.Text = "超高,高,中,低,超低";
 			this.qualityBtn.UseVisualStyleBackColor = true;
 			this.qualityBtn.Click += new System.EventHandler(this.qualityBtn_Click);
 			// 

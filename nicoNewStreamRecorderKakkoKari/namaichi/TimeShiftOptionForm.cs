@@ -24,7 +24,7 @@ namespace namaichi
 		public TimeShiftConfig ret = null;
 		private config.config config;
 		public TimeShiftOptionForm(string[] lastFileTime, 
-				string segmentSaveType, config.config config)
+				string segmentSaveType, config.config config, bool isChase)
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -63,6 +63,13 @@ namespace namaichi
 			updateUrlListChkBoxCheckedChanged();
 			updateIsManualEndTimeRadioBtn();
 			this.config = config;
+			
+			if (isChase) {
+				Text = "追っかけ録画設定";
+				isFromLastTimeRadioBtn.Visible = false;
+				lastFileInfoLabel.Visible = false;
+				isRenketuLastFile.Visible = false;
+			}
 		}
 		private void updateTimeShiftStartTimeChkBox() {
 			//isRenketuLastFile.Enabled = !isStartTimeRadioBtn.Checked;

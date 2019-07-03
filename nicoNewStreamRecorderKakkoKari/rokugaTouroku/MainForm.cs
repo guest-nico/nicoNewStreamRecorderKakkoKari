@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading.Tasks;
@@ -30,8 +31,13 @@ namespace rokugaTouroku
 		public string qualityRank;
 		public RecInfo displayingRi = null;
 		
+		private Thread madeThread;
+		
 		public MainForm(string[] args)
 		{
+			madeThread = Thread.CurrentThread;
+			//config.set("IsHokan", "false");
+			
 			System.Diagnostics.Debug.Listeners.Clear();
 			System.Diagnostics.Debug.Listeners.Add(new Logger.TraceListener());
 		    util.setLog(config, null);
@@ -58,6 +64,14 @@ namespace rokugaTouroku
 			recList.DataSource = recListDataSource;
 			
 			qualityRank = config.get("rokugaTourokuQualityRank");
+			if (qualityRank.Split(',').Length == 6) {
+				var l = new List<string>();
+				l.AddRange(qualityRank.Split(','));
+				l.Remove("0");
+				for (var i = 0; i < l.Count(); i++)
+					l[i] = (int.Parse(l[i]) - 1).ToString();
+				qualityRank = string.Join(",", l.ToArray());
+			}
 			qualityBtn.Text = getQualityRankStr(qualityRank);
 			setConvertList(int.Parse(config.get("afterConvertMode")));
 			recCommmentList.Text = "映像＋コメント";
@@ -166,7 +180,7 @@ namespace rokugaTouroku
 		public void resetBindingList(int row, string column = null, string val = null) {
 			var a = new object();
 			lock (a) {
-				if (row >= recListDataSource.Count) return;
+				if (row >= recListDataSource.Count || row < 0) return;
 				
 				var ri = (RecInfo)recListDataSource[row];
 				this.Invoke((MethodInvoker)delegate() {
@@ -267,10 +281,11 @@ namespace rokugaTouroku
 			}
 		}
 		string getQualityRankStr(string qualityRank) {
-			return qualityRank.Replace("0", "自")
-				.Replace("1", "超高").Replace("2", "高")
-				.Replace("3", "中").Replace("4", "低")
-				.Replace("5", "超低");
+			
+			return qualityRank//.Replace("0", "自")
+				.Replace("0", "超高").Replace("1", "高")
+				.Replace("2", "中").Replace("3", "低")
+				.Replace("4", "超低");
 		}
 		public void displayRiInfo(RecInfo ri, string ctrl = null, string val = null) {
 			var isChange = displayingRi != ri;
@@ -405,6 +420,8 @@ namespace rokugaTouroku
 				return;
 			}
 			var _ri = new RecInfo(ri.id, ri.url, ri.rdg, ri.afterConvertType, ri.tsConfig, ri.timeShift, ri.quality, ri.qualityRank, ri.recComment);
+			Task.Run(() => _ri.setHosoInfo(this));
+			
 			recListDataSource[selectedCell.RowIndex] = _ri;
 			resetBindingList(selectedCell.RowIndex);
 			displayRiInfo(_ri);
@@ -553,6 +570,38 @@ namespace rokugaTouroku
 				e.Effect = DragDropEffects.Copy;
 				
 			}
+		}
+		public void formAction(Action a) {
+			if (IsDisposed) return;
+			
+			if (Thread.CurrentThread == madeThread) {
+				try {
+					a.Invoke();
+				} catch (Exception e) {
+					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				}
+			} else {
+				try {
+					Invoke((MethodInvoker)delegate() {
+						try {    
+				       		a.Invoke();
+				       	} catch (Exception e) {
+							util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+						}
+					});
+				} catch (Exception e) {
+					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				} 
+			}
+		}
+		public void updateRecListCell(RecInfo ri) {
+			formAction(() => {
+				var i = recListDataSource.IndexOf(ri);
+				if (i == -1) return;
+				var cellNum = recList.Columns.Count;
+				for (var j = 0; j < cellNum; j++)
+					recList.UpdateCellValue(j, i);
+			});
 		}
 	}
 }

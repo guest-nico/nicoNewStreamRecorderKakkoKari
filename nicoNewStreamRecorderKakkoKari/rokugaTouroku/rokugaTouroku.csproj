@@ -23,7 +23,7 @@
     <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>False</RunCodeAnalysis>
     <SourceAnalysisOverrideSettingsFile>C:\Users\zack\AppData\Roaming\ICSharpCode/SharpDevelop4\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
-    <ApplicationIcon>..\%28+.ico</ApplicationIcon>
+    <ApplicationIcon>..\%28+3.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -106,6 +106,7 @@
       <DependentUpon>QualityForm.cs</DependentUpon>
     </Compile>
     <Compile Include="rec\CookieGetter.cs" />
+    <Compile Include="rec\HosoInfoGetter.cs" />
     <Compile Include="rec\RecDataGetter.cs" />
     <Compile Include="rec\RecListManager.cs" />
     <Compile Include="TimeShiftOptionForm.cs">
@@ -114,7 +115,9 @@
     <Compile Include="TimeShiftOptionForm.Designer.cs">
       <DependentUpon>TimeShiftOptionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UrlBulkRegistForm.cs" />
+    <Compile Include="UrlBulkRegistForm.cs">
+      <DependentUpon>VersionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UrlBulkRegistForm.Designer.cs">
       <DependentUpon>UrlBulkRegistForm.cs</DependentUpon>
     </Compile>

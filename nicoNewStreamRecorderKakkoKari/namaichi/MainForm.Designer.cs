@@ -89,6 +89,7 @@ namespace namaichi
 			this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.playerBtn = new System.Windows.Forms.Button();
 			this.miniBtn = new System.Windows.Forms.Button();
+			this.isChaseChkBtn = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.samuneBox)).BeginInit();
 			this.menuStrip1.SuspendLayout();
 			this.groupBox5.SuspendLayout();
@@ -552,6 +553,15 @@ namespace namaichi
 			this.miniBtn.UseVisualStyleBackColor = true;
 			this.miniBtn.Click += new System.EventHandler(this.MiniBtnClick);
 			// 
+			// isChaseChkBtn
+			// 
+			this.isChaseChkBtn.Location = new System.Drawing.Point(319, 65);
+			this.isChaseChkBtn.Name = "isChaseChkBtn";
+			this.isChaseChkBtn.Size = new System.Drawing.Size(104, 15);
+			this.isChaseChkBtn.TabIndex = 24;
+			this.isChaseChkBtn.Text = "追っかけ録画";
+			this.isChaseChkBtn.UseVisualStyleBackColor = true;
+			// 
 			// MainForm
 			// 
 			this.AllowDrop = true;
@@ -560,6 +570,7 @@ namespace namaichi
 			this.BackColor = System.Drawing.SystemColors.Window;
 			this.ClientSize = new System.Drawing.Size(719, 362);
 			this.ContextMenuStrip = this.mainWindowRightClickMenu;
+			this.Controls.Add(this.isChaseChkBtn);
 			this.Controls.Add(this.miniBtn);
 			this.Controls.Add(this.playerBtn);
 			this.Controls.Add(this.commentList);
@@ -592,6 +603,7 @@ namespace namaichi
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		public System.Windows.Forms.CheckBox isChaseChkBtn;
 		private System.Windows.Forms.Button miniBtn;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;

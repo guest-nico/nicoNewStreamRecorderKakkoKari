@@ -21,6 +21,7 @@ using WebSocket4Net;
 using Newtonsoft.Json;
 using namaichi.info;
 
+/*
 namespace namaichi.rec
 {
 	/// <summary>
@@ -155,12 +156,14 @@ namespace namaichi.rec
 		}
 		private void process() {
 			//util.debugWriteLine("testtest" + util.getMainSubStr(isSub, true));
+			all comment out */
 			/*
 			try {var a = new WebSocket4Net.MessageReceivedEventArgs(null, null).Data;}
 			catch (Exception e) {
 				System.Windows.Forms.MessageBox.Show("websocket", "aa");
 			}
 			*/
+			/*
 			//util.debugWriteLine(System.Diagnostics.FileVersionInfo.GetVersionInfo("websocket4net.dll").
 			if (isRtmp || 
 				    (rm.cfg.get("IsHokan") == "true" && 
@@ -171,7 +174,7 @@ namespace namaichi.rec
 				
 				rr = new RtmpRecorder(lvid, container, rm, rfu, !isRtmp, recFolderFile, this, releaseTime);
 				Task.Run(() => {
-					rr.record();
+					rr.record(null, null);
 					rm.hlsUrl = "end";
 					if (rr.isEndProgram) isEndProgram = true;
 					isRetry = false;
@@ -186,7 +189,7 @@ namespace namaichi.rec
 		}
 		private void record() {
 			Task.Run(() => {
-			         	rec = new Record(rm, true, rfu, wi.hlsUrl, recFolderFile[1], -1, container, isTimeShift, this, lvid, tsConfig, releaseTime, null, recFolderFile[2]);
+			         	rec = new Record(rm, true, rfu, wi.hlsUrl, recFolderFile[1], container, isTimeShift, this, lvid, tsConfig, releaseTime, null, recFolderFile[2]);
 			    try {
 					rec.record(jr.requestQuality);
 	         	} catch (Exception e) {
@@ -402,6 +405,7 @@ namespace namaichi.rec
 					}
 				}
 //				ws.Open();
+				all comment out */
 				/*
 				Task.Run(() => {
 					if (!isTimeShift && isEndedProgram()) {
@@ -410,6 +414,7 @@ namespace namaichi.rec
 					}
 				});
 				*/
+				/*
 			}
 		}
 		private void closeWscProcess() {
@@ -591,6 +596,7 @@ namespace namaichi.rec
 			var s = __time % 60;
 			var _s = (s < 10) ? ("0" + s.ToString()) : s.ToString();
 			var keikaTime = h + ":" + _m + ":" + _s + "";
+			all comment out */
 			/*
 //			- unixKijunDt;
 			
@@ -599,6 +605,7 @@ namespace namaichi.rec
 			var m = __timeSpan.Minutes;
 			var s = __timeSpan.Seconds;
 			*/
+			/*
 //			- new TimeSpan(9,0,0);
 			var c = (chat.premium == "3") ? "red" :
 				((chat.premium == "7") ? "blue" : "black");
@@ -694,15 +701,8 @@ namespace namaichi.rec
 				util.debugWriteLine("comment sw close error");
 				util.debugWriteLine(e.Message + e.StackTrace);
 			}
-			/*
-			try {
-				if (rec != null) rec.stopRecording();
-			} catch (Exception e) {
-				util.debugWriteLine("rec close error" + util.getMainSubStr(isSub, true));
-				util.debugWriteLine(e.Message + e.StackTrace + util.getMainSubStr(isSub, true));
-			}
-			isRetry = false;
-			*/
+			
+			
 		}
 		private bool isEndedProgram() {
 			var url = "https://live2.nicovideo.jp/watch/" + lvid;
@@ -771,3 +771,4 @@ namespace namaichi.rec
 	}
 }
 
+*/

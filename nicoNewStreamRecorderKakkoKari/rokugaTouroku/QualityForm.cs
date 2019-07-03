@@ -34,21 +34,22 @@ namespace rokugaTouroku
 		}
 		void highRankBtn_Click(object sender, EventArgs e)
 		{
-			int[] ranks = {1,2,3,4,5,0};
+			int[] ranks = {0,1,2,3,4};
 			qualityListBox.Items.Clear();
 			qualityListBox.Items.AddRange(getRanksToItems(ranks, qualityListBox));
 		}
 		void lowRankBtn_Click(object sender, EventArgs e)
 		{
-			int[] ranks = {5, 4, 3, 2, 1, 0};
+			int[] ranks = {4, 3, 2, 1, 0};
 			qualityListBox.Items.Clear();
 			qualityListBox.Items.AddRange(getRanksToItems(ranks, qualityListBox));
 		}
 		public object[] getRanksToItems(int[] ranks, ListBox owner) {
 			var items = new Dictionary<int, string> {
-				{0, "自動(abr)"}, {1, "3Mbps(super_high)"},
-				{2, "2Mbps(high)"}, {3, "1Mbps(normal)"},
-				{4, "384kbps(low)"}, {5, "192kbps(super_low)"},
+				//{0, "自動(abr)"}, 
+				{0, "3Mbps(super_high)"},
+				{1, "2Mbps(high)"}, {2, "1Mbps(normal)"},
+				{3, "384kbps(low)"}, {4, "192kbps(super_low)"},
 			};
 //			var ret = new ListBox.ObjectCollection(owner);
 			var ret = new List<object>();
@@ -89,9 +90,10 @@ namespace rokugaTouroku
 		}
 		List<int> getItemsToRanks(ListBox.ObjectCollection items) {
 			var itemsDic = new Dictionary<int, string> {
-				{0, "自動(abr)"}, {1, "3Mbps(super_high)"},
-				{2, "2Mbps(high)"}, {3, "1Mbps(normal)"},
-				{4, "384kbps(low)"}, {5, "192kbps(super_low)"},
+				//{0, "自動(abr)"}, 
+				{0, "3Mbps(super_high)"},
+				{1, "2Mbps(high)"}, {2, "1Mbps(normal)"},
+				{3, "384kbps(low)"}, {4, "192kbps(super_low)"},
 			};
 			var ret = new List<int>();
 			for (int i = 0; i < items.Count; i++) {
@@ -129,10 +131,10 @@ namespace rokugaTouroku
 			Close();
 		}
 		string getQualityRankStr(string qualityRank) {
-			return qualityRank.Replace("0", "自")
-				.Replace("1", "超高").Replace("2", "高")
-				.Replace("3", "中").Replace("4", "低")
-				.Replace("5", "超低");
+			return qualityRank//.Replace("0", "自")
+				.Replace("0", "超高").Replace("1", "高")
+				.Replace("2", "中").Replace("3", "低")
+				.Replace("4", "超低");
 		}
 		
 		void cancelBtn_Click(object sender, EventArgs e)

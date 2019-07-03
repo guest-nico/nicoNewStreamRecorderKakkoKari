@@ -15,6 +15,7 @@ using System.Windows.Forms;
 
 using namaichi.info;
 
+
 namespace namaichi.rec
 {
 	/// <summary>
@@ -22,6 +23,7 @@ namespace namaichi.rec
 	/// </summary>
 	public class JikkenRecorder
 	{
+		/*
 		private string lvid;
 		private CookieContainer container;
 		private RecordingManager rm;
@@ -207,14 +209,7 @@ namespace namaichi.rec
 			//var quaLityList = list.Split(',');
 			//quaLityList.Where((x) => x.IndexOf("broadcaster") == -1));
 			streamCapacity = list.Split(',')[0];
-			/*
 			
-			var d = new Dictionary<string, string>{{"low", "super_low"}, {"middle", "low"}, {"superhigh", "high"}, {"ultrahigh", "super_high"}, {"high", "normal"}};
-			for (var i = 0; i < availableQualities.Length; i++) {
-				var index = d.Keys.ToList().IndexOf(availableQualities[i]);
-				availableQualities[i] = d.Values.ToArray()[index];
-			}
-			*/
 //			list = list.Replace("low", "super_low").Replace("middle", "low").Replace("superhigh", "high").Replace("ultrahigh", "super_high").Replace("high", "normal");
 			availableQualities = list.Split(','); 
 			
@@ -530,5 +525,8 @@ namespace namaichi.rec
 			if (_tsConfig.timeType == 0) _tsConfig.isContinueConcat = false;
 			return _tsConfig;
 		}
+		
+		*/
 	}
 }
+

@@ -16,7 +16,7 @@
     <StartupObject>namaichi.Program</StartupObject>
     <StartAction>Project</StartAction>
     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
-    <ApplicationIcon>..\%28rec.ico</ApplicationIcon>
+    <ApplicationIcon>..\%28rec3.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -191,6 +191,8 @@
     <Compile Include="Properties\Settings.Designer.cs" />
     <Compile Include="rec\ArgConcat.cs" />
     <Compile Include="rec\AnotherEngineRecorder.cs" />
+    <Compile Include="rec\ChaseHokan.cs" />
+    <Compile Include="rec\ChaseLastRecord.cs" />
     <Compile Include="rec\DeflateDecoder.cs" />
     <Compile Include="rec\DropSegmentProcess.cs" />
     <Compile Include="rec\FFMpegConcat.cs" />

@@ -41,7 +41,7 @@ namespace namaichi.rec
 		public Html5Recorder h5r;
 		private WebSocket ws;
 		private WebSocket wsc;
-		private Record rec;
+		public Record rec;
 		private StreamWriter commentSW;
 		//public string msUri;
 		//public string[] msReq;
@@ -56,7 +56,7 @@ namespace namaichi.rec
 		//public long openTime;
 		public long _openTime;
 		public bool isEndProgram = false;
-		public int lastSegmentNo = -1;
+		//public int lastSegmentNo = -1;
 		//public bool isTimeShift = false;
 		private TimeShiftConfig tsConfig = null;
 		private bool isTimeShiftCommentGetEnd = false;
@@ -95,20 +95,24 @@ namespace namaichi.rec
 		private bool isXmlComment = true;
 		private XmlCommentGetter_ontime xcg = null;
 		private TimeShiftCommentGetter_xml tscgx = null;
-<<<<<<< HEAD
-		
-		
-=======
->>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
+		private bool isRtmpOnlyPage = false;
+		public bool isChase = false;
+		private bool isRealtimeChase = false;
+		private List<string> chaseCommentBuf = new List<string>();
+		public bool isSaveComment = false;
+		public bool isHokan = false;
 		
 		public WebSocketRecorder(string[] webSocketInfo, 
 				CookieContainer container, string[] recFolderFile, 
 				RecordingManager rm, RecordFromUrl rfu, 
 				Html5Recorder h5r, long openTime, 
-				int lastSegmentNo, bool isTimeShift, string lvid, 
+				//int lastSegmentNo, 
+				bool isTimeShift, string lvid,
 				TimeShiftConfig tsConfig, string userId, 
 				bool isPremium, TimeSpan programTime, 
-				string programType, long _openTime, bool isRtmp
+				string programType, long _openTime, bool isRtmp, 
+				bool isRtmpOnlyPage, bool isChase, bool isRealtimeChase,
+				bool isSaveComment
 			)
 		{
 			this.webSocketInfo = webSocketInfo;
@@ -118,7 +122,7 @@ namespace namaichi.rec
 			this.rfu = rfu;
 			this.h5r = h5r;
 			this.openTime = openTime;
-			this.lastSegmentNo = lastSegmentNo;
+			//this.lastSegmentNo = lastSegmentNo;
 			this.isTimeShift = isTimeShift;
 			this.lvid = lvid;
 			this.tsConfig = tsConfig;
@@ -135,66 +139,39 @@ namespace namaichi.rec
 			this.isGetComment = rm.cfg.get("IsgetComment");
 			this.isGetCommentXml = rm.cfg.get("IsgetcommentXml");
 			this.engineMode = rm.cfg.get("EngineMode");
+			this.isRtmpOnlyPage = isRtmpOnlyPage;
+			this.isChase = isChase;
+			this.isRealtimeChase = isRealtimeChase;
+			this.isSaveComment = isSaveComment;
+			if (isChase && !isSaveComment) isHokan = true;
 		}
-		public bool start(bool isRtmpOnlyPage) {
+		public bool start() {
 			addDebugBuf("ws rec start");
 			
 			isXmlComment = false;
 			tsWriterTask = Task.Run(() => {startDebugWriter();});
 			
 //			connect(webSocketInfo[0]);
-			if (isRtmp || 
-			    (rm.cfg.get("IsHokan") == "true" && 
-			     !rfu.isRtmpMain && !rm.isPlayOnlyMode && 
-			     engineMode == "0" && !isTimeShift)) {
-				rfu.subGotNumTaskInfo = new List<numTaskInfo>();
-				rr = new RtmpRecorder(lvid, container, rm, rfu, !isRtmp, recFolderFile, this, openTime);
+			
+			
+			if (isRtmpOnlyPage) {
 				Task.Run(() => {
-					rr.record();
-					rm.hlsUrl = "end";
-					if (rr.isEndProgram) {
-						isEndProgram = true;
-						if (endTime == DateTime.MinValue)
-							endTime = DateTime.Now;
-					}
-					isRetry = false;
+					rtmpRecord(null, null);
+					saveXmlComment();
 				});
-				/*
-				Task.Run(() => {
-				    xcg = new XmlCommentGetter(lvid, container, rm, rfu, recFolderFile[1], this, isTimeShift, isRtmp, openTime, _openTime, serverTime);
-				    xcg.get();
-				});
-				while (rm.rfu == rfu && isRetry) Thread.Sleep(1000);
-				*/
-				if (isRtmpOnlyPage) {
-					if (isTimeShift) {
-						tscgx = new TimeShiftCommentGetter_xml ( 
-								userId, rm, rfu, rm.form, openTime, 
-								recFolderFile, lvid, container, 
-								programType, _openTime, this, 
-								(isRtmp) ? 0 : tsConfig.timeSeconds, 
-								(isRtmp) ? false : tsConfig.isVposStartTime, isRtmp);
-						tscgx.save();
-						
-					} else {
-						/*
-						xcg = new XmlCommentGetter_ontime( 
-								userId, rm, rfu, rm.form, openTime, 
-								recFolderFile, lvid, container, 
-								programType, _openTime, this);
-						xcg.save();
-						*/
-					}
+			} else {
+				if (isRtmp && isTimeShift) {
+					Task.Run(() => rtmpRecord(null, null));
 				}
-			}
-			
-			
-			if (!isRtmpOnlyPage) {
+				broadcastId = util.getRegGroup(webSocketInfo[0], "watch/.*?(\\d+?)(\\?|/)");
 				connect();
 				addDebugBuf("rm.rfu dds1 " + rm.rfu);
 			
-				broadcastId = util.getRegGroup(webSocketInfo[0], "watch/.*?(\\d+?)(\\?|/)");
+				
 			}
+			
+			
+			
 			
 //			userId = util.getRegGroup(webSocketInfo[0], "audience_token=.+?_(.+?)_");
 			
@@ -202,7 +179,7 @@ namespace namaichi.rec
 			
 			addDebugBuf("ws main " + ws + " a " + (ws == null));
 			
-			if (!isRtmpOnlyPage)
+			if (!isRtmpOnlyPage && !(isChase && !isSaveComment))
 				displaySchedule();
 			
 			
@@ -291,7 +268,9 @@ namespace namaichi.rec
 					rec.waitForEnd();
 			}
 			
-			
+			if (isChase && rec != null && !rec.isEndProgram) {
+				new ChaseLastRecord(lvid, container, rm, h5r.recFolderFileInfo, openTime, h5r, tsConfig).rec();
+			}
 			addDebugBuf("closed saikai");
 			
 			return isNoPermission;
@@ -374,7 +353,6 @@ namespace namaichi.rec
 			
 			ws.Send(webSocketInfo[1]);
 			
-			
 			/*
 			if (isNoPermission)
 				ws.Send(webSocketInfo[1]);
@@ -394,14 +372,15 @@ namespace namaichi.rec
 			addDebugBuf("on close2 " + " wsList " + wsList.Count);
 			
 			Task.Run(() => {  
-				if (!isTimeShift && isEndedProgram()) {
-			        rm.form.addLogTextDebug("isEndprogram websocket");
+				if ((!isTimeShift || isChase) && isEndedProgram()) {
+			        addDebugBuf("isEndprogram websocket");
 					isRetry = false;
 					if (rr != null) rr.retryMode = 2;
 					if (tscg != null) tscg.setIsRetry(false);
 					isEndProgram = true;
 					if (endTime == DateTime.MinValue)
 							endTime = DateTime.Now;
+					
 				}
 			});
 			
@@ -447,9 +426,10 @@ namespace namaichi.rec
 			//get message
 			if (e.Message.IndexOf("\"messageServerUri\"") >= 0) {
 				//if (isSub) return;
+				if (!isSaveComment) return;
 				
 				setMsInfo(e.Message);
-				if (isTimeShift) {
+				if (isTimeShift && !isRealtimeChase) {
 					if (tscg == null) {
 						tscg = new TimeShiftCommentGetter(e.Message, 
 								userId, rm, rfu, rm.form, openTime, 
@@ -460,7 +440,8 @@ namespace namaichi.rec
 						tscg.save();
 					}
 					
-				} else {
+				}
+				if (!isTimeShift || isChase) {
 					if (rfu == rm.rfu && wsc == null && isRetry) {
 						connectMessageServer(e.Message, (WebSocket)sender);
 					}
@@ -470,14 +451,36 @@ namespace namaichi.rec
 			//record
 			if (e.Message.IndexOf("\"currentStream\"") >= 0) {
 				addDebugBuf("mediaservertype = " + util.getRegGroup(e.Message, "(\"mediaServerType\".\".+?\")"));
-				if (isRtmp) return;
+				if (isChase) addDebugBuf("isChase true isSaveComment " + isSaveComment);
+				if (isRtmpOnlyPage) {
+					return;
+							//isRtmp || 
+//				    		(rm.cfg.get("IsHokan") == "true" && 
+//				     		!rfu.isRtmpMain && !rm.isPlayOnlyMode && 
+//				     		engineMode == "0" && !isTimeShift)) {
+				}
+				
+				if (isChase && !isChaseStream(e.Message)) {
+					var chaseReq = "{\"type\":\"watch\",\"body\":{\"command\":\"getstream\",\"requirement\":{\"protocol\":\"hls\",\"isChasePlay\":true}}}"; 
+					ws.Send(chaseReq);
+					util.debugWriteLine("chase sent " + chaseReq);
+					return;
+				}
+				if (isChase) {
+					addDebugBuf("got chaseStream");
+				}
 //				if (engineMode == "3") return;
 				
 				var bestGettableQuolity = getBestGettableQuolity(e.Message);
 				var currentQuality = util.getRegGroup(e.Message, "\"quality\":\"(.+?)\"");
-				if (isFirstChoiceQuality(currentQuality, bestGettableQuolity)) {
-					record(e.Message, currentQuality);
-				} else sendUseableStreamGetCommand(bestGettableQuolity);
+				if (!(isRtmp && isTimeShift)) {
+					if (isFirstChoiceQuality(currentQuality, bestGettableQuolity)) {
+						if (isRtmp) {
+							Task.Run(() => rtmpRecord(e.Message, currentQuality));
+						} else record(e.Message, currentQuality);
+					} else 
+						sendUseableStreamGetCommand(bestGettableQuolity);
+				} 
 //				Task.Run(() => {
 //				         	sendIntervalPong();
 //				         });
@@ -494,11 +497,13 @@ namespace namaichi.rec
 				if (e.Message.IndexOf("\"TAKEOVER\"") >= 0 && !isRtmp) rm.form.addLogText("追い出されました。");
 				
 				//SERVICE_TEMPORARILY_UNAVAILABLE 予約枠開始後に何らかの問題？
-				if (e.Message.IndexOf("\"SERVICE_TEMPORARILY_UNAVAILABLE\"") > 0 && !isRtmp) 
+				if (e.Message.IndexOf("\"SERVICE_TEMPORARILY_UNAVAILABLE\"") > 0 && !isRtmp) {
 					rm.form.addLogText("サーバーからデータの受信ができませんでした。リトライします。");
+					Thread.Sleep(3000);
+				}
 				
-				if (e.Message.IndexOf("\"END_PROGRAM\"") > 0) {
-					rm.form.addLogTextDebug("endprogram receive");
+				if (e.Message.IndexOf("\"END_PROGRAM\"") > 0 && !isTimeShift) {
+					addDebugBuf("END_PROGRAM receive");
 					isEndProgram = true;
 					if (endTime == DateTime.MinValue)
 						endTime = DateTime.Now;
@@ -507,7 +512,7 @@ namespace namaichi.rec
 					if (tscg != null) tscg.setIsRetry(false);
 				}
 				
-				addDebugBuf("kiteru");
+				addDebugBuf("websocket error kei");
 //				connect(webSocketInfo[0].Replace("\"requireNewStream\":false", "\"requireNewStream\":true"));
 				isNoPermission = true;
 				if (e.Message.IndexOf("\"TEMPORARILY_CROWDED\"") >= 0 ||
@@ -565,8 +570,11 @@ namespace namaichi.rec
 					if (!isRtmp)
 						rm.form.addLogText("notify reconnect");
 				#endif
-				
-				
+			}
+			if (e.Message.IndexOf("{\"type\":\"error\",\"body\":{\"code\":\"CONTENT_NOT_READY\"}}") > -1) {
+				Thread.Sleep(3000);
+				util.debugWriteLine("sendUseableStreamGetCommand");
+				sendUseableStreamGetCommand("normal");
 			}
 			if (e.Message.IndexOf("\"command\":\"servertime\",\"params\"") >= 0) {
 				var _t = (int)(long.Parse(util.getRegGroup(e.Message, "(\\d+)")) / 1000);
@@ -600,17 +608,17 @@ namespace namaichi.rec
 			DateTime keikaTimeStart = DateTime.MinValue;
 			Task.Run(() => {
 				while (rm.rfu == rfu && isRetry) {
-	         		if (isTimeShift && tsHlsRequestTime == DateTime.MinValue) {
+	         		if (isTimeShift && tsHlsRequestTime == DateTime.MinValue && !isChase) {
 	         			Thread.Sleep(1000);
 	         			continue;
 	         		}       
-			        DateTime _keikaTimeStart = (!isTimeShift) ? (util.getUnixToDatetime(openTime) - jisa) : (tsHlsRequestTime - tsStartTime - jisa);
+			        DateTime _keikaTimeStart = (!isTimeShift || isChase) ? (util.getUnixToDatetime(openTime) - jisa) : (tsHlsRequestTime - tsStartTime - jisa);
 			        if (keikaTimeStart == _keikaTimeStart)
 			        	_keikaTimeStart = DateTime.MinValue;
 			        else keikaTimeStart = _keikaTimeStart;
 			        
 			        TimeSpan _keikaJikanDt;
-			        if (!isTimeShift)
+			        if (!isTimeShift || isChase)
 						//_keikaJikanDt = (DateTime.Now - util.getUnixToDatetime(openTime) + jisa);
 			        	_keikaJikanDt = (DateTime.Now - keikaTimeStart);
 					else 
@@ -659,12 +667,13 @@ namespace namaichi.rec
 			addDebugBuf(hlsUrl);
 				
 			if (rec == null) {
-		        rec = new Record(rm, true, rfu, hlsUrl, recFolderFile[1], lastSegmentNo, container, isTimeShift, this, lvid, tsConfig, openTime, ws, recFolderFile[2]);
+		        rec = new Record(rm, true, rfu, hlsUrl, recFolderFile[1], container, isTimeShift, this, lvid, tsConfig, openTime, ws, recFolderFile[2], isRealtimeChase, h5r);
 		        Task.Run(() => {
 			        rec.record(currentQuality);
-					if (rec.isEndProgram) {
+					if (rec.isEndProgram || isEndProgram) {
 						addDebugBuf("stop websocket recd");
 						rm.form.addLogTextDebug("end record");
+						
 						isRetry = false;
 						if (rr != null) rr.retryMode = 2;
 	//						if (tscg != null) tscg.setIsRetry(false);
@@ -722,8 +731,8 @@ namespace namaichi.rec
 		public void setMsInfo(string msg) {
 			msUri = util.getRegGroup(msg, "messageServerUri\"\\:\"(ws.+?)\"");
 			msThread = util.getRegGroup(msg, "threadId\":\"(.+?)\"");
-			var res_from = (isTimeShift) ? "-2000" : "-10";
-			msReq = new string[] {"[{\"ping\":{\"content\":\"rs:0\"}},{\"ping\":{\"content\":\"ps:0\"}},{\"thread\":{\"thread\":\"" + msThread + "\",\"version\":\"20061206\",\"fork\":0,\"user_id\":\"" + userId + "\",\"res_from\":" + res_from + ",\"with_global\":1,\"scores\":0,\"nicoru\":0}},{\"ping\":{\"content\":\"pf:0\"}},{\"ping\":{\"content\":\"rf:0\"}}]"};
+			var res_from = (isTimeShift && !isChase) ? "-2000" : "-10";
+			msReq = new string[] {"[{\"ping\":{\"content\":\"rs:0\"}},{\"ping\":{\"content\":\"ps:0\"}},{\"thread\":{\"thread\":\"" + msThread + "\",\"version\":\"20061206\",\"fork\":0,\"user_id\":\"" + userId + "\",\"res_from\":" + res_from + ",\"with_global\":1,\"scores\":1,\"nicoru\":0}},{\"ping\":{\"content\":\"pf:0\"}},{\"ping\":{\"content\":\"rf:0\"}}]"};
 		}
 		public void stopRecording(WebSocket _ws, WebSocket _wsc) {
 			addDebugBuf("stop recording");
@@ -877,7 +886,7 @@ namespace namaichi.rec
 		private void onWscMessageReceive(object sender, MessageReceivedEventArgs e) {
 			addDebugBuf("on wsc message " + e.Message);
 			
-			if (isTimeShift && e.Message.StartsWith("{\"ping\":{\"content\":\"rf:")) {
+			if (isTimeShift && e.Message.StartsWith("{\"ping\":{\"content\":\"rf:") && !isChase) {
 				closeWscProcess();
 				try {commentSW.Close();}
 				catch (Exception eee) {addDebugBuf(eee.Message + eee.Source + eee.StackTrace + eee.TargetSite);}
@@ -885,7 +894,7 @@ namespace namaichi.rec
 				rm.form.addLogText("コメントの保存を完了しました");
 			}
 			
-			if (rm.rfu != rfu || (!isTimeShift && !isRetry)) {
+			if (rm.rfu != rfu || ((!isTimeShift || isChase) && !isRetry)) {
 				try {
 					if (wsc != null) wsc.Close();
 				} catch (Exception ee) {
@@ -901,8 +910,19 @@ namespace namaichi.rec
 			var chatinfo = new namaichi.info.ChatInfo(xml);
 			
 			XDocument chatXml;
-			if (isTimeShift) chatXml = chatinfo.getFormatXml(openTime);
-			else chatXml = chatinfo.getFormatXml(serverTime);
+			if (isTimeShift && !isChase) chatXml = chatinfo.getFormatXml(openTime);
+			else {
+				if (!isTimeShift || isRealtimeChase)
+					chatXml = chatinfo.getFormatXml(serverTime);
+				else {
+					var vposStartTime = (tsConfig.isVposStartTime) ? (long)firstSegmentSecond : 0;
+					if (programType == "official") {
+						//chatXml = chatinfo.getFormatXml(0, true, tsConfig.timeSeconds);
+						chatXml = chatinfo.getFormatXml(0, true, tsConfig.timeSeconds);
+					} else chatXml = chatinfo.getFormatXml(openTime + vposStartTime);
+					
+				}
+			}
 			addDebugBuf("xml " + chatXml.ToString());
 			
 			if (chatinfo.root == "chat" && (chatinfo.contents.IndexOf("/hb ifseetno") != -1 && 
@@ -929,8 +949,16 @@ namespace namaichi.rec
 						(Regex.Replace(e.Message, 
 			            	"\"vpos\"\\:(\\d+)", 
 			            	"\"vpos\":" + chatinfo.vpos + ""));
-					commentSW.WriteLine(writeStr);
-					commentSW.Flush();
+					
+					if (isChase && !isRealtimeChase && chaseCommentBuf != null) {
+						chaseCommentBuf.Add(writeStr);
+						
+						if (tscg.isEnd)
+							chaseCommentSum();
+					} else {
+						commentSW.WriteLine(writeStr);
+						commentSW.Flush();
+					}
 					addDebugBuf("write comment " + writeStr);
 		             
 				}
@@ -975,8 +1003,8 @@ namespace namaichi.rec
 			var c = (chat.premium == "3") ? "red" :
 				((chat.premium == "7") ? "blue" : "black");
 			
-			
-			rm.form.addComment(keikaTime, chat.contents, chat.userId, chat.score, isTimeShift, c);
+			if (!isTimeShift || isRealtimeChase)
+				rm.form.addComment(keikaTime, chat.contents, chat.userId, chat.score, c);
 			
 		}
 		private bool isFirstChoiceQuality(string currentQuality, string bestGettableQuolity) {
@@ -988,16 +1016,18 @@ namespace namaichi.rec
 			
 		}
 		private string getBestGettableQuolity(string msg) {
-			var qualityList = new string[] {"abr", "super_high", "high",
+			var qualityList = new List<string>{//"abr",
+				"super_high", "high",
 				"normal", "low", "super_low"};
 			var gettableList = util.getRegGroup(msg, "\"qualityTypes\"\\:\\[(.+?)\\]").Replace("\"", "").Split(',');
 			var ranks = (rm.ri == null) ? (qualityRank.Split(',')) :
 					rm.ri.qualityRank;
+			if (ranks.Length == 6) qualityList.Insert(0, "abr");
 			
-			var bestGettableQuality = "abr";
+			var bestGettableQuality = "normal";
 			foreach(var r in ranks) {
 				var q = qualityList[int.Parse(r)];
-				if (gettableList.Contains(q)) {
+				if (gettableList.Contains(q) && q != "abr") {
 					bestGettableQuality = q;
 					break;
 				}
@@ -1005,7 +1035,13 @@ namespace namaichi.rec
 			return bestGettableQuality;
 		}
 		private void sendUseableStreamGetCommand(string bestGettableQuolity) {
-			var req = "{\"type\":\"watch\",\"body\":{\"command\":\"getstream\",\"requirement\":{\"protocol\":\"hls\",\"quality\":\"" + bestGettableQuolity + "\",\"isLowLatency\":false}}}";
+			var req = "";
+			if (isRtmp) 
+				req = ("{\"type\":\"watch\",\"body\":{\"command\":\"getstream\",\"requirement\":{\"protocol\":\"rtmp\",\"quality\":\"" + bestGettableQuolity + "\"}}}");
+			else 
+				req = (isChase) ? 
+					("{\"type\":\"watch\",\"body\":{\"command\":\"getstream\",\"requirement\":{\"protocol\":\"hls\",\"quality\":\"" + bestGettableQuolity + "\",\"isChasePlay\":true}}}")
+					: ("{\"type\":\"watch\",\"body\":{\"command\":\"getstream\",\"requirement\":{\"protocol\":\"hls\",\"quality\":\"" + bestGettableQuolity + "\",\"isLowLatency\":false,\"isChasePlay\":false}}}");
 			ws.Send(req);
 		}
 		override public void reConnect() {
@@ -1026,7 +1062,7 @@ namespace namaichi.rec
 				addDebugBuf("reconnect ws exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
 		}
-		private bool isEndedProgram() {
+		public bool isEndedProgram() {
 			var isPass = (DateTime.Now - lastEndProgramCheckTime < TimeSpan.FromSeconds(5));
 			addDebugBuf("ispass " + isPass + " lastendprogramchecktime " + lastEndProgramCheckTime);
 			if (isPass) return false;
@@ -1044,7 +1080,7 @@ namespace namaichi.rec
 				container = cgTask.Result[0];
 				res = util.getPageSource(h5r.url, container, null, false, 5000);
 				res = System.Web.HttpUtility.HtmlDecode(res);
-				var _webSocketInfo = h5r.getWebSocketInfo(res);
+				var _webSocketInfo = Html5Recorder.getWebSocketInfo(res, isRtmp, isChase, isTimeShift);
 				isNoPermission = true;
 				addDebugBuf("isendprogram login websocketInfo " + webSocketInfo[0] + " " + webSocketInfo[1]);
 				if (_webSocketInfo[0] == null || _webSocketInfo[1] == null) {
@@ -1125,7 +1161,7 @@ namespace namaichi.rec
 				container = cgTask.Result[0];
 				var res = util.getPageSource(h5r.url, container, null, false, 5000);
 				res = System.Web.HttpUtility.HtmlDecode(res);
-				var _webSocketInfo = h5r.getWebSocketInfo(res);
+				var _webSocketInfo = Html5Recorder.getWebSocketInfo(res, isRtmp, isChase, isTimeShift);
 				isNoPermission = true;
 				addDebugBuf("resetWebsocketInfo " + _webSocketInfo[0] + " " + _webSocketInfo[1]);
 				if (_webSocketInfo[0] == null || _webSocketInfo[1] == null) {
@@ -1141,9 +1177,11 @@ namespace namaichi.rec
 				xcg.resetCommentFile();
 			} else {
 				try {
-					commentSW.WriteLine("</packet>");
-					commentSW.Close();
-					commentSW = null;
+					if (commentSW != null) {
+						commentSW.WriteLine("</packet>");
+						commentSW.Close();
+						commentSW = null;
+					}
 				} catch (Exception e) {
 					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
@@ -1194,6 +1232,131 @@ namespace namaichi.rec
 				}
 			}
 		}
+		private void rtmpRecord(string websocketMsg, string quality) {
+			string url = null;
+			if (websocketMsg != null) {
+				var _msg = util.getRegGroup(websocketMsg,  "\"currentStream\":{(.+?)}");
+				if (_msg == null) {
+					util.debugWriteLine("rtmpRecord _msg null");
+					return;
+				}
+				url = util.getRegGroup(_msg, "\"uri\":\"(.+?)\"") + "/" + util.getRegGroup(_msg, "\"name\":\"(.+?)\"");
+				util.debugWriteLine("rtmp url " + url);
+			}
+			
+			rfu.subGotNumTaskInfo = new List<numTaskInfo>();
+			if (rr != null) rr.resetRtmpUrl(url);
+			else {
+				rr = new RtmpRecorder(lvid, container, rm, rfu, !isRtmp, recFolderFile, this, openTime);
+				Task.Run(() => {
+					rr.record(url, quality);
+					rm.hlsUrl = "end";
+					if (rr.isEndProgram) {
+						isEndProgram = true;
+						if (endTime == DateTime.MinValue)
+							endTime = DateTime.Now;
+					}
+					isRetry = false;
+				});
+			}
+			
+			/*
+			Task.Run(() => {
+			    xcg = new XmlCommentGetter(lvid, container, rm, rfu, recFolderFile[1], this, isTimeShift, isRtmp, openTime, _openTime, serverTime);
+			    xcg.get();
+			});
+			while (rm.rfu == rfu && isRetry) Thread.Sleep(1000);
+			*/
+			/*
+			if (websocketMsg == null) {
+				if (isTimeShift) {
+					
+					
+				} else {
+					/*
+					xcg = new XmlCommentGetter_ontime( 
+							userId, rm, rfu, rm.form, openTime, 
+							recFolderFile, lvid, container, 
+							programType, _openTime, this);
+					xcg.save();
+					*
+				}
+			}
+			*/
+		}
+		private void saveXmlComment() {
+			tscgx = new TimeShiftCommentGetter_xml ( 
+					userId, rm, rfu, rm.form, openTime, 
+					recFolderFile, lvid, container, 
+					programType, _openTime, this, 
+					(isRtmp) ? 0 : tsConfig.timeSeconds, 
+					(isRtmp) ? false : tsConfig.isVposStartTime, isRtmp);
+			tscgx.save();
+		}
+		private bool isChaseStream(string msg) {
+			var url = util.getRegGroup(msg, "(http.+?)\"");
+			if (url == null) return false;
+			
+			var res = util.getPageSource(url, container);
+			if (res == null) {
+				return false;
+			}
+			string segUrl = null;
+			foreach (var s in res.Split('\n')) {
+				if (s.StartsWith("#") || s.IndexOf(".m3u8") < 0) continue;
+				segUrl = s;
+				break;
+			}
+			
+			var masterBaseUrl = util.getRegGroup(url, "(.+/)");
+			var baseUrl = util.getRegGroup(masterBaseUrl + segUrl, "(.+/)");
+			addDebugBuf("master m3u8 res " + res);
+			addDebugBuf("seg m3u8 " + 
+					masterBaseUrl + segUrl);
+			var _segUrl = masterBaseUrl + segUrl;
+			
+			res = util.getPageSource(_segUrl, container);
+			var ret = res != null && res.IndexOf("#DMC-CURRENT-POSITION") != -1;
+			addDebugBuf("isChaseStream " + ret);
+			if (res != null) {
+				var _duration = util.getRegGroup(res, "#STREAM-DURATION:(.+)");
+				if (_duration != null && tsConfig.timeSeconds < 0) {
+					var duration = (int)(double.Parse(_duration, System.Globalization.NumberStyles.Float));
+					tsConfig.timeSeconds = duration + tsConfig.timeSeconds;
+					tsConfig.endTimeSeconds = duration + tsConfig.endTimeSeconds;
+				}
+			}
+				
+			return ret;
+		}
+		void chaseCommentSum() {
+			var gotComList = new List<string>();
+			gotComList.AddRange(gotTsCommentList);
+			foreach (var c in chaseCommentBuf) {
+				if (gotComList.IndexOf(c) > -1)
+					gotComList.Remove(c);
+			}
+			
+			//var d = chaseCommentBuf[0];
+			chaseCommentBuf.RemoveAt(0);
+			//var f = chaseCommentBuf[0];
+			
+			//var a = gotComList[gotComList.Count - 1];
+			//var b = chaseCommentBuf[0];
+			
+			try {
+				for (var i = 0; i < gotComList.Count; i++) {
+					//c.IndexOf(thread
+					commentSW.WriteLine(gotComList[i]);
+				}
+				//commentSW.WriteLine("aaaaa");
+				foreach (var c in chaseCommentBuf)
+					commentSW.WriteLine(c);
+				commentSW.Flush();
+				chaseCommentBuf = null;
+			} catch (Exception e) {
+				addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
+		}
 	}
 }
-	

@@ -21,6 +21,7 @@ using System.Threading;
 using System.Drawing;
 using namaichi.info;
 
+/*
 namespace namaichi.rec
 {
 	/// <summary>
@@ -344,3 +345,4 @@ namespace namaichi.rec
 		}
 	}
 }
+*/

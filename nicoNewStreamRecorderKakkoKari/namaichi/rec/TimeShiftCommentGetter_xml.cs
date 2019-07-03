@@ -120,11 +120,7 @@ namespace namaichi.rec
 //			});
 		}
 		private bool setQuePosList() {
-<<<<<<< HEAD
 			var url = "https://live.nicovideo.jp/api/getplayerstatus/" + lvid;
-=======
-			var url = "http://live.nicovideo.jp/api/getplayerstatus/" + lvid;
->>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 			var res = util.getPageSource(url, container, null, false, 5000);
 			
 			var xml = new XmlDocument();
@@ -276,11 +272,7 @@ namespace namaichi.rec
 			}
 		}
 		private string getWaybackKey() {
-<<<<<<< HEAD
 			var url = "https://live.nicovideo.jp/api/getwaybackkey?thread=" + thread;
-=======
-			var url = "http://live.nicovideo.jp/api/getwaybackkey?thread=" + thread;
->>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 			var r = util.getPageSource(url, container, null, false, 5000);
 			if (r == null) {
 				util.debugWriteLine("getwayback exception " + url);
@@ -312,11 +304,7 @@ namespace namaichi.rec
 		}
 		*/
 		private bool getInfo(out string address, out string port, out string thread) {
-<<<<<<< HEAD
 			var url = "https://live.nicovideo.jp/api/getplayerstatus?v=" + lvid;
-=======
-			var url = "http://live.nicovideo.jp/api/getplayerstatus?v=" + lvid;
->>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 			var res = util.getPageSource(url, container, null, false, 5000);
 			
 			var xml = new XmlDocument();

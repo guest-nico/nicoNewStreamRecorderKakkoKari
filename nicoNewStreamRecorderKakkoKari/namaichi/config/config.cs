@@ -157,8 +157,9 @@ public class config
 			{"IsDisplayComment","true"},
 			{"IstitlebarSamune","true"},
 			{"IsautoFollowComgen","false"},
-			{"qualityRank","0,1,2,3,4,5"},
+			{"qualityRank","0,1,2,3,4"},
 			{"IsMiniStart","false"},
+			{"IsConfirmCloseMsgBox","true"},
 			{"IsLogFile","false"},
 			{"IsSegmentNukeInfo","true"},
 			{"segmentSaveType","0"},
@@ -169,10 +170,11 @@ public class config
 			{"anotherEngineCommand",""},
 			{"IsDefaultRtmpPath","true"},
 			{"rtmpPath",""},
-<<<<<<< HEAD
 			{"IsNoRecordRtmpBlackScreen","false"},
-=======
->>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
+			{"IsChaseRecord","false"},
+			{"IsOnlyTimeShiftChase","true"},
+			{"IsChaseReserveRec","false"},
+			
 			{"IsUsePlayer","true"},
 			{"IsDefaultPlayer","true"},
 			{"IsUseCommentViewer","true"},
@@ -201,6 +203,7 @@ public class config
 			
 			{"cookieFile",""},
 			{"iscookie","false"},
+			{"IsBrowserShowAll","false"},
 			{"recordDir",""},
 			{"IsdefaultRecordDir","true"},
 			{"IscreateSubfolder","true"},
@@ -221,7 +224,7 @@ public class config
 			{"rokugaTourokuWidth","950"},
 			{"rokugaTourokuHeight","500"},
 			{"rokugaTourokuMaxRecordingNum","10"},
-			{"rokugaTourokuQualityRank","0,1,2,3,4,5"},
+			{"rokugaTourokuQualityRank","0,1,2,3,4"},
 		};
 		try {
 			var buf = new Dictionary<string,string>();

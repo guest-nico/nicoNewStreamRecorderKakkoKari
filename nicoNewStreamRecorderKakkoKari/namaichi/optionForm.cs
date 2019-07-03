@@ -47,6 +47,8 @@ namespace namaichi
 			nicoSessionComboBox1.Selector.PropertyChanged += Selector_PropertyChanged;
 			nicoSessionComboBox2.Selector.PropertyChanged += Selector2_PropertyChanged;
 			setFormFromConfig();
+			
+			//tabControl1.TabPages.RemoveAt(6);
 		}
 		
 		void hozonFolderSanshouBtn_Click(object sender, EventArgs e)
@@ -129,6 +131,7 @@ namespace namaichi
 				{"IsautoFollowComgen",isAutoFollowComGen.Checked.ToString().ToLower()},
 				{"qualityRank",getQualityRank()},
 				{"IsMiniStart",isMiniStartChkBox.Checked.ToString().ToLower()},
+				{"IsConfirmCloseMsgBox",isConfirmCloseMsgBoxChkBox.Checked.ToString().ToLower()},
 				{"IsLogFile",isLogFileChkBox.Checked.ToString().ToLower()},
 				{"IsSegmentNukeInfo",isSegmentNukeInfoChkBox.Checked.ToString().ToLower()},
 				{"segmentSaveType",getSegmentSaveType()},
@@ -139,6 +142,10 @@ namespace namaichi
 				{"anotherEngineCommand",anotherEngineCommandText.Text},
 				{"IsDefaultRtmpPath",isDefaultRtmpChkBox.Checked.ToString().ToLower()},
 				{"rtmpPath",rtmpPathText.Text},
+				{"IsChaseRecord",isChaseRecordRadioBtn.Checked.ToString().ToLower()},
+				{"IsOnlyTimeShiftChase",isOnlyTimeShiftChaseChkBox.Checked.ToString().ToLower()},
+				{"IsChaseReserveRec",isChaseReserveRecChkBox.Checked.ToString().ToLower()},
+				
 				{"IsUsePlayer",isUsePlayerChkBox.Checked.ToString().ToLower()},
 				{"IsUseCommentViewer",isUseCommentViewerChkBox.Checked.ToString().ToLower()},
 				{"IsDefaultPlayer",isDefaultPlayerRadioBtn.Checked.ToString().ToLower()},
@@ -170,6 +177,7 @@ namespace namaichi
 				{"issecondlogin2",useSecondLoginChkBox2.Checked.ToString().ToLower()},
 				{"cookieFile2",cookieFileText2.Text},
 				{"iscookie2",isCookieFileSiteiChkBox2.Checked.ToString().ToLower()},
+				{"IsBrowserShowAll",checkBoxShowAll.Checked.ToString().ToLower()},
 				{"user_session2",""},
 				{"user_session_secure2",""},
 			};
@@ -351,6 +359,7 @@ namespace namaichi
         	isAutoFollowComGen.Checked = bool.Parse(cfg.get("IsautoFollowComgen"));
         	setInitQualityRankList(cfg.get("qualityRank"));
         	isMiniStartChkBox.Checked = bool.Parse(cfg.get("IsMiniStart"));
+        	isConfirmCloseMsgBoxChkBox.Checked = bool.Parse(cfg.get("IsConfirmCloseMsgBox"));
         	isLogFileChkBox.Checked = bool.Parse(cfg.get("IsLogFile"));
         	isSegmentNukeInfoChkBox.Checked = bool.Parse(cfg.get("IsSegmentNukeInfo"));
         	setSegmentSaveType(cfg.get("segmentSaveType"));
@@ -363,6 +372,11 @@ namespace namaichi
 			isDefaultRtmpChkBox.Checked = bool.Parse(cfg.get("IsDefaultRtmpPath"));
 			rtmpPathText.Text = cfg.get("rtmpPath");
 			isDefaultEngineChkBox_UpdateAction();
+			isChaseRecordRadioBtn.Checked = bool.Parse(cfg.get("IsChaseRecord"));
+			isOnlyTimeShiftChaseChkBox.Checked = bool.Parse(cfg.get("IsOnlyTimeShiftChase"));
+			isChaseRecordRadioBtn_UpdateAction();
+			isChaseReserveRecChkBox.Checked = bool.Parse(cfg.get("IsChaseReserveRec"));
+			
 			setPlayerType();
 			setCommentViewerType();
 			anotherPlayerPathText.Text = cfg.get("anotherPlayerPath");
@@ -403,6 +417,7 @@ namespace namaichi
         	isCookieFileSiteiChkBox2.Checked = bool.Parse(cfg.get("iscookie2"));
         	isCookieFileSiteiChkBox2_UpdateAction();
         	cookieFileText2.Text = cfg.get("cookieFile2");
+        	checkBoxShowAll.Checked = bool.Parse(cfg.get("IsBrowserShowAll"));
         		
         	var si = SourceInfoSerialize.load(false);
         	nicoSessionComboBox1.Selector.SetInfoAsync(si);
@@ -568,21 +583,22 @@ namespace namaichi
 		
 		void highRankBtn_Click(object sender, EventArgs e)
 		{
-			int[] ranks = {1,2,3,4,5,0};
+			int[] ranks = {0,1,2,3,4};
 			qualityListBox.Items.Clear();
 			qualityListBox.Items.AddRange(getRanksToItems(ranks, qualityListBox));
 		}
 		void lowRankBtn_Click(object sender, EventArgs e)
 		{
-			int[] ranks = {5, 4, 3, 2, 1, 0};
+			int[] ranks = {4, 3, 2, 1, 0};
 			qualityListBox.Items.Clear();
 			qualityListBox.Items.AddRange(getRanksToItems(ranks, qualityListBox));
 		}
 		public object[] getRanksToItems(int[] ranks, ListBox owner) {
 			var items = new Dictionary<int, string> {
-				{0, "自動(abr)"}, {1, "3Mbps(super_high)"},
-				{2, "2Mbps(high)"}, {3, "1Mbps(normal)"},
-				{4, "384kbps(low)"}, {5, "192kbps(super_low)"},
+				//{0, "自動(abr)"}, 
+				{0, "3Mbps(super_high)"},
+				{1, "2Mbps(high)"}, {2, "1Mbps(normal)"},
+				{3, "384kbps(low)"}, {4, "192kbps(super_low)"},
 			};
 //			var ret = new ListBox.ObjectCollection(owner);
 			var ret = new List<object>();
@@ -623,9 +639,10 @@ namespace namaichi
 		}
 		List<int> getItemsToRanks(ListBox.ObjectCollection items) {
 			var itemsDic = new Dictionary<int, string> {
-				{0, "自動(abr)"}, {1, "3Mbps(super_high)"},
-				{2, "2Mbps(high)"}, {3, "1Mbps(normal)"},
-				{4, "384kbps(low)"}, {5, "192kbps(super_low)"},
+				//{0, "自動(abr)"}, 
+				{0, "3Mbps(super_high)"},
+				{1, "2Mbps(high)"}, {2, "1Mbps(normal)"},
+				{3, "384kbps(low)"}, {4, "192kbps(super_low)"},
 			};
 			var ret = new List<int>();
 			for (int i = 0; i < items.Count; i++) {
@@ -650,6 +667,10 @@ namespace namaichi
 //			ranks.AddRange(qualityRank.Split(','));
 			
 			qualityListBox.Items.Clear();
+			if (ranks.Count == 6) {
+				ranks.Remove(0);
+				for (var i = 0; i < ranks.Count; i++) ranks[i] -= 1;
+			}
 			var items = getRanksToItems(ranks.ToArray(), qualityListBox);
 			qualityListBox.Items.AddRange(items);
 		}
@@ -924,6 +945,14 @@ namespace namaichi
 		{
 			util.debugWriteLine(volumeBar.Value);
 			volumeText.Text = "音量：" + volumeBar.Value;
+		}
+		void isChaseRecordRadioBtn_UpdateAction() {
+			isOnlyTimeShiftChaseChkBox.Enabled = 
+				isChaseRecordRadioBtn.Checked;
+		}
+		void IsChaseRecordRadioBtnCheckedChanged(object sender, EventArgs e)
+		{
+			isChaseRecordRadioBtn_UpdateAction();
 		}
 	}
 }

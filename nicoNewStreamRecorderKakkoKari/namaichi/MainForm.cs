@@ -55,14 +55,12 @@ namespace namaichi
 		private play.Player player;
 		private string labelUrl;
 		private Thread madeThread;
-<<<<<<< HEAD
 		private Size originalSize = Size.Empty;
-=======
->>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 		
 		public MainForm(string[] args)
 		{
 			madeThread = Thread.CurrentThread;
+			//config.set("IsHokan", "false");
 			
 			//test
 			app.form = this;
@@ -75,11 +73,12 @@ namespace namaichi
 //				if (config.get("IsLogFile") == "true") 
 //					config.set("IsLogFile", "false");
 //			#endif
-			
+			/*
 			if (false && !isFullAccessDirectory()) {
 				MessageBox.Show("このディレクトリーにはファイルの読み書き権限がありませんでした。別のフォルダに移すかフォルダに権限を付与してください。");
 				System.Environment.Exit(0);
 			}
+			*/
 			
 				
 			
@@ -278,7 +277,7 @@ namespace namaichi
         public void addLogTextTest(string t) {
        		addLogText(t);
         }
-		public void setRecordState(String t) {
+		public void setRecordState(String t, string titleT = null) {
        		if (!util.isShowWindow) return;
        		//util.debugWriteLine("setRecordState form");
 	       	try {
@@ -288,7 +287,7 @@ namespace namaichi
 	       		    try {
 		        	    recordStateLabel.Text = t;
 		        	    if (rec.isTitleBarInfo) {
-		        	    	Text = t;
+		        	    	Text = titleT == null ? t : titleT;
 		        	    }
 	       		    } catch (Exception e) {
 	       		       	util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
@@ -459,11 +458,11 @@ namespace namaichi
 			}
 			player.setStatistics(visit, comment);
 		}
-       public void addComment(string time, string comment, string userId, string score, bool isTimeShift, string color) {
+       public void addComment(string time, string comment, string userId, string score, string color) {
        	if (!util.isShowWindow) return;
        	if (!bool.Parse(config.get("IsDisplayComment"))) return;
        	try {
-       		if (!IsDisposed && !isTimeShift) {
+       		if (!IsDisposed) {
 		        	Invoke((MethodInvoker)delegate() {
 		       	       	try {
 			       	       	var rows = new string[]{time, comment};
@@ -565,7 +564,7 @@ namespace namaichi
 			if (!kakuninClose()) e.Cancel = true;
 		}
 		bool kakuninClose() {
-			if (rec.rfu != null) {
+			if (rec.rfu != null && bool.Parse(config.get("IsConfirmCloseMsgBox"))) {
 				var _m = (rec.isPlayOnlyMode) ? "視聴" : "録画";
 				DialogResult res = MessageBox.Show(_m + "中ですが終了しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 				if (res == DialogResult.No) return false;
@@ -839,7 +838,6 @@ namespace namaichi
    	       		}
         	});
 		}
-<<<<<<< HEAD
 		void MiniBtnClick(object sender, EventArgs e)
 		{
 			if (originalSize == Size.Empty) {
@@ -895,7 +893,5 @@ namespace namaichi
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
 		}
-=======
->>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 	}
 }

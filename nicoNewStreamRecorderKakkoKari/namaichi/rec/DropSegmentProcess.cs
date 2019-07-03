@@ -30,7 +30,9 @@ namespace namaichi.rec
 		private string recFolderFileOrigin;
 		private RecordFromUrl rfu;
 		private RecordingManager rm;
-		public DropSegmentProcess(DateTime _lastWroteSegmentDt, int _lastSegmentNo, Record rec, string recFolderFileOrigin, RecordFromUrl rfu, RecordingManager rm) {
+		private Html5Recorder h5r;
+		private ChaseHokan chaseHokan = null;
+		public DropSegmentProcess(DateTime _lastWroteSegmentDt, int _lastSegmentNo, Record rec, string recFolderFileOrigin, RecordFromUrl rfu, RecordingManager rm, Html5Recorder h5r) {
 //			this.nti = s;
 			this.lastWroteSegmentDt = _lastWroteSegmentDt;
 			this.lastSegmentNo = _lastSegmentNo;
@@ -38,6 +40,7 @@ namespace namaichi.rec
 			this.recFolderFileOrigin = recFolderFileOrigin;
 			this.rfu = rfu;
 			this.rm = rm;
+			this.h5r = h5r;
 		}
 		public void start(numTaskInfo nti) {
 			try {
@@ -51,18 +54,29 @@ namespace namaichi.rec
 						rec.addDebugBuf("drop segment process subList min " + subL[0].dt + " " + subL[0].no + " max " + subL[subL.Count - 1].dt + " " + subL[subL.Count - 1].no);
 				}
 				var fName = writeNukeSegment();
-				rec.addDebugBuf("drop fname " + fName);
+				rec.addDebugBuf("drop fname " + (fName == null ? "" : (fName[0] + " " + fName[1])));
 				var dropTime = (nti.no - lastSegmentNo - 1) * nti.second;
 				var msg = lastWroteSegmentDt.ToString() + "ぐらいから" + nti.dt.ToString() + "ぐらいまでの動画データが取得できませんでした。(" + dropTime + "秒)";
 				string hokanMsg = (fName == null) ? "補完設定がされていませんでした。" : 
-					((fName == "") ? "補完用データがありませんでした。" : ("補完を試みました。" + fName));
+				//	((fName == "") ? "補完用データがありませんでした。" : ("補完を試みました。" + fName));
+					("補完を試みます。");
 				if (rm.cfg.get("IsSegmentNukeInfo") == "true")
-					writeNukeInfo(msg, fName, nti.no, hokanMsg);
+					writeNukeInfo(msg, null, nti.no, hokanMsg);
 				else 
 					rec.addDebugBuf("write nuke info no");
-					
+				
 				rm.form.addLogText(msg);
 				rm.form.addLogText(hokanMsg, true);
+				
+				if (fName != null) {
+					rec.addDebugBuf("drop hokan chase  nti.no " + nti.no + " nti.second " + nti.second);
+					chaseHokan = new ChaseHokan(nti, lastSegmentNo, fName, rfu.lvid, rm, h5r);
+					Task.Run(() => {
+						chaseHokan.start();
+						chaseHokan = null;
+						rec.dsp = null;
+					});
+				}
 			} catch (Exception e) {
 				rec.addDebugBuf("drop exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
@@ -76,13 +90,14 @@ namespace namaichi.rec
 //			for (var i = lastSegmentNo + 1; i < nti.no; i++) {
 //				sw.WriteLine("セグメントNo." + i);
 //			}
-			sw.WriteLine(hokanMsg);
+//			sw.WriteLine(hokanMsg);
 			sw.WriteLine();
 			sw.Close();
 			
 		}
-		private string writeNukeSegment() {
+		private string[] writeNukeSegment() {
 			try {
+				/*
 				if (rfu.subGotNumTaskInfo == null) {
 					rec.addDebugBuf("writenuke seg rfu.subGotNumTaskInfo null");
 					return null;
@@ -95,15 +110,18 @@ namespace namaichi.rec
 					rec.addDebugBuf("writenuke seg firstFlvData == null");
 					return null;
 				}
-				 
+				*/
+				if (!bool.Parse(rm.cfg.get("IsHokan"))) {
+					return null;
+				}
 				var name = getOkFileName();
 				
-				var c = getCount(rfu.subGotNumTaskInfo);
+				//var c = getCount(rfu.subGotNumTaskInfo);
 //				util.debugWriteBuf("write nuke segment start seg dt " + rfu.subGotNumTaskInfo[0].dt + " no " + rfu.subGotNumTaskInfo[0].no + " end dt " + rfu.subGotNumTaskInfo[c].dt + " end no " + rfu.subGotNumTaskInfo[c].no);
-				rec.addDebugBuf("drop segment firstData " + rfu.firstFlvData);
-				rec.addDebugBuf("drop segment firstFlvData len " + " len " + rfu.firstFlvData.Length);
+				//rec.addDebugBuf("drop segment firstData " + rfu.firstFlvData);
+				//rec.addDebugBuf("drop segment firstFlvData len " + " len " + rfu.firstFlvData.Length);
 				
-				var fs = new FileStream(name, FileMode.Create, FileAccess.Write);
+				//var fs = new FileStream(name, FileMode.Create, FileAccess.Write);
 				/*
 				if (rfu.isSubAccountHokan) {
 					if (rfu.firstFlvData != null && !rfu.isSubAccountHokan) {
@@ -119,7 +137,9 @@ namespace namaichi.rec
 					fs.Close();
 				} else {
 				*/
-					rtmpSubNtiWrite(fs);
+				
+					//補完機能　廃止
+					//rtmpSubNtiWrite(fs);
 				//}
 				
 				
@@ -127,9 +147,11 @@ namespace namaichi.rec
 				return name;
 			} catch (Exception e) {
 				rec.addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
-				return "補完中にエラーが発生しました。";
+				util.debugWriteLine("補完ファイルの設定中にエラーが発生しました");
+				return null;
 			}
 		}
+		/*
 		private void rtmpSubNtiWrite(FileStream fs) {
 			//get ts data
 			while (true) {
@@ -191,14 +213,27 @@ namespace namaichi.rec
 				}
 			}
 		}
-		private string getOkFileName() {
+		*/
+		private string[] getOkFileName() {
 			//var ext = (rfu.isSubAccountHokan) ? ".ts" : ".flv";
 			var ext = ".flv";
 			ext = ".ts";
+			ext = "";
+			var files = Directory.GetFiles(Directory.GetParent(recFolderFileOrigin).FullName);
+			var dirs = Directory.GetDirectories(Directory.GetParent(recFolderFileOrigin).FullName);
 			for (var i = 0; i < 1000; i++) {
-				var name = recFolderFileOrigin + "n" + i + ext;
-				if (!File.Exists(name) && !Directory.Exists(name))
-					return name;
+				//var name = recFolderFileOrigin + "n_ts_0h0m0s_" + i + ext;
+				var name = recFolderFileOrigin + "n_ts";
+				var name0 = (name + i.ToString()).Replace('/', '\\');
+				
+				var isExists = false;
+				foreach (var f in files)
+					if (f.IndexOf(name0) != -1) isExists = true;
+				foreach (var f in dirs)
+					if (f.IndexOf(name0) != -1) isExists = true;
+				if (!isExists)
+					//return name;
+					return new string[] {name0, name + "_0h0m0s_" + i};
 			}
 			return null;
 		}
@@ -222,7 +257,7 @@ namespace namaichi.rec
 					return;
 				}
 				//var baseSecond = (rfu.subGotNumTaskInfo.Count > 1) ? rfu.subGotNumTaskInfo[0].second : -1;
-				var fName = writeNukeSegment();
+				var fName = writeNukeSegment()[0];
 				//var dropTime = (baseSecond == -1) ? "最終セグメントまで" : (((nti.no - lastSegmentNo - 1) * nti.second).ToString() + "秒");
 				//var dropTime = "最終セグメントまで";
 				var msg = lastWroteSegmentDt.ToString() + "ぐらいから" + "最終セグメントまでの動画データが取得できませんでした。(" + (rfu.subGotNumTaskInfo.Count * second) + ")";
@@ -230,10 +265,18 @@ namespace namaichi.rec
 					((fName == "") ? "補完用データがありませんでした。" : ("補完を試みました。" + fName));
 				writeNukeInfo(msg, fName, -1, hokanMsg);
 				rm.form.addLogText(msg);
-				rm.form.addLogText(hokanMsg);
+//				rm.form.addLogText(hokanMsg);
 			} catch (Exception e) {
 				rec.addDebugBuf("writeRemaining exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
+		}
+		public void updateHokanEndtime() {
+			rec.addDebugBuf("updateHokanEndtime");
+			rm.form.addLogText("補完中にセグメント抜けが発生しました。作成中の補完ファイルに追加します");
+			if (chaseHokan == null || chaseHokan.wr == null || 
+			    	chaseHokan.wr.rec == null || 
+			    	chaseHokan.wr.rec.tsConfig == null) return;
+			chaseHokan.wr.rec.tsConfig.endTimeSeconds = -1;//(int)newEndtime + 10;
 		}
 	}
 }

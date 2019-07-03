@@ -28,34 +28,27 @@ namespace namaichi.rec
 		private string res;
 		private bool isJikken = false;
 //		private JikkenRecorder jr;
-		private string lvid;
+		public string lvid;
 		public int[] tsRecNumArr;
 		public List<numTaskInfo> subGotNumTaskInfo = null;
 		public string[] id = new string[2];
 		public bool isRtmpMain = false;
-		public bool isRtmpTimeShiftEnabled = true;
+		//public bool isRtmpTimeShiftEnabled = true;
 		public byte[] firstFlvData = null;
 		
 		public RecordFromUrl(RecordingManager rm)
 		{
 			this.rm = rm;
+			isRtmpMain = rm.cfg.get("EngineMode") == "2";
+			
 		}
 		public int rec(string url, string lvid) {
 			//endcode 0-その他の理由 1-stop 2-最初に終了 3-始まった後に番組終了
 			util.debugWriteLine("RecordFromUrl rec");
 			util.debugWriteLine(url + " " + lvid);
 			this.lvid = util.getRegGroup(lvid, "(lv\\d+)");
-			tsRecNumArr = (this.lvid == lvid) ? null : Array.ConvertAll<string, int>(util.getRegGroup(lvid, ",(.+)").Split(','), (i) => {return int.Parse(i);});
 			this.url = util.getRegGroup(url, "([^,]+)");
-			
-			
-			if (rm.cfg.get("EngineMode") != "2") {
-				isRtmpMain = false;
-			} else {
-				isRtmpMain = true;
-			}
-			isRtmpTimeShiftEnabled = isRtmpMain;
-			
+			tsRecNumArr = (this.lvid == lvid) ? null : Array.ConvertAll<string, int>(util.getRegGroup(lvid, ",(.+)").Split(','), (i) => {return int.Parse(i);});
 			
 			var mainT = Task.Run<int>(() => {return _rec(this.url);});
 			
@@ -79,11 +72,8 @@ namespace namaichi.rec
 			CookieContainer cc;
 			
 			var pageType = this.getPageType(url, true, ref jr, out cc);
-			//if (pageType == -2 && isSub) return 2;
 			if (pageType == -1) return 2;
 			
-			//var ccInd = (isSub) ? 1 : 0;
-			//var ccInd = 0;
 			util.debugWriteLine("pagetype " + pageType + " container " + cc);
 			if (cc == null || cc == null) {
 				rm.form.addLogText("ログインに失敗しました。");
@@ -93,9 +83,7 @@ namespace namaichi.rec
 				}
 				if (bool.Parse(rm.cfg.get("IsfailExit"))) {
 					rm.rfu = null;
-					if (util.isShowWindow) {
-						rm.form.close();
-					}
+					rm.form.close();
 				}
 				return 2;
 			}
@@ -104,14 +92,15 @@ namespace namaichi.rec
 			
 			while (this == rm.rfu) {
 				util.debugWriteLine("pagetype " + pageType);
-				if (pageType == 0 || ((!isRtmp || isRtmpTimeShiftEnabled) && pageType == 7)) {
+				if (pageType == 0 || pageType == 7) {
 					var isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
 					int recResult = 0;
 					
 					if (rm.isPlayOnlyMode && pageType == 7 && isRtmp) isRtmp = false;
 					
 					if (isJikken) {
-						recResult = jr.record(res, isRtmp);
+						//実験放送　なくし
+						//recResult = jr.record(res, isRtmp);
 					} else {
 						var isTimeShift = pageType == 7;
 						
@@ -129,9 +118,9 @@ namespace namaichi.rec
 						while(this == rm.rfu) {
 							try {
 								res = util.getPageSource(url, cc);
-								
 								isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
-								var _pageType = (isJikken) ? getJikkenPageType(res, out jr, cc) : util.getPageType(res);
+								//var _pageType = (isJikken) ? getJikkenPageType(res, out jr, cc) : util.getPageType(res);
+								var _pageType = (isJikken) ? 0 : util.getPageType(res);
 								util.debugWriteLine(_pageType);
 								if (pageType != 1) continue;
 								
@@ -195,9 +184,7 @@ namespace namaichi.rec
 					}
 					if (bool.Parse(rm.cfg.get("IsfailExit"))) {
 						rm.rfu = null;
-						if (util.isShowWindow) {
-							rm.form.close();
-						}
+						rm.form.close();
 					}
 					return 2;
 					
@@ -205,75 +192,47 @@ namespace namaichi.rec
 					rm.form.addLogText("この番組の視聴にはシリアル番号が必要です。");
 					return 2;
 				} else if (pageType == 9) {
-					//if (isSub) return 2;
-					
 					rm.form.addLogText("この番組の視聴には予約が必要です。");
+					
 					DialogResult isYoyakuRes = DialogResult.None;
-					if (util.isShowWindow) {
-						rm.form.Invoke((MethodInvoker)delegate() {
-							isYoyakuRes = MessageBox.Show(rm.form, "この番組の視聴には予約が必要です。予約しますか？", "", MessageBoxButtons.YesNo);
-						               });
-					} else {
-						isYoyakuRes = MessageBox.Show("この番組の視聴には予約が必要です。予約しますか？", "", MessageBoxButtons.YesNo);
-					}
+					rm.form.formAction(() => {
+						isYoyakuRes = MessageBox.Show(rm.form, "この番組の視聴には予約が必要です。予約しますか？", "", MessageBoxButtons.YesNo);
+					});
 					if (isYoyakuRes == DialogResult.No) return 2;
 					
 					var r = new Reservation(cc, lvid);
 					var reserveRet = r.reserve();
 					if (reserveRet == "ok") {
 						rm.form.addLogText("予約しました");
-						//res = util.getPageSource(url, container, null, false, 2000);
 						pageType = getPageType(url, false, ref jr, out cc);
 						continue;
 					} else {
 						rm.form.addLogText(reserveRet);
 						rm.form.addLogText("予約できませんでした");
 						if (reserveRet == "予約リストが一杯です。") {
-							DialogResult isOpenMypageRes = DialogResult.None;
-							if (util.isShowWindow) {
-								rm.form.Invoke((MethodInvoker)delegate() {
-									isOpenMypageRes = MessageBox.Show(rm.form, "予約リストが一杯です。マイページを開きますか？", "", MessageBoxButtons.YesNo);
-								});
-							} else {
-								isOpenMypageRes = MessageBox.Show("予約リストが一杯です。マイページを開きますか？", "", MessageBoxButtons.YesNo);
-							}
-							if (isOpenMypageRes == DialogResult.Yes) 
-								System.Diagnostics.Process.Start("https://live.nicovideo.jp/my");
-					
+							//DialogResult isOpenMypageRes = DialogResult.None;
+							rm.form.formAction(() => {
+								var isOpenMypageRes = MessageBox.Show(rm.form, "予約リストが一杯です。マイページを開きますか？", "", MessageBoxButtons.YesNo);
+							    if (isOpenMypageRes == DialogResult.Yes) 
+									System.Diagnostics.Process.Start("https://live.nicovideo.jp/my");
+							});
 						}
 						return 2;
 					}
 				} else {
 					var mes = "";
-					if (pageType == 2) mes = "この放送は終了しています。";
-					if (pageType == 3) mes = "この放送は終了しています。";
-					if (pageType == 7 && isRtmp) mes = "この放送は終了しています。";
+					if (pageType == 2 || pageType == 3) mes = "この放送は終了しています。";
 					rm.form.addLogText(mes);
 					util.debugWriteLine("pagetype " + pageType + " 終了");
 					
 					if (bool.Parse(rm.cfg.get("IsdeleteExit"))) {
 						rm.rfu = null;
-						if (util.isShowWindow) {
-							try {
-								rm.form.Invoke((MethodInvoker)delegate() {
-					       			try { rm.form.Close();} 
-									 catch (Exception e) {
-				       	       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-				       	       		}
-								});
-							} catch (Exception e) {
-					       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-					       	}
-						}
+						rm.form.close();
 					}
 					return 2;
-					//var nh5r = new NotHtml5Recorder(url, container, lvid, rm, this);
-					//nh5r.record(res);
 				}
 			}
 			return 2;
-            
-
 		}
 		public int getPageType(string url, bool isLogin, ref JikkenRecorder jr, out CookieContainer cc) {
 			var dt = DateTime.Now;
@@ -328,13 +287,14 @@ namespace namaichi.rec
 							_res = System.Net.WebUtility.UrlDecode(_res);
 							var isTimeShift = true;
 							var ret = util.getPageTypeRtmp(_res, ref isTimeShift, false);
-							isRtmpMain = true;
+							//isRtmpMain = true;
 							return ret;
 						}
 					}
 					var isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
 					if (isJikken) {
-						return getJikkenPageType(res, out jr, cc);
+						//実験放送なくし
+						//return getJikkenPageType(res, out jr, cc);
 					} else {
 						var _pageType = util.getPageType(res);
 						util.debugWriteLine(_pageType);
@@ -351,25 +311,10 @@ namespace namaichi.rec
 			}
 			cc = null;
 			return 5;
-			
-			/*
-			var req = (HttpWebRequest)HttpWebRequest.Create(url);
-            req.Timeout = 15000;
-            req.CookieContainer = this.container;
-            req.AllowAutoRedirect  = false;
-            
-            var res = (HttpWebResponse)req.GetResponse();
-            return (res.Headers.Get("Location") == null) ? false : true;
-            */
 		}
 		private int getPageAfterFollow(string url, string lvid, ref JikkenRecorder jr, out CookieContainer cc) {
-<<<<<<< HEAD
 			Uri TargetUrl = new Uri("https://live.nicovideo.jp");
 			Uri TargetUrl2 = new Uri("https://live2.nicovideo.jp");
-=======
-			Uri TargetUrl = new Uri("http://live.nicovideo.jp");
-			Uri TargetUrl2 = new Uri("http://live2.nicovideo.jp");
->>>>>>> da2ceb1dec9975a74d9e4b0e4bfbb48a1dad3721
 			for (int i = 0; this == rm.rfu; i++) {
 				try {
 					var cg = new CookieGetter(rm.cfg);
@@ -414,14 +359,12 @@ namespace namaichi.rec
 					var getheaders = _res.Headers;
 					var resCookie = _res.Cookies;
 					
-	//				if (res.IndexOf("会場のご案内") < 0) break;
-					  
 					isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
 					int pagetype;
 //					if (isRtmp) pagetype = getRtmpPageType(res, isSub, out rr, cc);
-					pagetype = (isJikken) ? getJikkenPageType(res, out jr, cc) : util.getPageType(res); 
+					//pagetype = (isJikken) ? getJikkenPageType(res, out jr, cc) : util.getPageType(res);
+					pagetype = (isJikken) ? 0 : util.getPageType(res);					
 					
-//					var pagetype = util.getPageType(res);
 					if (!isJikken && pagetype != 5 && pagetype != 9) return pagetype;
 					if (isJikken && pagetype != 4) return pagetype;
 					util.debugWriteLine(i);
@@ -433,18 +376,10 @@ namespace namaichi.rec
 			cc = null;
 			return -1;
 		}
-		private int getJikkenPageType(string res, out JikkenRecorder jr, CookieContainer cc) {
-//			if (jr == null)
-			//var ccInd = (isSub) ? 1 : 0;
-			var ccInd = 0;
-			jr = new JikkenRecorder(res, lvid, cc, rm.cfg, rm, this);
-//			rm.jr = jr;
-			return jr.getPageType();
-		}
 		/*
-		private int getRtmpPageType(string res, bool isSub, out RtmpRecorder rr, CookieContainer cc) {
-			rr = new RtmpRecorder(res, lvid, cc, rm.cfg, rm, this, isSub);
-			return rr.getPageType();
+		private int getJikkenPageType(string res, out JikkenRecorder jr, CookieContainer cc) {
+			jr = new JikkenRecorder(res, lvid, cc, rm.cfg, rm, this);
+			return jr.getPageType();
 		}
 		*/
 	}

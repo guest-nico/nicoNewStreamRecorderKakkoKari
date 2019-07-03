@@ -32,6 +32,8 @@ namespace namaichi.rec
 			util.debugWriteLine("another rec start");
 			util.debugWriteLine("command "  + command);
 
+			System.IO.Directory.SetCurrentDirectory(util.getJarPath()[0]);
+			
 			var _command = command.Replace("{i}", hlsSegM3uUrl);
 			_command = getAddedExtRecFilePath(recFolderFile, _command);
 			

@@ -175,7 +175,9 @@ namespace namaichi.play
 			*/
 			List<ChatInfo> chatInfoList;
 			if (wsr.isJikken) {
-				chatInfoList = ((JikkenRecordProcess)wsr).getChatInfoList(deflateDecoder.decode(e.Data));
+				//実験放送　なくし
+				chatInfoList = null;
+				//chatInfoList = ((JikkenRecordProcess)wsr).getChatInfoList(deflateDecoder.decode(e.Data));
 			}
 			else {
 				chatInfoList = new List<ChatInfo>();
