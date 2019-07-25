@@ -32,7 +32,7 @@ namespace namaichi.rec
 		private string broadcastId;
 		private string userId;
 		private string lvid;
-		private bool isPremium = false;
+		public bool isPremium = false;
 		private string programType;
 		private CookieContainer container;
 		private string[] recFolderFile;
@@ -269,6 +269,10 @@ namespace namaichi.rec
 			}
 			
 			if (isChase && rec != null && !rec.isEndProgram) {
+				#if DEBUG
+					rm.form.addLogText("追っかけ録画処理開始");
+				#endif
+				
 				new ChaseLastRecord(lvid, container, rm, h5r.recFolderFileInfo, openTime, h5r, tsConfig).rec();
 			}
 			addDebugBuf("closed saikai");
@@ -1220,10 +1224,15 @@ namespace namaichi.rec
 			return r;
 		}
 		private void connectUntilOk() {
-			while (true) {
+			while (rm.rfu == rfu && isRetry) {
 				try {
 					if (!connect()) {
 						Thread.Sleep(3000);
+						
+						#if DEBUG
+							rm.form.addLogText("再接続試行");
+						#endif
+							
 						continue;
 					}
 					break;

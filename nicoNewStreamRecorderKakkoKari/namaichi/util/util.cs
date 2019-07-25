@@ -25,8 +25,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.87.38";
-	public static string versionDayStr = "2019/06/21";
+	public static string versionStr = "ver0.87.39";
+	public static string versionDayStr = "2019/07/26";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	

@@ -84,6 +84,7 @@ namespace namaichi.rec
 //		private RealTimeFFmpeg realtimeFFmpeg = null;
 		private bool isRealtimeChase = false;
 		public DropSegmentProcess dsp = null;
+		private bool isSpeedUp = false;
 		
 		public Record(RecordingManager rm, bool isFFmpeg, 
 		              RecordFromUrl rfu, string hlsUrl, 
@@ -824,6 +825,15 @@ namespace namaichi.rec
 						isRetry = false;
 //						isEndProgram = true;
 					}
+					
+				}
+				
+				var lateTime = streamDuration - lastSegmentNo / 1000;
+				util.debugWriteLine("lateTime " + lateTime);
+				if (lateTime > 12 || !((WebSocketRecorder)wr).isChase) {
+					if (!isSpeedUp) setSpeed(true);
+				} else if (lateTime < 7) {
+					if (isSpeedUp) setSpeed(false);
 				}
 			}
 			return targetDuration;
@@ -1085,6 +1095,7 @@ namespace namaichi.rec
 			hlsSegM3uUrl = getHlsSegM3uUrl(hlsMasterUrl);
 			
 			setReconnecting(false);
+			isSpeedUp = false;
 		}
 		private void renketuAfter() {
 			var isFFmpegRenketuAfter = false;
@@ -1568,5 +1579,15 @@ namespace namaichi.rec
 			return false;
 		}
 		*/
+		private void setSpeed(bool isUp) {
+			util.debugWriteLine("setSpeed isup " +isUp);
+			var speed = isUp ? (((WebSocketRecorder)wr).isPremium ? "2" : "1.25") : "1";
+			var url = hlsMasterUrl.Replace("master.m3u8", "play_control.json") + "&play_speed=" + speed;
+			var res = util.getPageSource(url, container);
+			if (res != null && res.IndexOf("\"message\":\"ok\"") > -1) {
+				isSpeedUp = isUp;
+				util.debugWriteLine("setSpeed ok");
+			}
+		}
 	}
 }

@@ -244,7 +244,9 @@ namespace namaichi.rec
 //						return -1;
 					}
 					
-					if (isRtmpMain) url = url.Replace("live2.nicovideo.jp", "live.nicovideo.jp");
+					if (isRtmpMain) 
+						url = url.Replace("live2.nicovideo.jp", "live.nicovideo.jp");
+
 					var cg = new CookieGetter(rm.cfg);
 					var cgret = cg.getHtml5RecordCookie(url);
 					cgret.Wait();
@@ -287,8 +289,16 @@ namespace namaichi.rec
 							_res = System.Net.WebUtility.UrlDecode(_res);
 							var isTimeShift = true;
 							var ret = util.getPageTypeRtmp(_res, ref isTimeShift, false);
+							
 							//isRtmpMain = true;
 							return ret;
+						} else if (res.IndexOf("<!doctype html>") == -1) {
+							var __url = "http://live.nicovideo.jp/api/getplayerstatus?v=" + lvid;
+							var __res = util.getPageSource(__url, cc);
+							var isTimeShift = true;
+							var ret = util.getPageTypeRtmp(__res, ref isTimeShift, false);
+							res += __res;
+							return ret; 
 						}
 					}
 					var isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
