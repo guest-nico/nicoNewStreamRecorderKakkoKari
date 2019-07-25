@@ -50,13 +50,14 @@ namespace namaichi.rec
 			
 		}
 		string getRes() {
-			for (var i = 0; i < 20; i++) {
+			for (var i = 0; i < 12; i++) {
 				Thread.Sleep(5000);
 				var _res = util.getPageSource("https://live2.nicovideo.jp/watch/" + lvid, container);
 				if (_res == null) continue;
 				
 				var pageType = util.getPageType(_res);
 				util.debugWriteLine("chase last record pagetype " + pageType);
+					
 				if (pageType == 7) {
 					return _res;
 				} else if (pageType == 9) {
@@ -75,18 +76,21 @@ namespace namaichi.rec
 						return null;
 					}
 				} else if (pageType == 2 || pageType == 3) {
-					if (_res.IndexOf("<div style=\"font-weight:bold;\">※この放送はタイムシフトに対応しておりません。</div>") > -1) {
+					if (false && _res.IndexOf("<div style=\"font-weight:bold;\">※この放送はタイムシフトに対応しておりません。</div>") > -1) {
 						util.debugWriteLine(_res);
 						rm.form.addLogText("タイムシフトを取得できませんでした");
 						rm.form.addLogText("録画を終了します");
 						return null;
 					}
 					
-					if (i != 19) continue;
-					
 					#if DEBUG
 						rm.form.addLogText("pagetype " + pageType);
+						var url = "http://live.nicovideo.jp/api/getplayerstatus?v=" + lvid;
+						util.debugWriteLine(util.getPageSource(url, container));
 					#endif
+					
+					if (i != 11) continue;
+					
 					util.debugWriteLine(_res);
 					rm.form.addLogText("タイムシフトを取得できませんでした");
 					rm.form.addLogText("録画を終了します");

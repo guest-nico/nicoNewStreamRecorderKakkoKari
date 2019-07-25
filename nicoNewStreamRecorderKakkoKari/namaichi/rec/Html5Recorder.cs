@@ -168,7 +168,7 @@ namespace namaichi.rec
 			while(rm.rfu == rfu) {
 				var type = util.getRegGroup(res, "\"content_type\":\"(.+?)\"");
 				var data = util.getRegGroup(res, "<script id=\"embedded-data\" data-props=\"([\\d\\D]+?)</script>");
-				var isRtmpOnlyPage = res.IndexOf("%3Cgetplayerstatus%20") > -1;
+				var isRtmpOnlyPage = res.IndexOf("%3Cgetplayerstatus%20") > -1 || res.IndexOf("<getplayerstatus ") > -1;
 				if (isRtmpOnlyPage) isRtmp = true;
 				var isChasable = util.getRegGroup(res, "&quot;permissions&quot;:\\[[^\\]]*(CHASE_PLAY)") != null &&
 					res.IndexOf("isChasePlayEnabled&quot;:true") > -1;
@@ -290,6 +290,7 @@ namespace namaichi.rec
 					}
 						
 				} catch (Exception e) {
+					rm.form.addLogText("録画中に予期せぬ問題が発生しました");
 					util.debugWriteLine("wsr start exception " + e.Message + e.StackTrace);
 				}
 				
