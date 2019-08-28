@@ -237,7 +237,10 @@ namespace namaichi.rec
 				if (programType == "official") {
 					chatXml = chatinfo.getFormatXml(0, true, vposStartTime);
 //					chatXml = chatinfo.getFormatXml(_openTime + vposStartTime);
-				} else chatXml = chatinfo.getFormatXml(openTime + vposStartTime);
+				} else {
+					chatXml = chatinfo.getFormatXml(openTime + vposStartTime);
+
+				}
 			}
 //			else chatXml = chatinfo.getFormatXml(serverTime);
 //			util.debugWriteLine("xml " + chatXml.ToString());
@@ -321,7 +324,7 @@ namespace namaichi.rec
 //			var when = (isSave) ? lastGetChatTime.ToString() : openTime.ToString();
 			when = gotMinTime + 1;
 			var ret = "[{\"ping\":{\"content\":\"rs:0\"}},{\"ping\":{\"content\":\"ps:0\"}},{\"thread\":{\"thread\":\"" + thread + "\",\"version\":\"20061206\",\"fork\":0,\"user_id\":\"" + userId + "\",\"res_from\":" + resfrom + ",\"with_global\":1,\"scores\":1,\"nicoru\":0,\"waybackkey\":\"" + waybackKey + "\",\"when\":" + when + "}},{\"ping\":{\"content\":\"pf:0\"}},{\"ping\":{\"content\":\"rf:0\"}}]";
-			util.debugWriteLine(ret);
+			util.debugWriteLine("tscg " + ret);
 			return ret;
 		}
 		public void setIsRetry(bool b) {
@@ -358,6 +361,12 @@ namespace namaichi.rec
 			Array.Sort(keys.ToArray(), chats);
 			
 			rp.gotTsCommentList = chats;
+			
+			if (rp.isChase) {
+				while (rp.chaseCommentBuf.Count == 0 
+				       && rm.rfu == rfu) Thread.Sleep(1000);
+				rp.chaseCommentSum();
+			}
 			if (!isWrite) return;
 			
 			var fileNum = (quePosTimeList != null) ? quePosTimeList.Length : 1;
@@ -370,7 +379,6 @@ namespace namaichi.rec
 					fileName = rr.fileNameList[j] + 
 						((rm.cfg.get("IsgetcommentXml") == "true") ? ".xml" : ".json");
 				}
-				
 				
 				var w = new StreamWriter(fileName + "_", false, System.Text.Encoding.UTF8);
 				if (isGetXml) {

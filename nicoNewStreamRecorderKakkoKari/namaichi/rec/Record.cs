@@ -793,7 +793,7 @@ namespace namaichi.rec
 					if (isTimeShift && 
 					    	((tsConfig.timeType == 0 && startTime < tsConfig.timeSeconds) ||
 					     	(tsConfig.timeType == 1 && startTime <= tsConfig.timeSeconds))) continue;
-					if (isTimeShift && tsConfig.endTimeSeconds > 0 && startTime > tsConfig.endTimeSeconds) {
+					if (isTimeShift && tsConfig.endTimeSeconds > 0 && startTime >= tsConfig.endTimeSeconds) {
 						addDebugBuf("timeshift tsConfig.endtime " + tsConfig.endTimeSeconds + " now starttime " + startTime + " tsConfig.timeseconds " + tsConfig.timeSeconds);
 						isRetry = false;
 						isEndProgram = true;

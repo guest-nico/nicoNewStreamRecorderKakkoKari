@@ -4046,7 +4046,6 @@ C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\SnkLib.App.CookieGetter.xml
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\SnkLib.App.CookieGetter.Forms.xml
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\namaichi\bin\Debug\System.Data.SQLite.xml
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.csprojResolveAssemblyReference.cache
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.commentForm.resources
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.defaultFFplayController.resources
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.DotNetMessageBox.resources
@@ -4058,3 +4057,4 @@ C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.csproj.GenerateResource.Cache
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\ニコ生新配信録画ツール（仮.exe
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\ニコ生新配信録画ツール（仮.pdb
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\namaichi\obj\Debug\namaichi.csprojResolveAssemblyReference.cache

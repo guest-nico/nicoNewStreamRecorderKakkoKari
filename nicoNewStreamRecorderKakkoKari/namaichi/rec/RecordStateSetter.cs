@@ -44,9 +44,10 @@ namespace namaichi.rec
 		private bool isPlayOnlyMode = false;
 		private bool isDescriptionTag;
 		private bool isRtmpOnlyPage = false;
+		private bool isChase = false;
 			
 		public bool isWrite = false;
-		public RecordStateSetter(MainForm form, RecordingManager rm, RecordFromUrl rfu, bool isTimeShift, bool isJikken, string[] recFolderFile, bool isPlayOnlyMode, bool isRtmpOnlyPage)
+		public RecordStateSetter(MainForm form, RecordingManager rm, RecordFromUrl rfu, bool isTimeShift, bool isJikken, string[] recFolderFile, bool isPlayOnlyMode, bool isRtmpOnlyPage, bool isChase)
 		{
 			this.form = form;
 			this.rm = rm;
@@ -57,7 +58,7 @@ namespace namaichi.rec
 			this.isPlayOnlyMode = isPlayOnlyMode;
 			this.isDescriptionTag = bool.Parse(rm.cfg.get("IsDescriptionTag"));
 			this.isRtmpOnlyPage = isRtmpOnlyPage;
-			
+			this.isChase = isChase;
 		}
 		public void set(string data, string type, string[] recFolderFileInfo) {
 			setInfo(data, form, type, recFolderFileInfo);
@@ -67,7 +68,9 @@ namespace namaichi.rec
 			
 			if (util.isStdIO) writeStdIOInfo();
 			
-			if (isTimeShift) return;
+			if (isTimeShift) {
+				return;
+			}
 			
 			/*
 			while (rm.rfu == rfu) {
@@ -77,6 +80,7 @@ namespace namaichi.rec
 				System.Threading.Thread.Sleep(100);
 			}
 			*/
+			
 		}
 		private DateTime getUnixToDt(long startunix) {
 			return util.getUnixToDatetime(startunix);
@@ -142,7 +146,8 @@ namespace namaichi.rec
 			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "thumbnail:.+?'(https*://.+?)'");
 			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "<thumb_url>(.+?)</thumb_url>");
 			tag = getTag(data);
-			form.setInfo(host, hostUrl, group, groupUrl, title, url, gentei, openTime, description, isJikken);
+			var formEndTime = (isTimeShift && !isChase) ? endTime : "";
+			form.setInfo(host, hostUrl, group, groupUrl, title, url, gentei, openTime, description, isJikken, formEndTime);
 		}
 		private void setSamune(string data, MainForm form) {
 			form.setSamune(samuneUrl);
@@ -174,7 +179,7 @@ namespace namaichi.rec
 			if (hostUrl != null)
 				sw.WriteLine("[放送者URL] " + hostUrl + br);
 			sw.WriteLine("[タグ] " + tag + br);
-			if (isTimeShift) sw.WriteLine("[放送終了時間] " + endTimeDt.ToString("yyyy/MM/dd(ddd) HH:mm:ss") + br);
+			if (isTimeShift && !isChase) sw.WriteLine("[放送終了時間] " + endTimeDt.ToString("yyyy/MM/dd(ddd) HH:mm:ss") + br);
 			sw.Close();
 			
 			isWrite = true;

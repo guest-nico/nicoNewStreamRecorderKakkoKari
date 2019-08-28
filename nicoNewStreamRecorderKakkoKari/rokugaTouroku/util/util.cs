@@ -21,8 +21,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.10.6";
-	public static string versionDayStr = "2019/06/21";
+	public static string versionStr = "ver0.1.3.10.7";
+	public static string versionDayStr = "2019/08/21";
 	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);
@@ -449,7 +449,7 @@ class util {
 		return null;
 	}
 	public static string getPageSource(string _url, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 5000) {
-		timeoutMs = 2000;
+		timeoutMs = 5000;
 		/*
 		string a = "";
 		try {

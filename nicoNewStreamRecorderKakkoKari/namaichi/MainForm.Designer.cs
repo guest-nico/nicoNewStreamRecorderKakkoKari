@@ -55,6 +55,8 @@ namespace namaichi
 			this.helpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.バージョン情報VToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
+			this.endTimeLabel = new System.Windows.Forms.Label();
+			this.label4 = new System.Windows.Forms.Label();
 			this.typeLabel = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
 			this.label10 = new System.Windows.Forms.Label();
@@ -240,6 +242,8 @@ namespace namaichi
 			// 
 			this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 									| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox5.Controls.Add(this.endTimeLabel);
+			this.groupBox5.Controls.Add(this.label4);
 			this.groupBox5.Controls.Add(this.typeLabel);
 			this.groupBox5.Controls.Add(this.label7);
 			this.groupBox5.Controls.Add(this.label10);
@@ -262,6 +266,21 @@ namespace namaichi
 			this.groupBox5.TabIndex = 17;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "番組情報";
+			// 
+			// endTimeLabel
+			// 
+			this.endTimeLabel.Location = new System.Drawing.Point(78, 163);
+			this.endTimeLabel.Name = "endTimeLabel";
+			this.endTimeLabel.Size = new System.Drawing.Size(118, 14);
+			this.endTimeLabel.TabIndex = 3;
+			// 
+			// label4
+			// 
+			this.label4.Location = new System.Drawing.Point(6, 163);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(56, 15);
+			this.label4.TabIndex = 0;
+			this.label4.Text = "終了時刻";
 			// 
 			// typeLabel
 			// 
@@ -603,6 +622,8 @@ namespace namaichi
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label endTimeLabel;
 		public System.Windows.Forms.CheckBox isChaseChkBtn;
 		private System.Windows.Forms.Button miniBtn;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;

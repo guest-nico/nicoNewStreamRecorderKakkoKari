@@ -1359,3 +1359,7 @@ C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Debug\rokugaTouroku.csproj.GenerateResource.Cache
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Debug\rokugaTouroku.exe
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Debug\rokugaTouroku.pdb
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Debug\Newtonsoft.Json.dll
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Debug\Newtonsoft.Json.xml
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Debug\System.Data.SQLite.dll
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Debug\System.Data.SQLite.xml

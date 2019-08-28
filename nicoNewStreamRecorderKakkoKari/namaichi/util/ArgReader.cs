@@ -48,6 +48,7 @@ namespace namaichi.utility
 			util.debugWriteLine("args " + string.Join(" ", args));
 			foreach(var a in argConfig) util.debugWriteLine(a.Key + " " + a.Value);
 			isPlayMode = Array.IndexOf(args, "-play") > -1;
+			if (Array.IndexOf(args, "-chase") > -1) form.isChaseChkBtn.Checked = true;
 		}
 		private bool isAllPath() {
 			var isAllPath = true;
@@ -319,6 +320,19 @@ namespace namaichi.utility
 						return false;;
 					}
 				}
+				/*
+				if (lowKeys[i] == "ischase") {
+					if (val.ToLower() == "true" || val.ToLower() == "false") {
+						setName = "IsChase";
+						setVal = val;
+						form.isChaseChkBtn.Checked = bool.Parse(val);
+						return true;
+				   	} else {
+						form.addLogText(name + "の値が設定できませんでした(true or false) " + val, false);
+						return false;;
+					}
+				}
+				*/
 				setName = keys[i];
 				setVal = val;
 				return true;

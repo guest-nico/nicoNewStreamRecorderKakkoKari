@@ -44,6 +44,9 @@ namespace rokugaTouroku.info
 		public RecDataGetter rdg;
 		public DateTime keikaTimeStart;
 		
+		public RecInfo() {
+			
+		}
 		public RecInfo(string id, string url, RecDataGetter rdg, string afterConvertType, info.TimeShiftConfig tsConfig, string tsStr, string qualityRankStr, string qualityRank, string recComment) {
 			this.id = id;
 			this.url = url;

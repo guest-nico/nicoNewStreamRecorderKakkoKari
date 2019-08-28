@@ -86,8 +86,12 @@ namespace namaichi.rec
 					group = util.getRegGroup(data, "\"socialGroup\".+?\"name\".\"(.+?)\"");
 					
 		//			if (host == null) host = "official";
-					host = util.getRegGroup(data, "\"supplier\"..\"name\".\"(.+?)\"");
-					if (host == null) group = "official";
+					host = util.getRegGroup(data, "\"supplier\"..\"name\".\"(.*?)\"");
+					if (host == null || host == "") {
+						//group = "official";
+						host = "公式生放送";
+					}
+					if (group == null || group == "") group = "official"; 
 					if (util.getRegGroup(data, "(\"socialGroup\".\\{\\},)") != null) host = "公式生放送";
 					title = util.getRegGroup(data, "\"title\"\\:\"(.+?)\",");
 	//				title = util.uniToOriginal(title);
@@ -254,7 +258,7 @@ namespace namaichi.rec
 				} else recFolderFile = new string[]{"", "", ""};
 			
 				//display set
-				var b = new RecordStateSetter(rm.form, rm, rfu, isTimeShift, false, recFolderFile, rm.isPlayOnlyMode, isRtmpOnlyPage);
+				var b = new RecordStateSetter(rm.form, rm, rfu, isTimeShift, false, recFolderFile, rm.isPlayOnlyMode, isRtmpOnlyPage, isChase);
 				Task.Run(() => {
 				       	b.set(data, type, recFolderFileInfo);
 					});
@@ -284,7 +288,7 @@ namespace namaichi.rec
 					isNoPermission = wsr.start();
 					rm.wsr = null;
 					if (wsr.isEndProgram) {
-						if (!isTimeShift && b.isWrite) 
+						if ((!isTimeShift || isChase) && b.isWrite)
 							b.writeEndTime(container, wsr.endTime);
 						return 3;
 					}

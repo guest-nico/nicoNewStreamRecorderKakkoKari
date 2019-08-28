@@ -122,7 +122,15 @@ namespace namaichi.rec
 			if (process == null || process.HasExited) return;
 
 			try {
-				process.Kill();
+				if (process.CloseMainWindow()) {
+					for (var i = 0; i < 10; i++) {
+						if (process.HasExited) break;
+						Thread.Sleep(1000);
+					}
+					process.Kill();
+				} else process.Kill();
+				
+//				process.Kill();
 			} catch (Exception eee) {
 				util.debugWriteLine(eee.Message + eee.StackTrace + eee.Source + eee.TargetSite);
 			}

@@ -98,7 +98,7 @@ namespace namaichi.rec
 		private bool isRtmpOnlyPage = false;
 		public bool isChase = false;
 		private bool isRealtimeChase = false;
-		private List<string> chaseCommentBuf = new List<string>();
+		public List<string> chaseCommentBuf = new List<string>();
 		public bool isSaveComment = false;
 		public bool isHokan = false;
 		
@@ -169,8 +169,6 @@ namespace namaichi.rec
 			
 				
 			}
-			
-			
 			
 			
 //			userId = util.getRegGroup(webSocketInfo[0], "audience_token=.+?_(.+?)_");
@@ -268,12 +266,12 @@ namespace namaichi.rec
 					rec.waitForEnd();
 			}
 			
-			if (isChase && rec != null && !rec.isEndProgram) {
+			if (isChase && rec != null && !rec.isEndProgram && rm.rfu == rfu) {
 				#if DEBUG
 					rm.form.addLogText("追っかけ録画処理開始");
 				#endif
 				
-				new ChaseLastRecord(lvid, container, rm, h5r.recFolderFileInfo, openTime, h5r, tsConfig).rec();
+				new ChaseLastRecord(lvid, container, rm, h5r.recFolderFileInfo, openTime, h5r, tsConfig, rfu).rec();
 			}
 			addDebugBuf("closed saikai");
 			
@@ -919,11 +917,16 @@ namespace namaichi.rec
 				if (!isTimeShift || isRealtimeChase)
 					chatXml = chatinfo.getFormatXml(serverTime);
 				else {
+					while (firstSegmentSecond == -1 && rm.rfu == rfu) {
+						Thread.Sleep(1000);
+					}
 					var vposStartTime = (tsConfig.isVposStartTime) ? (long)firstSegmentSecond : 0;
 					if (programType == "official") {
 						//chatXml = chatinfo.getFormatXml(0, true, tsConfig.timeSeconds);
 						chatXml = chatinfo.getFormatXml(0, true, tsConfig.timeSeconds);
-					} else chatXml = chatinfo.getFormatXml(openTime + vposStartTime);
+					} else {
+						chatXml = chatinfo.getFormatXml(openTime + vposStartTime);
+					}
 					
 				}
 			}
@@ -957,8 +960,8 @@ namespace namaichi.rec
 					if (isChase && !isRealtimeChase && chaseCommentBuf != null) {
 						chaseCommentBuf.Add(writeStr);
 						
-						if (tscg.isEnd)
-							chaseCommentSum();
+//						if (tscg.isEnd)
+//							chaseCommentSum();
 					} else {
 						commentSW.WriteLine(writeStr);
 						commentSW.Flush();
@@ -1067,36 +1070,57 @@ namespace namaichi.rec
 			}
 		}
 		public bool isEndedProgram() {
-			var isPass = (DateTime.Now - lastEndProgramCheckTime < TimeSpan.FromSeconds(5));
-			addDebugBuf("ispass " + isPass + " lastendprogramchecktime " + lastEndProgramCheckTime);
-			if (isPass) return false;
-			lastEndProgramCheckTime = DateTime.Now;
-			
-			var a = new System.Net.WebHeaderCollection();
-			var res = util.getPageSource(h5r.url, ref a, container);
-			addDebugBuf("isendedprogram url " + h5r.url + " res==null " + (res == null));
-			if (res == null) return false;
-			if (res.IndexOf("user.login_status = 'not_login'") > -1) {
-				addDebugBuf("isendprogram not login");
-				var cg = new CookieGetter(rm.cfg);
-				var cgTask = cg.getHtml5RecordCookie(h5r.url);
-				cgTask.Wait();
-				container = cgTask.Result[0];
-				res = util.getPageSource(h5r.url, container, null, false, 5000);
-				res = System.Web.HttpUtility.HtmlDecode(res);
-				var _webSocketInfo = Html5Recorder.getWebSocketInfo(res, isRtmp, isChase, isTimeShift);
-				isNoPermission = true;
-				addDebugBuf("isendprogram login websocketInfo " + webSocketInfo[0] + " " + webSocketInfo[1]);
-				if (_webSocketInfo[0] == null || _webSocketInfo[1] == null) {
-					addDebugBuf(res);
-				} else webSocketInfo = _webSocketInfo;
-				return false;
+			try {
+				var isPass = (DateTime.Now - lastEndProgramCheckTime < TimeSpan.FromSeconds(5));
+				addDebugBuf("ispass " + isPass + " lastendprogramchecktime " + lastEndProgramCheckTime);
+				if (isPass) return false;
+				lastEndProgramCheckTime = DateTime.Now;
+				
+				var a = new System.Net.WebHeaderCollection();
+				var res = util.getPageSource(h5r.url, ref a, container, null, false, 15000);
+				addDebugBuf("isendedprogram url " + h5r.url + " res==null " + (res == null));
+				if (res == null) return isEndedProgramRtmp();
+				if (res.IndexOf("user.login_status = 'not_login'") > -1) {
+					addDebugBuf("isendprogram not login");
+					var cg = new CookieGetter(rm.cfg);
+					var cgTask = cg.getHtml5RecordCookie(h5r.url);
+					cgTask.Wait();
+					container = cgTask.Result[0];
+					res = util.getPageSource(h5r.url, container, null, false, 5000);
+					if (res == null) return isEndedProgramRtmp();
+					res = System.Web.HttpUtility.HtmlDecode(res);
+					var _webSocketInfo = Html5Recorder.getWebSocketInfo(res, isRtmp, isChase, isTimeShift);
+					isNoPermission = true;
+					addDebugBuf("isendprogram login websocketInfo " + webSocketInfo[0] + " " + webSocketInfo[1]);
+					if (_webSocketInfo[0] == null || _webSocketInfo[1] == null) {
+						addDebugBuf(res);
+					} else webSocketInfo = _webSocketInfo;
+					return isEndedProgramRtmp();
+				}
+				if (res == null) return false;
+				var type = util.getPageType(res);
+				addDebugBuf("is ended program  pagetype " + type);
+				var isEnd = (type == 7 || type == 2 || type == 3 || type == 9);
+				return isEnd;
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				return isEndedProgramRtmp();
+				//return false;
 			}
-			if (res == null) return false;
-			var type = util.getPageType(res);
-			addDebugBuf("is ended program  pagetype " + type);
-			var isEnd = (type == 7 || type == 2 || type == 3 || type == 9);
-			return isEnd;
+		}
+		public bool isEndedProgramRtmp() {
+			util.debugWriteLine("isEndedProgramRtmp");
+			try {
+					var url = "http://live.nicovideo.jp/api/getplayerstatus?v=" + lvid;
+					var r = util.getPageSource(url, container);
+					var isTs = false;
+					var type = util.getPageTypeRtmp(r, ref isTs, false);
+					var isEnd = (type == 7 || type == 2 || type == 3 || type == 9);
+					return isEnd;
+				} catch (Exception ee) {
+					util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+					return false;
+				}
 		}
 		override public void sendComment(string s, bool is184) {
 			if (msThread == null) return;
@@ -1164,7 +1188,12 @@ namespace namaichi.rec
 				cgTask.Wait();
 				container = cgTask.Result[0];
 				var res = util.getPageSource(h5r.url, container, null, false, 5000);
+				if (res == null) {
+					util.debugWriteLine("resetWebsocketInfo get page null");
+					return;
+				}
 				res = System.Web.HttpUtility.HtmlDecode(res);
+				
 				var _webSocketInfo = Html5Recorder.getWebSocketInfo(res, isRtmp, isChase, isTimeShift);
 				isNoPermission = true;
 				addDebugBuf("resetWebsocketInfo " + _webSocketInfo[0] + " " + _webSocketInfo[1]);
@@ -1338,7 +1367,7 @@ namespace namaichi.rec
 				
 			return ret;
 		}
-		void chaseCommentSum() {
+		public void chaseCommentSum() {
 			var gotComList = new List<string>();
 			gotComList.AddRange(gotTsCommentList);
 			foreach (var c in chaseCommentBuf) {
@@ -1347,7 +1376,8 @@ namespace namaichi.rec
 			}
 			
 			//var d = chaseCommentBuf[0];
-			chaseCommentBuf.RemoveAt(0);
+			if (chaseCommentBuf.Count > 0)
+				chaseCommentBuf.RemoveAt(0);
 			//var f = chaseCommentBuf[0];
 			
 			//var a = gotComList[gotComList.Count - 1];

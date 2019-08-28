@@ -25,11 +25,12 @@ namespace namaichi.rec
 		private long openTime;
 		private Html5Recorder h5r;
 		private TimeShiftConfig tsConfig;
+		private RecordFromUrl rfu;
 		
 		public ChaseLastRecord(string lvid, 
 				CookieContainer container, RecordingManager rm,
 				string[] recFolderFileInfo, long openTime, 
-				Html5Recorder h5r, TimeShiftConfig tsConfig)
+				Html5Recorder h5r, TimeShiftConfig tsConfig, RecordFromUrl rfu)
 		{
 			this.lvid = lvid;
 			this.container = container;
@@ -38,6 +39,7 @@ namespace namaichi.rec
 			this.openTime = openTime;
 			this.h5r = h5r;
 			this.tsConfig = tsConfig;
+			this.rfu = rfu;
 		}
 		public void rec() {
 			util.debugWriteLine("chase last record rec start");
@@ -50,10 +52,15 @@ namespace namaichi.rec
 			
 		}
 		string getRes() {
-			for (var i = 0; i < 12; i++) {
+			for (var i = 0; i < 12 && rm.rfu == rfu; i++) {
 				Thread.Sleep(5000);
-				var _res = util.getPageSource("https://live2.nicovideo.jp/watch/" + lvid, container);
-				if (_res == null) continue;
+				//var timeout = i == 0 ? 3000 : 15000;
+				var timeout = 3000;
+				var _res = util.getPageSource("https://live2.nicovideo.jp/watch/" + lvid, container, null, false, timeout);
+				if (_res == null) {
+					util.debugWriteLine("chaseLastRecord getres getPage null " + i);
+					continue;
+				}
 				
 				var pageType = util.getPageType(_res);
 				util.debugWriteLine("chase last record pagetype " + pageType);
@@ -97,6 +104,8 @@ namespace namaichi.rec
 					return null;
 				}
 			}
+			rm.form.addLogText("タイムシフトのページの取得に失敗しました");
+			rm.form.addLogText("録画を終了します");
 			return null;
 		}
 		WebSocketRecorder getWebsocketRecorder(string res) {

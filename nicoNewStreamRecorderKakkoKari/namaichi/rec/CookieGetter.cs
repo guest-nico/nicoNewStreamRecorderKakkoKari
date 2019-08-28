@@ -13,6 +13,7 @@ using System.Web;
 using SunokoLibrary.Application;
 using System.Net.Http;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace namaichi.rec
 {
@@ -203,7 +204,9 @@ namespace namaichi.rec
 			
 		}
 		private bool isHtml5Login(CookieContainer cc, string url) {
-			for (var i = 0; i < 10; i++) {
+			//cc.Add(new Uri(url), new Cookie("age_auth", "0"));
+			
+			for (var i = 0; i < 5; i++) {
 				var headers = new WebHeaderCollection();
 				try {
 					util.debugWriteLine("ishtml5login getpage " + url);
@@ -215,14 +218,21 @@ namespace namaichi.rec
 					util.debugWriteLine("cookiegetter ishtml5login " + e.Message+e.StackTrace);
 					pageSource = "";
 					log += "ページの取得中にエラーが発生しました。" + e.Message + e.Source + e.TargetSite + e.StackTrace;
+					Thread.Sleep(3000);
 					continue;
 				}
 	//			isHtml5 = (headers.Get("Location") == null) ? false : true;
 				if (pageSource == null) {
 					log += "ページが取得できませんでした。";
 					util.debugWriteLine("not get page");
+					Thread.Sleep(3000);
 					continue;
 				}
+				if (pageSource.IndexOf("<p class=\"textTitle\">年齢認証</p>") > -1) {
+					log = "この放送は年齢認証が必要です。ブラウザで年齢認証をしてください。";
+					return false;
+				}
+					
 				var isLogin = !(pageSource.IndexOf("\"login_status\":\"login\"") < 0 &&
 				   	pageSource.IndexOf("login_status = 'login'") < 0);
 				if (isRtmp) isLogin = pageSource.IndexOf("<code>notlogin</code>") == -1;
@@ -307,6 +317,16 @@ namespace namaichi.rec
 				cc.Add(TargetUrl4, new Cookie(secureC.Name, secureC.Value));
 				cc.Add(TargetUrl5, new Cookie(secureC.Name, secureC.Value));
 			}
+			
+			/*
+			var ageAuth = "0";
+			cc.Add(TargetUrl, new Cookie("age_auth", ageAuth));
+			cc.Add(TargetUrl2, new Cookie("age_auth", ageAuth));
+			cc.Add(TargetUrl3, new Cookie("age_auth", ageAuth));
+			cc.Add(TargetUrl4, new Cookie("age_auth", ageAuth));
+			cc.Add(TargetUrl5, new Cookie("age_auth", ageAuth));
+			var a = util.getPageSource("https://live2.nicovideo.jp/watch/lv320739154", cc);
+			*/
 			return cc;
 		}
 	}

@@ -181,6 +181,7 @@ namespace namaichi.rec
 				
 				
 				NetworkStream stream = null;
+				var lastGotCommentListCount = 0;
 				
 				while (isRetry) {
 					isSave = true;
@@ -246,6 +247,7 @@ namespace namaichi.rec
 						lastGotMinTime = gotMinTime;
 						lastGotMinVpos = gotMinVpos;
 						
+						
 						if (!isKaburiNasi) {
 							util.debugWriteLine("kaburinasi last_res " + lastLastRes + " gotCount " + gotCommentList.Count);
 							Task.Run(() => {
@@ -258,7 +260,10 @@ namespace namaichi.rec
 							});
 						}
 						
+						
 					}
+					if (gotCommentList.Count == lastGotCommentListCount) break;
+					lastGotCommentListCount = gotCommentList.Count;
 				}
 				stream.Close();
 				
@@ -451,9 +456,8 @@ namespace namaichi.rec
 			if (!isWrite) return;
 			
 			var fileNum = (quePosTimeList != null) ? quePosTimeList.Length : 1;
-			for (int j = 0; j < fileNum; j++) {
+			for (int j = 1; j < fileNum + 1; j++) {
 				if (j != 0) recFolderFile = incrementRecFolderFile(recFolderFile);
-				
 				
 				fileName = util.getOkCommentFileName(rm.cfg, recFolderFile, lvid, true, isRtmp);
 				var w = new StreamWriter(fileName + "_", false, System.Text.Encoding.UTF8);
@@ -474,9 +478,9 @@ namespace namaichi.rec
 						if (isRtmp) {
 							
 						}
-						if (j == fileNum - 1 || vpos < quePosTimeList[j + 1]) {
+						if (j == fileNum - 0 || vpos < quePosTimeList[j + 0]) {
 							var oriVposPart = util.getRegGroup(chats[i], "(vpos.+?-*\\d+)");
-							var newVposPart = oriVposPart.Replace(vpos.ToString(), (vpos - quePosTimeList[j]).ToString());
+							var newVposPart = oriVposPart.Replace(vpos.ToString(), (vpos - quePosTimeList[j - 1]).ToString());
 							w.WriteLine(chats[i].Replace(oriVposPart, newVposPart));
 							chats[i] = null;
 						}

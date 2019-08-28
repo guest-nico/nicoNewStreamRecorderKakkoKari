@@ -1206,7 +1206,6 @@ C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\namaichi\bin\Release\SnkLib.App.CookieGetter.xml
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\namaichi\bin\Release\SnkLib.App.CookieGetter.Forms.xml
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\namaichi\bin\Release\System.Data.SQLite.xml
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\namaichi\obj\Release\namaichi.csprojResolveAssemblyReference.cache
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\namaichi\obj\Release\namaichi.commentForm.resources
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\namaichi\obj\Release\namaichi.defaultFFplayController.resources
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\namaichi\obj\Release\namaichi.DotNetMessageBox.resources
@@ -1217,3 +1216,4 @@ C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\namaichi\obj\Release\namaichi.VersionForm.resources
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\namaichi\obj\Release\namaichi.csproj.GenerateResource.Cache
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\namaichi\obj\Release\ニコ生新配信録画ツール（仮.exe
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a37\nicoNewStreamRecorderKakkoKari\namaichi\obj\Release\namaichi.csprojResolveAssemblyReference.cache

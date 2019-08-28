@@ -93,8 +93,9 @@ namespace namaichi
 			rec = new rec.RecordingManager(this, config);
 			player = new Player(this, config);
 			
-//			args = new string[]{"a", "-qualityrank=1,2,3,4,5,0", "lv315967820", "-istitlebarinfo=False", "-ts-start=25h2m", "-openUrlListCommand=notepad"};
-//			args = new string[]{"Debug_1.ts"};
+			//args = new string[]{"a", "-qualityrank=1,2,3,4,5,0", "lv315967820", "-istitlebarinfo=False", "-ts-start=25h2m", "-openUrlListCommand=notepad"};
+			//args = new string[]{"Debug_1.ts"};
+			//args = new String[]{"lv321193806", "-ischase=true", "-ts-start=0s"};
 			if (Array.IndexOf(args, "-stdIO") > -1) util.isStdIO = true;
 			
 			var lv = (args.Length == 0) ? null : util.getRegGroup(args[0], "(lv\\d+(,\\d+)*)");
@@ -345,7 +346,8 @@ namespace namaichi
         }
 		public void setInfo(string host, string hostUrl, 
         		string group, string groupUrl, string title, string url, 
-        		string gentei, string openTime, string description, bool isJikken) {
+        		string gentei, string openTime, string description, bool isJikken, 
+        		string endTime) {
        		if (!util.isShowWindow) return;
        		util.debugWriteLine(hostUrl);
        		
@@ -372,6 +374,7 @@ namespace namaichi
 			        	    startTimeLabel.Text = openTime;
 			        	    descriptLabel.Text = description;
 			        	    typeLabel.Text = (isJikken) ? "実験放送" : "ニコニコ生放送";
+			        	    endTimeLabel.Text = endTime;
 	       		       	} catch (Exception e) {
 	       		       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 	       		       	}
@@ -523,25 +526,37 @@ namespace namaichi
 		}
 		void copyUrlMenu_Clicked(object sender, EventArgs e)
 		{
-			if (titleLabel.Links.Count > 0 && titleLabel.Links[0].Length != 0) {
-				string url = (string)titleLabel.Links[0].LinkData;
-				Clipboard.SetText(url);
+			try {
+				if (titleLabel.Links.Count > 0 && titleLabel.Links[0].Length != 0) {
+					string url = (string)titleLabel.Links[0].LinkData;
+					Clipboard.SetText(url);
+				}
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
 		}
 		void copyCommunityUrlMenu_Clicked(object sender, EventArgs e)
 		{
-			if (communityLabel.Links.Count > 0 && communityLabel.Links[0].Length != 0) {
-				string url = (string)communityLabel.Links[0].LinkData;
-				Clipboard.SetText(url);
+			try {
+				if (communityLabel.Links.Count > 0 && communityLabel.Links[0].Length != 0) {
+					string url = (string)communityLabel.Links[0].LinkData;
+					Clipboard.SetText(url);
+				}
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
 		}
 		void copyHost_UrlMenu_Clicked(object sender, EventArgs e)
 		{
-			if (hostLabel.Text.Length > 0 &&
-					titleLabel.Links.Count > 0 && titleLabel.Links[0].Length != 0) {
-				var host = hostLabel.Text;
-				var url = (string)titleLabel.Links[0].LinkData;
-				Clipboard.SetText(host + " " + url);
+			try {
+				if (hostLabel.Text.Length > 0 &&
+						titleLabel.Links.Count > 0 && titleLabel.Links[0].Length != 0) {
+					var host = hostLabel.Text;
+					var url = (string)titleLabel.Links[0].LinkData;
+					Clipboard.SetText(host + " " + url);
+				}
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
 		}
 		void openRecFolderMenu_Clicked(object sender, EventArgs e)
@@ -603,6 +618,7 @@ namespace namaichi
 			genteiLabel.Text = "";
 			startTimeLabel.Text = "";
 			keikaTimeLabel.Text = "";
+			endTimeLabel.Text = "";
 			descriptLabel.Text = "";
 			typeLabel.Text = "";
 			commentList.Rows.Clear();

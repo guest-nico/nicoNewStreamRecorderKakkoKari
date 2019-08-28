@@ -14,8 +14,11 @@ using System.Windows.Forms;
 using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Xml.Serialization;
 using rokugaTouroku.info;
 using rokugaTouroku.rec;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace rokugaTouroku
 {
@@ -134,6 +137,7 @@ namespace rokugaTouroku
 				util.debugWriteLine(e.Message + " " + e.StackTrace);
 			}
 			//player.stopPlaying(true, true);
+			saveList();
 			return true;
 		}
 		public void addLogText(string t) {
@@ -464,6 +468,8 @@ namespace rokugaTouroku
 		　　　　　　System.Reflection.BindingFlags.NonPublic);
 			dinfo.SetValue(recList, true);
 			tinfo.SetValue(logText, true);
+			
+			loadList();
 		}
 		
 		void recList_DataError(object sender, DataGridViewDataErrorEventArgs e)
@@ -602,6 +608,39 @@ namespace rokugaTouroku
 				for (var j = 0; j < cellNum; j++)
 					recList.UpdateCellValue(j, i);
 			});
+		}
+		private void loadList() {
+			try {
+				var f = util.getJarPath()[0] + "/recList.ini";
+				var sr = new StreamReader(f);
+				var s = sr.ReadToEnd();
+				sr.Close();
+				var list = JsonConvert.DeserializeObject<List<RecInfo>>(s);
+				foreach (var l in list) {
+					addList(l);
+				}
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
+		}
+		private void saveList() {
+			try {
+				var list = new List<RecInfo>();
+				foreach (RecInfo ri in recListDataSource) {
+					ri.samune = null;
+					ri.process = null;
+					list.Add((RecInfo)ri);
+				}
+				var json = JToken.FromObject(list).ToString(Formatting.None);
+				var f = util.getJarPath()[0] + "/recList.ini";
+				var sw = new StreamWriter(f, false);
+				sw.Write(json);
+				sw.Close();
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				var a = 0;
+				util.debugWriteLine(a);
+			}
 		}
 	}
 }
