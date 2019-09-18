@@ -146,8 +146,9 @@ namespace namaichi.rec
 		private CookieContainer getUserSessionCC(string us, string uss) {
 			//var us = cfg.get("user_session");
 			//var uss = cfg.get("user_session_secure");
-			if ((us == null || us.Length == 0) &&
-			    (uss == null || uss.Length == 0)) return null;
+			//if ((us == null || us.Length == 0) &&
+			//    (uss == null || uss.Length == 0)) return null;
+			if (us == null || us.Length == 0) return null;
 			var cc = new CookieContainer();
 			
 			var c = new Cookie("user_session", us);
@@ -197,6 +198,9 @@ namespace namaichi.rec
 			
 			var c = cc.GetCookies(TargetUrl)["user_session"];
 			var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
+			if (c == null) {
+				log += "ブラウザでログインし直すか、別のブラウザを試すか、アカウントログインを試すと上手くいくかもしれません。"; 
+			}
 			cc = copyUserSession(cc, c, secureC);
 			
 			
@@ -205,14 +209,13 @@ namespace namaichi.rec
 		}
 		private bool isHtml5Login(CookieContainer cc, string url) {
 			//cc.Add(new Uri(url), new Cookie("age_auth", "0"));
-			
 			for (var i = 0; i < 5; i++) {
 				var headers = new WebHeaderCollection();
 				try {
 					util.debugWriteLine("ishtml5login getpage " + url);
 					var _url = (isRtmp) ? ("https://live.nicovideo.jp/api/getplayerstatus/" + util.getRegGroup(url, "(lv\\d+)")) : url;
 					pageSource = util.getPageSource(_url, ref headers, cc);
-//					util.debugWriteLine(cc.GetCookieHeader(new Uri(_url)));
+					
 					util.debugWriteLine("ishtml5login getpage ok");
 				} catch (Exception e) {
 					util.debugWriteLine("cookiegetter ishtml5login " + e.Message+e.StackTrace);
@@ -247,6 +250,7 @@ namespace namaichi.rec
 					util.debugWriteLine("id " + id);
 				} else {
 					util.debugWriteLine("not login " + pageSource.Substring(0, 1000));
+					util.debugWriteLine(cc.GetCookieHeader(new Uri(url)));
 				}
 				return isLogin;
 			}

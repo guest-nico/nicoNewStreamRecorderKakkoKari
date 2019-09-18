@@ -39,6 +39,7 @@ namespace rokugaTouroku
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.isNotSleepChkBox = new System.Windows.Forms.CheckBox();
 			this.isConfirmCloseMsgBoxChkBox = new System.Windows.Forms.CheckBox();
 			this.isMiniStartChkBox = new System.Windows.Forms.CheckBox();
 			this.isDisplayCommentChkbox = new System.Windows.Forms.CheckBox();
@@ -57,11 +58,11 @@ namespace rokugaTouroku
 			this.isMessageBoxChkBox = new System.Windows.Forms.CheckBox();
 			this.isRetryChkBox = new System.Windows.Forms.CheckBox();
 			this.isMinimizedChkBox = new System.Windows.Forms.CheckBox();
+			this.tabPage9 = new System.Windows.Forms.TabPage();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.isDefaultBrowserPathChkBox = new System.Windows.Forms.CheckBox();
 			this.browserPathSanshouBtn = new System.Windows.Forms.Button();
 			this.browserPathText = new System.Windows.Forms.TextBox();
-			this.tabPage9 = new System.Windows.Forms.TabPage();
 			this.groupBox9 = new System.Windows.Forms.GroupBox();
 			this.volumeText = new System.Windows.Forms.Label();
 			this.volumeBar = new System.Windows.Forms.TrackBar();
@@ -95,6 +96,7 @@ namespace rokugaTouroku
 			this.groupBox15 = new System.Windows.Forms.GroupBox();
 			this.isChaseReserveRecChkBox = new System.Windows.Forms.CheckBox();
 			this.groupBox14 = new System.Windows.Forms.GroupBox();
+			this.isArgChaseRecFromFirstChkBox = new System.Windows.Forms.CheckBox();
 			this.label9 = new System.Windows.Forms.Label();
 			this.isOnlyTimeShiftChaseChkBtn = new System.Windows.Forms.CheckBox();
 			this.isRealTimeRecordRadioBtn = new System.Windows.Forms.RadioButton();
@@ -184,11 +186,16 @@ namespace rokugaTouroku
 			this.label3 = new System.Windows.Forms.Label();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
+			this.label12 = new System.Windows.Forms.Label();
+			this.label11 = new System.Windows.Forms.Label();
+			this.label10 = new System.Windows.Forms.Label();
+			this.label13 = new System.Windows.Forms.Label();
+			this.playerArgsText = new System.Windows.Forms.TextBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox6.SuspendLayout();
-			this.groupBox5.SuspendLayout();
 			this.tabPage9.SuspendLayout();
+			this.groupBox5.SuspendLayout();
 			this.groupBox9.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.volumeBar)).BeginInit();
 			this.tabPage6.SuspendLayout();
@@ -239,7 +246,6 @@ namespace rokugaTouroku
 			// tabPage1
 			// 
 			this.tabPage1.Controls.Add(this.groupBox6);
-			this.tabPage1.Controls.Add(this.groupBox5);
 			this.tabPage1.Location = new System.Drawing.Point(4, 40);
 			this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
 			this.tabPage1.Name = "tabPage1";
@@ -251,6 +257,7 @@ namespace rokugaTouroku
 			// 
 			// groupBox6
 			// 
+			this.groupBox6.Controls.Add(this.isNotSleepChkBox);
 			this.groupBox6.Controls.Add(this.isConfirmCloseMsgBoxChkBox);
 			this.groupBox6.Controls.Add(this.isMiniStartChkBox);
 			this.groupBox6.Controls.Add(this.isDisplayCommentChkbox);
@@ -269,16 +276,25 @@ namespace rokugaTouroku
 			this.groupBox6.Controls.Add(this.isMessageBoxChkBox);
 			this.groupBox6.Controls.Add(this.isRetryChkBox);
 			this.groupBox6.Controls.Add(this.isMinimizedChkBox);
-			this.groupBox6.Location = new System.Drawing.Point(5, 83);
+			this.groupBox6.Location = new System.Drawing.Point(5, 10);
 			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(458, 417);
+			this.groupBox6.Size = new System.Drawing.Size(458, 445);
 			this.groupBox6.TabIndex = 0;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Recorder設定";
 			// 
+			// isNotSleepChkBox
+			// 
+			this.isNotSleepChkBox.Location = new System.Drawing.Point(19, 377);
+			this.isNotSleepChkBox.Name = "isNotSleepChkBox";
+			this.isNotSleepChkBox.Size = new System.Drawing.Size(291, 19);
+			this.isNotSleepChkBox.TabIndex = 8;
+			this.isNotSleepChkBox.Text = "録画中はPCがスリープモードに入らないようにする";
+			this.isNotSleepChkBox.UseVisualStyleBackColor = true;
+			// 
 			// isConfirmCloseMsgBoxChkBox
 			// 
-			this.isConfirmCloseMsgBoxChkBox.Location = new System.Drawing.Point(19, 377);
+			this.isConfirmCloseMsgBoxChkBox.Location = new System.Drawing.Point(19, 399);
 			this.isConfirmCloseMsgBoxChkBox.Name = "isConfirmCloseMsgBoxChkBox";
 			this.isConfirmCloseMsgBoxChkBox.Size = new System.Drawing.Size(291, 19);
 			this.isConfirmCloseMsgBoxChkBox.TabIndex = 7;
@@ -334,7 +350,7 @@ namespace rokugaTouroku
 			// 
 			// isLogFileChkBox
 			// 
-			this.isLogFileChkBox.Location = new System.Drawing.Point(19, 399);
+			this.isLogFileChkBox.Location = new System.Drawing.Point(19, 421);
 			this.isLogFileChkBox.Name = "isLogFileChkBox";
 			this.isLogFileChkBox.Size = new System.Drawing.Size(337, 19);
 			this.isLogFileChkBox.TabIndex = 2;
@@ -442,6 +458,18 @@ namespace rokugaTouroku
 			this.isMinimizedChkBox.Text = "自動起動時は最小化(非アクティブ)状態で起動する";
 			this.isMinimizedChkBox.UseVisualStyleBackColor = true;
 			// 
+			// tabPage9
+			// 
+			this.tabPage9.Controls.Add(this.groupBox5);
+			this.tabPage9.Controls.Add(this.groupBox9);
+			this.tabPage9.Location = new System.Drawing.Point(4, 40);
+			this.tabPage9.Name = "tabPage9";
+			this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage9.Size = new System.Drawing.Size(468, 481);
+			this.tabPage9.TabIndex = 9;
+			this.tabPage9.Text = "一般2";
+			this.tabPage9.UseVisualStyleBackColor = true;
+			// 
 			// groupBox5
 			// 
 			this.groupBox5.Controls.Add(this.isDefaultBrowserPathChkBox);
@@ -450,7 +478,7 @@ namespace rokugaTouroku
 			this.groupBox5.Location = new System.Drawing.Point(5, 10);
 			this.groupBox5.Name = "groupBox5";
 			this.groupBox5.Size = new System.Drawing.Size(372, 67);
-			this.groupBox5.TabIndex = 0;
+			this.groupBox5.TabIndex = 3;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "URLを開くWebブラウザ";
 			// 
@@ -481,17 +509,6 @@ namespace rokugaTouroku
 			this.browserPathText.Size = new System.Drawing.Size(291, 19);
 			this.browserPathText.TabIndex = 0;
 			// 
-			// tabPage9
-			// 
-			this.tabPage9.Controls.Add(this.groupBox9);
-			this.tabPage9.Location = new System.Drawing.Point(4, 40);
-			this.tabPage9.Name = "tabPage9";
-			this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage9.Size = new System.Drawing.Size(468, 481);
-			this.tabPage9.TabIndex = 9;
-			this.tabPage9.Text = "一般2";
-			this.tabPage9.UseVisualStyleBackColor = true;
-			// 
 			// groupBox9
 			// 
 			this.groupBox9.Controls.Add(this.volumeText);
@@ -501,7 +518,7 @@ namespace rokugaTouroku
 			this.groupBox9.Controls.Add(this.isDefaultSoundChkBtn);
 			this.groupBox9.Controls.Add(this.soundSanshouBtn);
 			this.groupBox9.Controls.Add(this.soundPathText);
-			this.groupBox9.Location = new System.Drawing.Point(5, 10);
+			this.groupBox9.Location = new System.Drawing.Point(5, 83);
 			this.groupBox9.Name = "groupBox9";
 			this.groupBox9.Size = new System.Drawing.Size(372, 147);
 			this.groupBox9.TabIndex = 2;
@@ -592,7 +609,7 @@ namespace rokugaTouroku
 			this.groupBox4.Controls.Add(this.afterConvertModeList);
 			this.groupBox4.Location = new System.Drawing.Point(5, 363);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(415, 121);
+			this.groupBox4.Size = new System.Drawing.Size(425, 115);
 			this.groupBox4.TabIndex = 29;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "変換・FFmpeg処理";
@@ -601,10 +618,10 @@ namespace rokugaTouroku
 			// 
 			this.label4.Location = new System.Drawing.Point(12, 50);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(360, 77);
+			this.label4.Size = new System.Drawing.Size(413, 77);
 			this.label4.TabIndex = 1;
-			this.label4.Text = "形式を変更せず処理する\r\n\r\n（音声や映像の問題が減りますが、録画後に処理のための時間がかかります。後からエクスプローラ上で.tsファイルや.tsファイルの入った" +
-			"フォルダをexeファイルにドロップしても同様の処理を行うことができます。）\r\n";
+			this.label4.Text = "形式を変更せず処理する\r\n\r\n（プレイヤーにより音声が出ないことがある問題が減り、ファイルサイズも若干小さくなりますが、録画後に処理のための時間がかかります。後か" +
+			"らエクスプローラ上で.tsファイルや.tsファイルの入ったフォルダをexeファイルにドロップしても同様の処理を行うことができます。）\r\n\r\n";
 			// 
 			// afterConvertModeList
 			// 
@@ -627,7 +644,7 @@ namespace rokugaTouroku
 									"wma(音声)",
 									"aac(音声)",
 									"ogg(音声)"});
-			this.afterConvertModeList.Location = new System.Drawing.Point(42, 18);
+			this.afterConvertModeList.Location = new System.Drawing.Point(52, 18);
 			this.afterConvertModeList.Name = "afterConvertModeList";
 			this.afterConvertModeList.Size = new System.Drawing.Size(149, 20);
 			this.afterConvertModeList.TabIndex = 6;
@@ -650,7 +667,7 @@ namespace rokugaTouroku
 			this.groupBox10.Controls.Add(this.segmentRadioBtnPanel);
 			this.groupBox10.Location = new System.Drawing.Point(5, 10);
 			this.groupBox10.Name = "groupBox10";
-			this.groupBox10.Size = new System.Drawing.Size(415, 347);
+			this.groupBox10.Size = new System.Drawing.Size(425, 347);
 			this.groupBox10.TabIndex = 0;
 			this.groupBox10.TabStop = false;
 			this.groupBox10.Text = "録画エンジン";
@@ -817,7 +834,7 @@ namespace rokugaTouroku
 			// groupBox15
 			// 
 			this.groupBox15.Controls.Add(this.isChaseReserveRecChkBox);
-			this.groupBox15.Location = new System.Drawing.Point(5, 179);
+			this.groupBox15.Location = new System.Drawing.Point(5, 201);
 			this.groupBox15.Name = "groupBox15";
 			this.groupBox15.Size = new System.Drawing.Size(385, 48);
 			this.groupBox15.TabIndex = 3;
@@ -837,20 +854,30 @@ namespace rokugaTouroku
 			// 
 			// groupBox14
 			// 
+			this.groupBox14.Controls.Add(this.isArgChaseRecFromFirstChkBox);
 			this.groupBox14.Controls.Add(this.label9);
 			this.groupBox14.Controls.Add(this.isOnlyTimeShiftChaseChkBtn);
 			this.groupBox14.Controls.Add(this.isRealTimeRecordRadioBtn);
 			this.groupBox14.Controls.Add(this.isChaseRecordRadioBtn);
 			this.groupBox14.Location = new System.Drawing.Point(5, 10);
 			this.groupBox14.Name = "groupBox14";
-			this.groupBox14.Size = new System.Drawing.Size(415, 163);
+			this.groupBox14.Size = new System.Drawing.Size(415, 185);
 			this.groupBox14.TabIndex = 2;
 			this.groupBox14.TabStop = false;
 			this.groupBox14.Text = "リアルタイム録画";
 			// 
+			// isArgChaseRecFromFirstChkBox
+			// 
+			this.isArgChaseRecFromFirstChkBox.Location = new System.Drawing.Point(32, 63);
+			this.isArgChaseRecFromFirstChkBox.Name = "isArgChaseRecFromFirstChkBox";
+			this.isArgChaseRecFromFirstChkBox.Size = new System.Drawing.Size(309, 15);
+			this.isArgChaseRecFromFirstChkBox.TabIndex = 4;
+			this.isArgChaseRecFromFirstChkBox.Text = "他のツールから起動された時は番組の最初から録画する";
+			this.isArgChaseRecFromFirstChkBox.UseVisualStyleBackColor = true;
+			// 
 			// label9
 			// 
-			this.label9.Location = new System.Drawing.Point(32, 85);
+			this.label9.Location = new System.Drawing.Point(32, 107);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(329, 75);
 			this.label9.TabIndex = 2;
@@ -860,7 +887,7 @@ namespace rokugaTouroku
 			// 
 			// isOnlyTimeShiftChaseChkBtn
 			// 
-			this.isOnlyTimeShiftChaseChkBtn.Location = new System.Drawing.Point(32, 63);
+			this.isOnlyTimeShiftChaseChkBtn.Location = new System.Drawing.Point(32, 85);
 			this.isOnlyTimeShiftChaseChkBtn.Name = "isOnlyTimeShiftChaseChkBtn";
 			this.isOnlyTimeShiftChaseChkBtn.Size = new System.Drawing.Size(309, 15);
 			this.isOnlyTimeShiftChaseChkBtn.TabIndex = 1;
@@ -1349,7 +1376,7 @@ namespace rokugaTouroku
 			this.groupBox13.Controls.Add(this.isDefaultCommentViewerRadioBtn);
 			this.groupBox13.Controls.Add(this.anotherCommentViewerPathText);
 			this.groupBox13.Controls.Add(this.anotherCommentViewerSanshouBtn);
-			this.groupBox13.Location = new System.Drawing.Point(5, 150);
+			this.groupBox13.Location = new System.Drawing.Point(5, 247);
 			this.groupBox13.Name = "groupBox13";
 			this.groupBox13.Size = new System.Drawing.Size(385, 133);
 			this.groupBox13.TabIndex = 20;
@@ -1407,6 +1434,11 @@ namespace rokugaTouroku
 			// 
 			// groupBox8
 			// 
+			this.groupBox8.Controls.Add(this.label12);
+			this.groupBox8.Controls.Add(this.label11);
+			this.groupBox8.Controls.Add(this.label10);
+			this.groupBox8.Controls.Add(this.label13);
+			this.groupBox8.Controls.Add(this.playerArgsText);
 			this.groupBox8.Controls.Add(this.isUsePlayerChkBox);
 			this.groupBox8.Controls.Add(this.isAnotherPlayerRadioBtn);
 			this.groupBox8.Controls.Add(this.isDefaultPlayerRadioBtn);
@@ -1414,7 +1446,7 @@ namespace rokugaTouroku
 			this.groupBox8.Controls.Add(this.anotherPlayerSanshouBtn);
 			this.groupBox8.Location = new System.Drawing.Point(5, 10);
 			this.groupBox8.Name = "groupBox8";
-			this.groupBox8.Size = new System.Drawing.Size(385, 133);
+			this.groupBox8.Size = new System.Drawing.Size(385, 231);
 			this.groupBox8.TabIndex = 19;
 			this.groupBox8.TabStop = false;
 			this.groupBox8.Text = "プレイヤー";
@@ -1823,6 +1855,45 @@ namespace rokugaTouroku
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
 			// 
+			// label12
+			// 
+			this.label12.Location = new System.Drawing.Point(18, 168);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(205, 13);
+			this.label12.TabIndex = 31;
+			this.label12.Text = "(例) -window_title {f}";
+			// 
+			// label11
+			// 
+			this.label11.Location = new System.Drawing.Point(148, 150);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(68, 13);
+			this.label11.TabIndex = 30;
+			this.label11.Text = "{t} タイトル";
+			// 
+			// label10
+			// 
+			this.label10.Location = new System.Drawing.Point(18, 150);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(99, 13);
+			this.label10.TabIndex = 29;
+			this.label10.Text = "{f} 録画ファイル名";
+			// 
+			// label13
+			// 
+			this.label13.Location = new System.Drawing.Point(18, 130);
+			this.label13.Name = "label13";
+			this.label13.Size = new System.Drawing.Size(152, 16);
+			this.label13.TabIndex = 28;
+			this.label13.Text = "追加引数";
+			// 
+			// playerArgsText
+			// 
+			this.playerArgsText.Location = new System.Drawing.Point(18, 196);
+			this.playerArgsText.Name = "playerArgsText";
+			this.playerArgsText.Size = new System.Drawing.Size(297, 19);
+			this.playerArgsText.TabIndex = 27;
+			// 
 			// optionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1839,9 +1910,9 @@ namespace rokugaTouroku
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.groupBox6.ResumeLayout(false);
+			this.tabPage9.ResumeLayout(false);
 			this.groupBox5.ResumeLayout(false);
 			this.groupBox5.PerformLayout();
-			this.tabPage9.ResumeLayout(false);
 			this.groupBox9.ResumeLayout(false);
 			this.groupBox9.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.volumeBar)).EndInit();
@@ -1875,6 +1946,13 @@ namespace rokugaTouroku
 			((System.ComponentModel.ISupportInitialize)(this.maxRecordingNum)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.TextBox playerArgsText;
+		private System.Windows.Forms.Label label13;
+		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.Label label11;
+		private System.Windows.Forms.Label label12;
+		private System.Windows.Forms.CheckBox isNotSleepChkBox;
+		private System.Windows.Forms.CheckBox isArgChaseRecFromFirstChkBox;
 		private System.Windows.Forms.CheckBox isChaseReserveRecChkBox;
 		private System.Windows.Forms.GroupBox groupBox15;
 		private System.Windows.Forms.RadioButton isChaseRecordRadioBtn;
@@ -2031,6 +2109,5 @@ namespace rokugaTouroku
 		
 
 		
-
 	}
 }

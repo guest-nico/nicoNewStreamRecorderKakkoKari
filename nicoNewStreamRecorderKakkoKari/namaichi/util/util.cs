@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.IO;
@@ -7,6 +8,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using Microsoft.Win32;
 using System.Threading;
+using System.Runtime.InteropServices;
 
 using namaichi.config;
 using namaichi.info;
@@ -25,8 +27,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.87.43 debug";
-	public static string versionDayStr = "2019/08/29";
+	public static string versionStr = "ver0.87.54";
+	public static string versionDayStr = "2019/09/19";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	
@@ -235,7 +237,7 @@ class util {
 		else if (n == "8") return host + "_" + communityNum + "";
 		else return host;
 	}
-	private static string getFileName(string host, string group, string title, string lvId, string communityNum, config cfg, long _openTime) {
+	public static string getFileName(string host, string group, string title, string lvId, string communityNum, config cfg, long _openTime) {
 		var n = cfg.get("fileNameType");
 		//var _hiduke = DateTime.Now;
 		var _hiduke = getUnixToDatetime(_openTime);
@@ -611,39 +613,59 @@ class util {
 			
 		return null;
 	}
-	public static byte[] getFileBytes(string url, CookieContainer container) {
+	public static byte[] getFileBytes(string url, CookieContainer container, bool isRedirect = true, int mode = 0) {
 //		var a = container.GetCookieHeader(new Uri(_url));
 		//util.debugWriteLine("getfilebyte " + url);
 		for (int i = 0; i < 1; i++) {
 			try {
-				var req = (HttpWebRequest)WebRequest.Create(url);
-				req.Proxy = null;
-				req.AllowAutoRedirect = true;
-				req.Timeout = 2000;
-	//			req.Headers = getheaders;
-//				if (referer != null) req.Referer = referer;
-				if (container != null) req.CookieContainer = container;
-				var res = (HttpWebResponse)req.GetResponse();
-				var dataStream = res.GetResponseStream();
 				
 				//test
-				var isMs = true;
-				if (isMs) {
-					var ms = new MemoryStream();
-					dataStream.CopyTo(ms);
-					return ms.ToArray();
-				} else {
-	//				var reader = new StreamReader(dataStream);
-					byte[] b = new byte[10000000];
-					int pos = 0;
-					var r = 0;
-					while ((r = dataStream.Read(b, pos, 1000000)) > 0) {
-	//					if (dataStream.Read(b, (int)j, (int)dataStream.Length) == 0) break;
-	//					j = dataStream.Position;
-						pos += r;
+				//var mode = 0;
+				if (mode == 0 || mode == 1) {
+					var req = (HttpWebRequest)WebRequest.Create(url);
+					req.Proxy = null;
+					req.AllowAutoRedirect = true;
+					req.Timeout = 10000;
+					req.KeepAlive = false;
+									
+		//			req.Headers = getheaders;
+	//				if (referer != null) req.Referer = referer;
+					
+					if (container != null) req.CookieContainer = container;
+					var res = (HttpWebResponse)req.GetResponse();
+					var dataStream = res.GetResponseStream();
+					
+					if (mode == 0) {
+						var ms = new MemoryStream();
+						dataStream.CopyTo(ms);
+						return ms.ToArray();
+					} else {
+		//				var reader = new StreamReader(dataStream);
+						byte[] b = new byte[10000000];
+						int pos = 0;
+						var r = 0;
+						while ((r = dataStream.Read(b, pos, 1000000)) > 0) {
+		//					if (dataStream.Read(b, (int)j, (int)dataStream.Length) == 0) break;
+		//					j = dataStream.Position;
+							pos += r;
+						}
+						Array.Resize(ref b, pos);
+						return b;
+					
 					}
-					Array.Resize(ref b, pos);
-					return b;
+				} else if (mode == 2) {
+					using (var handler = new HttpClientHandler())
+		            using (var client = new HttpClient(handler))
+		            {
+						
+						handler.CookieContainer = container;
+						handler.UseProxy = false;
+						handler.AllowAutoRedirect = isRedirect;
+						client.Timeout = TimeSpan.FromSeconds(10);
+						
+		                var result = client.GetByteArrayAsync(url).Result;
+		                return result;
+		            }
 				}
 			} catch (Exception e) {
 				System.Threading.Tasks.Task.Run(() => {
@@ -915,6 +937,7 @@ class util {
 	}
 	private static double CheckFor45PlusVersion(int releaseKey)
    {
+	  util.debugWriteLine("releasekey " + releaseKey);
       if (releaseKey >= 461808)
          return 4.72; //later
       if (releaseKey >= 461308)
@@ -971,8 +994,20 @@ class util {
 			*/
 		} catch (Exception e) {
 			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
-		}
-		                                     
+		}                                
 	}
-	
+	[DllImport("kernel32.dll")]
+	extern static int SetThreadExecutionState(uint esFlags);
+	public static void setThreadExecutionState() {
+		try {
+			
+			var r = SetThreadExecutionState((uint)1);
+			//var r2 = SetThreadExecutionState((uint)2);
+			//var r2 = SetThreadExecutionState(0x80000000);
+			util.debugWriteLine("setThreadExecutionState " + r);
+			
+		} catch (Exception e) {
+			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+		}
+	}
 }

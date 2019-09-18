@@ -35,7 +35,7 @@ namespace namaichi.rec
 		public bool isPremium = false;
 		private string programType;
 		private CookieContainer container;
-		private string[] recFolderFile;
+		public string[] recFolderFile;
 		private RecordingManager rm;
 		private RecordFromUrl rfu;
 		public Html5Recorder h5r;
@@ -101,6 +101,7 @@ namespace namaichi.rec
 		public List<string> chaseCommentBuf = new List<string>();
 		public bool isSaveComment = false;
 		public bool isHokan = false;
+		private bool isNotSleep = false;
 		
 		public WebSocketRecorder(string[] webSocketInfo, 
 				CookieContainer container, string[] recFolderFile, 
@@ -139,6 +140,7 @@ namespace namaichi.rec
 			this.isGetComment = rm.cfg.get("IsgetComment");
 			this.isGetCommentXml = rm.cfg.get("IsgetcommentXml");
 			this.engineMode = rm.cfg.get("EngineMode");
+			this.isNotSleep = bool.Parse(rm.cfg.get("IsNotSleep"));
 			this.isRtmpOnlyPage = isRtmpOnlyPage;
 			this.isChase = isChase;
 			this.isRealtimeChase = isRealtimeChase;
@@ -185,7 +187,8 @@ namespace namaichi.rec
 //			while (rm.rfu == rfu && ws != null && isRetry && 
 //			       (rec == null || !rec.isStopRead())) {
 			WebSocket lastWebSocket = null;
-			var stopWsCount = 0;			
+			var stopWsCount = 0;
+			var lastSendRequired = DateTime.Now;
 			while (rm.rfu == rfu && isRetry) {
 				/*
 				if (isTimeShift && rm.rfu == rfu && 
@@ -203,13 +206,7 @@ namespace namaichi.rec
 //					connect();
 				}
 				
-//				if (DateTime.Now > DateTime.Parse("2018/10/19 4:43")) resetWebsocketInfo();
-				//test
-//				GC.Collect();
-//				GC.WaitForPendingFinalizers();
 				if (ws != null) {
-					var a = ws.State == WebSocketState.Open;
-					var b = ws == lastWebSocket;
 					if (ws != null && ws.State != WebSocketState.Open && ws == lastWebSocket) {
 						stopWsCount++;
 						if (stopWsCount > 10) {
@@ -227,6 +224,12 @@ namespace namaichi.rec
 					} else stopWsCount = 0;
 					lastWebSocket = ws;
 				}
+				
+				if (isNotSleep && DateTime.Now - lastSendRequired > TimeSpan.FromSeconds(45)) {
+					util.setThreadExecutionState();
+					lastSendRequired = DateTime.Now;
+				}
+				
 				System.Threading.Thread.Sleep(1000);
 			}
 //			while (isTimeShift && rm.rfu == rfu) 
@@ -245,6 +248,7 @@ namespace namaichi.rec
 				while (rm.rfu == rfu && 
 				       ((!isRtmpOnlyPage && tscg != null && !tscg.isEnd) || 
 				       		isRtmpOnlyPage && tscgx != null && !tscgx.isEnd)) {
+					addDebugBuf("tscg end wait loop tscg " + tscg);
 					Thread.Sleep(1000);
 				}
 			}
@@ -684,7 +688,7 @@ namespace namaichi.rec
 				});
 			} else {
 				//Task.Run(() => {
-					rec.reSetHlsUrl(hlsUrl, currentQuality, ws);
+					rec.reSetHlsUrl(hlsUrl, currentQuality, ws, false);
 				//});
 	        }
 		}
@@ -1010,7 +1014,8 @@ namespace namaichi.rec
 			var c = (chat.premium == "3") ? "red" :
 				((chat.premium == "7") ? "blue" : "black");
 			
-			if (!isTimeShift || isRealtimeChase)
+			//if (!isTimeShift || isRealtimeChase)
+			if (!isTimeShift || isChase)
 				rm.form.addComment(keikaTime, chat.contents, chat.userId, chat.score, c);
 			
 		}

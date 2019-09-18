@@ -129,8 +129,10 @@ namespace rokugaTouroku
 				{"IsautoFollowComgen",isAutoFollowComGen.Checked.ToString().ToLower()},
 				{"qualityRank",getQualityRank()},
 				{"IsMiniStart",isMiniStartChkBox.Checked.ToString().ToLower()},
-				{"IsLogFile",isLogFileChkBox.Checked.ToString().ToLower()},
 				{"IsConfirmCloseMsgBox",isConfirmCloseMsgBoxChkBox.Checked.ToString().ToLower()},
+				{"IsLogFile",isLogFileChkBox.Checked.ToString().ToLower()},
+				{"IsNotSleep",isNotSleepChkBox.Checked.ToString().ToLower()},
+				
 				{"IsSegmentNukeInfo",isSegmentNukeInfoChkBox.Checked.ToString().ToLower()},
 				{"segmentSaveType",getSegmentSaveType()},
 				{"IsRenketuAfter",isRenketuAfterChkBox.Checked.ToString().ToLower()},
@@ -141,6 +143,7 @@ namespace rokugaTouroku
 				{"IsDefaultRtmpPath",isDefaultRtmpChkBox.Checked.ToString().ToLower()},
 				{"rtmpPath",rtmpPathText.Text},
 				{"IsChaseRecord",isChaseRecordRadioBtn.Checked.ToString().ToLower()},
+				{"IsArgChaseRecFromFirst",isArgChaseRecFromFirstChkBox.Checked.ToString().ToLower()},
 				{"IsOnlyTimeShiftChase",isOnlyTimeShiftChaseChkBtn.Checked.ToString().ToLower()},
 				{"IsChaseReserveRec",isChaseReserveRecChkBox.Checked.ToString().ToLower()},
 				
@@ -155,6 +158,7 @@ namespace rokugaTouroku
 				{"soundPath",soundPathText.Text},
 				{"IsSoundDefault",isDefaultSoundChkBtn.Checked.ToString().ToLower()},
 				{"soundVolume",volumeBar.Value.ToString()},
+				{"playerArgs",playerArgsText.Text},
 				
 				{"cookieFile",cookieFileText.Text},
 				{"iscookie",isCookieFileSiteiChkBox.Checked.ToString().ToLower()},
@@ -364,6 +368,8 @@ namespace rokugaTouroku
         	isMiniStartChkBox.Checked = bool.Parse(cfg.get("IsMiniStart"));
         	isConfirmCloseMsgBoxChkBox.Checked = bool.Parse(cfg.get("IsConfirmCloseMsgBox"));
         	isLogFileChkBox.Checked = bool.Parse(cfg.get("IsLogFile"));
+        	isNotSleepChkBox.Checked = bool.Parse(cfg.get("IsNotSleep"));
+        	
         	isSegmentNukeInfoChkBox.Checked = bool.Parse(cfg.get("IsSegmentNukeInfo"));
         	setSegmentSaveType(cfg.get("segmentSaveType"));
         	isRenketuAfterChkBox.Checked = bool.Parse(cfg.get("IsRenketuAfter"));
@@ -376,6 +382,7 @@ namespace rokugaTouroku
 			rtmpPathText.Text = cfg.get("rtmpPath");
 			isDefaultEngineChkBox_UpdateAction();
 			isChaseRecordRadioBtn.Checked = bool.Parse(cfg.get("IsChaseRecord"));
+			isArgChaseRecFromFirstChkBox.Checked = bool.Parse(cfg.get("IsArgChaseRecFromFirst"));
 			isOnlyTimeShiftChaseChkBtn.Checked = bool.Parse(cfg.get("IsOnlyTimeShiftChase"));
 			isChaseRecordRadioBtn_UpdateAction();
 			isChaseReserveRecChkBox.Checked = bool.Parse(cfg.get("IsChaseReserveRec"));
@@ -386,6 +393,7 @@ namespace rokugaTouroku
 			anotherCommentViewerPathText.Text = cfg.get("anotherCommentViewerPath");
 			isUsePlayerChkBox.Checked = bool.Parse(cfg.get("IsUsePlayer"));
 			isUseCommentViewerChkBox.Checked = bool.Parse(cfg.get("IsUseCommentViewer"));
+			playerArgsText.Text = cfg.get("playerArgs");
 			isUsePlayerChkBox_UpdateAction();
 			isUseCommentViewerChkBox_UpdateAction();
 			
@@ -885,7 +893,8 @@ namespace rokugaTouroku
 			isDefaultPlayerRadioBtn.Enabled = c;
 			isAnotherPlayerRadioBtn.Enabled = c;
 			anotherPlayerPathText.Enabled = c && isAnotherPlayerRadioBtn.Checked;
-			anotherPlayerSanshouBtn.Enabled = c && isAnotherPlayerRadioBtn.Checked; 
+			anotherPlayerSanshouBtn.Enabled = c && isAnotherPlayerRadioBtn.Checked;
+			playerArgsText.Enabled = c;			
 		}
 		void isUseCommentViewerChkBox_UpdateAction() {
 			var c = isUseCommentViewerChkBox.Checked;
@@ -950,11 +959,14 @@ namespace rokugaTouroku
 		}
 		void isChaseRecordRadioBtn_UpdateAction() {
 			isOnlyTimeShiftChaseChkBtn.Enabled = 
-				isChaseRecordRadioBtn.Checked;
+					isArgChaseRecFromFirstChkBox.Enabled =
+					isChaseRecordRadioBtn.Checked;
 		}
 		void IsChaseRecordRadioBtnCheckedChanged(object sender, EventArgs e)
 		{
 			isChaseRecordRadioBtn_UpdateAction();
 		}
+		
+
 	}
 }

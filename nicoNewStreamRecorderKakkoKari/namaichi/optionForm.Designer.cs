@@ -39,6 +39,7 @@ namespace namaichi
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.isNotSleepChkBox = new System.Windows.Forms.CheckBox();
 			this.isConfirmCloseMsgBoxChkBox = new System.Windows.Forms.CheckBox();
 			this.isMiniStartChkBox = new System.Windows.Forms.CheckBox();
 			this.isCommentJson = new System.Windows.Forms.RadioButton();
@@ -57,11 +58,11 @@ namespace namaichi
 			this.isMessageBoxChkBox = new System.Windows.Forms.CheckBox();
 			this.isRetryChkBox = new System.Windows.Forms.CheckBox();
 			this.isMinimizedChkBox = new System.Windows.Forms.CheckBox();
+			this.tabPage8 = new System.Windows.Forms.TabPage();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.isDefaultBrowserPathChkBox = new System.Windows.Forms.CheckBox();
 			this.browserPathSanshouBtn = new System.Windows.Forms.Button();
 			this.browserPathText = new System.Windows.Forms.TextBox();
-			this.tabPage8 = new System.Windows.Forms.TabPage();
 			this.groupBox9 = new System.Windows.Forms.GroupBox();
 			this.volumeText = new System.Windows.Forms.Label();
 			this.volumeBar = new System.Windows.Forms.TrackBar();
@@ -95,6 +96,7 @@ namespace namaichi
 			this.groupBox14 = new System.Windows.Forms.GroupBox();
 			this.isChaseReserveRecChkBox = new System.Windows.Forms.CheckBox();
 			this.groupBox11 = new System.Windows.Forms.GroupBox();
+			this.isArgChaseRecFromFirstChkBox = new System.Windows.Forms.CheckBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.isOnlyTimeShiftChaseChkBox = new System.Windows.Forms.CheckBox();
 			this.isRealTimeRecordRadioBtn = new System.Windows.Forms.RadioButton();
@@ -147,9 +149,14 @@ namespace namaichi
 			this.anotherCommentViewerPathText = new System.Windows.Forms.TextBox();
 			this.anotherCommentViewerSanshouBtn = new System.Windows.Forms.Button();
 			this.groupBox8 = new System.Windows.Forms.GroupBox();
+			this.label12 = new System.Windows.Forms.Label();
+			this.label11 = new System.Windows.Forms.Label();
+			this.label10 = new System.Windows.Forms.Label();
+			this.label9 = new System.Windows.Forms.Label();
 			this.isUsePlayerChkBox = new System.Windows.Forms.CheckBox();
 			this.isAnotherPlayerRadioBtn = new System.Windows.Forms.RadioButton();
 			this.isDefaultPlayerRadioBtn = new System.Windows.Forms.RadioButton();
+			this.playerArgsText = new System.Windows.Forms.TextBox();
 			this.anotherPlayerPathText = new System.Windows.Forms.TextBox();
 			this.anotherPlayerSanshouBtn = new System.Windows.Forms.Button();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -183,8 +190,8 @@ namespace namaichi
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox6.SuspendLayout();
-			this.groupBox5.SuspendLayout();
 			this.tabPage8.SuspendLayout();
+			this.groupBox5.SuspendLayout();
 			this.groupBox9.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.volumeBar)).BeginInit();
 			this.tabPage6.SuspendLayout();
@@ -230,7 +237,6 @@ namespace namaichi
 			// tabPage1
 			// 
 			this.tabPage1.Controls.Add(this.groupBox6);
-			this.tabPage1.Controls.Add(this.groupBox5);
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
 			this.tabPage1.Name = "tabPage1";
@@ -242,6 +248,7 @@ namespace namaichi
 			// 
 			// groupBox6
 			// 
+			this.groupBox6.Controls.Add(this.isNotSleepChkBox);
 			this.groupBox6.Controls.Add(this.isConfirmCloseMsgBoxChkBox);
 			this.groupBox6.Controls.Add(this.isMiniStartChkBox);
 			this.groupBox6.Controls.Add(this.isCommentJson);
@@ -260,16 +267,25 @@ namespace namaichi
 			this.groupBox6.Controls.Add(this.isMessageBoxChkBox);
 			this.groupBox6.Controls.Add(this.isRetryChkBox);
 			this.groupBox6.Controls.Add(this.isMinimizedChkBox);
-			this.groupBox6.Location = new System.Drawing.Point(5, 83);
+			this.groupBox6.Location = new System.Drawing.Point(5, 10);
 			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(385, 417);
+			this.groupBox6.Size = new System.Drawing.Size(385, 444);
 			this.groupBox6.TabIndex = 0;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Recorder設定";
 			// 
+			// isNotSleepChkBox
+			// 
+			this.isNotSleepChkBox.Location = new System.Drawing.Point(19, 377);
+			this.isNotSleepChkBox.Name = "isNotSleepChkBox";
+			this.isNotSleepChkBox.Size = new System.Drawing.Size(291, 19);
+			this.isNotSleepChkBox.TabIndex = 5;
+			this.isNotSleepChkBox.Text = "録画中はPCがスリープモードに入らないようにする";
+			this.isNotSleepChkBox.UseVisualStyleBackColor = true;
+			// 
 			// isConfirmCloseMsgBoxChkBox
 			// 
-			this.isConfirmCloseMsgBoxChkBox.Location = new System.Drawing.Point(19, 377);
+			this.isConfirmCloseMsgBoxChkBox.Location = new System.Drawing.Point(19, 399);
 			this.isConfirmCloseMsgBoxChkBox.Name = "isConfirmCloseMsgBoxChkBox";
 			this.isConfirmCloseMsgBoxChkBox.Size = new System.Drawing.Size(291, 19);
 			this.isConfirmCloseMsgBoxChkBox.TabIndex = 4;
@@ -316,7 +332,7 @@ namespace namaichi
 			// 
 			// isLogFileChkBox
 			// 
-			this.isLogFileChkBox.Location = new System.Drawing.Point(19, 399);
+			this.isLogFileChkBox.Location = new System.Drawing.Point(19, 421);
 			this.isLogFileChkBox.Name = "isLogFileChkBox";
 			this.isLogFileChkBox.Size = new System.Drawing.Size(271, 19);
 			this.isLogFileChkBox.TabIndex = 2;
@@ -435,6 +451,17 @@ namespace namaichi
 			this.isMinimizedChkBox.Text = "自動起動時は最小化(非アクティブ)状態で起動する";
 			this.isMinimizedChkBox.UseVisualStyleBackColor = true;
 			// 
+			// tabPage8
+			// 
+			this.tabPage8.Controls.Add(this.groupBox5);
+			this.tabPage8.Controls.Add(this.groupBox9);
+			this.tabPage8.Location = new System.Drawing.Point(4, 22);
+			this.tabPage8.Name = "tabPage8";
+			this.tabPage8.Size = new System.Drawing.Size(428, 499);
+			this.tabPage8.TabIndex = 8;
+			this.tabPage8.Text = "一般2";
+			this.tabPage8.UseVisualStyleBackColor = true;
+			// 
 			// groupBox5
 			// 
 			this.groupBox5.Controls.Add(this.isDefaultBrowserPathChkBox);
@@ -443,7 +470,7 @@ namespace namaichi
 			this.groupBox5.Location = new System.Drawing.Point(5, 10);
 			this.groupBox5.Name = "groupBox5";
 			this.groupBox5.Size = new System.Drawing.Size(372, 67);
-			this.groupBox5.TabIndex = 0;
+			this.groupBox5.TabIndex = 2;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = "URLを開くWebブラウザ";
 			// 
@@ -474,16 +501,6 @@ namespace namaichi
 			this.browserPathText.Size = new System.Drawing.Size(291, 19);
 			this.browserPathText.TabIndex = 0;
 			// 
-			// tabPage8
-			// 
-			this.tabPage8.Controls.Add(this.groupBox9);
-			this.tabPage8.Location = new System.Drawing.Point(4, 22);
-			this.tabPage8.Name = "tabPage8";
-			this.tabPage8.Size = new System.Drawing.Size(428, 499);
-			this.tabPage8.TabIndex = 8;
-			this.tabPage8.Text = "一般2";
-			this.tabPage8.UseVisualStyleBackColor = true;
-			// 
 			// groupBox9
 			// 
 			this.groupBox9.Controls.Add(this.volumeText);
@@ -493,7 +510,7 @@ namespace namaichi
 			this.groupBox9.Controls.Add(this.isDefaultSoundChkBtn);
 			this.groupBox9.Controls.Add(this.soundSanshouBtn);
 			this.groupBox9.Controls.Add(this.soundPathText);
-			this.groupBox9.Location = new System.Drawing.Point(5, 10);
+			this.groupBox9.Location = new System.Drawing.Point(5, 83);
 			this.groupBox9.Name = "groupBox9";
 			this.groupBox9.Size = new System.Drawing.Size(372, 147);
 			this.groupBox9.TabIndex = 1;
@@ -584,7 +601,7 @@ namespace namaichi
 			this.groupBox4.Controls.Add(this.afterConvertModeList);
 			this.groupBox4.Location = new System.Drawing.Point(5, 363);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(385, 121);
+			this.groupBox4.Size = new System.Drawing.Size(385, 125);
 			this.groupBox4.TabIndex = 2;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "変換・FFmpeg処理";
@@ -595,8 +612,8 @@ namespace namaichi
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(360, 77);
 			this.label4.TabIndex = 1;
-			this.label4.Text = "形式を変更せず処理する\r\n\r\n（音声や映像の問題が減りますが、録画後に処理のための時間がかかります。後からエクスプローラ上で.tsファイルや.tsファイルの入った" +
-			"フォルダをexeファイルにドロップしても同様の処理を行うことができます。）\r\n";
+			this.label4.Text = "形式を変更せず処理する\r\n\r\n（プレイヤーにより音声が出ないことがある問題が減り、ファイルサイズも若干小さくなりますが、録画後に処理のための時間がかかります。後か" +
+			"らエクスプローラ上で.tsファイルや.tsファイルの入ったフォルダをexeファイルにドロップしても同様の処理を行うことができます。）\r\n";
 			// 
 			// afterConvertModeList
 			// 
@@ -809,7 +826,7 @@ namespace namaichi
 			// groupBox14
 			// 
 			this.groupBox14.Controls.Add(this.isChaseReserveRecChkBox);
-			this.groupBox14.Location = new System.Drawing.Point(5, 179);
+			this.groupBox14.Location = new System.Drawing.Point(5, 201);
 			this.groupBox14.Name = "groupBox14";
 			this.groupBox14.Size = new System.Drawing.Size(385, 48);
 			this.groupBox14.TabIndex = 2;
@@ -829,20 +846,30 @@ namespace namaichi
 			// 
 			// groupBox11
 			// 
+			this.groupBox11.Controls.Add(this.isArgChaseRecFromFirstChkBox);
 			this.groupBox11.Controls.Add(this.label3);
 			this.groupBox11.Controls.Add(this.isOnlyTimeShiftChaseChkBox);
 			this.groupBox11.Controls.Add(this.isRealTimeRecordRadioBtn);
 			this.groupBox11.Controls.Add(this.isChaseRecordRadioBtn);
 			this.groupBox11.Location = new System.Drawing.Point(5, 10);
 			this.groupBox11.Name = "groupBox11";
-			this.groupBox11.Size = new System.Drawing.Size(385, 163);
+			this.groupBox11.Size = new System.Drawing.Size(385, 185);
 			this.groupBox11.TabIndex = 1;
 			this.groupBox11.TabStop = false;
 			this.groupBox11.Text = "リアルタイム録画";
 			// 
+			// isArgChaseRecFromFirstChkBox
+			// 
+			this.isArgChaseRecFromFirstChkBox.Location = new System.Drawing.Point(32, 63);
+			this.isArgChaseRecFromFirstChkBox.Name = "isArgChaseRecFromFirstChkBox";
+			this.isArgChaseRecFromFirstChkBox.Size = new System.Drawing.Size(309, 15);
+			this.isArgChaseRecFromFirstChkBox.TabIndex = 3;
+			this.isArgChaseRecFromFirstChkBox.Text = "他のツールから起動された時は番組の最初から録画する";
+			this.isArgChaseRecFromFirstChkBox.UseVisualStyleBackColor = true;
+			// 
 			// label3
 			// 
-			this.label3.Location = new System.Drawing.Point(32, 85);
+			this.label3.Location = new System.Drawing.Point(32, 107);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(329, 75);
 			this.label3.TabIndex = 2;
@@ -852,7 +879,7 @@ namespace namaichi
 			// 
 			// isOnlyTimeShiftChaseChkBox
 			// 
-			this.isOnlyTimeShiftChaseChkBox.Location = new System.Drawing.Point(32, 63);
+			this.isOnlyTimeShiftChaseChkBox.Location = new System.Drawing.Point(32, 85);
 			this.isOnlyTimeShiftChaseChkBox.Name = "isOnlyTimeShiftChaseChkBox";
 			this.isOnlyTimeShiftChaseChkBox.Size = new System.Drawing.Size(309, 15);
 			this.isOnlyTimeShiftChaseChkBox.TabIndex = 1;
@@ -1340,7 +1367,7 @@ namespace namaichi
 			this.groupBox13.Controls.Add(this.isDefaultCommentViewerRadioBtn);
 			this.groupBox13.Controls.Add(this.anotherCommentViewerPathText);
 			this.groupBox13.Controls.Add(this.anotherCommentViewerSanshouBtn);
-			this.groupBox13.Location = new System.Drawing.Point(5, 150);
+			this.groupBox13.Location = new System.Drawing.Point(5, 247);
 			this.groupBox13.Name = "groupBox13";
 			this.groupBox13.Size = new System.Drawing.Size(385, 133);
 			this.groupBox13.TabIndex = 20;
@@ -1398,17 +1425,54 @@ namespace namaichi
 			// 
 			// groupBox8
 			// 
+			this.groupBox8.Controls.Add(this.label12);
+			this.groupBox8.Controls.Add(this.label11);
+			this.groupBox8.Controls.Add(this.label10);
+			this.groupBox8.Controls.Add(this.label9);
 			this.groupBox8.Controls.Add(this.isUsePlayerChkBox);
 			this.groupBox8.Controls.Add(this.isAnotherPlayerRadioBtn);
 			this.groupBox8.Controls.Add(this.isDefaultPlayerRadioBtn);
+			this.groupBox8.Controls.Add(this.playerArgsText);
 			this.groupBox8.Controls.Add(this.anotherPlayerPathText);
 			this.groupBox8.Controls.Add(this.anotherPlayerSanshouBtn);
 			this.groupBox8.Location = new System.Drawing.Point(5, 10);
 			this.groupBox8.Name = "groupBox8";
-			this.groupBox8.Size = new System.Drawing.Size(385, 133);
+			this.groupBox8.Size = new System.Drawing.Size(385, 231);
 			this.groupBox8.TabIndex = 19;
 			this.groupBox8.TabStop = false;
 			this.groupBox8.Text = "プレイヤー";
+			// 
+			// label12
+			// 
+			this.label12.Location = new System.Drawing.Point(18, 168);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(205, 13);
+			this.label12.TabIndex = 26;
+			this.label12.Text = "(例) -window_title {f}";
+			// 
+			// label11
+			// 
+			this.label11.Location = new System.Drawing.Point(148, 150);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(68, 13);
+			this.label11.TabIndex = 24;
+			this.label11.Text = "{t} タイトル";
+			// 
+			// label10
+			// 
+			this.label10.Location = new System.Drawing.Point(18, 150);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(99, 13);
+			this.label10.TabIndex = 24;
+			this.label10.Text = "{f} 録画ファイル名";
+			// 
+			// label9
+			// 
+			this.label9.Location = new System.Drawing.Point(18, 130);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(152, 16);
+			this.label9.TabIndex = 22;
+			this.label9.Text = "追加引数";
 			// 
 			// isUsePlayerChkBox
 			// 
@@ -1440,6 +1504,13 @@ namespace namaichi
 			this.isDefaultPlayerRadioBtn.Text = "デフォルトのプレイヤーを使う";
 			this.isDefaultPlayerRadioBtn.UseVisualStyleBackColor = true;
 			this.isDefaultPlayerRadioBtn.CheckedChanged += new System.EventHandler(this.isDefaultPlayerRadioBtn_CheckedChanged);
+			// 
+			// playerArgsText
+			// 
+			this.playerArgsText.Location = new System.Drawing.Point(18, 196);
+			this.playerArgsText.Name = "playerArgsText";
+			this.playerArgsText.Size = new System.Drawing.Size(297, 19);
+			this.playerArgsText.TabIndex = 19;
 			// 
 			// anotherPlayerPathText
 			// 
@@ -1783,9 +1854,9 @@ namespace namaichi
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.groupBox6.ResumeLayout(false);
+			this.tabPage8.ResumeLayout(false);
 			this.groupBox5.ResumeLayout(false);
 			this.groupBox5.PerformLayout();
-			this.tabPage8.ResumeLayout(false);
 			this.groupBox9.ResumeLayout(false);
 			this.groupBox9.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.volumeBar)).EndInit();
@@ -1816,6 +1887,13 @@ namespace namaichi
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label label12;
+		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.Label label11;
+		private System.Windows.Forms.TextBox playerArgsText;
+		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.CheckBox isNotSleepChkBox;
+		private System.Windows.Forms.CheckBox isArgChaseRecFromFirstChkBox;
 		private System.Windows.Forms.CheckBox isChaseReserveRecChkBox;
 		private System.Windows.Forms.GroupBox groupBox14;
 		private System.Windows.Forms.Label label3;

@@ -177,16 +177,17 @@ namespace namaichi.play
 		}
 		private void sendPlayCommand(bool isDefaultPlayer) {
 			Environment.SetEnvironmentVariable("SDL_AUDIODRIVER", "directsound", EnvironmentVariableTarget.Process);
+			var exArgs = getExArgs();
 			if (isDefaultPlayer) {
 				try {
 					var volume = (ctrl != null) ? ((ctrl.volume == -10) ? 0 : ctrl.volume) : int.Parse(config.get("volume"));
 					util.debugWriteLine("kia 00 " + form.rec.hlsUrl);
 					
 					if (form.rec.hlsUrl.StartsWith("http"))
-						playCommand("ffplay", form.rec.hlsUrl + " -autoexit -volume " + volume);
+						playCommand("ffplay", form.rec.hlsUrl + " -autoexit -volume " + volume + " " + exArgs);
 					else 
 	//					playCommandStd("MPC-HC.1.7.13.x86/mpc-hc.exe", "-");
-						Task.Run(() => playCommandStd("ffplay.exe", form.rec.hlsUrl + " -autoexit -volume " + volume));
+						Task.Run(() => playCommandStd("ffplay.exe", form.rec.hlsUrl + " -autoexit -volume " + volume + " " + exArgs));
 					
 					util.debugWriteLine("kia 0 " + ctrl);
 					
@@ -205,9 +206,9 @@ namespace namaichi.play
 				}
 			} else {
 				if (form.rec.hlsUrl.StartsWith("http"))
-					playCommand(config.get("anotherPlayerPath"), form.rec.hlsUrl);
+					playCommand(config.get("anotherPlayerPath"), form.rec.hlsUrl + " " + exArgs);
 				else
-					playCommandStd(config.get("anotherPlayerPath"), form.rec.hlsUrl);
+					playCommandStd(config.get("anotherPlayerPath"), form.rec.hlsUrl + " " + exArgs);
 			}
 		}
 		
@@ -532,6 +533,24 @@ namespace namaichi.play
 //        	pipeWriter.WriteLine();
 //        	pipeWriter.Flush();
 			
+		}
+		private string getExArgs() {
+			var args = config.get("playerArgs");
+			try {
+				var f = ((WebSocketRecorder)form.rec.wsr).recFolderFile[1];
+				if (string.IsNullOrEmpty(f)) args = args.Replace("{f}", "{t}");
+				f = util.getRegGroup(f.Replace("\\", "/"), ".+/(.+)");
+				args = args.Replace("{f}", "\"" + f + "\"");
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
+			try {
+				var t = form.getTitleLabelText();
+				if (t != "") args = args.Replace("{t}", "\"" + t + "\"");
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
+			return args;
 		}
 	}
 }

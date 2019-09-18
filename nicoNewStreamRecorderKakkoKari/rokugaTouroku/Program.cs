@@ -34,7 +34,9 @@ namespace rokugaTouroku
 			Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
 			System.Threading.Tasks.TaskScheduler.UnobservedTaskException += taskSchedulerUnobservedTaskException;
 			AppDomain.CurrentDomain.FirstChanceException += firstChanceException;
-				
+			
+			System.Net.ServicePointManager.DefaultConnectionLimit = 20;
+			
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.Run(new MainForm(args));

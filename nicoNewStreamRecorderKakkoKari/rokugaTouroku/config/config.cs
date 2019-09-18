@@ -125,6 +125,8 @@ public class config
 			{"IsConfirmCloseMsgBox","true"},
 			{"IsLogFile","false"},
 			{"IsSegmentNukeInfo","true"},
+			{"IsNotSleep","false"},
+			
 			{"segmentSaveType","0"},
 			{"IsRenketuAfter","true"},
 //			{"IsAfterRenketuFFmpeg","false"},
@@ -133,6 +135,7 @@ public class config
 			{"IsDefaultRtmpPath","true"},
 			{"rtmpPath",""},
 			{"IsChaseRecord","false"},
+			{"IsArgChaseRecFromFirst","false"},
 			{"IsOnlyTimeShiftChase","true"},
 			{"IsChaseReserveRec","false"},
 			{"IsUsePlayer","true"},
@@ -142,6 +145,7 @@ public class config
 			{"anotherPlayerPath",""},
 			{"anotherCommentViewerPath",""},
 			{"Is184","true"},
+			{"playerArgs",""},
 			
 			{"tsStartTimeMode","0"},
 			{"tsEndTimeMode","0"},

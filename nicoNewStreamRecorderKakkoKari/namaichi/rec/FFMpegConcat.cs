@@ -10,6 +10,9 @@ using System;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.IO.Pipes;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace namaichi.rec
 {
@@ -23,11 +26,70 @@ namespace namaichi.rec
 		private RecordFromUrl rfu;
 		private System.Diagnostics.Process process;
 		private DateTime lastReadTime = DateTime.UtcNow;
-		
+		private int afterConvertMode = 0;
 		public FFMpegConcat(RecordingManager rm, RecordFromUrl rfu) {
 			this.rm = rm;
 //			this.isFFmpeg = isFFmpeg;
 			this.rfu = rfu;
+			afterConvertMode = int.Parse(rm.cfg.get("afterConvertMode"));
+		}
+		public void concat(string outPath, List<string> files) {
+			var input = "";
+			var arg = "";
+			var isM3u8 = true;
+			if (isM3u8) {
+				input += "#EXTM3U\n#EXT-X-VERSION:3\n#EXT-X-MEDIA-SEQUENCE:0\n";
+				foreach (var s in files) input += "#EXTINF:7,\n" + s.Replace("\\", "/") + "\n";
+				input += "#EXT-X-ENDLIST";
+				arg = "-protocol_whitelist file,pipe -y -i -";
+			} else {
+				foreach (var s in files) input += "file '" + s.Replace("\\", "/") + "'\n";
+				arg = "-protocol_whitelist file,pipe -f concat -safe 0 -y -i -";
+			}
+			
+			outPath = replacedKakutyousi(outPath);
+			
+			//10-mp3 8-vob 11-wav
+			if (afterConvertMode == 10 || afterConvertMode == 8 || afterConvertMode == 11)
+				arg += (" \"" + outPath + "\"");
+			//12-wma
+			else if (afterConvertMode == 12)
+				arg +=  (" -vn -c copy \"" + outPath + "\"");
+			//14-ogg
+			else if (afterConvertMode == 14)
+				arg +=  (" -vn \"" + outPath + "\"");
+			//5-flv
+			else if (afterConvertMode == 5)
+				arg += (" -c:v copy -c:a aac -bsf:a aac_adtstoasc \"" + outPath + "\"");
+			else arg += (" -c copy \"" + outPath + "\"");
+			
+			//var arg = " -c copy \"" + outPath + "\" -y";
+			arg = arg.Replace("\\", "/");
+			try {
+				EventHandler e = new EventHandler(appExitHandler);
+				Application.ApplicationExit += e;
+				
+				process = new System.Diagnostics.Process();
+				process.StartInfo.FileName = util.getJarPath()[0] + 
+					"\\ffmpeg";
+				process.StartInfo.RedirectStandardOutput = true;
+				process.StartInfo.RedirectStandardError = true;
+				process.StartInfo.RedirectStandardInput = true;
+				process.StartInfo.StandardErrorEncoding = System.Text.Encoding.UTF8;
+				process.StartInfo.UseShellExecute = false;
+				process.StartInfo.CreateNoWindow = true;
+				process.StartInfo.Arguments = arg;
+			
+				process.Start();
+				process.StandardInput.Write(input);
+				process.StandardInput.Close();
+				
+				displayRecordStatus();
+				Application.ApplicationExit -= e;
+				
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.StackTrace + ee.Source + ee.TargetSite);
+			}
 		}
 		public void recordCommand(string[] command, string m3u8, string pipeName) {
 			util.debugWriteLine("rec start");
@@ -69,7 +131,6 @@ namespace namaichi.rec
 				pipe.Write(bytes, 0, bytes.Length);
 				pipe.Close();
 				
-				//segmentにもpipe繋げたほうがよさげか・・・
 				
 //				var w = process.StandardInput.BaseStream;
 //				var bytes = System.Text.Encoding.UTF8.GetBytes(m3u8);
@@ -197,6 +258,32 @@ namespace namaichi.rec
 				util.debugWriteLine(a);
 			}
 			return DateTime.UtcNow - lastReadTime > new TimeSpan(0,0,30);
+		}
+		private string replacedKakutyousi(string origin) {
+			var ext = "ts";
+			if (afterConvertMode == 0) ext = (origin.EndsWith("ts") ? "ts" : "flv");
+			if (afterConvertMode == 1) ext = (origin.EndsWith("ts") ? "ts" : "flv");
+			if (afterConvertMode == 2) ext = "ts";
+			if (afterConvertMode == 3) ext = "avi";
+			if (afterConvertMode == 4) ext = "mp4";
+			if (afterConvertMode == 5) ext = "flv";
+			if (afterConvertMode == 6) ext = "mov";
+			if (afterConvertMode == 7) ext = "wmv";
+			if (afterConvertMode == 8) ext = "vob";
+			if (afterConvertMode == 9) ext = "mkv";
+			if (afterConvertMode == 10) ext = "mp3";
+			if (afterConvertMode == 11) ext = "wav";
+			if (afterConvertMode == 12) ext = "wma";
+			if (afterConvertMode == 13) ext = "aac";
+			if (afterConvertMode == 14) ext = "ogg";
+			var originalExtLen = origin.EndsWith("ts") ? 2 : 3;
+			var withoutExt = origin.Substring(0, origin.Length - originalExtLen - 1);
+			withoutExt = util.getRegGroup(withoutExt, "(.+?)\\d+$");
+			var a = withoutExt.Length;
+			for (var i = 0; i < 10000; i++)
+				if (!File.Exists(withoutExt + i + "." + ext))
+					return withoutExt + i + "." + ext;
+			return withoutExt + 00 + "." + ext;
 		}
 	}
 }

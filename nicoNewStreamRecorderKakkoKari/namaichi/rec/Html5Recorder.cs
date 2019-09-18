@@ -245,6 +245,9 @@ namespace namaichi.rec
 				if (!isChaseCheck && isChase)
 					timeShiftConfig = new TimeShiftConfig();
 			
+				var isRealtimeChase =  isChase && !isChaseCheck && 
+						!(rm.form.args.Length > 0 && bool.Parse(rm.cfg.get("IsArgChaseRecFromFirst")));
+				
 				if (!rm.isPlayOnlyMode) {
 					util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode());
 					if (recFolderFile == null)
@@ -255,7 +258,10 @@ namespace namaichi.rec
 						util.debugWriteLine("too long path? " + recFolderFile[1]);
 						return 2;
 					}
-				} else recFolderFile = new string[]{"", "", ""};
+				} else {
+					var fName = "a/" + util.getFileName(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], rm.cfg, openTime);
+					recFolderFile = new String[]{fName, fName, fName};//new string[]{"", "", ""};
+				}
 			
 				//display set
 				var b = new RecordStateSetter(rm.form, rm, rfu, isTimeShift, false, recFolderFile, rm.isPlayOnlyMode, isRtmpOnlyPage, isChase);
@@ -282,7 +288,7 @@ namespace namaichi.rec
 				
 				var userId = util.getRegGroup(res, "\"user\"\\:\\{\"user_id\"\\:(.+?),");
 				var isPremium = res.IndexOf("\"member_status\":\"premium\"") > -1;
-				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, isTimeShift, lvid, timeShiftConfig, userId, isPremium, programTime, type, _openTime, isRtmp, isRtmpOnlyPage, isChase, isChase && !isChaseCheck, true);
+				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, isTimeShift, lvid, timeShiftConfig, userId, isPremium, programTime, type, _openTime, isRtmp, isRtmpOnlyPage, isChase, isRealtimeChase, true);
 				rm.wsr = wsr;
 				try {
 					isNoPermission = wsr.start();

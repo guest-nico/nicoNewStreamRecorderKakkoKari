@@ -77,6 +77,9 @@
     <Reference Include="RtmpSharp2">
       <HintPath>..\..\..\..\..\Downloads\RtmpSharp2-master\RtmpSharp2-master\RtmpSharp2\RtmpSharp2\bin\Release\RtmpSharp2.dll</HintPath>
     </Reference>
+    <Reference Include="RtmpSharp2">
+      <HintPath>..\packages\RtmpSharp2.dll</HintPath>
+    </Reference>
     <Reference Include="SnkLib.App.CookieGetter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SnkLib.App.CookieGetter.2.3.1.0\lib\net45\SnkLib.App.CookieGetter.dll</HintPath>
       <Private>True</Private>

@@ -41,14 +41,12 @@ namespace namaichi.rec
 			
 			util.debugWriteLine("concat get files " + files.Count());
 			rm.form.addLogText(files.Count() + "のファイルが見つかりました");
+			//var outPath = concatFiles(files);
 			var outPath = concatFiles(files);
 			
 //			if (rm.cfg.get("IsAfterRenketuFFmpeg") == "true" ||
 //			    int.Parse(rm.cfg.get("afterConvertMode")) > 1) {
-			if (int.Parse(rm.cfg.get("afterConvertMode")) > 0) {
-				var tf = new ThroughFFMpeg(rm);
-				tf.start(outPath, true);
-			}
+			
 			rm.form.addLogText("結合を完了しました");
 			rm.form.addLogText(outPath);
 		}
@@ -98,65 +96,85 @@ namespace namaichi.rec
 			
 			string outPath = null; 
 			var count = 0;
-			using (var outFileStream = getOutFileStream(files[0])) {
-				if (outFileStream == null) {
-	//				rm.form.addLogText("出力先パスが取得できませんでした");
-					return null;
-				}
-				util.debugWriteLine("outfname " + outFileStream + outFileStream.Name);
-				outPath = outFileStream.Name;
-	
-				foreach (var f in files) {
-					util.debugWriteLine(f);
-					try {
-						var r = new FileStream(f, FileMode.Open, FileAccess.Read);
-						
-						var pos = 0;
-						var readI = 0;
-						var bytes = new byte[1000000];
-						while((readI = r.Read(bytes, 0, bytes.Length)) != 0) {
-							outFileStream.Write(bytes, 0, readI);
-							pos += readI;
+			
+			var outName = getOutFileName(files[0]);
+			outPath = outName;
+			var isFFmpegConcat = true;
+			if (isFFmpegConcat) {
+				new FFMpegConcat(rm, null).concat(outName, files);
+			} else {
+				using (var outFileStream = new FileStream(outName, FileMode.Append, FileAccess.Write)) {
+				//using (var outFileStream = getOutFileStream(files[0])) {
+					if (outFileStream == null) {
+		//				rm.form.addLogText("出力先パスが取得できませんでした");
+						return null;
+					}
+					util.debugWriteLine("outfname " + outFileStream + outFileStream.Name);
+					//outPath = outFileStream.Name;
+		
+					foreach (var f in files) {
+						util.debugWriteLine(f);
+						try {
+							var r = new FileStream(f, FileMode.Open, FileAccess.Read);
+							
+							var pos = 0;
+							var readI = 0;
+							var bytes = new byte[1000000];
+							while((readI = r.Read(bytes, 0, bytes.Length)) != 0) {
+								outFileStream.Write(bytes, 0, readI);
+								pos += readI;
+							}
+							r.Close();
+							count++;
+							
+						} catch (Exception e) {
+							util.debugWriteLine("arg concat write exception " + f + " " + e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 						}
-						r.Close();
-						count++;
-						
-					} catch (Exception e) {
-						util.debugWriteLine("arg concat write exception " + f + " " + e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 					}
 				}
+				if (int.Parse(rm.cfg.get("afterConvertMode")) > 0) {
+					var tf = new ThroughFFMpeg(rm);
+				tf.start(outPath, true);
+			}
 			}
 			util.debugWriteLine("concated count " + count);
 			return outPath;
 		}
-		private FileStream getOutFileStream(string file) {
+		private string getOutFileName(string file) {
 			var dir = Directory.GetParent(file).ToString();
 			var dirName = Directory.GetParent(file).Name;
 			util.debugWriteLine("out parent dir " + dir + " name " + dirName);
 			                    
 			for (var i = 0; i < 10000; i++) {
-				var f = dir + "/" + dirName + "_" + i + ".ts";
+				string f = dir + "/" + dirName + "_" + i + ".ts";
 				var lvid = util.getRegGroup(dirName, "(lv\\d+)");
 				if (File.Exists(f) || Directory.Exists(f)) continue;
 				
 				try {
 					util.debugWriteLine("renketu out fname " + f);			
-					var w = new FileStream(f, FileMode.Append, FileAccess.Write);
-					return w;
+					//return f;
+//					var w = new FileStream(f, FileMode.Append, FileAccess.Write);
+					if (f.Length > 250) throw new Exception();
+					return f;
+					//return w;
 				} catch (Exception e) {
 					try {
 						if (lvid != null) f = dir + "/" + lvid + "_" + i + ".ts";
 						if (File.Exists(f) || Directory.Exists(f)) continue;
 						util.debugWriteLine("renketu out fname " + f);	
-						var w = new FileStream(f, FileMode.Append, FileAccess.Write);
-						return w;
+						if (f.Length > 250) throw new Exception();
+						return f;
+						//var w = new FileStream(f, FileMode.Append, FileAccess.Write);
+						//return w;
 					} catch (Exception ee) {
 						try {
 							f = dir + "/out_" + i + ".ts";
 							if (File.Exists(f) || Directory.Exists(f)) continue;
 							util.debugWriteLine("renketu out fname " + f);	
-							var w = new FileStream(f, FileMode.Append, FileAccess.Write);
-							return w;
+							if (f.Length > 250) throw new Exception();
+							return f;
+							//var w = new FileStream(f, FileMode.Append, FileAccess.Write);
+							//return w;
 						
 						} catch (Exception eee) {
 							util.debugWriteLine("renketu after exception" + eee.Message + eee.StackTrace + eee.Source + eee.TargetSite);
@@ -170,3 +188,12 @@ namespace namaichi.rec
 		}
 	}
 }
+
+/*
+ * ffmpeg -f concat -safe 0 -i list.txt -c copy concat.avi
+
+where list.txt is
+
+file 'intro_prepped.avi'
+file 'intro_prepped.avi'
+*/

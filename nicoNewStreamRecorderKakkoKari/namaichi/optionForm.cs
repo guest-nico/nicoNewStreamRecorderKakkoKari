@@ -133,6 +133,8 @@ namespace namaichi
 				{"IsMiniStart",isMiniStartChkBox.Checked.ToString().ToLower()},
 				{"IsConfirmCloseMsgBox",isConfirmCloseMsgBoxChkBox.Checked.ToString().ToLower()},
 				{"IsLogFile",isLogFileChkBox.Checked.ToString().ToLower()},
+				{"IsNotSleep",isNotSleepChkBox.Checked.ToString().ToLower()},
+				
 				{"IsSegmentNukeInfo",isSegmentNukeInfoChkBox.Checked.ToString().ToLower()},
 				{"segmentSaveType",getSegmentSaveType()},
 				{"IsRenketuAfter",isRenketuAfterChkBox.Checked.ToString().ToLower()},
@@ -143,6 +145,7 @@ namespace namaichi
 				{"IsDefaultRtmpPath",isDefaultRtmpChkBox.Checked.ToString().ToLower()},
 				{"rtmpPath",rtmpPathText.Text},
 				{"IsChaseRecord",isChaseRecordRadioBtn.Checked.ToString().ToLower()},
+				{"IsArgChaseRecFromFirst",isArgChaseRecFromFirstChkBox.Checked.ToString().ToLower()},
 				{"IsOnlyTimeShiftChase",isOnlyTimeShiftChaseChkBox.Checked.ToString().ToLower()},
 				{"IsChaseReserveRec",isChaseReserveRecChkBox.Checked.ToString().ToLower()},
 				
@@ -157,6 +160,7 @@ namespace namaichi
 				{"soundPath",soundPathText.Text},
 				{"IsSoundDefault",isDefaultSoundChkBtn.Checked.ToString().ToLower()},
 				{"soundVolume",volumeBar.Value.ToString()},
+				{"playerArgs",playerArgsText.Text},
 				
 				{"cookieFile",cookieFileText.Text},
 				{"iscookie",isCookieFileSiteiChkBox.Checked.ToString().ToLower()},
@@ -362,6 +366,8 @@ namespace namaichi
         	isConfirmCloseMsgBoxChkBox.Checked = bool.Parse(cfg.get("IsConfirmCloseMsgBox"));
         	isLogFileChkBox.Checked = bool.Parse(cfg.get("IsLogFile"));
         	isSegmentNukeInfoChkBox.Checked = bool.Parse(cfg.get("IsSegmentNukeInfo"));
+        	isNotSleepChkBox.Checked = bool.Parse(cfg.get("IsNotSleep"));
+        	
         	setSegmentSaveType(cfg.get("segmentSaveType"));
         	isRenketuAfterChkBox.Checked = bool.Parse(cfg.get("IsRenketuAfter"));
         	isRenketuAfterChkBox_UpdateAction();
@@ -373,6 +379,7 @@ namespace namaichi
 			rtmpPathText.Text = cfg.get("rtmpPath");
 			isDefaultEngineChkBox_UpdateAction();
 			isChaseRecordRadioBtn.Checked = bool.Parse(cfg.get("IsChaseRecord"));
+			isArgChaseRecFromFirstChkBox.Checked = bool.Parse(cfg.get("IsArgChaseRecFromFirst"));
 			isOnlyTimeShiftChaseChkBox.Checked = bool.Parse(cfg.get("IsOnlyTimeShiftChase"));
 			isChaseRecordRadioBtn_UpdateAction();
 			isChaseReserveRecChkBox.Checked = bool.Parse(cfg.get("IsChaseReserveRec"));
@@ -383,6 +390,7 @@ namespace namaichi
 			anotherCommentViewerPathText.Text = cfg.get("anotherCommentViewerPath");
 			isUsePlayerChkBox.Checked = bool.Parse(cfg.get("IsUsePlayer"));
 			isUseCommentViewerChkBox.Checked = bool.Parse(cfg.get("IsUseCommentViewer"));
+			playerArgsText.Text = cfg.get("playerArgs");
 			isUsePlayerChkBox_UpdateAction();
 			isUseCommentViewerChkBox_UpdateAction();
 			
@@ -757,13 +765,9 @@ namespace namaichi
 			isDefaultCommentViewerRadioBtn_UpdateAction();
 		}
 		void isDefaultPlayerRadioBtn_UpdateAction() {
-			if (isDefaultPlayerRadioBtn.Checked) {
-				anotherPlayerPathText.Enabled = false;
-				anotherPlayerSanshouBtn.Enabled = false;
-			} else {
-				anotherPlayerPathText.Enabled = true;
-				anotherPlayerSanshouBtn.Enabled = true;
-			}
+			anotherPlayerPathText.Enabled = 
+					anotherPlayerSanshouBtn.Enabled = 
+					!isDefaultPlayerRadioBtn.Checked;
 		}
 		void isDefaultCommentViewerRadioBtn_UpdateAction() {
 			if (isDefaultCommentViewerRadioBtn.Checked) {
@@ -879,7 +883,8 @@ namespace namaichi
 			isDefaultPlayerRadioBtn.Enabled = c;
 			isAnotherPlayerRadioBtn.Enabled = c;
 			anotherPlayerPathText.Enabled = c && isAnotherPlayerRadioBtn.Checked;
-			anotherPlayerSanshouBtn.Enabled = c && isAnotherPlayerRadioBtn.Checked; 
+			anotherPlayerSanshouBtn.Enabled = c && isAnotherPlayerRadioBtn.Checked;
+			playerArgsText.Enabled = c;
 		}
 		void isUseCommentViewerChkBox_UpdateAction() {
 			var c = isUseCommentViewerChkBox.Checked;
@@ -948,7 +953,9 @@ namespace namaichi
 		}
 		void isChaseRecordRadioBtn_UpdateAction() {
 			isOnlyTimeShiftChaseChkBox.Enabled = 
-				isChaseRecordRadioBtn.Checked;
+					isArgChaseRecFromFirstChkBox.Enabled =
+					isChaseRecordRadioBtn.Checked;
+			
 		}
 		void IsChaseRecordRadioBtnCheckedChanged(object sender, EventArgs e)
 		{

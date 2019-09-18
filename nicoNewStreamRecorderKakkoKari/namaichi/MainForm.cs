@@ -51,7 +51,7 @@ namespace namaichi
 		public rec.RecordingManager rec;
 		private bool isInitRun = true;
 		private namaichi.config.config config = new namaichi.config.config();
-		private string[] args;
+		public string[] args;
 		private play.Player player;
 		private string labelUrl;
 		private Thread madeThread;
@@ -60,11 +60,14 @@ namespace namaichi
 		public MainForm(string[] args)
 		{
 			madeThread = Thread.CurrentThread;
+			
 			//config.set("IsHokan", "false");
 			
 			//test
 			app.form = this;
 			
+			//args = new String[]{"lv321744352"};
+			//args = new string[]{"C:\\Users\\zack\\downloads\\a.ts"};
 			//args = "-nowindo -stdIO -IsmessageBox=false -IscloseExit=true lv316762771 -ts-start=1785s -ts-end=0s -ts-list=false -ts-list-m3u8=false -ts-list-update=5 -ts-list-open=false -ts-list-command=\"notepad{i}\" -ts-vpos-starttime=true -afterConvertMode=4 -qualityRank=0,1,2,3,4,5 -IsLogFile=true".Split(' ');
 			//read std
 			if (Array.IndexOf(args, "-std-read") > -1) startStdRead();
@@ -908,6 +911,12 @@ namespace namaichi
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
+		}
+		public string getKeikaTime() {
+			return keikaTimeLabel.Text;
+		}
+		public string getTitleLabelText() {
+			return titleLabel.Text;
 		}
 	}
 }

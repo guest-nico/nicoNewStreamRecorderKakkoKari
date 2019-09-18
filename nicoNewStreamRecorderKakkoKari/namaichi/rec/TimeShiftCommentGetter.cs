@@ -256,7 +256,10 @@ namespace namaichi.rec
 //				serverTime = chatinfo.serverTime;
 				ticket = chatinfo.ticket;
 //				lastLastRes = (chatinfo.lastRes == null) ? 0 : int.Parse(chatinfo.lastRes);
+				//lastLastRes = (chatinfo.lastRes != null) ? int.Parse(chatinfo.lastRes) : 0;
+				if (chatinfo.lastRes == null) chatinfo.lastRes = "0";
 				if (chatinfo.lastRes != null) lastLastRes = int.Parse(chatinfo.lastRes);
+				
 			}
 //			util.debugWriteLine(chatXml.ToString());
 //			util.debugWriteLine(gotMinXml[1]);
