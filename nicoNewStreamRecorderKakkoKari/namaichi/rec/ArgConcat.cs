@@ -115,16 +115,15 @@ namespace namaichi.rec
 					foreach (var f in files) {
 						util.debugWriteLine(f);
 						try {
-							var r = new FileStream(f, FileMode.Open, FileAccess.Read);
-							
-							var pos = 0;
-							var readI = 0;
-							var bytes = new byte[1000000];
-							while((readI = r.Read(bytes, 0, bytes.Length)) != 0) {
-								outFileStream.Write(bytes, 0, readI);
-								pos += readI;
+							using (var r = new FileStream(f, FileMode.Open, FileAccess.Read)) {
+								var pos = 0;
+								var readI = 0;
+								var bytes = new byte[1000000];
+								while((readI = r.Read(bytes, 0, bytes.Length)) != 0) {
+									outFileStream.Write(bytes, 0, readI);
+									pos += readI;
+								}
 							}
-							r.Close();
 							count++;
 							
 						} catch (Exception e) {

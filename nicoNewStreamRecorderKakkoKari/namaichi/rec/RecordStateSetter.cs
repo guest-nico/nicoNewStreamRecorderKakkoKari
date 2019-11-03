@@ -159,30 +159,32 @@ namespace namaichi.rec
 			var ext = (isDescriptionTag) ? ".html" : ".txt";
 			StreamWriter sw;
 			try {
-				sw = new StreamWriter(recFolderFile[2] + ext, false);
+				using (sw = new StreamWriter(recFolderFile[2] + ext, false)) {
+					var br = (isDescriptionTag) ? "<br />" : "";
+					sw.WriteLine("[放送開始時間] " + openTimeDt.ToString("yyyy/MM/dd(ddd) HH:mm:ss") + br);
+					sw.WriteLine("[タイトル] " + title + br);
+					sw.WriteLine("[限定] " + gentei + br);
+					sw.WriteLine("[放送タイプ] " + ((isJikken) ? "nicocas" : (isRtmpOnlyPage) ? "nicolive" : "nicolive2") + br);
+					sw.WriteLine("[放送者] " + host + br);
+					sw.WriteLine("[コミュニティ名] " + group + br);
+					sw.WriteLine("[説明] " + description + br);
+					sw.WriteLine("[放送URL] " + url + br);
+					if (groupUrl != null)
+						sw.WriteLine("[コミュニティURL] " + groupUrl + br);
+					if (hostUrl != null)
+						sw.WriteLine("[放送者URL] " + hostUrl + br);
+					sw.WriteLine("[タグ] " + tag + br);
+					if (isTimeShift && !isChase) sw.WriteLine("[放送終了時間] " + endTimeDt.ToString("yyyy/MM/dd(ddd) HH:mm:ss") + br);
+					//sw.Close();
+					
+					isWrite = true;
+				}
 			} catch (Exception e) {
 				rm.form.addLogText(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				rm.form.addLogText(recFolderFile[2] + ext);
 				return;
 			}
-			var br = (isDescriptionTag) ? "<br />" : "";
-			sw.WriteLine("[放送開始時間] " + openTimeDt.ToString("yyyy/MM/dd(ddd) HH:mm:ss") + br);
-			sw.WriteLine("[タイトル] " + title + br);
-			sw.WriteLine("[限定] " + gentei + br);
-			sw.WriteLine("[放送タイプ] " + ((isJikken) ? "nicocas" : (isRtmpOnlyPage) ? "nicolive" : "nicolive2") + br);
-			sw.WriteLine("[放送者] " + host + br);
-			sw.WriteLine("[コミュニティ名] " + group + br);
-			sw.WriteLine("[説明] " + description + br);
-			sw.WriteLine("[放送URL] " + url + br);
-			if (groupUrl != null)
-				sw.WriteLine("[コミュニティURL] " + groupUrl + br);
-			if (hostUrl != null)
-				sw.WriteLine("[放送者URL] " + hostUrl + br);
-			sw.WriteLine("[タグ] " + tag + br);
-			if (isTimeShift && !isChase) sw.WriteLine("[放送終了時間] " + endTimeDt.ToString("yyyy/MM/dd(ddd) HH:mm:ss") + br);
-			sw.Close();
 			
-			isWrite = true;
 		}
 		private void writeStdIOInfo() {
 			Console.WriteLine("info.title:" + title);
@@ -223,14 +225,14 @@ namespace namaichi.rec
 			if (endTime == DateTime.MinValue) return;
 			
 			var ext = (isDescriptionTag) ? ".html" : ".txt";
-			StreamWriter sw;
+			//StreamWriter sw;
 			try {
 				if (!File.Exists(recFolderFile[2] + ext)) return;
-				sw = new StreamWriter(recFolderFile[2] + ext, true);
-				
-				var br = (isDescriptionTag) ? "<br />" : "";
-				sw.WriteLine("[放送終了時間] " + endTime.ToString("MM/dd(ddd) HH:mm:ss") + br);
-				sw.Close();
+				using (var sw = new StreamWriter(recFolderFile[2] + ext, true)) {
+					var br = (isDescriptionTag) ? "<br />" : "";
+					sw.WriteLine("[放送終了時間] " + endTime.ToString("MM/dd(ddd) HH:mm:ss") + br);
+				}
+				//sw.Close();
 			} catch (Exception e) {
 				rm.form.addLogText(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				rm.form.addLogText(recFolderFile[2] + ext);

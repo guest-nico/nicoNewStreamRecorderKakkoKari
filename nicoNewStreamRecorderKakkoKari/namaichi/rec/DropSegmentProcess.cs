@@ -82,17 +82,17 @@ namespace namaichi.rec
 			}
 		}
 		private void writeNukeInfo(string msg, string fName, int reStartSegmentNo, string hokanMsg) {
-			var sw = new StreamWriter(recFolderFileOrigin + "n.txt", true);
-			sw.WriteLine(msg);
-			var msgSeg = "最終取得セグメントNo." + lastSegmentNo;
-			msgSeg += (reStartSegmentNo == -1) ? " 録画終了まで" : (" 再開セグメント " + reStartSegmentNo);
-			sw.WriteLine(msgSeg);
-//			for (var i = lastSegmentNo + 1; i < nti.no; i++) {
-//				sw.WriteLine("セグメントNo." + i);
-//			}
-//			sw.WriteLine(hokanMsg);
-			sw.WriteLine();
-			sw.Close();
+			using (var sw = new StreamWriter(recFolderFileOrigin + "n.txt", true)) {
+				sw.WriteLine(msg);
+				var msgSeg = "最終取得セグメントNo." + lastSegmentNo;
+				msgSeg += (reStartSegmentNo == -1) ? " 録画終了まで" : (" 再開セグメント " + reStartSegmentNo);
+				sw.WriteLine(msgSeg);
+	//			for (var i = lastSegmentNo + 1; i < nti.no; i++) {
+	//				sw.WriteLine("セグメントNo." + i);
+	//			}
+	//			sw.WriteLine(hokanMsg);
+				sw.WriteLine();
+			}
 			
 		}
 		private string[] writeNukeSegment() {

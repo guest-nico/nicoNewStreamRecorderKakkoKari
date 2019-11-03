@@ -46,7 +46,7 @@ namespace namaichi
 			
 			nicoSessionComboBox1.Selector.PropertyChanged += Selector_PropertyChanged;
 			nicoSessionComboBox2.Selector.PropertyChanged += Selector2_PropertyChanged;
-			setFormFromConfig();
+			//setFormFromConfig();
 			
 			//tabControl1.TabPages.RemoveAt(6);
 		}
@@ -960,6 +960,11 @@ namespace namaichi
 		void IsChaseRecordRadioBtnCheckedChanged(object sender, EventArgs e)
 		{
 			isChaseRecordRadioBtn_UpdateAction();
+		}
+		
+		void OptionFormLoad(object sender, EventArgs e)
+		{
+			setFormFromConfig();
 		}
 	}
 }

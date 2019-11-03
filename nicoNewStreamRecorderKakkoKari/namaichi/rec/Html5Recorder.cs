@@ -36,6 +36,7 @@ namespace namaichi.rec
 		//private bool isSub;
 		
 		private long openTime;
+		public WebSocketRecorder wsr = null;
 	
 		public Html5Recorder(string url, CookieContainer container, 
 				string lvid, RecordingManager rm, RecordFromUrl rfu,
@@ -288,7 +289,7 @@ namespace namaichi.rec
 				
 				var userId = util.getRegGroup(res, "\"user\"\\:\\{\"user_id\"\\:(.+?),");
 				var isPremium = res.IndexOf("\"member_status\":\"premium\"") > -1;
-				var wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, isTimeShift, lvid, timeShiftConfig, userId, isPremium, programTime, type, _openTime, isRtmp, isRtmpOnlyPage, isChase, isRealtimeChase, true);
+				wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, isTimeShift, lvid, timeShiftConfig, userId, isPremium, programTime, type, _openTime, isRtmp, isRtmpOnlyPage, isChase, isRealtimeChase, true);
 				rm.wsr = wsr;
 				try {
 					isNoPermission = wsr.start();

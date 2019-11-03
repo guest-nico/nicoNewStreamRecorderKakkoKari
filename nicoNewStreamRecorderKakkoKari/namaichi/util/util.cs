@@ -27,8 +27,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.87.54";
-	public static string versionDayStr = "2019/09/19";
+	public static string versionStr = "ver0.87.57";
+	public static string versionDayStr = "2019/11/04";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	
@@ -523,24 +523,22 @@ class util {
 //				util.debugWriteLine("getpage 05");
 
 				req.Timeout = timeoutMs;
-//				util.debugWriteLine("getpage 0");
-				var res = (HttpWebResponse)req.GetResponse();
-//				util.debugWriteLine("getpage 1");
-				var dataStream = res.GetResponseStream();
-//				util.debugWriteLine("getpage 2");
-				var reader = new StreamReader(dataStream);
-				
-				/*
-				var resStrTask = reader.ReadToEndAsync();
-				if (!resStrTask.Wait(5000)) return null;
-				string resStr = resStrTask.Result;
-				*/
-//				util.debugWriteLine("getpage 3");
-				var resStr = reader.ReadToEnd();
-//				util.debugWriteLine("getpage 4");
-				
-				getheaders = res.Headers;
-				return resStr;
+				using (var res = (HttpWebResponse)req.GetResponse())
+				using (var dataStream = res.GetResponseStream())
+				using (var reader = new StreamReader(dataStream)) {
+					
+					/*
+					var resStrTask = reader.ReadToEndAsync();
+					if (!resStrTask.Wait(5000)) return null;
+					string resStr = resStrTask.Result;
+					*/
+	//				util.debugWriteLine("getpage 3");
+					var resStr = reader.ReadToEnd();
+	//				util.debugWriteLine("getpage 4");
+					
+					getheaders = res.Headers;
+					return resStr;
+				}
 	
 			} catch (Exception e) {
 				System.Threading.Tasks.Task.Run(() => {
@@ -584,23 +582,22 @@ class util {
 
 				req.Timeout = timeoutMs;
 //				util.debugWriteLine("getpage 0");
-				var res = (HttpWebResponse)req.GetResponse();
-//				util.debugWriteLine("getpage 1");
-				var dataStream = res.GetResponseStream();
-//				util.debugWriteLine("getpage 2");
-				var reader = new StreamReader(dataStream);
-				
-				/*
-				var resStrTask = reader.ReadToEndAsync();
-				if (!resStrTask.Wait(5000)) return null;
-				string resStr = resStrTask.Result;
-				*/
-//				util.debugWriteLine("getpage 3");
-				var resStr = reader.ReadToEnd();
-//				util.debugWriteLine("getpage 4");
-				
-//				getheaders = res.Headers;
-				return resStr;
+				using (var res = (HttpWebResponse)req.GetResponse())
+				using (var dataStream = res.GetResponseStream())
+				using (var reader = new StreamReader(dataStream)) {
+					
+					/*
+					var resStrTask = reader.ReadToEndAsync();
+					if (!resStrTask.Wait(5000)) return null;
+					string resStr = resStrTask.Result;
+					*/
+	//				util.debugWriteLine("getpage 3");
+					var resStr = reader.ReadToEnd();
+	//				util.debugWriteLine("getpage 4");
+					
+	//				getheaders = res.Headers;
+					return resStr;
+				}
 	
 			} catch (Exception e) {
 				System.Threading.Tasks.Task.Run(() => {
@@ -636,9 +633,10 @@ class util {
 					var dataStream = res.GetResponseStream();
 					
 					if (mode == 0) {
-						var ms = new MemoryStream();
-						dataStream.CopyTo(ms);
-						return ms.ToArray();
+						using (var ms = new MemoryStream()) {
+							dataStream.CopyTo(ms);
+							return ms.ToArray();
+						}
 					} else {
 		//				var reader = new StreamReader(dataStream);
 						byte[] b = new byte[10000000];
@@ -1009,5 +1007,22 @@ class util {
 		} catch (Exception e) {
 			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 		}
+	}
+	public static void dllCheck(namaichi.MainForm form) {
+		var path = getJarPath()[0];
+		var dlls = new string[]{"websocket4net.dll", "NAudio.dll",
+				"RtmpSharp2.dll", "SnkLib.App.CookieGetter.Forms.dll",
+				"SnkLib.App.CookieGetter.dll", "SuperSocket.ClientEngine.dll",
+				"Microsoft.Web.XmlTransform.dll", "Newtonsoft.Json.dll",
+				"System.Data.SQLite.dll", "x64/SQLite.Interop.dll",
+				"x86/SQLite.Interop.dll", "x86/SnkLib.App.CookieGetter.x86Proxy.exe"};
+		var isOk = new string[dlls.Length];
+		var msg = "";
+		foreach (var n in dlls) {
+			if (!File.Exists(path + "/" + n)) 
+				msg += (msg == "" ? "" : ",") + n;
+		}
+		if (msg == "") return;
+		form.formAction(() => MessageBox.Show(path + "“à‚É" + msg + "‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½"));
 	}
 }

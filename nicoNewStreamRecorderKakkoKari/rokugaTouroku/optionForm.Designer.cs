@@ -149,6 +149,11 @@ namespace rokugaTouroku
 			this.anotherCommentViewerPathText = new System.Windows.Forms.TextBox();
 			this.anotherCommentViewerSanshouBtn = new System.Windows.Forms.Button();
 			this.groupBox8 = new System.Windows.Forms.GroupBox();
+			this.label12 = new System.Windows.Forms.Label();
+			this.label11 = new System.Windows.Forms.Label();
+			this.label10 = new System.Windows.Forms.Label();
+			this.label13 = new System.Windows.Forms.Label();
+			this.playerArgsText = new System.Windows.Forms.TextBox();
 			this.isUsePlayerChkBox = new System.Windows.Forms.CheckBox();
 			this.isAnotherPlayerRadioBtn = new System.Windows.Forms.RadioButton();
 			this.isDefaultPlayerRadioBtn = new System.Windows.Forms.RadioButton();
@@ -186,11 +191,6 @@ namespace rokugaTouroku
 			this.label3 = new System.Windows.Forms.Label();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
-			this.label12 = new System.Windows.Forms.Label();
-			this.label11 = new System.Windows.Forms.Label();
-			this.label10 = new System.Windows.Forms.Label();
-			this.label13 = new System.Windows.Forms.Label();
-			this.playerArgsText = new System.Windows.Forms.TextBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox6.SuspendLayout();
@@ -713,9 +713,9 @@ namespace rokugaTouroku
 			// 
 			this.isRtmpEngine.Location = new System.Drawing.Point(6, 245);
 			this.isRtmpEngine.Name = "isRtmpEngine";
-			this.isRtmpEngine.Size = new System.Drawing.Size(252, 15);
+			this.isRtmpEngine.Size = new System.Drawing.Size(390, 15);
 			this.isRtmpEngine.TabIndex = 28;
-			this.isRtmpEngine.Text = "RTMP録画エンジンを使う";
+			this.isRtmpEngine.Text = "RTMP録画エンジンを使う(旧配信で提供されているタイムシフト放送のみ)";
 			this.isRtmpEngine.UseVisualStyleBackColor = true;
 			this.isRtmpEngine.CheckedChanged += new System.EventHandler(this.isDefaultEngineChkBox_CheckedChanged);
 			// 
@@ -1451,6 +1451,45 @@ namespace rokugaTouroku
 			this.groupBox8.TabStop = false;
 			this.groupBox8.Text = "プレイヤー";
 			// 
+			// label12
+			// 
+			this.label12.Location = new System.Drawing.Point(18, 168);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(205, 13);
+			this.label12.TabIndex = 31;
+			this.label12.Text = "(例) -window_title {f}";
+			// 
+			// label11
+			// 
+			this.label11.Location = new System.Drawing.Point(148, 150);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(68, 13);
+			this.label11.TabIndex = 30;
+			this.label11.Text = "{t} タイトル";
+			// 
+			// label10
+			// 
+			this.label10.Location = new System.Drawing.Point(18, 150);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(99, 13);
+			this.label10.TabIndex = 29;
+			this.label10.Text = "{f} 録画ファイル名";
+			// 
+			// label13
+			// 
+			this.label13.Location = new System.Drawing.Point(18, 130);
+			this.label13.Name = "label13";
+			this.label13.Size = new System.Drawing.Size(152, 16);
+			this.label13.TabIndex = 28;
+			this.label13.Text = "追加引数";
+			// 
+			// playerArgsText
+			// 
+			this.playerArgsText.Location = new System.Drawing.Point(18, 196);
+			this.playerArgsText.Name = "playerArgsText";
+			this.playerArgsText.Size = new System.Drawing.Size(297, 19);
+			this.playerArgsText.TabIndex = 27;
+			// 
 			// isUsePlayerChkBox
 			// 
 			this.isUsePlayerChkBox.Location = new System.Drawing.Point(6, 22);
@@ -1855,45 +1894,6 @@ namespace rokugaTouroku
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
 			// 
-			// label12
-			// 
-			this.label12.Location = new System.Drawing.Point(18, 168);
-			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(205, 13);
-			this.label12.TabIndex = 31;
-			this.label12.Text = "(例) -window_title {f}";
-			// 
-			// label11
-			// 
-			this.label11.Location = new System.Drawing.Point(148, 150);
-			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(68, 13);
-			this.label11.TabIndex = 30;
-			this.label11.Text = "{t} タイトル";
-			// 
-			// label10
-			// 
-			this.label10.Location = new System.Drawing.Point(18, 150);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(99, 13);
-			this.label10.TabIndex = 29;
-			this.label10.Text = "{f} 録画ファイル名";
-			// 
-			// label13
-			// 
-			this.label13.Location = new System.Drawing.Point(18, 130);
-			this.label13.Name = "label13";
-			this.label13.Size = new System.Drawing.Size(152, 16);
-			this.label13.TabIndex = 28;
-			this.label13.Text = "追加引数";
-			// 
-			// playerArgsText
-			// 
-			this.playerArgsText.Location = new System.Drawing.Point(18, 196);
-			this.playerArgsText.Name = "playerArgsText";
-			this.playerArgsText.Size = new System.Drawing.Size(297, 19);
-			this.playerArgsText.TabIndex = 27;
-			// 
 			// optionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1907,6 +1907,7 @@ namespace rokugaTouroku
 			this.MaximizeBox = false;
 			this.Name = "optionForm";
 			this.Text = "オプション";
+			this.Load += new System.EventHandler(this.OptionFormLoad);
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.groupBox6.ResumeLayout(false);

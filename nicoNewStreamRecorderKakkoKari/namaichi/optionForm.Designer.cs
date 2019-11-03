@@ -705,9 +705,9 @@ namespace namaichi
 			// 
 			this.isRtmpEngine.Location = new System.Drawing.Point(6, 245);
 			this.isRtmpEngine.Name = "isRtmpEngine";
-			this.isRtmpEngine.Size = new System.Drawing.Size(252, 15);
+			this.isRtmpEngine.Size = new System.Drawing.Size(373, 15);
 			this.isRtmpEngine.TabIndex = 27;
-			this.isRtmpEngine.Text = "RTMP録画エンジンを使う";
+			this.isRtmpEngine.Text = "RTMP録画エンジンを使う(旧配信で提供されているタイムシフト放送のみ)";
 			this.isRtmpEngine.UseVisualStyleBackColor = true;
 			this.isRtmpEngine.CheckedChanged += new System.EventHandler(this.isDefaultEngineChkBox_CheckedChanged);
 			// 
@@ -1851,6 +1851,7 @@ namespace namaichi
 			this.MaximizeBox = false;
 			this.Name = "optionForm";
 			this.Text = "オプション";
+			this.Load += new System.EventHandler(this.OptionFormLoad);
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.groupBox6.ResumeLayout(false);

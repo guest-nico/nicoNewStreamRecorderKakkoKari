@@ -42,12 +42,12 @@ namespace namaichi.rec
 		private WebSocket ws;
 		private WebSocket wsc;
 		public Record rec;
-		private StreamWriter commentSW;
+		public StreamWriter commentSW;
 		//public string msUri;
 		//public string[] msReq;
 		private long serverTime;
 		private string ticket;
-		private bool isRetry = true;
+		public bool isRetry = true;
 		private string msThread;
 		private string sendCommentBuf = null;
 		private bool isSend184 = true;
@@ -272,6 +272,7 @@ namespace namaichi.rec
 			
 			if (isChase && rec != null && !rec.isEndProgram && rm.rfu == rfu) {
 				#if DEBUG
+					//Task.Run(() => rm.form.addLogText("追っかけ録画処理開始"));
 					rm.form.addLogText("追っかけ録画処理開始");
 				#endif
 				
@@ -540,9 +541,13 @@ namespace namaichi.rec
 //				         	sendIntervalPong();
 //				         });
 				}
-			} else if (e.Message.IndexOf("\"INTERNAL_SERVERERROR\"") >= 0) {
+			} else if (e.Message.IndexOf("\"INTERNAL_SERVERERROR\"") >= 0 ||
+			          	e.Message.IndexOf("\"INVALID_MESSAGE\"") >= 0) {
 				try {
 					ws.Close();
+					#if DEBUG
+						rm.form.addLogText(e.Message);
+					#endif
 				} catch (Exception ee) {
 					addDebugBuf("notify ws close exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 				}
@@ -780,6 +785,9 @@ namespace namaichi.rec
 			isRetry = false;
 			*/
 		}
+		public void stopRecording() {
+			stopRecording(ws, wsc);
+		}
 		/*
 		private void endStreamProcess() {
 			if (rm.rfu != rfu) return;
@@ -996,12 +1004,15 @@ namespace namaichi.rec
 //			var openTimeDt = util.getUnixToDatetime(openTime);
 //			var __timeDt0 = __timeDt - openTimeDt;
 //			var __timeDt1 = __timeDt0. - new timespunixKijunDt;
+			var isMinus = __time < 0;
+			if (isMinus) __time *= -1;
 			var h = (int)(__time / (60 * 60));
 			var m = (int)((__time % (60 * 60)) / 60);
 			var _m = (m < 10) ? ("0" + m.ToString()) : m.ToString();
 			var s = __time % 60;
 			var _s = (s < 10) ? ("0" + s.ToString()) : s.ToString();
 			var keikaTime = h + ":" + _m + ":" + _s + "";
+			if (isMinus) keikaTime = "-" + keikaTime;
 			/*
 //			- unixKijunDt;
 			

@@ -460,39 +460,40 @@ namespace namaichi.rec
 				if (j != 0) recFolderFile = incrementRecFolderFile(recFolderFile);
 				
 				fileName = util.getOkCommentFileName(rm.cfg, recFolderFile, lvid, true, isRtmp);
-				var w = new StreamWriter(fileName + "_", false, System.Text.Encoding.UTF8);
-				if (isGetXml) {
-					w.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
-				    w.WriteLine("<packet>");
-				    
-				    w.Flush();
-				}
-				w.WriteLine(threadLine);
-				for (var i = 0; i < chats.Length; i++) {
-					if (quePosTimeList != null) {
-						if (chats[i] == null) continue;
-						var _vpos = util.getRegGroup(chats[i], "vpos.+?(-*\\d+)");
-						if (_vpos == null) continue;
-						var vpos = int.Parse(_vpos);
-						
-						if (isRtmp) {
-							
-						}
-						if (j == fileNum - 0 || vpos < quePosTimeList[j + 0]) {
-							var oriVposPart = util.getRegGroup(chats[i], "(vpos.+?-*\\d+)");
-							var newVposPart = oriVposPart.Replace(vpos.ToString(), (vpos - quePosTimeList[j - 1]).ToString());
-							w.WriteLine(chats[i].Replace(oriVposPart, newVposPart));
-							chats[i] = null;
-						}
-					} else {
-						w.WriteLine(chats[i]);
+				using (var w = new StreamWriter(fileName + "_", false, System.Text.Encoding.UTF8)) {
+					if (isGetXml) {
+						w.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
+					    w.WriteLine("<packet>");
+					    
+					    w.Flush();
 					}
-					
+					w.WriteLine(threadLine);
+					for (var i = 0; i < chats.Length; i++) {
+						if (quePosTimeList != null) {
+							if (chats[i] == null) continue;
+							var _vpos = util.getRegGroup(chats[i], "vpos.+?(-*\\d+)");
+							if (_vpos == null) continue;
+							var vpos = int.Parse(_vpos);
+							
+							if (isRtmp) {
+								
+							}
+							if (j == fileNum - 0 || vpos < quePosTimeList[j + 0]) {
+								var oriVposPart = util.getRegGroup(chats[i], "(vpos.+?-*\\d+)");
+								var newVposPart = oriVposPart.Replace(vpos.ToString(), (vpos - quePosTimeList[j - 1]).ToString());
+								w.WriteLine(chats[i].Replace(oriVposPart, newVposPart));
+								chats[i] = null;
+							}
+						} else {
+							w.WriteLine(chats[i]);
+						}
+						
+					}
+					if (isGetXml) {
+						w.WriteLine("</packet>");
+					}
+					//w.Close();
 				}
-				if (isGetXml) {
-					w.WriteLine("</packet>");
-				}
-				w.Close();
 				
 				File.Delete(fileName);
 				File.Move(fileName + "_", fileName);

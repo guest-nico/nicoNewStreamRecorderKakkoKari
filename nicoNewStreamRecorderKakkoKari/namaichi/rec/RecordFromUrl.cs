@@ -36,6 +36,8 @@ namespace namaichi.rec
 		//public bool isRtmpTimeShiftEnabled = true;
 		public byte[] firstFlvData = null;
 		
+		public Html5Recorder h5r = null;
+		
 		public RecordFromUrl(RecordingManager rm)
 		{
 			this.rm = rm;
@@ -104,7 +106,7 @@ namespace namaichi.rec
 					} else {
 						var isTimeShift = pageType == 7;
 						
-						var h5r = new Html5Recorder(url, cc, lvid, rm, this, isTimeShift);
+						h5r = new Html5Recorder(url, cc, lvid, rm, this, isTimeShift);
 						recResult = h5r.record(res, isRtmp, pageType);
 					}
 
@@ -362,12 +364,15 @@ namespace namaichi.rec
 					var ccInd = 0;
 					cc.Add(TargetUrl, new Cookie("_gali", "box" + lvid));
 					if (cc != null) req.CookieContainer = cc;
-					var _res = (HttpWebResponse)req.GetResponse();
-					var dataStream = _res.GetResponseStream();
-					var reader = new StreamReader(dataStream);
-					res = reader.ReadToEnd();
-					var getheaders = _res.Headers;
-					var resCookie = _res.Cookies;
+					using (var _res = (HttpWebResponse)req.GetResponse())
+					
+					using (var dataStream = _res.GetResponseStream())
+					using (var reader = new StreamReader(dataStream)) {
+						res = reader.ReadToEnd();
+					
+						var getheaders = _res.Headers;
+						var resCookie = _res.Cookies;
+					}
 					
 					isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
 					int pagetype;

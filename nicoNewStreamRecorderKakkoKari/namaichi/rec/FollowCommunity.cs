@@ -120,15 +120,15 @@ namespace namaichi.rec
 	
 					var res = req.GetResponse();
 					
-					var resStream = new System.IO.StreamReader(res.GetResponseStream());
-					var resStr = resStream.ReadToEnd();
-	
-					var isSuccess = resStr.IndexOf("フォローしました") > -1;
-					var _m = (form.rec.isPlayOnlyMode) ? "視聴" : "録画";
-					form.addLogText((isSuccess ?
-					                 "フォローしました。" + _m + "開始までしばらくお待ちください。" : "フォローに失敗しました。"));
-					return isSuccess;
-					
+					using (var resStream = new System.IO.StreamReader(res.GetResponseStream())) {
+						var resStr = resStream.ReadToEnd();
+		
+						var isSuccess = resStr.IndexOf("フォローしました") > -1;
+						var _m = (form.rec.isPlayOnlyMode) ? "視聴" : "録画";
+						form.addLogText((isSuccess ?
+						                 "フォローしました。" + _m + "開始までしばらくお待ちください。" : "フォローに失敗しました。"));
+						return isSuccess;
+					}
 	//				resStream.Close();
 					
 					

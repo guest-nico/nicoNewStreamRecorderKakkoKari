@@ -56,6 +56,7 @@ namespace namaichi
 		private string labelUrl;
 		private Thread madeThread;
 		private Size originalSize = Size.Empty;
+		private Icon defIcon;
 		
 		public MainForm(string[] args)
 		{
@@ -90,6 +91,7 @@ namespace namaichi
 		    
 			InitializeComponent();
 			Text = "ニコ生新配信録画ツール（仮 " + util.versionStr;
+			defIcon = Icon;
 			
 			this.args = args;
 			
@@ -241,6 +243,19 @@ namespace namaichi
         */
         public void addLogText(string t, bool isInvoke = true) {
        		if (util.isStdIO) Console.WriteLine("info.log:" + t);
+       		
+       		formAction(() => {
+				string _t = "";
+		    	if (logText.Text.Length != 0) _t += "\r\n";
+		    	_t += t;
+		    	
+	    		logText.AppendText(_t);
+				if (logText.Text.Length > 200000) 
+					logText.Text = logText.Text.Substring(logText.TextLength - 10000);
+								
+			});
+			return;
+			
        		if (!util.isShowWindow) return;
        		try {
 	       		if (this.IsDisposed) return;
@@ -397,11 +412,9 @@ namespace namaichi
 			try {
        			byte[] pic = cl.DownloadData(url);
 				
-			
-				var  st = new System.IO.MemoryStream(pic);
-				icon = Icon.FromHandle(new System.Drawing.Bitmap(st).GetHicon());
-				st.Close();
-				
+       			using (var st = new System.IO.MemoryStream(pic)) {
+					icon = Icon.FromHandle(new System.Drawing.Bitmap(st).GetHicon());
+       			}
 				
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
@@ -606,6 +619,37 @@ namespace namaichi
 				util.debugWriteLine(e.Message + " " + e.StackTrace);
 			}
 			player.stopPlaying(true, true);
+			try  {
+				if (rec != null && rec.rfu != null && rec.rfu.h5r != null && rec.rfu.h5r.wsr != null) {
+					var _r = rec.rfu.h5r.wsr;
+					rec.stopRecording();
+					for (var i = 0; i < 100; i++) {
+//						util.debugWriteLine("close rec commentSW " + i);
+						if (_r.commentSW == null) break;
+						Thread.Sleep(100);
+					}
+					util.debugWriteLine("end close sw");
+
+					/*
+					_r.isRetry = false;
+					_r.rec.isRetry = false;
+					_r.rec.isEndProgram = true;
+					_r.isEndProgram = true;
+					
+					Task.Run(() => {
+						_r.stopRecording();
+						if (_r.rec != null) _r.rec.waitForEnd();
+						for (var i = 0; i < 1000 && rec.rfu != null; i++) {
+							util.debugWriteLine("wait rec close " + i);
+							Thread.Sleep(100);
+						}
+						util.debugWriteLine("wait rec close end");
+					}).Wait();
+					*/
+				}
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
 			return true;
 		}
 		public void resetDisplay() {
@@ -625,8 +669,8 @@ namespace namaichi
 			descriptLabel.Text = "";
 			typeLabel.Text = "";
 			commentList.Rows.Clear();
-			Text = "ニコ生新配信録画ツール（仮";
-			Icon = null;
+			Text = "ニコ生新配信録画ツール（仮 " + util.versionStr;
+			Icon = defIcon;
 			recordStateLabel.Text = "";
 		}
 		public void setTitle(string s) {
@@ -672,31 +716,42 @@ namespace namaichi
 		{
 			if (!util.isShowWindow) return;
 			
-			if (config.brokenCopyFile != null)
-				addLogText("設定ファイルを読み込めませんでした。設定ファイルをバックアップしました。" + config.brokenCopyFile);
-			
-			var a = util.getJarPath();
-			var desc = System.Diagnostics.FileVersionInfo.GetVersionInfo(util.getJarPath()[0] + "/websocket4net.dll");
-			if (desc.FileDescription != "WebSocket4Net for .NET 4.5 gettable data bytes") {
-				Invoke((MethodInvoker)delegate() {
-					System.Windows.Forms.MessageBox.Show("「WebSocket4Net.dll」をver0.86.9以降に同梱されているものと置き換えてください");
-				});
+			try {
+				if (config.brokenCopyFile != null)
+					addLogText("設定ファイルを読み込めませんでした。設定ファイルをバックアップしました。" + config.brokenCopyFile);
+				
+				var a = util.getJarPath();
+				var desc = System.Diagnostics.FileVersionInfo.GetVersionInfo(util.getJarPath()[0] + "/websocket4net.dll");
+				if (desc.FileDescription != "WebSocket4Net for .NET 4.5 gettable data bytes") {
+					Invoke((MethodInvoker)delegate() {
+						System.Windows.Forms.MessageBox.Show("「WebSocket4Net.dll」をver0.86.9以降に同梱されているものと置き換えてください");
+					});
+				}
+				
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
 			
-			
-			
-			//.net
-			var ver = util.Get45PlusFromRegistry();  
-			util.debugWriteLine(".net ver " + ver);
-			if (ver < 4.52) {
-				
-				Task.Run(() => {
-				    Invoke((MethodInvoker)delegate() {
-						var b = new DotNetMessageBox(ver);
-						b.Show(this); 
-//						System.Windows.Forms.MessageBox.Show("「動作には.NET 4.5.2以上が推奨です。現在は" + ver + "です。");
-					});
-				});
+			try {
+				//.net
+				var ver = util.Get45PlusFromRegistry();
+				util.debugWriteLine(".net ver " + ver);
+				if (ver < 4.52) {
+					//Task.Run(() => {
+					    //Invoke((MethodInvoker)delegate() {
+							//var b = new DotNetMessageBox(ver);
+							//b.Show(this); 
+							System.Windows.Forms.MessageBox.Show("動作には.NET 4.5.2以上が推奨です。");
+						//});
+					//});
+				} else {
+					//dll
+					var task = Task.Factory.StartNew(() => {
+						util.dllCheck(this);            
+			        });
+				}
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
 		}
 		
@@ -918,5 +973,6 @@ namespace namaichi
 		public string getTitleLabelText() {
 			return titleLabel.Text;
 		}
+		
 	}
 }

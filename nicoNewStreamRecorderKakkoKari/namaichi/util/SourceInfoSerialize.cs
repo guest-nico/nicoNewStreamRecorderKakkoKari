@@ -26,10 +26,11 @@ public class SourceInfoSerialize
 		try {
 			var uri = (isSub) ? (jarPath[0] + "\\" + jarPath[1] + "0.xml") :
 				(jarPath[0] + "\\" + jarPath[1] + ".xml");
-			var sw = new System.IO.StreamWriter(uri, false, System.Text.Encoding.UTF8);
+			using (var sw = new System.IO.StreamWriter(uri, false, System.Text.Encoding.UTF8)) {
 		
-			serializer.Serialize(sw, si);
-			sw.Close();
+				serializer.Serialize(sw, si);
+			}
+			//sw.Close();
 		} catch (Exception e) {
 			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.TargetSite);
 		}

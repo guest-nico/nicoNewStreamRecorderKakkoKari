@@ -59,11 +59,11 @@ namespace namaichi.rec
 			if (tsConfig.isM3u8List) {
 				writeM3u8List(path, ret);
 			} else {
-				var w = new StreamWriter(path, false);
-				w.Write(ret);
-				w.Flush();
-				w.Close();
-				
+				using (var w = new StreamWriter(path, false)) {
+					w.Write(ret);
+					//w.Flush();
+					//w.Close();
+				}
 				if (tsConfig.isOpenUrlList)
 					openFile(path);
 			}
@@ -96,29 +96,29 @@ namespace namaichi.rec
 			return "ok";
 		}
 		private void writeM3u8List(string path, string buf) {
-			var w = new StreamWriter(path, false);
-			w.WriteLine("#EXTM3U");
-			w.WriteLine("#EXT-X-VERSION:3");
-			w.WriteLine("#EXT-X-TARGETDURATION:" + (tsConfig.m3u8UpdateSeconds + 3).ToString());
-			w.Flush();
-			var isOpened = false;
-			foreach(var b in buf.Split('\n')) {
-				w.WriteLine("#EXTINF:" + tsConfig.m3u8UpdateSeconds.ToString() + ",");
-				w.WriteLine(b);
+			using (var w = new StreamWriter(path, false)) {
+				w.WriteLine("#EXTM3U");
+				w.WriteLine("#EXT-X-VERSION:3");
+				w.WriteLine("#EXT-X-TARGETDURATION:" + (tsConfig.m3u8UpdateSeconds + 3).ToString());
 				w.Flush();
-				
-				if (tsConfig.isOpenUrlList && !isOpened) {
-					var openRes = openFile(path);
-					if (openRes != "ok") {
-						rm.form.addLogText(openRes);
+				var isOpened = false;
+				foreach(var b in buf.Split('\n')) {
+					w.WriteLine("#EXTINF:" + tsConfig.m3u8UpdateSeconds.ToString() + ",");
+					w.WriteLine(b);
+					w.Flush();
+					
+					if (tsConfig.isOpenUrlList && !isOpened) {
+						var openRes = openFile(path);
+						if (openRes != "ok") {
+							rm.form.addLogText(openRes);
+						}
+						isOpened = true;
 					}
-					isOpened = true;
+					Thread.Sleep((int)(tsConfig.m3u8UpdateSeconds * 1000));
 				}
-				Thread.Sleep((int)(tsConfig.m3u8UpdateSeconds * 1000));
+				w.WriteLine("#EXT-X-ENDLIST");
+				//w.Close();
 			}
-			w.WriteLine("#EXT-X-ENDLIST");
-			w.Close();
-			
 			
 		}
 	}

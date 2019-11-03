@@ -94,7 +94,7 @@ namespace namaichi.rec
 			
 			if (browserNum == "2") {
 				CookieContainer cc = await getBrowserCookie(isSub).ConfigureAwait(false);
-				log += (cc == null) ? "ブラウザからユーザーセッションを取得できませんでした。" : "ブラウザからユーザーセッションを取得しました。";
+				log += (cc == null) ? "ブラウザからユーザーセッションを取得できませんでした。ログインに使うブラウザの設定をご確認ください。他のブラウザやアカウントログインを試したり、ブラウザ上で一度ログインし直した後にもう一度ツール側で設定すると上手くいくかもしれません。" : "ブラウザからユーザーセッションを取得しました。";
 				if (cc != null) {
 					util.debugWriteLine("browser ishtml5login");
 					if (isHtml5Login(cc, url)) {

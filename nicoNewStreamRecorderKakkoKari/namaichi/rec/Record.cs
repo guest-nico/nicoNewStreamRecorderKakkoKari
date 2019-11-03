@@ -47,7 +47,7 @@ namespace namaichi.rec
 		private string baseUrl;
 		private IRecorderProcess wr;
 		private bool isReConnecting = false;
-		private bool isRetry = true;
+		public bool isRetry = true;
 		private bool isEnd = false;
 		private string hlsSegM3uUrl;
 		private double recordedSecond = 0;
@@ -629,9 +629,10 @@ namespace namaichi.rec
 				if (File.Exists(recFolderFile + ".ts"))
 					File.Move(recFolderFile + ".ts", recFolderFile + ".ts");
 				
-				var w = new FileStream(recFolderFile + ".ts", FileMode.Append, FileAccess.Write);
-				w.Write(info.res, 0, info.res.Length);
-				w.Close();
+				using (var w = new FileStream(recFolderFile + ".ts", FileMode.Append, FileAccess.Write)) {
+					w.Write(info.res, 0, info.res.Length);
+					//w.Close();
+				}
 				if (isTimeShift) {
 					var newName = newTimeShiftFileName(recFolderFile, info.fileName);
 					File.Move(recFolderFile + ".ts", newName + ".ts");
@@ -1025,9 +1026,10 @@ namespace namaichi.rec
 				info.fileName;
 			addDebugBuf("original ts record " + path);
 			try {
-				var w = new FileStream(path, FileMode.Create, FileAccess.Write);
-				w.Write(info.res, 0, info.res.Length);
-				w.Close();
+				using (var w = new FileStream(path, FileMode.Create, FileAccess.Write)) {
+					w.Write(info.res, 0, info.res.Length);
+					//w.Close();
+				}
 				return true; 
 			} catch (Exception e) {
 				addDebugBuf("original ts record exception " + e.Message+e.StackTrace + e.Source + e.TargetSite);
@@ -1205,44 +1207,54 @@ namespace namaichi.rec
 				if (outFName.Length > 245) outFName = recFolderFile + "/" + lvid + ".ts";
 				if (outFName.Length > 245) outFName = recFolderFile + "/out.ts";
 				addDebugBuf("renketu after out fname shuusei go " + outFName);
-				w = new FileStream(outFName, FileMode.Append, FileAccess.Write);
+				using (w = new FileStream(outFName, FileMode.Append, FileAccess.Write)) {
+					_streamRenketuAfterWrite(w);
+					return w.Name;
+				}
 			} catch (PathTooLongException e) {
 				try {
 					addDebugBuf("renketu after out fname " + recFolderFile + "/" + lvid + ".ts");			
-					w = new FileStream(recFolderFile + "/" + lvid + ".ts", FileMode.Append, FileAccess.Write);
+					using (w = new FileStream(recFolderFile + "/" + lvid + ".ts", FileMode.Append, FileAccess.Write)) {
+						_streamRenketuAfterWrite(w);
+						return w.Name;
+					}
 				} catch (PathTooLongException ee) {
 					try {
 						addDebugBuf("renketu after out fname " + recFolderFile + "/_.ts");			
-						w = new FileStream(recFolderFile + "/_.ts", FileMode.Append, FileAccess.Write);
+						using (w = new FileStream(recFolderFile + "/_.ts", FileMode.Append, FileAccess.Write)) {
+							_streamRenketuAfterWrite(w);
+							return w.Name;
+						}
 					} catch (PathTooLongException eee) {
 						addDebugBuf("renketu after too long");
 						rm.form.addLogText("録画後に連結しようとしましたがパスが長すぎてファイルが開けませんでした " + recFolderFile + "/_.ts");
 						return null;
 					}
-					
 				}
 			}
-			
-				
+
+			//w.Close();
+			//return w.Name;
+		}
+		private void _streamRenketuAfterWrite(FileStream w) {
 			foreach (var s in recordedNo) {
 				addDebugBuf(s);
 				try {
-					var r = new FileStream(recFolderFile + "/" + s + "", FileMode.Open, FileAccess.Read);
-					
-					var pos = 0;
-					var readI = 0;
-					var bytes = new byte[1000000];
-					while((readI = r.Read(bytes, 0, bytes.Length)) != 0) {
-						w.Write(bytes, 0, readI);
-						pos += readI;
+					using (var r = new FileStream(recFolderFile + "/" + s + "", FileMode.Open, FileAccess.Read)) {
+						
+						var pos = 0;
+						var readI = 0;
+						var bytes = new byte[1000000];
+						while((readI = r.Read(bytes, 0, bytes.Length)) != 0) {
+							w.Write(bytes, 0, readI);
+							pos += readI;
+						}
+						//r.Close();
 					}
-					r.Close();
 				} catch (Exception e) {
 					addDebugBuf("renketu after write exception " + s + " " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
 			}
-			w.Close();
-			return w.Name;
 		}
 		private void timeShiftOnTimeRecord() {
 			if (tsConfig.isOutputUrlList) {
