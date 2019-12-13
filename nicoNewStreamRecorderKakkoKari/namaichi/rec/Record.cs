@@ -57,7 +57,7 @@ namespace namaichi.rec
 		private int gotTsMaxNo = -1;
 		public bool isEndProgram = false;
 		private double allDuration = -1;
-		private string engineMode = "0";
+		public string engineMode = "0";
 		private string anotherEngineCommand = ""; 
 		private Html5Recorder h5r;
 		private double targetDuration = 2;

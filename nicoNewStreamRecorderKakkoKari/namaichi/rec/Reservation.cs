@@ -10,6 +10,7 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Text;
 
 namespace namaichi.rec
 {
@@ -20,6 +21,10 @@ namespace namaichi.rec
 	{
 		CookieContainer cc;
 		string lv;
+		
+		string useUrl = "https://live.nicovideo.jp/api/timeshift.ticket.use";
+		string reservationsUrl = "https://live.nicovideo.jp/api/timeshift.reservations";
+		
 		public Reservation(CookieContainer cc, string lv)
 		{
 			this.cc = cc;
@@ -130,6 +135,53 @@ namespace namaichi.rec
 				util.debugWriteLine("get watching exception " + e.Message+e.StackTrace);
 				return null;
 			}
+		}
+		public string live2Reserve() {
+			var id = util.getRegGroup(lv, "(\\d+)");
+			var useUrl = "https://live.nicovideo.jp/api/timeshift.ticket.use";
+			var useData = Encoding.ASCII.GetBytes("vid=" + id);
+			var header = getLive2ReserveHeader(id);
+			var res = util.postResStr(useUrl, header, useData);
+			if (res == null) return "チケットを予約するための接続に失敗しました";
+			var res2 = "";
+			
+			if (res.IndexOf("TICKET_NOT_FOUND") > -1) {
+				
+				var reserveData = Encoding.ASCII.GetBytes("vid=" + id + "&overwrite=0");
+				res2 = util.postResStr(reservationsUrl, header, reserveData);
+				if (res2 == null) return "チケットを取得するための接続に失敗しました" + res;
+				if (res2.IndexOf("Timeshift_reservation can overwrite") > -1)
+					return "予約リストが一杯です。";
+				if (res2.IndexOf("Timeshift_reservation was used") > -1)
+					return "すでに視聴済みです。";
+				else if (res2.IndexOf("status\":200") > -1) {
+					return "ok";
+				} else {
+					return "チケットの予約中に予期せぬ問題が発生しました" + res + "/" + res2;
+				}
+			}
+			return "チケットの予約接続中に予期せぬ問題が発生しました" + res + "/" + res2;
+			
+		}
+		public bool useLive2Reserve() {
+			var id = util.getRegGroup(lv, "(\\d+)");
+			
+			var useData = Encoding.ASCII.GetBytes("vid=" + id);
+			var header = getLive2ReserveHeader(id);
+			var res = util.postResStr(useUrl, header, useData);
+			if (res == null) return false;
+			return res.IndexOf("status\":200") > -1;
+		}
+		private Dictionary<string, string> getLive2ReserveHeader(string id) {
+			if (id.StartsWith("lv")) id = util.getRegGroup(lv, "(\\d+)");
+			var header = new Dictionary<string, string>();
+			header.Add("Cookie", cc.GetCookieHeader(new Uri(useUrl)));
+			header.Add("Accept", "application/json, text/plain, */*");
+			header.Add("Content-Type", "application/x-www-form-urlencoded");
+			header.Add("Referer", "https://live2.nicovideo.jp/watch/lv" + id);
+			header.Add("Origin", "https://live2.nicovideo.jp");
+			//header.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; W…) Gecko/20100101 Firefox/65.0");
+			return header;
 		}
 	}
 }

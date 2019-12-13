@@ -45,7 +45,7 @@ namespace namaichi.utility
 				return;
 			}
 			setArgConfig();
-			util.debugWriteLine("args " + string.Join(" ", args));
+			util.debugWriteLine("args " + args.Length + " " + string.Join(" ", args));
 			foreach(var a in argConfig) util.debugWriteLine(a.Key + " " + a.Value);
 			isPlayMode = Array.IndexOf(args, "-play") > -1;
 			if (Array.IndexOf(args, "-chase") > -1) form.isChaseChkBtn.Checked = true;

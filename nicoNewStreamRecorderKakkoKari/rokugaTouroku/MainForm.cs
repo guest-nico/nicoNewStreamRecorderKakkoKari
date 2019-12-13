@@ -629,6 +629,7 @@ namespace rokugaTouroku
 				foreach (RecInfo ri in recListDataSource) {
 					ri.samune = null;
 					ri.process = null;
+					ri.rdg = null;
 					list.Add((RecInfo)ri);
 				}
 				var json = JToken.FromObject(list).ToString(Formatting.None);

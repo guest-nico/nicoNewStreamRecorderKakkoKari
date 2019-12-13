@@ -52,6 +52,7 @@ namespace namaichi.rec
 			if (cc != null) {
 				var c = cc.GetCookies(TargetUrl)["user_session"];
 				var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
+				var age_auth = cc.GetCookies(TargetUrl)["age_auth"];
 				
 				var l = new List<KeyValuePair<string, string>>();
 				if (c != null)
@@ -60,6 +61,8 @@ namespace namaichi.rec
 				if (secureC != null)
 //						cfg.set("user_session_secure", secureC.Value);
 					l.Add(new KeyValuePair<string, string>("user_session_secure" + num, secureC.Value));
+				if (age_auth != null)
+					l.Add(new KeyValuePair<string, string>("age_auth", age_auth.Value));
 				cfg.set(l);
 			}
 			
@@ -153,7 +156,8 @@ namespace namaichi.rec
 			
 			var c = new Cookie("user_session", us);
 			var secureC = new Cookie("user_session_secure", uss);
-			cc = copyUserSession(cc, c, secureC);
+			var age_auth = new Cookie("age_auth", cfg.get("age_auth"));
+			cc = copyUserSession(cc, c, secureC, age_auth);
  			cc.Add(TargetUrl, new Cookie("player_version", "leo"));
 			
 			//test
@@ -186,29 +190,34 @@ namespace namaichi.rec
 
 			//util.debugWriteLine("usersession " + cookie);
 			
+			var requireCookies = new List<Cookie>();
 			var cc = new CookieContainer();
 			foreach(Cookie _c in result.Cookies) {
 				try {
 					cc.Add(_c);
+					if (_c.Name == "age_auth" || _c.Name.IndexOf("user_session") > -1) {
+						requireCookies.Add(_c);
+					}
 				} catch (Exception e) {
 					util.debugWriteLine("cookie add browser " + _c.ToString() + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
 			}
 //			result.AddTo(cc);
-			
+			foreach (var _c in requireCookies) cc.Add(_c);
+						
 			var c = cc.GetCookies(TargetUrl)["user_session"];
 			var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
 			if (c == null) {
 				log += "ブラウザでログインし直すか、別のブラウザを試すか、アカウントログインを試すと上手くいくかもしれません。"; 
 			}
+			
 			cc = copyUserSession(cc, c, secureC);
-			
-			
 			return cc;
 			
 		}
 		private bool isHtml5Login(CookieContainer cc, string url) {
 			//cc.Add(new Uri(url), new Cookie("age_auth", "0"));
+			var ccc = cc.GetCookieHeader(new Uri(url));
 			for (var i = 0; i < 5; i++) {
 				var headers = new WebHeaderCollection();
 				try {
@@ -235,7 +244,8 @@ namespace namaichi.rec
 					log = "この放送は年齢認証が必要です。ブラウザで年齢認証をしてください。";
 					return false;
 				}
-					
+				
+				
 				var isLogin = !(pageSource.IndexOf("\"login_status\":\"login\"") < 0 &&
 				   	pageSource.IndexOf("login_status = 'login'") < 0);
 				if (isRtmp) isLogin = pageSource.IndexOf("<code>notlogin</code>") == -1;
@@ -306,7 +316,7 @@ namespace namaichi.rec
 				
 		}
 		private CookieContainer copyUserSession(CookieContainer cc, 
-				Cookie c, Cookie secureC) {
+				Cookie c, Cookie secureC, Cookie age_auth = null) {
 			if (c != null && c.Value != "") {
 				cc.Add(TargetUrl, new Cookie(c.Name, c.Value));
 				cc.Add(TargetUrl2, new Cookie(c.Name, c.Value));
@@ -321,7 +331,13 @@ namespace namaichi.rec
 				cc.Add(TargetUrl4, new Cookie(secureC.Name, secureC.Value));
 				cc.Add(TargetUrl5, new Cookie(secureC.Name, secureC.Value));
 			}
-			
+			if (age_auth != null && age_auth.Value != "") {
+				cc.Add(TargetUrl, new Cookie(age_auth.Name, age_auth.Value));
+				cc.Add(TargetUrl2, new Cookie(age_auth.Name, age_auth.Value));
+				cc.Add(TargetUrl3, new Cookie(age_auth.Name, age_auth.Value));
+				cc.Add(TargetUrl4, new Cookie(age_auth.Name, age_auth.Value));
+				cc.Add(TargetUrl5, new Cookie(age_auth.Name, age_auth.Value));
+			}
 			/*
 			var ageAuth = "0";
 			cc.Add(TargetUrl, new Cookie("age_auth", ageAuth));

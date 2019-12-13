@@ -26,7 +26,7 @@ namespace rokugaTouroku.rec
 	/// </summary>
 	public class RecDataGetter
 	{
-		private RecListManager rlm;
+		public RecListManager rlm;
 		
 		//public bool isStop = false;
 		

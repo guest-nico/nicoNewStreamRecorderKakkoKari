@@ -166,7 +166,7 @@ namespace namaichi.rec
 					continue;
 
 				} else if (pageType == 4) {
-					rm.form.addLogText("require_community_menber");
+					rm.form.addLogText("require_community_member");
 					
 					util.debugWriteLine(rm.cfg.get("IsautoFollowComgen"));
 					if (bool.Parse(rm.cfg.get("IsautoFollowComgen"))) {
@@ -181,7 +181,7 @@ namespace namaichi.rec
 					}
 					if (bool.Parse(rm.cfg.get("IsmessageBox")) && util.isShowWindow) {
 						var ret = rm.form.formAction(() =>
-								MessageBox.Show("コミュニティに入る必要があります：\nrequire_community_menber/" + lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None));
+								MessageBox.Show("コミュニティに入る必要があります：\nrequire_community_member/" + lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None));
 						if (!ret) return 2;
 					}
 					if (bool.Parse(rm.cfg.get("IsfailExit"))) {
@@ -203,7 +203,8 @@ namespace namaichi.rec
 					if (isYoyakuRes == DialogResult.No) return 2;
 					
 					var r = new Reservation(cc, lvid);
-					var reserveRet = r.reserve();
+					//var reserveRet = r.reserve();
+					var reserveRet = r.live2Reserve();
 					if (reserveRet == "ok") {
 						rm.form.addLogText("予約しました");
 						pageType = getPageType(url, false, ref jr, out cc);
@@ -221,6 +222,18 @@ namespace namaichi.rec
 						}
 						return 2;
 					}
+				} else if (pageType == 10) {
+					var r = new Reservation(cc, lvid).useLive2Reserve();
+					if (!r) {
+						rm.form.addLogText("この番組のチケットを正常に使用できませんでした。");
+						return 2;
+					}
+					pageType = getPageType(url, false, ref jr, out cc);
+					util.debugWriteLine("pagetype 10_ " + pageType);
+					continue;
+				} else if (pageType == 11) {
+					rm.form.addLogText("この番組は有料チケットが必要です。");
+					return 2;
 				} else {
 					var mes = "";
 					if (pageType == 2 || pageType == 3) mes = "この放送は終了しています。";
@@ -380,7 +393,7 @@ namespace namaichi.rec
 					//pagetype = (isJikken) ? getJikkenPageType(res, out jr, cc) : util.getPageType(res);
 					pagetype = (isJikken) ? 0 : util.getPageType(res);					
 					
-					if (!isJikken && pagetype != 5 && pagetype != 9) return pagetype;
+					if (!isJikken && pagetype != 5 && pagetype != 9 && pagetype != 4) return pagetype;
 					if (isJikken && pagetype != 4) return pagetype;
 					util.debugWriteLine(i);
 				} catch (Exception e) {

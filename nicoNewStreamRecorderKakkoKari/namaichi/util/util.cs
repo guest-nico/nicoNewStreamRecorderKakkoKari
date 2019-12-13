@@ -27,8 +27,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.87.57";
-	public static string versionDayStr = "2019/11/04";
+	public static string versionStr = "ver0.87.63 debug";
+	public static string versionDayStr = "2019/12/10";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	
@@ -675,6 +675,94 @@ class util {
 		}
 		return null;
 	}
+	public static string postResStr(string url, Dictionary<string, string> headers, byte[] content) {
+		try {
+			var res = sendRequest(url, headers, content, "POST");
+			if (res == null) {
+				debugWriteLine("postResStr res null");
+				return null;
+			}
+			
+			debugWriteLine(res.StatusCode + " " + res.StatusDescription);
+			
+			//var resStream = res.GetResponseStream();
+			using (var getResStream = res.GetResponseStream())
+			using (var resStream = new System.IO.StreamReader(getResStream)) {
+				//foreach (var h in res.Headers) Debug.WriteLine("header " + h + " " + res.Headers[h.ToString()]);
+				/*
+				List<byte> rb = new List<byte>();
+				for (var i = 0; i < 10; i++) {
+					var a = new byte[100000];
+					var readC = resStream.Read(a, 0, a.Length);
+					if (readC == 0) break;
+					Debug.WriteLine("read c " + readC);
+					for (var j = 0; j < readC; j++) rb.Add(a[j]);
+					
+					Debug.WriteLine("read " + i);
+				}
+				*/
+				var resStr = resStream.ReadToEnd();
+				//return getRegGroup(resStr,
+				
+				return resStr;
+			}
+		} catch (Exception ee) {
+			debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+			return null;
+		}
+	}
+	public static HttpWebResponse sendRequest(string url, Dictionary<string, string> headers, byte[] content, string method) {
+		try {
+			var req = (HttpWebRequest)WebRequest.Create(url);
+			req.Method = method;
+			req.Proxy = null;
+			
+			if (headers != null) {
+				foreach (var h in headers) {
+					if (h.Key.ToLower().Replace("-", "") == "contenttype")
+						req.ContentType = h.Value;
+					else if (h.Key.ToLower().Replace("-", "") == "useragent")
+						req.UserAgent = h.Value;
+					else if (h.Key.ToLower().Replace("-", "") == "connection")
+						req.KeepAlive = h.Value.ToLower().Replace("-", "") == "keepalive";
+					else if (h.Key.ToLower().Replace("-", "") == "accept")
+						req.Accept = h.Value;
+					else if (h.Key.ToLower().Replace("-", "") == "referer")
+						req.Referer = h.Value;
+					else req.Headers.Add(h.Key, h.Value);
+				}
+			}
+				
+			if (content != null) {
+				using (var stream = req.GetRequestStream()) {
+					try {
+						stream.Write(content, 0, content.Length);
+					} catch (Exception ee) {
+			       		debugWriteLine(ee.Message + " " + ee.StackTrace + " " + ee.Source + " " + ee.TargetSite);
+			       	}
+				}
+			}
+//					stream.Close();
+
+			return (HttpWebResponse)req.GetResponse();
+			
+		} catch (WebException ee) {
+			util.debugWriteLine(ee.Data + ee.Message + ee.Source + ee.StackTrace + ee.Status);
+			try {
+				return (HttpWebResponse)ee.Response;
+				//using (var _rs = ee.Response.GetResponseStream())
+				//using (var rs = new StreamReader(_rs)) {
+				//	return rs.ReadToEnd();
+				//}
+			} catch (Exception eee) {
+				util.debugWriteLine(eee.Message + eee.Source + eee.StackTrace);
+				return null;
+			}
+		} catch (Exception ee) {
+			debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+			return null;
+		}
+	}
 	public static bool isEndedProgram(string lvid, CookieContainer container, bool isSub) {
 		var url = "https://live2.nicovideo.jp/watch/" + lvid;
 		
@@ -725,17 +813,25 @@ class util {
 		//if (res.IndexOf("siteId&quot;:&quot;nicolive2") > -1) {
 			var data = util.getRegGroup(res, "<script id=\"embedded-data\" data-props=\"([\\d\\D]+?)</script>");
 			var status = (data == null) ? null : util.getRegGroup(data, "&quot;status&quot;:&quot;(.+?)&quot;");
-			if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ON_AIR") return 0;
-			else if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ENDED") return 7;
+			if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ON_AIR" && data.IndexOf("webSocketUrl&quot;:&quot;ws") > -1) return 0;
+			else if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ENDED" && data.IndexOf("webSocketUrl&quot;:&quot;ws") > -1) return 7;
 			else if (util.getRegGroup(res, "(混雑中ですが、プレミアム会員の方は優先して入場ができます)") != null ||
 			        util.getRegGroup(res, "(ただいま、満員のため入場できません)") != null) return 1;
 	//		else if (util.getRegGroup(res, "<div id=\"comment_arealv\\d+\">[^<]+この番組は\\d+/\\d+/\\d+\\(.\\) \\d+:\\d+に終了いたしました。<br>") != null) return 2;
 			else if (res.IndexOf(" onclick=\"Nicolive.ProductSerial") > -1) return 8;
-			else if (res.IndexOf("※この放送はタイムシフトに対応しておりません。") > -1 && 
-			         res.IndexOf("に終了いたしました") > -1) return 2;
-			else if (util.getRegGroup(res, "(コミュニティフォロワー限定番組です。<br>)") != null) return 4;
-			else if (util.getRegGroup(res, "(に終了いたしました)") != null && res.IndexOf(" onclick=\"Nicolive.WatchingReservation") > -1) return 9;
-			else if (util.getRegGroup(res, "(に終了いたしました)") != null) return 2;
+			//else if (res.IndexOf("※この放送はタイムシフトに対応しておりません。") > -1 && 
+			//         res.IndexOf("に終了いたしました") > -1) return 2;
+			//else if (util.getRegGroup(res, "(コミュニティフォロワー限定番組です。<br>)") != null) return 4;
+			else if (res.IndexOf("isFollowerOnly&quot;:true") > -1 && res.IndexOf("isFollowed&quot;:false") > -1) return 4;
+			else if (status == "ENDED" && res.IndexOf("rejectedReasons&quot;:[&quot;notHaveTimeshiftTicket") > -1) return 9;
+			else if (status == "ENDED" && res.IndexOf("rejectedReasons&quot;:[&quot;notUseTimeshiftTicket") > -1) return 10;
+			else if (data.IndexOf("webSocketUrl&quot;:&quot;ws") == -1 &&
+			         status == "ENDED") return 2;
+			else if (res.IndexOf("rejectedReasons&quot;:[&quot;notHavePayTicket") > -1) return 11;
+			//else if (status == "ENDED" && res.IndexOf(" onclick=\"Nicolive.WatchingReservation") > -1) return 9;
+			
+			//else if (util.getRegGroup(res, "(に終了いたしました)") != null) return 2;
+			else if (status == "ENDED") return 2;
 			else if (util.getRegGroup(res, "(<archive>1</archive>)") != null) return 3;
 			else if (util.getRegGroup(res, "(チャンネル会員限定番組です。<br>)") != null) return 4;
 			else if (util.getRegGroup(res, "(<h3>【会場のご案内】</h3>)") != null) return 6;

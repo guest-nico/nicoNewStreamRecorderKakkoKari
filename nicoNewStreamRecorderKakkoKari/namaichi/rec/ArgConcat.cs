@@ -97,7 +97,7 @@ namespace namaichi.rec
 			string outPath = null; 
 			var count = 0;
 			
-			var outName = getOutFileName(files[0]);
+			var outName = getOutFileName(files[0], files.Count == 1);
 			outPath = outName;
 			var isFFmpegConcat = true;
 			if (isFFmpegConcat) {
@@ -139,13 +139,19 @@ namespace namaichi.rec
 			util.debugWriteLine("concated count " + count);
 			return outPath;
 		}
-		private string getOutFileName(string file) {
+		private string getOutFileName(string file, bool isSingleFile) {
 			var dir = Directory.GetParent(file).ToString();
-			var dirName = Directory.GetParent(file).Name;
+			var dirName = isSingleFile ? Path.GetFileNameWithoutExtension(file) : Directory.GetParent(file).Name;
 			util.debugWriteLine("out parent dir " + dir + " name " + dirName);
 			                    
 			for (var i = 0; i < 10000; i++) {
-				string f = dir + "/" + dirName + "_" + i + ".ts";
+				if (isSingleFile) {
+					string _f = dir + "/" + dirName + ".ts";
+					var _lvid = util.getRegGroup(dirName, "(lv\\d+)");
+					if (File.Exists(_f) || Directory.Exists(_f) && 
+					    	_f.Length <= 250) return _f;
+				}
+				var f = dir + "/" + dirName + "_" + i + ".ts";
 				var lvid = util.getRegGroup(dirName, "(lv\\d+)");
 				if (File.Exists(f) || Directory.Exists(f)) continue;
 				

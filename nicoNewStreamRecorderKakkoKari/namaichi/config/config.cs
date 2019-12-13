@@ -128,6 +128,7 @@ public class config
 			{"browserNum","1"},
 //			{"isAllBrowserMode","true"},
 			{"issecondlogin","false"},
+			{"age_auth","0"},
 			
 			{"IsHokan","true"},
 			{"accountId2",""},

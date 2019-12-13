@@ -94,7 +94,7 @@ namespace namaichi.rec
 			group = util.getRegGroup(data, "\"socialGroup\".+?\"name\".\"(.+?)\"");
 			if (group == null) group = util.getRegGroup(res, "COMMUNITY INFO[\\s\\S]+target=\"_blank\"><span itemprop=\"name\">(.+?)</span>");
 			util.debugWriteLine(pageType);
-			if (pageType == 0 || pageType == 7) {
+			if ((pageType == 0 || pageType == 7 && isRtmpOnlyPage) || true) {
 				if (type == "official") {
 					communityId = util.getRegGroup(data, "\"socialGroup\".+?\"id\".\"(.+?)\"");
 //					if (communityId == null) communityId = "official";

@@ -30,7 +30,9 @@ namespace namaichi.rec
 			followCommunity(string res, CookieContainer cc, MainForm form, config.config cfg) {
 			var isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
 			var comId = (isJikken) ? util.getRegGroup(res, "&quot;followPageUrl&quot;\\:&quot;.+?motion/(.+?)&quot;") :
-					util.getRegGroup(res, "Nicolive_JS_Conf\\.Recommend = \\{type\\: 'community', community_id\\: '(co\\d+)'");
+					//util.getRegGroup(res, "Nicolive_JS_Conf\\.Recommend = \\{type\\: 'community', community_id\\: '(co\\d+)'");
+					util.getRegGroup(res, "community&quot;,&quot;id&quot;:&quot;(.+?)&");
+				
 			if (comId == null) {
 				form.addLogText("この放送はフォローできませんでした。");
 				return false;
@@ -64,7 +66,8 @@ namespace namaichi.rec
 //					var _cc = cgret.Result[(isSub) ? 1 : 0];
 //					util.debugWriteLine(cg.pageSource);
 					
-					var isJidouShounin = util.getPageSource(url, ref headers, _cc, comUrl).IndexOf("自動承認されます") > -1;
+					var res = util.getPageSource(url, ref headers, _cc, comUrl);
+					var isJidouShounin = res.IndexOf("自動承認されます") > -1;
 	//				var _compage = util.getPageSource(url, ref headers, cc);
 	//				var gateurl = "http://live.nicovideo.jp/gate/lv313793991";
 	//				var __gatePage = util.getPageSource(gateurl, ref headers, cc);

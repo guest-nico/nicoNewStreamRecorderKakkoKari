@@ -59,7 +59,8 @@ namespace namaichi.rec
 		
 		public static string[] getWebSocketInfo(string data, bool isRtmp, bool isChase, bool isTimeShift) {
 //			util.debugWriteLine(data);
-			var wsUrl = util.getRegGroup(data, "\"webSocketUrl\":\"([\\d\\D]+?)\"");
+			var wsUrl = util.getRegGroup(data, "\"webSocketUrl\":\"(ws[\\d\\D]+?)\"");
+			if (wsUrl == null) return null;
 			util.debugWriteLine("wsurl " + wsUrl);
 			//var broadcastId = util.getRegGroup(wsUrl, "/(\\d+)\\?");
 			var broadcastId = util.getRegGroup(data, "\"broadcastId\"\\:\"(\\d+)\"");
@@ -372,12 +373,12 @@ namespace namaichi.rec
 				return 1;
 				
 			} else if (pageType == 4) {
-				rm.form.addLogText("require_community_menber");
+				rm.form.addLogText("require_community_member");
 				if (bool.Parse(rm.cfg.get("IsmessageBox")) && util.isShowWindow) {
 					if (rm.form.IsDisposed) return 2;
 					try {
 			        	rm.form.Invoke((MethodInvoker)delegate() {
-			       			MessageBox.Show("コミュニティに入る必要があります：\nrequire_community_menber/" + lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None);
+			       			MessageBox.Show("コミュニティに入る必要があります：\nrequire_community_member/" + lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None);
 						});
 					} catch (Exception e) {
 			       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);

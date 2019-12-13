@@ -1441,7 +1441,6 @@ C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a42\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Debug\Newtonsoft.Json.xml
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a42\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Debug\SnkLib.App.CookieGetter.xml
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a42\nicoNewStreamRecorderKakkoKari\rokugaTouroku\bin\Debug\SnkLib.App.CookieGetter.Forms.xml
-C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a42\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Debug\rokugaTouroku.csprojResolveAssemblyReference.cache
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a42\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Debug\rokugaTouroku.fileNameOptionForm.resources
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a42\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Debug\rokugaTouroku.MainForm.resources
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a42\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Debug\rokugaTouroku.optionForm.resources
@@ -1453,3 +1452,4 @@ C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a42\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Debug\rokugaTouroku.csproj.GenerateResource.Cache
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a42\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Debug\rokugaTouroku.exe
 C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a42\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Debug\rokugaTouroku.pdb
+C:\Users\zack\Desktop\c#project\nicoNewStreamRecorderKakkoKariRepo2 11.20 tuujou a42\nicoNewStreamRecorderKakkoKari\rokugaTouroku\obj\Debug\rokugaTouroku.csprojResolveAssemblyReference.cache

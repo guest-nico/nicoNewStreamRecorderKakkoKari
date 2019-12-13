@@ -102,6 +102,8 @@ namespace namaichi.rec
 		public bool isSaveComment = false;
 		public bool isHokan = false;
 		private bool isNotSleep = false;
+		private List<string> lastSaveComments = new List<string>();
+		private DateTime lastOpenCommentSwDt = DateTime.MinValue;
 		
 		public WebSocketRecorder(string[] webSocketInfo, 
 				CookieContainer container, string[] recFolderFile, 
@@ -269,6 +271,7 @@ namespace namaichi.rec
 				if (rec != null)
 					rec.waitForEnd();
 			}
+			if (commentSW != null) closeWscProcess();
 			
 			if (isChase && rec != null && !rec.isEndProgram && rm.rfu == rfu) {
 				#if DEBUG
@@ -312,6 +315,9 @@ namespace namaichi.rec
 				ws.Open();
 			} catch (Exception ee) {
 				addDebugBuf("ws connect exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+				Task.Run(() => {
+				    endProgramCheck();
+				});
 				return false;
 			}
 			
@@ -378,17 +384,9 @@ namespace namaichi.rec
 			} catch (Exception ee) {util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);}
 			addDebugBuf("on close2 " + " wsList " + wsList.Count);
 			
-			Task.Run(() => {  
-				if ((!isTimeShift || isChase) && isEndedProgram()) {
-			        addDebugBuf("isEndprogram websocket");
-					isRetry = false;
-					if (rr != null) rr.retryMode = 2;
-					if (tscg != null) tscg.setIsRetry(false);
-					isEndProgram = true;
-					if (endTime == DateTime.MinValue)
-							endTime = DateTime.Now;
-					
-				}
+			Task.Run(() => {
+			    endProgramCheck();
+				
 			});
 			
 			//stopRecording();
@@ -400,6 +398,19 @@ namespace namaichi.rec
 			}
 			
 
+		}
+		private void endProgramCheck() {
+			addDebugBuf("endProgramCheck");
+			if ((!isTimeShift || isChase) && isEndedProgram()) {
+		        addDebugBuf("isEndprogram websocket");
+				isRetry = false;
+				if (rr != null) rr.retryMode = 2;
+				if (tscg != null) tscg.setIsRetry(false);
+				isEndProgram = true;
+				if (endTime == DateTime.MinValue)
+						endTime = DateTime.Now;
+				
+			}
 		}
 		private void onError(object sender, SuperSocket.ClientEngine.ErrorEventArgs e) {
 			addDebugBuf("on error " + e.Exception.Message + " ws " + sender.GetHashCode());
@@ -826,11 +837,21 @@ namespace namaichi.rec
 			}			
 			try {
 				if (bool.Parse(isGetComment) && commentSW == null && !rm.isPlayOnlyMode) {
+					if (DateTime.Now < lastOpenCommentSwDt + TimeSpan.FromSeconds(3) 
+					    	&& (rec.engineMode != "0" && rec.engineMode != "3")) {
+						var __commentFileName = util.getOkCommentFileName(rm.cfg, commentFileName, lvid, isTimeShift, isRtmp);
+						try {
+							File.Delete(__commentFileName);
+						} catch (Exception ee) {util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);}
+					}
+					
 					var fName = (commentFileName == null) ? recFolderFile[1] : incrementRecFolderFile(commentFileName);
+					//var fName = (commentFileName == null) ? recFolderFile[1] : incrementRecFolderFile(commentFileName);
 					commentFileName = fName;
 					var _commentFileName = util.getOkCommentFileName(rm.cfg, fName, lvid, isTimeShift, isRtmp);
 					var isExists = File.Exists(_commentFileName);
 					commentSW = new StreamWriter(_commentFileName, false, System.Text.Encoding.UTF8);
+					lastOpenCommentSwDt = DateTime.Now;
 					
 					if (bool.Parse(isGetCommentXml) && !isExists) {
 						commentSW.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
@@ -856,7 +877,9 @@ namespace namaichi.rec
 		}
 		private void onWscClose(object sender, EventArgs e) {
 			addDebugBuf("ms onclose");
-			closeWscProcess();
+			if (rec.engineMode != "0" & rec.engineMode != "3")
+			//    DateTime.Now > lastOpenCommentSwDt + TimeSpan.FromSeconds(3)) return;
+				closeWscProcess();
 			wsc = null;
 			try {
 				if (rm.rfu == rfu && isRetry && !isTimeShiftCommentGetEnd) {
@@ -886,6 +909,7 @@ namespace namaichi.rec
 				}
 				commentSW.Close();
 				commentSW = null;
+				lastSaveComments.Clear();
 			}
 			
 
@@ -948,7 +972,7 @@ namespace namaichi.rec
 					chatinfo.premium == "3")) return;
 			if (chatinfo.root != "chat" && chatinfo.root != "thread") return;
 			
-			if (chatinfo.root == "thread") {
+			if (chatinfo.root == "thread" && lastSaveComments.Count == 0) {
 				serverTime = chatinfo.serverTime;
 				ticket = chatinfo.ticket;
 			}
@@ -975,8 +999,14 @@ namespace namaichi.rec
 //						if (tscg.isEnd)
 //							chaseCommentSum();
 					} else {
-						commentSW.WriteLine(writeStr);
-						commentSW.Flush();
+						if (lastSaveComments.IndexOf(writeStr) == -1 &&
+						    !(lastSaveComments.Count > 0 && chatinfo.root == "thread")) {
+							commentSW.WriteLine(writeStr);
+							commentSW.Flush();
+						}
+						lastSaveComments.Add(writeStr);
+						if (lastSaveComments.Count > 12)
+							lastSaveComments.RemoveRange(0, lastSaveComments.Count - 12);
 					}
 					addDebugBuf("write comment " + writeStr);
 		             
@@ -1108,7 +1138,7 @@ namespace namaichi.rec
 					var _webSocketInfo = Html5Recorder.getWebSocketInfo(res, isRtmp, isChase, isTimeShift);
 					isNoPermission = true;
 					addDebugBuf("isendprogram login websocketInfo " + webSocketInfo[0] + " " + webSocketInfo[1]);
-					if (_webSocketInfo[0] == null || _webSocketInfo[1] == null) {
+					if (_webSocketInfo == null || _webSocketInfo[0] == null || _webSocketInfo[1] == null) {
 						addDebugBuf(res);
 					} else webSocketInfo = _webSocketInfo;
 					return isEndedProgramRtmp();
@@ -1211,6 +1241,10 @@ namespace namaichi.rec
 				res = System.Web.HttpUtility.HtmlDecode(res);
 				
 				var _webSocketInfo = Html5Recorder.getWebSocketInfo(res, isRtmp, isChase, isTimeShift);
+				if (_webSocketInfo == null) {
+					addDebugBuf("resetWebsocketInfo _websocketInfo null");
+					return;
+				}
 				isNoPermission = true;
 				addDebugBuf("resetWebsocketInfo " + _webSocketInfo[0] + " " + _webSocketInfo[1]);
 				if (_webSocketInfo[0] == null || _webSocketInfo[1] == null) {
@@ -1222,27 +1256,41 @@ namespace namaichi.rec
 		}
 		override public void resetCommentFile() {
 			addDebugBuf("resetCommentFile");
+			
+			
 			if (xcg != null) {
 				xcg.resetCommentFile();
 			} else {
 				try {
-					if (commentSW != null) {
-						commentSW.WriteLine("</packet>");
-						commentSW.Close();
-						commentSW = null;
+					if (bool.Parse(isGetCommentXml)) {
+						if (commentSW != null) {
+							commentSW.WriteLine("</packet>");
+							commentSW.Close();
+							commentSW = null;
+							lastSaveComments.Clear();
+						}
 					}
 				} catch (Exception e) {
 					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
 				
 				try {
+					
 					if (bool.Parse(rm.cfg.get("IsgetComment")) && commentSW == null && !rm.isPlayOnlyMode) {
+						if (DateTime.Now < lastOpenCommentSwDt + TimeSpan.FromSeconds(3) 
+						    	&& (rec.engineMode != "0" && rec.engineMode != "3")) {
+							var __commentFileName = util.getOkCommentFileName(rm.cfg, commentFileName, lvid, isTimeShift, isRtmp);
+							try {
+								File.Delete(__commentFileName);
+							} catch (Exception e) {util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);}
+						}
+			
 						var fName = (commentFileName == null) ? recFolderFile[1] : incrementRecFolderFile(commentFileName);
 						commentFileName = fName;
 						var _commentFileName = util.getOkCommentFileName(rm.cfg, fName, lvid, isTimeShift, isRtmp);
 						var isExists = File.Exists(_commentFileName);
 						commentSW = new StreamWriter(_commentFileName, false, System.Text.Encoding.UTF8);
-						
+						lastOpenCommentSwDt = DateTime.Now;
 						
 						if (bool.Parse(isGetCommentXml) && !isExists) {
 							commentSW.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
