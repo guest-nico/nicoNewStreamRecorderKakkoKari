@@ -752,6 +752,7 @@ namespace namaichi.rec
 			var secondSum = 0.0;
 			var targetDuration = 2.0;
 			lock(recordLock) {
+				bool _isRetry = isRetry, _isEndProgram = isEndProgram, _isEnd = isEnd;
 				foreach (var s in res.Split('\n')) {
 					var _second = util.getRegGroup(s, "^#EXTINF:(\\d+(\\.\\d+)*)");
 					if (_second != null) {
@@ -764,8 +765,8 @@ namespace namaichi.rec
 					}
 					var isEndList = s.IndexOf("#EXT-X-ENDLIST") > -1;
 					if (isEndList) {
-						isRetry = false;
-						isEndProgram = true;
+						_isRetry = false;
+						_isEndProgram = true;
 					}
 					var _allDuration = util.getRegGroup(s, "^#STREAM-DURATION:(.+)");
 					if (_allDuration != null) {
@@ -784,8 +785,8 @@ namespace namaichi.rec
 					
 					if (isEndTimeshift(streamDuration, res, second) && !((WebSocketRecorder)wr).isChase) {
 						addDebugBuf("isEndTimeshift true");
-						isRetry = false;
-						isEndProgram = true;
+						_isRetry = false;
+						_isEndProgram = true;
 					}
 					
 					var startTime = baseTime + secondSum - second;
@@ -794,8 +795,8 @@ namespace namaichi.rec
 					     	(tsConfig.timeType == 1 && startTime <= tsConfig.timeSeconds))) continue;
 					if (isTimeShift && tsConfig.endTimeSeconds > 0 && startTime >= tsConfig.endTimeSeconds) {
 						addDebugBuf("timeshift tsConfig.endtime " + tsConfig.endTimeSeconds + " now starttime " + startTime + " tsConfig.timeseconds " + tsConfig.timeSeconds);
-						isRetry = false;
-						isEndProgram = true;
+						_isRetry = false;
+						_isEndProgram = true;
 						continue;
 					}
 					var startTimeStr = util.getSecondsToStr(startTime);
@@ -804,8 +805,8 @@ namespace namaichi.rec
 						if (engineMode == "3") {
 							if (wr.firstSegmentSecond == -1) 
 								wr.firstSegmentSecond = startTime;
-							isRetry = false;
-							isEnd = isEndProgram = true;
+							_isRetry = false;
+							_isEnd = _isEndProgram = true;
 							break;
 						}
 						
@@ -821,13 +822,17 @@ namespace namaichi.rec
 					
 					if (((WebSocketRecorder)wr).isChase && hlsSegM3uUrl.IndexOf("hlsarchive") > -1) {
 						addDebugBuf("ischase segM3uUrl hlsarchive end");
-						isRetry = false;
+						_isRetry = false;
 //						isEndProgram = true;
 					}
 					
 				}
 				
-				var getByteList = new List<byte[]>();
+				var a = newGetTsTaskList.Count;
+				if (newGetTsTaskList.Count == 0)
+					return targetDuration;
+				var lastListSegNo = newGetTsTaskList[newGetTsTaskList.Count - 1].no;
+				//var getByteList = new List<byte[]>();
 				var getByteThread = new Task[newGetTsTaskList.Count];
 				try {
 					for (var i = 0; i < newGetTsTaskList.Count; i++) {
@@ -844,6 +849,11 @@ namespace namaichi.rec
 					}
 				} catch (Exception e) {
 					addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				}
+				if (lastSegmentNo == lastListSegNo && !_isRetry) {
+					isRetry = _isRetry;
+					isEndProgram = _isEndProgram;
+					isEnd = _isEnd;
 				}
 				
 				var lateTime = streamDuration - lastSegmentNo / 1000;

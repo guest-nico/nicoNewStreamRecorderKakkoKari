@@ -38,7 +38,6 @@ namespace rokugaTouroku
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.fileNameTypeText = new System.Windows.Forms.TextBox();
-			this.fileNameTypeLabel = new System.Windows.Forms.Label();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.fileNameTypeTitleBtn = new System.Windows.Forms.Button();
 			this.fileNameTypeSimpleBtn = new System.Windows.Forms.Button();
@@ -60,6 +59,7 @@ namespace rokugaTouroku
 			this.label2 = new System.Windows.Forms.Label();
 			this.FileNameTypeCancelBtn = new System.Windows.Forms.Button();
 			this.fileNameTypeOkBtn = new System.Windows.Forms.Button();
+			this.fileNameTypeLabel = new System.Windows.Forms.TextBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -67,35 +67,22 @@ namespace rokugaTouroku
 			// 
 			// groupBox1
 			// 
-			this.groupBox1.Controls.Add(this.fileNameTypeText);
 			this.groupBox1.Controls.Add(this.fileNameTypeLabel);
-			this.groupBox1.Location = new System.Drawing.Point(16, 15);
-			this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
+			this.groupBox1.Controls.Add(this.fileNameTypeText);
+			this.groupBox1.Location = new System.Drawing.Point(12, 12);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-			this.groupBox1.Size = new System.Drawing.Size(485, 121);
+			this.groupBox1.Size = new System.Drawing.Size(364, 97);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "ファイル名の書式";
 			// 
 			// fileNameTypeText
 			// 
-			this.fileNameTypeText.Location = new System.Drawing.Point(8, 75);
-			this.fileNameTypeText.Margin = new System.Windows.Forms.Padding(4);
+			this.fileNameTypeText.Location = new System.Drawing.Point(6, 60);
 			this.fileNameTypeText.Name = "fileNameTypeText";
-			this.fileNameTypeText.Size = new System.Drawing.Size(425, 22);
+			this.fileNameTypeText.Size = new System.Drawing.Size(320, 19);
 			this.fileNameTypeText.TabIndex = 1;
 			this.fileNameTypeText.TextChanged += new System.EventHandler(this.fileNameTypeText_Changed);
-			// 
-			// fileNameTypeLabel
-			// 
-			this.fileNameTypeLabel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.fileNameTypeLabel.Location = new System.Drawing.Point(8, 32);
-			this.fileNameTypeLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-			this.fileNameTypeLabel.Name = "fileNameTypeLabel";
-			this.fileNameTypeLabel.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
-			this.fileNameTypeLabel.Size = new System.Drawing.Size(427, 28);
-			this.fileNameTypeLabel.TabIndex = 0;
 			// 
 			// groupBox2
 			// 
@@ -103,21 +90,18 @@ namespace rokugaTouroku
 			this.groupBox2.Controls.Add(this.fileNameTypeSimpleBtn);
 			this.groupBox2.Controls.Add(this.fileNameTypeDateBtn);
 			this.groupBox2.Controls.Add(this.fileNameTypeDefaultBtn);
-			this.groupBox2.Location = new System.Drawing.Point(16, 144);
-			this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
+			this.groupBox2.Location = new System.Drawing.Point(12, 115);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
-			this.groupBox2.Size = new System.Drawing.Size(485, 81);
+			this.groupBox2.Size = new System.Drawing.Size(364, 65);
 			this.groupBox2.TabIndex = 1;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "テンプレート";
 			// 
 			// fileNameTypeTitleBtn
 			// 
-			this.fileNameTypeTitleBtn.Location = new System.Drawing.Point(328, 31);
-			this.fileNameTypeTitleBtn.Margin = new System.Windows.Forms.Padding(4);
+			this.fileNameTypeTitleBtn.Location = new System.Drawing.Point(246, 25);
 			this.fileNameTypeTitleBtn.Name = "fileNameTypeTitleBtn";
-			this.fileNameTypeTitleBtn.Size = new System.Drawing.Size(99, 29);
+			this.fileNameTypeTitleBtn.Size = new System.Drawing.Size(74, 23);
 			this.fileNameTypeTitleBtn.TabIndex = 2;
 			this.fileNameTypeTitleBtn.Text = "タイトル";
 			this.fileNameTypeTitleBtn.UseVisualStyleBackColor = true;
@@ -125,10 +109,9 @@ namespace rokugaTouroku
 			// 
 			// fileNameTypeSimpleBtn
 			// 
-			this.fileNameTypeSimpleBtn.Location = new System.Drawing.Point(221, 31);
-			this.fileNameTypeSimpleBtn.Margin = new System.Windows.Forms.Padding(4);
+			this.fileNameTypeSimpleBtn.Location = new System.Drawing.Point(166, 25);
 			this.fileNameTypeSimpleBtn.Name = "fileNameTypeSimpleBtn";
-			this.fileNameTypeSimpleBtn.Size = new System.Drawing.Size(99, 29);
+			this.fileNameTypeSimpleBtn.Size = new System.Drawing.Size(74, 23);
 			this.fileNameTypeSimpleBtn.TabIndex = 2;
 			this.fileNameTypeSimpleBtn.Text = "シンプル";
 			this.fileNameTypeSimpleBtn.UseVisualStyleBackColor = true;
@@ -136,10 +119,9 @@ namespace rokugaTouroku
 			// 
 			// fileNameTypeDateBtn
 			// 
-			this.fileNameTypeDateBtn.Location = new System.Drawing.Point(115, 31);
-			this.fileNameTypeDateBtn.Margin = new System.Windows.Forms.Padding(4);
+			this.fileNameTypeDateBtn.Location = new System.Drawing.Point(86, 25);
 			this.fileNameTypeDateBtn.Name = "fileNameTypeDateBtn";
-			this.fileNameTypeDateBtn.Size = new System.Drawing.Size(99, 29);
+			this.fileNameTypeDateBtn.Size = new System.Drawing.Size(74, 23);
 			this.fileNameTypeDateBtn.TabIndex = 2;
 			this.fileNameTypeDateBtn.Text = "日時(漢字)";
 			this.fileNameTypeDateBtn.UseVisualStyleBackColor = true;
@@ -147,10 +129,9 @@ namespace rokugaTouroku
 			// 
 			// fileNameTypeDefaultBtn
 			// 
-			this.fileNameTypeDefaultBtn.Location = new System.Drawing.Point(8, 31);
-			this.fileNameTypeDefaultBtn.Margin = new System.Windows.Forms.Padding(4);
+			this.fileNameTypeDefaultBtn.Location = new System.Drawing.Point(6, 25);
 			this.fileNameTypeDefaultBtn.Name = "fileNameTypeDefaultBtn";
-			this.fileNameTypeDefaultBtn.Size = new System.Drawing.Size(99, 29);
+			this.fileNameTypeDefaultBtn.Size = new System.Drawing.Size(74, 23);
 			this.fileNameTypeDefaultBtn.TabIndex = 2;
 			this.fileNameTypeDefaultBtn.Text = "デフォルト";
 			this.fileNameTypeDefaultBtn.UseVisualStyleBackColor = true;
@@ -171,138 +152,122 @@ namespace rokugaTouroku
 			this.groupBox3.Controls.Add(this.label10);
 			this.groupBox3.Controls.Add(this.label7);
 			this.groupBox3.Controls.Add(this.label2);
-			this.groupBox3.Location = new System.Drawing.Point(16, 244);
-			this.groupBox3.Margin = new System.Windows.Forms.Padding(4);
+			this.groupBox3.Location = new System.Drawing.Point(12, 195);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Padding = new System.Windows.Forms.Padding(4);
-			this.groupBox3.Size = new System.Drawing.Size(484, 175);
+			this.groupBox3.Size = new System.Drawing.Size(363, 140);
 			this.groupBox3.TabIndex = 2;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "変換記号";
 			// 
 			// label6
 			// 
-			this.label6.Location = new System.Drawing.Point(23, 122);
-			this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label6.Location = new System.Drawing.Point(17, 98);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(123, 22);
+			this.label6.Size = new System.Drawing.Size(92, 18);
 			this.label6.TabIndex = 0;
 			this.label6.Text = "{W} (曜日)";
 			// 
 			// label5
 			// 
-			this.label5.Location = new System.Drawing.Point(23, 100);
-			this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label5.Location = new System.Drawing.Point(17, 80);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(123, 22);
+			this.label5.Size = new System.Drawing.Size(92, 18);
 			this.label5.TabIndex = 0;
 			this.label5.Text = "{D} (日)";
 			// 
 			// label4
 			// 
-			this.label4.Location = new System.Drawing.Point(23, 78);
-			this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label4.Location = new System.Drawing.Point(17, 62);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(123, 22);
+			this.label4.Size = new System.Drawing.Size(92, 18);
 			this.label4.TabIndex = 0;
 			this.label4.Text = "{M} (月)";
 			// 
 			// label3
 			// 
-			this.label3.Location = new System.Drawing.Point(23, 55);
-			this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label3.Location = new System.Drawing.Point(17, 44);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(123, 22);
+			this.label3.Size = new System.Drawing.Size(92, 18);
 			this.label3.TabIndex = 0;
 			this.label3.Text = "{y} (2桁の西暦)";
 			// 
 			// label9
 			// 
-			this.label9.Location = new System.Drawing.Point(153, 78);
-			this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label9.Location = new System.Drawing.Point(115, 62);
 			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(104, 22);
+			this.label9.Size = new System.Drawing.Size(78, 18);
 			this.label9.TabIndex = 0;
 			this.label9.Text = "{s} (秒)";
 			// 
 			// label8
 			// 
-			this.label8.Location = new System.Drawing.Point(153, 55);
-			this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label8.Location = new System.Drawing.Point(115, 44);
 			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(104, 22);
+			this.label8.Size = new System.Drawing.Size(78, 18);
 			this.label8.TabIndex = 0;
 			this.label8.Text = "{m} (分)";
 			// 
 			// label14
 			// 
-			this.label14.Location = new System.Drawing.Point(265, 122);
-			this.label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label14.Location = new System.Drawing.Point(199, 98);
 			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(123, 22);
+			this.label14.Size = new System.Drawing.Size(92, 18);
 			this.label14.TabIndex = 0;
 			this.label14.Text = "{4} コミュニティ名";
 			// 
 			// label13
 			// 
-			this.label13.Location = new System.Drawing.Point(265, 100);
-			this.label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label13.Location = new System.Drawing.Point(199, 80);
 			this.label13.Name = "label13";
-			this.label13.Size = new System.Drawing.Size(123, 22);
+			this.label13.Size = new System.Drawing.Size(92, 18);
 			this.label13.TabIndex = 0;
 			this.label13.Text = "{3} コミュニティID";
 			// 
 			// label12
 			// 
-			this.label12.Location = new System.Drawing.Point(265, 78);
-			this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label12.Location = new System.Drawing.Point(199, 62);
 			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(123, 22);
+			this.label12.Size = new System.Drawing.Size(92, 18);
 			this.label12.TabIndex = 0;
 			this.label12.Text = "{2} 配信者名";
 			// 
 			// label11
 			// 
-			this.label11.Location = new System.Drawing.Point(265, 55);
-			this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label11.Location = new System.Drawing.Point(199, 44);
 			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(123, 22);
+			this.label11.Size = new System.Drawing.Size(92, 18);
 			this.label11.TabIndex = 0;
 			this.label11.Text = "{1} タイトル";
 			// 
 			// label10
 			// 
-			this.label10.Location = new System.Drawing.Point(265, 32);
-			this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label10.Location = new System.Drawing.Point(199, 26);
 			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(123, 22);
+			this.label10.Size = new System.Drawing.Size(92, 18);
 			this.label10.TabIndex = 0;
 			this.label10.Text = "{0} lv数字(必須)";
 			// 
 			// label7
 			// 
-			this.label7.Location = new System.Drawing.Point(153, 32);
-			this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label7.Location = new System.Drawing.Point(115, 26);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(104, 22);
+			this.label7.Size = new System.Drawing.Size(78, 18);
 			this.label7.TabIndex = 0;
 			this.label7.Text = "{h} (時)";
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(23, 32);
-			this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label2.Location = new System.Drawing.Point(17, 26);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(123, 22);
+			this.label2.Size = new System.Drawing.Size(92, 18);
 			this.label2.TabIndex = 0;
 			this.label2.Text = "{Y} (4桁の西暦)";
 			// 
 			// FileNameTypeCancelBtn
 			// 
-			this.FileNameTypeCancelBtn.Location = new System.Drawing.Point(401, 430);
-			this.FileNameTypeCancelBtn.Margin = new System.Windows.Forms.Padding(4);
+			this.FileNameTypeCancelBtn.Location = new System.Drawing.Point(301, 344);
 			this.FileNameTypeCancelBtn.Name = "FileNameTypeCancelBtn";
-			this.FileNameTypeCancelBtn.Size = new System.Drawing.Size(99, 29);
+			this.FileNameTypeCancelBtn.Size = new System.Drawing.Size(74, 23);
 			this.FileNameTypeCancelBtn.TabIndex = 2;
 			this.FileNameTypeCancelBtn.Text = "キャンセル";
 			this.FileNameTypeCancelBtn.UseVisualStyleBackColor = true;
@@ -310,26 +275,32 @@ namespace rokugaTouroku
 			// 
 			// fileNameTypeOkBtn
 			// 
-			this.fileNameTypeOkBtn.Location = new System.Drawing.Point(281, 430);
-			this.fileNameTypeOkBtn.Margin = new System.Windows.Forms.Padding(4);
+			this.fileNameTypeOkBtn.Location = new System.Drawing.Point(211, 344);
 			this.fileNameTypeOkBtn.Name = "fileNameTypeOkBtn";
-			this.fileNameTypeOkBtn.Size = new System.Drawing.Size(99, 29);
+			this.fileNameTypeOkBtn.Size = new System.Drawing.Size(74, 23);
 			this.fileNameTypeOkBtn.TabIndex = 2;
 			this.fileNameTypeOkBtn.Text = "OK";
 			this.fileNameTypeOkBtn.UseVisualStyleBackColor = true;
 			this.fileNameTypeOkBtn.Click += new System.EventHandler(this.fileNameTypeOkBtn_Click);
 			// 
+			// fileNameTypeLabel
+			// 
+			this.fileNameTypeLabel.Location = new System.Drawing.Point(6, 26);
+			this.fileNameTypeLabel.Name = "fileNameTypeLabel";
+			this.fileNameTypeLabel.ReadOnly = true;
+			this.fileNameTypeLabel.Size = new System.Drawing.Size(320, 19);
+			this.fileNameTypeLabel.TabIndex = 3;
+			// 
 			// fileNameOptionForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(516, 474);
+			this.ClientSize = new System.Drawing.Size(387, 379);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.fileNameTypeOkBtn);
 			this.Controls.Add(this.FileNameTypeCancelBtn);
-			this.Margin = new System.Windows.Forms.Padding(4);
 			this.Name = "fileNameOptionForm";
 			this.Text = "FileNameOption";
 			this.groupBox1.ResumeLayout(false);
@@ -360,7 +331,7 @@ namespace rokugaTouroku
 		private System.Windows.Forms.Button fileNameTypeDefaultBtn;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.TextBox fileNameTypeText;
-		private System.Windows.Forms.Label fileNameTypeLabel;
+		private System.Windows.Forms.TextBox fileNameTypeLabel;
 		private System.Windows.Forms.GroupBox groupBox1;
 	}
 }

@@ -21,14 +21,14 @@ class app {
 		Console.WriteLine(util.getPath());
 		Console.WriteLine(util.getTime());
 		Console.WriteLine(util.getJarPath());
-		Console.WriteLine(util.getOkFileName(".a\\\"aa|a", false));
+		Console.WriteLine(util.getOkFileName(".a\\\"aa|a", false, false));
 		//Console.WriteLine(util.getRecFolderFilePath("host", "group", "title", "lvid", "comnum")[0]);
 		//Console.WriteLine(util.getRecFolderFilePath("host", "group", "title", "lvid", "comnum")[1]);
 	}
 }
 class util {
-	public static string versionStr = "ver0.87.63 debug";
-	public static string versionDayStr = "2019/12/10";
+	public static string versionStr = "ver0.87.65";
+	public static string versionDayStr = "2019/12/28";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	
@@ -83,9 +83,9 @@ class util {
 			bool isTimeShift, TimeShiftConfig tsConfig, 
 			long _openTime, bool isRtmp) {
 		
-		host = getOkFileName(host, isRtmp);
-		group = getOkFileName(group, isRtmp);
-		title = getOkFileName(title, isRtmp);
+		host = getOkFileName(host, isRtmp, false);
+		group = getOkFileName(group, isRtmp, false);
+		title = getOkFileName(title, isRtmp, false);
 		
 		string[] jarpath = getJarPath();
 //		util.debugWriteLine(jarpath);
@@ -110,6 +110,11 @@ class util {
 		if (cfg.get("EngineMode") != "0") _isTimeShift = false;
 
 		var name = getFileName(host, group, title, lvId, communityNum,  cfg, _openTime);
+		if (name.IndexOf("\\") > -1) {
+			sfn += "\\" + name.Substring(0, name.LastIndexOf("\\"));
+			dirPath += "\\" + name.Substring(0, name.LastIndexOf("\\"));
+			name = name.Substring(name.LastIndexOf("\\") + 1);
+		}
 		if (name.Length > 200) name = name.Substring(0, 200);
 		
 		//’·‚¢ƒpƒX’²®
@@ -204,10 +209,11 @@ class util {
 		}
 		return null;
 	}
-	public static string getOkFileName(string name, bool isRtmp) {
+	public static string getOkFileName(string name, bool isRtmp, bool isDokuji) {
 		if (isRtmp) name = getOkSJisOut(name);
 		
-		name = name.Replace("\\", "");
+		if (!isDokuji)
+			name = name.Replace("\\", "");
 		name = name.Replace("/", "^");
 		name = name.Replace(":", "F");
 		name = name.Replace("*", "–");
@@ -291,7 +297,7 @@ class util {
 		type = type.Replace("{2}", host);
 		type = type.Replace("{3}", communityNum);
 		type = type.Replace("{4}", group);
-		type = getOkFileName(type, false);
+		type = getOkFileName(type, false, true);
 		return type;
 		
 	}
@@ -321,9 +327,9 @@ class util {
 	public static string getLastTimeshiftFileName(string host, 
 			string group, string title, string lvId, string communityNum, 
 			string userId, config cfg, long _openTime) {
-		host = getOkFileName(host, false);
-		group = getOkFileName(group, false);
-		title = getOkFileName(title, false);
+		host = getOkFileName(host, false, false);
+		group = getOkFileName(group, false, false);
+		title = getOkFileName(title, false, false);
 		
 		string[] jarpath = getJarPath();
 //		util.debugWriteLine(jarpath);
@@ -344,6 +350,11 @@ class util {
 		var segmentSaveType = cfg.get("segmentSaveType");
 
 		var name = getFileName(host, group, title, lvId, communityNum,  cfg, _openTime);
+		if (name.IndexOf("\\") > -1) {
+			sfn += "\\" + name.Substring(0, name.LastIndexOf("\\"));
+			dirPath += "\\" + name.Substring(0, name.LastIndexOf("\\"));
+			name = name.Substring(name.LastIndexOf("\\") + 1);
+		}
 		if (name.Length > 200) name = name.Substring(0, 200);
 		
 		util.debugWriteLine("getLastTimeshiftFileName name " + name);

@@ -19,7 +19,7 @@ namespace namaichi.info
 	{
 		private XDocument xml;
 		public string json;
-		public string contents;
+		public string contents = "";
 		public string premium;
 		public string root;
 		public long serverTime;
@@ -32,6 +32,7 @@ namespace namaichi.info
 		public string lastRes;
 		public bool isPingRf;
 		public long vposOriginal;
+		public int no;
 		
 		public ChatInfo(XDocument xml, string json)
 		{
@@ -81,6 +82,7 @@ namespace namaichi.info
 				if (e.Name == "score") score = e.Value;
 				if (e.Name == "ticket") ticket = e.Value;
 				if (e.Name == "last_res") lastRes = e.Value;
+				if (e.Name == "no") no = int.Parse(e.Value);
 			}
 			
 			if (root == "chat" || root == "control") {

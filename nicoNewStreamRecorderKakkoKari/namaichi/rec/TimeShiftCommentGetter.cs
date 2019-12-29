@@ -51,7 +51,7 @@ namespace namaichi.rec
 		int lastLastRes = int.MaxValue;
 		string threadLine;
 		bool isGetXml;
-		List<string> gotCommentList = new List<string>();
+		List<GotCommentInfo> gotCommentList = new List<GotCommentInfo>();
 		
 		private StreamWriter commentSW;
 		private string fileName;
@@ -212,105 +212,108 @@ namespace namaichi.rec
 			util.debugWriteLine("ms onerror");
 		}
 		private void onWscMessageReceive(object sender, MessageReceivedEventArgs e) {
-			
-			if (rm.rfu != rfu || !isRetry) {
-				try {
-					if (wsc != null) wsc.Close();
-				} catch (Exception ee) {
-					util.debugWriteLine("wsc message receive exception " + ee.Source + " " + ee.StackTrace + " " + ee.TargetSite + " " + ee.Message);
-				}
-				//stopRecording();
-				util.debugWriteLine("tigau rfu comment" + e.Message + " " + isRetry);
-				return;
-			}
-			
-			
-			var xml = JsonConvert.DeserializeXNode(e.Message);
-			var chatinfo = new namaichi.info.ChatInfo(xml);
-			
-			XDocument chatXml;
-			var vposStartTime = (isVposStartTime) ? (long)rp.firstSegmentSecond : 0;
-			
-			if (isRtmp) {
-				chatXml = chatinfo.getFormatXml(_openTime + vposStartTime);
-			} else {
-				if (programType == "official") {
-					chatXml = chatinfo.getFormatXml(0, true, vposStartTime);
-//					chatXml = chatinfo.getFormatXml(_openTime + vposStartTime);
-				} else {
-					chatXml = chatinfo.getFormatXml(openTime + vposStartTime);
-
-				}
-			}
-//			else chatXml = chatinfo.getFormatXml(serverTime);
-//			util.debugWriteLine("xml " + chatXml.ToString());
-			
-			if (chatinfo.root == "chat" && (chatinfo.contents.IndexOf("/hb ifseetno") != -1 && 
-					chatinfo.premium == "3")) return;
-			if (chatinfo.root == "ping" && chatinfo.contents.IndexOf("rf:") > -1) {
-				wsc.Close();
-			}
-			if (chatinfo.root != "chat" && chatinfo.root != "thread") return;
-			
-			if (chatinfo.root == "thread") {
-//				serverTime = chatinfo.serverTime;
-				ticket = chatinfo.ticket;
-//				lastLastRes = (chatinfo.lastRes == null) ? 0 : int.Parse(chatinfo.lastRes);
-				//lastLastRes = (chatinfo.lastRes != null) ? int.Parse(chatinfo.lastRes) : 0;
-				if (chatinfo.lastRes == null) chatinfo.lastRes = "0";
-				if (chatinfo.lastRes != null) lastLastRes = int.Parse(chatinfo.lastRes);
-				
-			}
-//			util.debugWriteLine(chatXml.ToString());
-//			util.debugWriteLine(gotMinXml[1]);
-			if (chatXml.ToString().Equals(gotMinXml[1])) {
-				
-				isSave = false;
-			}
-			if (!isSave) return;
-			if (chatinfo.root == "chat" && chatinfo.date < gotMinTime) {
-				gotMinTime = chatinfo.date;
-				gotMinXml[1] = gotMinXml[0];
-				gotMinXml[0] = chatXml.ToString();
-			}
-			
-
 			try {
-//				if (commentSW != null) {
-					string s;
-					if (isGetXml) {
-						s = chatXml.ToString();
-					} else {
-						var vposReplaced = Regex.Replace(e.Message, 
-			            	"\"vpos\"\\:(\\d+)", 
-			            	"\"vpos\":" + chatinfo.vpos + "");
-						s = vposReplaced;
+				if (rm.rfu != rfu || !isRetry) {
+					try {
+						if (wsc != null) wsc.Close();
+					} catch (Exception ee) {
+						util.debugWriteLine("wsc message receive exception " + ee.Source + " " + ee.StackTrace + " " + ee.TargetSite + " " + ee.Message);
 					}
+					//stopRecording();
+					util.debugWriteLine("tigau rfu comment" + e.Message + " " + isRetry);
+					return;
+				}
+				
+				
+				var xml = JsonConvert.DeserializeXNode(e.Message);
+				var chatinfo = new namaichi.info.ChatInfo(xml);
+				
+				XDocument chatXml;
+				var vposStartTime = (isVposStartTime) ? (long)rp.firstSegmentSecond : 0;
+				
+				if (isRtmp) {
+					chatXml = chatinfo.getFormatXml(_openTime + vposStartTime);
+				} else {
+					if (programType == "official") {
+						chatXml = chatinfo.getFormatXml(0, true, vposStartTime);
+	//					chatXml = chatinfo.getFormatXml(_openTime + vposStartTime);
+					} else {
+						chatXml = chatinfo.getFormatXml(openTime + vposStartTime);
+	
+					}
+				}
+	//			else chatXml = chatinfo.getFormatXml(serverTime);
+	//			util.debugWriteLine("xml " + chatXml.ToString());
+				
+				if (chatinfo.root == "chat" && (chatinfo.contents.IndexOf("/hb ifseetno") != -1 && 
+						chatinfo.premium == "3")) return;
+				if (chatinfo.root == "ping" && chatinfo.contents.IndexOf("rf:") > -1) {
+					wsc.Close();
+				}
+				if (chatinfo.root != "chat" && chatinfo.root != "thread") return;
+				
+				if (chatinfo.root == "thread") {
+	//				serverTime = chatinfo.serverTime;
+					ticket = chatinfo.ticket;
+	//				lastLastRes = (chatinfo.lastRes == null) ? 0 : int.Parse(chatinfo.lastRes);
+					//lastLastRes = (chatinfo.lastRes != null) ? int.Parse(chatinfo.lastRes) : 0;
+					if (chatinfo.lastRes == null) chatinfo.lastRes = "0";
+					if (chatinfo.lastRes != null) lastLastRes = int.Parse(chatinfo.lastRes);
 					
-		            if (chatinfo.root == "thread") {
-						if (threadLine == null) {
-							threadLine = s;
-							if (!rm.isPlayOnlyMode)
-								form.addLogText("アリーナ席に" + chatinfo.lastRes + "件ぐらいのコメントが見つかりました(追い出しコメント含む)");
+				}
+	//			util.debugWriteLine(chatXml.ToString());
+	//			util.debugWriteLine(gotMinXml[1]);
+				if (chatXml.ToString().Equals(gotMinXml[1])) {
+					
+					isSave = false;
+				}
+				if (!isSave) return;
+				if (chatinfo.root == "chat" && chatinfo.date < gotMinTime) {
+					gotMinTime = chatinfo.date;
+					gotMinXml[1] = gotMinXml[0];
+					gotMinXml[0] = chatXml.ToString();
+				}
+				
+	
+				try {
+	//				if (commentSW != null) {
+						string s;
+						if (isGetXml) {
+							s = chatXml.ToString();
+						} else {
+							var vposReplaced = Regex.Replace(e.Message, 
+				            	"\"vpos\"\\:(\\d+)", 
+				            	"\"vpos\":" + chatinfo.vpos + "");
+							s = vposReplaced;
 						}
-		            } else {
-//		            	commentSW.WriteLine(s + "}>");
-//		            	commentSW.Flush();
-//		            	gotCount++;
-//		            	if (gotCount % 2000 == 0) form.addLogText(gotCount + "件のコメントを保存しました");
-		            	gotCommentList.Add(s);
-						gotCount++;
-		            	
-		            	if (gotCount % 2000 == 0 && !rm.isPlayOnlyMode) form.addLogText(gotCount + "件のコメントを保存しました");
-		            }
-//				}
-           
-			} catch (Exception ee) {util.debugWriteLine(ee.Message + " " + ee.StackTrace);}
-			
-				if (e.Message.IndexOf("rf:") > -1) 
-					((WebSocket)(sender)).Close();
-			//if (!isTimeShift)
-//				addDisplayComment(chatinfo);
+						
+			            if (chatinfo.root == "thread") {
+							if (threadLine == null) {
+								threadLine = s;
+								if (!rm.isPlayOnlyMode)
+									form.addLogText("アリーナ席に" + chatinfo.lastRes + "件ぐらいのコメントが見つかりました(追い出しコメント含む)");
+							}
+			            } else {
+	//		            	commentSW.WriteLine(s + "}>");
+	//		            	commentSW.Flush();
+	//		            	gotCount++;
+	//		            	if (gotCount % 2000 == 0) form.addLogText(gotCount + "件のコメントを保存しました");
+							gotCommentList.Add(new GotCommentInfo(s, chatinfo.no, chatinfo.date));
+							gotCount++;
+			            	
+			            	if (gotCount % 2000 == 0 && !rm.isPlayOnlyMode) form.addLogText(gotCount + "件のコメントを保存しました");
+			            }
+	//				}
+	           
+				} catch (Exception ee) {util.debugWriteLine(ee.Message + " " + ee.StackTrace);}
+				
+					if (e.Message.IndexOf("rf:") > -1) 
+						((WebSocket)(sender)).Close();
+				//if (!isTimeShift)
+	//				addDisplayComment(chatinfo);
+			} catch (Exception eee) {
+				util.debugWriteLine(eee.Message + eee.Source + eee.StackTrace + eee.TargetSite);
+			}
 
 		}
 		
@@ -357,12 +360,14 @@ namespace namaichi.rec
 			foreach (var c in gotCommentList) {
 //				util.debugWriteLine(c);
 //				util.debugWriteLine(util.getRegGroup(c, "date.+?(\\d+)"));
-				var date = int.Parse(util.getRegGroup(c, "date.+?(\\d+)"));
+				//var date = int.Parse(util.getRegGroup(c, "date.+?(\\d+)"));
+				var date = c.date;
 				keys.Add(date);
 			}
-			var chats = gotCommentList.ToArray();
-			Array.Sort(keys.ToArray(), chats);
 			
+			//Array.Sort(keys.ToArray(), chats);
+			gotCommentList.Sort(new Comparison<GotCommentInfo>(commentListCompare));
+			var chats = gotCommentList.Select(x => x.comment).ToArray();
 			rp.gotTsCommentList = chats;
 			
 			if (rp.isChase) {
@@ -480,6 +485,20 @@ namespace namaichi.rec
 			
 			
 			return r.Replace(recFolderFile, _new + ".xml");
+		}
+		private int commentListCompare(GotCommentInfo x, GotCommentInfo y) {
+			if (x.no != 0 && y.no != 0) return x.no - y.no;
+			return x.date - y.date;
+		}
+		class GotCommentInfo {
+			public string comment = null;
+			public int no;
+			public int date;
+			public GotCommentInfo(string comment, int no, int date) {
+				this.comment = comment;
+				this.no = no;
+				this.date = date;
+			}
 		}
 	}
 }

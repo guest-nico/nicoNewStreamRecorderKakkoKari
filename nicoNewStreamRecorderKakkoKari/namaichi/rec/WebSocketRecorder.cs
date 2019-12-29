@@ -729,6 +729,7 @@ namespace namaichi.rec
 			addDebugBuf("msuri " + msUri);
 			addDebugBuf("msreq " + msReq[0]);
 //			if (rm.isPlayOnlyMode) return;
+			//msUri += "store";
 			
 			var header =  new List<KeyValuePair<string, string>>();
 			header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Protocol", "msg.nicovideo.jp#json"));
