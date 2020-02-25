@@ -78,6 +78,9 @@ namespace rokugaTouroku
 			qualityBtn.Text = getQualityRankStr(qualityRank);
 			setConvertList(int.Parse(config.get("afterConvertMode")));
 			recCommmentList.Text = "映像＋コメント";
+			
+			setBackColor(Color.FromArgb(int.Parse(config.get("tourokuBackColor"))));
+			setForeColor(Color.FromArgb(int.Parse(config.get("tourokuForeColor"))));
 		}
 		void optionItem_Select(object sender, EventArgs e)
         { 
@@ -552,7 +555,12 @@ namespace rokugaTouroku
 		{
 			var t = "";
 			foreach (var d in recListDataSource) {
-				t += ((RecInfo)d).url += "\r\n";
+				var url = ((RecInfo)d).url;
+				if (url == null) continue;
+				var _url = util.getRegGroup(url, "(lv\\d+)");
+				if (_url == null) continue;
+				_url = "https://live2.nicovideo.jp/watch/" + _url;
+				t += _url + "\r\n";
 			}
 			var f = new UrlListSaveForm(t);
 			f.ShowDialog();
@@ -617,6 +625,7 @@ namespace rokugaTouroku
 				sr.Close();
 				var list = JsonConvert.DeserializeObject<List<RecInfo>>(s);
 				foreach (var l in list) {
+					
 					addList(l);
 				}
 			} catch (Exception e) {
@@ -642,6 +651,55 @@ namespace rokugaTouroku
 				var a = 0;
 				util.debugWriteLine(a);
 			}
+		}
+		void UpdateMenuClick(object sender, EventArgs e)
+		{
+			var v = new UpdateForm();
+			v.ShowDialog();
+		}
+		void FormColorMenuItemClick(object sender, EventArgs e)
+		{
+			var d = new ColorDialog();
+			d.Color = BackColor;
+			var r = d.ShowDialog();
+			if (r == DialogResult.OK) {
+				setBackColor(d.Color);
+				config.set("tourokuBackColor", d.Color.ToArgb().ToString());
+			}
+		}
+		private void setBackColor(Color color) {
+			BackColor = //commentList.BackgroundColor = 
+				color;
+			//if (color != 
+		}
+		void CharacterColorMenuItemClick(object sender, EventArgs e)
+		{
+			var d = new ColorDialog();
+			d.Color = label1.ForeColor;
+			var r = d.ShowDialog();
+			if (r == DialogResult.OK) {
+				setForeColor(d.Color);
+				config.set("tourokuForeColor", d.Color.ToArgb().ToString());
+			}
+		}
+		private void setForeColor(Color color) {
+			var c = getChildControls(this);
+			foreach (var _c in c)
+				if (_c.GetType() == typeof(GroupBox) ||
+				    _c.GetType() == typeof(Label) || 
+				    _c.GetType() == typeof(CheckBox)) _c.ForeColor = color;
+		}
+		private List<Control> getChildControls(Control c) {
+			util.debugWriteLine("cname " + c.Name);
+			var ret = new List<Control>();
+			foreach (Control _c in c.Controls) {
+				var children = getChildControls(_c);
+				ret.Add(_c);
+				ret.AddRange(children);
+				util.debugWriteLine(c.Name + " " + children.Count);
+			}
+			util.debugWriteLine(c.Name + " " + ret.Count);
+			return ret;
 		}
 	}
 }

@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using rokugaTouroku.rec;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace rokugaTouroku.info
 {
@@ -49,7 +50,12 @@ namespace rokugaTouroku.info
 		}
 		public RecInfo(string id, string url, RecDataGetter rdg, string afterConvertType, info.TimeShiftConfig tsConfig, string tsStr, string qualityRankStr, string qualityRank, string recComment) {
 			this.id = id;
-			this.url = url;
+			var lvM = Regex.Match(url, "lv\\d+");
+			if (lvM != null && !string.IsNullOrEmpty(lvM.Value)) {
+				if (url.IndexOf("live.nicovideo.jp") != -1)
+					this.url = "https://live.nicovideo.jp/watch/" + lvM.Value;
+				else this.url = "https://live2.nicovideo.jp/watch/" + lvM.Value;
+			} else this.url = url;
 			this.rdg = rdg;
 			state = "待機中";
 			//this.afterFFmpegMode = afterFFmpegMode;

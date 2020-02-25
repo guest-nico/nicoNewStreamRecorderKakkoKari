@@ -52,9 +52,13 @@ namespace namaichi
 			this.終了ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.visualMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.formColorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.characterColorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.バージョン情報VToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.groupBox5 = new System.Windows.Forms.GroupBox();
+			this.更新方法VToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.streamInfoGroupBox = new System.Windows.Forms.GroupBox();
 			this.endTimeLabel = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.typeLabel = new System.Windows.Forms.Label();
@@ -79,25 +83,26 @@ namespace namaichi
 			this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
-			this.label12 = new System.Windows.Forms.Label();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.urlLabel = new System.Windows.Forms.Label();
+			this.streamStateGroupBox = new System.Windows.Forms.GroupBox();
 			this.label15 = new System.Windows.Forms.Label();
 			this.commentLabel = new System.Windows.Forms.Label();
 			this.visitLabel = new System.Windows.Forms.Label();
 			this.label13 = new System.Windows.Forms.Label();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.recordGroupBox = new System.Windows.Forms.GroupBox();
 			this.commentList = new System.Windows.Forms.DataGridView();
 			this.時間 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.playerBtn = new System.Windows.Forms.Button();
 			this.miniBtn = new System.Windows.Forms.Button();
 			this.isChaseChkBtn = new System.Windows.Forms.CheckBox();
+			this.linkColorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.samuneBox)).BeginInit();
 			this.menuStrip1.SuspendLayout();
-			this.groupBox5.SuspendLayout();
+			this.streamInfoGroupBox.SuspendLayout();
 			this.mainWindowRightClickMenu.SuspendLayout();
-			this.groupBox1.SuspendLayout();
-			this.groupBox2.SuspendLayout();
+			this.streamStateGroupBox.SuspendLayout();
+			this.recordGroupBox.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.commentList)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -167,6 +172,7 @@ namespace namaichi
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 									this.fileMenuItem,
 									this.toolMenuItem,
+									this.visualMenuItem,
 									this.helpMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
@@ -222,10 +228,35 @@ namespace namaichi
 			this.optionMenuItem.Text = "オプション(&O)";
 			this.optionMenuItem.Click += new System.EventHandler(this.optionItem_Select);
 			// 
+			// visualMenuItem
+			// 
+			this.visualMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+									this.formColorMenuItem,
+									this.characterColorMenuItem,
+									this.linkColorMenuItem});
+			this.visualMenuItem.Name = "visualMenuItem";
+			this.visualMenuItem.Size = new System.Drawing.Size(62, 22);
+			this.visualMenuItem.Text = "表示(&V)";
+			// 
+			// formColorMenuItem
+			// 
+			this.formColorMenuItem.Name = "formColorMenuItem";
+			this.formColorMenuItem.Size = new System.Drawing.Size(182, 22);
+			this.formColorMenuItem.Text = "ウィンドウの色(&W)";
+			this.formColorMenuItem.Click += new System.EventHandler(this.ColorMenuItemClick);
+			// 
+			// characterColorMenuItem
+			// 
+			this.characterColorMenuItem.Name = "characterColorMenuItem";
+			this.characterColorMenuItem.Size = new System.Drawing.Size(182, 22);
+			this.characterColorMenuItem.Text = "文字の色(&S)";
+			this.characterColorMenuItem.Click += new System.EventHandler(this.CharacterColorMenuItemClick);
+			// 
 			// helpMenuItem
 			// 
 			this.helpMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.バージョン情報VToolStripMenuItem});
+									this.バージョン情報VToolStripMenuItem,
+									this.更新方法VToolStripMenuItem});
 			this.helpMenuItem.Name = "helpMenuItem";
 			this.helpMenuItem.ShowShortcutKeys = false;
 			this.helpMenuItem.Size = new System.Drawing.Size(75, 22);
@@ -238,34 +269,41 @@ namespace namaichi
 			this.バージョン情報VToolStripMenuItem.Text = "バージョン情報(&A)";
 			this.バージョン情報VToolStripMenuItem.Click += new System.EventHandler(this.versionMenu_Click);
 			// 
-			// groupBox5
+			// 更新方法VToolStripMenuItem
 			// 
-			this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.更新方法VToolStripMenuItem.Name = "更新方法VToolStripMenuItem";
+			this.更新方法VToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+			this.更新方法VToolStripMenuItem.Text = "更新方法(&U)";
+			this.更新方法VToolStripMenuItem.Click += new System.EventHandler(this.updateMenu_Click);
+			// 
+			// streamInfoGroupBox
+			// 
+			this.streamInfoGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 									| System.Windows.Forms.AnchorStyles.Right)));
-			this.groupBox5.Controls.Add(this.endTimeLabel);
-			this.groupBox5.Controls.Add(this.label4);
-			this.groupBox5.Controls.Add(this.typeLabel);
-			this.groupBox5.Controls.Add(this.label7);
-			this.groupBox5.Controls.Add(this.label10);
-			this.groupBox5.Controls.Add(this.descriptLabel);
-			this.groupBox5.Controls.Add(this.keikaTimeLabel);
-			this.groupBox5.Controls.Add(this.startTimeLabel);
-			this.groupBox5.Controls.Add(this.label8);
-			this.groupBox5.Controls.Add(this.genteiLabel);
-			this.groupBox5.Controls.Add(this.label6);
-			this.groupBox5.Controls.Add(this.hostLabel);
-			this.groupBox5.Controls.Add(this.label3);
-			this.groupBox5.Controls.Add(this.label2);
-			this.groupBox5.Controls.Add(this.titleLabel);
-			this.groupBox5.Controls.Add(this.label5);
-			this.groupBox5.Controls.Add(this.communityLabel);
-			this.groupBox5.Controls.Add(this.label1);
-			this.groupBox5.Location = new System.Drawing.Point(179, 76);
-			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(539, 180);
-			this.groupBox5.TabIndex = 17;
-			this.groupBox5.TabStop = false;
-			this.groupBox5.Text = "番組情報";
+			this.streamInfoGroupBox.Controls.Add(this.endTimeLabel);
+			this.streamInfoGroupBox.Controls.Add(this.label4);
+			this.streamInfoGroupBox.Controls.Add(this.typeLabel);
+			this.streamInfoGroupBox.Controls.Add(this.label7);
+			this.streamInfoGroupBox.Controls.Add(this.label10);
+			this.streamInfoGroupBox.Controls.Add(this.descriptLabel);
+			this.streamInfoGroupBox.Controls.Add(this.keikaTimeLabel);
+			this.streamInfoGroupBox.Controls.Add(this.startTimeLabel);
+			this.streamInfoGroupBox.Controls.Add(this.label8);
+			this.streamInfoGroupBox.Controls.Add(this.genteiLabel);
+			this.streamInfoGroupBox.Controls.Add(this.label6);
+			this.streamInfoGroupBox.Controls.Add(this.hostLabel);
+			this.streamInfoGroupBox.Controls.Add(this.label3);
+			this.streamInfoGroupBox.Controls.Add(this.label2);
+			this.streamInfoGroupBox.Controls.Add(this.titleLabel);
+			this.streamInfoGroupBox.Controls.Add(this.label5);
+			this.streamInfoGroupBox.Controls.Add(this.communityLabel);
+			this.streamInfoGroupBox.Controls.Add(this.label1);
+			this.streamInfoGroupBox.Location = new System.Drawing.Point(179, 76);
+			this.streamInfoGroupBox.Name = "streamInfoGroupBox";
+			this.streamInfoGroupBox.Size = new System.Drawing.Size(539, 180);
+			this.streamInfoGroupBox.TabIndex = 17;
+			this.streamInfoGroupBox.TabStop = false;
+			this.streamInfoGroupBox.Text = "番組情報";
 			// 
 			// endTimeLabel
 			// 
@@ -457,26 +495,26 @@ namespace namaichi
 			this.toolStripMenuItem4.Text = "録画フォルダを開く";
 			this.toolStripMenuItem4.Click += new System.EventHandler(this.openRecFolderMenu_Click);
 			// 
-			// label12
+			// urlLabel
 			// 
-			this.label12.Location = new System.Drawing.Point(6, 41);
-			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(58, 18);
-			this.label12.TabIndex = 18;
-			this.label12.Text = "放送URL";
+			this.urlLabel.Location = new System.Drawing.Point(6, 41);
+			this.urlLabel.Name = "urlLabel";
+			this.urlLabel.Size = new System.Drawing.Size(58, 18);
+			this.urlLabel.TabIndex = 18;
+			this.urlLabel.Text = "放送URL";
 			// 
-			// groupBox1
+			// streamStateGroupBox
 			// 
-			this.groupBox1.Controls.Add(this.label15);
-			this.groupBox1.Controls.Add(this.commentLabel);
-			this.groupBox1.Controls.Add(this.visitLabel);
-			this.groupBox1.Controls.Add(this.label13);
-			this.groupBox1.Location = new System.Drawing.Point(467, 30);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(229, 40);
-			this.groupBox1.TabIndex = 19;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "番組状況";
+			this.streamStateGroupBox.Controls.Add(this.label15);
+			this.streamStateGroupBox.Controls.Add(this.commentLabel);
+			this.streamStateGroupBox.Controls.Add(this.visitLabel);
+			this.streamStateGroupBox.Controls.Add(this.label13);
+			this.streamStateGroupBox.Location = new System.Drawing.Point(467, 30);
+			this.streamStateGroupBox.Name = "streamStateGroupBox";
+			this.streamStateGroupBox.Size = new System.Drawing.Size(229, 40);
+			this.streamStateGroupBox.TabIndex = 19;
+			this.streamStateGroupBox.TabStop = false;
+			this.streamStateGroupBox.Text = "番組状況";
 			// 
 			// label15
 			// 
@@ -508,15 +546,15 @@ namespace namaichi
 			this.label13.TabIndex = 0;
 			this.label13.Text = "来場者数";
 			// 
-			// groupBox2
+			// recordGroupBox
 			// 
-			this.groupBox2.Controls.Add(this.recordStateLabel);
-			this.groupBox2.Location = new System.Drawing.Point(6, 217);
-			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(167, 54);
-			this.groupBox2.TabIndex = 20;
-			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "転送状況";
+			this.recordGroupBox.Controls.Add(this.recordStateLabel);
+			this.recordGroupBox.Location = new System.Drawing.Point(6, 217);
+			this.recordGroupBox.Name = "recordGroupBox";
+			this.recordGroupBox.Size = new System.Drawing.Size(167, 54);
+			this.recordGroupBox.TabIndex = 20;
+			this.recordGroupBox.TabStop = false;
+			this.recordGroupBox.Text = "転送状況";
 			// 
 			// commentList
 			// 
@@ -581,6 +619,13 @@ namespace namaichi
 			this.isChaseChkBtn.Text = "追っかけ録画";
 			this.isChaseChkBtn.UseVisualStyleBackColor = true;
 			// 
+			// linkColorMenuItem
+			// 
+			this.linkColorMenuItem.Name = "linkColorMenuItem";
+			this.linkColorMenuItem.Size = new System.Drawing.Size(182, 22);
+			this.linkColorMenuItem.Text = "リンク文字の色(&L)";
+			this.linkColorMenuItem.Click += new System.EventHandler(this.LinkColorMenuItemClick);
+			// 
 			// MainForm
 			// 
 			this.AllowDrop = true;
@@ -593,10 +638,10 @@ namespace namaichi
 			this.Controls.Add(this.miniBtn);
 			this.Controls.Add(this.playerBtn);
 			this.Controls.Add(this.commentList);
-			this.Controls.Add(this.groupBox2);
-			this.Controls.Add(this.groupBox1);
-			this.Controls.Add(this.label12);
-			this.Controls.Add(this.groupBox5);
+			this.Controls.Add(this.recordGroupBox);
+			this.Controls.Add(this.streamStateGroupBox);
+			this.Controls.Add(this.urlLabel);
+			this.Controls.Add(this.streamInfoGroupBox);
 			this.Controls.Add(this.logText);
 			this.Controls.Add(this.recBtn);
 			this.Controls.Add(this.urlText);
@@ -614,14 +659,19 @@ namespace namaichi
 			((System.ComponentModel.ISupportInitialize)(this.samuneBox)).EndInit();
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
-			this.groupBox5.ResumeLayout(false);
+			this.streamInfoGroupBox.ResumeLayout(false);
 			this.mainWindowRightClickMenu.ResumeLayout(false);
-			this.groupBox1.ResumeLayout(false);
-			this.groupBox2.ResumeLayout(false);
+			this.streamStateGroupBox.ResumeLayout(false);
+			this.recordGroupBox.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.commentList)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripMenuItem linkColorMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem characterColorMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem formColorMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem visualMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem 更新方法VToolStripMenuItem;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label endTimeLabel;
 		public System.Windows.Forms.CheckBox isChaseChkBtn;
@@ -639,12 +689,12 @@ namespace namaichi
 		private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
 		private System.Windows.Forms.DataGridViewTextBoxColumn 時間;
 		private System.Windows.Forms.DataGridView commentList;
-		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.GroupBox recordGroupBox;
 		private System.Windows.Forms.Label label13;
 		public System.Windows.Forms.Label visitLabel;
 		private System.Windows.Forms.Label label15;
-		private System.Windows.Forms.GroupBox groupBox1;
-		private System.Windows.Forms.Label label12;
+		private System.Windows.Forms.GroupBox streamStateGroupBox;
+		private System.Windows.Forms.Label urlLabel;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.LinkLabel communityLabel;
 		private System.Windows.Forms.Label label5;
@@ -659,7 +709,7 @@ namespace namaichi
 		private System.Windows.Forms.Label startTimeLabel;
 		private System.Windows.Forms.Label keikaTimeLabel;
 		private System.Windows.Forms.Label descriptLabel;
-		private System.Windows.Forms.GroupBox groupBox5;
+		private System.Windows.Forms.GroupBox streamInfoGroupBox;
 		private System.Windows.Forms.ToolStripMenuItem バージョン情報VToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem 終了ToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;

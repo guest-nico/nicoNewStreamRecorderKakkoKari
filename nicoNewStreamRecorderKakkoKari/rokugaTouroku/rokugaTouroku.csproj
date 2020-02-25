@@ -118,6 +118,10 @@
     <Compile Include="TimeShiftOptionForm.Designer.cs">
       <DependentUpon>TimeShiftOptionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UpdateForm.cs" />
+    <Compile Include="UpdateForm.Designer.cs">
+      <DependentUpon>UpdateForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UrlBulkRegistForm.cs">
       <DependentUpon>VersionForm.cs</DependentUpon>
     </Compile>

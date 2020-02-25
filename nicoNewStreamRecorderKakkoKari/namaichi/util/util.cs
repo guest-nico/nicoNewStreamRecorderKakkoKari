@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 
 using namaichi.config;
 using namaichi.info;
-
+/*
 class app {
 	public static namaichi.MainForm form;
 	public static void Mains(string[] args) {
@@ -26,9 +26,10 @@ class app {
 		//Console.WriteLine(util.getRecFolderFilePath("host", "group", "title", "lvid", "comnum")[1]);
 	}
 }
+*/
 class util {
-	public static string versionStr = "ver0.87.65";
-	public static string versionDayStr = "2019/12/28";
+	public static string versionStr = "ver0.87.72";
+	public static string versionDayStr = "2020/02/24";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	
@@ -907,9 +908,14 @@ class util {
 //		w.Close();
 //		f.Close();
 	}
-	public static string getOkSJisOut(string s) {
-		var a = System.Text.Encoding.GetEncoding("shift_jis");
-		return a.GetString(a.GetBytes(s)).Replace("?", "_");
+	public static string getOkSJisOut(string s, string replaceStr = null) {
+		try {
+			var a = System.Text.Encoding.GetEncoding("shift_jis");
+			return a.GetString(a.GetBytes(s)).Replace("?", replaceStr == null ? "_" : replaceStr);
+		} catch (Exception e) {
+			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			return s;
+		}
 	}
 	public static bool isLogFile = false;
 	public static List<string> debugWriteBuf = new List<string>();

@@ -49,6 +49,8 @@ namespace namaichi
 			//setFormFromConfig();
 			
 			//tabControl1.TabPages.RemoveAt(6);
+			setBackColor(Color.FromArgb(int.Parse(cfg.get("recBackColor"))));
+			setForeColor(Color.FromArgb(int.Parse(cfg.get("recForeColor"))));
 		}
 		
 		void hozonFolderSanshouBtn_Click(object sender, EventArgs e)
@@ -126,6 +128,7 @@ namespace namaichi
 				{"Isretry",isRetryChkBox.Checked.ToString().ToLower()},
 				{"IsdeleteExit",isDeleteExitChkBox.Checked.ToString().ToLower()},
 				{"IsgetcommentXml",isCommentXML.Checked.ToString().ToLower()},
+				{"IsCommentConvertSpace",isCommentConvertSpaceChkbox.Checked.ToString().ToLower()},
 				{"IsDisplayComment",isDisplayCommentChkbox.Checked.ToString().ToLower()},
 				{"IstitlebarSamune",isTitleBarSamune.Checked.ToString().ToLower()},
 				{"IsautoFollowComgen",isAutoFollowComGen.Checked.ToString().ToLower()},
@@ -358,6 +361,7 @@ namespace namaichi
         	isCommentXML.Checked = bool.Parse(cfg.get("IsgetcommentXml"));
         	isCommentJson.Checked = !bool.Parse(cfg.get("IsgetcommentXml"));
         	isGetCommentChkBox_UpdateAction();
+        	isCommentConvertSpaceChkbox.Checked = bool.Parse(cfg.get("IsCommentConvertSpace"));
         	isDisplayCommentChkbox.Checked = bool.Parse(cfg.get("IsDisplayComment"));
         	isTitleBarSamune.Checked = bool.Parse(cfg.get("IstitlebarSamune"));
         	isAutoFollowComGen.Checked = bool.Parse(cfg.get("IsautoFollowComgen"));
@@ -965,6 +969,41 @@ namespace namaichi
 		void OptionFormLoad(object sender, EventArgs e)
 		{
 			setFormFromConfig();
+		}
+		private void setBackColor(Color color) {
+			BackColor = color;
+			var c = getChildControls(this);
+			foreach (var _c in c)
+				if (//_c.GetType() == typeof(GroupBox) ||
+				    _c.GetType() == typeof(System.Windows.Forms.Panel) || 
+				    _c.GetType() == typeof(System.Windows.Forms.Form) 
+				   	//_c.GetType() == typeof(System.Windows.Forms.TabPage) ||
+				   //	_c.GetType() == typeof(System.Windows.Forms.TabControl)
+				   )
+						_c.BackColor = color;
+		}
+		private void setForeColor(Color color) {
+			var c = getChildControls(this);
+			foreach (var _c in c)
+				if (//_c.GetType() == typeof(GroupBox) ||
+				    _c.GetType() == typeof(Label) ||
+				    _c.GetType() == typeof(CheckBox) ||
+				   	_c.GetType() == typeof(RadioButton)) _c.ForeColor = color;
+			
+		}
+		private List<Control> getChildControls(Control c) {
+			util.debugWriteLine("cname " + c.Name);
+			var ret = new List<Control>();
+			foreach (Control _c in c.Controls) {
+				ret.Add(_c);
+				if (_c.GetType() != typeof(GroupBox)) {
+					var children = getChildControls(_c);
+					ret.AddRange(children);
+				   }
+				//util.debugWriteLine(c.Name + " " + children.Count);
+			}
+			util.debugWriteLine(c.Name + " " + ret.Count);
+			return ret;
 		}
 	}
 }

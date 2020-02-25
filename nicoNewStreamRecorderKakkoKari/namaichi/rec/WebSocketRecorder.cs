@@ -9,6 +9,7 @@
 using System;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Xml.Linq;
 using WebSocket4Net;
 using System.Security.Authentication;
@@ -74,7 +75,7 @@ namespace namaichi.rec
 		private WebSocket[] himodukeWS = new WebSocket[2];
 			
 //		private System.Threading.Thread mainThread;
-		private TimeShiftCommentGetter tscg = null;
+		public TimeShiftCommentGetter tscg = null;
 		
 		bool isWaitNextConnection = false;
 		List<WebSocket> wsList = new List<WebSocket>();
@@ -104,6 +105,7 @@ namespace namaichi.rec
 		private bool isNotSleep = false;
 		private List<string> lastSaveComments = new List<string>();
 		private DateTime lastOpenCommentSwDt = DateTime.MinValue;
+		private bool isConvertSpace;
 		
 		public WebSocketRecorder(string[] webSocketInfo, 
 				CookieContainer container, string[] recFolderFile, 
@@ -148,6 +150,7 @@ namespace namaichi.rec
 			this.isRealtimeChase = isRealtimeChase;
 			this.isSaveComment = isSaveComment;
 			if (isChase && !isSaveComment) isHokan = true;
+			isConvertSpace = bool.Parse(rm.cfg.get("IsCommentConvertSpace"));
 		}
 		public bool start() {
 			addDebugBuf("ws rec start");
@@ -924,8 +927,9 @@ namespace namaichi.rec
 		}
 		private void onWscMessageReceive(object sender, MessageReceivedEventArgs e) {
 			addDebugBuf("on wsc message " + e.Message);
+			var eMessage = isConvertSpace ? util.getOkSJisOut(e.Message, " ") : e.Message;
 			
-			if (isTimeShift && e.Message.StartsWith("{\"ping\":{\"content\":\"rf:") && !isChase) {
+			if (isTimeShift && eMessage.StartsWith("{\"ping\":{\"content\":\"rf:") && !isChase) {
 				closeWscProcess();
 				try {commentSW.Close();}
 				catch (Exception eee) {addDebugBuf(eee.Message + eee.Source + eee.StackTrace + eee.TargetSite);}
@@ -940,12 +944,12 @@ namespace namaichi.rec
 					addDebugBuf("wsc message receive exception " + ee.Source + " " + ee.StackTrace + " " + ee.TargetSite + " " + ee.Message);
 				}
 				//stopRecording();
-				addDebugBuf("tigau rfu comment" + e.Message);
+				addDebugBuf("tigau rfu comment" + eMessage);
 				return;
 			}
 			
 			
-			var xml = JsonConvert.DeserializeXNode(e.Message);
+			var xml = JsonConvert.DeserializeXNode(eMessage);
 			var chatinfo = new namaichi.info.ChatInfo(xml);
 			
 			XDocument chatXml;
@@ -986,13 +990,15 @@ namespace namaichi.rec
 			
 			
 //            addDebugBuf(jsonCommentToXML(text));
+			
 			try {
 				if (commentSW != null) {
 					var writeStr = (bool.Parse(isGetCommentXml)) ? 
 						chatXml.ToString() : 
-						(Regex.Replace(e.Message, 
+						(Regex.Replace(eMessage, 
 			            	"\"vpos\"\\:(\\d+)", 
 			            	"\"vpos\":" + chatinfo.vpos + ""));
+					writeStr = util.getOkSJisOut(writeStr, " ");
 					
 					if (isChase && !isRealtimeChase && chaseCommentBuf != null) {
 						chaseCommentBuf.Add(writeStr);

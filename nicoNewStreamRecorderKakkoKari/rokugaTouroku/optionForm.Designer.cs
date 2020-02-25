@@ -191,6 +191,7 @@ namespace rokugaTouroku
 			this.label3 = new System.Windows.Forms.Label();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
+			this.isCommentConvertSpaceChkbox = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox6.SuspendLayout();
@@ -257,6 +258,7 @@ namespace rokugaTouroku
 			// 
 			// groupBox6
 			// 
+			this.groupBox6.Controls.Add(this.isCommentConvertSpaceChkbox);
 			this.groupBox6.Controls.Add(this.isNotSleepChkBox);
 			this.groupBox6.Controls.Add(this.isConfirmCloseMsgBoxChkBox);
 			this.groupBox6.Controls.Add(this.isMiniStartChkBox);
@@ -278,14 +280,14 @@ namespace rokugaTouroku
 			this.groupBox6.Controls.Add(this.isMinimizedChkBox);
 			this.groupBox6.Location = new System.Drawing.Point(5, 10);
 			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(458, 445);
+			this.groupBox6.Size = new System.Drawing.Size(458, 467);
 			this.groupBox6.TabIndex = 0;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Recorder設定";
 			// 
 			// isNotSleepChkBox
 			// 
-			this.isNotSleepChkBox.Location = new System.Drawing.Point(19, 377);
+			this.isNotSleepChkBox.Location = new System.Drawing.Point(19, 399);
 			this.isNotSleepChkBox.Name = "isNotSleepChkBox";
 			this.isNotSleepChkBox.Size = new System.Drawing.Size(291, 19);
 			this.isNotSleepChkBox.TabIndex = 8;
@@ -294,7 +296,7 @@ namespace rokugaTouroku
 			// 
 			// isConfirmCloseMsgBoxChkBox
 			// 
-			this.isConfirmCloseMsgBoxChkBox.Location = new System.Drawing.Point(19, 399);
+			this.isConfirmCloseMsgBoxChkBox.Location = new System.Drawing.Point(19, 421);
 			this.isConfirmCloseMsgBoxChkBox.Name = "isConfirmCloseMsgBoxChkBox";
 			this.isConfirmCloseMsgBoxChkBox.Size = new System.Drawing.Size(291, 19);
 			this.isConfirmCloseMsgBoxChkBox.TabIndex = 7;
@@ -303,7 +305,7 @@ namespace rokugaTouroku
 			// 
 			// isMiniStartChkBox
 			// 
-			this.isMiniStartChkBox.Location = new System.Drawing.Point(19, 355);
+			this.isMiniStartChkBox.Location = new System.Drawing.Point(19, 377);
 			this.isMiniStartChkBox.Name = "isMiniStartChkBox";
 			this.isMiniStartChkBox.Size = new System.Drawing.Size(337, 19);
 			this.isMiniStartChkBox.TabIndex = 6;
@@ -312,7 +314,7 @@ namespace rokugaTouroku
 			// 
 			// isDisplayCommentChkbox
 			// 
-			this.isDisplayCommentChkbox.Location = new System.Drawing.Point(19, 171);
+			this.isDisplayCommentChkbox.Location = new System.Drawing.Point(19, 193);
 			this.isDisplayCommentChkbox.Name = "isDisplayCommentChkbox";
 			this.isDisplayCommentChkbox.Size = new System.Drawing.Size(271, 19);
 			this.isDisplayCommentChkbox.TabIndex = 5;
@@ -321,7 +323,7 @@ namespace rokugaTouroku
 			// 
 			// isSegmentNukeInfoChkBox
 			// 
-			this.isSegmentNukeInfoChkBox.Location = new System.Drawing.Point(19, 333);
+			this.isSegmentNukeInfoChkBox.Location = new System.Drawing.Point(19, 355);
 			this.isSegmentNukeInfoChkBox.Name = "isSegmentNukeInfoChkBox";
 			this.isSegmentNukeInfoChkBox.Size = new System.Drawing.Size(271, 19);
 			this.isSegmentNukeInfoChkBox.TabIndex = 4;
@@ -350,7 +352,7 @@ namespace rokugaTouroku
 			// 
 			// isLogFileChkBox
 			// 
-			this.isLogFileChkBox.Location = new System.Drawing.Point(19, 421);
+			this.isLogFileChkBox.Location = new System.Drawing.Point(19, 443);
 			this.isLogFileChkBox.Name = "isLogFileChkBox";
 			this.isLogFileChkBox.Size = new System.Drawing.Size(337, 19);
 			this.isLogFileChkBox.TabIndex = 2;
@@ -359,7 +361,7 @@ namespace rokugaTouroku
 			// 
 			// isAutoFollowComGen
 			// 
-			this.isAutoFollowComGen.Location = new System.Drawing.Point(19, 237);
+			this.isAutoFollowComGen.Location = new System.Drawing.Point(19, 259);
 			this.isAutoFollowComGen.Name = "isAutoFollowComGen";
 			this.isAutoFollowComGen.Size = new System.Drawing.Size(351, 46);
 			this.isAutoFollowComGen.TabIndex = 2;
@@ -368,7 +370,7 @@ namespace rokugaTouroku
 			// 
 			// isDescriptionTagChkBox
 			// 
-			this.isDescriptionTagChkBox.Location = new System.Drawing.Point(47, 311);
+			this.isDescriptionTagChkBox.Location = new System.Drawing.Point(47, 333);
 			this.isDescriptionTagChkBox.Name = "isDescriptionTagChkBox";
 			this.isDescriptionTagChkBox.Size = new System.Drawing.Size(271, 19);
 			this.isDescriptionTagChkBox.TabIndex = 2;
@@ -377,7 +379,7 @@ namespace rokugaTouroku
 			// 
 			// isHosoInfoChkBox
 			// 
-			this.isHosoInfoChkBox.Location = new System.Drawing.Point(19, 289);
+			this.isHosoInfoChkBox.Location = new System.Drawing.Point(19, 311);
 			this.isHosoInfoChkBox.Name = "isHosoInfoChkBox";
 			this.isHosoInfoChkBox.Size = new System.Drawing.Size(271, 19);
 			this.isHosoInfoChkBox.TabIndex = 2;
@@ -387,7 +389,7 @@ namespace rokugaTouroku
 			// 
 			// isTitleBarSamune
 			// 
-			this.isTitleBarSamune.Location = new System.Drawing.Point(19, 220);
+			this.isTitleBarSamune.Location = new System.Drawing.Point(19, 242);
 			this.isTitleBarSamune.Name = "isTitleBarSamune";
 			this.isTitleBarSamune.Size = new System.Drawing.Size(271, 19);
 			this.isTitleBarSamune.TabIndex = 2;
@@ -396,7 +398,7 @@ namespace rokugaTouroku
 			// 
 			// isTitleBarInfoChkBox
 			// 
-			this.isTitleBarInfoChkBox.Location = new System.Drawing.Point(19, 193);
+			this.isTitleBarInfoChkBox.Location = new System.Drawing.Point(19, 215);
 			this.isTitleBarInfoChkBox.Name = "isTitleBarInfoChkBox";
 			this.isTitleBarInfoChkBox.Size = new System.Drawing.Size(271, 19);
 			this.isTitleBarInfoChkBox.TabIndex = 2;
@@ -1894,6 +1896,15 @@ namespace rokugaTouroku
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
 			// 
+			// isCommentConvertSpaceChkbox
+			// 
+			this.isCommentConvertSpaceChkbox.Location = new System.Drawing.Point(19, 171);
+			this.isCommentConvertSpaceChkbox.Name = "isCommentConvertSpaceChkbox";
+			this.isCommentConvertSpaceChkbox.Size = new System.Drawing.Size(271, 19);
+			this.isCommentConvertSpaceChkbox.TabIndex = 9;
+			this.isCommentConvertSpaceChkbox.Text = "コメントの特殊文字を空白に変換する";
+			this.isCommentConvertSpaceChkbox.UseVisualStyleBackColor = true;
+			// 
 			// optionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1947,6 +1958,7 @@ namespace rokugaTouroku
 			((System.ComponentModel.ISupportInitialize)(this.maxRecordingNum)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox isCommentConvertSpaceChkbox;
 		private System.Windows.Forms.TextBox playerArgsText;
 		private System.Windows.Forms.Label label13;
 		private System.Windows.Forms.Label label10;

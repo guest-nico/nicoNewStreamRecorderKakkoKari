@@ -753,6 +753,7 @@ namespace namaichi.rec
 			var targetDuration = 2.0;
 			lock(recordLock) {
 				bool _isRetry = isRetry, _isEndProgram = isEndProgram, _isEnd = isEnd;
+				var lastListSegNo = -1;
 				foreach (var s in res.Split('\n')) {
 					var _second = util.getRegGroup(s, "^#EXTINF:(\\d+(\\.\\d+)*)");
 					if (_second != null) {
@@ -774,7 +775,7 @@ namespace namaichi.rec
 					}
 					
 					if (s.IndexOf(".ts") < 0) continue;
-					var no = int.Parse(util.getRegGroup(s, "(\\d+)"));
+					var no = lastListSegNo = int.Parse(util.getRegGroup(s, "(\\d+)"));
 					var url = baseUrl + s;
 					
 					var isInList = false;
@@ -827,29 +828,30 @@ namespace namaichi.rec
 					}
 					
 				}
-				
-				var a = newGetTsTaskList.Count;
-				if (newGetTsTaskList.Count == 0)
-					return targetDuration;
-				var lastListSegNo = newGetTsTaskList[newGetTsTaskList.Count - 1].no;
-				//var getByteList = new List<byte[]>();
-				var getByteThread = new Task[newGetTsTaskList.Count];
-				try {
-					for (var i = 0; i < newGetTsTaskList.Count; i++) {
-						var ng = new NtiGetter(newGetTsTaskList[i]);
-						getByteThread[i] = Task.Run(() => ng.get(container));
+
+				if (newGetTsTaskList.Count != 0) {
+					//var lastListSegNo = newGetTsTaskList[newGetTsTaskList.Count - 1].no;
+					//var getByteList = new List<byte[]>();
+					var getByteThread = new Task[newGetTsTaskList.Count];
+					try {
+						for (var i = 0; i < newGetTsTaskList.Count; i++) {
+							var ng = new NtiGetter(newGetTsTaskList[i]);
+							getByteThread[i] = Task.Run(() => ng.get(container));
+							
+						}
+						foreach (var t in getByteThread) t.Wait();
 						
+						
+						for (var i = 0; i < getByteThread.Length; i++) {
+							if (newGetTsTaskList.Count == 0) break;
+							getTsTask(newGetTsTaskList[0], newGetTsTaskList[0].res);
+							
+						}
+					} catch (Exception e) {
+						addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
 					}
-					foreach (var t in getByteThread) t.Wait();
-					
-					
-					for (var i = 0; i < getByteThread.Length; i++) {
-						if (newGetTsTaskList.Count == 0) break;
-						getTsTask(newGetTsTaskList[0], newGetTsTaskList[0].res);
-					}
-				} catch (Exception e) {
-					addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
+				
 				if (lastSegmentNo == lastListSegNo && !_isRetry) {
 					isRetry = _isRetry;
 					isEndProgram = _isEndProgram;
@@ -953,6 +955,15 @@ namespace namaichi.rec
 //							if (fName == 
 							lastRecordedSeconds = util.getSecondsFromStr(fName);
 							lastWroteFileSecond = newGetTsTaskList[i].second;
+							
+							util.debugWriteLine("aaaaa " + tsConfig.endTimeSeconds + " " + startTime + " " +  newGetTsTaskList[i].startSecond + " " + nti.second + " a " + (startTime + nti.second) + " " + (startTime + nti.second >= tsConfig.endTimeSeconds) + " " + newGetTsTaskList.Count + " " + i);
+							if (isTimeShift && tsConfig.endTimeSeconds > 0 && newGetTsTaskList[i].startSecond + nti.second >= tsConfig.endTimeSeconds) {
+								addDebugBuf("getTsTask timeshift tsConfig.endtime " + tsConfig.endTimeSeconds + " now starttime " + startTime + " tsConfig.timeseconds " + tsConfig.timeSeconds);
+								isRetry = false;
+								isEndProgram = true;
+								continue;
+							}
+							
 						} else {
 							newGetTsTaskList.Clear();
 							if (!isReConnecting) {
@@ -1301,7 +1312,12 @@ namespace namaichi.rec
 
 					targetDuration = addNewTsTaskList(hlsSegM3uUrl);
 
-					
+					if (engineMode == "3" && 
+					    	((WebSocketRecorder)wr).tscg != null && 
+					    	((WebSocketRecorder)wr).tscg.isEnd) {
+						isRetry = false;
+						isEndProgram = true;
+					}
 					Thread.Sleep((int)(targetDuration * 500));
 				} else {
 					var recStartTime = DateTime.Now;

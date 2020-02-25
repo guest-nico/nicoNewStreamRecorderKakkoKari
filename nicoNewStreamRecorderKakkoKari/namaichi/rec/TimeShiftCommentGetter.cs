@@ -68,6 +68,7 @@ namespace namaichi.rec
 		private bool isRtmp;
 		private int[] quePosTimeList;
 		private RtmpRecorder rr;
+		private bool isConvertSpace;
 		
 		public TimeShiftCommentGetter(string message, 
 				string userId, RecordingManager rm, 
@@ -98,6 +99,7 @@ namespace namaichi.rec
 			this.isVposStartTime = isVposStartTime;
 			this.isRtmp = isRtmp;
 			this.rr = rr;
+			isConvertSpace = bool.Parse(rm.cfg.get("IsCommentConvertSpace"));
 		}
 		public void save() {
 			if (!bool.Parse(rm.cfg.get("IsgetComment"))) {
@@ -169,7 +171,7 @@ namespace namaichi.rec
 			util.debugWriteLine("ms open a");
 			var req = getReq("-1000");
 			wsc.Send(req);
-			util.debugWriteLine("ms open b");
+			util.debugWriteLine("ms open b " + req);
 			
 			if (rm.rfu != rfu) {
 				//stopRecording();
@@ -210,8 +212,13 @@ namespace namaichi.rec
 
 		private void onWscError(object sender, SuperSocket.ClientEngine.ErrorEventArgs e) {
 			util.debugWriteLine("ms onerror");
+			gotCommentList = new List<TimeShiftCommentGetter.GotCommentInfo>();
+			gotMinTime = util.getUnixTime();
+			gotMinXml = new string[2];
+			gotCount = 0;
 		}
 		private void onWscMessageReceive(object sender, MessageReceivedEventArgs e) {
+			var eMessage = isConvertSpace ? util.getOkSJisOut(e.Message, " ") : e.Message;
 			try {
 				if (rm.rfu != rfu || !isRetry) {
 					try {
@@ -220,12 +227,12 @@ namespace namaichi.rec
 						util.debugWriteLine("wsc message receive exception " + ee.Source + " " + ee.StackTrace + " " + ee.TargetSite + " " + ee.Message);
 					}
 					//stopRecording();
-					util.debugWriteLine("tigau rfu comment" + e.Message + " " + isRetry);
+					util.debugWriteLine("tigau rfu comment" + eMessage + " " + isRetry);
 					return;
 				}
 				
 				
-				var xml = JsonConvert.DeserializeXNode(e.Message);
+				var xml = JsonConvert.DeserializeXNode(eMessage);
 				var chatinfo = new namaichi.info.ChatInfo(xml);
 				
 				XDocument chatXml;
@@ -258,8 +265,13 @@ namespace namaichi.rec
 	//				lastLastRes = (chatinfo.lastRes == null) ? 0 : int.Parse(chatinfo.lastRes);
 					//lastLastRes = (chatinfo.lastRes != null) ? int.Parse(chatinfo.lastRes) : 0;
 					if (chatinfo.lastRes == null) chatinfo.lastRes = "0";
-					if (chatinfo.lastRes != null) lastLastRes = int.Parse(chatinfo.lastRes);
-					
+					if (eMessage.IndexOf("resultcode\":0") == -1) {
+						//((WebSocket)(sender)).Close();
+						return;
+					}
+					if (chatinfo.lastRes != null)
+						lastLastRes = int.Parse(chatinfo.lastRes);
+					util.debugWriteLine("thread " + eMessage);
 				}
 	//			util.debugWriteLine(chatXml.ToString());
 	//			util.debugWriteLine(gotMinXml[1]);
@@ -281,7 +293,7 @@ namespace namaichi.rec
 						if (isGetXml) {
 							s = chatXml.ToString();
 						} else {
-							var vposReplaced = Regex.Replace(e.Message, 
+							var vposReplaced = Regex.Replace(eMessage, 
 				            	"\"vpos\"\\:(\\d+)", 
 				            	"\"vpos\":" + chatinfo.vpos + "");
 							s = vposReplaced;
@@ -307,7 +319,7 @@ namespace namaichi.rec
 	           
 				} catch (Exception ee) {util.debugWriteLine(ee.Message + " " + ee.StackTrace);}
 				
-					if (e.Message.IndexOf("rf:") > -1) 
+					if (eMessage.IndexOf("rf:") > -1) 
 						((WebSocket)(sender)).Close();
 				//if (!isTimeShift)
 	//				addDisplayComment(chatinfo);
@@ -329,6 +341,7 @@ namespace namaichi.rec
 		private string getReq(string resfrom) {
 //			var when = (isSave) ? lastGetChatTime.ToString() : openTime.ToString();
 			when = gotMinTime + 1;
+			//thread += "store";
 			var ret = "[{\"ping\":{\"content\":\"rs:0\"}},{\"ping\":{\"content\":\"ps:0\"}},{\"thread\":{\"thread\":\"" + thread + "\",\"version\":\"20061206\",\"fork\":0,\"user_id\":\"" + userId + "\",\"res_from\":" + resfrom + ",\"with_global\":1,\"scores\":1,\"nicoru\":0,\"waybackkey\":\"" + waybackKey + "\",\"when\":" + when + "}},{\"ping\":{\"content\":\"pf:0\"}},{\"ping\":{\"content\":\"rf:0\"}}]";
 			util.debugWriteLine("tscg " + ret);
 			return ret;

@@ -65,7 +65,7 @@ namespace namaichi
 			//config.set("IsHokan", "false");
 			
 			//test
-			app.form = this;
+			//app.form = this;
 			
 			//args = new String[]{"lv321744352"};
 			//args = new string[]{"C:\\Users\\zack\\downloads\\a.ts"};
@@ -142,6 +142,9 @@ namespace namaichi
 			
 			if (bool.Parse(config.get("IsMiniStart")))
 				changeSize(true);
+			setBackColor(Color.FromArgb(int.Parse(config.get("recBackColor"))));
+			setForeColor(Color.FromArgb(int.Parse(config.get("recForeColor"))));
+			setLinkColor(Color.FromArgb(int.Parse(config.get("recLinkColor"))));
 		}
 
 		private void recBtnAction(object sender, EventArgs e) {
@@ -922,10 +925,10 @@ namespace namaichi
 		}
 		private void changeSize(bool isMini) {
 			try {
-				label12.Visible = !isMini;
+				urlLabel.Visible = !isMini;
 				commentList.Visible = !isMini;
 				logText.Visible = !isMini;
-				groupBox1.Visible = !isMini;
+				streamStateGroupBox.Visible = !isMini;
 				playerBtn.Visible = !isMini;
 				label10.Visible = !isMini;
 				descriptLabel.Visible = !isMini;
@@ -947,11 +950,11 @@ namespace namaichi
 				startTimeLabel.Location = isMini ? label3.Location : new Point(78,label6.Location.Y);
 				keikaTimeLabel.Location = isMini ? label7.Location : new Point(78,label8.Location.Y);
 				//groupBox5.Location = isMini ? new Point(160, 76) : new Point(179, 76);
-				groupBox2.Location = isMini ? new Point(6, 143) : new Point(6, 217);
+				recordGroupBox.Location = isMini ? new Point(6, 143) : new Point(6, 217);
 				
-				titleLabel.Size = isMini ? new Size(groupBox5.Width - 10, 23) : new Size(groupBox5.Width - 93, 23);
-				communityLabel.Size = isMini ? new Size(groupBox5.Width - 10, 23) : new Size(groupBox5.Width - 93, 23);
-				hostLabel.Size = isMini ? new Size(groupBox5.Width - 10, 23) : new Size(groupBox5.Width - 93, 23);
+				titleLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 10, 23) : new Size(streamInfoGroupBox.Width - 93, 23);
+				communityLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 10, 23) : new Size(streamInfoGroupBox.Width - 93, 23);
+				hostLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 10, 23) : new Size(streamInfoGroupBox.Width - 93, 23);
 				samuneBox.Size = isMini ? new Size(87, 76) : new Size(141, 150);
 				
 				var urlTextX = isMini ? 19 : 69;
@@ -960,7 +963,7 @@ namespace namaichi
 				miniBtn.Location = new Point((isMini) ? (recBtn.Location.X + 83) : 698, miniBtn.Location.Y);
 				var _size = Size;
 				Size = isMini ? new Size(386, 236) : originalSize;
-				groupBox5.Size = isMini ? new Size(Width - 196, 121) : new Size(Width - 196, 180);
+				streamInfoGroupBox.Size = isMini ? new Size(Width - 196, 121) : new Size(Width - 196, 180);
 				originalSize = isMini ? _size : Size.Empty;
 				miniBtn.Text = isMini ? "戻" : "小";
 			} catch (Exception e) {
@@ -973,6 +976,69 @@ namespace namaichi
 		public string getTitleLabelText() {
 			return titleLabel.Text;
 		}
-		
+		void updateMenu_Click(object sender, EventArgs e)
+		{
+			var v = new UpdateForm();
+			v.ShowDialog();
+		}
+		void ColorMenuItemClick(object sender, EventArgs e)
+		{
+			var d = new ColorDialog();
+			d.Color = BackColor;
+			var r = d.ShowDialog();
+			if (r == DialogResult.OK) {
+				setBackColor(d.Color);
+				config.set("recBackColor", d.Color.ToArgb().ToString());
+			}
+		}
+		private void setBackColor(Color color) {
+			BackColor = //commentList.BackgroundColor = 
+				color;
+		}
+		void CharacterColorMenuItemClick(object sender, EventArgs e)
+		{
+			var d = new ColorDialog();
+			d.Color = label1.ForeColor;
+			var r = d.ShowDialog();
+			if (r == DialogResult.OK) {
+				setForeColor(d.Color);
+				config.set("recForeColor", d.Color.ToArgb().ToString());
+			}
+		}
+		private void setForeColor(Color color) {
+			var c = getChildControls(this);
+			foreach (var _c in c)
+				if (_c.GetType() == typeof(GroupBox) ||
+				    _c.GetType() == typeof(Label) ||
+				   _c.GetType() == typeof(CheckBox)) _c.ForeColor = color;
+		}
+		void LinkColorMenuItemClick(object sender, EventArgs e)
+		{
+			var d = new ColorDialog();
+			d.Color = titleLabel.LinkColor;
+			var r = d.ShowDialog();
+			if (r == DialogResult.OK) {
+				setLinkColor(d.Color);
+				config.set("recLinkColor", d.Color.ToArgb().ToString());
+			}
+		}
+		private void setLinkColor(Color color) {
+			var c = getChildControls(this);
+			foreach (var _c in c)
+				if (_c.GetType() == typeof(LinkLabel)) 
+					((LinkLabel)_c).LinkColor = color;
+		}
+		private List<Control> getChildControls(Control c) {
+			util.debugWriteLine("cname " + c.Name);
+			var ret = new List<Control>();
+			foreach (Control _c in c.Controls) {
+				var children = getChildControls(_c);
+				ret.Add(_c);
+				ret.AddRange(children);
+				util.debugWriteLine(c.Name + " " + children.Count);
+			}
+			util.debugWriteLine(c.Name + " " + ret.Count);
+			return ret;
+		}
 	}
 }

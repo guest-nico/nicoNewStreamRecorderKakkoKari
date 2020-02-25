@@ -73,8 +73,12 @@ namespace rokugaTouroku
 			this.終了ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.visualMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.formColorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.characterColorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.バージョン情報VToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.updateMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.label2 = new System.Windows.Forms.Label();
 			this.recCommmentList = new System.Windows.Forms.ComboBox();
@@ -362,6 +366,7 @@ namespace rokugaTouroku
 			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 									this.fileMenuItem,
 									this.toolMenuItem,
+									this.visualMenuItem,
 									this.helpMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
@@ -439,10 +444,34 @@ namespace rokugaTouroku
 			this.optionMenuItem.Text = "オプション(&O)";
 			this.optionMenuItem.Click += new System.EventHandler(this.optionItem_Select);
 			// 
+			// visualMenuItem
+			// 
+			this.visualMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+									this.formColorMenuItem,
+									this.characterColorMenuItem});
+			this.visualMenuItem.Name = "visualMenuItem";
+			this.visualMenuItem.Size = new System.Drawing.Size(62, 22);
+			this.visualMenuItem.Text = "表示(&V)";
+			// 
+			// formColorMenuItem
+			// 
+			this.formColorMenuItem.Name = "formColorMenuItem";
+			this.formColorMenuItem.Size = new System.Drawing.Size(182, 22);
+			this.formColorMenuItem.Text = "ウィンドウの色(&W)";
+			this.formColorMenuItem.Click += new System.EventHandler(this.FormColorMenuItemClick);
+			// 
+			// characterColorMenuItem
+			// 
+			this.characterColorMenuItem.Name = "characterColorMenuItem";
+			this.characterColorMenuItem.Size = new System.Drawing.Size(182, 22);
+			this.characterColorMenuItem.Text = "文字の色(&S)";
+			this.characterColorMenuItem.Click += new System.EventHandler(this.CharacterColorMenuItemClick);
+			// 
 			// helpMenuItem
 			// 
 			this.helpMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.バージョン情報VToolStripMenuItem});
+									this.バージョン情報VToolStripMenuItem,
+									this.updateMenu});
 			this.helpMenuItem.Name = "helpMenuItem";
 			this.helpMenuItem.ShowShortcutKeys = false;
 			this.helpMenuItem.Size = new System.Drawing.Size(75, 22);
@@ -454,6 +483,13 @@ namespace rokugaTouroku
 			this.バージョン情報VToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
 			this.バージョン情報VToolStripMenuItem.Text = "バージョン情報(&A)";
 			this.バージョン情報VToolStripMenuItem.Click += new System.EventHandler(this.versionMenu_Click);
+			// 
+			// updateMenu
+			// 
+			this.updateMenu.Name = "updateMenu";
+			this.updateMenu.Size = new System.Drawing.Size(178, 22);
+			this.updateMenu.Text = "更新方法(&U)";
+			this.updateMenu.Click += new System.EventHandler(this.UpdateMenuClick);
 			// 
 			// panel1
 			// 
@@ -620,7 +656,7 @@ namespace rokugaTouroku
 			this.panel3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.panel3.AutoSize = true;
-			this.panel3.BackColor = System.Drawing.SystemColors.Control;
+			this.panel3.BackColor = System.Drawing.Color.Transparent;
 			this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.panel3.Controls.Add(this.keikaTimeLabel);
 			this.panel3.Controls.Add(this.label7);
@@ -886,6 +922,10 @@ namespace rokugaTouroku
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripMenuItem characterColorMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem formColorMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem visualMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem updateMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem urlBulkRegist;

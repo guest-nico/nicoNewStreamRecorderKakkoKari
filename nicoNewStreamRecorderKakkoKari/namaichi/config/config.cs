@@ -155,6 +155,7 @@ public class config
 			{"Isretry","true"},
 			{"IsdeleteExit","false"},
 			{"IsgetcommentXml","true"},
+			{"IsCommentConvertSpace","false"},
 			{"IsDisplayComment","true"},
 			{"IstitlebarSamune","true"},
 			{"IsautoFollowComgen","false"},
@@ -230,6 +231,12 @@ public class config
 			{"rokugaTourokuHeight","500"},
 			{"rokugaTourokuMaxRecordingNum","10"},
 			{"rokugaTourokuQualityRank","0,1,2,3,4"},
+			
+			{"recBackColor","-1"},
+			{"recForeColor","-16777216"},
+			{"recLinkColor","-16776961"},
+			{"tourokuBackColor","-1"},
+			{"tourokuForeColor","-16777216"},
 		};
 		try {
 			var buf = new Dictionary<string,string>();
