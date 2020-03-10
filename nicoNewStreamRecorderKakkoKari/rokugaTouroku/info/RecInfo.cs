@@ -44,6 +44,7 @@ namespace rokugaTouroku.info
 		public Process process;
 		public RecDataGetter rdg;
 		public DateTime keikaTimeStart;
+		public string samuneUrl = null;
 		
 		public RecInfo() {
 			
@@ -57,7 +58,7 @@ namespace rokugaTouroku.info
 				else this.url = "https://live2.nicovideo.jp/watch/" + lvM.Value;
 			} else this.url = url;
 			this.rdg = rdg;
-			state = "待機中";
+			this.state = "待機中";
 			//this.afterFFmpegMode = afterFFmpegMode;
 			this.afterConvertType = afterConvertType;
 			this.timeShift = tsStr;
@@ -93,8 +94,15 @@ namespace rokugaTouroku.info
 		}
 		public void setHosoInfo(MainForm form) {
          	var hig = new namaichi.rec.HosoInfoGetter();
-         	var ret = hig.get(url);
+         	var ret = false;
+         	for (var i = 0; i < 3; i++) {
+	         	ret = hig.get(url);
+	         	if (ret) break;
+	         	System.Threading.Thread.Sleep(3000);
+         	}
          	if (!ret) return;
+         	//return;
+         	
          	if (string.IsNullOrEmpty(title) && 
          	    	!string.IsNullOrEmpty(hig.title)) 
          		title = hig.title;
@@ -115,6 +123,7 @@ namespace rokugaTouroku.info
          		communityUrl = comUrl;
          	}
          	form.updateRecListCell(this);
+         	form.saveList();
 		}
 		public string Id
         {

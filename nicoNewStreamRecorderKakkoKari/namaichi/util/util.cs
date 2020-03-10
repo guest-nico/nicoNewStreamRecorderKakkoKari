@@ -28,8 +28,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.87.72";
-	public static string versionDayStr = "2020/02/24";
+	public static string versionStr = "ver0.87.75";
+	public static string versionDayStr = "2020/03/10";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	
@@ -506,7 +506,7 @@ class util {
 		return null;
 	}
 	public static string getPageSource(string _url, ref WebHeaderCollection getheaders, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 5000) {
-		//util.debugWriteLine("getpage 01");
+		util.debugWriteLine("access__ getpage " + _url);
 		timeoutMs = 5000;
 		/*
 		string a;
@@ -564,6 +564,7 @@ class util {
 		return null;
 	}
 	public static string getPageSource(string _url, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 0) {
+		util.debugWriteLine("access__ getpage " + _url);
 		//if (timeoutMs == 0) timeoutMs = 5000;
 		timeoutMs = 5000;
 		
@@ -623,6 +624,7 @@ class util {
 		return null;
 	}
 	public static byte[] getFileBytes(string url, CookieContainer container, bool isRedirect = true, int mode = 0) {
+		util.debugWriteLine("access__ getFilebytes " + url);
 //		var a = container.GetCookieHeader(new Uri(_url));
 		//util.debugWriteLine("getfilebyte " + url);
 		for (int i = 0; i < 1; i++) {

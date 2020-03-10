@@ -129,6 +129,7 @@ namespace namaichi
 				{"IsdeleteExit",isDeleteExitChkBox.Checked.ToString().ToLower()},
 				{"IsgetcommentXml",isCommentXML.Checked.ToString().ToLower()},
 				{"IsCommentConvertSpace",isCommentConvertSpaceChkbox.Checked.ToString().ToLower()},
+				{"IsSaveCommentOnlyRetryingRec",isSaveCommentOnlyRetryingRecChkBox.Checked.ToString().ToLower()},
 				{"IsDisplayComment",isDisplayCommentChkbox.Checked.ToString().ToLower()},
 				{"IstitlebarSamune",isTitleBarSamune.Checked.ToString().ToLower()},
 				{"IsautoFollowComgen",isAutoFollowComGen.Checked.ToString().ToLower()},
@@ -362,6 +363,7 @@ namespace namaichi
         	isCommentJson.Checked = !bool.Parse(cfg.get("IsgetcommentXml"));
         	isGetCommentChkBox_UpdateAction();
         	isCommentConvertSpaceChkbox.Checked = bool.Parse(cfg.get("IsCommentConvertSpace"));
+        	isSaveCommentOnlyRetryingRecChkBox.Checked = bool.Parse(cfg.get("IsSaveCommentOnlyRetryingRec"));
         	isDisplayCommentChkbox.Checked = bool.Parse(cfg.get("IsDisplayComment"));
         	isTitleBarSamune.Checked = bool.Parse(cfg.get("IstitlebarSamune"));
         	isAutoFollowComGen.Checked = bool.Parse(cfg.get("IsautoFollowComgen"));

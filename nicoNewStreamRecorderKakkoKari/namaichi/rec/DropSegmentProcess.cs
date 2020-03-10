@@ -42,7 +42,7 @@ namespace namaichi.rec
 			this.rm = rm;
 			this.h5r = h5r;
 		}
-		public void start(numTaskInfo nti) {
+		public bool start(numTaskInfo nti) {
 			try {
 				this.nti = nti;
 				Thread.Sleep(3000);
@@ -76,10 +76,11 @@ namespace namaichi.rec
 						chaseHokan = null;
 						rec.dsp = null;
 					});
-				}
+				} else return false;
 			} catch (Exception e) {
 				rec.addDebugBuf("drop exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
+			return true;
 		}
 		private void writeNukeInfo(string msg, string fName, int reStartSegmentNo, string hokanMsg) {
 			using (var sw = new StreamWriter(recFolderFileOrigin + "n.txt", true)) {

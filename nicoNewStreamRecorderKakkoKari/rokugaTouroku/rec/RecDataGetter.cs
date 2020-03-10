@@ -29,6 +29,7 @@ namespace rokugaTouroku.rec
 		public RecListManager rlm;
 		
 		//public bool isStop = false;
+		public bool isChangeList = true;
 		
 		public RecDataGetter(RecListManager rlm)
 		{
@@ -62,6 +63,10 @@ namespace rokugaTouroku.rec
 					}
 					util.debugWriteLine(isAllEnd);
 					if (isAllEnd) break;
+					
+					if (isChangeList) rlm.form.saveList();
+					isChangeList = false;
+					
 				} catch (Exception e) {
 					util.debugWriteLine("rdg rec exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
@@ -80,16 +85,25 @@ namespace rokugaTouroku.rec
 			startRecProcess(ri);
 			var r = ri.process.StandardOutput;
 			var w = ri.process.StandardInput;
-			while (!ri.process.HasExited && rlm.rdg == this) {
-				var res = r.ReadLine();
-				if (res == null) break;
-				util.debugWriteLine("res " + res);
-				
-				readResProcess(res, w, ri);
+			try {
+				while (!ri.process.HasExited && rlm.rdg == this) {
+					var res = r.ReadLine();
+					if (res == null) break;
+					util.debugWriteLine("res " + res);
+					
+					readResProcess(res, w, ri);
+				}
+				util.debugWriteLine("recProcess loop end wait mae " + ri.id + " " + ri.state);
+				ri.process.WaitForExit();
+				ri.state = (ri.process.ExitCode == 5) ? "録画完了" : "録画失敗";
+			} catch (Exception e) {
+				util.debugWriteLine("ri " + ri + " ri.process " + (ri.process == null ? null : ri.process));
+				if (ri != null && ri.process != null)
+					util.debugWriteLine(ri.process.HasExited + " " + ri.process.ExitCode);
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				ri.state = "録画終了";
 			}
-			util.debugWriteLine("recProcess loop end wait mae " + ri.id + " " + ri.state);
-			ri.process.WaitForExit();
-			ri.state = (ri.process.ExitCode == 5) ? "録画完了" : "録画失敗";
+			
 			util.debugWriteLine("recProcess loop end wait go " + ri.id + " " + ri.state);
 			row = rlm.recListData.IndexOf(ri);
 			rlm.form.resetBindingList(row);
@@ -152,9 +166,11 @@ namespace rokugaTouroku.rec
 				ri.programTime = util.getRegGroup(res, ":(.*)");
 			if (res.StartsWith("info.keikaTime:")) {
 				ri.keikaTimeStart = DateTime.Parse(util.getRegGroup(res, ":(.*)"));
+			} else isChangeList = true;
+			if (res.StartsWith("info.samuneUrl:")) {
+				ri.samuneUrl = util.getRegGroup(res, ":(.*)");
+				ri.samune = util.getSamune(ri.samuneUrl);
 			}
-			if (res.StartsWith("info.samuneUrl:")) 
-				ri.samune = getSamune(util.getRegGroup(res, ":(.*)"));
 			if (res.StartsWith("info.log:")) {
 				if (ri.log != "") ri.log += "\r\n";
 				ri.log += util.getRegGroup(res, ":(.*)");
@@ -194,25 +210,7 @@ namespace rokugaTouroku.rec
 				}
 			}
 		}
-		private Bitmap getSamune(string url) {
-       		WebClient cl = new WebClient();
-       		cl.Proxy = null;
-			
-       		System.Drawing.Icon icon =  null;
-			try {
-       			util.debugWriteLine("samune url " + url);
-       			byte[] pic = cl.DownloadData(url);
-				
-				var  st = new System.IO.MemoryStream(pic);
-				icon = Icon.FromHandle(new System.Drawing.Bitmap(st).GetHicon());
-				st.Close();
-				
-			} catch (Exception e) {
-				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-				return null;
-			}
-			return icon.ToBitmap();
-		}
+		
 		private int getRecordingNum(int count, BindingSource list) {
 			var c = 0;
 			for (var i = 0; i < count; i++) {

@@ -182,8 +182,8 @@ namespace rokugaTouroku
 			this.recList.Size = new System.Drawing.Size(876, 187);
 			this.recList.TabIndex = 6;
 			this.recList.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.recListCell_MouseDown);
-			this.recList.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.recList_DataError);
 			this.recList.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.recList_FocusRowEnter);
+			this.recList.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.RecListRowsRemoved);
 			this.recList.DragDrop += new System.Windows.Forms.DragEventHandler(this.RecListDragDrop);
 			this.recList.DragEnter += new System.Windows.Forms.DragEventHandler(this.RecListDragEnter);
 			// 
@@ -1000,9 +1000,5 @@ namespace rokugaTouroku
 		private System.Windows.Forms.ToolStripMenuItem 録画フォルダを開くToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem fileMenuItem;
 		private System.Windows.Forms.MenuStrip menuStrip1;
-
-
-		
-		
 	}
 }

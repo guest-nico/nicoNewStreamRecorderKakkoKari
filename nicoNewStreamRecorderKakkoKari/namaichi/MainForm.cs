@@ -67,7 +67,8 @@ namespace namaichi
 			//test
 			//app.form = this;
 			
-			//args = new String[]{"lv321744352"};
+			//args = new String[]{"lv323868848", "-chase", "-ts-end=1m"};
+			//args = new String[]{"lv324583435", "-chase", "-ts-end=1m"};
 			//args = new string[]{"C:\\Users\\zack\\downloads\\a.ts"};
 			//args = "-nowindo -stdIO -IsmessageBox=false -IscloseExit=true lv316762771 -ts-start=1785s -ts-end=0s -ts-list=false -ts-list-m3u8=false -ts-list-update=5 -ts-list-open=false -ts-list-command=\"notepad{i}\" -ts-vpos-starttime=true -afterConvertMode=4 -qualityRank=0,1,2,3,4,5 -IsLogFile=true".Split(' ');
 			//read std

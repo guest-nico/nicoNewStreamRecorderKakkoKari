@@ -156,6 +156,7 @@ public class config
 			{"IsdeleteExit","false"},
 			{"IsgetcommentXml","true"},
 			{"IsCommentConvertSpace","false"},
+			{"IsSaveCommentOnlyRetryingRec","false"},
 			{"IsDisplayComment","true"},
 			{"IstitlebarSamune","true"},
 			{"IsautoFollowComgen","false"},

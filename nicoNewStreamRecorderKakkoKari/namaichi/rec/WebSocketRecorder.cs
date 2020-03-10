@@ -106,6 +106,7 @@ namespace namaichi.rec
 		private List<string> lastSaveComments = new List<string>();
 		private DateTime lastOpenCommentSwDt = DateTime.MinValue;
 		private bool isConvertSpace;
+		private bool isSaveCommentOnlyRetryingRec;
 		
 		public WebSocketRecorder(string[] webSocketInfo, 
 				CookieContainer container, string[] recFolderFile, 
@@ -151,6 +152,7 @@ namespace namaichi.rec
 			this.isSaveComment = isSaveComment;
 			if (isChase && !isSaveComment) isHokan = true;
 			isConvertSpace = bool.Parse(rm.cfg.get("IsCommentConvertSpace"));
+			isSaveCommentOnlyRetryingRec = bool.Parse(rm.cfg.get("IsSaveCommentOnlyRetryingRec"));
 		}
 		public bool start() {
 			addDebugBuf("ws rec start");
@@ -881,7 +883,8 @@ namespace namaichi.rec
 		}
 		private void onWscClose(object sender, EventArgs e) {
 			addDebugBuf("ms onclose");
-			if (rec.engineMode != "0" & rec.engineMode != "3")
+			
+			if (rec != null && rec.engineMode != "0" & rec.engineMode != "3")
 			//    DateTime.Now > lastOpenCommentSwDt + TimeSpan.FromSeconds(3)) return;
 				closeWscProcess();
 			wsc = null;
@@ -980,6 +983,8 @@ namespace namaichi.rec
 			if (chatinfo.root == "thread" && lastSaveComments.Count == 0) {
 				serverTime = chatinfo.serverTime;
 				ticket = chatinfo.ticket;
+				//数秒過去の動画も取得できることを考慮
+				serverTime -= isRealtimeChase ? 20 : 3;
 			}
 			
 			addDebugBuf("wsc message " + ws);
@@ -1007,9 +1012,11 @@ namespace namaichi.rec
 //							chaseCommentSum();
 					} else {
 						if (lastSaveComments.IndexOf(writeStr) == -1 &&
-						    !(lastSaveComments.Count > 0 && chatinfo.root == "thread")) {
-							commentSW.WriteLine(writeStr);
-							commentSW.Flush();
+						    	!(lastSaveComments.Count > 0 && chatinfo.root == "thread")) {
+							if (!isSaveCommentOnlyRetryingRec || (rec == null || DateTime.Now - rec.lastWroteSegmentDt < TimeSpan.FromSeconds(10))) {
+								commentSW.WriteLine(writeStr);
+								commentSW.Flush();
+							}
 						}
 						lastSaveComments.Add(writeStr);
 						if (lastSaveComments.Count > 12)
@@ -1020,6 +1027,7 @@ namespace namaichi.rec
 				}
            
 			} catch (Exception ee) {addDebugBuf("comment write exception " + ee.Message + " " + ee.StackTrace);}
+			
 			
 			//if (!isTimeShift)
 				addDisplayComment(chatinfo);
@@ -1456,7 +1464,6 @@ namespace namaichi.rec
 			
 			try {
 				for (var i = 0; i < gotComList.Count; i++) {
-					//c.IndexOf(thread
 					commentSW.WriteLine(gotComList[i]);
 				}
 				//commentSW.WriteLine("aaaaa");

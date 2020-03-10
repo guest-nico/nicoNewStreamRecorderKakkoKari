@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Drawing;
 using rokugaTouroku.config;
 using rokugaTouroku.info;
 
@@ -21,8 +22,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.10.16";
-	public static string versionDayStr = "2020/02/24";
+	public static string versionStr = "ver0.1.3.10.19";
+	public static string versionDayStr = "2020/03/10";
 	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);
@@ -774,5 +775,25 @@ class util {
 			}
 			util.isLogFile = true;
 		}
+	}
+	public static Bitmap getSamune(string url) {
+   		WebClient cl = new WebClient();
+   		cl.Proxy = null;
+		
+   		System.Drawing.Icon icon =  null;
+		try {
+   			util.debugWriteLine("samune url " + url);
+   			byte[] pic = cl.DownloadData(url);
+			
+   			using (var  st = new System.IO.MemoryStream(pic)) {
+				icon = Icon.FromHandle(new System.Drawing.Bitmap(st).GetHicon());
+   			}
+			//st.Close();
+			
+		} catch (Exception e) {
+			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+			return null;
+		}
+		return icon.ToBitmap();
 	}
 }

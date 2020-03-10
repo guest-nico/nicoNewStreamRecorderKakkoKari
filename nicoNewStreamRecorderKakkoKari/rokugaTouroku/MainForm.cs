@@ -167,8 +167,10 @@ namespace rokugaTouroku
 		}
 		void addListBtn_Click(object sender, EventArgs e)
 		{
-			if (rec.add(urlText.Text))
+			if (rec.add(urlText.Text)) {
 				urlText.Text = "";
+				saveList();
+			}
 			urlText.Focus();
 			//var b = new info.TimeShiftConfig(0,1,2,3,true);
 			//var g = new RecInfo("id", "title", "host", "comname", "start", "end", "proTime", "url", "comurl", "des", "0,1,2", b);
@@ -501,6 +503,7 @@ namespace rokugaTouroku
 		private void displayKeikaTime(RecInfo ri) {
 			this.Invoke((MethodInvoker) delegate() {
 				keikaTimeLabel.Text = "";
+				keikaTimeLabel.Text = ri.keikaTime;
 			});
 			while (ri == displayingRi && (ri.state == "録画中" || ri.state == "待機中")) {
 				if (ri.keikaTimeStart == DateTime.MinValue) {
@@ -510,6 +513,7 @@ namespace rokugaTouroku
 				var keikaDt = DateTime.Now - ri.keikaTimeStart;
 				this.Invoke((MethodInvoker) delegate() {
 					keikaTimeLabel.Text = keikaDt.ToString("h'時間'mm'分'ss'秒'");
+					ri.keikaTime = keikaTimeLabel.Text;
 				});
 				Thread.Sleep(500);
 			}
@@ -549,6 +553,7 @@ namespace rokugaTouroku
 				util.debugWriteLine(r);
 				rec.add(r);
 			}
+			saveList();
 		}
 		
 		void urlListSaveMenu_Click(object sender, EventArgs e)
@@ -571,6 +576,7 @@ namespace rokugaTouroku
 			try {
 				var url = e.Data.GetData(DataFormats.Text).ToString();
 				rec.add(url);
+				saveList();
 			} catch (Exception ee) {
 				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
@@ -625,31 +631,51 @@ namespace rokugaTouroku
 				sr.Close();
 				var list = JsonConvert.DeserializeObject<List<RecInfo>>(s);
 				foreach (var l in list) {
-					
+					if (l.state == "録画中") l.state = "録画失敗";
+					if (l.samuneUrl != null) l.samune = util.getSamune(l.samuneUrl);
+					//if (l.sa
 					addList(l);
 				}
+				//Task.Run(() => {
+		        // 	foreach (var l in list) l.setHosoInfo(this);
+		        // });
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
 		}
-		private void saveList() {
+		public void saveList() {
 			try {
 				var list = new List<RecInfo>();
 				foreach (RecInfo ri in recListDataSource) {
-					ri.samune = null;
-					ri.process = null;
-					ri.rdg = null;
-					list.Add((RecInfo)ri);
+					var _ri = new RecInfo(ri.id, ri.url, ri.rdg, ri.afterConvertType, ri.tsConfig, ri.timeShift, ri.quality, ri.qualityRank, ri.recComment);
+					_ri.samune = null;
+					_ri.process = null;
+					_ri.rdg = null;
+					_ri.title = ri.title;
+					_ri.state = ri.state;
+					_ri.host = ri.host;
+					_ri.communityName = ri.communityName;
+					_ri.startTime = ri.startTime;
+					//_ri.keikaTime = ri.keikaTime;
+					_ri.keikaTimeStart = ri.keikaTimeStart;
+					_ri.endTime = ri.endTime;
+					_ri.programTime = ri.programTime;
+					_ri.communityUrl = ri.communityUrl;
+					_ri.description = ri.description;
+					_ri.log = ri.log;
+					_ri.samuneUrl = ri.samuneUrl;
+					list.Add(_ri);
 				}
 				var json = JToken.FromObject(list).ToString(Formatting.None);
-				var f = util.getJarPath()[0] + "/recList.ini";
+				var f = util.getJarPath()[0] + "/recList.ini_";
 				var sw = new StreamWriter(f, false);
 				sw.Write(json);
 				sw.Close();
+				File.Copy(f, f.Substring(0, f.Length - 1), true);
+				File.Delete(f);
+				
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
-				var a = 0;
-				util.debugWriteLine(a);
 			}
 		}
 		void UpdateMenuClick(object sender, EventArgs e)
@@ -701,5 +727,10 @@ namespace rokugaTouroku
 			util.debugWriteLine(c.Name + " " + ret.Count);
 			return ret;
 		}
+		void RecListRowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
+		{
+			saveList();
+		}
+		
 	}
 }

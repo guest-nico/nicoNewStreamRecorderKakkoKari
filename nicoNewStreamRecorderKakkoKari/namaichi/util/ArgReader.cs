@@ -47,8 +47,12 @@ namespace namaichi.utility
 			setArgConfig();
 			util.debugWriteLine("args " + args.Length + " " + string.Join(" ", args));
 			foreach(var a in argConfig) util.debugWriteLine(a.Key + " " + a.Value);
-			isPlayMode = Array.IndexOf(args, "-play") > -1;
-			if (Array.IndexOf(args, "-chase") > -1) form.isChaseChkBtn.Checked = true;
+			
+			foreach (var arg in args) {
+				var _a = arg.ToLower();
+				if (_a == "-play") isPlayMode = true;
+				if (_a == "-chase") form.isChaseChkBtn.Checked = true;
+			}
 		}
 		private bool isAllPath() {
 			var isAllPath = true;
@@ -320,19 +324,19 @@ namespace namaichi.utility
 						return false;;
 					}
 				}
-				/*
-				if (lowKeys[i] == "ischase") {
-					if (val.ToLower() == "true" || val.ToLower() == "false") {
-						setName = "IsChase";
+				if (lowKeys[i] == "soundvolume") {
+					int _s = 0;
+					if (int.TryParse(val, out _s)) {
+						if (_s < 0) val = "0";
+						if (_s > 100) val = "100";
 						setVal = val;
-						form.isChaseChkBtn.Checked = bool.Parse(val);
+						setName = keys[i];
 						return true;
-				   	} else {
-						form.addLogText(name + "の値が設定できませんでした(true or false) " + val, false);
-						return false;;
+					} else {
+						form.addLogText(name + "の値が設定できませんでした(0から100の整数) " + val, false);
+						return false;
 					}
 				}
-				*/
 				setName = keys[i];
 				setVal = val;
 				return true;

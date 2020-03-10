@@ -36,7 +36,7 @@ namespace namaichi.rec
 		private string lvid;
 		private long _openTime;
 		private int lastSegmentNo = -1;
-		private DateTime lastWroteSegmentDt = DateTime.MinValue;
+		public DateTime lastWroteSegmentDt = DateTime.MinValue;
 		private int lastAccessingSegmentNo;
 		private CookieContainer container;
 		private int segmentSaveType = 0;
@@ -46,7 +46,7 @@ namespace namaichi.rec
 		private List<string> recordedNo = new List<string>();
 		private string baseUrl;
 		private IRecorderProcess wr;
-		private bool isReConnecting = false;
+		public bool isReConnecting = false;
 		public bool isRetry = true;
 		private bool isEnd = false;
 		private string hlsSegM3uUrl;
@@ -349,7 +349,7 @@ namespace namaichi.rec
 					}
 					//util.debugWriteLine("sleep mae");
 					addDebugBuf("sleep mae");
-					Thread.Sleep((int)(targetDuration * 500));
+					Thread.Sleep((int)(targetDuration * 1000));
 					//util.debugWriteLine("targetduration " + targetDuration);
 					addDebugBuf("targetduration " + targetDuration);
 				} catch (Exception e) {
@@ -374,7 +374,6 @@ namespace namaichi.rec
 						break;
 					}
 					
-	
 					foreach (var _s in new List<string>(segM3u8List)) {
 	//					var sss = new List<string>(segM3u8List);
 						if (_s == null) continue;
@@ -433,7 +432,8 @@ namespace namaichi.rec
 									//util.debugWriteLine(no + " " + fileName);
 									
 									var nti = new numTaskInfo(no + baseNo, url, second, fileName, startTime, no);
-	//								var t = Task.Run(() => getFileBytesNti(nti));
+									//var t = Task.Run(() => getFileBytesNti(nti));
+	
 									var r = getFileBytesNti(nti);
 									if (r == null) segM3u8List.Clear();
 									else getFileBytesTasks.Add(r);
@@ -483,6 +483,9 @@ namespace namaichi.rec
 					}
 	//				segM3u8List.Clear();
 					Thread.Sleep(300);
+					
+					
+					
 				} catch (Exception e) {
 					addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
 					rm.form.addLogText(e.Message + e.Source + e.StackTrace + e.TargetSite);
@@ -1598,7 +1601,7 @@ namespace namaichi.rec
 		private void dropSegmentProcess(numTaskInfo s, DateTime _lastWroteSegmentDt, int _lastSegmentNo) {
 			if (dsp == null) {
 				dsp = new DropSegmentProcess(_lastWroteSegmentDt, _lastSegmentNo, this, recFolderFileOrigin, rfu, rm, h5r);
-				dsp.start(s);
+				if (!dsp.start(s)) dsp = null;
 				//dsp = null;
 			} else dsp.updateHokanEndtime();
 		}
