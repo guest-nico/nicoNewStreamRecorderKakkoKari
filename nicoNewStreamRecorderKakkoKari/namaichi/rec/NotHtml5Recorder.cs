@@ -222,7 +222,7 @@ namespace namaichi.rec
 	}
 	class NotHtmlCommentGetter {
 		private string[] messageInfo;
-		private bool isAlive = true;
+		//private bool isAlive = true;
 		private RecordingManager rm;
 		private RecordFromUrl rfu;
 		private string[] recFolderFileInfo;
@@ -274,7 +274,7 @@ namespace namaichi.rec
 		}
 		public void close() {
 	//		gui.addLogText(isAlive + " " + gui.recBtn.getText());
-			isAlive = false;
+			//isAlive = false;
 		}
 	}
 }

@@ -217,9 +217,9 @@ namespace namaichi.rec
 		*/
 		private string[] getOkFileName() {
 			//var ext = (rfu.isSubAccountHokan) ? ".ts" : ".flv";
-			var ext = ".flv";
-			ext = ".ts";
-			ext = "";
+			//var ext = ".flv";
+			//ext = ".ts";
+			//ext = "";
 			var files = Directory.GetFiles(Directory.GetParent(recFolderFileOrigin).FullName);
 			var dirs = Directory.GetDirectories(Directory.GetParent(recFolderFileOrigin).FullName);
 			for (var i = 0; i < 1000; i++) {
@@ -244,7 +244,8 @@ namespace namaichi.rec
 					var ret = l.Count;
 					return ret;
 				} catch (Exception e) {
-					
+					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+					Thread.Sleep(1000);
 				}
 			}
 		}

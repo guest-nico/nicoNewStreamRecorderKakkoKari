@@ -24,7 +24,7 @@ namespace namaichi.rec
 	/// </summary>
 	public class TimeShiftCommentGetter_xml
 	{
-		string uri;
+		//string uri;
 		string thread;
 		string userId;
 		MainForm form;
@@ -34,7 +34,7 @@ namespace namaichi.rec
 		long _openTime = 0;
 		string recFolderFile;
 		string lvid;
-		string programType;
+		string programType = null;
 		int startSecond;
 		CookieContainer container;
 		string ticket;
@@ -50,9 +50,9 @@ namespace namaichi.rec
 		bool isGetXml;
 		List<string> gotCommentList = new List<string>();
 		
-		private StreamWriter commentSW;
+		//private StreamWriter commentSW;
 		private string fileName;
-		bool isSave = true;
+		//bool isSave = true;
 		bool isRetry = true;
 		public bool isEnd = false;
 		public WebSocketRecorder rp;
@@ -184,7 +184,7 @@ namespace namaichi.rec
 				var lastGotCommentListCount = 0;
 				
 				while (isRetry) {
-					isSave = true;
+					//isSave = true;
 //					setStreamWriter();
 					
 					var tcp = new TcpClient(address, int.Parse(port));
@@ -206,7 +206,7 @@ namespace namaichi.rec
 					while (rm.rfu == rfu && isRetry && !isNextRequest) {
 						var bList = new List<byte>();
 						int i = -1;
-						var isBreak = false;
+						//var isBreak = false;
 						while (i != 0) {
 							try {
 								i = stream.Read(b, 0, b.Length);
@@ -214,10 +214,11 @@ namespace namaichi.rec
 									bList.Add(b[_i]);
 							} catch (Exception e) {
 								util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
-								isBreak = true;
+								//isBreak = true;
 //								continue;
 								break;
 							}
+							System.Threading.Thread.Sleep(1000);
 						}
 //						if (isBreak) break;
 						
@@ -366,7 +367,7 @@ namespace namaichi.rec
 			}
 			
 			if (chatXml.ToString().Equals(gotMinXml[1])) {
-				isSave = false;
+				//isSave = false;
 			}
 			if (chatinfo.root == "chat" && (chatinfo.date >= lastGotMinTime || chatinfo.vpos >= lastGotMinVpos)) {
 //				return true;

@@ -163,6 +163,7 @@ namespace namaichi.rec
 					return f;
 					//return w;
 				} catch (Exception e) {
+					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 					try {
 						if (lvid != null) f = dir + "/" + lvid + "_" + i + ".ts";
 						if (File.Exists(f) || Directory.Exists(f)) continue;
@@ -172,6 +173,7 @@ namespace namaichi.rec
 						//var w = new FileStream(f, FileMode.Append, FileAccess.Write);
 						//return w;
 					} catch (Exception ee) {
+						util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 						try {
 							f = dir + "/out_" + i + ".ts";
 							if (File.Exists(f) || Directory.Exists(f)) continue;

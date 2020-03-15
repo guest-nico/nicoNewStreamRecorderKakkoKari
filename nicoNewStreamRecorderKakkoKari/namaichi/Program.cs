@@ -75,7 +75,8 @@ namespace namaichi
 			var frameCount = 0;
 			try {
 				frameCount = new System.Diagnostics.StackTrace().FrameCount;
-			} catch (StackOverflowException ee) {
+			} catch (StackOverflowException) {
+				//エラーのログを書き込むときにエラーが出た場合はそれ以上ログを書き込まないように
 				return;
 			}
 			#if DEBUG

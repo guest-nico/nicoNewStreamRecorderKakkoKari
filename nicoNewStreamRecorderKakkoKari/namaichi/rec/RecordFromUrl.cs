@@ -374,7 +374,7 @@ namespace namaichi.rec
 		//			req.Headers = getheaders;
 					req.Referer = "https://live.nicovideo.jp/gate/" + lvid;
 					//var ccInd = (isSub) ? 1 : 0;
-					var ccInd = 0;
+					//var ccInd = 0;
 					cc.Add(TargetUrl, new Cookie("_gali", "box" + lvid));
 					if (cc != null) req.CookieContainer = cc;
 					using (var _res = (HttpWebResponse)req.GetResponse())

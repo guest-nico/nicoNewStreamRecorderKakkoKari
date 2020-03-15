@@ -16,7 +16,7 @@ namespace namaichi.utility
 	/// </summary>
 	public class RegGetter
 	{
-		private Regex resStreamDuration;
+		//private Regex resStreamDuration;
 		private Regex extXTargetDuration;
 		private Regex _extXTargetDuration;
 		private Regex extInf;

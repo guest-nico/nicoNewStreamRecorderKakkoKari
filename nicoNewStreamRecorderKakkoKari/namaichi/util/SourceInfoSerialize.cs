@@ -51,7 +51,7 @@ public class SourceInfoSerialize
 			var uri = (isSub) ? (jarPath[0] + "\\" + jarPath[1] + "0.xml") :
 				(jarPath[0] + "\\" + jarPath[1] + ".xml");
 			x.Load(uri);
-		} catch (Exception e) {
+		} catch (Exception) {
 			return null;
 		}
 		foreach (System.Xml.XmlNode n in x.LastChild.ChildNodes) {

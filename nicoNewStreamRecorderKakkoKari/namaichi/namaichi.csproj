@@ -83,9 +83,8 @@
     <Reference Include="RtmpSharp2">
       <HintPath>..\packages\RtmpSharp2.dll</HintPath>
     </Reference>
-    <Reference Include="SnkLib.App.CookieGetter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SnkLib.App.CookieGetter">
       <HintPath>..\packages\SnkLib.App.CookieGetter.2.3.1.0\lib\net45\SnkLib.App.CookieGetter.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="SnkLib.App.CookieGetter.Forms, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SnkLib.App.CookieGetter.Forms.1.4.0.0\lib\net45\SnkLib.App.CookieGetter.Forms.dll</HintPath>

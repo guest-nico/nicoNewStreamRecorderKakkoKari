@@ -131,7 +131,6 @@ namespace namaichi
 			//onReconnectButtonArea = true;
 			reconnectOnBtn.BringToFront();
 			reconnectTip.Visible = true;
-			var a = 0;
 		}
 		void reconnectButton_MouseLeave(object sender, System.EventArgs _e)
 		{

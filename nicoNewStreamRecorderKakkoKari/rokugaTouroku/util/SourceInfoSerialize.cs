@@ -50,7 +50,7 @@ public class SourceInfoSerialize
 			var uri = (isSub) ? (jarPath[0] + "\\ニコ生新配信録画ツール（仮0.xml") :
 				(jarPath[0] + "\\ニコ生新配信録画ツール（仮.xml");
 			x.Load(uri);
-		} catch (Exception e) {
+		} catch (Exception) {
 			return null;
 		}
 		foreach (System.Xml.XmlNode n in x.LastChild.ChildNodes) {

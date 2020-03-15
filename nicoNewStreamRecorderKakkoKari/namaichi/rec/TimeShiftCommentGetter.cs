@@ -20,7 +20,7 @@ using Newtonsoft.Json;
 using System.Threading;
 using System.Drawing;
 using System.Xml;
-using System.Text.RegularExpressions;
+//using System.Text.RegularExpressions;
 using namaichi.info;
 
 namespace namaichi.rec
@@ -53,7 +53,7 @@ namespace namaichi.rec
 		bool isGetXml;
 		List<GotCommentInfo> gotCommentList = new List<GotCommentInfo>();
 		
-		private StreamWriter commentSW;
+		//private StreamWriter commentSW;
 		private string fileName;
 		WebSocket wsc = null;
 		bool isSave = true;

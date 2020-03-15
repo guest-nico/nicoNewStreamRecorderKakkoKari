@@ -226,18 +226,18 @@ namespace namaichi
 		
 		async void commentSendButtonPane_Clickl(object sender, EventArgs e)
 		{
-			commentSend();
+			await commentSend();
 		}
-		void commentSend() {
+		async Task commentSend() {
 			if (commentText.Text == "" || !commentText.Focused) return;
-			Task.Run(() => {
+			await Task.Run(() => {
 			    Invoke((MethodInvoker)delegate() {
 		         	commentButtonPanel.BackColor = Color.FromArgb(115, 179, 242);
 		         	Thread.Sleep(100);
 		         	commentButtonPanel.BackColor = Color.FromArgb(0, 128, 255);
 				});
 			});
-			Task.Run(() => {
+			await Task.Run(() => {
 				form.rec.wsr.sendComment(commentText.Text, is184ChkBox.Checked);
 				
 				Invoke((MethodInvoker)delegate() {
@@ -245,9 +245,9 @@ namespace namaichi
 				});
 			});
 		}
-		private void secretCommentSendBtn_Click(object sender, EventArgs e)
+		async private void secretCommentSendBtn_Click(object sender, EventArgs e)
 		{
-			commentSend();
+			await commentSend();
 		}
 		public void setTime(int h, int m, int s) {
 			nowVpos = (h * 3600 + m * 60 + s) * 100;

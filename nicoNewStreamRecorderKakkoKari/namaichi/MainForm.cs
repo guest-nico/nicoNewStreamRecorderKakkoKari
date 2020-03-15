@@ -14,21 +14,21 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using System.ComponentModel;
 using SunokoLibrary.Application;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
+//using System;
+//using System.Collections.Generic;
+//using System.ComponentModel;
+//using System.Data;
+//using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+//using System.Windows.Forms;
 using System.Configuration;
 using System.IO;
-using System.Text;
+//using System.Text;
 using System.Threading;
 using System.Security.AccessControl;
 using namaichi.rec;
@@ -49,11 +49,10 @@ namespace namaichi
 		
 		
 		public rec.RecordingManager rec;
-		private bool isInitRun = true;
+		//private bool isInitRun = true;
 		private namaichi.config.config config = new namaichi.config.config();
 		public string[] args;
 		private play.Player player;
-		private string labelUrl;
 		private Thread madeThread;
 		private Size originalSize = Size.Empty;
 		private Icon defIcon;
@@ -260,42 +259,6 @@ namespace namaichi
 			});
 			return;
 			
-       		if (!util.isShowWindow) return;
-       		try {
-	       		if (this.IsDisposed) return;
-	       		if (!this.IsHandleCreated) return;
-	       		if (isInvoke) {
-		        	this.Invoke((MethodInvoker)delegate() {
-		       		       	try {
-				        	    string _t = "";
-						    	if (logText.Text.Length != 0) _t += "\r\n";
-						    	_t += t;
-						    	
-					    		logText.AppendText(_t);
-								if (logText.Text.Length > 200000) 
-									logText.Text = logText.Text.Substring(logText.TextLength - 10000);
-		       		       	} catch (Exception e) {
-		       		       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-		       		       	}
-		
-					});
-	       		} else {
-	       			try {
-		        	    string _t = "";
-				    	if (logText.Text.Length != 0) _t += "\r\n";
-				    	_t += t;
-				    	
-			    		logText.AppendText(_t);
-						if (logText.Text.Length > 20000) 
-							logText.Text = logText.Text.Substring(logText.TextLength - 10000);
-	   		       	} catch (Exception e) {
-	   		       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-	   		       	}
-	       		}
-	       	} catch (Exception e) {
-	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-	       	}
-       		
 		}
         public void addLogTextTest(string t) {
        		addLogText(t);
@@ -321,7 +284,6 @@ namespace namaichi
 	       	} catch (Exception e) {
        			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 	       	}
-       		//util.debugWriteLine("setRecordState ok");
 		}
        public void setRecordStateComplete() {
        		if (!util.isShowWindow) return;
@@ -364,7 +326,7 @@ namespace namaichi
 
             }
 			
-			isInitRun = false;
+			//isInitRun = false;
         }
 		public void setInfo(string host, string hostUrl, 
         		string group, string groupUrl, string title, string url, 
@@ -834,10 +796,8 @@ namespace namaichi
 				}
 			}
 			return true;
-					
-					
 			
-			
+			/*
 			var dir = util.getJarPath();
 			var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
 			var security = Directory.GetAccessControl(dir[0]).GetAccessRules(true, true, typeof(System.Security.Principal.NTAccount));
@@ -863,20 +823,11 @@ namespace namaichi
 							return false;
 					//else return false;
 					
-					/*
-					if ((s.FileSystemRights & FileSystemRights.CreateFiles) != 0 &&
-					    (s.FileSystemRights & FileSystemRights.Delete) != 0 &&
-					    (s.FileSystemRights & FileSystemRights.AppendData) != 0 &&
-					    (s.FileSystemRights & FileSystemRights.CreateDirectories) != 0 &&
-					    (s.FileSystemRights & FileSystemRights.WriteData) != 0) {
-						return true;
-					} else return false;
-					*/
 				}
 				
 			}
 			return true;
-			
+			*/
 		}
 		public void addLogTextDebug(string s) {
 			//addLogText(s, true);

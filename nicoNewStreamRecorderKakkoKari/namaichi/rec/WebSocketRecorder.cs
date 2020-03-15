@@ -93,7 +93,7 @@ namespace namaichi.rec
 //		private string commentHead = null;
 		private string engineMode = null;
 		
-		private bool isXmlComment = true;
+		//private bool isXmlComment = true;
 		private XmlCommentGetter_ontime xcg = null;
 		private TimeShiftCommentGetter_xml tscgx = null;
 		private bool isRtmpOnlyPage = false;
@@ -157,7 +157,7 @@ namespace namaichi.rec
 		public bool start() {
 			addDebugBuf("ws rec start");
 			
-			isXmlComment = false;
+			//isXmlComment = false;
 			tsWriterTask = Task.Run(() => {startDebugWriter();});
 			
 //			connect(webSocketInfo[0]);

@@ -83,13 +83,14 @@ namespace namaichi.rec
 						return null;
 					}
 				} else if (pageType == 2 || pageType == 3) {
+					/*
 					if (false && _res.IndexOf("<div style=\"font-weight:bold;\">※この放送はタイムシフトに対応しておりません。</div>") > -1) {
 						util.debugWriteLine(_res);
 						rm.form.addLogText("タイムシフトを取得できませんでした");
 						rm.form.addLogText("録画を終了します");
 						return null;
 					}
-					
+					*/
 					#if DEBUG
 						rm.form.addLogText("pagetype " + pageType);
 						var url = "http://live.nicovideo.jp/api/getplayerstatus?v=" + lvid;

@@ -45,7 +45,7 @@ namespace namaichi.rec
 		}
 		private bool join(string comId, CookieContainer cc, MainForm form, config.config cfg) {
 			for (int i = 0; i < 5; i++) {
-				var myPageUrl = "https://www.nicovideo.jp/my";
+				//var myPageUrl = "https://www.nicovideo.jp/my";
 				var comUrl = "https://com.nicovideo.jp/community/" + comId; 
 				var url = "https://com.nicovideo.jp/motion/" + comId;
 				var headers = new WebHeaderCollection();
@@ -78,6 +78,7 @@ namespace namaichi.rec
 					
 					if (!isJidouShounin) return false;
 				} catch (Exception e) {
+					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 					return false;
 				}
 				

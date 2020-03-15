@@ -26,7 +26,7 @@ namespace namaichi.rec
 	/// </summary>
 	public class RtmpRecorder
 	{
-		private string getPlayerStatusRes;
+		//private string getPlayerStatusRes;
 		private string lvid;
 		private CookieContainer container;
 //		/private config.config cfg;
@@ -53,7 +53,7 @@ namespace namaichi.rec
 		private int tsRecordNum = 0;
 		
 		private string rtmpUrl;
-		private string que;
+		//private string que;
 		private string ticket;
 		
 		public List<string> fileNameList = null;
@@ -719,8 +719,8 @@ namespace namaichi.rec
 //					Debug.WriteLine("rtmpdump " + i);
 //					if (rm.isPlayOnlyMode) continue;
 					
-					if (i == null || i == 0) {
-						util.debugWriteLine("rtmpdump read i " + ((i == null) ? "null" : " get 0"));
+					if (i == 0) {
+						util.debugWriteLine("rtmpdump read i " + (" get 0"));
 					}
 					
 					var bb = b.CloneRange(0, i);

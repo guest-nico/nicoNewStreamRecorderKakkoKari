@@ -23,7 +23,7 @@ namespace rokugaTouroku.Logger
 			try {
 				var dt = DateTime.Now.ToLongTimeString();
 				base.WriteLine(dt + " " + msg);
-			} catch (Exception e) {
+			} catch (Exception) {
 				
 //				util.debugWriteLine("trace listner exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}

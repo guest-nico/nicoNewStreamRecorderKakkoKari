@@ -41,6 +41,20 @@ namespace rokugaTouroku.rec
 			var url = "";
 			if (lvid != null) {
 				url = "https://live2.nicovideo.jp/watch/" + lvid;
+				
+				while (true) {
+					try {
+						RecInfo containObject = null;
+						foreach (RecInfo d in recListData)
+							if (d.id == lvid) containObject = d;
+						if (containObject != null) {
+							if (MessageBox.Show(lvid + "はリスト内に含まれています。既にある行を削除して登録しますか？", "確認", MessageBoxButtons.YesNo) == DialogResult.Yes) {
+								if (!form.deleteRow(containObject))
+									return false;
+							} else return false;
+						} else break;
+					} catch (Exception){}
+				}
 			}
 //				if (lvid != null) form.urlText.Text = "https://cas.nicovideo.jp/user/77252622/lv313508832";
 				

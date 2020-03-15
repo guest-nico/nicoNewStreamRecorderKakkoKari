@@ -191,6 +191,7 @@ namespace rokugaTouroku.rec
 				    rlm.recListData[rlm.form.recList.SelectedCells[0].RowIndex] == ri) 
 					rlm.form.displayRiInfo(ri, ctrl, val);
 			} catch (ArgumentOutOfRangeException e) {
+				util.debugWriteLine(e.Message + e.ParamName + e.StackTrace + e.TargetSite);
 				util.debugWriteLine("exception ok インデックスが範囲を超えています。負でない値で、コレクションのサイズよりも小さくなければなりません。");
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);

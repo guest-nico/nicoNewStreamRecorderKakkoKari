@@ -19,11 +19,11 @@ namespace namaichi
 	/// </summary>
 	public partial class placeHolderText : TextBox
 	{
-		string placeHolder = "コメント（75文字以内）";
-		bool isNowDisplay = true;
-		bool isFirst = true;
-		bool isNowIMEComposition = false;
-		bool isExistIMEChar = false;
+		//string placeHolder = "コメント（75文字以内）";
+		//bool isNowDisplay = true;
+		//bool isFirst = true;
+		//bool isNowIMEComposition = false;
+		//bool isExistIMEChar = false;
 		public placeTextBox5 placeText;
 		IntPtr placeTextBoxHwnd = IntPtr.Zero;
 		
@@ -54,16 +54,16 @@ namespace namaichi
 		}
 		protected override void WndProc(ref Message m) {
 			
-	        
+	        /*
 	        const int WM_PAINT = 0x000F;
 	        var WM_IME_COMPOSITION = 0x10F;
 	        var WM_IME_STARTCOMPOSITION = 269;
 	        var WM_IME_ENDCOMPOSITION = 270;
-	        var WM_ERASEBKGND = 20;
+	        //var WM_ERASEBKGND = 20;
 	        var WM_CHAR = 258;
-	        var WM_PASTE = 770;
 	        var WM_IME_CHAR = 646;
-	
+			*/
+			var WM_PASTE = 770;
 //	        System.Diagnostics.Debug.WriteLine(DateTime.Now + " " + m.Msg);
 	        
 	        if (placeTextBoxHwnd == IntPtr.Zero && placeText != null &&
@@ -83,7 +83,8 @@ namespace namaichi
 	        base.WndProc(ref m);
 	        return;
 	        
-//		        if (m.Msg == WM_PAINT)
+	        /*
+	        //if (m.Msg == WM_PAINT)
 	        if (m.Msg == WM_IME_STARTCOMPOSITION || 
 	           m.Msg == WM_PASTE) {
 	        	clearPlaceHolder();
@@ -123,7 +124,7 @@ namespace namaichi
 	        	}
 	        	return;
 	        }
-	        */
+	        *
 	        //System.Diagnostics.Debug.WriteLine(DateTime.Now.ToString() + " " + m.Msg + " " + isNowDisplay);
 	        if (m.Msg == WM_PAINT && Text == "" && true)
 	        {
@@ -150,13 +151,14 @@ namespace namaichi
 	                TextRenderer.DrawText(g, placeHolder, this.Font,
 	                                      rect, Color.FromArgb(118, 118, 118), TextFormatFlags.Top | TextFormatFlags.Left);
 	            }
-	            */
+	            *
 	        } else if (m.Msg == WM_IME_COMPOSITION) {
 	        	//if (isNowDisplay) 
 	        	//	clearPlaceHolder();
 	        		//System.Diagnostics.Debug.WriteLine("ime");
 	        }
 	        base.WndProc(ref m);
+	        */
 	    }
 		string lastText = "";
 		void onTextChanged(object sender, EventArgs e) {
@@ -183,13 +185,13 @@ namespace namaichi
 //			if (Text == "") displayPlaceHolder();
 		}
 		public void displayPlaceHolder() {
-			isNowDisplay = true;
+			//isNowDisplay = true;
 			Width = 1;
 			
 		}
 		private void clearPlaceHolder() {
 			Width = 371;
-			isNowDisplay = false;
+			//isNowDisplay = false;
 		}
 	}
 

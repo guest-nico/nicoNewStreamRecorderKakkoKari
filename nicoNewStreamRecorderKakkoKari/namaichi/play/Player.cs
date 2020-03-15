@@ -329,8 +329,8 @@ namespace namaichi.play
 				
 	//			var f = new FileStream("aa.ts", FileMode.Create);
 				var head = new byte[16*16];
-				var isFirst = true;
-				var cc = 0;
+				//var isFirst = true;
+				//var cc = 0;
 				
 				var d = DateTime.Now;
 //				Task.Run(() => readFfmpeg(ffmpegP));

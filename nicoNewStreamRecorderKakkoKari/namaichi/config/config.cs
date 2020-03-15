@@ -115,7 +115,7 @@ public class config
 			if (argConfig.ContainsKey(key)) 
 				return argConfig[key];
 			return cfg.AppSettings.Settings[key].Value;
-		} catch (Exception e) {
+		} catch (Exception) {
 			return null;
 		}
 	}

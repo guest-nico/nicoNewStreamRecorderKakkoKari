@@ -238,8 +238,6 @@ namespace rokugaTouroku
 			var ri = (RecInfo)recListDataSource[e.RowIndex];
 			
 			displayRiInfo(ri);
-			
-			var i = 0;
 		}
 		void setTimeshiftBtn_Click(object sender, System.EventArgs e)
 		{
@@ -440,22 +438,25 @@ namespace rokugaTouroku
 			if (recList.SelectedCells.Count == 0) return;
 			var selectedCell = recList.SelectedCells[0];
 			var ri = (RecInfo)recListDataSource[selectedCell.RowIndex];
+			deleteRow(ri);
+		}
+		public bool deleteRow(RecInfo ri) {
 			if (ri.state == "録画中") {
 				//MessageBox.Show("録画中は登録できません", "", MessageBoxButtons.OK, MessageBoxIcon.None);
 				
 				DialogResult res = MessageBox.Show("録画中ですが中断しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-				if (res == DialogResult.No) return;
+				if (res == DialogResult.No) return false;
 				try {
 					ri.process.Kill();
 				} catch (Exception ee) {
 					util.debugWriteLine("reAdd kill exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 				}
 			}
-			recListDataSource.Remove(selectedCell.RowIndex);
-			recList.Rows.RemoveAt(selectedCell.RowIndex);
+			recListDataSource.Remove(ri);
+			//recList.Rows.RemoveAt(selectedCell.RowIndex);
 			//resetBindingList(selectedCell.RowIndex);
+			return true;
 		}
-		
 		void form_Load(object sender, EventArgs e)
 		{
 			if (config.brokenCopyFile != null)
@@ -480,7 +481,6 @@ namespace rokugaTouroku
 		void recList_DataError(object sender, DataGridViewDataErrorEventArgs e)
 		{
 //			util.showException(e, false);
-			var a = 0;
 		}
 		public int getRecListCount() {
 			var ret = 0;
@@ -517,7 +517,6 @@ namespace rokugaTouroku
 				});
 				Thread.Sleep(500);
 			}
-			var i = 0;
 		}
 		void setConvertList(int afterConvertMode) {
 			var t = "処理しない";
@@ -673,6 +672,7 @@ namespace rokugaTouroku
 				sw.Close();
 				File.Copy(f, f.Substring(0, f.Length - 1), true);
 				File.Delete(f);
+				
 				
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);

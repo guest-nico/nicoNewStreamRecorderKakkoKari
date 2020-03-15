@@ -29,7 +29,7 @@ namespace namaichi.rec
 		private RecordingManager rm;
 		private bool isFFmpeg;
 		private RecordFromUrl rfu;
-		private System.Diagnostics.Process process;
+		//private System.Diagnostics.Process process;
 		private DateTime lastReadTime = DateTime.UtcNow;
 		public string hlsMasterUrl;
 		public string recFolderFile;
@@ -37,7 +37,7 @@ namespace namaichi.rec
 		private long _openTime;
 		private int lastSegmentNo = -1;
 		public DateTime lastWroteSegmentDt = DateTime.MinValue;
-		private int lastAccessingSegmentNo;
+		//private int lastAccessingSegmentNo;
 		private CookieContainer container;
 		private int segmentSaveType = 0;
 		private bool isTimeShift = false;
@@ -360,12 +360,8 @@ namespace namaichi.rec
 			addDebugBuf("m3u8 getter end segm8u8List len " + segM3u8List.Count);
 		}
 		private void startTsGetter() {
-			var erase = false;
-			var eee = false;
-									
 			while (true) {
 				try {
-	//				addDebugBuf("tsGetter loop segM3u8List count " + segM3u8List.Count);
 					var isM3u8GetterEnd = (m3u8GetterTask.IsCanceled ||
 							m3u8GetterTask.IsCompleted ||
 							m3u8GetterTask.IsFaulted);
@@ -374,14 +370,17 @@ namespace namaichi.rec
 						break;
 					}
 					
+					var isBreak = false;
 					foreach (var _s in new List<string>(segM3u8List)) {
+						if (isBreak) break;
 	//					var sss = new List<string>(segM3u8List);
 						if (_s == null) continue;
 						var baseTime = getBaseTimeFromPlaylist(_s);
 						var second = 0.0;
 						var secondSum = 0.0;
 						var targetDuration = 2.0;
-	//					lock(recordLock) {
+						
+//					lock(recordLock) {
 							var getFileBytesTasks = new List<Task<numTaskInfo>>();
 	//						var line = ;
 							foreach (var s in _s.Split('\n')) {
@@ -442,6 +441,7 @@ namespace namaichi.rec
 								
 								
 							}
+							foreach (var _nti in getFileBytesTasks) _nti.Start();
 							foreach (var _nti in getFileBytesTasks) _nti.Wait();
 							foreach (var _nti in getFileBytesTasks) {
 								var _res = _nti.Result;
@@ -455,12 +455,9 @@ namespace namaichi.rec
 	//									}
 	//								segM3u8List.Clear();
 									
-									//if (erase)
-										segM3u8List.Clear();
-									
-									//if (eee)
-									//	segM3u8List.Remove(_s);
-									//segM3u8List.Remove(_s);
+									segM3u8List.RemoveRange(0, segM3u8List.Count - 1);
+									isBreak = true;
+
 									continue;
 								}
 								
@@ -476,7 +473,6 @@ namespace namaichi.rec
 								lastFileSecond = _res.second;
 								if (_res.no > gotTsMaxNo) gotTsMaxNo = _res.no;
 							}
-							
 							segM3u8List.Remove(_s);
 	//					}
 				
@@ -1235,21 +1231,21 @@ namespace namaichi.rec
 					_streamRenketuAfterWrite(w);
 					return w.Name;
 				}
-			} catch (PathTooLongException e) {
+			} catch (PathTooLongException) {
 				try {
 					addDebugBuf("renketu after out fname " + recFolderFile + "/" + lvid + ".ts");			
 					using (w = new FileStream(recFolderFile + "/" + lvid + ".ts", FileMode.Append, FileAccess.Write)) {
 						_streamRenketuAfterWrite(w);
 						return w.Name;
 					}
-				} catch (PathTooLongException ee) {
+				} catch (PathTooLongException) {
 					try {
 						addDebugBuf("renketu after out fname " + recFolderFile + "/_.ts");			
 						using (w = new FileStream(recFolderFile + "/_.ts", FileMode.Append, FileAccess.Write)) {
 							_streamRenketuAfterWrite(w);
 							return w.Name;
 						}
-					} catch (PathTooLongException eee) {
+					} catch (PathTooLongException) {
 						addDebugBuf("renketu after too long");
 						rm.form.addLogText("録画後に連結しようとしましたがパスが長すぎてファイルが開けませんでした " + recFolderFile + "/_.ts");
 						return null;
@@ -1447,7 +1443,7 @@ namespace namaichi.rec
 						}
 					}
 					Thread.Sleep(500);
-				} catch (Exception e) {
+				} catch (Exception) {
 				}
 			}
 			util.debugWriteLine("start debug writer end rm.rfu == rfu " + (rm.rfu == rfu) + " isend " + isEnd + " debugWriteBuf.count " + debugWriteBuf.Count);
@@ -1634,11 +1630,14 @@ namespace namaichi.rec
 				#endif
 			}
 		}
-		async Task<numTaskInfo> getFileBytesNti(numTaskInfo nti) {
-			byte[] tsBytes;
+		private Task<numTaskInfo> getFileBytesNti(numTaskInfo nti) {
+			//byte[] tsBytes;
 			addDebugBuf("getfilebyte " + nti.url);
-			nti.res = util.getFileBytes(nti.url, container);
-			return nti;
+			return new Task<numTaskInfo>(() => {
+				nti.res = util.getFileBytes(nti.url, container);
+				return nti;
+			});
+			//return ret;
 		}
 		
 		private void displayWriteRemainGotTsData() {

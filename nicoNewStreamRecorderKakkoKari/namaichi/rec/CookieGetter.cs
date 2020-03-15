@@ -34,7 +34,7 @@ namespace namaichi.rec
 		static readonly Uri TargetUrl4 = new Uri("https://watch.live.nicovideo.jp/api/");
 		static readonly Uri TargetUrl5 = new Uri("https://www.nicovideo.jp/");
 		//private bool isSub;
-		private bool isRtmp;
+		private bool isRtmp = false;
 		
 		public CookieGetter(config.config cfg)
 		{
@@ -223,6 +223,7 @@ namespace namaichi.rec
 				try {
 					util.debugWriteLine("ishtml5login getpage " + url);
 					var _url = (isRtmp) ? ("https://live.nicovideo.jp/api/getplayerstatus/" + util.getRegGroup(url, "(lv\\d+)")) : url;
+					//var _url = url;
 					pageSource = util.getPageSource(_url, ref headers, cc);
 					
 					util.debugWriteLine("ishtml5login getpage ok");

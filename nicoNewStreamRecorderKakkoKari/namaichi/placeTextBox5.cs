@@ -18,10 +18,10 @@ namespace namaichi
 	/// </summary>
 	public partial class placeTextBox5 : TextBox
 	{
-		string placeHolder = "コメント（75文字以内）";
+		//string placeHolder = "コメント（75文字以内）";
 		bool isNowDisplay = true;
 		bool isFirst = true;
-		bool isNowIMEComposition = false;
+		//bool isNowIMEComposition = false;
 		bool isExistIMEChar = false;
 		
 		private placeHolderText placeHolderText;
@@ -53,7 +53,7 @@ namespace namaichi
 	        var WM_IME_COMPOSITION = 0x10F;
 	        var WM_IME_STARTCOMPOSITION = 269;
 	        var WM_IME_ENDCOMPOSITION = 270;
-	        var WM_ERASEBKGND = 20;
+	        //var WM_ERASEBKGND = 20;
 	        var WM_CHAR = 258;
 	        var WM_PASTE = 770;
 	        var WM_IME_CHAR = 646;
@@ -64,11 +64,11 @@ namespace namaichi
 	        	clearPlaceHolder();
 	        }
 	        if (m.Msg == WM_IME_STARTCOMPOSITION) {
-	        	isNowIMEComposition = true;
+	        	//isNowIMEComposition = true;
 	        	isExistIMEChar = false;
 	        }
 	        if (m.Msg == WM_IME_ENDCOMPOSITION) {
-	        	isNowIMEComposition = false;
+	        	//isNowIMEComposition = false;
 	        	if (!isExistIMEChar && Text == "") 
 	        		displayPlaceHolder();
 	        }

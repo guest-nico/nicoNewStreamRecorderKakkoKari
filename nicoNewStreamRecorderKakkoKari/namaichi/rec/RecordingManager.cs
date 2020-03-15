@@ -59,7 +59,7 @@ namespace namaichi.rec
 			this.cfg = cfg;
 		}
 		
-		async public void rec() {
+		public void rec() {
             util.debugWriteLine("rm");
            
 			if (rfu == null) {

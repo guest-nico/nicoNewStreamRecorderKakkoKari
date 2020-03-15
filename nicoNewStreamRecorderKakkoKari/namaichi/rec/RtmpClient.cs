@@ -25,7 +25,7 @@ namespace namaichi.rec
 	{
 		private TcpClient client;
         private bool _connect = true;
-        private bool _sendToken = true;
+        //private bool _sendToken = true;
         private string url;
         private string que;
         private string ticket;
@@ -229,11 +229,9 @@ namespace namaichi.rec
 	            		System.Threading.Thread.Sleep(1000);
 	            		return false;
 	            	}
-	            
 			}
-       		
        	}
-       	return false;
+       	//return false;
 	}
 }
 	public class Connect : CommandMessage

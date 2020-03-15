@@ -28,8 +28,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.87.75";
-	public static string versionDayStr = "2020/03/10";
+	public static string versionStr = "ver0.87.76";
+	public static string versionDayStr = "2020/03/14";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	
@@ -931,7 +931,7 @@ class util {
 			                    str.ToString().IndexOf("s") > -1)) {
 //				app.form.formAction(() => app.form.testLogText.AppendText(dt + " " + str));
 			}
-		} catch (Exception e) {
+		} catch (Exception) {
 			
 		}
 		

@@ -8,6 +8,7 @@
  */
 using System;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Text;
@@ -83,8 +84,9 @@ namespace namaichi.rec
 				}
 				if (wrRet.IndexOf("nicolive_video_response status=\"ok\"") > -1) return "ok";
 				if (wrRet.IndexOf("regist_finished") > -1) mode = "regist_finished";
+				Thread.Sleep(1000);
 			}
-			return "ok";
+			//return "ok";
 		}
 
 		async private Task<string> watchingReservation(string token, string id, string mode) {

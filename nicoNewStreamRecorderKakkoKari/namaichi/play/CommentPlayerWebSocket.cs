@@ -111,7 +111,7 @@ namespace namaichi.play
 			}
 			try {
 				util.debugWriteLine("player wsr msreq2 " + string.Join(" ", wsr.msReq));
-			} catch (Exception ee) {
+			} catch (Exception) {
 				util.debugWriteLine("player comment req exception ");
 			}
 			
