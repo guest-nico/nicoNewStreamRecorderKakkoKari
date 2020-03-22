@@ -10,6 +10,7 @@ using System;
 using System.Windows.Forms;
 using System.Data;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 using rokugaTouroku;
 using rokugaTouroku.info;
@@ -42,26 +43,26 @@ namespace rokugaTouroku.rec
 			if (lvid != null) {
 				url = "https://live2.nicovideo.jp/watch/" + lvid;
 				
-				while (true) {
-					try {
-						RecInfo containObject = null;
+				try {
+					if (bool.Parse(cfg.get("IsDuplicateConfirm"))) {
+						var delList = new List<RecInfo>();
 						foreach (RecInfo d in recListData)
-							if (d.id == lvid) containObject = d;
-						if (containObject != null) {
-							if (MessageBox.Show(lvid + "はリスト内に含まれています。既にある行を削除して登録しますか？", "確認", MessageBoxButtons.YesNo) == DialogResult.Yes) {
-								if (!form.deleteRow(containObject))
-									return false;
-							} else return false;
-						} else break;
-					} catch (Exception){}
+							if (d.id == lvid) delList.Add(d);
+						
+						foreach (var _ri in delList) 
+							if (MessageBox.Show(_ri.id + "はリスト内に含まれています。既にある行を削除しますか？\n[" + _ri.quality + "] [" + _ri.timeShift + "]", "確認", MessageBoxButtons.YesNo) == DialogResult.Yes) {
+								form.deleteRow(_ri);
+						}
+						
+					}
+				} catch (Exception e){
+					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
-			}
-//				if (lvid != null) form.urlText.Text = "https://cas.nicovideo.jp/user/77252622/lv313508832";
-				
-			else {
+			} else {
 				MessageBox.Show("not found lvID");
 				return false;
 			}
+			//if (lvid != null) form.urlText.Text = "https://cas.nicovideo.jp/user/77252622/lv313508832";
 				
 			var rdg = new RecDataGetter(this);
 			var ri = new RecInfo(lvid, t, rdg, form.afterConvertModeList.Text, form.setTsConfig, form.setTimeshiftBtn.Text, form.qualityBtn.Text, form.qualityRank, form.recCommmentList.Text);

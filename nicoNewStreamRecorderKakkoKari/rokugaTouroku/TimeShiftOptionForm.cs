@@ -152,6 +152,7 @@ namespace rokugaTouroku
 				MessageBox.Show("M3U8の更新間隔に0.5以下を指定することはできません");
 				return;
 			}
+			
 			/*
 			var isUrlList = isUrlListChkBox.Checked;
 			var openListCommand = openListCommandText.Text;
@@ -177,7 +178,6 @@ namespace rokugaTouroku
 			config.set("M3u8UpdateSeconds", m3u8UpdateSeconds.ToString());
 			config.set("IsOpenUrlList", isOpenUrlList.ToString().ToLower());
 			config.set("openUrlListCommand", openListCommand);
-			
 			config.set("tsStartTimeMode", startTimeMode.ToString());
 			config.set("tsEndTimeMode", endTimeMode.ToString());
 			config.set("tsStartSecond", (h * 3600 + m * 60 + s).ToString());

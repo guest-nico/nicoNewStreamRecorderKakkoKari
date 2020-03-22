@@ -231,6 +231,7 @@ public class config
 			{"rokugaTourokuWidth","950"},
 			{"rokugaTourokuHeight","500"},
 			{"rokugaTourokuMaxRecordingNum","10"},
+			{"IsDuplicateConfirm","false"},
 			{"rokugaTourokuQualityRank","0,1,2,3,4"},
 			
 			{"recBackColor","-1"},

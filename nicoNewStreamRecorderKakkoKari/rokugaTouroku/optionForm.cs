@@ -188,6 +188,7 @@ namespace rokugaTouroku
 				{"user_session_secure2",""},
 				
 				{"rokugaTourokuMaxRecordingNum",maxRecordingNum.Text},
+				{"IsDuplicateConfirm",isDuplicateConfirmChkBox.Checked.ToString().ToLower()},
 			};
 			
 		}
@@ -443,6 +444,7 @@ namespace rokugaTouroku
 //			!bool.Parse(cfg.get("defaultBrowserPath"))
         	
         	maxRecordingNum.Text= cfg.get("rokugaTourokuMaxRecordingNum");
+        	isDuplicateConfirmChkBox.Checked = bool.Parse(cfg.get("IsDuplicateConfirm"));
         }
         private void setSubFolderNameType(int subFolderNameType) {
         	if (subFolderNameType == 1) housoushaRadioBtn.Checked = true;

@@ -22,8 +22,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.10.20";
-	public static string versionDayStr = "2020/03/15";
+	public static string versionStr = "ver0.1.3.10.22";
+	public static string versionDayStr = "2020/03/19";
 	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);

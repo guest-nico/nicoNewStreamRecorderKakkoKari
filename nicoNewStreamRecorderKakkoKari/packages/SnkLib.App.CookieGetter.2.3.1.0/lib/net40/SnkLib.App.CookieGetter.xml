@@ -9,6 +9,26 @@
             使用可能なICookieImporterを提供します。
             </summary>
         </member>
+        <member name="T:SunokoLibrary.Application.ICookieImporterManager">
+            <summary>
+            使用可能なICookieImporterの管理を行う機能を定義します。
+            </summary>
+        </member>
+        <member name="M:SunokoLibrary.Application.ICookieImporterManager.GetInstancesAsync(System.Boolean)">
+            <summary>
+            使用できるICookieImporterのリストを取得します。
+            </summary>
+            <param name="availableOnly">利用可能なものに絞る</param>
+        </member>
+        <member name="M:SunokoLibrary.Application.ICookieImporterManager.GetInstanceAsync(SunokoLibrary.Application.CookieSourceInfo,System.Boolean)">
+            <summary>
+            設定値を指定したICookieImporterを取得します。アプリ終了時に直前まで使用していた
+            ICookieImporterのSourceInfoを設定として保存すれば、起動時にSourceInfoをこのメソッドに
+            渡す事で適切なICookieImporterを再生成してくれる。
+            </summary>
+            <param name="targetSourceInfo">再取得対象のブラウザの構成情報</param>
+            <param name="allowDefault">取得不可の場合に既定のCookieImporterを返すかを指定できます。</param>
+        </member>
         <member name="M:SunokoLibrary.Application.CookieGetters.#ctor(System.Boolean,SunokoLibrary.Application.ICookieImporterFactory[])">
             <summary>
             CookieGettersを生成します。
@@ -57,11 +77,6 @@
             拡張保護モードのIEのICookieImporterを取得します。
             </summary>
         </member>
-        <member name="P:SunokoLibrary.Application.CookieGetters.Browsers.MicrosoftEdge">
-            <summary>
-            MicrosoftEdgeのICookieImporterを取得します。
-            </summary>
-        </member>
         <member name="P:SunokoLibrary.Application.CookieGetters.Browsers.Firefox">
             <summary>
             FirefoxのICookieImporterを取得します。
@@ -92,6 +107,11 @@
             シリアル化用。使用しないでください。
             </summary>
         </member>
+        <member name="M:SunokoLibrary.Application.CookieSourceInfo.GenerateCopy(System.String,System.String,System.String)">
+            <summary>
+            引数で指定された値で上書きしたコピーを生成します。
+            </summary>
+        </member>
         <member name="P:SunokoLibrary.Application.CookieSourceInfo.IsCustomized">
             <summary>
             ユーザーによるカスタム設定かを取得します。
@@ -117,14 +137,145 @@
             使用されているブラウザエンジンの種類を取得します。
             </summary>
         </member>
-        <member name="M:SunokoLibrary.Application.CookieSourceInfo.GenerateCopy(System.String,System.String,System.String)">
+        <member name="T:SunokoLibrary.Windows.ViewModels.CookieSourceSelector">
             <summary>
-            引数で指定された値で上書きしたコピーを生成します。
+            ブラウザ選択UI用ViewModel。CookieImportersとUIの間を取り持ち、UI側の状態遷移を保持します。
+            </summary>
+        </member>
+        <member name="M:SunokoLibrary.Windows.ViewModels.CookieSourceSelector.#ctor(SunokoLibrary.Application.ICookieImporterManager,System.Func{SunokoLibrary.Application.ICookieImporter,SunokoLibrary.Windows.ViewModels.CookieSourceItem})">
+            <summary>
+            指定されたManagerからの項目を使用するインスタンスを生成します。
+            </summary>
+            <param name="importerManager">使用するManager</param>
+            <param name="itemGenerator">取得されたICookieImporterからブラウザ項目のViewModelを生成するメソッド</param>
+        </member>
+        <member name="M:SunokoLibrary.Windows.ViewModels.CookieSourceSelector.UpdateAsync">
+            <summary>
+            Itemsを更新します。
+            </summary>
+        </member>
+        <member name="M:SunokoLibrary.Windows.ViewModels.CookieSourceSelector.SetInfoAsync(SunokoLibrary.Application.CookieSourceInfo)">
+            <summary>
+            任意のブラウザ構成を設定します。カスタム設定の構成も設定可能です。
+            </summary>
+            <param name="info">ブラウザの構成設定</param>
+        </member>
+        <member name="M:SunokoLibrary.Windows.ViewModels.CookieSourceSelector.OnPropertyChanged(System.String)">
+            <summary>
+            PropertyChangedイベントを起こします。
+            </summary>
+        </member>
+        <member name="P:SunokoLibrary.Windows.ViewModels.CookieSourceSelector.IsUpdating">
+            <summary>
+            メンバの内容の更新中であるかを取得します。
+            </summary>
+        </member>
+        <member name="P:SunokoLibrary.Windows.ViewModels.CookieSourceSelector.IsAllBrowserMode">
+            <summary>
+            使用可能なブラウザのみを取得するかを取得、設定します。
+            </summary>
+        </member>
+        <member name="P:SunokoLibrary.Windows.ViewModels.CookieSourceSelector.SelectedIndex">
+            <summary>
+            選択中のブラウザのインデックスを取得、設定します。
+            </summary>
+        </member>
+        <member name="P:SunokoLibrary.Windows.ViewModels.CookieSourceSelector.SelectedImporter">
+            <summary>
+            選択中のブラウザのICookieImporterを取得します。
+            </summary>
+        </member>
+        <member name="P:SunokoLibrary.Windows.ViewModels.CookieSourceSelector.Items">
+            <summary>
+            使用可能なブラウザを取得します。
+            </summary>
+        </member>
+        <member name="E:SunokoLibrary.Windows.ViewModels.CookieSourceSelector.PropertyChanged">
+            <summary>
+            プロパティが更新された事を通知します。
+            </summary>
+        </member>
+        <member name="T:SunokoLibrary.Windows.ViewModels.CookieSourceItem">
+            <summary>
+            ブラウザ選択UIにおける各ブラウザ項目用ViewModel。可視化対象のICookieImporterを持ち、UI上での項目表示を保持します。
+            </summary>
+        </member>
+        <member name="M:SunokoLibrary.Windows.ViewModels.CookieSourceItem.#ctor(SunokoLibrary.Application.ICookieImporter)">
+            <summary>
+            指定されたICookieImporterからインスタンスを生成します。
+            </summary>
+            <param name="importer">対象のブラウザ</param>
+        </member>
+        <member name="M:SunokoLibrary.Windows.ViewModels.CookieSourceItem.Initialize">
+            <summary>
+            初期化を行う際に呼び出されます。呼び出す必要はありません。オーバーライドして使用してください。
+            </summary>
+        </member>
+        <member name="M:SunokoLibrary.Windows.ViewModels.CookieSourceItem.OnPropertyChanged(System.String)">
+            <summary>
+            PropertyChangedイベントを起こします。
+            </summary>
+        </member>
+        <member name="P:SunokoLibrary.Windows.ViewModels.CookieSourceItem.Importer">
+            <summary>
+            Cookie取得用インスタンスを取得します。
+            </summary>
+        </member>
+        <member name="P:SunokoLibrary.Windows.ViewModels.CookieSourceItem.IsCustomized">
+            <summary>
+            既存の項目に設定変更を行って生成した項目かどうかを取得します。
+            </summary>
+        </member>
+        <member name="P:SunokoLibrary.Windows.ViewModels.CookieSourceItem.BrowserName">
+            <summary>
+            ブラウザの名前を取得します。
+            </summary>
+        </member>
+        <member name="P:SunokoLibrary.Windows.ViewModels.CookieSourceItem.ProfileName">
+            <summary>
+            識別名を取得します。
+            </summary>
+        </member>
+        <member name="P:SunokoLibrary.Windows.ViewModels.CookieSourceItem.DisplayText">
+            <summary>
+            画面上で表示される文字列を取得します。
+            </summary>
+        </member>
+        <member name="E:SunokoLibrary.Windows.ViewModels.CookieSourceItem.PropertyChanged">
+            <summary>
+            プロパティが更新された事を通知します。
             </summary>
         </member>
         <member name="T:SunokoLibrary.Application.Browsers.BlinkImporterFactory">
             <summary>
             Chromium系列のブラウザからICookieImporterを取得する基盤クラス
+            </summary>
+        </member>
+        <member name="T:SunokoLibrary.Application.Browsers.ImporterFactoryBase">
+            <summary>
+            ICookieImporterFactoryの実装の作成を支援する基盤クラスです。
+            </summary>
+        </member>
+        <member name="T:SunokoLibrary.Application.ICookieImporterFactory">
+            <summary>
+            ブラウザに対して行える操作を定義します。
+            </summary>
+        </member>
+        <member name="M:SunokoLibrary.Application.ICookieImporterFactory.GetCookieImporters">
+            <summary>
+            利用可能なすべてのICookieImporterを取得します。
+            </summary>
+        </member>
+        <member name="M:SunokoLibrary.Application.ICookieImporterFactory.GetCookieImporter(SunokoLibrary.Application.CookieSourceInfo)">
+            <summary>
+            指定されたブラウザ構成情報からICookieImporterを取得します。
+            </summary>
+            <param name="sourceInfo">元となるブラウザ構成情報。</param>
+            <returns>引数で指定されたブラウザを参照するインスタンス。</returns>
+        </member>
+        <member name="P:SunokoLibrary.Application.ICookieImporterFactory.EngineIds">
+            <summary>
+            対応しているブラウザエンジンの識別子の配列を取得します。
             </summary>
         </member>
         <member name="M:SunokoLibrary.Application.Browsers.BlinkImporterFactory.#ctor(System.String,System.String,System.Int32,System.String,System.String,System.String,System.String,System.String)">
@@ -223,11 +374,6 @@
             拡張保護モードのIEからCookieを取得するICookieImporterを取得します。
             </summary>
         </member>
-        <member name="T:SunokoLibrary.Application.Browsers.ImporterFactoryBase">
-            <summary>
-            ICookieImporterFactoryの実装の作成を支援する基盤クラスです。
-            </summary>
-        </member>
         <member name="T:SunokoLibrary.Application.Browsers.LunascapeImporterFactory">
             <summary>
             LunascapeからICookieImporterを取得します。
@@ -298,9 +444,51 @@
             GoogleChromeからCookieを取得します。
             </summary>
         </member>
+        <member name="T:SunokoLibrary.Application.Browsers.SqlCookieImporter">
+            <summary>
+            Cookieの保存にSQLiteを使用するタイプのブラウザからCookieを取得します。
+            </summary>
+        </member>
         <member name="T:SunokoLibrary.Application.Browsers.CookieImporterBase">
             <summary>
             ICookieImporterの実装の作成を支援する基盤クラスです。
+            </summary>
+        </member>
+        <member name="T:SunokoLibrary.Application.ICookieImporter">
+            <summary>
+            ブラウザからのCookieを取得する機能を定義します。
+            </summary>
+        </member>
+        <member name="M:SunokoLibrary.Application.ICookieImporter.Generate(SunokoLibrary.Application.CookieSourceInfo)">
+            <summary>
+            自身と設定の異なるICookieImporterを生成します。
+            </summary>
+        </member>
+        <member name="M:SunokoLibrary.Application.ICookieImporter.GetCookiesAsync(System.Uri)">
+            <summary>
+            指定されたURLとの通信に使えるCookieを返します。
+            </summary>
+            <param name="targetUrl">通信先のURL</param>
+            <returns>処理の成功不成功</returns>
+        </member>
+        <member name="P:SunokoLibrary.Application.ICookieImporter.SourceInfo">
+            <summary>
+            Cookieを取得するブラウザに関する情報を取得します。
+            </summary>
+        </member>
+        <member name="P:SunokoLibrary.Application.ICookieImporter.CookiePathType">
+            <summary>
+            Cookie保存の形態を取得します。
+            </summary>
+        </member>
+        <member name="P:SunokoLibrary.Application.ICookieImporter.IsAvailable">
+            <summary>
+            利用可能かどうかを取得します。
+            </summary>
+        </member>
+        <member name="P:SunokoLibrary.Application.ICookieImporter.PrimaryLevel">
+            <summary>
+            並べ替え時に用いられる数値を取得します。OSブラウザ: 0、有名ブラウザ: 1、派生ブラウザ: 2。
             </summary>
         </member>
         <member name="M:SunokoLibrary.Application.Browsers.CookieImporterBase.#ctor(SunokoLibrary.Application.CookieSourceInfo,SunokoLibrary.Application.CookiePathType,System.Int32)">
@@ -331,6 +519,24 @@
             <param name="message">失敗した処理の名前</param>
             <param name="detailMessage">詳細な状況説明文</param>
         </member>
+        <member name="M:SunokoLibrary.Application.Browsers.SqlCookieImporter.LookupCookies(System.String,System.String,System.Func{System.Object[],System.Net.Cookie})">
+            <summary>
+            DBから指定したクエリでCookieを取得します。
+            </summary>
+            <param name="path">参照先DBファイル</param>
+            <param name="query">実行するクエリ</param>
+            <param name="dataConverter">レコードからCookieへ変換するメソッド</param>
+            <returns>取得されたCookies</returns>
+            <exception cref="T:SunokoLibrary.Application.CookieImportException"/>
+        </member>
+        <member name="M:SunokoLibrary.Application.Browsers.SqlCookieImporter.LookupEntry(System.String,System.String)">
+            <summary>
+            DBに対してエントリ照会を行います。
+            </summary>
+            <param name="path">参照先DBファイル</param>
+            <param name="query">実行するクエリ</param>
+            <exception cref="T:SunokoLibrary.Application.CookieImportException">一時ファイル生成失敗。DB照会失敗。</exception>
+        </member>
         <member name="T:SunokoLibrary.Application.Browsers.GeckoCookieImporter">
             <summary>
             FirefoxからCookieを取得します。
@@ -350,7 +556,7 @@
             <summary>
             IEのCookieテキストからCookieを取得します。
             </summary>
-            <exception cref="T:SunokoLibrary.Application.CookieImportException" />
+            <exception cref="T:SunokoLibrary.Application.CookieImportException"/>
         </member>
         <member name="M:SunokoLibrary.Application.Browsers.IEFindCacheCookieImporter.ReadAllTextIfHasSendableCookie(System.String,System.Uri)">
             <summary>
@@ -360,83 +566,30 @@
             <param name="cacheFilePath">Cookieファイル</param>
             <param name="sendingTarget">通信したいURL</param>
             <returns>Cookieファイル本文。</returns>
-            <exception cref="T:SunokoLibrary.Application.CookieImportException" />
-            <exception cref="T:System.OutOfMemoryException" />
+            <exception cref="T:SunokoLibrary.Application.CookieImportException"/>
+            <exception cref="T:System.OutOfMemoryException"/>
         </member>
         <member name="T:SunokoLibrary.Application.Browsers.IEPMCookieImporter">
             <summary>
             保護モードIEブラウザからCookieを取得します。
             </summary>
         </member>
-        <member name="T:SunokoLibrary.Application.Browsers.SqlCookieImporter">
-            <summary>
-            Cookieの保存にSQLiteを使用するタイプのブラウザからCookieを取得します。
-            </summary>
-        </member>
-        <member name="M:SunokoLibrary.Application.Browsers.SqlCookieImporter.LookupCookies(System.String,System.String,System.Func{System.Object[],System.Net.Cookie})">
-            <summary>
-            DBから指定したクエリでCookieを取得します。
-            </summary>
-            <param name="path">参照先DBファイル</param>
-            <param name="query">実行するクエリ</param>
-            <param name="dataConverter">レコードからCookieへ変換するメソッド</param>
-            <returns>取得されたCookies</returns>
-            <exception cref="T:SunokoLibrary.Application.CookieImportException" />
-        </member>
-        <member name="M:SunokoLibrary.Application.Browsers.SqlCookieImporter.LookupEntry(System.String,System.String)">
-            <summary>
-            DBに対してエントリ照会を行います。
-            </summary>
-            <param name="path">参照先DBファイル</param>
-            <param name="query">実行するクエリ</param>
-            <exception cref="T:SunokoLibrary.Application.CookieImportException">一時ファイル生成失敗。DB照会失敗。</exception>
-        </member>
         <member name="T:SunokoLibrary.Application.Browsers.WebkitQtCookieImporter">
             <summary>
             Qt上のWebkitでよく使われるCookieファイル形式からCookieを取得します。
             </summary>
         </member>
-        <member name="T:SunokoLibrary.Application.ICookieImporter">
-            <summary>
-            ブラウザからのCookieを取得する機能を定義します。
-            </summary>
-        </member>
-        <member name="P:SunokoLibrary.Application.ICookieImporter.SourceInfo">
-            <summary>
-            Cookieを取得するブラウザに関する情報を取得します。
-            </summary>
-        </member>
-        <member name="P:SunokoLibrary.Application.ICookieImporter.CookiePathType">
-            <summary>
-            Cookie保存の形態を取得します。
-            </summary>
-        </member>
-        <member name="P:SunokoLibrary.Application.ICookieImporter.IsAvailable">
-            <summary>
-            利用可能かどうかを取得します。
-            </summary>
-        </member>
-        <member name="P:SunokoLibrary.Application.ICookieImporter.PrimaryLevel">
-            <summary>
-            並べ替え時に用いられる数値を取得します。OSブラウザ: 0、有名ブラウザ: 1、派生ブラウザ: 2。
-            </summary>
-        </member>
-        <member name="M:SunokoLibrary.Application.ICookieImporter.Generate(SunokoLibrary.Application.CookieSourceInfo)">
-            <summary>
-            自身と設定の異なるICookieImporterを生成します。
-            </summary>
-        </member>
-        <member name="M:SunokoLibrary.Application.ICookieImporter.GetCookiesAsync(System.Uri)">
-            <summary>
-            指定されたURLとの通信に使えるCookieを返します。
-            </summary>
-            <param name="targetUrl">通信先のURL</param>
-            <returns>処理の成功不成功</returns>
-        </member>
         <member name="T:SunokoLibrary.Application.CookieImportResult">
             <summary>
             Cookie取得結果を扱うクラスです。
             </summary>
+        </member>
+        <member name="M:SunokoLibrary.Application.CookieImportResult.AddTo(System.Net.CookieContainer)">
+            <summary>
+            引数として指定したCookieContainerにブラウザから取得したCookieを追加します。
+            </summary>
+            <param name="targetContainer">追加先のコンテナ</param>
+            <returns>インスタンスが保持するStatusをそのまま返します。</returns>
         </member>
         <member name="P:SunokoLibrary.Application.CookieImportResult.Cookies">
             <summary>
@@ -447,13 +600,6 @@
             <summary>
             処理の成功不成功の状態を取得します。
             </summary>
-        </member>
-        <member name="M:SunokoLibrary.Application.CookieImportResult.AddTo(System.Net.CookieContainer)">
-            <summary>
-            引数として指定したCookieContainerにブラウザから取得したCookieを追加します。
-            </summary>
-            <param name="targetContainer">追加先のコンテナ</param>
-            <returns>インスタンスが保持するStatusをそのまま返します。</returns>
         </member>
         <member name="T:SunokoLibrary.Application.CookiePathType">
             <summary>
@@ -485,48 +631,6 @@
         </member>
         <member name="F:SunokoLibrary.Application.CookieImportState.UnknownError">
             <summary>処理に失敗。想定されていないエラーが発生しています。</summary>
-        </member>
-        <member name="T:SunokoLibrary.Application.ICookieImporterFactory">
-            <summary>
-            ブラウザに対して行える操作を定義します。
-            </summary>
-        </member>
-        <member name="P:SunokoLibrary.Application.ICookieImporterFactory.EngineIds">
-            <summary>
-            対応しているブラウザエンジンの識別子の配列を取得します。
-            </summary>
-        </member>
-        <member name="M:SunokoLibrary.Application.ICookieImporterFactory.GetCookieImporters">
-            <summary>
-            利用可能なすべてのICookieImporterを取得します。
-            </summary>
-        </member>
-        <member name="M:SunokoLibrary.Application.ICookieImporterFactory.GetCookieImporter(SunokoLibrary.Application.CookieSourceInfo)">
-            <summary>
-            指定されたブラウザ構成情報からICookieImporterを取得します。
-            </summary>
-            <param name="sourceInfo">元となるブラウザ構成情報。</param>
-            <returns>引数で指定されたブラウザを参照するインスタンス。</returns>
-        </member>
-        <member name="T:SunokoLibrary.Application.ICookieImporterManager">
-            <summary>
-            使用可能なICookieImporterの管理を行う機能を定義します。
-            </summary>
-        </member>
-        <member name="M:SunokoLibrary.Application.ICookieImporterManager.GetInstancesAsync(System.Boolean)">
-            <summary>
-            使用できるICookieImporterのリストを取得します。
-            </summary>
-            <param name="availableOnly">利用可能なものに絞る</param>
-        </member>
-        <member name="M:SunokoLibrary.Application.ICookieImporterManager.GetInstanceAsync(SunokoLibrary.Application.CookieSourceInfo,System.Boolean)">
-            <summary>
-            設定値を指定したICookieImporterを取得します。アプリ終了時に直前まで使用していた
-            ICookieImporterのSourceInfoを設定として保存すれば、起動時にSourceInfoをこのメソッドに
-            渡す事で適切なICookieImporterを再生成してくれる。
-            </summary>
-            <param name="targetSourceInfo">再取得対象のブラウザの構成情報</param>
-            <param name="allowDefault">取得不可の場合に既定のCookieImporterを返すかを指定できます。</param>
         </member>
         <member name="T:SunokoLibrary.Application.CookieImportException">
             <summary>
@@ -600,115 +704,6 @@
             IEのバージョンを取得します。
             </summary>
             <returns>ex:11.0.9600.17239</returns>
-        </member>
-        <member name="T:SunokoLibrary.Windows.ViewModels.CookieSourceSelector">
-            <summary>
-            ブラウザ選択UI用ViewModel。CookieImportersとUIの間を取り持ち、UI側の状態遷移を保持します。
-            </summary>
-        </member>
-        <member name="M:SunokoLibrary.Windows.ViewModels.CookieSourceSelector.#ctor(SunokoLibrary.Application.ICookieImporterManager,System.Func{SunokoLibrary.Application.ICookieImporter,SunokoLibrary.Windows.ViewModels.CookieSourceItem})">
-            <summary>
-            指定されたManagerからの項目を使用するインスタンスを生成します。
-            </summary>
-            <param name="importerManager">使用するManager</param>
-            <param name="itemGenerator">取得されたICookieImporterからブラウザ項目のViewModelを生成するメソッド</param>
-        </member>
-        <member name="P:SunokoLibrary.Windows.ViewModels.CookieSourceSelector.IsUpdating">
-            <summary>
-            メンバの内容の更新中であるかを取得します。
-            </summary>
-        </member>
-        <member name="P:SunokoLibrary.Windows.ViewModels.CookieSourceSelector.IsAllBrowserMode">
-            <summary>
-            使用可能なブラウザのみを取得するかを取得、設定します。
-            </summary>
-        </member>
-        <member name="P:SunokoLibrary.Windows.ViewModels.CookieSourceSelector.SelectedIndex">
-            <summary>
-            選択中のブラウザのインデックスを取得、設定します。
-            </summary>
-        </member>
-        <member name="P:SunokoLibrary.Windows.ViewModels.CookieSourceSelector.SelectedImporter">
-            <summary>
-            選択中のブラウザのICookieImporterを取得します。
-            </summary>
-        </member>
-        <member name="P:SunokoLibrary.Windows.ViewModels.CookieSourceSelector.Items">
-            <summary>
-            使用可能なブラウザを取得します。
-            </summary>
-        </member>
-        <member name="M:SunokoLibrary.Windows.ViewModels.CookieSourceSelector.UpdateAsync">
-            <summary>
-            Itemsを更新します。
-            </summary>
-        </member>
-        <member name="M:SunokoLibrary.Windows.ViewModels.CookieSourceSelector.SetInfoAsync(SunokoLibrary.Application.CookieSourceInfo)">
-            <summary>
-            任意のブラウザ構成を設定します。カスタム設定の構成も設定可能です。
-            </summary>
-            <param name="info">ブラウザの構成設定</param>
-        </member>
-        <member name="E:SunokoLibrary.Windows.ViewModels.CookieSourceSelector.PropertyChanged">
-            <summary>
-            プロパティが更新された事を通知します。
-            </summary>
-        </member>
-        <member name="M:SunokoLibrary.Windows.ViewModels.CookieSourceSelector.OnPropertyChanged(System.String)">
-            <summary>
-            PropertyChangedイベントを起こします。
-            </summary>
-        </member>
-        <member name="T:SunokoLibrary.Windows.ViewModels.CookieSourceItem">
-            <summary>
-            ブラウザ選択UIにおける各ブラウザ項目用ViewModel。可視化対象のICookieImporterを持ち、UI上での項目表示を保持します。
-            </summary>
-        </member>
-        <member name="M:SunokoLibrary.Windows.ViewModels.CookieSourceItem.#ctor(SunokoLibrary.Application.ICookieImporter)">
-            <summary>
-            指定されたICookieImporterからインスタンスを生成します。
-            </summary>
-            <param name="importer">対象のブラウザ</param>
-        </member>
-        <member name="P:SunokoLibrary.Windows.ViewModels.CookieSourceItem.Importer">
-            <summary>
-            Cookie取得用インスタンスを取得します。
-            </summary>
-        </member>
-        <member name="P:SunokoLibrary.Windows.ViewModels.CookieSourceItem.IsCustomized">
-            <summary>
-            既存の項目に設定変更を行って生成した項目かどうかを取得します。
-            </summary>
-        </member>
-        <member name="P:SunokoLibrary.Windows.ViewModels.CookieSourceItem.BrowserName">
-            <summary>
-            ブラウザの名前を取得します。
-            </summary>
-        </member>
-        <member name="P:SunokoLibrary.Windows.ViewModels.CookieSourceItem.ProfileName">
-            <summary>
-            識別名を取得します。
-            </summary>
-        </member>
-        <member name="P:SunokoLibrary.Windows.ViewModels.CookieSourceItem.DisplayText">
-            <summary>
-            画面上で表示される文字列を取得します。
-            </summary>
-        </member>
-        <member name="M:SunokoLibrary.Windows.ViewModels.CookieSourceItem.Initialize">
-            <summary>
-            初期化を行う際に呼び出されます。呼び出す必要はありません。オーバーライドして使用してください。
-            </summary>
-        </member>
-        <member name="E:SunokoLibrary.Windows.ViewModels.CookieSourceItem.PropertyChanged">
-            <summary>
-            プロパティが更新された事を通知します。
-            </summary>
-        </member>
-        <member name="M:SunokoLibrary.Windows.ViewModels.CookieSourceItem.OnPropertyChanged(System.String)">
-            <summary>
-            PropertyChangedイベントを起こします。
-            </summary>
         </member>
     </members>
 </doc>

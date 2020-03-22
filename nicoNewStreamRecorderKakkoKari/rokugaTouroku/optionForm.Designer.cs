@@ -39,6 +39,7 @@ namespace rokugaTouroku
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.isSaveCommentOnlyRetryingRecChkBox = new System.Windows.Forms.CheckBox();
 			this.isCommentConvertSpaceChkbox = new System.Windows.Forms.CheckBox();
 			this.isNotSleepChkBox = new System.Windows.Forms.CheckBox();
 			this.isConfirmCloseMsgBoxChkBox = new System.Windows.Forms.CheckBox();
@@ -192,7 +193,7 @@ namespace rokugaTouroku
 			this.label3 = new System.Windows.Forms.Label();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
-			this.isSaveCommentOnlyRetryingRecChkBox = new System.Windows.Forms.CheckBox();
+			this.isDuplicateConfirmChkBox = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox6.SuspendLayout();
@@ -286,6 +287,15 @@ namespace rokugaTouroku
 			this.groupBox6.TabIndex = 0;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Recorder設定";
+			// 
+			// isSaveCommentOnlyRetryingRecChkBox
+			// 
+			this.isSaveCommentOnlyRetryingRecChkBox.Location = new System.Drawing.Point(19, 193);
+			this.isSaveCommentOnlyRetryingRecChkBox.Name = "isSaveCommentOnlyRetryingRecChkBox";
+			this.isSaveCommentOnlyRetryingRecChkBox.Size = new System.Drawing.Size(271, 19);
+			this.isSaveCommentOnlyRetryingRecChkBox.TabIndex = 10;
+			this.isSaveCommentOnlyRetryingRecChkBox.Text = "動画の再接続中はコメントを保存しない";
+			this.isSaveCommentOnlyRetryingRecChkBox.UseVisualStyleBackColor = true;
 			// 
 			// isCommentConvertSpaceChkbox
 			// 
@@ -478,7 +488,7 @@ namespace rokugaTouroku
 			this.tabPage9.Location = new System.Drawing.Point(4, 40);
 			this.tabPage9.Name = "tabPage9";
 			this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage9.Size = new System.Drawing.Size(468, 481);
+			this.tabPage9.Size = new System.Drawing.Size(468, 503);
 			this.tabPage9.TabIndex = 9;
 			this.tabPage9.Text = "一般2";
 			this.tabPage9.UseVisualStyleBackColor = true;
@@ -611,7 +621,7 @@ namespace rokugaTouroku
 			this.tabPage6.Location = new System.Drawing.Point(4, 40);
 			this.tabPage6.Name = "tabPage6";
 			this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage6.Size = new System.Drawing.Size(468, 481);
+			this.tabPage6.Size = new System.Drawing.Size(468, 503);
 			this.tabPage6.TabIndex = 5;
 			this.tabPage6.Text = "録画方法";
 			this.tabPage6.UseVisualStyleBackColor = true;
@@ -839,7 +849,7 @@ namespace rokugaTouroku
 			this.tabPage10.Controls.Add(this.groupBox14);
 			this.tabPage10.Location = new System.Drawing.Point(4, 40);
 			this.tabPage10.Name = "tabPage10";
-			this.tabPage10.Size = new System.Drawing.Size(468, 481);
+			this.tabPage10.Size = new System.Drawing.Size(468, 503);
 			this.tabPage10.TabIndex = 10;
 			this.tabPage10.Text = "追っかけ録画";
 			this.tabPage10.UseVisualStyleBackColor = true;
@@ -934,7 +944,7 @@ namespace rokugaTouroku
 			this.tabPage5.Location = new System.Drawing.Point(4, 40);
 			this.tabPage5.Name = "tabPage5";
 			this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage5.Size = new System.Drawing.Size(468, 481);
+			this.tabPage5.Size = new System.Drawing.Size(468, 503);
 			this.tabPage5.TabIndex = 4;
 			this.tabPage5.Text = "画質";
 			this.tabPage5.UseVisualStyleBackColor = true;
@@ -1017,7 +1027,7 @@ namespace rokugaTouroku
 			this.tabPage2.Margin = new System.Windows.Forms.Padding(2);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(2);
-			this.tabPage2.Size = new System.Drawing.Size(468, 481);
+			this.tabPage2.Size = new System.Drawing.Size(468, 503);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "アカウント設定";
 			this.tabPage2.UseVisualStyleBackColor = true;
@@ -1190,7 +1200,7 @@ namespace rokugaTouroku
 			this.tabPage4.Location = new System.Drawing.Point(4, 40);
 			this.tabPage4.Name = "tabPage4";
 			this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage4.Size = new System.Drawing.Size(468, 481);
+			this.tabPage4.Size = new System.Drawing.Size(468, 503);
 			this.tabPage4.TabIndex = 7;
 			this.tabPage4.Text = "補完設定";
 			this.tabPage4.UseVisualStyleBackColor = true;
@@ -1377,7 +1387,7 @@ namespace rokugaTouroku
 			this.tabPage7.Location = new System.Drawing.Point(4, 40);
 			this.tabPage7.Name = "tabPage7";
 			this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage7.Size = new System.Drawing.Size(468, 481);
+			this.tabPage7.Size = new System.Drawing.Size(468, 503);
 			this.tabPage7.TabIndex = 6;
 			this.tabPage7.Text = "視聴";
 			this.tabPage7.UseVisualStyleBackColor = true;
@@ -1560,7 +1570,7 @@ namespace rokugaTouroku
 			this.tabPage3.Margin = new System.Windows.Forms.Padding(2);
 			this.tabPage3.Name = "tabPage3";
 			this.tabPage3.Padding = new System.Windows.Forms.Padding(2);
-			this.tabPage3.Size = new System.Drawing.Size(468, 481);
+			this.tabPage3.Size = new System.Drawing.Size(468, 503);
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "録画";
 			this.tabPage3.UseVisualStyleBackColor = true;
@@ -1846,18 +1856,19 @@ namespace rokugaTouroku
 			this.tabPage8.Location = new System.Drawing.Point(4, 40);
 			this.tabPage8.Name = "tabPage8";
 			this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage8.Size = new System.Drawing.Size(468, 481);
+			this.tabPage8.Size = new System.Drawing.Size(468, 503);
 			this.tabPage8.TabIndex = 8;
 			this.tabPage8.Text = "録画登録";
 			this.tabPage8.UseVisualStyleBackColor = true;
 			// 
 			// groupBox11
 			// 
+			this.groupBox11.Controls.Add(this.isDuplicateConfirmChkBox);
 			this.groupBox11.Controls.Add(this.maxRecordingNum);
 			this.groupBox11.Controls.Add(this.label3);
 			this.groupBox11.Location = new System.Drawing.Point(5, 10);
 			this.groupBox11.Name = "groupBox11";
-			this.groupBox11.Size = new System.Drawing.Size(405, 62);
+			this.groupBox11.Size = new System.Drawing.Size(405, 88);
 			this.groupBox11.TabIndex = 20;
 			this.groupBox11.TabStop = false;
 			this.groupBox11.Text = "録画設定";
@@ -1907,14 +1918,14 @@ namespace rokugaTouroku
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
 			// 
-			// isSaveCommentOnlyRetryingRecChkBox
+			// isDuplicateConfirmChkBox
 			// 
-			this.isSaveCommentOnlyRetryingRecChkBox.Location = new System.Drawing.Point(19, 193);
-			this.isSaveCommentOnlyRetryingRecChkBox.Name = "isSaveCommentOnlyRetryingRecChkBox";
-			this.isSaveCommentOnlyRetryingRecChkBox.Size = new System.Drawing.Size(271, 19);
-			this.isSaveCommentOnlyRetryingRecChkBox.TabIndex = 10;
-			this.isSaveCommentOnlyRetryingRecChkBox.Text = "動画の再接続中はコメントを保存しない";
-			this.isSaveCommentOnlyRetryingRecChkBox.UseVisualStyleBackColor = true;
+			this.isDuplicateConfirmChkBox.Location = new System.Drawing.Point(6, 58);
+			this.isDuplicateConfirmChkBox.Name = "isDuplicateConfirmChkBox";
+			this.isDuplicateConfirmChkBox.Size = new System.Drawing.Size(271, 19);
+			this.isDuplicateConfirmChkBox.TabIndex = 3;
+			this.isDuplicateConfirmChkBox.Text = "重複する放送IDを登録時に確認する";
+			this.isDuplicateConfirmChkBox.UseVisualStyleBackColor = true;
 			// 
 			// optionForm
 			// 
@@ -1969,6 +1980,7 @@ namespace rokugaTouroku
 			((System.ComponentModel.ISupportInitialize)(this.maxRecordingNum)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox isDuplicateConfirmChkBox;
 		private System.Windows.Forms.CheckBox isSaveCommentOnlyRetryingRecChkBox;
 		private System.Windows.Forms.CheckBox isCommentConvertSpaceChkbox;
 		private System.Windows.Forms.TextBox playerArgsText;

@@ -127,11 +127,6 @@
             拡張保護モードのIEのICookieImporterを取得します。
             </summary>
         </member>
-        <member name="P:SunokoLibrary.Application.CookieGetters.Browsers.MicrosoftEdge">
-            <summary>
-            MicrosoftEdgeのICookieImporterを取得します。
-            </summary>
-        </member>
         <member name="P:SunokoLibrary.Application.CookieGetters.Browsers.Firefox">
             <summary>
             FirefoxのICookieImporterを取得します。
