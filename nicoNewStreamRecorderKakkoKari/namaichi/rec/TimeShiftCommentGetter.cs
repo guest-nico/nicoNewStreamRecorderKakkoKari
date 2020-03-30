@@ -41,6 +41,7 @@ namespace namaichi.rec
 		string recFolderFile;
 		string lvid;
 		string programType;
+		string roomName = "";
 		int startSecond;
 		CookieContainer container;
 		string ticket;
@@ -50,7 +51,8 @@ namespace namaichi.rec
 		int when = 0;
 		int lastLastRes = int.MaxValue;
 		string threadLine;
-		bool isGetXml;
+		bool isGetXml = true;
+		bool isGetCommentXmlInfo = false;
 		List<GotCommentInfo> gotCommentList = new List<GotCommentInfo>();
 		
 		//private StreamWriter commentSW;
@@ -60,6 +62,7 @@ namespace namaichi.rec
 		bool isRetry = true;
 		public bool isEnd = false;
 		public WebSocketRecorder rp;
+		//private RecordStateSetter rss;
 		
 		int gotCount = 0;
 		public string[] sortedComments;
@@ -78,7 +81,8 @@ namespace namaichi.rec
 				string programType, long _openTime, 
 				WebSocketRecorder rp, int startSecond, 
 				bool isVposStartTime, bool isRtmp, 
-				RtmpRecorder rr)
+				RtmpRecorder rr, RecordStateSetter rss, 
+				string roomName)
 		{
 			this.uri = util.getRegGroup(message, "messageServerUri\"\\:\"(ws.+?)\"");
 			this.thread = util.getRegGroup(message, "threadId\":\"(.+?)\"");
@@ -91,6 +95,7 @@ namespace namaichi.rec
 			this.lvid = lvid;
 			this.container = container;
 			this.isGetXml = bool.Parse(rm.cfg.get("IsgetcommentXml"));
+			this.isGetCommentXmlInfo = bool.Parse(rm.cfg.get("IsgetcommentXmlInfo"));
 			this.programType = programType;
 			this._openTime = _openTime;
 			this.rp = rp;
@@ -100,6 +105,7 @@ namespace namaichi.rec
 			this.isRtmp = isRtmp;
 			this.rr = rr;
 			isConvertSpace = bool.Parse(rm.cfg.get("IsCommentConvertSpace"));
+			this.roomName = roomName;
 		}
 		public void save() {
 			if (!bool.Parse(rm.cfg.get("IsgetComment"))) {
@@ -249,6 +255,9 @@ namespace namaichi.rec
 	
 					}
 				}
+				if (isGetCommentXmlInfo && chatinfo.no == -1) 
+					chatXml.Root.Add(new XAttribute("no", "0"));
+				
 	//			else chatXml = chatinfo.getFormatXml(serverTime);
 	//			util.debugWriteLine("xml " + chatXml.ToString());
 				
@@ -404,7 +413,11 @@ namespace namaichi.rec
 				using (var w = new StreamWriter(fileName + "_", false, System.Text.Encoding.UTF8)) {
 					if (isGetXml) {
 						w.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
-					    w.WriteLine("<packet>");
+						if (!isGetCommentXmlInfo) 
+							w.WriteLine("<packet>");
+						else {
+							writeXmlStreamInfo(w);
+						}
 					    
 					    w.Flush();
 					}
@@ -500,8 +513,20 @@ namespace namaichi.rec
 			return r.Replace(recFolderFile, _new + ".xml");
 		}
 		private int commentListCompare(GotCommentInfo x, GotCommentInfo y) {
-			if (x.no != 0 && y.no != 0) return x.no - y.no;
+			if (x.no >= 0 && y.no >= 0) return x.no - y.no;
 			return x.date - y.date;
+		}
+		private void writeXmlStreamInfo(StreamWriter w) {
+			var startTime = openTime;
+			var vposStartTime = (isVposStartTime) ? (long)rp.firstSegmentSecond : 0;
+			if (programType == "official") {
+				startTime = _openTime + vposStartTime;
+			} else {
+				startTime = openTime + vposStartTime;
+			}
+			w.WriteLine("<packet xmlns=\"http://posite-c.jp/niconamacommentviewer/commentlog/\">");
+			w.WriteLine("<RoomLabel>" + roomName + "</RoomLabel>");
+			w.WriteLine("<StartTime>" + startTime + "</StartTime>");
 		}
 		class GotCommentInfo {
 			public string comment = null;

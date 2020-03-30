@@ -28,18 +28,20 @@ namespace namaichi.rec
 		private bool isJikken = false;
 		private string[] recFolderFile;
 		
-		private string openTime;
+		public string openTime;
 		private string endTime;
-		private string title;
+		public string title;
 		private string gentei;
-		private string host;
-		private string group;
+		public string host;
+		public string group;
 		private string description;
-		private string url;
-		private string groupUrl;
-		private string hostUrl;
-		private string samuneUrl;
+		public string url;
+		public string groupUrl;
+		public string hostUrl;
+		public string samuneUrl;
 		private string tag;
+		public int watchCount = 0;
+		public int commentCount = 0;
 		
 		private bool isPlayOnlyMode = false;
 		private bool isDescriptionTag;
@@ -147,6 +149,7 @@ namespace namaichi.rec
 			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "<thumb_url>(.+?)</thumb_url>");
 			tag = getTag(data);
 			var formEndTime = (isTimeShift && !isChase) ? endTime : "";
+			setStatistics(data);
 			form.setInfo(host, hostUrl, group, groupUrl, title, url, gentei, openTime, description, isJikken, formEndTime);
 		}
 		private void setSamune(string data, MainForm form) {
@@ -238,7 +241,16 @@ namespace namaichi.rec
 				rm.form.addLogText(recFolderFile[2] + ext);
 				return;
 			}
-			
+		}
+		private void setStatistics(string data) {
+			try {
+				var _watchCount = util.getRegGroup(data, "\"statistics\":\\{\"watchCount\":(\\d+),\"commentCount\":\\d*\\}");
+				var _commentCount = util.getRegGroup(data, "\"statistics\":\\{\"watchCount\":\\d*,\"commentCount\":(\\d+)\\}");
+				if (_watchCount != null) watchCount = int.Parse(_watchCount);
+				if (_commentCount != null) commentCount = int.Parse(_commentCount);
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
 		}
 	}
 }

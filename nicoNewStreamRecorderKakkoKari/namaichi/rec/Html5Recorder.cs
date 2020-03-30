@@ -267,14 +267,14 @@ namespace namaichi.rec
 				}
 			
 				//display set
-				var b = new RecordStateSetter(rm.form, rm, rfu, isTimeShift, false, recFolderFile, rm.isPlayOnlyMode, isRtmpOnlyPage, isChase);
+				var rss = new RecordStateSetter(rm.form, rm, rfu, isTimeShift, false, recFolderFile, rm.isPlayOnlyMode, isRtmpOnlyPage, isChase);
 				Task.Run(() => {
-				       	b.set(data, type, recFolderFileInfo);
+				       	rss.set(data, type, recFolderFileInfo);
 					});
 				
 				//hosoInfo
 				if (rm.cfg.get("IshosoInfo") == "true" && !rm.isPlayOnlyMode)
-					Task.Run(() => {b.writeHosoInfo();});
+					Task.Run(() => {rss.writeHosoInfo();});
 				
 				util.debugWriteLine("form disposed" + rm.form.IsDisposed);
 				util.debugWriteLine("recfolderfile test " + recFolderFileInfo);
@@ -291,14 +291,14 @@ namespace namaichi.rec
 				
 				var userId = util.getRegGroup(res, "\"user\"\\:\\{\"user_id\"\\:(.+?),");
 				var isPremium = res.IndexOf("\"member_status\":\"premium\"") > -1;
-				wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, isTimeShift, lvid, timeShiftConfig, userId, isPremium, programTime, type, _openTime, isRtmp, isRtmpOnlyPage, isChase, isRealtimeChase, true);
+				wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, isTimeShift, lvid, timeShiftConfig, userId, isPremium, programTime, type, _openTime, isRtmp, isRtmpOnlyPage, isChase, isRealtimeChase, true, rss);
 				rm.wsr = wsr;
 				try {
 					isNoPermission = wsr.start();
 					rm.wsr = null;
 					if (wsr.isEndProgram) {
-						if ((!isTimeShift || isChase) && b.isWrite)
-							b.writeEndTime(container, wsr.endTime);
+						if ((!isTimeShift || isChase) && rss.isWrite)
+							rss.writeEndTime(container, wsr.endTime);
 						return 3;
 					}
 						

@@ -39,6 +39,7 @@ namespace namaichi
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.isCommentXmlInfo = new System.Windows.Forms.RadioButton();
 			this.isSaveCommentOnlyRetryingRecChkBox = new System.Windows.Forms.CheckBox();
 			this.isCommentConvertSpaceChkbox = new System.Windows.Forms.CheckBox();
 			this.isNotSleepChkBox = new System.Windows.Forms.CheckBox();
@@ -250,6 +251,7 @@ namespace namaichi
 			// 
 			// groupBox6
 			// 
+			this.groupBox6.Controls.Add(this.isCommentXmlInfo);
 			this.groupBox6.Controls.Add(this.isSaveCommentOnlyRetryingRecChkBox);
 			this.groupBox6.Controls.Add(this.isCommentConvertSpaceChkbox);
 			this.groupBox6.Controls.Add(this.isNotSleepChkBox);
@@ -273,10 +275,19 @@ namespace namaichi
 			this.groupBox6.Controls.Add(this.isMinimizedChkBox);
 			this.groupBox6.Location = new System.Drawing.Point(5, 10);
 			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(385, 486);
+			this.groupBox6.Size = new System.Drawing.Size(395, 486);
 			this.groupBox6.TabIndex = 0;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Recorder設定";
+			// 
+			// isCommentXmlInfo
+			// 
+			this.isCommentXmlInfo.Location = new System.Drawing.Point(241, 149);
+			this.isCommentXmlInfo.Name = "isCommentXmlInfo";
+			this.isCommentXmlInfo.Size = new System.Drawing.Size(154, 16);
+			this.isCommentXmlInfo.TabIndex = 7;
+			this.isCommentXmlInfo.Text = "XML(開始時間付)で保存";
+			this.isCommentXmlInfo.UseVisualStyleBackColor = true;
 			// 
 			// isSaveCommentOnlyRetryingRecChkBox
 			// 
@@ -1910,6 +1921,7 @@ namespace namaichi
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.RadioButton isCommentXmlInfo;
 		private System.Windows.Forms.CheckBox isSaveCommentOnlyRetryingRecChkBox;
 		private System.Windows.Forms.CheckBox isCommentConvertSpaceChkbox;
 		private System.Windows.Forms.Label label12;

@@ -127,7 +127,8 @@ namespace namaichi
 //				{"Islimitpopup",isLimitPopupChkBox.Checked.ToString().ToLower()},
 				{"Isretry",isRetryChkBox.Checked.ToString().ToLower()},
 				{"IsdeleteExit",isDeleteExitChkBox.Checked.ToString().ToLower()},
-				{"IsgetcommentXml",isCommentXML.Checked.ToString().ToLower()},
+				{"IsgetcommentXml",(!isCommentJson.Checked).ToString().ToLower()},
+				{"IsgetcommentXmlInfo",isCommentXmlInfo.Checked.ToString().ToLower()},
 				{"IsCommentConvertSpace",isCommentConvertSpaceChkbox.Checked.ToString().ToLower()},
 				{"IsSaveCommentOnlyRetryingRec",isSaveCommentOnlyRetryingRecChkBox.Checked.ToString().ToLower()},
 				{"IsDisplayComment",isDisplayCommentChkbox.Checked.ToString().ToLower()},
@@ -359,8 +360,7 @@ namespace namaichi
 //        	isLimitPopupChkBox.Checked = bool.Parse(cfg.get("Islimitpopup"));
         	isRetryChkBox.Checked = bool.Parse(cfg.get("Isretry"));
         	isDeleteExitChkBox.Checked = bool.Parse(cfg.get("IsdeleteExit"));
-        	isCommentXML.Checked = bool.Parse(cfg.get("IsgetcommentXml"));
-        	isCommentJson.Checked = !bool.Parse(cfg.get("IsgetcommentXml"));
+        	setCommentChkBox();
         	isGetCommentChkBox_UpdateAction();
         	isCommentConvertSpaceChkbox.Checked = bool.Parse(cfg.get("IsCommentConvertSpace"));
         	isSaveCommentOnlyRetryingRecChkBox.Checked = bool.Parse(cfg.get("IsSaveCommentOnlyRetryingRec"));
@@ -591,8 +591,9 @@ namespace namaichi
 		}
 		void isGetCommentChkBox_UpdateAction()
 		{
-			isCommentXML.Enabled = isGetCommentChkBox.Checked;
-			isCommentJson.Enabled = isGetCommentChkBox.Checked;
+			isCommentXML.Enabled = isCommentJson.Enabled = 
+					isCommentXmlInfo.Enabled = 
+						isGetCommentChkBox.Checked;
 		}
 		
 		void highRankBtn_Click(object sender, EventArgs e)
@@ -1006,6 +1007,13 @@ namespace namaichi
 			}
 			util.debugWriteLine(c.Name + " " + ret.Count);
 			return ret;
+		}
+		private void setCommentChkBox() {
+			var isXml = bool.Parse(cfg.get("IsgetcommentXml"));
+			var isXmlInfo = bool.Parse(cfg.get("IsgetcommentXmlInfo"));
+			isCommentXML.Checked = isXml && !isXmlInfo;
+        	isCommentJson.Checked = !isXml;
+        	isCommentXmlInfo.Checked = isXmlInfo;
 		}
 	}
 }

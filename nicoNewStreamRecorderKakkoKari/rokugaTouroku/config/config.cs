@@ -116,6 +116,7 @@ public class config
 			{"Isretry","true"},
 			{"IsdeleteExit","false"},
 			{"IsgetcommentXml","true"},
+			{"IsgetcommentXmlInfo","false"},
 			{"IsCommentConvertSpace","false"},
 			{"IsSaveCommentOnlyRetryingRec","false"},
 			{"IsDisplayComment","true"},

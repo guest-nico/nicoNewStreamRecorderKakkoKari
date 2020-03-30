@@ -32,7 +32,7 @@ namespace namaichi.info
 		public string lastRes;
 		public bool isPingRf;
 		public long vposOriginal;
-		public int no;
+		public int no = -1;
 		
 		public ChatInfo(XDocument xml, string json)
 		{

@@ -43,6 +43,7 @@ namespace namaichi.rec
 		private WebSocket ws;
 		private WebSocket wsc;
 		public Record rec;
+		private RecordStateSetter rss = null;
 		public StreamWriter commentSW;
 		//public string msUri;
 		//public string[] msReq;
@@ -68,7 +69,7 @@ namespace namaichi.rec
 		//private DateTime beginTime = null;
 		//private DateTime endTime = null;
 		private TimeSpan programTime = TimeSpan.Zero;
-		
+		private string roomName = "";
 //		public DateTime tsHlsRequestTime;
 //		public TimeSpan tsStartTime;
 			
@@ -89,6 +90,7 @@ namespace namaichi.rec
 		private string qualityRank = null;
 		private string isGetComment = null;
 		private string isGetCommentXml = null;
+		private bool isGetCommentXmlInfo = false;
 		private string commentFileName = null;
 //		private string commentHead = null;
 		private string engineMode = null;
@@ -118,7 +120,7 @@ namespace namaichi.rec
 				bool isPremium, TimeSpan programTime, 
 				string programType, long _openTime, bool isRtmp, 
 				bool isRtmpOnlyPage, bool isChase, bool isRealtimeChase,
-				bool isSaveComment
+				bool isSaveComment, RecordStateSetter rss
 			)
 		{
 			this.webSocketInfo = webSocketInfo;
@@ -144,6 +146,7 @@ namespace namaichi.rec
 			this.qualityRank = rm.cfg.get("qualityRank");
 			this.isGetComment = rm.cfg.get("IsgetComment");
 			this.isGetCommentXml = rm.cfg.get("IsgetcommentXml");
+			this.isGetCommentXmlInfo = bool.Parse(rm.cfg.get("IsgetcommentXmlInfo"));
 			this.engineMode = rm.cfg.get("EngineMode");
 			this.isNotSleep = bool.Parse(rm.cfg.get("IsNotSleep"));
 			this.isRtmpOnlyPage = isRtmpOnlyPage;
@@ -459,7 +462,8 @@ namespace namaichi.rec
 								recFolderFile, lvid, container, 
 								programType, _openTime, this, 
 								(isRtmp) ? 0 : tsConfig.timeSeconds, 
-								(isRtmp) ? false : tsConfig.isVposStartTime, isRtmp, rr);
+								(isRtmp) ? false : tsConfig.isVposStartTime, 
+								isRtmp, rr, rss, roomName);
 						tscg.save();
 					}
 					
@@ -761,6 +765,8 @@ namespace namaichi.rec
 			msThread = util.getRegGroup(msg, "threadId\":\"(.+?)\"");
 			var res_from = (isTimeShift && !isChase) ? "-2000" : "-10";
 			msReq = new string[] {"[{\"ping\":{\"content\":\"rs:0\"}},{\"ping\":{\"content\":\"ps:0\"}},{\"thread\":{\"thread\":\"" + msThread + "\",\"version\":\"20061206\",\"fork\":0,\"user_id\":\"" + userId + "\",\"res_from\":" + res_from + ",\"with_global\":1,\"scores\":1,\"nicoru\":0}},{\"ping\":{\"content\":\"pf:0\"}},{\"ping\":{\"content\":\"rf:0\"}}]"};
+			var _roomName = util.getRegGroup(msg, "\"roomName\":\"(.+?)\"");
+			if (_roomName != null) roomName = _roomName;
 		}
 		public void stopRecording(WebSocket _ws, WebSocket _wsc) {
 			addDebugBuf("stop recording");
@@ -861,7 +867,12 @@ namespace namaichi.rec
 					
 					if (bool.Parse(isGetCommentXml) && !isExists) {
 						commentSW.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
-				        commentSW.WriteLine("<packet>");
+						if (!isGetCommentXmlInfo) 
+							commentSW.WriteLine("<packet>");
+						else {
+							writeXmlStreamInfo(commentSW);
+						}
+				        
 				        commentSW.Flush();
 					} 
 			       
@@ -974,6 +985,8 @@ namespace namaichi.rec
 					
 				}
 			}
+			if (isGetCommentXmlInfo && chatinfo.no == -1) 
+				chatXml.Root.Add(new XAttribute("no", "0"));
 			addDebugBuf("xml " + chatXml.ToString());
 			
 			if (chatinfo.root == "chat" && (chatinfo.contents.IndexOf("/hb ifseetno") != -1 && 
@@ -985,6 +998,24 @@ namespace namaichi.rec
 				ticket = chatinfo.ticket;
 				//数秒過去の動画も取得できることを考慮
 				serverTime -= isRealtimeChase ? 20 : 3;
+				try {
+					if (isGetCommentXmlInfo) {
+						if (!isTimeShift || isRealtimeChase)
+							commentSW.WriteLine("<StartTime>" + serverTime + "</StartTime>");							
+						else {
+							var startTime = openTime;
+							var vposStartTime = (tsConfig.isVposStartTime) ? (long)firstSegmentSecond : 0;
+							if (programType == "official") {
+								startTime = _openTime + vposStartTime;
+							} else {
+								startTime = openTime + vposStartTime;
+							}
+							commentSW.WriteLine("<StartTime>" + startTime + "</StartTime>");
+						}
+					}
+				} catch (Exception ee) {
+					addDebugBuf(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+				}
 			}
 			
 			addDebugBuf("wsc message " + ws);
@@ -1474,6 +1505,10 @@ namespace namaichi.rec
 			} catch (Exception e) {
 				addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
+		}
+		private void writeXmlStreamInfo(StreamWriter w) {
+			w.WriteLine("<packet xmlns=\"http://posite-c.jp/niconamacommentviewer/commentlog/\">");
+			w.WriteLine("<RoomLabel>" + roomName + "</RoomLabel>");
 		}
 	}
 }

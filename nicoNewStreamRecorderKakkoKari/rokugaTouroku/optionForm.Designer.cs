@@ -39,6 +39,7 @@ namespace rokugaTouroku
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.isCommentXmlInfo = new System.Windows.Forms.RadioButton();
 			this.isSaveCommentOnlyRetryingRecChkBox = new System.Windows.Forms.CheckBox();
 			this.isCommentConvertSpaceChkbox = new System.Windows.Forms.CheckBox();
 			this.isNotSleepChkBox = new System.Windows.Forms.CheckBox();
@@ -189,11 +190,11 @@ namespace rokugaTouroku
 			this.recordDirectoryText = new System.Windows.Forms.TextBox();
 			this.tabPage8 = new System.Windows.Forms.TabPage();
 			this.groupBox11 = new System.Windows.Forms.GroupBox();
+			this.isDuplicateConfirmChkBox = new System.Windows.Forms.CheckBox();
 			this.maxRecordingNum = new System.Windows.Forms.NumericUpDown();
 			this.label3 = new System.Windows.Forms.Label();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
-			this.isDuplicateConfirmChkBox = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox6.SuspendLayout();
@@ -260,6 +261,7 @@ namespace rokugaTouroku
 			// 
 			// groupBox6
 			// 
+			this.groupBox6.Controls.Add(this.isCommentXmlInfo);
 			this.groupBox6.Controls.Add(this.isSaveCommentOnlyRetryingRecChkBox);
 			this.groupBox6.Controls.Add(this.isCommentConvertSpaceChkbox);
 			this.groupBox6.Controls.Add(this.isNotSleepChkBox);
@@ -287,6 +289,15 @@ namespace rokugaTouroku
 			this.groupBox6.TabIndex = 0;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Recorder設定";
+			// 
+			// isCommentXmlInfo
+			// 
+			this.isCommentXmlInfo.Location = new System.Drawing.Point(241, 149);
+			this.isCommentXmlInfo.Name = "isCommentXmlInfo";
+			this.isCommentXmlInfo.Size = new System.Drawing.Size(154, 16);
+			this.isCommentXmlInfo.TabIndex = 11;
+			this.isCommentXmlInfo.Text = "XML(開始時間付)で保存";
+			this.isCommentXmlInfo.UseVisualStyleBackColor = true;
 			// 
 			// isSaveCommentOnlyRetryingRecChkBox
 			// 
@@ -1873,6 +1884,15 @@ namespace rokugaTouroku
 			this.groupBox11.TabStop = false;
 			this.groupBox11.Text = "録画設定";
 			// 
+			// isDuplicateConfirmChkBox
+			// 
+			this.isDuplicateConfirmChkBox.Location = new System.Drawing.Point(6, 58);
+			this.isDuplicateConfirmChkBox.Name = "isDuplicateConfirmChkBox";
+			this.isDuplicateConfirmChkBox.Size = new System.Drawing.Size(271, 19);
+			this.isDuplicateConfirmChkBox.TabIndex = 3;
+			this.isDuplicateConfirmChkBox.Text = "重複する放送IDを登録時に確認する";
+			this.isDuplicateConfirmChkBox.UseVisualStyleBackColor = true;
+			// 
 			// maxRecordingNum
 			// 
 			this.maxRecordingNum.Location = new System.Drawing.Point(80, 24);
@@ -1917,15 +1937,6 @@ namespace rokugaTouroku
 			this.button4.Text = "キャンセル";
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
-			// 
-			// isDuplicateConfirmChkBox
-			// 
-			this.isDuplicateConfirmChkBox.Location = new System.Drawing.Point(6, 58);
-			this.isDuplicateConfirmChkBox.Name = "isDuplicateConfirmChkBox";
-			this.isDuplicateConfirmChkBox.Size = new System.Drawing.Size(271, 19);
-			this.isDuplicateConfirmChkBox.TabIndex = 3;
-			this.isDuplicateConfirmChkBox.Text = "重複する放送IDを登録時に確認する";
-			this.isDuplicateConfirmChkBox.UseVisualStyleBackColor = true;
 			// 
 			// optionForm
 			// 
@@ -1980,6 +1991,7 @@ namespace rokugaTouroku
 			((System.ComponentModel.ISupportInitialize)(this.maxRecordingNum)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.RadioButton isCommentXmlInfo;
 		private System.Windows.Forms.CheckBox isDuplicateConfirmChkBox;
 		private System.Windows.Forms.CheckBox isSaveCommentOnlyRetryingRecChkBox;
 		private System.Windows.Forms.CheckBox isCommentConvertSpaceChkbox;
