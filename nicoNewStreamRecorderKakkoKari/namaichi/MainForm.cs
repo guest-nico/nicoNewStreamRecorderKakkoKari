@@ -66,7 +66,7 @@ namespace namaichi
 			//test
 			//app.form = this;
 			
-			//args = new String[]{"lv323868848", "-chase", "-ts-end=1m"};
+			//args = new String[]{"lv325057380", ""};
 			//args = new String[]{"lv324583435", "-chase", "-ts-end=1m"};
 			//args = new string[]{"C:\\Users\\zack\\downloads\\a.ts"};
 			//args = "-nowindo -stdIO -IsmessageBox=false -IscloseExit=true lv316762771 -ts-start=1785s -ts-end=0s -ts-list=false -ts-list-m3u8=false -ts-list-update=5 -ts-list-open=false -ts-list-command=\"notepad{i}\" -ts-vpos-starttime=true -afterConvertMode=4 -qualityRank=0,1,2,3,4,5 -IsLogFile=true".Split(' ');
@@ -95,14 +95,38 @@ namespace namaichi
 			
 			this.args = args;
 			
-			rec = new rec.RecordingManager(this, config);
-			player = new Player(this, config);
-			
 			//args = new string[]{"a", "-qualityrank=1,2,3,4,5,0", "lv315967820", "-istitlebarinfo=False", "-ts-start=25h2m", "-openUrlListCommand=notepad"};
 			//args = new string[]{"Debug_1.ts"};
 			//args = new String[]{"lv321193806", "-ischase=true", "-ts-start=0s"};
+			
+			rec = new rec.RecordingManager(this, config);
+			player = new Player(this, config);
+			
 			if (Array.IndexOf(args, "-stdIO") > -1) util.isStdIO = true;
 			
+			
+
+			util.debugWriteLine("arg len " + args.Length);
+			util.debugWriteLine("arg join " + string.Join(" ", args));
+			
+			
+            //nicoSessionComboBox1.Selector.PropertyChanged += Selector_PropertyChanged;
+//            checkBoxShowAll.Checked = bool.Parse(config.get("isAllBrowserMode"));
+			//if (isInitRun) initRec();
+			try {
+				Width = int.Parse(config.get("Width"));
+				Height = int.Parse(config.get("Height"));
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+			}
+			
+			if (bool.Parse(config.get("IsMiniStart")))
+				changeSize(true);
+			setBackColor(Color.FromArgb(int.Parse(config.get("recBackColor"))));
+			setForeColor(Color.FromArgb(int.Parse(config.get("recForeColor"))));
+			setLinkColor(Color.FromArgb(int.Parse(config.get("recLinkColor"))));
+		}
+		private void init() {
 			var lv = (args.Length == 0) ? null : util.getRegGroup(args[0], "(lv\\d+(,\\d+)*)");
 			util.setLog(config, lv);
 			
@@ -125,26 +149,6 @@ namespace namaichi
 					this.WindowState = FormWindowState.Minimized;
 				}
             }
-
-			util.debugWriteLine("arg len " + args.Length);
-			util.debugWriteLine("arg join " + string.Join(" ", args));
-			
-			
-            //nicoSessionComboBox1.Selector.PropertyChanged += Selector_PropertyChanged;
-//            checkBoxShowAll.Checked = bool.Parse(config.get("isAllBrowserMode"));
-			//if (isInitRun) initRec();
-			try {
-				Width = int.Parse(config.get("Width"));
-				Height = int.Parse(config.get("Height"));
-			} catch (Exception e) {
-				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-			}
-			
-			if (bool.Parse(config.get("IsMiniStart")))
-				changeSize(true);
-			setBackColor(Color.FromArgb(int.Parse(config.get("recBackColor"))));
-			setForeColor(Color.FromArgb(int.Parse(config.get("recForeColor"))));
-			setLinkColor(Color.FromArgb(int.Parse(config.get("recLinkColor"))));
 		}
 
 		private void recBtnAction(object sender, EventArgs e) {
@@ -680,6 +684,8 @@ namespace namaichi
 		
 		void mainForm_Load(object sender, EventArgs e)
 		{
+			init();
+			
 			if (!util.isShowWindow) return;
 			
 			try {
