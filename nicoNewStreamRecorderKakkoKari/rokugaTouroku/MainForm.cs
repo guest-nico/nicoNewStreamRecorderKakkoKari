@@ -60,6 +60,21 @@ namespace rokugaTouroku
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 			}
+			
+			try {
+				if (bool.Parse(config.get("IsRestoreLocation"))) {
+					var x = config.get("rokugaTourokuX");
+					var y = config.get("rokugaTourokuY");
+					if (x != "" && y != "") {
+						StartPosition = FormStartPosition.Manual;
+						Location = new Point(int.Parse(x), int.Parse(y));
+					}
+				}
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+				StartPosition = FormStartPosition.WindowsDefaultLocation;
+			}
+			
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
@@ -130,9 +145,13 @@ namespace rokugaTouroku
 				if (this.WindowState == FormWindowState.Normal) {
 					config.set("rokugaTourokuWidth", Width.ToString());
 					config.set("rokugaTourokuHeight", Height.ToString());
+					config.set("rokugaTourokuX", Location.X.ToString());
+					config.set("rokugaTourokuY", Location.Y.ToString());
 				} else {
 					config.set("rokugaTourokuWidth", RestoreBounds.Width.ToString());
 					config.set("rokugaTourokuHeight", RestoreBounds.Height.ToString());
+					config.set("rokugaTourokuX", RestoreBounds.X.ToString());
+					config.set("rokugaTourokuY", RestoreBounds.Y.ToString());
 				}
 				config.set("rokugaTourokuQualityRank", qualityRank);
 

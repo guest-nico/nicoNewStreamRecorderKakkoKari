@@ -22,8 +22,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.10.23";
-	public static string versionDayStr = "2020/03/30";
+	public static string versionStr = "ver0.1.3.10.24";
+	public static string versionDayStr = "2020/04/01";
 	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);
@@ -405,6 +405,7 @@ class util {
 		var ret = new string[]{h, m, s};
 		return ret;
 	}
+	/*
 	public static string getPageSource(string _url, ref WebHeaderCollection getheaders, CookieContainer container = null, string referer = null, bool isFirstLog = true) {
 		string a;
 		try {
@@ -422,19 +423,18 @@ class util {
 				req.Proxy = null;
 				req.AllowAutoRedirect = true;
 	//			req.Headers = getheaders;
+				req.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
 				if (referer != null) req.Referer = referer;
 				if (container != null) req.CookieContainer = container;
+				req.Headers.Add("Accept-Encoding", "gzip,deflate");
+				req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
 				req.Timeout = 5000;
 				var res = (HttpWebResponse)req.GetResponse();
 				var dataStream = res.GetResponseStream();
 				var reader = new StreamReader(dataStream);
 				
-				/*
-				var resStrTask = reader.ReadToEndAsync();
-				if (!resStrTask.Wait(5000)) return null;
-				string resStr = resStrTask.Result;
-				*/
+				
 				var resStr = reader.ReadToEnd();
 				
 				getheaders = res.Headers;
@@ -449,6 +449,7 @@ class util {
 			
 		return null;
 	}
+	*/
 	public static string getPageSource(string _url, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 5000) {
 		timeoutMs = 5000;
 		/*
@@ -470,18 +471,14 @@ class util {
 				req.Proxy = null;
 				req.AllowAutoRedirect = true;
 	//			req.Headers = getheaders;
-//				util.debugWriteLine("getpage 03");
 				if (referer != null) req.Referer = referer;
-//				util.debugWriteLine("getpage 04");
 				if (container != null) req.CookieContainer = container;
-//				util.debugWriteLine("getpage 05");
+				req.Headers.Add("Accept-Encoding", "gzip,deflate");
+				req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
 				req.Timeout = timeoutMs;
-//				util.debugWriteLine("getpage 0");
 				var res = (HttpWebResponse)req.GetResponse();
-//				util.debugWriteLine("getpage 1");
 				var dataStream = res.GetResponseStream();
-//				util.debugWriteLine("getpage 2");
 				var reader = new StreamReader(dataStream);
 				
 				/*

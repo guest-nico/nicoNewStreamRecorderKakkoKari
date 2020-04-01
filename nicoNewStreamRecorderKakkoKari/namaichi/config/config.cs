@@ -167,6 +167,7 @@ public class config
 			{"IsLogFile","false"},
 			{"IsSegmentNukeInfo","true"},
 			{"IsNotSleep","false"},
+			{"IsRestoreLocation","false"},
 			
 			{"segmentSaveType","0"},
 			{"IsRenketuAfter","true"},
@@ -221,6 +222,8 @@ public class config
 			{"ffmpegopt",""},
 			{"Height","400"},
 			{"Width","735"},
+			{"X",""},
+			{"Y",""},
 			{"defaultControllerX","100"},
 			{"defaultControllerY","100"},
 			{"volume","50"},

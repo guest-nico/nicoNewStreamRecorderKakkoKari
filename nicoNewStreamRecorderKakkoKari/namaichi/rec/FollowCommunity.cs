@@ -111,6 +111,8 @@ namespace namaichi.rec
 					req.Referer = url;
 					req.ContentLength = postDataBytes.Length;
 					req.ContentType = "application/x-www-form-urlencoded";
+					req.Headers.Add("Accept-Encoding", "gzip,deflate");
+					req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 	//				req.Headers.Add("Referer", url);
 					using (var stream = req.GetRequestStream()) {
 						try {

@@ -43,7 +43,6 @@ namespace namaichi
 			this.isSaveCommentOnlyRetryingRecChkBox = new System.Windows.Forms.CheckBox();
 			this.isCommentConvertSpaceChkbox = new System.Windows.Forms.CheckBox();
 			this.isNotSleepChkBox = new System.Windows.Forms.CheckBox();
-			this.isConfirmCloseMsgBoxChkBox = new System.Windows.Forms.CheckBox();
 			this.isMiniStartChkBox = new System.Windows.Forms.CheckBox();
 			this.isCommentJson = new System.Windows.Forms.RadioButton();
 			this.isCommentXML = new System.Windows.Forms.RadioButton();
@@ -190,6 +189,8 @@ namespace namaichi
 			this.recordDirectoryText = new System.Windows.Forms.TextBox();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
+			this.isConfirmCloseMsgBoxChkBox = new System.Windows.Forms.CheckBox();
+			this.isRestoreLocationChkBox = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox6.SuspendLayout();
@@ -254,8 +255,8 @@ namespace namaichi
 			this.groupBox6.Controls.Add(this.isCommentXmlInfo);
 			this.groupBox6.Controls.Add(this.isSaveCommentOnlyRetryingRecChkBox);
 			this.groupBox6.Controls.Add(this.isCommentConvertSpaceChkbox);
+			this.groupBox6.Controls.Add(this.isRestoreLocationChkBox);
 			this.groupBox6.Controls.Add(this.isNotSleepChkBox);
-			this.groupBox6.Controls.Add(this.isConfirmCloseMsgBoxChkBox);
 			this.groupBox6.Controls.Add(this.isMiniStartChkBox);
 			this.groupBox6.Controls.Add(this.isCommentJson);
 			this.groupBox6.Controls.Add(this.isCommentXML);
@@ -315,15 +316,6 @@ namespace namaichi
 			this.isNotSleepChkBox.TabIndex = 5;
 			this.isNotSleepChkBox.Text = "録画中はPCがスリープモードに入らないようにする";
 			this.isNotSleepChkBox.UseVisualStyleBackColor = true;
-			// 
-			// isConfirmCloseMsgBoxChkBox
-			// 
-			this.isConfirmCloseMsgBoxChkBox.Location = new System.Drawing.Point(19, 443);
-			this.isConfirmCloseMsgBoxChkBox.Name = "isConfirmCloseMsgBoxChkBox";
-			this.isConfirmCloseMsgBoxChkBox.Size = new System.Drawing.Size(291, 19);
-			this.isConfirmCloseMsgBoxChkBox.TabIndex = 4;
-			this.isConfirmCloseMsgBoxChkBox.Text = "録画中に終了する場合、メッセージボックスで確認する";
-			this.isConfirmCloseMsgBoxChkBox.UseVisualStyleBackColor = true;
 			// 
 			// isMiniStartChkBox
 			// 
@@ -536,6 +528,7 @@ namespace namaichi
 			// 
 			// groupBox9
 			// 
+			this.groupBox9.Controls.Add(this.isConfirmCloseMsgBoxChkBox);
 			this.groupBox9.Controls.Add(this.volumeText);
 			this.groupBox9.Controls.Add(this.volumeBar);
 			this.groupBox9.Controls.Add(this.isSoundEndChkBox);
@@ -545,7 +538,7 @@ namespace namaichi
 			this.groupBox9.Controls.Add(this.soundPathText);
 			this.groupBox9.Location = new System.Drawing.Point(5, 83);
 			this.groupBox9.Name = "groupBox9";
-			this.groupBox9.Size = new System.Drawing.Size(372, 147);
+			this.groupBox9.Size = new System.Drawing.Size(372, 169);
 			this.groupBox9.TabIndex = 1;
 			this.groupBox9.TabStop = false;
 			this.groupBox9.Text = "録画終了時";
@@ -1871,6 +1864,24 @@ namespace namaichi
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
 			// 
+			// isConfirmCloseMsgBoxChkBox
+			// 
+			this.isConfirmCloseMsgBoxChkBox.Location = new System.Drawing.Point(19, 144);
+			this.isConfirmCloseMsgBoxChkBox.Name = "isConfirmCloseMsgBoxChkBox";
+			this.isConfirmCloseMsgBoxChkBox.Size = new System.Drawing.Size(291, 19);
+			this.isConfirmCloseMsgBoxChkBox.TabIndex = 8;
+			this.isConfirmCloseMsgBoxChkBox.Text = "録画中に終了する場合、メッセージボックスで確認する";
+			this.isConfirmCloseMsgBoxChkBox.UseVisualStyleBackColor = true;
+			// 
+			// isRestoreLocationChkBox
+			// 
+			this.isRestoreLocationChkBox.Location = new System.Drawing.Point(19, 443);
+			this.isRestoreLocationChkBox.Name = "isRestoreLocationChkBox";
+			this.isRestoreLocationChkBox.Size = new System.Drawing.Size(291, 19);
+			this.isRestoreLocationChkBox.TabIndex = 5;
+			this.isRestoreLocationChkBox.Text = "前回の終了位置にメインウィンドウを表示する";
+			this.isRestoreLocationChkBox.UseVisualStyleBackColor = true;
+			// 
 			// optionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1921,6 +1932,7 @@ namespace namaichi
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox isRestoreLocationChkBox;
 		private System.Windows.Forms.RadioButton isCommentXmlInfo;
 		private System.Windows.Forms.CheckBox isSaveCommentOnlyRetryingRecChkBox;
 		private System.Windows.Forms.CheckBox isCommentConvertSpaceChkbox;

@@ -139,6 +139,7 @@ namespace namaichi
 				{"IsConfirmCloseMsgBox",isConfirmCloseMsgBoxChkBox.Checked.ToString().ToLower()},
 				{"IsLogFile",isLogFileChkBox.Checked.ToString().ToLower()},
 				{"IsNotSleep",isNotSleepChkBox.Checked.ToString().ToLower()},
+				{"IsRestoreLocation",isRestoreLocationChkBox.Checked.ToString().ToLower()},
 				
 				{"IsSegmentNukeInfo",isSegmentNukeInfoChkBox.Checked.ToString().ToLower()},
 				{"segmentSaveType",getSegmentSaveType()},
@@ -373,6 +374,7 @@ namespace namaichi
         	isLogFileChkBox.Checked = bool.Parse(cfg.get("IsLogFile"));
         	isSegmentNukeInfoChkBox.Checked = bool.Parse(cfg.get("IsSegmentNukeInfo"));
         	isNotSleepChkBox.Checked = bool.Parse(cfg.get("IsNotSleep"));
+        	isRestoreLocationChkBox.Checked = bool.Parse(cfg.get("IsRestoreLocation"));
         	
         	setSegmentSaveType(cfg.get("segmentSaveType"));
         	isRenketuAfterChkBox.Checked = bool.Parse(cfg.get("IsRenketuAfter"));

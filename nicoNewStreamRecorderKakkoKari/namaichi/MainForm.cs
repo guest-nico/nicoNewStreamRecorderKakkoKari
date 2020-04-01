@@ -120,6 +120,20 @@ namespace namaichi
 				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 			}
 			
+			try {
+				if (bool.Parse(config.get("IsRestoreLocation"))) {
+					var x = config.get("X");
+					var y = config.get("Y");
+					if (x != "" && y != "") {
+						StartPosition = FormStartPosition.Manual;
+						Location = new Point(int.Parse(x), int.Parse(y));
+					}
+				}
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+				StartPosition = FormStartPosition.WindowsDefaultLocation;
+			}
+			
 			if (bool.Parse(config.get("IsMiniStart")))
 				changeSize(true);
 			setBackColor(Color.FromArgb(int.Parse(config.get("recBackColor"))));
@@ -575,13 +589,19 @@ namespace namaichi
 				if (originalSize != Size.Empty) {
 					config.set("Width", originalSize.Width.ToString());
 					config.set("Height", originalSize.Height.ToString());
+					config.set("X", Location.X.ToString());
+					config.set("Y", Location.Y.ToString());
 				} else {
 					if (this.WindowState == FormWindowState.Normal) {
 						config.set("Width", Width.ToString());
 						config.set("Height", Height.ToString());
+						config.set("X", Location.X.ToString());
+						config.set("Y", Location.Y.ToString());
 					} else {
 						config.set("Width", RestoreBounds.Width.ToString());
 						config.set("Height", RestoreBounds.Height.ToString());
+						config.set("X", RestoreBounds.X.ToString());
+						config.set("Y", RestoreBounds.Y.ToString());
 					}
 				}
 

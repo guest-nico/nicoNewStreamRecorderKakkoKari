@@ -128,6 +128,7 @@ public class config
 			{"IsLogFile","false"},
 			{"IsSegmentNukeInfo","true"},
 			{"IsNotSleep","false"},
+			{"IsRestoreLocation","false"},
 			
 			{"segmentSaveType","0"},
 			{"IsRenketuAfter","true"},
@@ -178,6 +179,8 @@ public class config
 			{"ffmpegopt",""},
 			{"Height","400"},
 			{"Width","715"},
+			{"X",""},
+			{"Y",""},
 			{"defaultControllerX","100"},
 			{"defaultControllerY","100"},
 			{"volume","50"},
@@ -188,6 +191,8 @@ public class config
 			
 			{"rokugaTourokuWidth","950"},
 			{"rokugaTourokuHeight","500"},
+			{"rokugaTourokuX",""},
+			{"rokugaTourokuY",""},
 			{"rokugaTourokuMaxRecordingNum","10"},
 			{"IsDuplicateConfirm","false"},
 			{"rokugaTourokuQualityRank","0,1,2,3,4"},

@@ -28,8 +28,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.87.79";
-	public static string versionDayStr = "2020/03/31";
+	public static string versionStr = "ver0.87.80";
+	public static string versionDayStr = "2020/04/01";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	
@@ -533,6 +533,8 @@ class util {
 //				util.debugWriteLine("getpage 04");
 				if (container != null) req.CookieContainer = container;
 //				util.debugWriteLine("getpage 05");
+				req.Headers.Add("Accept-Encoding", "gzip,deflate");
+				req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
 				req.Timeout = timeoutMs;
 				using (var res = (HttpWebResponse)req.GetResponse())
@@ -592,6 +594,8 @@ class util {
 //				util.debugWriteLine("getpage 04");
 				if (container != null) req.CookieContainer = container;
 //				util.debugWriteLine("getpage 05");
+				req.Headers.Add("Accept-Encoding", "gzip,deflate");
+				req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
 				req.Timeout = timeoutMs;
 //				util.debugWriteLine("getpage 0");
@@ -730,6 +734,8 @@ class util {
 			var req = (HttpWebRequest)WebRequest.Create(url);
 			req.Method = method;
 			req.Proxy = null;
+			req.Headers.Add("Accept-Encoding", "gzip,deflate");
+			req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 			
 			if (headers != null) {
 				foreach (var h in headers) {

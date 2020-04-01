@@ -373,6 +373,8 @@ namespace namaichi.rec
 					req.AllowAutoRedirect = true;
 		//			req.Headers = getheaders;
 					req.Referer = "https://live.nicovideo.jp/gate/" + lvid;
+					req.Headers.Add("Accept-Encoding", "gzip,deflate");
+					req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 					//var ccInd = (isSub) ? 1 : 0;
 					//var ccInd = 0;
 					cc.Add(TargetUrl, new Cookie("_gali", "box" + lvid));

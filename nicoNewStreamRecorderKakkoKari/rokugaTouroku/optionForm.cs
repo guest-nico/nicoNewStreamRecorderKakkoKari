@@ -137,6 +137,7 @@ namespace rokugaTouroku
 				{"IsConfirmCloseMsgBox",isConfirmCloseMsgBoxChkBox.Checked.ToString().ToLower()},
 				{"IsLogFile",isLogFileChkBox.Checked.ToString().ToLower()},
 				{"IsNotSleep",isNotSleepChkBox.Checked.ToString().ToLower()},
+				{"IsRestoreLocation",isRestoreLocationChkBox.Checked.ToString().ToLower()},
 				
 				{"IsSegmentNukeInfo",isSegmentNukeInfoChkBox.Checked.ToString().ToLower()},
 				{"segmentSaveType",getSegmentSaveType()},
@@ -376,6 +377,7 @@ namespace rokugaTouroku
         	isConfirmCloseMsgBoxChkBox.Checked = bool.Parse(cfg.get("IsConfirmCloseMsgBox"));
         	isLogFileChkBox.Checked = bool.Parse(cfg.get("IsLogFile"));
         	isNotSleepChkBox.Checked = bool.Parse(cfg.get("IsNotSleep"));
+        	isRestoreLocationChkBox.Checked = bool.Parse(cfg.get("IsRestoreLocation"));
         	
         	isSegmentNukeInfoChkBox.Checked = bool.Parse(cfg.get("IsSegmentNukeInfo"));
         	setSegmentSaveType(cfg.get("segmentSaveType"));

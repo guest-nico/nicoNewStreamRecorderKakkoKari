@@ -210,10 +210,11 @@ namespace rokugaTouroku.rec
 			
 		}
 		private bool isHtml5Login(CookieContainer cc, string url) {
-			var headers = new WebHeaderCollection();
+			//var headers = new WebHeaderCollection();
 			try {
 				util.debugWriteLine("ishtml5login getpage " + url);
-				pageSource = util.getPageSource(url + "", ref headers, cc);
+				//pageSource = util.getPageSource(url + "", ref headers, cc);
+				pageSource = util.getPageSource(url + "",cc);
 				util.debugWriteLine("ishtml5login getpage ok");
 			} catch (Exception e) {
 				util.debugWriteLine("cookiegetter ishtml5login " + e.Message+e.StackTrace);
