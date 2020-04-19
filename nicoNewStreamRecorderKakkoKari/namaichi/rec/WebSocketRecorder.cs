@@ -43,7 +43,7 @@ namespace namaichi.rec
 		private WebSocket ws;
 		private WebSocket wsc;
 		public Record rec;
-		private RecordStateSetter rss = null;
+		public RecordStateSetter rss = null;
 		public StreamWriter commentSW;
 		//public string msUri;
 		//public string[] msReq;
@@ -72,6 +72,8 @@ namespace namaichi.rec
 		private string roomName = "";
 //		public DateTime tsHlsRequestTime;
 //		public TimeSpan tsStartTime;
+		public string visitCount = "0";
+		public string commentCount = "0";
 			
 		private WebSocket[] himodukeWS = new WebSocket[2];
 			
@@ -142,6 +144,7 @@ namespace namaichi.rec
 			this._openTime = _openTime;
 			//this.isSub = isSub;
 			this.isRtmp = isRtmp;
+			this.rss = rss;
 			
 			this.qualityRank = rm.cfg.get("qualityRank");
 			this.isGetComment = rm.cfg.get("IsgetComment");
@@ -279,6 +282,8 @@ namespace namaichi.rec
 				if (rec != null)
 					rec.waitForEnd();
 			}
+			
+				
 			if (commentSW != null) closeWscProcess();
 			
 			if (isChase && rec != null && !rec.isEndProgram && rm.rfu == rfu) {
@@ -825,14 +830,14 @@ namespace namaichi.rec
 		}
 		*/
 		private void displayStatistics(string e) {
-			var visit = util.getRegGroup(e, "{\"type\":\"watch\",\"body\":{\"command\":\"statistics\",\"params\":\\[\"(\\d+?)\",\"\\d+?\"", 1, rm.regGetter.getWrVisit());
-			var comment = util.getRegGroup(e, "{\"type\":\"watch\",\"body\":{\"command\":\"statistics\",\"params\":\\[\"\\d+?\",\"(\\d+?)\"", 1, rm.regGetter.getWrComment());
+			var _visit = util.getRegGroup(e, "{\"type\":\"watch\",\"body\":{\"command\":\"statistics\",\"params\":\\[\"(\\d+?)\",\"\\d+?\"", 1, rm.regGetter.getWrVisit());
+			var _comment = util.getRegGroup(e, "{\"type\":\"watch\",\"body\":{\"command\":\"statistics\",\"params\":\\[\"\\d+?\",\"(\\d+?)\"", 1, rm.regGetter.getWrComment());
 			try {
-				if (visit != null)
-					visit = int.Parse(visit).ToString("n0");
-				if (comment != null) 
-					comment = int.Parse(comment).ToString("n0");
-				rm.form.setStatistics(visit, comment);
+				if (_visit != null)
+					visitCount = int.Parse(_visit).ToString("n0");
+				if (_comment != null) 
+					commentCount = int.Parse(_comment).ToString("n0");
+				rm.form.setStatistics(_visit, _comment);
 			} catch (Exception ee){
 				addDebugBuf(ee.Message + " " + ee.StackTrace + " " + ee.Source + " " + ee.TargetSite);
 			}
@@ -925,9 +930,17 @@ namespace namaichi.rec
 						addDebugBuf(ee.Message + " " + ee.StackTrace + " " + ee.TargetSite);
 					}
 				}
+				
+				var name = ((FileStream)commentSW.BaseStream).Name; 
 				commentSW.Close();
 				commentSW = null;
 				lastSaveComments.Clear();
+				try {
+					if (rm.cfg.get("fileNameType") == "10")
+						File.Move(name, name.Replace("{w}", visitCount.ToString()).Replace("{c}", commentCount));
+				} catch (Exception e) {
+					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				}
 			}
 			
 

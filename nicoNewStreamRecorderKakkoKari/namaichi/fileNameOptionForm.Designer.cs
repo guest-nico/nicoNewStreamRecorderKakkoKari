@@ -37,6 +37,7 @@ namespace namaichi
 		private void InitializeComponent()
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.fileNameTypeLabel = new System.Windows.Forms.TextBox();
 			this.fileNameTypeText = new System.Windows.Forms.TextBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.fileNameTypeTitleBtn = new System.Windows.Forms.Button();
@@ -59,7 +60,8 @@ namespace namaichi
 			this.label2 = new System.Windows.Forms.Label();
 			this.FileNameTypeCancelBtn = new System.Windows.Forms.Button();
 			this.fileNameTypeOkBtn = new System.Windows.Forms.Button();
-			this.fileNameTypeLabel = new System.Windows.Forms.TextBox();
+			this.label1 = new System.Windows.Forms.Label();
+			this.label15 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -75,6 +77,14 @@ namespace namaichi
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "ファイル名の書式";
+			// 
+			// fileNameTypeLabel
+			// 
+			this.fileNameTypeLabel.Location = new System.Drawing.Point(6, 26);
+			this.fileNameTypeLabel.Name = "fileNameTypeLabel";
+			this.fileNameTypeLabel.ReadOnly = true;
+			this.fileNameTypeLabel.Size = new System.Drawing.Size(320, 19);
+			this.fileNameTypeLabel.TabIndex = 2;
 			// 
 			// fileNameTypeText
 			// 
@@ -143,6 +153,8 @@ namespace namaichi
 			this.groupBox3.Controls.Add(this.label5);
 			this.groupBox3.Controls.Add(this.label4);
 			this.groupBox3.Controls.Add(this.label3);
+			this.groupBox3.Controls.Add(this.label15);
+			this.groupBox3.Controls.Add(this.label1);
 			this.groupBox3.Controls.Add(this.label9);
 			this.groupBox3.Controls.Add(this.label8);
 			this.groupBox3.Controls.Add(this.label14);
@@ -283,13 +295,21 @@ namespace namaichi
 			this.fileNameTypeOkBtn.UseVisualStyleBackColor = true;
 			this.fileNameTypeOkBtn.Click += new System.EventHandler(this.fileNameTypeOkBtn_Click);
 			// 
-			// fileNameTypeLabel
+			// label1
 			// 
-			this.fileNameTypeLabel.Location = new System.Drawing.Point(6, 26);
-			this.fileNameTypeLabel.Name = "fileNameTypeLabel";
-			this.fileNameTypeLabel.ReadOnly = true;
-			this.fileNameTypeLabel.Size = new System.Drawing.Size(320, 19);
-			this.fileNameTypeLabel.TabIndex = 2;
+			this.label1.Location = new System.Drawing.Point(115, 80);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(78, 18);
+			this.label1.TabIndex = 0;
+			this.label1.Text = "{w} 来場者数";
+			// 
+			// label15
+			// 
+			this.label15.Location = new System.Drawing.Point(115, 98);
+			this.label15.Name = "label15";
+			this.label15.Size = new System.Drawing.Size(78, 18);
+			this.label15.TabIndex = 0;
+			this.label15.Text = "{c} コメント数";
 			// 
 			// fileNameOptionForm
 			// 
@@ -309,6 +329,8 @@ namespace namaichi
 			this.groupBox3.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label label15;
 		private System.Windows.Forms.Button fileNameTypeOkBtn;
 		private System.Windows.Forms.Button FileNameTypeCancelBtn;
 		private System.Windows.Forms.Label label11;

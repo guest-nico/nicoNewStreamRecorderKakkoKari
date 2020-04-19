@@ -42,6 +42,7 @@ namespace namaichi
 			this.isCommentXmlInfo = new System.Windows.Forms.RadioButton();
 			this.isSaveCommentOnlyRetryingRecChkBox = new System.Windows.Forms.CheckBox();
 			this.isCommentConvertSpaceChkbox = new System.Windows.Forms.CheckBox();
+			this.isRestoreLocationChkBox = new System.Windows.Forms.CheckBox();
 			this.isNotSleepChkBox = new System.Windows.Forms.CheckBox();
 			this.isMiniStartChkBox = new System.Windows.Forms.CheckBox();
 			this.isCommentJson = new System.Windows.Forms.RadioButton();
@@ -66,6 +67,7 @@ namespace namaichi
 			this.browserPathSanshouBtn = new System.Windows.Forms.Button();
 			this.browserPathText = new System.Windows.Forms.TextBox();
 			this.groupBox9 = new System.Windows.Forms.GroupBox();
+			this.isConfirmCloseMsgBoxChkBox = new System.Windows.Forms.CheckBox();
 			this.volumeText = new System.Windows.Forms.Label();
 			this.volumeBar = new System.Windows.Forms.TrackBar();
 			this.isSoundEndChkBox = new System.Windows.Forms.CheckBox();
@@ -189,8 +191,6 @@ namespace namaichi
 			this.recordDirectoryText = new System.Windows.Forms.TextBox();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
-			this.isConfirmCloseMsgBoxChkBox = new System.Windows.Forms.CheckBox();
-			this.isRestoreLocationChkBox = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox6.SuspendLayout();
@@ -307,6 +307,15 @@ namespace namaichi
 			this.isCommentConvertSpaceChkbox.TabIndex = 6;
 			this.isCommentConvertSpaceChkbox.Text = "コメントの特殊文字を空白に変換する";
 			this.isCommentConvertSpaceChkbox.UseVisualStyleBackColor = true;
+			// 
+			// isRestoreLocationChkBox
+			// 
+			this.isRestoreLocationChkBox.Location = new System.Drawing.Point(19, 443);
+			this.isRestoreLocationChkBox.Name = "isRestoreLocationChkBox";
+			this.isRestoreLocationChkBox.Size = new System.Drawing.Size(291, 19);
+			this.isRestoreLocationChkBox.TabIndex = 5;
+			this.isRestoreLocationChkBox.Text = "前回の終了位置にメインウィンドウを表示する";
+			this.isRestoreLocationChkBox.UseVisualStyleBackColor = true;
 			// 
 			// isNotSleepChkBox
 			// 
@@ -542,6 +551,15 @@ namespace namaichi
 			this.groupBox9.TabIndex = 1;
 			this.groupBox9.TabStop = false;
 			this.groupBox9.Text = "録画終了時";
+			// 
+			// isConfirmCloseMsgBoxChkBox
+			// 
+			this.isConfirmCloseMsgBoxChkBox.Location = new System.Drawing.Point(19, 144);
+			this.isConfirmCloseMsgBoxChkBox.Name = "isConfirmCloseMsgBoxChkBox";
+			this.isConfirmCloseMsgBoxChkBox.Size = new System.Drawing.Size(291, 19);
+			this.isConfirmCloseMsgBoxChkBox.TabIndex = 8;
+			this.isConfirmCloseMsgBoxChkBox.Text = "録画中に終了する場合、メッセージボックスで確認する";
+			this.isConfirmCloseMsgBoxChkBox.UseVisualStyleBackColor = true;
 			// 
 			// volumeText
 			// 
@@ -1863,24 +1881,6 @@ namespace namaichi
 			this.button4.Text = "キャンセル";
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
-			// 
-			// isConfirmCloseMsgBoxChkBox
-			// 
-			this.isConfirmCloseMsgBoxChkBox.Location = new System.Drawing.Point(19, 144);
-			this.isConfirmCloseMsgBoxChkBox.Name = "isConfirmCloseMsgBoxChkBox";
-			this.isConfirmCloseMsgBoxChkBox.Size = new System.Drawing.Size(291, 19);
-			this.isConfirmCloseMsgBoxChkBox.TabIndex = 8;
-			this.isConfirmCloseMsgBoxChkBox.Text = "録画中に終了する場合、メッセージボックスで確認する";
-			this.isConfirmCloseMsgBoxChkBox.UseVisualStyleBackColor = true;
-			// 
-			// isRestoreLocationChkBox
-			// 
-			this.isRestoreLocationChkBox.Location = new System.Drawing.Point(19, 443);
-			this.isRestoreLocationChkBox.Name = "isRestoreLocationChkBox";
-			this.isRestoreLocationChkBox.Size = new System.Drawing.Size(291, 19);
-			this.isRestoreLocationChkBox.TabIndex = 5;
-			this.isRestoreLocationChkBox.Text = "前回の終了位置にメインウィンドウを表示する";
-			this.isRestoreLocationChkBox.UseVisualStyleBackColor = true;
 			// 
 			// optionForm
 			// 

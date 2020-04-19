@@ -22,8 +22,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.10.24";
-	public static string versionDayStr = "2020/04/01";
+	public static string versionStr = "ver0.1.3.10.25";
+	public static string versionDayStr = "2020/04/19";
 	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);
@@ -217,15 +217,16 @@ class util {
 		else if (n == "7") return hiduke + "_" + host + "_" + group + "(" + communityNum + ")_" + title + "(" + lvId + ")";
 		else if (n == "8") return hiduke + "_" + group + "(" + communityNum + ")_" + host + "_" + title + "(" + lvId + ")";
 		else if (n == "9") return hiduke + "_" + title + "(" + lvId + ")_" + host + "_" + group + "(" + communityNum + ")";
-		else if (n == "10") return getDokujiSetteiFileName(host, group, title, lvId, communityNum, cfg.get("filenameformat"));
+		else if (n == "10") return getDokujiSetteiFileName(host, group, title, lvId, communityNum, cfg.get("filenameformat"), _hiduke);
 		else return host + "_" + communityNum + "(" + group + ")_" + lvId + "(" + title + ")";
 		
 		
 	}
-	public static string getDokujiSetteiFileName(string host, string group, string title, string lvId, string communityNum, string format) {
+	public static string getDokujiSetteiFileName(string host, string group, string title, string lvId, string communityNum, string format, DateTime _openTime) {
 		var type = format;
 		if (type == null) return "";
-		var dt = DateTime.Now;
+		//var dt = DateTime.Now;
+		var dt = _openTime;
 		var yearBuf = ("0000" + dt.Year.ToString());
 		var year2 = yearBuf.Substring(yearBuf.Length - 2);
 		var year4 = yearBuf.Substring(yearBuf.Length - 4);
@@ -252,13 +253,13 @@ class util {
 		type = type.Replace("{2}", host);
 		type = type.Replace("{3}", communityNum);
 		type = type.Replace("{4}", group);
-		
+		type = getOkFileName(type);
 		return type;
 		
 	}
 	public static string getFileNameTypeSample(string filenametype) {
 			//var format = cfg.get("filenameformat");
-			return getDokujiSetteiFileName("放送者名", "コミュ名", "タイトル", "lv12345", "co9876", filenametype);
+			return getDokujiSetteiFileName("放送者名", "コミュ名", "タイトル", "lv12345", "co9876", filenametype, DateTime.Now).Replace("{w}", "2").Replace("{c}", "1");
 		}
 	public static string getOkCommentFileName(config cfg, string fName, string lvid, bool isTimeShift) {
 		var kakutyousi = (cfg.get("IsgetcommentXml") == "true") ? ".xml" : ".json";

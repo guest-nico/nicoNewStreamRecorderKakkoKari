@@ -28,8 +28,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.87.80";
-	public static string versionDayStr = "2020/04/01";
+	public static string versionStr = "ver0.87.81";
+	public static string versionDayStr = "2020/04/19";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	
@@ -145,8 +145,10 @@ class util {
 			util.debugWriteLine(dirPath + " " + fName);
 			
 			if (!_isTimeShift) {
-				if (segmentSaveType == "0" && isExistAllExt(fName)) continue;
+				if (segmentSaveType == "0" && isExistAllExt(fName, dirPath)) continue;
 				else if (segmentSaveType == "1") {
+					isExistDirectory(fName, dirPath);
+					
 					if (Directory.Exists(fName)) continue;
 					Directory.CreateDirectory(fName);
 					if (!Directory.Exists(fName)) return null;
@@ -156,7 +158,7 @@ class util {
 				return reta;
 			} else {
 				if (isRtmp) {
-					if (isExistAllExt(fName)) continue;
+					if (isExistAllExt(fName, dirPath)) continue;
 					string[] reta = {dirPath, fName, originName};
 					return reta;
 				}
@@ -304,7 +306,7 @@ class util {
 	}
 	public static string getFileNameTypeSample(string filenametype) {
 			//var format = cfg.get("filenameformat");
-			return getDokujiSetteiFileName("放送者名", "コミュ名", "タイトル", "lv12345", "co9876", filenametype, DateTime.Now);
+			return getDokujiSetteiFileName("放送者名", "コミュ名", "タイトル", "lv12345", "co9876", filenametype, DateTime.Now).Replace("{w}", "2").Replace("{c}", "1");
 		}
 	public static string getOkCommentFileName(config cfg, string fName, string lvid, bool isTimeShift, bool isRtmp) {
 		var kakutyousi = (cfg.get("IsgetcommentXml") == "true") ? ".xml" : ".json";
@@ -471,12 +473,28 @@ class util {
 		var ret = new string[]{h, m, s};
 		return ret;
 	}
-	private static bool isExistAllExt(string fName) {
+	private static bool isExistAllExt(string fName, string folder) {
 		var ext = new string[] {".ts", ".xml", ".flv", ".avi", ".mp4",
 				".mov", ".wmv", ".vob", ".mkv", ".mp3",
 				".wav", ".wma", ".aac", ".ogg"};
-		foreach (var e in ext) 
-			if (File.Exists(fName + e)) return true;
+		var files = Directory.GetFiles(folder);
+		
+		foreach (var e in ext) {
+			var reg = new Regex(Regex.Escape(fName.Replace("\\", "/")).Replace("\\{w}", "\\d*").Replace("\\{c}", "\\d*") + e);
+			foreach (var f in files) {
+				if (reg.Match(f.Replace("\\", "/")).Success) return true;
+				
+				//if (File.Exists(fName + e)) return true;
+			}
+		}
+		return false;
+	}
+	private static bool isExistDirectory(string fName, string dirPath) {
+		var files = Directory.GetDirectories(dirPath);
+		foreach (var f in files) {
+			var reg = new Regex(Regex.Escape(fName.Replace("\\", "/")).Replace("\\{w}", "\\d*").Replace("\\{c}", "\\d*"));
+			if (reg.Match(f.Replace("\\", "/")).Success) return true;
+		}
 		return false;
 	}
 	public static string incrementRecFolderFile(string recFolderFile) {
@@ -799,14 +817,23 @@ class util {
 	}
 	public static string existFile(string[] files, string reg, string startWith) {
 //		var files = Directory.GetFiles(dirPath);
+		var startsReg = new Regex("^" + Regex.Escape(startWith).Replace("\\{w}", "\\d*").Replace("\\{c}", "\\d*"));
+		
 		foreach (var f in files) {
 			var _f = getRegGroup(f, ".+\\\\(.+)");
-			var isStartsWith = _f.StartsWith(startWith);
+			var nameLen = 0;
+			var isStartsWith = false;
+			if (startWith.IndexOf("{w}") > -1 || startWith.IndexOf("{c}") > -1) {
+				var m = startsReg.Match(_f);
+				isStartsWith = m.Success;
+				nameLen = m.Length;
+			} else {
+				isStartsWith = _f.StartsWith(startWith);
+				nameLen = startWith.Length;
+			}
 			if (!isStartsWith) continue;
-			var _reg = util.getRegGroup(_f.Substring(startWith.Length), reg);
+			var _reg = util.getRegGroup(_f.Substring(nameLen), reg);
 			if (_reg == null) continue;
-//			util.debugWriteLine(_f.StartsWith(startWith));
-//			util.debugWriteLine(util.getRegGroup(_f.Substring(startWith.Length), reg));
 			return f;
 //			if (issta_f.StartsWith(startWith) && 
 //			    util.getRegGroup(_f.Substring(startWith.Length), reg) != null) return f;

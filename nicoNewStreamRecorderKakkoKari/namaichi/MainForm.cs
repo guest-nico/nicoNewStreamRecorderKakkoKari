@@ -113,6 +113,8 @@ namespace namaichi
             //nicoSessionComboBox1.Selector.PropertyChanged += Selector_PropertyChanged;
 //            checkBoxShowAll.Checked = bool.Parse(config.get("isAllBrowserMode"));
 			//if (isInitRun) initRec();
+			//MessageBox.Show(config.get("Isminimized") + " " + config.get("Width") + " " + config.get("Height") + " " + config.get("X") + " " + config.get("Y"));
+			
 			try {
 				Width = int.Parse(config.get("Width"));
 				Height = int.Parse(config.get("Height"));
@@ -124,7 +126,7 @@ namespace namaichi
 				if (bool.Parse(config.get("IsRestoreLocation"))) {
 					var x = config.get("X");
 					var y = config.get("Y");
-					if (x != "" && y != "") {
+					if (x != "" && y != "" && int.Parse(x) >= 0 && int.Parse(y) >= 0) {
 						StartPosition = FormStartPosition.Manual;
 						Location = new Point(int.Parse(x), int.Parse(y));
 					}
@@ -282,50 +284,33 @@ namespace namaichi
        		addLogText(t);
         }
 		public void setRecordState(String t, string titleT = null) {
-       		if (!util.isShowWindow) return;
        		//util.debugWriteLine("setRecordState form");
-	       	try {
-	       		if (IsDisposed) return;
-	        	Invoke((MethodInvoker)delegate() {
-	       		    //util.debugWriteLine("setRecordState form after invoke");
-	       		    try {
-		        	    recordStateLabel.Text = t;
-		        	    if (rec.isTitleBarInfo) {
-		        	    	Text = titleT == null ? t : titleT;
-		        	    }
-	       		    } catch (Exception e) {
-	       		       	util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-	       		    }
-		        	   
-	        	    //recordStateLabel.AutoSize
-				});
-	       	} catch (Exception e) {
-       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-	       	}
+       		formAction(() => {
+		       	try {
+	        	    recordStateLabel.Text = t;
+	        	    if (rec.isTitleBarInfo) {
+	        	    	Text = titleT == null ? t : titleT;
+	        	    }
+		       	} catch (Exception e) {
+	       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+		       	}
+			});
 		}
        public void setRecordStateComplete() {
-       		if (!util.isShowWindow) return;
        		//util.debugWriteLine("setRecordState form");
-	       	try {
-	       		if (IsDisposed) return;
-	        	Invoke((MethodInvoker)delegate() {
-	       		    //util.debugWriteLine("setRecordState form after invoke");
-	       		    try {
-	       		    	var t = "(complete)";
-		        	    recordStateLabel.Text += t;
-		        	    if (rec.isTitleBarInfo) {
-		        	    	Text += t;
-		        	    }
-	       		    } catch (Exception e) {
-	       		       	util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-	       		    }
-		        	   
-	        	    //recordStateLabel.AutoSize
-				});
-	       	} catch (Exception e) {
-       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-	       	}
-       		//util.debugWriteLine("setRecordState ok");
+       		formAction(() => {
+		       	try {
+       		    	var t = "(complete)";
+       		    	//var per = util.getRegGroup(recordStateLabel, "(\\(\\d+%\\))");
+       		    	//recordStateLabel.Text = recordStateLabel.Text.Replace(per, "(100)"
+	        	    recordStateLabel.Text += t;
+	        	    if (rec.isTitleBarInfo) {
+	        	    	Text += t;
+	        	    }
+		       	} catch (Exception e) {
+	       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+		       	}
+			});
 		}
         private void initRec() {
         	//util.debugWriteLine(int.Parse(config.get("browserName")));
@@ -350,41 +335,33 @@ namespace namaichi
         		string group, string groupUrl, string title, string url, 
         		string gentei, string openTime, string description, bool isJikken, 
         		string endTime) {
-       		if (!util.isShowWindow) return;
        		util.debugWriteLine(hostUrl);
-       		
-	       	try {
-	       		if (IsDisposed) return;
-	        	Invoke((MethodInvoker)delegate() {
-	       		       	try {
-			       		    titleLabel.Links.Clear();
-			       		    hostLabel.Links.Clear();
-			       		    communityLabel.Links.Clear();
-			       		    
-			        	    titleLabel.Text = title;
-			        	    titleLabel.Links.Add(0, titleLabel.Text.Length, url);
-			        	    hostLabel.Text = host;
-			        	    if (hostUrl != null) {
-				        	    hostLabel.Links.Add(0, hostLabel.Text.Length, hostUrl);
+       		formAction(() => {
+		       	try {
+	       		    titleLabel.Links.Clear();
+	       		    hostLabel.Links.Clear();
+	       		    communityLabel.Links.Clear();
+	       		    
+	        	    titleLabel.Text = title;
+	        	    titleLabel.Links.Add(0, titleLabel.Text.Length, url);
+	        	    hostLabel.Text = host;
+	        	    if (hostUrl != null) {
+		        	    hostLabel.Links.Add(0, hostLabel.Text.Length, hostUrl);
 //				        	    hostLabel.LinkArea = new LinkArea(0, hostLabel.Text.Length);
-			        	    }
-			        	    communityLabel.Text = group;
-			        	    if (groupUrl != null) {
-			        	    	communityLabel.Links.Add(0, groupLabel.Text.Length, groupUrl);
-			        	    }
-			        	    genteiLabel.Text = gentei;
-			        	    startTimeLabel.Text = openTime;
-			        	    descriptLabel.Text = description;
-			        	    typeLabel.Text = (isJikken) ? "実験放送" : "ニコニコ生放送";
-			        	    endTimeLabel.Text = endTime;
-	       		       	} catch (Exception e) {
-	       		       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-	       		       	}
-				});
-	       	} catch (Exception e) {
-	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-	       	}
-       		//util.debugWriteLine(hostLabel.Text + " " + hostLabel.Links);
+	        	    }
+	        	    communityLabel.Text = group;
+	        	    if (groupUrl != null) {
+	        	    	communityLabel.Links.Add(0, groupLabel.Text.Length, groupUrl);
+	        	    }
+	        	    genteiLabel.Text = gentei;
+	        	    startTimeLabel.Text = openTime;
+	        	    descriptLabel.Text = description;
+	        	    typeLabel.Text = (isJikken) ? "実験放送" : "ニコニコ生放送";
+	        	    endTimeLabel.Text = endTime;
+		       	} catch (Exception e) {
+		       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+		       	}
+			});
 		}
 		public void setSamune(string url) {
        		if (!util.isShowWindow) return;
@@ -405,84 +382,61 @@ namespace namaichi
 				return;
 			}
 			
-			try {
-	        	Invoke((MethodInvoker)delegate() {
-       			       	try {
-						    samuneBox.Image = icon.ToBitmap();
-			//       			samuneBox.ImageLocation = url;
-							if (bool.Parse(config.get("IstitlebarSamune"))) {
-			        	    	this.Icon = icon;
-							}
-       			       	} catch (Exception e) {
-       			       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-       			       	}
-       			});
-			} catch (Exception e) {
-       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-       		}
+       		formAction(() => {
+				try {
+				    samuneBox.Image = icon.ToBitmap();
+	//       			samuneBox.ImageLocation = url;
+					if (bool.Parse(config.get("IstitlebarSamune"))) {
+	        	    	this.Icon = icon;
+					}
+				} catch (Exception e) {
+	       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+	       		}
+			});
 					
        			
 //       			Icon = new System.Drawing.Icon(url);
 			
 		}
        public void setKeikaJikan(string keikaJikan, string timeLabelStr, string stdIoStr, DateTime keikaTimeStart) {
-       		if (!util.isShowWindow) return;
-			try {
-				if (IsDisposed) return;
-				Invoke((MethodInvoker)delegate() {
-					try {
-						keikaTimeLabel.Text = keikaJikan;
-						player.setCtrlFormKeikaJikan(timeLabelStr);
-					} catch (Exception e) {
-						util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-					}
-				});
-			} catch (Exception e) {
-				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-			}
+       		formAction(() => {
+				try {
+					keikaTimeLabel.Text = keikaJikan;
+					player.setCtrlFormKeikaJikan(timeLabelStr);
+				} catch (Exception e) {
+					util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+				}
+			});
+       		//if (!util.isShowWindow) return;
        		if (util.isStdIO && keikaTimeStart != DateTime.MinValue)
        			//Console.WriteLine("info.keikaTime:" + stdIoStr);
        			Console.WriteLine("info.keikaTime:" + keikaTimeStart);
        }
 		public void setStatistics(string visit, string comment) {
-       		if (!util.isShowWindow) return;
-			try {
-			   	if (IsDisposed) return;
-			    	Invoke((MethodInvoker)delegate() {
-			   	       	try {
-			       			visitLabel.Text = visit;
-			       			commentLabel.Text = comment;
-			   	       	} catch (Exception e) {
-			   	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-			   	       	}
-					});
-			} catch (Exception e) {
-				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-			}
+       		formAction(() => {
+				try {
+	       			visitLabel.Text = visit;
+	       			commentLabel.Text = comment;
+				} catch (Exception e) {
+					util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+				}
+			});
 			player.setStatistics(visit, comment);
 		}
        public void addComment(string time, string comment, string userId, string score, string color) {
-       	if (!util.isShowWindow) return;
-       	if (!bool.Parse(config.get("IsDisplayComment"))) return;
-       	try {
-       		if (!IsDisposed) {
-		        	Invoke((MethodInvoker)delegate() {
-		       	       	try {
-			       	       	var rows = new string[]{time, comment};
-			       	       	commentList.Rows.Add(rows);
-			       	       	commentList.FirstDisplayedScrollingRowIndex = commentList.Rows.Count - 1;
-			       	       	while (commentList.Rows.Count > 20) {
-			       	       		commentList.Rows.RemoveAt(0);
-			       	       	}
-		       	       	} catch (Exception e) {
-		       	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-		       	       	}
-		       	       	
-					});
-       		}
-       	} catch (Exception e) {
-       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-       	}
+	       	if (!bool.Parse(config.get("IsDisplayComment"))) return;
+	       	formAction(() => {
+		       	try {
+	       	       	var rows = new string[]{time, comment};
+	       	       	commentList.Rows.Add(rows);
+	       	       	commentList.FirstDisplayedScrollingRowIndex = commentList.Rows.Count - 1;
+	       	       	while (commentList.Rows.Count > 20) {
+	       	       		commentList.Rows.RemoveAt(0);
+	       	       	}
+		       	} catch (Exception e) {
+		       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+		       	}
+			});
        	
 //       	player.addComment(time, comment, userId, score, color);
        }
@@ -604,6 +558,7 @@ namespace namaichi
 						config.set("Y", RestoreBounds.Y.ToString());
 					}
 				}
+				//MessageBox.Show("o " + originalSize + " " + this.WindowState + " l " + Location + " " + Width + " " + Height + " r " + RestoreBounds.X + " " + RestoreBounds.Y + " " + RestoreBounds.Width + " " + RestoreBounds.Height + " c " + config.get("X") + " " + config.get("Y"));
 
 			} catch(Exception e) {
 				util.debugWriteLine(e.Message + " " + e.StackTrace);
@@ -664,20 +619,13 @@ namespace namaichi
 			recordStateLabel.Text = "";
 		}
 		public void setTitle(string s) {
-			if (!util.isShowWindow) return;
-			try {
-				if (!IsDisposed) {
-		        	Invoke((MethodInvoker)delegate() {
-						try {
-					        Text = s;
-						} catch (Exception e) {
-		       	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-	       	       		}
-					});
-				}
-			} catch (Exception e) {
-				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
-	       	}
+			formAction(() => {
+				try {
+					Text = s;
+				} catch (Exception e) {
+					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+		       	}
+			});
 		}
 		
 		void PlayerBtnClick(object sender, EventArgs e)
@@ -685,20 +633,13 @@ namespace namaichi
 			player.play();
 		}
 		public void setPlayerBtnEnable(bool b) {
-			if (!util.isShowWindow) return;
-			try {
-				if (!IsDisposed) {
-		        	Invoke((MethodInvoker)delegate() {
-						try {
-					        playerBtn.Enabled = b;
-						} catch (Exception e) {
-		       	       		util.debugWriteLine("player btn enabled exception " + e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-	       	       		}
-					});
-				}
-			} catch (Exception e) {
-	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-	       	}
+			formAction(() => {
+				try {
+					playerBtn.Enabled = b;
+				} catch (Exception e) {
+		       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+		       	}
+			});
 		}
 		
 		
@@ -715,7 +656,7 @@ namespace namaichi
 				var a = util.getJarPath();
 				var desc = System.Diagnostics.FileVersionInfo.GetVersionInfo(util.getJarPath()[0] + "/websocket4net.dll");
 				if (desc.FileDescription != "WebSocket4Net for .NET 4.5 gettable data bytes") {
-					Invoke((MethodInvoker)delegate() {
+					formAction(() => {
 						System.Windows.Forms.MessageBox.Show("「WebSocket4Net.dll」をver0.86.9以降に同梱されているものと置き換えてください");
 					});
 				}
@@ -858,7 +799,7 @@ namespace namaichi
 		public void addLogTextDebug(string s) {
 			//addLogText(s, true);
 		}
-		public bool formAction(Action a) {
+		public bool formAction(Action a, bool isAsync = true) {
 			if (IsDisposed || !util.isShowWindow) return false;
 			
 			if (Thread.CurrentThread == madeThread) {
@@ -870,13 +811,15 @@ namespace namaichi
 				}
 			} else {
 				try {
-					Invoke((MethodInvoker)delegate() {
+					var r = BeginInvoke((MethodInvoker)delegate() {
 						try {    
 				       		a.Invoke();
 				       	} catch (Exception e) {
 							util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 						}
 					});
+					if (!isAsync) 
+						EndInvoke(r);
 				} catch (Exception e) {
 					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 					return false;

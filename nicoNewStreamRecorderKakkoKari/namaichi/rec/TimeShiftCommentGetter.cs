@@ -410,6 +410,8 @@ namespace namaichi.rec
 						((rm.cfg.get("IsgetcommentXml") == "true") ? ".xml" : ".json");
 				}
 				
+				if (rm.cfg.get("fileNameType") == "10")
+					fileName = fileName.Replace("{w}", rp.visitCount.ToString()).Replace("{c}", rp.commentCount.ToString());
 				using (var w = new StreamWriter(fileName + "_", false, System.Text.Encoding.UTF8)) {
 					if (isGetXml) {
 						w.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");

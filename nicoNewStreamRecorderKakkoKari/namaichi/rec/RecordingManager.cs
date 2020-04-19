@@ -75,7 +75,7 @@ namespace namaichi.rec
 	        			
             		} else {
 						if (lv == null) {
-							form.formAction(() => MessageBox.Show("not found lvid"));
+							form.formAction(() => MessageBox.Show("not found lvid"), false);
 							return;
 						}
 						startRecording(lv);
@@ -96,7 +96,7 @@ namespace namaichi.rec
 			
 				form.resetDisplay();
 				recordingUrl = form.urlText.Text;
-			});
+			}, false);
 			
 			rfu = new RecordFromUrl(this);
 			Task.Run(() => {
@@ -173,7 +173,7 @@ namespace namaichi.rec
 				} catch (Exception e) {
        				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
        			}
-            });
+            }, false);
 		}
 	}
 }

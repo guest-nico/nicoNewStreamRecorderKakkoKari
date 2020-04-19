@@ -208,6 +208,8 @@ namespace namaichi.rec
 			rm.hlsUrl = "end";
 //			rm.form.setPlayerBtnEnable(false);
 			
+			if (rm.cfg.get("fileNameType") == "10")
+				renameStatistics();
 			
 			if (engineMode == "0" && !isPlayOnlyMode) {
 				addDebugBuf("rec end shori gottslist count " + gotTsList.Count);
@@ -1025,7 +1027,9 @@ namespace namaichi.rec
 			ret += "bitrate= " + bitrate.ToString("0.0") + "kbits/s";
 			
 			if (isTimeShift && !((WebSocketRecorder)wr).isChase) {
-				ret = "(" + (int)((lastSegmentNo / 10) / allDuration) + "%) " + ret;
+				var per = (int)(((lastSegmentNo + 5000) / 10) / allDuration);
+				if (per > 100) per = 100;
+				ret = "(" + per + "%) " + ret;
 				//ret += "(" + (int)((lastSegmentNo / 10) / allDuration) + "%)";
 			}
 			var titleT = ret.Replace('\n', ' ');
@@ -1290,11 +1294,8 @@ namespace namaichi.rec
 			hlsSegM3uUrl = getHlsSegM3uUrl(baseMasterUrl);
 			rm.hlsUrl = hlsSegM3uUrl;
 			rm.form.setPlayerBtnEnable(true);
-			
-			
 				
 //			if (isFFmpegThrough()) realtimeFFmpeg = new RealTimeFFmpeg();
-			
 			while (rm.rfu == rfu && isRetry) {
 				if (isReConnecting) {
 					Thread.Sleep(100);
@@ -1347,6 +1348,9 @@ namespace namaichi.rec
 			if (isEndProgram && !((WebSocketRecorder)wr).isHokan) {
 				rm.form.addLogText("録画を完了しました");
 			}
+			if (rm.cfg.get("fileNameType") == "10")
+				renameStatistics();
+			
 			if (engineMode == "0" && !isPlayOnlyMode) {
 				if (isEndProgram && segmentSaveType == 0) {
 					renameWithoutTime(recFolderFile);
@@ -1661,6 +1665,32 @@ namespace namaichi.rec
 					recFolderFile = newName;
 					return;
 				}
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
+		}
+		private void renameStatistics() {
+			try {
+				if (File.Exists(recFolderFile + ".ts")) {
+					var newName = recFolderFile.Replace("{w}", ((WebSocketRecorder)wr).visitCount.ToString()).Replace("{c}", ((WebSocketRecorder)wr).commentCount);
+					File.Move(recFolderFile + ".ts", newName + ".ts");
+					recFolderFile = newName;
+				}
+				
+				try {
+					if (Directory.Exists(recFolderFile)) {
+						//Thread.Sleep(5000);
+						((WebSocketRecorder)wr).isRetry = false;
+						((WebSocketRecorder)wr).stopRecording();
+						//Thread.Sleep(2000);
+						var newName = recFolderFile.Replace("{w}", ((WebSocketRecorder)wr).visitCount.ToString()).Replace("{c}", ((WebSocketRecorder)wr).commentCount);
+						Directory.Move(recFolderFile, newName);
+						recFolderFile = newName;
+					}
+				} catch (Exception ee) {
+					util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+				}
+				
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}

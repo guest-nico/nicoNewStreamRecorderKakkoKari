@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace namaichi.rec
 {
@@ -22,6 +23,7 @@ namespace namaichi.rec
 		private RecordingManager rm;
 		private RecordFromUrl rfu;
 		private System.Diagnostics.Process process;
+		public string ext = ".ts";
 		
 		public AnotherEngineRecorder(RecordingManager rm, RecordFromUrl rfu)
 		{
@@ -101,6 +103,9 @@ namespace namaichi.rec
 				stopRecording();
 				Application.ApplicationExit -= e;
 				
+				if (rm.cfg.get("fileNameType") == "10")
+					renameStatistics(recFolderFile);
+				
 			} catch (Exception ee) {
 				util.debugWriteLine(ee.Message + ee.StackTrace);
 			}
@@ -157,11 +162,29 @@ namespace namaichi.rec
 		}
 		private string getAddedExtRecFilePath(string recFolderFile, string command) {
 			var r = new Regex("\\{o\\}(\\.\\S+)");
+			var m = r.Match(command);
+			if (m.Success) 
+				ext = m.Groups[1].ToString();
+			
 			command = r.Replace(command, "\"" + recFolderFile + "${1}\"");
 			command = command.Replace("{o}", "\"" + recFolderFile + ".ts\"");
 //			if (recFolderFile.IndexOf(" ") > -1) o = "\"" + o + "\"";
 //			_command = _command.Replace("{o}", o);
 			return command;
+		}
+		private void renameStatistics(string recFolderFile) {
+			try {
+				//if (File.Exists(recFolderFile + ext)) {
+					var newName = recFolderFile.Replace("{w}", rfu.h5r.wsr.visitCount.ToString()).Replace("{c}", rfu.h5r.wsr.commentCount) + ext;
+					if (File.Exists(newName)) 
+						return;
+						
+					File.Move(recFolderFile + ext , newName);
+					
+				//}
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
 		}
 	}
 }

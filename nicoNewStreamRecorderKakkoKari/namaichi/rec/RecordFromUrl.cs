@@ -81,7 +81,7 @@ namespace namaichi.rec
 				rm.form.addLogText("ログインに失敗しました。");
 				if (bool.Parse(rm.cfg.get("IsmessageBox")) && util.isShowWindow) {
 					rm.form.formAction(() => 
-							MessageBox.Show("ログインに失敗しました。\n" + lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None));
+							MessageBox.Show("ログインに失敗しました。\n" + lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None), false);
 				}
 				if (bool.Parse(rm.cfg.get("IsfailExit"))) {
 					rm.rfu = null;
@@ -181,7 +181,7 @@ namespace namaichi.rec
 					}
 					if (bool.Parse(rm.cfg.get("IsmessageBox")) && util.isShowWindow) {
 						var ret = rm.form.formAction(() =>
-								MessageBox.Show("コミュニティに入る必要があります：\nrequire_community_member/" + lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None));
+								MessageBox.Show("コミュニティに入る必要があります：\nrequire_community_member/" + lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None), false);
 						if (!ret) return 2;
 					}
 					if (bool.Parse(rm.cfg.get("IsfailExit"))) {
@@ -199,7 +199,7 @@ namespace namaichi.rec
 					DialogResult isYoyakuRes = DialogResult.None;
 					rm.form.formAction(() => {
 						isYoyakuRes = MessageBox.Show(rm.form, "この番組の視聴には予約が必要です。予約しますか？", "", MessageBoxButtons.YesNo);
-					});
+					}, false);
 					if (isYoyakuRes == DialogResult.No) return 2;
 					
 					var r = new Reservation(cc, lvid);
@@ -218,7 +218,7 @@ namespace namaichi.rec
 								var isOpenMypageRes = MessageBox.Show(rm.form, "予約リストが一杯です。マイページを開きますか？", "", MessageBoxButtons.YesNo);
 							    if (isOpenMypageRes == DialogResult.Yes) 
 									System.Diagnostics.Process.Start("https://live.nicovideo.jp/my");
-							});
+							}, false);
 						}
 						return 2;
 					}

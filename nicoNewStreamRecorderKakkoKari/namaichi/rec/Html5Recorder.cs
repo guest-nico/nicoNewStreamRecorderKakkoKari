@@ -295,6 +295,10 @@ namespace namaichi.rec
 				rm.wsr = wsr;
 				try {
 					isNoPermission = wsr.start();
+					
+					if (rm.cfg.get("fileNameType") == "10")
+						renameStatistics(rss);
+					
 					rm.wsr = null;
 					if (wsr.isEndProgram) {
 						if ((!isTimeShift || isChase) && rss.isWrite)
@@ -306,6 +310,7 @@ namespace namaichi.rec
 					rm.form.addLogText("録画中に予期せぬ問題が発生しました");
 					util.debugWriteLine("wsr start exception " + e.Message + e.StackTrace);
 				}
+				
 				
 				util.debugWriteLine(rm.rfu + " " + rfu + " " + (rm.rfu == rfu));
 				if (rm.rfu != rfu || isRtmp) break;
@@ -378,9 +383,9 @@ namespace namaichi.rec
 				if (bool.Parse(rm.cfg.get("IsmessageBox")) && util.isShowWindow) {
 					if (rm.form.IsDisposed) return 2;
 					try {
-			        	rm.form.Invoke((MethodInvoker)delegate() {
+						rm.form.formAction(() => {
 			       			MessageBox.Show("コミュニティに入る必要があります：\nrequire_community_member/" + lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None);
-						});
+						}, false);
 					} catch (Exception e) {
 			       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 			       	}
@@ -388,12 +393,11 @@ namespace namaichi.rec
 				if (bool.Parse(rm.cfg.get("IsfailExit")) && util.isShowWindow) {
 					rm.rfu = null;
 					try {
-						rm.form.Invoke((MethodInvoker)delegate() {
+						rm.form.formAction(() => {
 							try { rm.form.Close();} 
 							catch (Exception e) {
 		       	       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-						               }
-
+							}
 						});
 					} catch (Exception e) {
 			       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
@@ -412,7 +416,7 @@ namespace namaichi.rec
 				if (bool.Parse(rm.cfg.get("IsdeleteExit")) && util.isShowWindow) {
 					rm.rfu = null;
 					try {
-						rm.form.Invoke((MethodInvoker)delegate() {
+						rm.form.formAction(() => {
 			       			try { rm.form.Close();} 
 							catch (Exception e) {
 		       	       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
@@ -446,13 +450,13 @@ namespace namaichi.rec
 				var o = new TimeShiftOptionForm(lastFileTime, segmentSaveType, rm.cfg, isChase);
 				
 				try {
-					rm.form.Invoke((MethodInvoker)delegate() {
-		       		       	try {
-				        	    o.ShowDialog(rm.form);
-		       		       	} catch (Exception e) {
-		       		       		util.debugWriteLine("timeshift option form invoke " + e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
-		       		       	}
-					});
+					rm.form.formAction(() => {
+	       		       	try {
+			        	    o.ShowDialog(rm.form);
+	       		       	} catch (Exception e) {
+	       		       		util.debugWriteLine("timeshift option form invoke " + e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
+	       		       	}
+					}, false);
 				} catch (Exception e) {
 					util.debugWriteLine("timeshift option form invoke try " + e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 				}
@@ -535,6 +539,17 @@ namespace namaichi.rec
 			if (res == null) return false;
 			return res.IndexOf("<is_nonarchive_timeshift_enabled>1") > -1 ||
 				res.IndexOf("is_archiveplayserver>1") > -1;
+		}
+		private void renameStatistics(RecordStateSetter rss) {
+			try {
+				var watchCount = rss.watchCount.ToString();
+				var commentCount = rss.commentCount.ToString();
+				if (wsr.visitCount != "0") watchCount = wsr.visitCount;
+				if (wsr.commentCount != "0") commentCount = wsr.commentCount;
+				rss.renameStatistics(watchCount, commentCount);
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
 		}
 	}
 }

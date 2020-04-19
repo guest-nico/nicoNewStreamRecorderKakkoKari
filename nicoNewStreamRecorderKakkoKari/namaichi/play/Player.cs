@@ -193,7 +193,7 @@ namespace namaichi.play
 					
 					if (ctrl == null) {
 						ctrl = new defaultFFplayController(config, process, this);
-						form.formAction(() => ctrl.Show());
+						form.formAction(() => ctrl.Show(), false);
 	            	} else {
 	            		ctrl.process = process;
 	            		ctrl.reset();

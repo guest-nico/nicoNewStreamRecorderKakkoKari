@@ -37,6 +37,7 @@ namespace rokugaTouroku
 		private void InitializeComponent()
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.fileNameTypeLabel = new System.Windows.Forms.TextBox();
 			this.fileNameTypeText = new System.Windows.Forms.TextBox();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.fileNameTypeTitleBtn = new System.Windows.Forms.Button();
@@ -59,7 +60,8 @@ namespace rokugaTouroku
 			this.label2 = new System.Windows.Forms.Label();
 			this.FileNameTypeCancelBtn = new System.Windows.Forms.Button();
 			this.fileNameTypeOkBtn = new System.Windows.Forms.Button();
-			this.fileNameTypeLabel = new System.Windows.Forms.TextBox();
+			this.label15 = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -75,6 +77,14 @@ namespace rokugaTouroku
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "ファイル名の書式";
+			// 
+			// fileNameTypeLabel
+			// 
+			this.fileNameTypeLabel.Location = new System.Drawing.Point(6, 26);
+			this.fileNameTypeLabel.Name = "fileNameTypeLabel";
+			this.fileNameTypeLabel.ReadOnly = true;
+			this.fileNameTypeLabel.Size = new System.Drawing.Size(320, 19);
+			this.fileNameTypeLabel.TabIndex = 3;
 			// 
 			// fileNameTypeText
 			// 
@@ -139,6 +149,8 @@ namespace rokugaTouroku
 			// 
 			// groupBox3
 			// 
+			this.groupBox3.Controls.Add(this.label15);
+			this.groupBox3.Controls.Add(this.label1);
 			this.groupBox3.Controls.Add(this.label6);
 			this.groupBox3.Controls.Add(this.label5);
 			this.groupBox3.Controls.Add(this.label4);
@@ -283,13 +295,21 @@ namespace rokugaTouroku
 			this.fileNameTypeOkBtn.UseVisualStyleBackColor = true;
 			this.fileNameTypeOkBtn.Click += new System.EventHandler(this.fileNameTypeOkBtn_Click);
 			// 
-			// fileNameTypeLabel
+			// label15
 			// 
-			this.fileNameTypeLabel.Location = new System.Drawing.Point(6, 26);
-			this.fileNameTypeLabel.Name = "fileNameTypeLabel";
-			this.fileNameTypeLabel.ReadOnly = true;
-			this.fileNameTypeLabel.Size = new System.Drawing.Size(320, 19);
-			this.fileNameTypeLabel.TabIndex = 3;
+			this.label15.Location = new System.Drawing.Point(115, 98);
+			this.label15.Name = "label15";
+			this.label15.Size = new System.Drawing.Size(78, 18);
+			this.label15.TabIndex = 2;
+			this.label15.Text = "{c} コメント数";
+			// 
+			// label1
+			// 
+			this.label1.Location = new System.Drawing.Point(115, 80);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(78, 18);
+			this.label1.TabIndex = 1;
+			this.label1.Text = "{w} 来場者数";
 			// 
 			// fileNameOptionForm
 			// 
@@ -309,6 +329,8 @@ namespace rokugaTouroku
 			this.groupBox3.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label label15;
 		private System.Windows.Forms.Button fileNameTypeOkBtn;
 		private System.Windows.Forms.Button FileNameTypeCancelBtn;
 		private System.Windows.Forms.Label label11;
