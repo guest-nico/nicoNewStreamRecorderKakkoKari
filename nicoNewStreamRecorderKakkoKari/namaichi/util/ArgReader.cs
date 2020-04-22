@@ -119,7 +119,7 @@ namespace namaichi.utility
 						setName = keys[i];
 						return true;
 					} else {
-						form.addLogText(name + "の値が設定できませんでした(例 「0,1,2,5,4,3」) " + val, false);
+						form.addLogText(name + "の値が設定できませんでした(例 「0,1,2,4,3」) " + val, false);
 						return false;
 					}
 				}

@@ -270,11 +270,11 @@ namespace namaichi.rec
 				var rss = new RecordStateSetter(rm.form, rm, rfu, isTimeShift, false, recFolderFile, rm.isPlayOnlyMode, isRtmpOnlyPage, isChase);
 				Task.Run(() => {
 				       	rss.set(data, type, recFolderFileInfo);
+				       	
+				       	//hosoInfo
+						if (rm.cfg.get("IshosoInfo") == "true" && !rm.isPlayOnlyMode)
+							rss.writeHosoInfo();
 					});
-				
-				//hosoInfo
-				if (rm.cfg.get("IshosoInfo") == "true" && !rm.isPlayOnlyMode)
-					Task.Run(() => {rss.writeHosoInfo();});
 				
 				util.debugWriteLine("form disposed" + rm.form.IsDisposed);
 				util.debugWriteLine("recfolderfile test " + recFolderFileInfo);
