@@ -304,14 +304,9 @@ namespace namaichi.play
 				process2 = new Process();
 				var ffmpegSi = new ProcessStartInfo();
 //				ffmpegSi.FileName = "vlc.exe";
-//				exe = "C:\\Users\\zack\\Downloads\\MPC-HomeCinema.1.4.2824.0.x86\\MPC-HomeCinema.1.4.2824.0.x86\\mpc-hc.exe";
 				ffmpegSi.FileName = exe;
-//				ffmpegSi.FileName = "C:\\Users\\zack\\Desktop\\c#project\\nicoNewStreamRecorderKakkoKariRepo2 10.12 tuujou s\\nicoNewStreamRecorderKakkoKari\\namaichi\\bin\\Debug\\mpc\\mpc-be.exe";
-//				ffmpegSi.FileName = "C:\\Users\\zack\\Downloads\\MPC-HC.1.7.13.x64\\MPC-HC.1.7.13.x64\\mpc-hc64.exe";
-//				var ffmpegArg = "- /new";
 				
 				var ffmpegArg = "-";
-//				ffmpegArg = "-i " + args;
 				if (exe.ToLower().IndexOf("mpc-hc") > -1) ffmpegArg += " /new";
 				ffmpegSi.Arguments = ffmpegArg;
 				ffmpegSi.RedirectStandardInput = true;

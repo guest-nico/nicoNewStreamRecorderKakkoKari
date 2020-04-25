@@ -17,6 +17,9 @@
     <StartAction>Project</StartAction>
     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
     <ApplicationIcon>..\%28rec3.ico</ApplicationIcon>
+    <SignAssembly>False</SignAssembly>
+    <AssemblyOriginatorKeyFile>kari.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>False</DelaySign>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -28,9 +31,6 @@
     <Optimize>False</Optimize>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <SignAssembly>False</SignAssembly>
-    <AssemblyOriginatorKeyFile>kari.snk</AssemblyOriginatorKeyFile>
-    <DelaySign>False</DelaySign>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -39,9 +39,6 @@
     <Optimize>True</Optimize>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <DefineConstants>TRACE</DefineConstants>
-    <SignAssembly>False</SignAssembly>
-    <AssemblyOriginatorKeyFile>kari.snk</AssemblyOriginatorKeyFile>
-    <DelaySign>False</DelaySign>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <Prefer32Bit>false</Prefer32Bit>
@@ -56,9 +53,6 @@
     <Optimize>True</Optimize>
     <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
     <DefineConstants>TRACE</DefineConstants>
-    <SignAssembly>True</SignAssembly>
-    <AssemblyOriginatorKeyFile>kari.snk</AssemblyOriginatorKeyFile>
-    <DelaySign>False</DelaySign>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ondebugRelease|AnyCPU' ">
     <Prefer32Bit>false</Prefer32Bit>
@@ -270,6 +264,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="namaichi.sln" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings" />
   </ItemGroup>

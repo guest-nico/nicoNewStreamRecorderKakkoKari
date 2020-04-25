@@ -114,7 +114,6 @@ namespace rokugaTouroku.rec
 				ri.process = new Process();
 				var si = new ProcessStartInfo();
 				si.FileName = "ニコ生新配信録画ツール（仮.exe";
-				//si.FileName = "nicoNewStreamRecorderKakkoKari.exe";
 				var isGetComment = (ri.recComment == "映像＋コメント" || ri.recComment == "コメントのみ") ? " -IsgetComment=true" : " -IsgetComment=false";
 				var isGetRec = (ri.recComment == "映像＋コメント" || ri.recComment == "映像のみ") ? 
 					((rlm.cfg.get("EngineMode") == "3") ? " -EngineMode=0" : "") :
