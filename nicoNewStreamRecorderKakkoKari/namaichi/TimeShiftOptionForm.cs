@@ -23,8 +23,9 @@ namespace namaichi
 		private string segmentSaveType;
 		public TimeShiftConfig ret = null;
 		private config.config config;
+		private int prepTime = 0;
 		public TimeShiftOptionForm(string[] lastFileTime, 
-				string segmentSaveType, config.config config, bool isChase)
+				string segmentSaveType, config.config config, bool isChase, int prepTime)
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -70,14 +71,19 @@ namespace namaichi
 				lastFileInfoLabel.Visible = false;
 				isRenketuLastFile.Visible = false;
 			}
+			if (prepTime > 0) {
+				isOpenTimeBaseStartChkBox.Visible = 
+					isOpenTimeBaseEndChkBox.Visible = true;
+				this.prepTime = prepTime; 
+			}
 		}
 		private void updateTimeShiftStartTimeChkBox() {
 			//isRenketuLastFile.Enabled = !isStartTimeRadioBtn.Checked;
-			hText.Enabled = isStartTimeRadioBtn.Checked;
+			hText.Enabled = mText.Enabled = sText.Enabled =
+					isOpenTimeBaseStartChkBox.Enabled = 
+						isStartTimeRadioBtn.Checked;
 			//hLabel.Enabled = isStartTimeRadioBtn.Checked;
-			mText.Enabled = isStartTimeRadioBtn.Checked;
 			//mLabel.Enabled = isStartTimeRadioBtn.Checked;
-			sText.Enabled = isStartTimeRadioBtn.Checked;
 			//sLabel.Enabled = isStartTimeRadioBtn.Checked;
 		}	
 		void cancelBtn_Click(object sender, EventArgs e)
@@ -90,7 +96,6 @@ namespace namaichi
 			var startType = (isStartTimeRadioBtn.Checked || isMostStartTimeRadioBtn.Checked) ? 0 : 1;
 			var startTimeMode = (isMostStartTimeRadioBtn.Checked ? 0 :((isStartTimeRadioBtn.Checked) ? 1 : 2));
 			var endTimeMode = isEndTimeRadioBtn.Checked ? 0 : 1;
-			
 			
 			var _h = (startType == 0) ? hText.Text : lastFileTime[0];
 			var _m = (startType == 0) ? mText.Text : lastFileTime[1];
@@ -129,6 +134,14 @@ namespace namaichi
 			var timeSeconds = (startTimeMode == 1) ? (h * 3600 + m * 60 + s) : 0;
 			var endTimeSeconds = endH * 3600 + endM * 60 + endS;
 			if (endTimeMode == 0) endTimeSeconds = 0;
+			if (isOpenTimeBaseStartChkBox.Checked) {
+				timeSeconds += prepTime;
+				s += prepTime;
+			}
+			if (isOpenTimeBaseEndChkBox.Checked) {
+				endTimeSeconds += prepTime;
+				endS += prepTime;
+			}
 			if (endTimeMode == 1 && (endH != 0 || endM != 0 || endS != 0) && 
 			    	endTimeSeconds < timeSeconds) {
 				MessageBox.Show("終了時間が開始時間より前に設定されています");
@@ -175,6 +188,10 @@ namespace namaichi
 			l.Add(new KeyValuePair<string, string>("tsEndSecond", (formEndH * 3600 + formEndM * 60 + formEndS).ToString()));
 			l.Add(new KeyValuePair<string, string>("tsIsRenketu", isRenketuLastFile.Checked.ToString().ToLower()));
 			l.Add(new KeyValuePair<string, string>("IsVposStartTime", isSetVposStartTime.Checked.ToString().ToLower()));
+			if (prepTime > 0) {
+				l.Add(new KeyValuePair<string, string>("tsBaseOpenTimeStart", isOpenTimeBaseStartChkBox.Checked.ToString().ToLower()));
+				l.Add(new KeyValuePair<string, string>("tsBaseOpenTimeEnd", isOpenTimeBaseEndChkBox.Checked.ToString().ToLower()));
+			}
 			config.set(l);
 			/*
 			config.set("IsUrlList", isUrlList.ToString().ToLower());
@@ -239,7 +256,8 @@ namespace namaichi
 		}
 		void updateIsManualEndTimeRadioBtn() {
 			endHText.Enabled = endMText.Enabled = 
-					endSText.Enabled = isManualEndTimeRadioBtn.Checked;
+					endSText.Enabled = isOpenTimeBaseEndChkBox.Enabled =  
+					isManualEndTimeRadioBtn.Checked;
 			
 		}
 		private void setFormFromConfig() {
@@ -261,6 +279,10 @@ namespace namaichi
 			isRenketuLastFile.Checked = bool.Parse(config.get("tsIsRenketu"));
 			isSetVposStartTime.Checked = bool.Parse(config.get("IsVposStartTime"));
 			
+			if (prepTime > 0) {
+				isOpenTimeBaseStartChkBox.Checked = bool.Parse(config.get("tsBaseOpenTimeStart"));
+				isOpenTimeBaseEndChkBox.Checked = bool.Parse(config.get("tsBaseOpenTimeStart"));
+			}
 		}
 		
 		void ResetBtnClick(object sender, EventArgs e)
@@ -275,6 +297,8 @@ namespace namaichi
 			endSText.Text = "0";
 			isRenketuLastFile.Checked = false;
 			isSetVposStartTime.Checked = true;
+			isOpenTimeBaseStartChkBox.Checked = false;
+			isOpenTimeBaseEndChkBox.Checked = false;
 		}
 		
 		void LastSettingBtnClick(object sender, EventArgs e)

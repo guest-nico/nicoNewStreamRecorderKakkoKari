@@ -35,7 +35,7 @@ namespace namaichi.rec
 		private string lvid;
 		public bool isPremium = false;
 		private string programType;
-		private CookieContainer container;
+		public CookieContainer container;
 		public string[] recFolderFile;
 		private RecordingManager rm;
 		private RecordFromUrl rfu;
@@ -185,20 +185,13 @@ namespace namaichi.rec
 				
 			}
 			
-			
 //			userId = util.getRegGroup(webSocketInfo[0], "audience_token=.+?_(.+?)_");
-			
-			addDebugBuf("rm.rfu dds6 " + rm.rfu);
-			
+
 			addDebugBuf("ws main " + ws + " a " + (ws == null));
 			
 			if (!isRtmpOnlyPage && !(isChase && !isSaveComment))
 				displaySchedule();
 			
-			
-//			while (ws.State != WebSocket4Net.WebSocketState.Closed) {
-//			while (rm.rfu == rfu && ws != null && isRetry && 
-//			       (rec == null || !rec.isStopRead())) {
 			WebSocket lastWebSocket = null;
 			var stopWsCount = 0;
 			var lastSendRequired = DateTime.Now;
@@ -210,9 +203,6 @@ namespace namaichi.rec
 					break;
 				}
 				*/
-//				if (rec != null) 
-//					addDebugBuf("isStopread " + rec.isStopRead());
-				
 				
 				if (!isRtmp && ws.State == WebSocket4Net.WebSocketState.Closed) {
 					addDebugBuf("no connect loop ws close");
@@ -936,8 +926,12 @@ namespace namaichi.rec
 				commentSW = null;
 				lastSaveComments.Clear();
 				try {
-					if (rm.cfg.get("fileNameType") == "10")
-						File.Move(name, name.Replace("{w}", visitCount.ToString()).Replace("{c}", commentCount));
+					if (rm.cfg.get("fileNameType") == "10" && (name.IndexOf("{w}") > -1 || name.IndexOf("{c}") > -1)) {
+						Task.Run(() => {
+				         	setRealTimeStatistics();
+				         	File.Move(name, name.Replace("{w}", visitCount.Replace("-", "")).Replace("{c}", commentCount.Replace("-", "")));
+						});
+					}
 				} catch (Exception e) {
 					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
@@ -1522,6 +1516,23 @@ namespace namaichi.rec
 		private void writeXmlStreamInfo(StreamWriter w) {
 			w.WriteLine("<packet xmlns=\"http://posite-c.jp/niconamacommentviewer/commentlog/\">");
 			w.WriteLine("<RoomLabel>" + roomName + "</RoomLabel>");
+		}
+		public void setRealTimeStatistics() {
+			try {
+				if (!visitCount.StartsWith("-")) {
+			    	Thread.Sleep(10000);
+			    	string visit, comment;
+			    	var ret = util.getStatistics(rfu.lvid, container, out visit, out comment);
+			    	if (ret) {
+			    		if (!visitCount.StartsWith("-")) {
+				    		visitCount = "-" + visit;
+				    		commentCount = "-" + comment;
+			    		}
+			    	}
+			    }
+			} catch (Exception e) {
+				addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
 		}
 	}
 }

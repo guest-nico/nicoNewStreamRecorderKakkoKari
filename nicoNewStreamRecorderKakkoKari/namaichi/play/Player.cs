@@ -305,8 +305,10 @@ namespace namaichi.play
 				var ffmpegSi = new ProcessStartInfo();
 //				ffmpegSi.FileName = "vlc.exe";
 				ffmpegSi.FileName = exe;
+//				var ffmpegArg = "- /new";
 				
 				var ffmpegArg = "-";
+//				ffmpegArg = "-i " + args;
 				if (exe.ToLower().IndexOf("mpc-hc") > -1) ffmpegArg += " /new";
 				ffmpegSi.Arguments = ffmpegArg;
 				ffmpegSi.RedirectStandardInput = true;

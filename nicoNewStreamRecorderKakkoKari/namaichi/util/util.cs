@@ -28,8 +28,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.87.82";
-	public static string versionDayStr = "2020/04/22";
+	public static string versionStr = "ver0.87.83";
+	public static string versionDayStr = "2020/04/26";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	
@@ -1172,5 +1172,18 @@ class util {
 		}
 		if (msg == "") return;
 		form.formAction(() => MessageBox.Show(path + "“à‚É" + msg + "‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½"));
+	}
+	public static bool getStatistics(string lvid, CookieContainer cc, out string visit, out string comment) {
+		visit = "0";
+		comment = "0";
+		var url = "https://live2.nicovideo.jp/watch/" + lvid;
+		var res = getPageSource(url, cc);
+		if (res == null) return false;
+		var _visit = util.getRegGroup(res, "statistics&quot;:{&quot;watchCount&quot;:(\\d+),&quot;commentCount&quot;:\\d+}");
+		var _comment = util.getRegGroup(res, "statistics&quot;:{&quot;watchCount&quot;:\\d+,&quot;commentCount&quot;:(\\d+)}");
+		if (_visit == null || _comment == null) return false;
+		visit = _visit;
+		comment = _comment;
+		return true;
 	}
 }

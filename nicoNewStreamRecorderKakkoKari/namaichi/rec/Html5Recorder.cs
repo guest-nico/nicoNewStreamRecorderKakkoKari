@@ -239,7 +239,7 @@ namespace namaichi.rec
 					if (rm.argTsConfig != null) {
 						timeShiftConfig = getReadyArgTsConfig(rm.argTsConfig.clone(), recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], openTime);
 					} else {
-						timeShiftConfig = getTimeShiftConfig(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, openTime, isChase);
+						timeShiftConfig = getTimeShiftConfig(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, openTime, isChase, _openTime);
 						if (timeShiftConfig == null) return 2;
 //							rm.cfg.set("IsUrlList", timeShiftConfig.isOutputUrlList.ToString().ToLower());
 //							rm.cfg.set("openUrlListCommand", timeShiftConfig.openListCommand);
@@ -296,7 +296,7 @@ namespace namaichi.rec
 				try {
 					isNoPermission = wsr.start();
 					
-					if (rm.cfg.get("fileNameType") == "10")
+					if (rm.cfg.get("fileNameType") == "10" && (recFolderFile[1].IndexOf("{w}") > -1 || recFolderFile[1].IndexOf("{c}") > -1))
 						renameStatistics(rss);
 					
 					rm.wsr = null;
@@ -435,11 +435,12 @@ namespace namaichi.rec
 		}
 		
 		private TimeShiftConfig getTimeShiftConfig(string host, 
-			string group, string title, string lvId, string communityNum, 
-			string userId, config.config cfg, long _openTime, bool isChase) {
+				string group, string title, string lvId, string communityNum, 
+				string userId, config.config cfg, long startTime, bool isChase, 
+				long openTime) {
 			var segmentSaveType = cfg.get("segmentSaveType");
 			var lastFile = util.getLastTimeshiftFileName(host,
-					group, title, lvId, communityNum, userId, cfg, _openTime);
+					group, title, lvId, communityNum, userId, cfg, startTime);
 			util.debugWriteLine("timeshift lastfile " + lastFile);
 			string[] lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType);
 			if (lastFileTime == null)
@@ -447,7 +448,8 @@ namespace namaichi.rec
 				                    ((lastFileTime == null) ? "null" : string.Join(" ", lastFileTime)));
 			
 			try {
-				var o = new TimeShiftOptionForm(lastFileTime, segmentSaveType, rm.cfg, isChase);
+				var prepTime = (int)(startTime - openTime);
+				var o = new TimeShiftOptionForm(lastFileTime, segmentSaveType, rm.cfg, isChase, prepTime);
 				
 				try {
 					rm.form.formAction(() => {
@@ -542,11 +544,9 @@ namespace namaichi.rec
 		}
 		private void renameStatistics(RecordStateSetter rss) {
 			try {
-				var watchCount = rss.watchCount.ToString();
-				var commentCount = rss.commentCount.ToString();
-				if (wsr.visitCount != "0") watchCount = wsr.visitCount;
-				if (wsr.commentCount != "0") commentCount = wsr.commentCount;
-				rss.renameStatistics(watchCount, commentCount);
+				wsr.setRealTimeStatistics();
+				
+				rss.renameStatistics(wsr.visitCount.Replace("-", ""), wsr.commentCount.Replace("-", ""));
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}

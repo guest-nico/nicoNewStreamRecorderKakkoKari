@@ -196,6 +196,8 @@ public class config
 			{"tsEndTimeMode","0"},
 			{"tsStartSecond","0"},
 			{"tsEndSecond","0"},
+			{"tsBaseOpenTimeStart","false"},
+			{"tsBaseOpenTimeEnd","false"},
 			{"tsIsRenketu","false"},
 			{"IsVposStartTime","true"},
 			

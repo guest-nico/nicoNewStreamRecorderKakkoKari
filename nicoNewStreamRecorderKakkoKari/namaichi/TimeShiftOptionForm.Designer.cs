@@ -37,6 +37,7 @@ namespace namaichi
 		private void InitializeComponent()
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.isOpenTimeBaseStartChkBox = new System.Windows.Forms.CheckBox();
 			this.isMostStartTimeRadioBtn = new System.Windows.Forms.RadioButton();
 			this.isSetVposStartTime = new System.Windows.Forms.CheckBox();
 			this.isRenketuLastFile = new System.Windows.Forms.CheckBox();
@@ -66,6 +67,7 @@ namespace namaichi
 			this.resetBtn = new System.Windows.Forms.Button();
 			this.lastSettingBtn = new System.Windows.Forms.Button();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.isOpenTimeBaseEndChkBox = new System.Windows.Forms.CheckBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.endSText = new System.Windows.Forms.TextBox();
@@ -84,6 +86,7 @@ namespace namaichi
 			// groupBox1
 			// 
 			this.groupBox1.BackColor = System.Drawing.SystemColors.Window;
+			this.groupBox1.Controls.Add(this.isOpenTimeBaseStartChkBox);
 			this.groupBox1.Controls.Add(this.isMostStartTimeRadioBtn);
 			this.groupBox1.Controls.Add(this.isSetVposStartTime);
 			this.groupBox1.Controls.Add(this.isRenketuLastFile);
@@ -102,6 +105,16 @@ namespace namaichi
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "録画開始時間";
+			// 
+			// isOpenTimeBaseStartChkBox
+			// 
+			this.isOpenTimeBaseStartChkBox.Location = new System.Drawing.Point(189, 45);
+			this.isOpenTimeBaseStartChkBox.Name = "isOpenTimeBaseStartChkBox";
+			this.isOpenTimeBaseStartChkBox.Size = new System.Drawing.Size(135, 15);
+			this.isOpenTimeBaseStartChkBox.TabIndex = 7;
+			this.isOpenTimeBaseStartChkBox.Text = "開演時間を基準にする";
+			this.isOpenTimeBaseStartChkBox.UseVisualStyleBackColor = true;
+			this.isOpenTimeBaseStartChkBox.Visible = false;
 			// 
 			// isMostStartTimeRadioBtn
 			// 
@@ -374,6 +387,7 @@ namespace namaichi
 			// groupBox2
 			// 
 			this.groupBox2.BackColor = System.Drawing.SystemColors.Window;
+			this.groupBox2.Controls.Add(this.isOpenTimeBaseEndChkBox);
 			this.groupBox2.Controls.Add(this.label1);
 			this.groupBox2.Controls.Add(this.label6);
 			this.groupBox2.Controls.Add(this.endSText);
@@ -383,12 +397,22 @@ namespace namaichi
 			this.groupBox2.Controls.Add(this.endHText);
 			this.groupBox2.Controls.Add(this.isManualEndTimeRadioBtn);
 			this.groupBox2.Controls.Add(this.isEndTimeRadioBtn);
-			this.groupBox2.Location = new System.Drawing.Point(6, 206);
+			this.groupBox2.Location = new System.Drawing.Point(5, 206);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(329, 108);
 			this.groupBox2.TabIndex = 28;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "録画終了時間";
+			// 
+			// isOpenTimeBaseEndChkBox
+			// 
+			this.isOpenTimeBaseEndChkBox.Location = new System.Drawing.Point(189, 45);
+			this.isOpenTimeBaseEndChkBox.Name = "isOpenTimeBaseEndChkBox";
+			this.isOpenTimeBaseEndChkBox.Size = new System.Drawing.Size(135, 15);
+			this.isOpenTimeBaseEndChkBox.TabIndex = 7;
+			this.isOpenTimeBaseEndChkBox.Text = "開演時間を基準にする";
+			this.isOpenTimeBaseEndChkBox.UseVisualStyleBackColor = true;
+			this.isOpenTimeBaseEndChkBox.Visible = false;
 			// 
 			// label1
 			// 
@@ -496,6 +520,8 @@ namespace namaichi
 			this.groupBox2.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox isOpenTimeBaseEndChkBox;
+		private System.Windows.Forms.CheckBox isOpenTimeBaseStartChkBox;
 		private System.Windows.Forms.Button lastSettingBtn;
 		private System.Windows.Forms.Button resetBtn;
 		private System.Windows.Forms.RadioButton isMostStartTimeRadioBtn;

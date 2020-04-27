@@ -208,7 +208,7 @@ namespace namaichi.rec
 			rm.hlsUrl = "end";
 //			rm.form.setPlayerBtnEnable(false);
 			
-			if (rm.cfg.get("fileNameType") == "10")
+			if (rm.cfg.get("fileNameType") == "10" && (recFolderFile.IndexOf("{w}") > -1 || recFolderFile.IndexOf("{c}") > -1))
 				renameStatistics();
 			
 			if (engineMode == "0" && !isPlayOnlyMode) {
@@ -1348,7 +1348,7 @@ namespace namaichi.rec
 			if (isEndProgram && !((WebSocketRecorder)wr).isHokan) {
 				rm.form.addLogText("録画を完了しました");
 			}
-			if (rm.cfg.get("fileNameType") == "10")
+			if (rm.cfg.get("fileNameType") == "10" && (recFolderFile.IndexOf("{w}") > -1 || recFolderFile.IndexOf("{c}") > -1))
 				renameStatistics();
 			
 			if (engineMode == "0" && !isPlayOnlyMode) {
@@ -1671,8 +1671,11 @@ namespace namaichi.rec
 		}
 		private void renameStatistics() {
 			try {
+				var wsr = (WebSocketRecorder)wr;
+				wsr.setRealTimeStatistics();
+				
 				if (File.Exists(recFolderFile + ".ts")) {
-					var newName = recFolderFile.Replace("{w}", ((WebSocketRecorder)wr).visitCount.ToString()).Replace("{c}", ((WebSocketRecorder)wr).commentCount);
+					var newName = recFolderFile.Replace("{w}", wsr.visitCount.Replace("-", "")).Replace("{c}", wsr.commentCount.Replace("-", ""));
 					File.Move(recFolderFile + ".ts", newName + ".ts");
 					recFolderFile = newName;
 				}
@@ -1680,10 +1683,10 @@ namespace namaichi.rec
 				try {
 					if (Directory.Exists(recFolderFile)) {
 						//Thread.Sleep(5000);
-						((WebSocketRecorder)wr).isRetry = false;
-						((WebSocketRecorder)wr).stopRecording();
+						wsr.isRetry = false;
+						wsr.stopRecording();
 						//Thread.Sleep(2000);
-						var newName = recFolderFile.Replace("{w}", ((WebSocketRecorder)wr).visitCount.ToString()).Replace("{c}", ((WebSocketRecorder)wr).commentCount);
+						var newName = recFolderFile.Replace("{w}", wsr.visitCount.Replace("-", "")).Replace("{c}", wsr.commentCount.Replace("-", ""));
 						Directory.Move(recFolderFile, newName);
 						recFolderFile = newName;
 					}

@@ -103,7 +103,7 @@ namespace namaichi.rec
 				stopRecording();
 				Application.ApplicationExit -= e;
 				
-				if (rm.cfg.get("fileNameType") == "10")
+				if (rm.cfg.get("fileNameType") == "10" && (recFolderFile.IndexOf("{w}") > -1 || recFolderFile.IndexOf("{c}") > -1)) 
 					renameStatistics(recFolderFile);
 				
 			} catch (Exception ee) {
@@ -174,14 +174,18 @@ namespace namaichi.rec
 		}
 		private void renameStatistics(string recFolderFile) {
 			try {
-				//if (File.Exists(recFolderFile + ext)) {
-					var newName = recFolderFile.Replace("{w}", rfu.h5r.wsr.visitCount.ToString()).Replace("{c}", rfu.h5r.wsr.commentCount) + ext;
+				Task.Run(() => {
+				    var wsr = rfu.h5r.wsr;
+				    wsr.setRealTimeStatistics();
+					
+				    //File.Move(name, name.Replace("{w}", visitCount.Replace("-", "")).Replace("{c}", commentCount.Replace("-", "")));
+				    var newName = recFolderFile.Replace("{w}", wsr.visitCount.Replace("-", "")).Replace("{c}", wsr.commentCount.Replace("-", "")) + ext;
 					if (File.Exists(newName)) 
 						return;
 						
 					File.Move(recFolderFile + ext , newName);
-					
-				//}
+				});
+
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}

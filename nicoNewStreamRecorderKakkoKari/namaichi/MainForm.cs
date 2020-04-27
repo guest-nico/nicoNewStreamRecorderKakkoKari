@@ -61,29 +61,17 @@ namespace namaichi
 		{
 			madeThread = Thread.CurrentThread;
 			
-			//config.set("IsHokan", "false");
-			
-			//test
-			//app.form = this;
-			
-			//args = new String[]{"lv325057380", ""};
 			//args = new String[]{"lv324583435", "-chase", "-ts-end=1m"};
 			//args = "-nowindo -stdIO -IsmessageBox=false -IscloseExit=true lv316762771 -ts-start=1785s -ts-end=0s -ts-list=false -ts-list-m3u8=false -ts-list-update=5 -ts-list-open=false -ts-list-command=\"notepad{i}\" -ts-vpos-starttime=true -afterConvertMode=4 -qualityRank=0,1,2,3,4,5 -IsLogFile=true".Split(' ');
 			//read std
 			if (Array.IndexOf(args, "-std-read") > -1) startStdRead();
 			
-//			#if !DEBUGE
-//				if (config.get("IsLogFile") == "true") 
-//					config.set("IsLogFile", "false");
-//			#endif
 			/*
 			if (false && !isFullAccessDirectory()) {
 				MessageBox.Show("このディレクトリーにはファイルの読み書き権限がありませんでした。別のフォルダに移すかフォルダに権限を付与してください。");
 				System.Environment.Exit(0);
 			}
 			*/
-			
-				
 			
 			System.Diagnostics.Debug.Listeners.Clear();
 			System.Diagnostics.Debug.Listeners.Add(new Logger.TraceListener());
@@ -93,10 +81,6 @@ namespace namaichi
 			defIcon = Icon;
 			
 			this.args = args;
-			
-			//args = new string[]{"a", "-qualityrank=1,2,3,4,5,0", "lv315967820", "-istitlebarinfo=False", "-ts-start=25h2m", "-openUrlListCommand=notepad"};
-			//args = new string[]{"Debug_1.ts"};
-			//args = new String[]{"lv321193806", "-ischase=true", "-ts-start=0s"};
 			
 			rec = new rec.RecordingManager(this, config);
 			player = new Player(this, config);

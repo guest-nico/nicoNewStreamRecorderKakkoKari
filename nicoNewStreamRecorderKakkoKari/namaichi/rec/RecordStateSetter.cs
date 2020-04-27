@@ -257,7 +257,10 @@ namespace namaichi.rec
 			var newName = (recFolderFile[2] + ext).Replace("{w}", watchCount).Replace("{c}", commentCount);
 			try {
 				if (!File.Exists(recFolderFile[2] + ext)) return;
-				if (File.Exists(newName)) File.Delete(newName);
+				if (newName == recFolderFile[2] + ext)
+					return;
+				if (File.Exists(newName) && File.Exists(recFolderFile[2] + ext)) 
+					File.Delete(newName);
 				File.Move(recFolderFile[2] + ext, newName);
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
