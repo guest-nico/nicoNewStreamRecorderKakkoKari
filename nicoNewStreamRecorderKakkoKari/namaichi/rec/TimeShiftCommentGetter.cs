@@ -48,12 +48,15 @@ namespace namaichi.rec
 		string waybackKey;
 		int gotMinTime;
 		string[] gotMinXml = new string[2];
+		int _gotMinTime;
+		string[] _gotMinXml = new string[2];
 		int when = 0;
 		int lastLastRes = int.MaxValue;
 		string threadLine;
 		bool isGetXml = true;
 		bool isGetCommentXmlInfo = false;
 		List<GotCommentInfo> gotCommentList = new List<GotCommentInfo>();
+		List<GotCommentInfo> gotCommentListBuf = new List<GotCommentInfo>();
 		
 		//private StreamWriter commentSW;
 		private string fileName;
@@ -147,6 +150,8 @@ namespace namaichi.rec
 				connect();
 				util.debugWriteLine("ms start");
 			});
+			
+			
 		}
 		bool connect() {
 			util.debugWriteLine("connect tscg ms");
@@ -156,6 +161,7 @@ namespace namaichi.rec
 				
 				var header =  new List<KeyValuePair<string, string>>();
 				header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Protocol", "msg.nicovideo.jp#json"));
+				header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Version", "13"));
 				//wsc = new WebSocket(msUri,  "", null, header, "", "", WebSocketVersion.Rfc6455);
 				//wsc = new WebSocket(uri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
 				wsc = new WebSocket(uri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.None);
@@ -175,6 +181,10 @@ namespace namaichi.rec
 		}
 		private void onWscOpen(object sender, EventArgs e) {
 			util.debugWriteLine("ms open a");
+			
+			_gotMinTime = gotMinTime;
+			_gotMinXml = new String[]{gotMinXml[0], gotMinXml[1]};
+			
 			var req = getReq("-1000");
 			wsc.Send(req);
 			util.debugWriteLine("ms open b " + req);
@@ -189,7 +199,7 @@ namespace namaichi.rec
 		}
 		
 		private void onWscClose(object sender, EventArgs e) {
-			util.debugWriteLine("ms tscg onclose " + lastLastRes);
+			util.debugWriteLine("ms tscg onclose " + lastLastRes + " " + gotCommentList.Count);
 			//closeWscProcess();
 			wsc = null;
 			try {
@@ -219,12 +229,19 @@ namespace namaichi.rec
 		private void onWscError(object sender, SuperSocket.ClientEngine.ErrorEventArgs e) {
 			util.debugWriteLine("ms onerror");
 			gotCommentList = new List<TimeShiftCommentGetter.GotCommentInfo>();
+			gotCommentListBuf = new List<TimeShiftCommentGetter.GotCommentInfo>();
 			gotMinTime = util.getUnixTime();
 			gotMinXml = new string[2];
+			_gotMinTime = util.getUnixTime();
+			_gotMinXml = new string[2];
 			gotCount = 0;
 		}
+		
+		
+		
 		private void onWscMessageReceive(object sender, MessageReceivedEventArgs e) {
 			var eMessage = isConvertSpace ? util.getOkSJisOut(e.Message, " ") : e.Message;
+			
 			try {
 				if (rm.rfu != rfu || !isRetry) {
 					try {
@@ -264,6 +281,11 @@ namespace namaichi.rec
 				if (chatinfo.root == "chat" && (chatinfo.contents.IndexOf("/hb ifseetno") != -1 && 
 						chatinfo.premium == "3")) return;
 				if (chatinfo.root == "ping" && chatinfo.contents.IndexOf("rf:") > -1) {
+					//var addList = gotCommentListBuf.Where((a) => gotCommentList.IndexOf(a) == -1);
+					gotCommentList.AddRange(gotCommentListBuf);
+					gotCommentListBuf = new List<GotCommentInfo>();
+					gotMinTime = _gotMinTime;
+					gotMinXml = _gotMinXml;
 					wsc.Close();
 				}
 				if (chatinfo.root != "chat" && chatinfo.root != "thread") return;
@@ -284,15 +306,21 @@ namespace namaichi.rec
 				}
 	//			util.debugWriteLine(chatXml.ToString());
 	//			util.debugWriteLine(gotMinXml[1]);
-				if (chatXml.ToString().Equals(gotMinXml[1])) {
-					
+	
+				
+				if (chatXml.ToString().Equals(_gotMinXml[1])) {
 					isSave = false;
+					//var addList = gotCommentListBuf.Where((a) => gotCommentList.IndexOf(a) == -1);
+					gotCommentList.AddRange(gotCommentListBuf);
+					gotCommentListBuf = new List<GotCommentInfo>();
+					gotMinTime = _gotMinTime;
+					gotMinXml = _gotMinXml;
 				}
 				if (!isSave) return;
-				if (chatinfo.root == "chat" && chatinfo.date < gotMinTime) {
-					gotMinTime = chatinfo.date;
-					gotMinXml[1] = gotMinXml[0];
-					gotMinXml[0] = chatXml.ToString();
+				if (chatinfo.root == "chat" && chatinfo.date < _gotMinTime) {
+					_gotMinTime = chatinfo.date;
+					_gotMinXml[1] = _gotMinXml[0];
+					_gotMinXml[0] = chatXml.ToString();
 				}
 				
 	
@@ -319,17 +347,21 @@ namespace namaichi.rec
 	//		            	commentSW.Flush();
 	//		            	gotCount++;
 	//		            	if (gotCount % 2000 == 0) form.addLogText(gotCount + "件のコメントを保存しました");
-							gotCommentList.Add(new GotCommentInfo(s, chatinfo.no, chatinfo.date));
+							gotCommentListBuf.Add(new GotCommentInfo(s, chatinfo.no, chatinfo.date, chatinfo.vpos));
 							gotCount++;
 			            	
-			            	if (gotCount % 2000 == 0 && !rm.isPlayOnlyMode) form.addLogText(gotCount + "件のコメントを保存しました");
+							if (gotCount % 2000 == 0 && !rm.isPlayOnlyMode) {
+								form.addLogText(gotCount + "件のコメントを保存しました");
+								gotCommentList = gotCommentList.Distinct().ToList();
+							}
 			            }
 	//				}
 	           
 				} catch (Exception ee) {util.debugWriteLine(ee.Message + " " + ee.StackTrace);}
 				
-					if (eMessage.IndexOf("rf:") > -1) 
-						((WebSocket)(sender)).Close();
+				if (eMessage.IndexOf("rf:") > -1) {
+					((WebSocket)(sender)).Close();
+				}
 				//if (!isTimeShift)
 	//				addDisplayComment(chatinfo);
 			} catch (Exception eee) {
@@ -349,7 +381,7 @@ namespace namaichi.rec
 		}
 		private string getReq(string resfrom) {
 //			var when = (isSave) ? lastGetChatTime.ToString() : openTime.ToString();
-			when = gotMinTime + 1;
+			when = gotMinTime + 10;
 			//thread += "store";
 			var ret = "[{\"ping\":{\"content\":\"rs:0\"}},{\"ping\":{\"content\":\"ps:0\"}},{\"thread\":{\"thread\":\"" + thread + "\",\"version\":\"20061206\",\"fork\":0,\"user_id\":\"" + userId + "\",\"res_from\":" + resfrom + ",\"with_global\":1,\"scores\":1,\"nicoru\":0,\"waybackkey\":\"" + waybackKey + "\",\"when\":" + when + "}},{\"ping\":{\"content\":\"pf:0\"}},{\"ping\":{\"content\":\"rf:0\"}}]";
 			util.debugWriteLine("tscg " + ret);
@@ -362,6 +394,12 @@ namespace namaichi.rec
 			var isWrite = (rm.cfg.get("IsgetComment") == "true" && !rm.isPlayOnlyMode && !rp.isChase);
 			if (isWrite)
 				form.addLogText("コメントの後処理を開始します");
+			
+			gotCommentList = gotCommentList.Distinct().ToList();
+			//foreach (var gci in gotCommentList)
+			//	if (unique.IndexOf(gci) == -1) unique.Add(gci);
+			//gotCommentList = unique;
+			
 			/*
 			try {
 				if (commentSW != null) commentSW.Close();
@@ -369,6 +407,7 @@ namespace namaichi.rec
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
 			*/
+			util.debugWriteLine("end proccess gotCommentList count " + gotCommentList.Count);
 //			string[] chats;
 //			using(var r = new StreamReader(fileName)) {
 //				chats = r.ReadToEnd().Split(new string[]{"}>\r\n"}, StringSplitOptions.RemoveEmptyEntries);
@@ -388,6 +427,7 @@ namespace namaichi.rec
 			}
 			
 			//Array.Sort(keys.ToArray(), chats);
+			
 			gotCommentList.Sort(new Comparison<GotCommentInfo>(commentListCompare));
 			var chats = gotCommentList.Select(x => x.comment).ToArray();
 			rp.gotTsCommentList = chats;
@@ -515,8 +555,15 @@ namespace namaichi.rec
 			return r.Replace(recFolderFile, _new + ".xml");
 		}
 		private int commentListCompare(GotCommentInfo x, GotCommentInfo y) {
-			if (x.no >= 0 && y.no >= 0) return x.no - y.no;
-			return x.date - y.date;
+			if (x.no >= 0 && y.no >= 0 && x.no != y.no) {
+				return x.no - y.no;
+			}
+			if (x.date != y.date) 
+				return x.date - y.date;
+			
+			if (x.vpos != y.vpos)
+				return x.vpos.CompareTo(y.vpos);
+			return x.comment.CompareTo(y.comment);
 		}
 		private void writeXmlStreamInfo(StreamWriter w) {
 			var startTime = openTime;
@@ -534,10 +581,19 @@ namespace namaichi.rec
 			public string comment = null;
 			public int no;
 			public int date;
-			public GotCommentInfo(string comment, int no, int date) {
+			public long vpos;
+			public GotCommentInfo(string comment, int no, int date, long vpos) {
 				this.comment = comment;
 				this.no = no;
 				this.date = date;
+				this.vpos = vpos;
+			}
+			public override bool Equals(object gci) {
+				if (gci == null) return false;
+				return comment.Equals(((GotCommentInfo)gci).comment);
+			}
+			public override int GetHashCode() {
+				return comment.GetHashCode();
 			}
 		}
 	}

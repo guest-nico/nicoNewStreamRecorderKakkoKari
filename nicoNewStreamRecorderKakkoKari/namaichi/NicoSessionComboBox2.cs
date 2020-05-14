@@ -13,6 +13,8 @@ using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Collections.Specialized;
 
 using SunokoLibrary.Windows.Forms;
 namespace namaichi
@@ -72,6 +74,7 @@ namespace namaichi
                 {
                     var url = new Uri("https://www.nicovideo.jp/my/channel");
                     var container = new CookieContainer();
+                    container.PerDomainCapacity = 100;
                     var client = new HttpClient(new HttpClientHandler() { CookieContainer = container });
                     var result = await cookieImporter.GetCookiesAsync(url);
                     
@@ -79,13 +82,13 @@ namespace namaichi
                     foreach(Cookie c in result.Cookies) {
                     	if (Regex.IsMatch(c.Name, "[^0-9a-zA-Z\\._\\-\\[\\]%#&=\":\\{\\} \\(\\)/\\?\\|]") ||
                     	   		Regex.IsMatch(c.Value, "[^0-9a-zA-Z\\._\\-\\[\\]%#&=\":\\{\\} \\(\\)/\\?\\|]")) {
-                    		System.Diagnostics.Debug.WriteLine(c.Name + " " + c.Value);
+                    		util.debugWriteLine(c.Name + " " + c.Value);
                     		continue;
                     	}
                     	try {
                     		container.Add(new Cookie(c.Name, c.Value, c.Path, c.Domain));
                     	} catch (Exception e) {
-                    		System.Diagnostics.Debug.WriteLine(e.Message + e.StackTrace + e.TargetSite + e.Source);
+                    		util.debugWriteLine(e.Message + e.StackTrace + e.TargetSite + e.Source);
                     	}
 	        			
 	        		}

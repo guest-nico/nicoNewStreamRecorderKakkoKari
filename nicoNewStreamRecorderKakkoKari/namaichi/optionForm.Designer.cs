@@ -191,6 +191,7 @@ namespace namaichi
 			this.recordDirectoryText = new System.Windows.Forms.TextBox();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
+			this.label13 = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox6.SuspendLayout();
@@ -1576,6 +1577,7 @@ namespace namaichi
 			// 
 			// tabPage3
 			// 
+			this.tabPage3.Controls.Add(this.label13);
 			this.tabPage3.Controls.Add(this.groupBox2);
 			this.tabPage3.Controls.Add(this.groupBox1);
 			this.tabPage3.Location = new System.Drawing.Point(4, 22);
@@ -1882,6 +1884,14 @@ namespace namaichi
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
 			// 
+			// label13
+			// 
+			this.label13.Location = new System.Drawing.Point(9, 468);
+			this.label13.Name = "label13";
+			this.label13.Size = new System.Drawing.Size(361, 15);
+			this.label13.TabIndex = 2;
+			this.label13.Text = "保存パスが長くなりすぎた場合、放送IDのみのファイル名で保存されます。";
+			// 
 			// optionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1932,6 +1942,7 @@ namespace namaichi
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label label13;
 		private System.Windows.Forms.CheckBox isRestoreLocationChkBox;
 		private System.Windows.Forms.RadioButton isCommentXmlInfo;
 		private System.Windows.Forms.CheckBox isSaveCommentOnlyRetryingRecChkBox;

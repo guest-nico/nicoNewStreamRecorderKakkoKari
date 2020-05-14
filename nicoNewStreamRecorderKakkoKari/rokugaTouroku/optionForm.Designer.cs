@@ -39,6 +39,7 @@ namespace rokugaTouroku
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.isRestoreLocationChkBox = new System.Windows.Forms.CheckBox();
 			this.isCommentXmlInfo = new System.Windows.Forms.RadioButton();
 			this.isSaveCommentOnlyRetryingRecChkBox = new System.Windows.Forms.CheckBox();
 			this.isCommentConvertSpaceChkbox = new System.Windows.Forms.CheckBox();
@@ -66,6 +67,7 @@ namespace rokugaTouroku
 			this.browserPathSanshouBtn = new System.Windows.Forms.Button();
 			this.browserPathText = new System.Windows.Forms.TextBox();
 			this.groupBox9 = new System.Windows.Forms.GroupBox();
+			this.isConfirmCloseMsgBoxChkBox = new System.Windows.Forms.CheckBox();
 			this.volumeText = new System.Windows.Forms.Label();
 			this.volumeBar = new System.Windows.Forms.TrackBar();
 			this.isCloseExitChkBox = new System.Windows.Forms.CheckBox();
@@ -194,8 +196,7 @@ namespace rokugaTouroku
 			this.label3 = new System.Windows.Forms.Label();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
-			this.isConfirmCloseMsgBoxChkBox = new System.Windows.Forms.CheckBox();
-			this.isRestoreLocationChkBox = new System.Windows.Forms.CheckBox();
+			this.label14 = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox6.SuspendLayout();
@@ -290,6 +291,15 @@ namespace rokugaTouroku
 			this.groupBox6.TabIndex = 0;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Recorder設定";
+			// 
+			// isRestoreLocationChkBox
+			// 
+			this.isRestoreLocationChkBox.Location = new System.Drawing.Point(19, 443);
+			this.isRestoreLocationChkBox.Name = "isRestoreLocationChkBox";
+			this.isRestoreLocationChkBox.Size = new System.Drawing.Size(291, 19);
+			this.isRestoreLocationChkBox.TabIndex = 12;
+			this.isRestoreLocationChkBox.Text = "前回の終了位置にメインウィンドウを表示する";
+			this.isRestoreLocationChkBox.UseVisualStyleBackColor = true;
 			// 
 			// isCommentXmlInfo
 			// 
@@ -551,6 +561,15 @@ namespace rokugaTouroku
 			this.groupBox9.TabIndex = 2;
 			this.groupBox9.TabStop = false;
 			this.groupBox9.Text = "録画終了時";
+			// 
+			// isConfirmCloseMsgBoxChkBox
+			// 
+			this.isConfirmCloseMsgBoxChkBox.Location = new System.Drawing.Point(19, 144);
+			this.isConfirmCloseMsgBoxChkBox.Name = "isConfirmCloseMsgBoxChkBox";
+			this.isConfirmCloseMsgBoxChkBox.Size = new System.Drawing.Size(291, 19);
+			this.isConfirmCloseMsgBoxChkBox.TabIndex = 10;
+			this.isConfirmCloseMsgBoxChkBox.Text = "録画中に終了する場合、メッセージボックスで確認する";
+			this.isConfirmCloseMsgBoxChkBox.UseVisualStyleBackColor = true;
 			// 
 			// volumeText
 			// 
@@ -1568,6 +1587,7 @@ namespace rokugaTouroku
 			// 
 			// tabPage3
 			// 
+			this.tabPage3.Controls.Add(this.label14);
 			this.tabPage3.Controls.Add(this.groupBox2);
 			this.tabPage3.Controls.Add(this.groupBox1);
 			this.tabPage3.Location = new System.Drawing.Point(4, 40);
@@ -1931,23 +1951,13 @@ namespace rokugaTouroku
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
 			// 
-			// isConfirmCloseMsgBoxChkBox
+			// label14
 			// 
-			this.isConfirmCloseMsgBoxChkBox.Location = new System.Drawing.Point(19, 144);
-			this.isConfirmCloseMsgBoxChkBox.Name = "isConfirmCloseMsgBoxChkBox";
-			this.isConfirmCloseMsgBoxChkBox.Size = new System.Drawing.Size(291, 19);
-			this.isConfirmCloseMsgBoxChkBox.TabIndex = 10;
-			this.isConfirmCloseMsgBoxChkBox.Text = "録画中に終了する場合、メッセージボックスで確認する";
-			this.isConfirmCloseMsgBoxChkBox.UseVisualStyleBackColor = true;
-			// 
-			// isRestoreLocationChkBox
-			// 
-			this.isRestoreLocationChkBox.Location = new System.Drawing.Point(19, 443);
-			this.isRestoreLocationChkBox.Name = "isRestoreLocationChkBox";
-			this.isRestoreLocationChkBox.Size = new System.Drawing.Size(291, 19);
-			this.isRestoreLocationChkBox.TabIndex = 12;
-			this.isRestoreLocationChkBox.Text = "前回の終了位置にメインウィンドウを表示する";
-			this.isRestoreLocationChkBox.UseVisualStyleBackColor = true;
+			this.label14.Location = new System.Drawing.Point(9, 468);
+			this.label14.Name = "label14";
+			this.label14.Size = new System.Drawing.Size(361, 15);
+			this.label14.TabIndex = 3;
+			this.label14.Text = "保存パスが長くなりすぎた場合、放送IDのみのファイル名で保存されます。";
 			// 
 			// optionForm
 			// 
@@ -2002,6 +2012,7 @@ namespace rokugaTouroku
 			((System.ComponentModel.ISupportInitialize)(this.maxRecordingNum)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label label14;
 		private System.Windows.Forms.CheckBox isRestoreLocationChkBox;
 		private System.Windows.Forms.RadioButton isCommentXmlInfo;
 		private System.Windows.Forms.CheckBox isDuplicateConfirmChkBox;

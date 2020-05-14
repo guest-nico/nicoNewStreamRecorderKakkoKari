@@ -192,6 +192,7 @@ namespace namaichi.rec
 			
 			var requireCookies = new List<Cookie>();
 			var cc = new CookieContainer();
+			cc.PerDomainCapacity = 100;
 			foreach(Cookie _c in result.Cookies) {
 				try {
 					cc.Add(_c);
@@ -271,17 +272,27 @@ namespace namaichi.rec
 			
 			if (mail == null || pass == null) return null;
 			
-			var loginUrl = "https://secure.nicovideo.jp/secure/login?site=nicolive";
-//			var param = "mail=" + mail + "&password=" + pass;
+			var isNew = true;
+			
+			string loginUrl;
+			Dictionary<string, string> param;
+			if (isNew) {
+				loginUrl = "https://account.nicovideo.jp/login/redirector";
+				param = new Dictionary<string, string> {
+					{"mail_tel", mail}, {"password", pass}, {"auth_id", "15263781"}//dummy
+				};
+			} else {
+				loginUrl = "https://secure.nicovideo.jp/secure/login?site=nicolive";
+				param = new Dictionary<string, string> {
+					{"mail", mail}, {"password", pass}
+				};
+			}
 			
 			try {
 				var handler = new System.Net.Http.HttpClientHandler();
 				handler.UseCookies = true;
 				var http = new System.Net.Http.HttpClient(handler);
-				var content = new System.Net.Http.FormUrlEncodedContent(new Dictionary<string, string>
-				{
-					{"mail", mail}, {"password", pass}
-				});
+				var content = new System.Net.Http.FormUrlEncodedContent(param);
 				
 				var _res = await http.PostAsync(loginUrl, content);
 				var res = await _res.Content.ReadAsStringAsync();

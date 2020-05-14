@@ -158,6 +158,8 @@ namespace namaichi.rec
 					return "すでに視聴済みです。";
 				else if (res2.IndexOf("status\":200") > -1) {
 					return "ok";
+				} else if (res2.IndexOf("Timeshift_reservation was expired") > -1) {
+					return "予約の期限切れでした。"; 
 				} else {
 					return "チケットの予約中に予期せぬ問題が発生しました" + res + "/" + res2;
 				}

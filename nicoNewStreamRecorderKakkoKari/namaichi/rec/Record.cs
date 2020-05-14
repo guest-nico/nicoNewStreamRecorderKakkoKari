@@ -85,6 +85,7 @@ namespace namaichi.rec
 		private bool isRealtimeChase = false;
 		public DropSegmentProcess dsp = null;
 		private bool isSpeedUp = false;
+		private bool isLoggedWriteError = false;
 		
 		public Record(RecordingManager rm, bool isFFmpeg, 
 		              RecordFromUrl rfu, string hlsUrl, 
@@ -161,7 +162,7 @@ namespace namaichi.rec
 			var isFirst = true;
 			while (rm.rfu == rfu && isRetry) {
 				if (isReConnecting) {
-					Thread.Sleep(1000);
+					Thread.Sleep(500);
 					
 					
 					continue;
@@ -181,7 +182,7 @@ namespace namaichi.rec
 				}
 				
 				if (engineMode == "0" || engineMode == "3") {
-					Thread.Sleep(1000);
+					Thread.Sleep(500);
 					
 				} else {
 					if (!isFirst) wr.resetCommentFile();
@@ -627,12 +628,21 @@ namespace namaichi.rec
 				addDebugBuf("record file path " + recFolderFile + ".ts");
 				
 				//file lock check
-				if (File.Exists(recFolderFile + ".ts"))
-					File.Move(recFolderFile + ".ts", recFolderFile + ".ts");
+				if (File.Exists(recFolderFile + ".ts")) {
+					//File.Move(recFolderFile + ".ts", recFolderFile + ".ts");
+					using (var checkIO = new FileStream(recFolderFile + ".ts", FileMode.Append, FileAccess.Write)) {
+					}
+				}
+				addDebugBuf("test record file path " + recFolderFile + ".ts");
 				
 				using (var w = new FileStream(recFolderFile + ".ts", FileMode.Append, FileAccess.Write)) {
+					w.Seek(0, SeekOrigin.End);
+					util.debugWriteLine("streamRenketuRecord cc　" + info.res.Length);
 					w.Write(info.res, 0, info.res.Length);
 					//w.Close();
+					util.debugWriteLine("streamRenketuRecord bb");
+					w.Flush(true);
+					util.debugWriteLine("streamRenketuRecord aa");
 				}
 				if (isTimeShift) {
 					var newName = newTimeShiftFileName(recFolderFile, info.fileName);
@@ -642,6 +652,7 @@ namespace namaichi.rec
 				return true; 
 			} catch (Exception e) {
 				addDebugBuf(e.Message+e.StackTrace + e.Source + e.TargetSite);
+				rm.form.addLogText(e.Message + e.StackTrace);
 				return false;
 			}
 		}
@@ -1038,11 +1049,25 @@ namespace namaichi.rec
 			
 		}
 		private bool writeFile(numTaskInfo info) {
+			var ret = false;
 			if (segmentSaveType == 0) {
-				return streamRenketuRecord(info);
+				ret = streamRenketuRecord(info);
 			} else {
-				return originalTsRecord(info);
+				ret = originalTsRecord(info);
 			}
+			if (!ret && !isLoggedWriteError) {
+				try {
+					var driveInfo = DriveInfo.GetDrives();
+					var t = "";
+					foreach (var d in driveInfo) 
+						if (d.IsReady) t += d.Name + " " + (d.AvailableFreeSpace / 1000000) + "MB " + (d.TotalFreeSpace / 1000000) + "MBの空き容量です";
+					rm.form.addLogText("ファイルの書き込みに失敗しました。" + t);
+				} catch (Exception e) {
+					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				}
+				isLoggedWriteError = true;
+			}
+			return ret;
 		}
 		private bool originalTsRecord(numTaskInfo info) {
 			var path = recFolderFile + "/" + 
@@ -1057,6 +1082,7 @@ namespace namaichi.rec
 				return true; 
 			} catch (Exception e) {
 				addDebugBuf("original ts record exception " + e.Message+e.StackTrace + e.Source + e.TargetSite);
+				rm.form.addLogText(e.Message + e.StackTrace);
 				return false;
 			}
 		}

@@ -135,7 +135,7 @@ namespace namaichi
 			this.isSetVposStartTime.Name = "isSetVposStartTime";
 			this.isSetVposStartTime.Size = new System.Drawing.Size(244, 17);
 			this.isSetVposStartTime.TabIndex = 5;
-			this.isSetVposStartTime.Text = "コメントのvposを録画開始時間を起点にする";
+			this.isSetVposStartTime.Text = "コメントのvposは録画開始時間を起点にする";
 			this.isSetVposStartTime.UseVisualStyleBackColor = true;
 			// 
 			// isRenketuLastFile
