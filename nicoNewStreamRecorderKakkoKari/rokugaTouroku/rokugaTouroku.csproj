@@ -12,9 +12,6 @@
     <TargetFrameworkProfile />
     <StartupObject>rokugaTouroku.Program</StartupObject>
     <NoWin32Manifest>False</NoWin32Manifest>
-    <SignAssembly>True</SignAssembly>
-    <DelaySign>False</DelaySign>
-    <AssemblyOriginatorKeyFile>kari.snk</AssemblyOriginatorKeyFile>
     <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
     <NoStdLib>False</NoStdLib>
@@ -24,6 +21,9 @@
     <RunCodeAnalysis>False</RunCodeAnalysis>
     <SourceAnalysisOverrideSettingsFile>C:\Users\zack\AppData\Roaming\ICSharpCode/SharpDevelop4\Settings.SourceAnalysis</SourceAnalysisOverrideSettingsFile>
     <ApplicationIcon>..\%28+3.ico</ApplicationIcon>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>kari.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>False</DelaySign>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -85,65 +85,64 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="config\config.cs" />
-    <Compile Include="fileNameOptionForm.cs">
+    <Compile Include="gui\fileNameOptionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="fileNameOptionForm.Designer.cs">
+    <Compile Include="gui\fileNameOptionForm.Designer.cs">
       <DependentUpon>fileNameOptionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="gui\MainForm.cs" />
+    <Compile Include="gui\MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="gui\NicoSessionComboBox2.cs" />
+    <Compile Include="gui\optionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="gui\optionForm.Designer.cs">
+      <DependentUpon>optionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="gui\QualityForm.cs" />
+    <Compile Include="gui\QualityForm.Designer.cs">
+      <DependentUpon>QualityForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="gui\TimeShiftOptionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="gui\TimeShiftOptionForm.Designer.cs">
+      <DependentUpon>TimeShiftOptionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="gui\UpdateForm.cs" />
+    <Compile Include="gui\UpdateForm.Designer.cs">
+      <DependentUpon>UpdateForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="gui\UrlBulkRegistForm.cs">
+      <DependentUpon>VersionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="gui\UrlBulkRegistForm.Designer.cs">
+      <DependentUpon>UrlBulkRegistForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="gui\UrlListSaveForm.cs" />
+    <Compile Include="gui\UrlListSaveForm.Designer.cs">
+      <DependentUpon>UrlListSaveForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="gui\VersionForm.cs" />
+    <Compile Include="gui\VersionForm.Designer.cs">
+      <DependentUpon>VersionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="info\RecInfo.cs" />
     <Compile Include="info\TimeShiftConfig.cs" />
     <Compile Include="Logger\TraceListener.cs" />
-    <Compile Include="MainForm.cs" />
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="NicoSessionComboBox2.cs" />
-    <Compile Include="optionForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="optionForm.Designer.cs">
-      <DependentUpon>optionForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QualityForm.cs" />
-    <Compile Include="QualityForm.Designer.cs">
-      <DependentUpon>QualityForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="rec\CookieGetter.cs" />
     <Compile Include="rec\HosoInfoGetter.cs" />
     <Compile Include="rec\RecDataGetter.cs" />
     <Compile Include="rec\RecListManager.cs" />
-    <Compile Include="TimeShiftOptionForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TimeShiftOptionForm.Designer.cs">
-      <DependentUpon>TimeShiftOptionForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UpdateForm.cs" />
-    <Compile Include="UpdateForm.Designer.cs">
-      <DependentUpon>UpdateForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UrlBulkRegistForm.cs">
-      <DependentUpon>VersionForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UrlBulkRegistForm.Designer.cs">
-      <DependentUpon>UrlBulkRegistForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UrlListSaveForm.cs" />
-    <Compile Include="UrlListSaveForm.Designer.cs">
-      <DependentUpon>UrlListSaveForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="util\SourceInfoSerialize.cs" />
     <Compile Include="util\util.cs" />
-    <Compile Include="VersionForm.cs" />
-    <Compile Include="VersionForm.Designer.cs">
-      <DependentUpon>VersionForm.cs</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="a---app.config" />
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -151,32 +150,33 @@
     <Folder Include="config" />
     <Folder Include="info" />
     <Folder Include="Logger" />
+    <Folder Include="gui" />
     <Folder Include="rec" />
     <Folder Include="util" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="fileNameOptionForm.resx">
+    <EmbeddedResource Include="gui\fileNameOptionForm.resx">
       <DependentUpon>fileNameOptionForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="gui\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="optionForm.resx">
+    <EmbeddedResource Include="gui\optionForm.resx">
       <DependentUpon>optionForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="QualityForm.resx">
+    <EmbeddedResource Include="gui\QualityForm.resx">
       <DependentUpon>QualityForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TimeShiftOptionForm.resx">
+    <EmbeddedResource Include="gui\TimeShiftOptionForm.resx">
       <DependentUpon>TimeShiftOptionForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UrlBulkRegistForm.resx">
+    <EmbeddedResource Include="gui\UrlBulkRegistForm.resx">
       <DependentUpon>UrlBulkRegistForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UrlListSaveForm.resx">
+    <EmbeddedResource Include="gui\UrlListSaveForm.resx">
       <DependentUpon>UrlListSaveForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="VersionForm.resx">
+    <EmbeddedResource Include="gui\VersionForm.resx">
       <DependentUpon>VersionForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

@@ -157,6 +157,12 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="src\gui\NicoSessionComboBox2.cs" />
+    <Compile Include="src\gui\optionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\gui\optionForm.Designer.cs">
+      <DependentUpon>optionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="src\gui\placeHolderText.cs" />
     <Compile Include="src\gui\placeHolderText.Designer.cs">
       <DependentUpon>placeHolderText.cs</DependentUpon>
@@ -185,13 +191,6 @@
     <Compile Include="src\info\TimeShiftConfig.cs" />
     <Compile Include="src\info\WatchingInfo.cs" />
     <Compile Include="src\Logger\TraceListener.cs" />
-    <Compile Include="optionForm.cs">
-      <DependentUpon>app.config</DependentUpon>
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="optionForm.Designer.cs">
-      <DependentUpon>optionForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="src\play\CommentPlayerWebSocket.cs" />
     <Compile Include="src\play\Player.cs" />
     <Compile Include="Program.cs" />
@@ -233,9 +232,6 @@
     <Compile Include="src\util\util.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="optionForm.resx">
-      <DependentUpon>optionForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="src\gui\commentForm.resx">
       <DependentUpon>commentForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -250,6 +246,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\gui\MainForm.resx">
       <DependentUpon>MainForm.Designer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\gui\optionForm.resx">
+      <DependentUpon>optionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\gui\TimeShiftOptionForm.resx">
       <DependentUpon>TimeShiftOptionForm.cs</DependentUpon>
