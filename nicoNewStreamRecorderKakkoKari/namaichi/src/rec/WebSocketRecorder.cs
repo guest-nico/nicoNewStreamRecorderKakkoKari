@@ -289,11 +289,13 @@ namespace namaichi.rec
 			return isNoPermission;
 		}
 		private bool connect() {
+			displayDebug("ws connect");
 			lock (this) {
-				var  isPass = (TimeSpan.FromSeconds(1) > (DateTime.Now - lastWebsocketConnectTime));
+				var passTime = (isTimeShift && !isRealtimeChase) ? 10 : 2;
+				var  isPass = (TimeSpan.FromSeconds(passTime) > (DateTime.Now - lastWebsocketConnectTime));
 				lastWebsocketConnectTime = DateTime.Now;
 				if (isPass) 
-					Thread.Sleep(1000);
+					Thread.Sleep(passTime * 1000);
 			}
 			if (isWaitNextConnection) {
 				Thread.Sleep(90000);
@@ -352,6 +354,7 @@ namespace namaichi.rec
 			return true;
 		}
 		private void onOpen(object sender, EventArgs e) {
+			displayDebug("ws open");
 			addDebugBuf("on open rm.rfu dds2 " + rm.rfu + " ws " + sender.GetHashCode() + " wsList " + wsList.Count);
 			
 			if (sender != ws) {
@@ -364,10 +367,9 @@ namespace namaichi.rec
 			String leoReq = "{\"type\":\"watch\",\"body\":{\"command\":\"playerversion\",\"params\":[\"leo\"]}}";
 			addDebugBuf("leoReq " + leoReq);
 			addDebugBuf("websocketinfo1 " + webSocketInfo[1]);
-			ws.Send(leoReq);
+			sendMessage(ws, leoReq);
 			
-			
-			ws.Send(webSocketInfo[1]);
+			sendMessage(ws, webSocketInfo[1]);
 			
 			/*
 			if (isNoPermission)
@@ -380,6 +382,7 @@ namespace namaichi.rec
 //			if (rm.rfu != rfu) stopRecording();
 		}
 		private void onClose(object sender, EventArgs e) {
+			displayDebug("ws close");
 			addDebugBuf("on close " + e.ToString() + " ws hash " + sender.GetHashCode() + " istimeshift " + isTimeShift + " wsList " + wsList.Count);
 			try {
 				addDebugBuf("wslist indexof onclose sender " + wsList.IndexOf((WebSocket)sender));
@@ -403,6 +406,7 @@ namespace namaichi.rec
 
 		}
 		private void endProgramCheck() {
+			displayDebug("end check");
 			addDebugBuf("endProgramCheck");
 			if ((!isTimeShift || isChase) && isEndedProgram()) {
 		        addDebugBuf("isEndprogram websocket");
@@ -416,6 +420,7 @@ namespace namaichi.rec
 			}
 		}
 		private void onError(object sender, SuperSocket.ClientEngine.ErrorEventArgs e) {
+			displayDebug("ws error");
 			addDebugBuf("on error " + e.Exception.Message + " ws " + sender.GetHashCode());
 			//stopRecording();
 //			reConnect();
@@ -427,6 +432,7 @@ namespace namaichi.rec
 		}
 		private void onMessageReceive(object sender, MessageReceivedEventArgs e) {
 			addDebugBuf("receive " + e.Message);
+			displayDebug("ws receive " + new Regex("ht2_nicolive=\\d+").Replace(e.Message, "ht2_nicolive=0"));
 			/*
 			if (e.Message.ToLower().IndexOf("notify") > -1 ||
 			    e.Message.ToLower().IndexOf("error") > -1 ||
@@ -484,7 +490,7 @@ namespace namaichi.rec
 				
 				if (isChase && !isChaseStream(e.Message)) {
 					var chaseReq = "{\"type\":\"watch\",\"body\":{\"command\":\"getstream\",\"requirement\":{\"protocol\":\"hls\",\"isChasePlay\":true}}}"; 
-					ws.Send(chaseReq);
+					sendMessage(ws, chaseReq);
 					util.debugWriteLine("chase sent " + chaseReq);
 					return;
 				}
@@ -678,8 +684,10 @@ namespace namaichi.rec
 		private void sendPong() {
 	    	try {
 				var dt = System.DateTime.Now.ToShortTimeString();
-				ws.Send("{\"body\":{},\"type\":\"pong\"}");
-				ws.Send("{\"type\":\"watch\",\"body\":{\"command\":\"watching\",\"params\":[\"" + broadcastId + "\",\"-1\",\"0\"]}}");
+				//ws.Send("{\"body\":{},\"type\":\"pong\"}");
+				sendMessage(ws, "{\"body\":{},\"type\":\"pong\"}");
+				sendMessage(ws, "{\"type\":\"watch\",\"body\":{\"command\":\"watching\",\"params\":[\"" + broadcastId + "\",\"-1\",\"0\"]}}");
+				//ws.Send("{\"type\":\"watch\",\"body\":{\"command\":\"watching\",\"params\":[\"" + broadcastId + "\",\"-1\",\"0\"]}}");
 				addDebugBuf("send {\"body\":{},\"type\":\"pong\"} and watching" + dt);
 				addDebugBuf("send {\"type\":\"watch\",\"body\":{\"command\":\"watching\",\"params\":[\"" + broadcastId + "\",\"-1\",\"0\"]}}" + dt);
 			} catch (Exception e) {
@@ -764,6 +772,7 @@ namespace namaichi.rec
 			if (_roomName != null) roomName = _roomName;
 		}
 		public void stopRecording(WebSocket _ws, WebSocket _wsc) {
+			displayDebug("stop recording");
 			addDebugBuf("stop recording");
 			try {
 				if (_ws != null && _ws.State != WebSocketState.Closed) {
@@ -834,7 +843,8 @@ namespace namaichi.rec
 		}
 		private void onWscOpen(object sender, EventArgs e) {
 			addDebugBuf("ms open a");
-			wsc.Send(msReq[0]);
+			//wsc.Send(msReq[0]);
+			sendMessage(wsc, msReq[0]);
 			addDebugBuf("ms open b");
 			
 			if (rm.rfu != rfu) {
@@ -880,7 +890,8 @@ namespace namaichi.rec
 		private void pongWsc(WebSocket _wsc) {
 			while (_wsc.State == WebSocket4Net.WebSocketState.Open && !isEndProgram && isRetry) {
 				try {
-					_wsc.Send("");
+					//_wsc.Send("");
+					sendMessage(_wsc, "");
 					Thread.Sleep(60000);
 				} catch (Exception e) {
 					addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
@@ -1148,9 +1159,11 @@ namespace namaichi.rec
 				req = (isChase) ? 
 					("{\"type\":\"watch\",\"body\":{\"command\":\"getstream\",\"requirement\":{\"protocol\":\"hls\",\"quality\":\"" + bestGettableQuolity + "\",\"isChasePlay\":true}}}")
 					: ("{\"type\":\"watch\",\"body\":{\"command\":\"getstream\",\"requirement\":{\"protocol\":\"hls\",\"quality\":\"" + bestGettableQuolity + "\",\"isLowLatency\":false,\"isChasePlay\":false}}}");
-			ws.Send(req);
+			//ws.Send(req);
+			sendMessage(ws, req);
 		}
 		override public void reConnect() {
+			displayDebug("reconnect");
 			addDebugBuf("reconnect wr");
 //			onOpen(null, null);
 			try {
@@ -1161,6 +1174,7 @@ namespace namaichi.rec
 //			ws.Open();
 		}
 		public void reConnect(WebSocket _ws) {
+			displayDebug("ws reconnect");
 			addDebugBuf("reconnect " + _ws + " " + _ws.GetHashCode() + " ws " + ws.GetHashCode());
 			try {
 				ws.Close();
@@ -1176,7 +1190,7 @@ namespace namaichi.rec
 				lastEndProgramCheckTime = DateTime.Now;
 				
 				var a = new System.Net.WebHeaderCollection();
-				var res = util.getPageSource(h5r.url, ref a, container, null, false, 15000);
+				var res = util.getPageSource(h5r.url, container, null, false, 15000);
 				addDebugBuf("isendedprogram url " + h5r.url + " res==null " + (res == null));
 				if (res == null) return isEndedProgramRtmp();
 				if (res.IndexOf("user.login_status = 'not_login'") > -1) {
@@ -1225,7 +1239,8 @@ namespace namaichi.rec
 			if (msThread == null) return;
 			sendCommentBuf = s;
 			isSend184 = is184;
-			ws.Send("{\"type\":\"watch\",\"body\":{\"command\":\"getpostkey\",\"params\":[\"" + msThread + "\"]}}");
+			//ws.Send("{\"type\":\"watch\",\"body\":{\"command\":\"getpostkey\",\"params\":[\"" + msThread + "\"]}}");
+			sendMessage(ws, "{\"type\":\"watch\",\"body\":{\"command\":\"getpostkey\",\"params\":[\"" + msThread + "\"]}}");
 		}
 		public void sendCommentWsc(string s) {
 			var postKey = util.getRegGroup(s, "params\"\\:\\[\"(.+?)\"");
@@ -1236,7 +1251,8 @@ namespace namaichi.rec
 			var command = "[{\"ping\":{\"content\":\"rs:1\"}},{\"ping\":{\"content\":\"ps:5\"}},{\"chat\":{\"thread\":\"" + msThread + "\",\"vpos\":" + vpos + mail + ",\"ticket\":\"" + ticket + "\",\"user_id\":\"" + userId + "\",\"content\":\"" + sendCommentBuf + "\",\"postkey\":\"" + postKey + "\", \"premium\":" + premium + "}},{\"ping\":{\"content\":\"pf:5\"}},{\"ping\":{\"content\":\"rf:1\"}}]"; 
 			addDebugBuf("send comment " + command);
 			//wsc.Send("[{\"ping\":{\"content\":\"rs:1\"}},{\"ping\":{\"content\":\"ps:5\"}},{\"chat\":{\"thread\":\"" + msThread + "\",\"vpos\":" + vpos + mail + ",\"ticket\":\"" + ticket + "\",\"user_id\":\"" + userId + "\",\"premium\":1,\"content\":\"うむ\",\"postkey\":\".1535198509.6HZajH6n5HWGDXnbz2fI1-r5LLg\"}},{\"ping\":{\"content\":\"pf:5\"}},{\"ping\":{\"content\":\"rf:1\"}}]");
-			wsc.Send(command);
+			//wsc.Send(command);
+			sendMessage(wsc, command);
 			
 			sendCommentBuf = null;
 		}
@@ -1358,7 +1374,8 @@ namespace namaichi.rec
 					util.debugWriteLine(ee.Message + " " + ee.StackTrace);
 				}
 				try {
-					wsc.Send(msReq[0]);
+					//wsc.Send(msReq[0]);
+					sendMessage(wsc, msReq[0]);
 				} catch (Exception ee) {
 					util.debugWriteLine("on open wsc req send exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 				}
@@ -1533,6 +1550,15 @@ namespace namaichi.rec
 			} catch (Exception e) {
 				addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
+		}
+		public void displayDebug(string s) {
+			#if DEBUG
+			rm.form.addLogText(DateTime.Now + " " + s);
+			#endif
+		}
+		private void sendMessage(WebSocket w, string s) {
+			util.debugWriteLine("ws send " + s);
+			w.Send(s);
 		}
 	}
 }

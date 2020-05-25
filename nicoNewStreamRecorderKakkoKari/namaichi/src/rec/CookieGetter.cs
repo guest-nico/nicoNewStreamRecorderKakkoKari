@@ -220,16 +220,16 @@ namespace namaichi.rec
 			//cc.Add(new Uri(url), new Cookie("age_auth", "0"));
 			var ccc = cc.GetCookieHeader(new Uri(url));
 			for (var i = 0; i < 5; i++) {
-				var headers = new WebHeaderCollection();
+				//var headers = new WebHeaderCollection();
 				try {
 					util.debugWriteLine("ishtml5login getpage " + url);
 					var _url = (isRtmp) ? ("https://live.nicovideo.jp/api/getplayerstatus/" + util.getRegGroup(url, "(lv\\d+)")) : url;
 					//var _url = url;
-					pageSource = util.getPageSource(_url, ref headers, cc);
+					pageSource = util.getPageSource(_url, cc);
 					
 					util.debugWriteLine("ishtml5login getpage ok");
 					#if DEBUG
-						util.debugWriteLine("pagesource " + pageSource);
+						//util.debugWriteLine("pagesource " + pageSource);
 					#endif
 				} catch (Exception e) {
 					util.debugWriteLine("cookiegetter ishtml5login " + e.Message+e.StackTrace);

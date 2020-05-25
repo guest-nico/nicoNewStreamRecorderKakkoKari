@@ -74,8 +74,8 @@ namespace namaichi.rec
 			
 		}
 		public string getGetPlayerStatusInfo() {
-			var a = new WebHeaderCollection();
-			var res = util.getPageSource("https://live.nicovideo.jp/api/getplayerstatus?v=" + lvid, ref a, container);
+			//var a = new WebHeaderCollection();
+			var res = util.getPageSource("https://live.nicovideo.jp/api/getplayerstatus?v=" + lvid, container);
 //			util.debugWriteLine(res);
 			return res;
 		}

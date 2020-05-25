@@ -121,8 +121,8 @@ namespace namaichi.rec
 				} else {
 					bool isAPI = false;
 					if (isAPI) {
-						var a = new System.Net.WebHeaderCollection();
-						var apiRes = util.getPageSource(url + "/programinfo", ref a, container);
+						//var a = new System.Net.WebHeaderCollection();
+						var apiRes = util.getPageSource(url + "/programinfo", container);
 					
 					} else {
 						
@@ -197,6 +197,7 @@ namespace namaichi.rec
 					rm.form.addLogText("追いかけ再生ができませんでした");
 					return 3;
 				}
+				//util.debugWriteLine(data);
 				
 				var isChase = isChaseRec(isChaseCheck, isChasable, lvid);
 				if (isChase) isTimeShift = true;
@@ -238,7 +239,7 @@ namespace namaichi.rec
 				//0-wsUrl 1-request
 				webSocketRecInfo = getWebSocketInfo(data, isRtmp, isChase, isTimeShift, rm.form);
 				util.debugWriteLine("websocketrecinfo " + webSocketRecInfo);
-				if (webSocketRecInfo == null) continue;
+				if (webSocketRecInfo == null) break;
 				
 				util.debugWriteLine("isnopermission " + isNoPermission);
 //				if (isNoPermission) webSocketRecInfo[1] = webSocketRecInfo[1].Replace("\"requireNewStream\":false", "\"requireNewStream\":true");

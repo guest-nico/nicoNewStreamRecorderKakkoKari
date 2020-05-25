@@ -9,9 +9,10 @@ using System.Collections.Generic;
 using Microsoft.Win32;
 using System.Threading;
 using System.Runtime.InteropServices;
-
+using namaichi;
 using namaichi.config;
 using namaichi.info;
+
 /*
 class app {
 	public static namaichi.MainForm form;
@@ -28,8 +29,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.87.85";
-	public static string versionDayStr = "2020/05/21";
+	public static string versionStr = "ver0.87.85 debug3";
+	public static string versionDayStr = "2020/05/25";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	
@@ -523,18 +524,11 @@ class util {
 		}
 		return null;
 	}
-	public static string getPageSource(string _url, ref WebHeaderCollection getheaders, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 5000) {
+	/*
+	public static string getPageSource(string _url, ref WebHeaderCollection getheaders, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 5000, string userAgent = null) {
 		util.debugWriteLine("access__ getpage " + _url);
 		timeoutMs = 5000;
-		/*
-		string a;
-		try {
-//			a = container.GetCookieHeader(new Uri(_url));
-		} catch (Exception e) {
-			util.debugWriteLine("getpage get cookie header error " + _url + e.Message+e.StackTrace);
-			return null;
-		}
-		*/
+		
 //		if (isFirstLog)
 //			util.debugWriteLine("getpagesource " + _url + " ");
 			
@@ -552,6 +546,8 @@ class util {
 				if (container != null) req.CookieContainer = container;
 //				util.debugWriteLine("getpage 05");
 				req.Headers.Add("Accept-Encoding", "gzip,deflate");
+				if (userAgent != null) 
+					req.UserAgent = userAgent;//"Lavf/56.36.100";
 				req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
 				req.Timeout = timeoutMs;
@@ -559,11 +555,7 @@ class util {
 				using (var dataStream = res.GetResponseStream())
 				using (var reader = new StreamReader(dataStream)) {
 					
-					/*
-					var resStrTask = reader.ReadToEndAsync();
-					if (!resStrTask.Wait(5000)) return null;
-					string resStr = resStrTask.Result;
-					*/
+					
 	//				util.debugWriteLine("getpage 3");
 					var resStr = reader.ReadToEnd();
 	//				util.debugWriteLine("getpage 4");
@@ -583,7 +575,8 @@ class util {
 			
 		return null;
 	}
-	public static string getPageSource(string _url, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 0) {
+	*/
+	public static string getPageSource(string _url, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 0, string userAgent = null) {
 		util.debugWriteLine("access__ getpage " + _url);
 		//if (timeoutMs == 0) timeoutMs = 5000;
 		timeoutMs = 5000;
@@ -613,10 +606,15 @@ class util {
 				if (container != null) req.CookieContainer = container;
 //				util.debugWriteLine("getpage 05");
 				req.Headers.Add("Accept-Encoding", "gzip,deflate");
+				if (userAgent != null) 
+					req.UserAgent = userAgent;//"Lavf/56.36.100";
 				req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
 				req.Timeout = timeoutMs;
-//				util.debugWriteLine("getpage 0");
+				req.KeepAlive = true;
+				req.Accept = "*/*";
+				ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+				
 				using (var res = (HttpWebResponse)req.GetResponse())
 				using (var dataStream = res.GetResponseStream())
 				using (var reader = new StreamReader(dataStream)) {
@@ -660,6 +658,7 @@ class util {
 					req.AllowAutoRedirect = true;
 					req.Timeout = 10000;
 					req.KeepAlive = false;
+					req.UserAgent = "Lavf/56.36.100";
 									
 		//			req.Headers = getheaders;
 	//				if (referer != null) req.Referer = referer;
@@ -804,8 +803,8 @@ class util {
 	public static bool isEndedProgram(string lvid, CookieContainer container, bool isSub) {
 		var url = "https://live2.nicovideo.jp/watch/" + lvid;
 		
-		var a = new System.Net.WebHeaderCollection();
-		var res = util.getPageSource(url, ref a, container);
+		//var a = new System.Net.WebHeaderCollection();
+		var res = util.getPageSource(url, container);
 		util.debugWriteLine("isendedprogram url " + url + " res==null " + (res == null) + util.getMainSubStr(isSub, true));
 //			util.debugWriteLine("isendedprogram res " + res + util.getMainSubStr(isSub, true));
 		if (res == null) return false;
