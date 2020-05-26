@@ -111,6 +111,7 @@ namespace namaichi.rec
 		private DateTime lastOpenCommentSwDt = DateTime.MinValue;
 		private bool isConvertSpace;
 		private bool isSaveCommentOnlyRetryingRec;
+		public long sync = 0;
 		
 		public WebSocketRecorder(string[] webSocketInfo, 
 				CookieContainer container, string[] recFolderFile, 
@@ -1012,10 +1013,17 @@ namespace namaichi.rec
 			if (chatinfo.root != "chat" && chatinfo.root != "thread") return;
 			
 			if (chatinfo.root == "thread" && lastSaveComments.Count == 0) {
-				serverTime = chatinfo.serverTime;
 				ticket = chatinfo.ticket;
-				//数秒過去の動画も取得できることを考慮
-				serverTime -= isRealtimeChase ? 20 : 3;
+				for (var i = 0; i < 20 && sync == 0 && rm.rfu == rfu; i++) 
+					Thread.Sleep(1000);
+				if (sync != 0) {
+					serverTime = sync / 1000;
+				} else {
+					serverTime = chatinfo.serverTime;
+					//数秒過去の動画も取得できることを考慮
+					serverTime -= isRealtimeChase ? 20 : 3;
+				}
+				
 				try {
 					if (isGetCommentXmlInfo) {
 						if (!isTimeShift || isRealtimeChase)
@@ -1559,6 +1567,20 @@ namespace namaichi.rec
 		private void sendMessage(WebSocket w, string s) {
 			util.debugWriteLine("ws send " + s);
 			w.Send(s);
+		}
+		public void setSync(int no, double second, string m3u8Url) {
+			util.debugWriteLine("setSync " + no + " " + second + " " + m3u8Url);
+			//var url = util.getRegGroup(mes, "\"syncUri\":\"(.+?)\"");
+			var url = m3u8Url.Replace("ts/playlist.m3u8", "stream_sync.json");
+			var res = util.getPageSource(url);
+			util.debugWriteLine("setSync res " + res);
+			if (res == null) return;
+			var m = new Regex("\"beginning_timestamp\":(\\d+),\"sequence\":(\\d+)").Match(res);
+			if (!m.Success) return;
+			if (second != 0)
+				sync = (long)(long.Parse(m.Groups[1].Value) - (long.Parse(m.Groups[2].Value) - no) * second * 1000);
+			else sync = (long)long.Parse(m.Groups[1].Value);
+			util.debugWriteLine("sync " + sync);
 		}
 	}
 }

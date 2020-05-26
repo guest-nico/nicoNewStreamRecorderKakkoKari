@@ -87,7 +87,7 @@ namespace namaichi.rec
 		public DropSegmentProcess dsp = null;
 		private bool isSpeedUp = false;
 		private bool isLoggedWriteError = false;
-		private string ua = "Lavf/56.36.100";
+		private string ua = null;//"Lavf/56.36.100";
 		private string referer = null;
 		
 		
@@ -124,7 +124,7 @@ namespace namaichi.rec
 			//this.isSub = isSub;
 			this.isRealtimeChase = isRealtimeChase;
 			this.h5r = h5r;
-			this.referer = rfu.url;
+			this.referer = null;//rfu.url;
 		}
 		public void record(string quality) {
 			recordingQuality = quality;
@@ -190,6 +190,7 @@ namespace namaichi.rec
 					Thread.Sleep(500);
 					
 				} else {
+					((WebSocketRecorder)wr).setSync(0, 0, hlsSegM3uUrl);
 					if (!isFirst) wr.resetCommentFile();
 					isFirst = false;
 					
@@ -198,9 +199,11 @@ namespace namaichi.rec
 					
 					recFolderFile = util.incrementRecFolderFile(recFolderFile);//wr.getRecFilePath()[1];
 					setReconnecting(true);
-//					if (!isReConnecting) 
-					reConnect();
+//					if (!isReConnecting)
+					//((WebSocketRecorder)wr).setSync(0, 0, hlsSegM3uUrl);					
+					((WebSocketRecorder)wr).sync = 0;
 					
+					reConnect();
 					continue;
 					
 				}
@@ -602,6 +605,7 @@ namespace namaichi.rec
 				Thread.Sleep(5);
 			}
 		}
+		/*
 		private void renketuRecord() {
 //				string[] command = { 
 //						"-i", "" + url + "", 
@@ -629,6 +633,7 @@ namespace namaichi.rec
 				var ffrec = new FFMpegRecord(rm, true, rfu);
 				ffrec.recordCommand(command);
 		}
+		*/
 		private bool streamRenketuRecord(numTaskInfo info) {
 			try {
 				addDebugBuf(info.no + " " + info.url);
@@ -1079,6 +1084,10 @@ namespace namaichi.rec
 					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
 				isLoggedWriteError = true;
+			}
+			if (lastSegmentNo == -1) {
+				((WebSocketRecorder)wr).setSync(
+					info.no, info.second,hlsSegM3uUrl);
 			}
 			return ret;
 		}

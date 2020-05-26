@@ -29,8 +29,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.87.85 debug3";
-	public static string versionDayStr = "2020/05/25";
+	public static string versionStr = "ver0.87.86";
+	public static string versionDayStr = "2020/05/27";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	
@@ -607,7 +607,7 @@ class util {
 //				util.debugWriteLine("getpage 05");
 				req.Headers.Add("Accept-Encoding", "gzip,deflate");
 				if (userAgent != null) 
-					req.UserAgent = userAgent;//"Lavf/56.36.100";
+					req.UserAgent = userAgent;
 				req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
 				req.Timeout = timeoutMs;
@@ -658,7 +658,7 @@ class util {
 					req.AllowAutoRedirect = true;
 					req.Timeout = 10000;
 					req.KeepAlive = false;
-					req.UserAgent = "Lavf/56.36.100";
+					//req.UserAgent = "Lavf/56.36.100";
 									
 		//			req.Headers = getheaders;
 	//				if (referer != null) req.Referer = referer;
