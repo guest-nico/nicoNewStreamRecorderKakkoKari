@@ -57,6 +57,7 @@ namespace namaichi.rec
 		private bool isNoPermission = false;
 		//public long openTime;
 		public long _openTime;
+		private long vposBaseTime;
 		public bool isEndProgram = false;
 		//public int lastSegmentNo = -1;
 		//public bool isTimeShift = false;
@@ -123,7 +124,7 @@ namespace namaichi.rec
 				bool isPremium, TimeSpan programTime, 
 				string programType, long _openTime, bool isRtmp, 
 				bool isRtmpOnlyPage, bool isChase, bool isRealtimeChase,
-				bool isSaveComment, RecordStateSetter rss
+				bool isSaveComment, RecordStateSetter rss, long vposBaseTime
 			)
 		{
 			this.webSocketInfo = webSocketInfo;
@@ -160,6 +161,7 @@ namespace namaichi.rec
 			if (isChase && !isSaveComment) isHokan = true;
 			isConvertSpace = bool.Parse(rm.cfg.get("IsCommentConvertSpace"));
 			isSaveCommentOnlyRetryingRec = bool.Parse(rm.cfg.get("IsSaveCommentOnlyRetryingRec"));
+			this.vposBaseTime = vposBaseTime;
 		}
 		public bool start() {
 			addDebugBuf("ws rec start");
@@ -988,15 +990,17 @@ namespace namaichi.rec
 			XDocument chatXml;
 			if (isTimeShift && !isChase) chatXml = chatinfo.getFormatXml(openTime);
 			else {
-				if (!isTimeShift || isRealtimeChase)
-					chatXml = chatinfo.getFormatXml(serverTime);
-				else {
+				if (!isTimeShift || isRealtimeChase) {
+					if (programType == "official") {
+						chatXml = chatinfo.getFormatXml(0, true, serverTime - _openTime);
+					//} else chatXml = chatinfo.getFormatXml(serverTime);
+					} else chatXml = chatinfo.getFormatXml(0, true, serverTime - _openTime);
+				} else {
 					while (firstSegmentSecond == -1 && rm.rfu == rfu) {
 						Thread.Sleep(1000);
 					}
 					var vposStartTime = (tsConfig.isVposStartTime) ? (long)firstSegmentSecond : 0;
 					if (programType == "official") {
-						//chatXml = chatinfo.getFormatXml(0, true, tsConfig.timeSeconds);
 						chatXml = chatinfo.getFormatXml(0, true, tsConfig.timeSeconds);
 					} else {
 						chatXml = chatinfo.getFormatXml(openTime + vposStartTime);
@@ -1014,9 +1018,10 @@ namespace namaichi.rec
 			
 			if (chatinfo.root == "thread" && lastSaveComments.Count == 0) {
 				ticket = chatinfo.ticket;
-				for (var i = 0; i < 20 && sync == 0 && rm.rfu == rfu; i++) 
+				for (var i = 0; i < 30 && sync == 0 && rm.rfu == rfu; i++) 
 					Thread.Sleep(1000);
 				if (sync != 0) {
+					util.debugWriteLine("sync set " + sync + " servertime " + chatinfo.serverTime);
 					serverTime = sync / 1000;
 				} else {
 					serverTime = chatinfo.serverTime;
@@ -1569,18 +1574,35 @@ namespace namaichi.rec
 			w.Send(s);
 		}
 		public void setSync(int no, double second, string m3u8Url) {
-			util.debugWriteLine("setSync " + no + " " + second + " " + m3u8Url);
-			//var url = util.getRegGroup(mes, "\"syncUri\":\"(.+?)\"");
-			var url = m3u8Url.Replace("ts/playlist.m3u8", "stream_sync.json");
-			var res = util.getPageSource(url);
-			util.debugWriteLine("setSync res " + res);
-			if (res == null) return;
-			var m = new Regex("\"beginning_timestamp\":(\\d+),\"sequence\":(\\d+)").Match(res);
-			if (!m.Success) return;
-			if (second != 0)
-				sync = (long)(long.Parse(m.Groups[1].Value) - (long.Parse(m.Groups[2].Value) - no) * second * 1000);
-			else sync = (long)long.Parse(m.Groups[1].Value);
-			util.debugWriteLine("sync " + sync);
+			try {
+				if (isTimeShift) {
+					sync = no + _openTime * 1000;
+					util.debugWriteLine("setSync ts " + no + " " + _openTime + " " + openTime + " " + vposBaseTime + " " + second);
+					
+					var _url = m3u8Url.Replace("1/ts/playlist.m3u8", "stream_sync.json");
+					var _m = new Regex("(.+\\?).*?(ht2.+)").Match(_url);
+					var _res = util.getPageSource(_m.Groups[1].Value + _m.Groups[2].Value);
+					util.debugWriteLine("setSync ts res " + _res);
+					
+					return;
+				}
+				
+				util.debugWriteLine("setSync " + no + " " + second + " " + m3u8Url + " " + _openTime + " " + openTime + " " + vposBaseTime);
+				//var url = util.getRegGroup(mes, "\"syncUri\":\"(.+?)\"");
+				var url = m3u8Url.Replace("ts/playlist.m3u8", "stream_sync.json");
+				var res = util.getPageSource(url);
+				util.debugWriteLine("setSync res " + res);
+				if (res == null) return;
+				var m = new Regex("\"beginning_timestamp\":(\\d+),\"sequence\":(\\d+)").Match(res);
+				if (!m.Success) return;
+				var beginTime = long.Parse(m.Groups[1].Value) + (_openTime - vposBaseTime) * 1000;
+				if (second != 0)
+					sync = (long)(beginTime - (long.Parse(m.Groups[2].Value) - no) * second * 1000);
+				else sync = beginTime;
+				util.debugWriteLine("sync " + sync);
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
 		}
 	}
 }

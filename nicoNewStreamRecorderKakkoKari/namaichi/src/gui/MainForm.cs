@@ -61,7 +61,7 @@ namespace namaichi
 		{
 			madeThread = Thread.CurrentThread;
 			
-			//args = new String[]{"lv324583435", "-chase", "-ts-end=1m"};
+			//args = new String[]{""};
 			//args = "-nowindo -stdIO -IsmessageBox=false -IscloseExit=true lv316762771 -ts-start=1785s -ts-end=0s -ts-list=false -ts-list-m3u8=false -ts-list-update=5 -ts-list-open=false -ts-list-command=\"notepad{i}\" -ts-vpos-starttime=true -afterConvertMode=4 -qualityRank=0,1,2,3,4,5 -IsLogFile=true".Split(' ');
 			//read std
 			if (Array.IndexOf(args, "-std-read") > -1) startStdRead();

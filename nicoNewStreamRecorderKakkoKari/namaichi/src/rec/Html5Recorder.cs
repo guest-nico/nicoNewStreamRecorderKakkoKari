@@ -225,12 +225,12 @@ namespace namaichi.rec
 				data = (isRtmpOnlyPage) ? System.Web.HttpUtility.UrlDecode(res) :
 						System.Web.HttpUtility.HtmlDecode(data);
 				
-				long endTime, _openTime, serverTime;
+				long endTime, _openTime, serverTime, vposBaseTime;
 //				DateTime programTime, jisa;
-				openTime = endTime = _openTime = serverTime = 0;
+				openTime = endTime = _openTime = serverTime = vposBaseTime = 0;
 				
 				if (!getTimeInfo(data, ref openTime, ref endTime, 
-						ref _openTime, ref serverTime, isRtmpOnlyPage))
+						ref _openTime, ref serverTime, ref vposBaseTime, isRtmpOnlyPage))
 					return 3;
 				
 				var programTime = util.getUnixToDatetime(endTime) - util.getUnixToDatetime(openTime);
@@ -305,7 +305,7 @@ namespace namaichi.rec
 				
 				var userId = util.getRegGroup(res, "\"user\"\\:\\{\"user_id\"\\:(.+?),");
 				var isPremium = res.IndexOf("\"member_status\":\"premium\"") > -1;
-				wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, isTimeShift, lvid, timeShiftConfig, userId, isPremium, programTime, type, _openTime, isRtmp, isRtmpOnlyPage, isChase, isRealtimeChase, true, rss);
+				wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, isTimeShift, lvid, timeShiftConfig, userId, isPremium, programTime, type, _openTime, isRtmp, isRtmpOnlyPage, isChase, isRealtimeChase, true, rss, vposBaseTime);
 				rm.wsr = wsr;
 				try {
 					isNoPermission = wsr.start();
@@ -515,7 +515,7 @@ namespace namaichi.rec
 			return _tsConfig;
 		}
 		private bool getTimeInfo(string data, ref long openTime, ref long endTime, 
-				ref long _openTime, ref long serverTime, bool isRtmpOnlyPage) {
+				ref long _openTime, ref long serverTime, ref long vposBaseTime, bool isRtmpOnlyPage) {
 			if (data == null) return false;
 			
 			if (!isRtmpOnlyPage) {
@@ -527,6 +527,8 @@ namespace namaichi.rec
 				if (!long.TryParse(util.getRegGroup(data, "\"openTime\":(\\d+)"), out _openTime))
 						return false;
 				if (!long.TryParse(util.getRegGroup(data, "\"serverTime\":(\\d+)"), out serverTime))
+						return false;
+				if (!long.TryParse(util.getRegGroup(data, "\"vposBaseTime\":(\\d+)"), out vposBaseTime))
 						return false;
 			} else {
 				if (!long.TryParse(util.getRegGroup(data, "<start_time>(\\d+)"), out openTime))

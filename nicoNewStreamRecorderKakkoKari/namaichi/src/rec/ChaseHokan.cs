@@ -146,7 +146,7 @@ namespace namaichi.rec
 				
 				var userId = util.getRegGroup(res, "\"user\"\\:\\{\"user_id\"\\:(.+?),");
 				var isPremium = res.IndexOf("\"member_status\":\"premium\"") > -1;
-				return new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rm.rfu, h5r, 0, true, lvid, tsConfig, userId, isPremium, TimeSpan.MaxValue, type, 0, false, false, true, false, false, null);
+				return new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rm.rfu, h5r, 0, true, lvid, tsConfig, userId, isPremium, TimeSpan.MaxValue, type, 0, false, false, true, false, false, null, 0);
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				return null;
