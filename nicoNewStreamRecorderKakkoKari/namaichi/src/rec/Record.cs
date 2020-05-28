@@ -86,10 +86,8 @@ namespace namaichi.rec
 		private bool isRealtimeChase = false;
 		public DropSegmentProcess dsp = null;
 		private bool isSpeedUp = false;
-		private bool isLoggedWriteError = false;
 		private string ua = null;//"Lavf/56.36.100";
 		private string referer = null;
-		
 		
 		public Record(RecordingManager rm, bool isFFmpeg, 
 		              RecordFromUrl rfu, string hlsUrl, 
@@ -592,6 +590,7 @@ namespace namaichi.rec
 			}
 			addDebugBuf("ts writer end gotTsList len " + gotTsList.Count);
 		}
+		/*
 		private void syncCheck() {
 			while (!isEnd) {
 				if (DateTime.Now - lastsync > TimeSpan.FromSeconds(15)) {
@@ -605,6 +604,7 @@ namespace namaichi.rec
 				Thread.Sleep(5);
 			}
 		}
+		*/
 		/*
 		private void renketuRecord() {
 //				string[] command = { 
@@ -1068,23 +1068,13 @@ namespace namaichi.rec
 		}
 		private bool writeFile(numTaskInfo info) {
 			var ret = false;
+			checkFreeSpace(info);
 			if (segmentSaveType == 0) {
 				ret = streamRenketuRecord(info);
 			} else {
 				ret = originalTsRecord(info);
 			}
-			if (!ret && !isLoggedWriteError) {
-				try {
-					var driveInfo = DriveInfo.GetDrives();
-					var t = "";
-					foreach (var d in driveInfo) 
-						if (d.IsReady) t += d.Name + " " + (d.AvailableFreeSpace / 1000000) + "MB " + (d.TotalFreeSpace / 1000000) + "MBの空き容量です";
-					rm.form.addLogText("ファイルの書き込みに失敗しました。" + t);
-				} catch (Exception e) {
-					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
-				}
-				isLoggedWriteError = true;
-			}
+			
 			if (lastSegmentNo == -1) {
 				((WebSocketRecorder)wr).setSync(
 					info.no, info.second,hlsSegM3uUrl);
@@ -1784,6 +1774,25 @@ namespace namaichi.rec
 				isSpeedUp = isUp;
 				util.debugWriteLine("setSpeed ok");
 			}
+		}
+		
+		private void checkFreeSpace(numTaskInfo nti) {
+			var di = new DriveInfo(Directory.GetDirectoryRoot(recFolderFile));
+			
+			while (rm.rfu == rfu && di.AvailableFreeSpace < nti.res.Length) {
+				var m = di.Name + "の空き容量が" + (di.AvailableFreeSpace / 1000) + "KBです。";
+				
+				util.debugWriteLine(m);
+				rm.form.addLogText(m);
+				rm.form.formAction(() => {
+					try {
+						var r = MessageBox.Show(rm.form, m, "", MessageBoxButtons.OK);
+					} catch (Exception e) {
+						util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+					}
+				}, false);
+			}
+			util.debugWriteLine("free space " + di.AvailableFreeSpace);
 		}
 	}
 	class NtiGetter {

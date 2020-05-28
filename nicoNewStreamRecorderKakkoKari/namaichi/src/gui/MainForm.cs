@@ -260,8 +260,6 @@ namespace namaichi
 					logText.Text = logText.Text.Substring(logText.TextLength - 10000);
 								
 			});
-			return;
-			
 		}
         public void addLogTextTest(string t) {
        		addLogText(t);
