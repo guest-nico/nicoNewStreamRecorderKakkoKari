@@ -268,6 +268,8 @@ namespace namaichi.rec
 //				wsc.Close();
 				if (rec != null) 
 					rec.waitForEnd();
+			} else if (rec != null) {
+				rec.waitForEnd();
 			}
 			if (!isRetry) {
 				//if (rr != null) rr.isRetry = false;
@@ -541,6 +543,7 @@ namespace namaichi.rec
 					isRetry = false;
 					if (rr != null) rr.retryMode = 2;
 					if (tscg != null) tscg.setIsRetry(false);
+					Thread.Sleep(15000);
 				}
 				
 				addDebugBuf("websocket error kei");

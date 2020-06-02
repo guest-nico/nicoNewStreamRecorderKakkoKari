@@ -29,10 +29,11 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.87.87";
-	public static string versionDayStr = "2020/05/28";
+	public static string versionStr = "ver0.87.88";
+	public static string versionDayStr = "2020/06/02";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
+	public static double dotNetVer = 0;
 	
 	public static string getRegGroup(string target, string reg, int group = 1, Regex r = null) {
 		if (r == null)
@@ -657,8 +658,9 @@ class util {
 					req.Proxy = null;
 					req.AllowAutoRedirect = true;
 					req.Timeout = 10000;
-					req.KeepAlive = false;
+					req.KeepAlive = true;
 					//req.UserAgent = "Lavf/56.36.100";
+					req.Accept = "*/*";
 									
 		//			req.Headers = getheaders;
 	//				if (referer != null) req.Referer = referer;

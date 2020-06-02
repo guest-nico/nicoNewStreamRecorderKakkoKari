@@ -65,7 +65,7 @@ namespace namaichi.rec
 			if (rfu == null) {
             	var lv = util.getRegGroup(form.urlText.Text, "(lv\\d+(,\\d+)*)");
 				util.setLog(cfg, lv);
-				util.debugWriteLine(util.versionStr + " " + util.versionDayStr);
+				util.debugWriteLine(util.versionStr + " " + util.versionDayStr + " " + util.dotNetVer);
 				
 				var arr = form.urlText.Text.Split('|');
             	try {
