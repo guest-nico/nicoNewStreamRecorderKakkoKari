@@ -62,35 +62,48 @@ namespace namaichi.rec
 //			util.debugWriteLine(data);
 			var wsUrl = util.getRegGroup(data, "\"webSocketUrl\":\"(ws[\\d\\D]+?)\"");
 			if (wsUrl == null) return null;
-			
-			wsUrl += "&frontend_id=90";
 
+			wsUrl += "&frontend_id=90";
 			util.debugWriteLine("wsurl " + wsUrl);
+			
 			var broadcastId = util.getRegGroup(data, "\"broadcastId\"\\:\"(\\d+)\"");
-			if (broadcastId == null) {
-				broadcastId = util.getRegGroup(data, "webSocketUrl.+?watch/(\\d+).+?audience_token");
-				#if DEBUG
-					form.addLogText("bloadcastId not found_");
-				#endif
-				if (broadcastId == null) {
-					form.addLogText("bloadcastId not found");
-					return null;
-				}
-			}
+			
 			
 			util.debugWriteLine("broadcastid " + broadcastId);
+			
+			
+			
 			//rtmp {"type":"watch","body":{"command":"getpermit","requirement":{"broadcastId":"17684079051334","route":"","stream":{"protocol":"rtmp","requireNewStream":true},"room":{"isCommentable":true,"protocol":"webSocket"}}}}
 			string request = null;
-			if (isRtmp && !isTimeShift) 
-				request = ("{\"type\":\"watch\",\"body\":{\"command\":\"getpermit\",\"requirement\":{\"broadcastId\":\"" + broadcastId + "\",\"route\":\"\",\"stream\":{\"protocol\":\"rtmp\",\"requireNewStream\":true},\"room\":{\"isCommentable\":true,\"protocol\":\"webSocket\"}}}}");
-			else
-				request = //(isChase) ? 
-					//("{\"type\":\"watch\",\"body\":{\"command\":\"getpermit\",\"requirement\":{\"broadcastId\":\"" + broadcastId + "\",\"route\":\"\",\"stream\":{\"protocol\":\"hls\",\"requireNewStream\":true,\"priorStreamQuality\":\"normal\", \"isLowLatency\": false},\"room\":{\"isCommentable\":true,\"protocol\":\"webSocket\"}}}}");
-					("{\"type\":\"watch\",\"body\":{\"command\":\"getpermit\",\"requirement\":{\"broadcastId\":\"" + broadcastId + "\",\"route\":\"\",\"stream\":{\"protocol\":\"hls\",\"requireNewStream\":true,\"priorStreamQuality\":\"normal\", \"isLowLatency\": false,\"isChasePlay\":false},\"room\":{\"isCommentable\":true,\"protocol\":\"webSocket\"}}}}");
+			var ver = util.getRegGroup(wsUrl, "/v(\\d+)/");
+			if (ver == "1") {
+				if (broadcastId == null) {
+					//broadcastId = util.getRegGroup(data, "webSocketUrl.+?watch/(\\d+).+?audience_token");
+					#if DEBUG
+					//	form.addLogText("broadcastId not found_");
+					#endif
+					//if (broadcastId == null) {
+						form.addLogText("broadcastId not found");
+						return null;
+					//}
+				}
+				
+				if (isRtmp && !isTimeShift) 
+					request = ("{\"type\":\"watch\",\"body\":{\"command\":\"getpermit\",\"requirement\":{\"broadcastId\":\"" + broadcastId + "\",\"route\":\"\",\"stream\":{\"protocol\":\"rtmp\",\"requireNewStream\":true},\"room\":{\"isCommentable\":true,\"protocol\":\"webSocket\"}}}}");
+				else
+					request = //(isChase) ? 
+						//("{\"type\":\"watch\",\"body\":{\"command\":\"getpermit\",\"requirement\":{\"broadcastId\":\"" + broadcastId + "\",\"route\":\"\",\"stream\":{\"protocol\":\"hls\",\"requireNewStream\":true,\"priorStreamQuality\":\"normal\", \"isLowLatency\": false},\"room\":{\"isCommentable\":true,\"protocol\":\"webSocket\"}}}}");
+						("{\"type\":\"watch\",\"body\":{\"command\":\"getpermit\",\"requirement\":{\"broadcastId\":\"" + broadcastId + "\",\"route\":\"\",\"stream\":{\"protocol\":\"hls\",\"requireNewStream\":true,\"priorStreamQuality\":\"normal\", \"isLowLatency\": false,\"isChasePlay\":false},\"room\":{\"isCommentable\":true,\"protocol\":\"webSocket\"}}}}");
+			} else if (ver == "2") {
+				request = "{\"type\":\"startWatching\",\"data\":{\"stream\":{\"quality\":\"normal\",\"protocol\":\"hls\",\"latency\":\"high\",\"chasePlay\":false},\"room\":{\"protocol\":\"webSocket\",\"commentable\":true},\"reconnect\":false}}";
+			} else {
+				form.addLogText("unknown type " + ver);
+				return null;
+			}
 			
 //			string request = "{\"type\":\"watch\",\"body\":{\"command\":\"getpermit\",\"requirement\":{\"broadcastId\":\"" + broadcastId + "\",\"route\":\"\",\"stream\":{\"protocol\":\"rtmp\"},\"room\":{\"isCommentable\":true,\"protocol\":\"webSocket\"}}}}";
 			util.debugWriteLine("request " + request);
-			return new string[]{wsUrl, request};
+			return new string[]{wsUrl, request, ver};
 		}
 		private string[] getHtml5RecFolderFileInfo(string data, string type, bool isRtmpOnlyPage) {
 			string host, group, title, communityNum, userId;

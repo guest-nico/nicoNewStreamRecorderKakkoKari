@@ -192,7 +192,7 @@ namespace namaichi.rec
 			
 			var requireCookies = new List<Cookie>();
 			var cc = new CookieContainer();
-			cc.PerDomainCapacity = 100;
+			cc.PerDomainCapacity = 200;
 			foreach(Cookie _c in result.Cookies) {
 				try {
 					cc.Add(_c);

@@ -87,7 +87,8 @@ namespace namaichi.rec
 				RtmpRecorder rr, RecordStateSetter rss, 
 				string roomName)
 		{
-			this.uri = util.getRegGroup(message, "messageServerUri\"\\:\"(ws.+?)\"");
+			this.uri = util.getRegGroup(message, rp.webSocketInfo[2] == "1" ? 
+					"messageServerUri\"\\:\"(ws.+?)\"" : "uri\"\\:\"(ws.+?)\"");
 			this.thread = util.getRegGroup(message, "threadId\":\"(.+?)\"");
 			this.rm = rm;
 			this.rfu = rfu;

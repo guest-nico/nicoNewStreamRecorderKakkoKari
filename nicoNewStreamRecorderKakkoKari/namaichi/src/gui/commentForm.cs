@@ -257,7 +257,7 @@ namespace namaichi
 				if (IsDisposed) return;
 				Thread.Sleep(300);
 			}
-			if (form.rec.wsr.isTimeShift) {
+			if (form.rec.wsr.isTimeShift && !((rec.WebSocketRecorder)form.rec.wsr).isRealtimeChase) {
 				displayTsComment();
 			} else {
 				cpws = new CommentPlayerWebSocket2(form.rec.wsr, this);
@@ -265,8 +265,9 @@ namespace namaichi
 			}
 		}
 		void displayTsComment() {
-			while (form.rec.wsr.gotTsCommentList == null && 
-			       form.rec.wsr != null && !this.IsDisposed) {
+			while (form.rec.wsr != null && 
+			       form.rec.wsr.gotTsCommentList == null &&
+			       !this.IsDisposed) {
 				Thread.Sleep(200);
 			}
 			if (form.rec.wsr.gotTsCommentList == null) return;

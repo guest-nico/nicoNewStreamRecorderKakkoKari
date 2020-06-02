@@ -113,12 +113,14 @@ namespace namaichi.utility
 		//websocketRecorder
 		public Regex getWrVisit() {
 			if (wrVisit == null)
-				wrVisit = new Regex("{\"type\":\"watch\",\"body\":{\"command\":\"statistics\",\"params\":\\[\"(\\d+?)\",\"\\d+?\"");
+				//wrVisit = new Regex("{\"type\":\"watch\",\"body\":{\"command\":\"statistics\",\"params\":\\[\"(\\d+?)\",\"\\d+?\"");
+				wrVisit = new Regex("\"data\":{\"viewers\":(\\d*),\"comments\":\\d*");
+				
 			return wrVisit;
 		}
 		public Regex getWrComment() {
 			if (wrComment == null)
-				wrComment = new Regex("{\"type\":\"watch\",\"body\":{\"command\":\"statistics\",\"params\":\\[\"\\d+?\",\"(\\d+?)\"");
+				wrComment = new Regex("\"data\":{\"viewers\":\\d*,\"comments\":(\\d*)");
 			return wrComment;
 		}
 	}
