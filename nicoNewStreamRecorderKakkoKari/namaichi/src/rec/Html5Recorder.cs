@@ -284,8 +284,8 @@ namespace namaichi.rec
 						recFolderFile = getRecFilePath(isRtmp);
 					if (recFolderFile == null || recFolderFile[0] == null) {
 						//パスが長すぎ
-						rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);
-						util.debugWriteLine("too long path? " + recFolderFile[1]);
+						rm.form.addLogText("パスに問題があります。 " + (recFolderFile != null ? recFolderFile[1] : ""));
+						util.debugWriteLine("too long path? " + (recFolderFile != null ? recFolderFile[1] : ""));
 						return 2;
 					}
 				} else {
@@ -500,7 +500,13 @@ namespace namaichi.rec
 		//public string[] getRecFilePath(long openTime, bool isRtmp) {
 		public string[] getRecFilePath(bool isRtmp) {
 			util.debugWriteLine(openTime + " c " + recFolderFileInfo[0] + " timeshiftConfig " + timeShiftConfig);
-			return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, isTimeShift, timeShiftConfig, openTime, isRtmp);
+			try {
+				return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, isTimeShift, timeShiftConfig, openTime, isRtmp);
+			} catch (Exception e) {
+				rm.form.addLogText("保存先パスの取得もしくはフォルダの作成に失敗しました");
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				return null;
+			}
 		}
 		private TimeShiftConfig getReadyArgTsConfig(
 				TimeShiftConfig _tsConfig, string host, 

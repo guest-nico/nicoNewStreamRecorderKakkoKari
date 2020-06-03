@@ -228,9 +228,7 @@ namespace namaichi.rec
 					pageSource = util.getPageSource(_url, cc);
 					
 					util.debugWriteLine("ishtml5login getpage ok");
-					#if DEBUG
-						//util.debugWriteLine("pagesource " + pageSource);
-					#endif
+
 				} catch (Exception e) {
 					util.debugWriteLine("cookiegetter ishtml5login " + e.Message+e.StackTrace);
 					pageSource = "";
@@ -249,7 +247,12 @@ namespace namaichi.rec
 					log = "この放送は年齢認証が必要です。ブラウザで年齢認証をしてください。";
 					return false;
 				}
-				
+				if (pageSource.IndexOf("\"login_status\"") == -1 &&
+				     	pageSource.IndexOf("login_status") == -1) {
+				    log += "放送ページを正常に取得できませんでした。";
+				    Thread.Sleep(5000);
+				    continue;
+			    }
 				
 				var isLogin = !(pageSource.IndexOf("\"login_status\":\"login\"") < 0 &&
 				   	pageSource.IndexOf("login_status = 'login'") < 0);

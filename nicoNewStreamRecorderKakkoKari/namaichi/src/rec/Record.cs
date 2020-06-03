@@ -1777,7 +1777,11 @@ namespace namaichi.rec
 		}
 		
 		private void checkFreeSpace(numTaskInfo nti) {
-			var di = new DriveInfo(Directory.GetDirectoryRoot(recFolderFile));
+			var d = Directory.GetDirectoryRoot(recFolderFile);
+			if (d == null) return;
+			if (util.getRegGroup(d[0].ToString(), "([a-zA-Z])") == null) return;
+
+			var di = new DriveInfo(d);
 			
 			while (rm.rfu == rfu && di.AvailableFreeSpace < nti.res.Length) {
 				var m = di.Name + "の空き容量が" + (di.AvailableFreeSpace / 1000) + "KBです。";

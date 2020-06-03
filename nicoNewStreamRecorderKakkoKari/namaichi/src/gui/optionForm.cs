@@ -9,13 +9,13 @@
 using System;
 using System.Drawing;
 using System.Drawing.Text;
+using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
-
 using namaichi.config;
 using SunokoLibrary.Application;
 using SunokoLibrary.Windows.ViewModels;
@@ -56,9 +56,13 @@ namespace namaichi
 		void hozonFolderSanshouBtn_Click(object sender, EventArgs e)
 		{
 			var f = new FolderBrowserDialog();
+			if (Directory.Exists(recordDirectoryText.Text))
+				f.SelectedPath = recordDirectoryText.Text;
 			DialogResult r = f.ShowDialog();
+			
 			util.debugWriteLine(f.SelectedPath);
-			recordDirectoryText.Text = f.SelectedPath;
+			if (r == DialogResult.OK)
+				recordDirectoryText.Text = f.SelectedPath;
 		}
 		
 		void fileNameOptionBtn(object sender, EventArgs e)

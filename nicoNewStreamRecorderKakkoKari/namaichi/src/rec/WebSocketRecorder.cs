@@ -64,7 +64,7 @@ namespace namaichi.rec
 		private TimeShiftConfig tsConfig = null;
 		private bool isTimeShiftCommentGetEnd = false;
 		private DateTime lastEndProgramCheckTime = DateTime.Now;
-		private DateTime lastWebsocketConnectTime = DateTime.Now;
+		private DateTime lastWebsocketConnectTime = DateTime.MinValue;
 		
 		private TimeSpan jisa;
 		//private DateTime beginTime = null;
