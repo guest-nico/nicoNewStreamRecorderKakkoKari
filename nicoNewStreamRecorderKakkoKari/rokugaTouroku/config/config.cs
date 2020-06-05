@@ -101,6 +101,10 @@ public class config
 			{"iscookie2","false"},
 			{"IsBrowserShowAll","false"},
 			
+			{"useProxy","false"},
+			{"proxyAddress",""},
+			{"proxyPort",""},
+			
 			{"IsdefaultBrowserPath","true"},
 			{"browserPath",""},
 			{"Isminimized","false"},

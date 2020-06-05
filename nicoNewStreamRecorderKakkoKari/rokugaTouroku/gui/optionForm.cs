@@ -56,9 +56,13 @@ namespace rokugaTouroku
 		void hozonFolderSanshouBtn_Click(object sender, EventArgs e)
 		{
 			var f = new FolderBrowserDialog();
+			if (System.IO.Directory.Exists(recordDirectoryText.Text))
+				f.SelectedPath = recordDirectoryText.Text;
 			DialogResult r = f.ShowDialog();
+			
 			util.debugWriteLine(f.SelectedPath);
-			recordDirectoryText.Text = f.SelectedPath;
+			if (r == DialogResult.OK)
+				recordDirectoryText.Text = f.SelectedPath;
 		}
 		
 		void fileNameOptionBtn(object sender, EventArgs e)
@@ -191,6 +195,10 @@ namespace rokugaTouroku
 				
 				{"rokugaTourokuMaxRecordingNum",maxRecordingNum.Text},
 				{"IsDuplicateConfirm",isDuplicateConfirmChkBox.Checked.ToString().ToLower()},
+				
+				{"useProxy",useProxyChkBox.Checked.ToString().ToLower()},
+				{"proxyAddress",proxyAddressText.Text},
+				{"proxyPort",proxyPortText.Text},
 			};
 			
 		}
@@ -447,6 +455,10 @@ namespace rokugaTouroku
         	
         	maxRecordingNum.Text= cfg.get("rokugaTourokuMaxRecordingNum");
         	isDuplicateConfirmChkBox.Checked = bool.Parse(cfg.get("IsDuplicateConfirm"));
+        	
+        	proxyAddressText.Text = cfg.get("proxyAddress");
+        	proxyPortText.Text = cfg.get("proxyPort");
+        	useProxyChkBox.Checked = bool.Parse(cfg.get("useProxy"));
         }
         private void setSubFolderNameType(int subFolderNameType) {
         	if (subFolderNameType == 1) housoushaRadioBtn.Checked = true;
@@ -1023,6 +1035,15 @@ namespace rokugaTouroku
 			isCommentXML.Checked = isXml && !isXmlInfo;
         	isCommentJson.Checked = !isXml;
         	isCommentXmlInfo.Checked = isXmlInfo;
+		}
+		void UseProxyChkBox_CheckedChanged(object sender, EventArgs e)
+		{
+			useProxyUpdate();
+		}
+		void useProxyUpdate() {
+			proxyAddressText.Enabled = proxyPortText.Enabled = 
+				proxyAddressLabel.Enabled = proxyPortLabel.Enabled = 
+					useProxyChkBox.Checked;
 		}
 	}
 }

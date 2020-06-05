@@ -35,6 +35,7 @@ namespace namaichi.rec
 		static readonly Uri TargetUrl5 = new Uri("https://www.nicovideo.jp/");
 		//private bool isSub;
 		private bool isRtmp = false;
+		public string reason = null;
 		
 		public CookieGetter(config.config cfg)
 		{
@@ -81,39 +82,18 @@ namespace namaichi.rec
 //				util.debugWriteLine(userSessionCC.GetCookieHeader(TargetUrl));
 				util.debugWriteLine("usersessioncc ishtml5login");
 				if (isHtml5Login(userSessionCC, url)) {
-					/*
-					var c = userSessionCC.GetCookies(TargetUrl)["user_session"];
-					var secureC = userSessionCC.GetCookies(TargetUrl)["user_session_secure"];
-					if (c != null)
-						//cfg.set("user_session", c.Value);
-						us = c.Value;
-					if (secureC != null)
-						//cfg.set("user_session_secure", secureC.Value);
-						uss = secureC.Value;
-					*/
 					return userSessionCC;
 				}
 			}
 			
 			if (browserNum == "2") {
+				reason = null;
 				CookieContainer cc = await getBrowserCookie(isSub).ConfigureAwait(false);
 				log += (cc == null) ? "ブラウザからユーザーセッションを取得できませんでした。ログインに使うブラウザの設定をご確認ください。他のブラウザやアカウントログインを試したり、ブラウザ上で一度ログインし直した後にもう一度ツール側で設定すると上手くいくかもしれません。" : "ブラウザからユーザーセッションを取得しました。";
 				if (cc != null) {
 					util.debugWriteLine("browser ishtml5login");
 					if (isHtml5Login(cc, url)) {
-//						util.debugWriteLine("browser 1 " + cc.GetCookieHeader(TargetUrl));
-//						util.debugWriteLine("browser 2 " + cc.GetCookieHeader(new Uri("http://live2.nicovideo.jp")));
 						util.debugWriteLine("browser login ok");
-						/*
-						var c = cc.GetCookies(TargetUrl)["user_session"];
-						var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
-						if (c != null)
-							//cfg.set("user_session", c.Value);
-							us = c.Value;
-						if (secureC != null)
-							//cfg.set("user_session_secure", secureC.Value);
-							uss = secureC.Value;
-						*/
 						return cc;
 					}
 					
@@ -121,7 +101,8 @@ namespace namaichi.rec
 			}
 			
 			if (browserNum == "1" || 
-			    isSecondLogin == "true") {
+			    	isSecondLogin == "true") {
+				reason = null;
 				var mail = accountId;
 				var pass = accountPass;
 				var accCC = await getAccountCookie(mail, pass).ConfigureAwait(false);
@@ -130,16 +111,6 @@ namespace namaichi.rec
 					util.debugWriteLine("account ishtml5login");
 					if (isHtml5Login(accCC, url)) {
 						util.debugWriteLine("account login ok");
-						/*
-						var c = accCC.GetCookies(TargetUrl)["user_session"];
-						var secureC = accCC.GetCookies(TargetUrl)["user_session_secure"];
-						if (c != null)
-							//cfg.set("user_session", c.Value);
-							us = c.Value;
-						if (secureC != null)
-							//cfg.set("user_session_secure", secureC.Value);
-							uss = secureC.Value;
-						*/
 						return accCC;
 					}
 				}
@@ -232,33 +203,51 @@ namespace namaichi.rec
 				} catch (Exception e) {
 					util.debugWriteLine("cookiegetter ishtml5login " + e.Message+e.StackTrace);
 					pageSource = "";
-					log += "ページの取得中にエラーが発生しました。" + e.Message + e.Source + e.TargetSite + e.StackTrace;
+					var msg = "ページの取得中にエラーが発生しました。" + e.Message + e.Source + e.TargetSite + e.StackTrace;
+					if (!log.EndsWith(msg)) log += msg;
 					Thread.Sleep(3000);
 					continue;
 				}
 	//			isHtml5 = (headers.Get("Location") == null) ? false : true;
 				if (pageSource == null) {
-					log += "ページが取得できませんでした。";
 					util.debugWriteLine("not get page");
+					Thread.Sleep(3000);
+					pageSource = util.getPageSource(url, cc, null, false, 5, null, true);
+					
+					var msg = "ページが取得できませんでした。" + url;
+					msg += util.getRegGroup(pageSource, "<title>(.+?)</title>");
+					if (!log.EndsWith(msg)) log += msg;
+					
 					Thread.Sleep(3000);
 					continue;
 				}
 				if (pageSource.IndexOf("<p class=\"textTitle\">年齢認証</p>") > -1) {
-					log = "この放送は年齢認証が必要です。ブラウザで年齢認証をしてください。";
+					log += "この放送は年齢認証が必要です。ブラウザで年齢認証をしてください。";
+					reason = "age";
 					return false;
 				}
 				if (pageSource.IndexOf("\"login_status\"") == -1 &&
 				     	pageSource.IndexOf("login_status") == -1) {
-				    log += "放送ページを正常に取得できませんでした。";
+					var msg = "放送ページを正常に取得できませんでした。";
+					if (!log.EndsWith(msg)) log += msg;
+					util.debugWriteLine(pageSource);
 				    Thread.Sleep(5000);
 				    continue;
 			    }
+	
+				//"login_status":"not_login"
+				if (pageSource.IndexOf("\"login_status\":\"not_login\"") != -1 ||
+				    	pageSource.IndexOf("login_status = 'not_login'") != -1) {
+					log += "ログインしていませんでした。";
+					reason = "not_login";
+					return false;
+				}
 				
 				var isLogin = !(pageSource.IndexOf("\"login_status\":\"login\"") < 0 &&
 				   	pageSource.IndexOf("login_status = 'login'") < 0);
 				if (isRtmp) isLogin = pageSource.IndexOf("<code>notlogin</code>") == -1;
 				util.debugWriteLine("islogin " + isLogin);
-				log += (isLogin) ? "ログインに成功しました。" : "ログインに失敗しました";
+				log += (isLogin) ? "ログインに成功しました。" : "ログインが確認できませんでした。";
 	//			if (!isLogin) log += pageSource;
 				if (isLogin) {
 	//				id = (isRtmp) ? util.getRegGroup(pageSource, "<user_id>(\\d+)</user_id>")
@@ -296,6 +285,10 @@ namespace namaichi.rec
 			
 			try {
 				var handler = new System.Net.Http.HttpClientHandler();
+				if (util.httpProxy != null) {
+					handler.UseProxy = true;
+					handler.Proxy = util.httpProxy;
+				}
 				handler.UseCookies = true;
 				var http = new System.Net.Http.HttpClient(handler);
 				var content = new System.Net.Http.FormUrlEncodedContent(param);

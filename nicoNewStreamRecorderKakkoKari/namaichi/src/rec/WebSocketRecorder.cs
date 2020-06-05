@@ -11,15 +11,16 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Xml.Linq;
-using WebSocket4Net;
 using System.Security.Authentication;
 using System.IO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json;
 using System.Threading;
 using System.Drawing;
+using WebSocket4Net;
+using Newtonsoft.Json;
+using SuperSocket.ClientEngine.Proxy;
 using namaichi.info;
 
 namespace namaichi.rec
@@ -316,6 +317,7 @@ namespace namaichi.rec
 				addDebugBuf("ws connect webSocketInfo[0] " + webSocketInfo[0] + " wsList " + wsList.Count);
 				//ws = new WebSocket(webSocketInfo[0], "", null, null, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
 				ws = new WebSocket(webSocketInfo[0], "", null, null, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.None);
+				ws.Proxy = util.wsProxy;
 				ws.Opened += onOpen;
 				ws.Closed += onClose;
 				ws.DataReceived += onDataReceive;
@@ -427,6 +429,7 @@ namespace namaichi.rec
 		private void onError(object sender, SuperSocket.ClientEngine.ErrorEventArgs e) {
 			displayDebug("ws error");
 			addDebugBuf("on error " + e.Exception.Message + " ws " + sender.GetHashCode());
+			
 			//stopRecording();
 //			reConnect();
 //			ws.Open();
@@ -1608,7 +1611,7 @@ namespace namaichi.rec
 		}
 		public void displayDebug(string s) {
 			#if DEBUG
-			rm.form.addLogText(DateTime.Now + " " + s);
+				//rm.form.addLogText(DateTime.Now + " " + s);
 			#endif
 		}
 		private void sendMessage(WebSocket w, string s) {

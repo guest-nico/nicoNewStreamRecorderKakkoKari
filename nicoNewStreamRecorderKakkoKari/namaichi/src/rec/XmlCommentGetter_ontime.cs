@@ -247,7 +247,8 @@ namespace namaichi.rec
 					handler.UseCookies = true;
 					handler.CookieContainer = container;
 					var http = new System.Net.Http.HttpClient(handler);
-					handler.UseProxy = false;
+					handler.UseProxy = true;
+					handler.Proxy = util.httpProxy;
 					http.Timeout = TimeSpan.FromSeconds(5);					
 					var contentStr = "{\"lang\":\"ja-jp\",\"locale\":\"JP\",\"seat_locale\":\"JP\",\"screen\":\"ScreenNormal\",\"v\":\"" + lvid + "\",\"datarate\":0}";
 					

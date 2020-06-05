@@ -145,6 +145,13 @@ namespace rokugaTouroku
 			this.cookieFileSanshouBtn2 = new System.Windows.Forms.Button();
 			this.btnReload2 = new System.Windows.Forms.Button();
 			this.useSecondLoginChkBox2 = new System.Windows.Forms.CheckBox();
+			this.tabPage11 = new System.Windows.Forms.TabPage();
+			this.groupBox16 = new System.Windows.Forms.GroupBox();
+			this.useProxyChkBox = new System.Windows.Forms.CheckBox();
+			this.proxyPortLabel = new System.Windows.Forms.Label();
+			this.proxyAddressLabel = new System.Windows.Forms.Label();
+			this.proxyPortText = new System.Windows.Forms.TextBox();
+			this.proxyAddressText = new System.Windows.Forms.TextBox();
 			this.tabPage7 = new System.Windows.Forms.TabPage();
 			this.groupBox13 = new System.Windows.Forms.GroupBox();
 			this.isUseCommentViewerChkBox = new System.Windows.Forms.CheckBox();
@@ -164,6 +171,7 @@ namespace rokugaTouroku
 			this.anotherPlayerPathText = new System.Windows.Forms.TextBox();
 			this.anotherPlayerSanshouBtn = new System.Windows.Forms.Button();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
+			this.label14 = new System.Windows.Forms.Label();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.fileNameTypeDokujiSetteiBtn = new System.Windows.Forms.Button();
 			this.fileNameTypeRadioBtn9 = new System.Windows.Forms.RadioButton();
@@ -196,7 +204,6 @@ namespace rokugaTouroku
 			this.label3 = new System.Windows.Forms.Label();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
-			this.label14 = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox6.SuspendLayout();
@@ -217,6 +224,8 @@ namespace rokugaTouroku
 			this.groupBox3.SuspendLayout();
 			this.tabPage4.SuspendLayout();
 			this.groupBox12.SuspendLayout();
+			this.tabPage11.SuspendLayout();
+			this.groupBox16.SuspendLayout();
 			this.tabPage7.SuspendLayout();
 			this.groupBox13.SuspendLayout();
 			this.groupBox8.SuspendLayout();
@@ -237,6 +246,7 @@ namespace rokugaTouroku
 			this.tabControl1.Controls.Add(this.tabPage5);
 			this.tabControl1.Controls.Add(this.tabPage2);
 			this.tabControl1.Controls.Add(this.tabPage4);
+			this.tabControl1.Controls.Add(this.tabPage11);
 			this.tabControl1.Controls.Add(this.tabPage7);
 			this.tabControl1.Controls.Add(this.tabPage3);
 			this.tabControl1.Controls.Add(this.tabPage8);
@@ -1403,6 +1413,78 @@ namespace rokugaTouroku
 			this.useSecondLoginChkBox2.Text = "ブラウザからクッキーが取得できなかった場合、次のアカウントでログインする";
 			this.useSecondLoginChkBox2.UseVisualStyleBackColor = true;
 			// 
+			// tabPage11
+			// 
+			this.tabPage11.Controls.Add(this.groupBox16);
+			this.tabPage11.Location = new System.Drawing.Point(4, 40);
+			this.tabPage11.Name = "tabPage11";
+			this.tabPage11.Size = new System.Drawing.Size(468, 503);
+			this.tabPage11.TabIndex = 11;
+			this.tabPage11.Text = "接続";
+			this.tabPage11.UseVisualStyleBackColor = true;
+			// 
+			// groupBox16
+			// 
+			this.groupBox16.Controls.Add(this.useProxyChkBox);
+			this.groupBox16.Controls.Add(this.proxyPortLabel);
+			this.groupBox16.Controls.Add(this.proxyAddressLabel);
+			this.groupBox16.Controls.Add(this.proxyPortText);
+			this.groupBox16.Controls.Add(this.proxyAddressText);
+			this.groupBox16.Location = new System.Drawing.Point(5, 10);
+			this.groupBox16.Margin = new System.Windows.Forms.Padding(2);
+			this.groupBox16.Name = "groupBox16";
+			this.groupBox16.Padding = new System.Windows.Forms.Padding(2);
+			this.groupBox16.Size = new System.Drawing.Size(385, 108);
+			this.groupBox16.TabIndex = 4;
+			this.groupBox16.TabStop = false;
+			this.groupBox16.Text = "プロキシ";
+			// 
+			// useProxyChkBox
+			// 
+			this.useProxyChkBox.Checked = true;
+			this.useProxyChkBox.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.useProxyChkBox.Location = new System.Drawing.Point(6, 18);
+			this.useProxyChkBox.Name = "useProxyChkBox";
+			this.useProxyChkBox.Size = new System.Drawing.Size(116, 15);
+			this.useProxyChkBox.TabIndex = 26;
+			this.useProxyChkBox.Text = "プロキシを使用する";
+			this.useProxyChkBox.UseVisualStyleBackColor = true;
+			this.useProxyChkBox.CheckedChanged += new System.EventHandler(this.UseProxyChkBox_CheckedChanged);
+			// 
+			// proxyPortLabel
+			// 
+			this.proxyPortLabel.Location = new System.Drawing.Point(6, 69);
+			this.proxyPortLabel.Name = "proxyPortLabel";
+			this.proxyPortLabel.Size = new System.Drawing.Size(80, 19);
+			this.proxyPortLabel.TabIndex = 23;
+			this.proxyPortLabel.Text = "ポート：";
+			this.proxyPortLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// proxyAddressLabel
+			// 
+			this.proxyAddressLabel.Location = new System.Drawing.Point(6, 41);
+			this.proxyAddressLabel.Name = "proxyAddressLabel";
+			this.proxyAddressLabel.Size = new System.Drawing.Size(80, 19);
+			this.proxyAddressLabel.TabIndex = 24;
+			this.proxyAddressLabel.Text = "アドレス：";
+			this.proxyAddressLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// proxyPortText
+			// 
+			this.proxyPortText.Location = new System.Drawing.Point(95, 69);
+			this.proxyPortText.Margin = new System.Windows.Forms.Padding(2);
+			this.proxyPortText.Name = "proxyPortText";
+			this.proxyPortText.Size = new System.Drawing.Size(193, 19);
+			this.proxyPortText.TabIndex = 22;
+			// 
+			// proxyAddressText
+			// 
+			this.proxyAddressText.Location = new System.Drawing.Point(95, 40);
+			this.proxyAddressText.Margin = new System.Windows.Forms.Padding(2);
+			this.proxyAddressText.Name = "proxyAddressText";
+			this.proxyAddressText.Size = new System.Drawing.Size(193, 19);
+			this.proxyAddressText.TabIndex = 21;
+			// 
 			// tabPage7
 			// 
 			this.tabPage7.Controls.Add(this.groupBox13);
@@ -1598,6 +1680,14 @@ namespace rokugaTouroku
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "録画";
 			this.tabPage3.UseVisualStyleBackColor = true;
+			// 
+			// label14
+			// 
+			this.label14.Location = new System.Drawing.Point(9, 468);
+			this.label14.Name = "label14";
+			this.label14.Size = new System.Drawing.Size(361, 15);
+			this.label14.TabIndex = 3;
+			this.label14.Text = "保存パスが長くなりすぎた場合、放送IDのみのファイル名で保存されます。";
 			// 
 			// groupBox2
 			// 
@@ -1951,14 +2041,6 @@ namespace rokugaTouroku
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
 			// 
-			// label14
-			// 
-			this.label14.Location = new System.Drawing.Point(9, 468);
-			this.label14.Name = "label14";
-			this.label14.Size = new System.Drawing.Size(361, 15);
-			this.label14.TabIndex = 3;
-			this.label14.Text = "保存パスが長くなりすぎた場合、放送IDのみのファイル名で保存されます。";
-			// 
 			// optionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1998,6 +2080,9 @@ namespace rokugaTouroku
 			this.tabPage4.ResumeLayout(false);
 			this.groupBox12.ResumeLayout(false);
 			this.groupBox12.PerformLayout();
+			this.tabPage11.ResumeLayout(false);
+			this.groupBox16.ResumeLayout(false);
+			this.groupBox16.PerformLayout();
 			this.tabPage7.ResumeLayout(false);
 			this.groupBox13.ResumeLayout(false);
 			this.groupBox13.PerformLayout();
@@ -2012,6 +2097,13 @@ namespace rokugaTouroku
 			((System.ComponentModel.ISupportInitialize)(this.maxRecordingNum)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.TextBox proxyAddressText;
+		private System.Windows.Forms.TextBox proxyPortText;
+		private System.Windows.Forms.Label proxyAddressLabel;
+		private System.Windows.Forms.Label proxyPortLabel;
+		private System.Windows.Forms.CheckBox useProxyChkBox;
+		private System.Windows.Forms.GroupBox groupBox16;
+		private System.Windows.Forms.TabPage tabPage11;
 		private System.Windows.Forms.Label label14;
 		private System.Windows.Forms.CheckBox isRestoreLocationChkBox;
 		private System.Windows.Forms.RadioButton isCommentXmlInfo;

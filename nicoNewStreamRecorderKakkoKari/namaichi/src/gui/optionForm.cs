@@ -51,6 +51,7 @@ namespace namaichi
 			//tabControl1.TabPages.RemoveAt(6);
 			setBackColor(Color.FromArgb(int.Parse(cfg.get("recBackColor"))));
 			setForeColor(Color.FromArgb(int.Parse(cfg.get("recForeColor"))));
+			util.setProxy(cfg);
 		}
 		
 		void hozonFolderSanshouBtn_Click(object sender, EventArgs e)
@@ -194,6 +195,10 @@ namespace namaichi
 				{"IsBrowserShowAll",checkBoxShowAll.Checked.ToString().ToLower()},
 				{"user_session2",""},
 				{"user_session_secure2",""},
+				
+				{"useProxy",useProxyChkBox.Checked.ToString().ToLower()},
+				{"proxyAddress",proxyAddressText.Text},
+				{"proxyPort",proxyPortText.Text},
 			};
 			
 		}
@@ -444,6 +449,9 @@ namespace namaichi
         	var si2 = SourceInfoSerialize.load(true);
         	nicoSessionComboBox2.Selector.SetInfoAsync(si2);
 //			!bool.Parse(cfg.get("defaultBrowserPath"))
+        	proxyAddressText.Text = cfg.get("proxyAddress");
+        	proxyPortText.Text = cfg.get("proxyPort");
+        	useProxyChkBox.Checked = bool.Parse(cfg.get("useProxy"));
         }
         private void setSubFolderNameType(int subFolderNameType) {
         	if (subFolderNameType == 1) housoushaRadioBtn.Checked = true;
@@ -1020,6 +1028,15 @@ namespace namaichi
 			isCommentXML.Checked = isXml && !isXmlInfo;
         	isCommentJson.Checked = !isXml;
         	isCommentXmlInfo.Checked = isXmlInfo;
+		}
+		void UseProxyChkBox_CheckedChanged(object sender, EventArgs e)
+		{
+			useProxyUpdate();
+		}
+		void useProxyUpdate() {
+			proxyAddressText.Enabled = proxyPortText.Enabled = 
+				proxyAddressLabel.Enabled = proxyPortLabel.Enabled = 
+					useProxyChkBox.Checked;
 		}
 	}
 }

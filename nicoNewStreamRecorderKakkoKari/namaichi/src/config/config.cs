@@ -140,6 +140,10 @@ public class config
 			{"cookieFile2",""},
 			{"iscookie2","false"},
 			
+			{"useProxy","false"},
+			{"proxyAddress",""},
+			{"proxyPort",""},
+			
 			{"IsdefaultBrowserPath","true"},
 			{"browserPath",""},
 			{"Isminimized","false"},

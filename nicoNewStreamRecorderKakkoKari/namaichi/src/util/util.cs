@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 using namaichi;
 using namaichi.config;
 using namaichi.info;
+using SuperSocket.ClientEngine.Proxy;
 
 /*
 class app {
@@ -29,11 +30,13 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.01";
-	public static string versionDayStr = "2020/06/04";
+	public static string versionStr = "ver0.88.02";
+	public static string versionDayStr = "2020/06/06";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
+	public static WebProxy httpProxy = null;
+	public static HttpConnectProxy wsProxy = null;
 	
 	public static string getRegGroup(string target, string reg, int group = 1, Regex r = null) {
 		if (r == null)
@@ -577,7 +580,7 @@ class util {
 		return null;
 	}
 	*/
-	public static string getPageSource(string _url, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 0, string userAgent = null) {
+	public static string getPageSource(string _url, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 0, string userAgent = null, bool isGetErrorPage = false) {
 		util.debugWriteLine("access__ getpage " + _url);
 		//if (timeoutMs == 0) timeoutMs = 5000;
 		timeoutMs = 5000;
@@ -598,7 +601,7 @@ class util {
 			try {
 //				util.debugWriteLine("getpage 00");
 				var req = (HttpWebRequest)WebRequest.Create(_url);
-				req.Proxy = null;
+				req.Proxy = httpProxy;
 				req.AllowAutoRedirect = true;
 	//			req.Headers = getheaders;
 //				util.debugWriteLine("getpage 03");
@@ -606,7 +609,7 @@ class util {
 //				util.debugWriteLine("getpage 04");
 				if (container != null) req.CookieContainer = container;
 //				util.debugWriteLine("getpage 05");
-				req.Headers.Add("Accept-Encoding", "gzip,deflate");
+				
 				if (userAgent != null) 
 					req.UserAgent = userAgent;
 				req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
@@ -632,11 +635,22 @@ class util {
 	//				getheaders = res.Headers;
 					return resStr;
 				}
-	
 			} catch (Exception e) {
 				System.Threading.Tasks.Task.Run(() => {
 					util.debugWriteLine("getpage error " + _url + e.Message+e.StackTrace);
 				});
+				if (isGetErrorPage && e is WebException) {
+					try {
+						var res = ((WebException)e).Response;
+						if (res == null) return null;
+						using (var st = res.GetResponseStream())
+						using (var r = new StreamReader(st)) {
+							return r.ReadToEnd();
+						}
+					} catch (Exception ee) {
+						util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+					}
+				}
 	//				System.Threading.Thread.Sleep(3000);
 				continue;
 			}
@@ -655,7 +669,7 @@ class util {
 				//var mode = 0;
 				if (mode == 0 || mode == 1) {
 					var req = (HttpWebRequest)WebRequest.Create(url);
-					req.Proxy = null;
+					req.Proxy = httpProxy;
 					req.AllowAutoRedirect = true;
 					req.Timeout = 10000;
 					req.KeepAlive = true;
@@ -752,7 +766,7 @@ class util {
 		try {
 			var req = (HttpWebRequest)WebRequest.Create(url);
 			req.Method = method;
-			req.Proxy = null;
+			req.Proxy = httpProxy;
 			req.Headers.Add("Accept-Encoding", "gzip,deflate");
 			req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 			
@@ -1186,5 +1200,30 @@ class util {
 		visit = _visit;
 		comment = _comment;
 		return true;
+	}
+	public static void setProxy(config cfg, MainForm form = null) {
+		util.httpProxy = null;
+		util.wsProxy = null;
+		if (!bool.Parse(cfg.get("useProxy"))) return;
+		
+		var proxyAddress = cfg.get("proxyAddress");
+		var proxyPort = cfg.get("proxyPort");
+		if (proxyAddress == "" && proxyPort == "") return;
+		try {
+			var ip = IPAddress.Parse(proxyAddress);
+			var endpoint = new IPEndPoint(ip, int.Parse(proxyPort));
+			util.wsProxy = new HttpConnectProxy(endpoint);
+		} catch (Exception e) {
+			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			if (form != null)
+				form.addLogText("WebSocketのプロキシの設定に失敗しました。アドレス:" + proxyAddress + "ポート：" + proxyPort);
+		}
+		try {
+			util.httpProxy = new WebProxy(proxyAddress, int.Parse(proxyPort));
+		} catch (Exception e) {
+			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			if (form != null)
+				form.addLogText("HTTPのプロキシの設定に失敗しました。アドレス:" + proxyAddress + "ポート：" + proxyPort);
+		}
 	}
 }

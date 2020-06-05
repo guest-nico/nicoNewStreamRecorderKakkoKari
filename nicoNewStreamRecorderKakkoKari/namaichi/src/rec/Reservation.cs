@@ -96,7 +96,8 @@ namespace namaichi.rec
 				handler.UseCookies = true;
 				handler.CookieContainer = cc;
 				var http = new System.Net.Http.HttpClient(handler);
-				handler.UseProxy = false;
+				handler.UseProxy = true;
+				handler.Proxy = util.httpProxy;
 				
 				
 				//var contentStr = "mode=auto_register&vid=" + id + "&token=" + token + "&_=";

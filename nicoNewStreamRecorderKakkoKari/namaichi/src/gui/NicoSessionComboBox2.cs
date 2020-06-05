@@ -73,7 +73,8 @@ namespace namaichi
                     var url = new Uri("https://www.nicovideo.jp/my/channel");
                     var container = new CookieContainer();
                     container.PerDomainCapacity = 100;
-                    var client = new HttpClient(new HttpClientHandler() { CookieContainer = container });
+                    var client = new HttpClient(new HttpClientHandler() { CookieContainer = container, Proxy = util.httpProxy, UseProxy = true });
+                    
                     var result = await cookieImporter.GetCookiesAsync(url);
                     
 					if (result.Status != CookieImportState.Success) return null;

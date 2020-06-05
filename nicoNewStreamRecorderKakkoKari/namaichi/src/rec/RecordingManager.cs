@@ -20,6 +20,7 @@ using System.IO;
 using System.Collections.Generic;
 using SunokoLibrary.Application;
 using SunokoLibrary.Application.Browsers;
+using SuperSocket.ClientEngine.Proxy;
 using namaichi.info;
 
 namespace namaichi.rec
@@ -89,6 +90,7 @@ namespace namaichi.rec
 			}
 		}
 		private void startRecording(string lvid) {
+			util.setProxy(cfg, form);
 			isRecording = true;
 			form.formAction(() => {
 			    form.urlText.Text = "https://live2.nicovideo.jp/watch/" + lvid;

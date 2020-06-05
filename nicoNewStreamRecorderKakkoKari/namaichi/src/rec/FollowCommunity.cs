@@ -87,7 +87,7 @@ namespace namaichi.rec
 					var handler = new System.Net.Http.HttpClientHandler();
 					handler.UseCookies = true;
 					handler.CookieContainer = cc;
-					handler.Proxy = null;
+					handler.Proxy = util.httpProxy;
 					
 					
 					var http = new System.Net.Http.HttpClient(handler);
@@ -106,7 +106,7 @@ namespace namaichi.rec
 					
 					var req = (HttpWebRequest)WebRequest.Create(url);
 					req.Method = "POST";
-					req.Proxy = null;
+					req.Proxy = util.httpProxy;
 					req.CookieContainer = cc;
 					req.Referer = url;
 					req.ContentLength = postDataBytes.Length;

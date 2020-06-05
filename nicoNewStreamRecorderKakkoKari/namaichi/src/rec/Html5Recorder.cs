@@ -252,7 +252,7 @@ namespace namaichi.rec
 				//0-wsUrl 1-request
 				webSocketRecInfo = getWebSocketInfo(data, isRtmp, isChase, isTimeShift, rm.form);
 				util.debugWriteLine("websocketrecinfo " + webSocketRecInfo);
-				if (webSocketRecInfo == null) break;
+				if (!isRtmpOnlyPage && webSocketRecInfo == null) break;
 				
 				util.debugWriteLine("isnopermission " + isNoPermission);
 //				if (isNoPermission) webSocketRecInfo[1] = webSocketRecInfo[1].Replace("\"requireNewStream\":false", "\"requireNewStream\":true");

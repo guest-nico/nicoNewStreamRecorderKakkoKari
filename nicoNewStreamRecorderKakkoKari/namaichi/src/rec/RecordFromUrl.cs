@@ -283,6 +283,13 @@ namespace namaichi.rec
 //							rm.form.addLogText("ログインに失敗しました。");
 							isFirst = false;
 						}
+						if (cg.reason != null) {
+							cc = null;
+							if (cg.reason == "not_login")
+								rm.form.formAction(() => 
+									MessageBox.Show("ログインに失敗しました。\n" + lvid));
+							return -1;
+						}
 						System.Threading.Thread.Sleep(3000);
 						continue;
 					}
@@ -369,7 +376,7 @@ namespace namaichi.rec
 	//				if (res.IndexOf("会場のご案内") < 0) break;
 					var _url = "https://live2.nicovideo.jp/watch/" + lvid;                              
 					var req = (HttpWebRequest)WebRequest.Create(_url + "?ref=grel");
-					req.Proxy = null;
+					req.Proxy = util.httpProxy;
 					req.AllowAutoRedirect = true;
 		//			req.Headers = getheaders;
 					req.Referer = "https://live.nicovideo.jp/gate/" + lvid;
