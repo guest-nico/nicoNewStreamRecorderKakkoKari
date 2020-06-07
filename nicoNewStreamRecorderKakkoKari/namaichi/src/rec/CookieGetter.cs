@@ -36,6 +36,7 @@ namespace namaichi.rec
 		//private bool isSub;
 		private bool isRtmp = false;
 		public string reason = null;
+		public static bool isLoginCheck = false;
 		
 		public CookieGetter(config.config cfg)
 		{
@@ -166,7 +167,7 @@ namespace namaichi.rec
 			cc.PerDomainCapacity = 200;
 			foreach(Cookie _c in result.Cookies) {
 				try {
-					cc.Add(_c);
+					//cc.Add(_c);
 					if (_c.Name == "age_auth" || _c.Name.IndexOf("user_session") > -1) {
 						requireCookies.Add(_c);
 					}
@@ -190,7 +191,7 @@ namespace namaichi.rec
 		private bool isHtml5Login(CookieContainer cc, string url) {
 			//cc.Add(new Uri(url), new Cookie("age_auth", "0"));
 			var ccc = cc.GetCookieHeader(new Uri(url));
-			for (var i = 0; i < 5; i++) {
+			for (var i = 0; i < 3; i++) {
 				//var headers = new WebHeaderCollection();
 				try {
 					util.debugWriteLine("ishtml5login getpage " + url);
@@ -261,6 +262,8 @@ namespace namaichi.rec
 				}
 				return isLogin;
 			}
+			if (isLoginCheck)
+				util.loginCheck(cc, url, log);
 			return false;
 		}
 		async public Task<CookieContainer> getAccountCookie(string mail, string pass) {
@@ -329,25 +332,34 @@ namespace namaichi.rec
 		private CookieContainer copyUserSession(CookieContainer cc, 
 				Cookie c, Cookie secureC, Cookie age_auth = null) {
 			if (c != null && c.Value != "") {
+				cc.Add(new Cookie(c.Name, c.Value, "/", ".nicovideo.jp"));
+				/*
 				cc.Add(TargetUrl, new Cookie(c.Name, c.Value));
 				cc.Add(TargetUrl2, new Cookie(c.Name, c.Value));
 				cc.Add(TargetUrl3, new Cookie(c.Name, c.Value));
 				cc.Add(TargetUrl4, new Cookie(c.Name, c.Value));
 				cc.Add(TargetUrl5, new Cookie(c.Name, c.Value));
+				*/
 			}
 			if (secureC != null && secureC.Value != "") {
+				cc.Add(new Cookie(secureC.Name, secureC.Value, "/", ".nicovideo.jp"));
+				/*
 				cc.Add(TargetUrl, new Cookie(secureC.Name, secureC.Value));
 				cc.Add(TargetUrl2, new Cookie(secureC.Name, secureC.Value));
 				cc.Add(TargetUrl3, new Cookie(secureC.Name, secureC.Value));
 				cc.Add(TargetUrl4, new Cookie(secureC.Name, secureC.Value));
 				cc.Add(TargetUrl5, new Cookie(secureC.Name, secureC.Value));
+				*/
 			}
 			if (age_auth != null && age_auth.Value != "") {
+				cc.Add(new Cookie(age_auth.Name, age_auth.Value, "/", ".nicovideo.jp"));
+				/*
 				cc.Add(TargetUrl, new Cookie(age_auth.Name, age_auth.Value));
 				cc.Add(TargetUrl2, new Cookie(age_auth.Name, age_auth.Value));
 				cc.Add(TargetUrl3, new Cookie(age_auth.Name, age_auth.Value));
 				cc.Add(TargetUrl4, new Cookie(age_auth.Name, age_auth.Value));
 				cc.Add(TargetUrl5, new Cookie(age_auth.Name, age_auth.Value));
+				*/
 			}
 			/*
 			var ageAuth = "0";
@@ -361,5 +373,4 @@ namespace namaichi.rec
 			return cc;
 		}
 	}
-	
 }

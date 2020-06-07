@@ -70,12 +70,13 @@ namespace namaichi
             {
                 try
                 {
-                    var url = new Uri("https://www.nicovideo.jp/my/channel");
+                    var myPage = new Uri("https://www.nicovideo.jp/my/channel");
+                    
                     var container = new CookieContainer();
                     container.PerDomainCapacity = 100;
                     var client = new HttpClient(new HttpClientHandler() { CookieContainer = container, Proxy = util.httpProxy, UseProxy = true });
                     
-                    var result = await cookieImporter.GetCookiesAsync(url);
+                    var result = await cookieImporter.GetCookiesAsync(myPage);
                     
 					if (result.Status != CookieImportState.Success) return null;
                     foreach(Cookie c in result.Cookies) {
@@ -94,8 +95,17 @@ namespace namaichi
                     
 //                    if (result.AddTo(container) != CookieImportState.Success)
 //                        return null;
-
-                    var res = await client.GetStringAsync(url);
+					
+					var us = container.GetCookies(myPage)["user_session"];
+					var cccc = container.GetCookieHeader(myPage);
+					if (us == null) {
+						return null;
+					}
+					
+					var n = util.getMyName(container);
+					return n;
+					/*
+                    var res = await client.GetStringAsync(myPage);
                     if (string.IsNullOrEmpty(res))
                         return null;
                     var namem = Regex.Match(res, "nickname = \"([^<>]+)\";", RegexOptions.Singleline);
@@ -103,6 +113,7 @@ namespace namaichi
                         return namem.Groups[1].Value;
                     else
                         return null;
+                    */
                 }
                 catch (System.Net.Http.HttpRequestException) { return null; }
             }

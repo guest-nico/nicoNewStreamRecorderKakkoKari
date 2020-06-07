@@ -452,6 +452,8 @@ namespace namaichi
         	proxyAddressText.Text = cfg.get("proxyAddress");
         	proxyPortText.Text = cfg.get("proxyPort");
         	useProxyChkBox.Checked = bool.Parse(cfg.get("useProxy"));
+        	
+        	
         }
         private void setSubFolderNameType(int subFolderNameType) {
         	if (subFolderNameType == 1) housoushaRadioBtn.Checked = true;

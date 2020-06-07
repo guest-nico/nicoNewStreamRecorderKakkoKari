@@ -1425,7 +1425,7 @@ namespace namaichi
 			this.groupBox15.Margin = new System.Windows.Forms.Padding(2);
 			this.groupBox15.Name = "groupBox15";
 			this.groupBox15.Padding = new System.Windows.Forms.Padding(2);
-			this.groupBox15.Size = new System.Drawing.Size(385, 149);
+			this.groupBox15.Size = new System.Drawing.Size(385, 108);
 			this.groupBox15.TabIndex = 3;
 			this.groupBox15.TabStop = false;
 			this.groupBox15.Text = "プロキシ";

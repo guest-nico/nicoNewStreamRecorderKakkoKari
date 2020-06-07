@@ -252,6 +252,7 @@ namespace namaichi.rec
 		public int getPageType(string url, bool isLogin, ref JikkenRecorder jr, out CookieContainer cc) {
 			var dt = DateTime.Now;
 			var isFirst = true;
+			CookieGetter.isLoginCheck = true;
 			while (this == rm.rfu) {
 				try {
 					if (isLogin && DateTime.Now - dt > TimeSpan.FromSeconds(15)) {
@@ -265,6 +266,7 @@ namespace namaichi.rec
 					var cg = new CookieGetter(rm.cfg);
 					var cgret = cg.getHtml5RecordCookie(url);
 					cgret.Wait();
+					CookieGetter.isLoginCheck = false;
 					                           
 					//if (isSub && cg.id != null)  id[1] = cg.id;
 					if (cg.id != null)  id[0] = cg.id;

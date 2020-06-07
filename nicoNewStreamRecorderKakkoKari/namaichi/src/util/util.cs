@@ -30,8 +30,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.02";
-	public static string versionDayStr = "2020/06/06";
+	public static string versionStr = "ver0.88.03";
+	public static string versionDayStr = "2020/06/07";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -617,7 +617,7 @@ class util {
 				req.Timeout = timeoutMs;
 				req.KeepAlive = true;
 				req.Accept = "*/*";
-				ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+				ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls |SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;  
 				
 				using (var res = (HttpWebResponse)req.GetResponse())
 				using (var dataStream = res.GetResponseStream())
@@ -884,7 +884,7 @@ class util {
 			//else if (res.IndexOf("※この放送はタイムシフトに対応しておりません。") > -1 && 
 			//         res.IndexOf("に終了いたしました") > -1) return 2;
 			//else if (util.getRegGroup(res, "(コミュニティフォロワー限定番組です。<br>)") != null) return 4;
-			else if (res.IndexOf("isFollowerOnly&quot;:true") > -1 && res.IndexOf("isFollowed&quot;:false") > -1) return 4;
+			else if (res.IndexOf("isFollowerOnly&quot;:true") > -1 && res.IndexOf("isFollowed&quot;:false") > -1 && res.IndexOf("[&quot;noTimeshiftProgram") == -1) return 4;
 			else if (status == "ENDED" && res.IndexOf("rejectedReasons&quot;:[&quot;notHaveTimeshiftTicket") > -1) return 9;
 			else if (status == "ENDED" && res.IndexOf("rejectedReasons&quot;:[&quot;notUseTimeshiftTicket") > -1) return 10;
 			else if (data.IndexOf("webSocketUrl&quot;:&quot;ws") == -1 &&
@@ -1225,5 +1225,55 @@ class util {
 			if (form != null)
 				form.addLogText("HTTPのプロキシの設定に失敗しました。アドレス:" + proxyAddress + "ポート：" + proxyPort);
 		}
+	}
+	public static bool loginCheck(CookieContainer cc, string url, string log = null) {
+		try {
+			var us = cc.GetCookies(new Uri(url))["user_session"];
+			if (us == null) {
+				if (log != null)
+					log += "Cookie内にユーザーセッションが見つかりませんでした。";
+				return false;
+			}
+			var uid = util.getRegGroup(us.Value, "user_session_(.+?)_");
+			if (uid == null) {
+				if (log != null)
+					log += "ユーザーセッション内にIDが見つかりませんでした。";
+				return false;
+			}
+			var _url = "https://public.api.nicovideo.jp/v1/user/followees/niconico-users/" + uid + ".json";
+			var res = util.getPageSource(_url, cc);
+			if (log != null)
+				log += res != null ? "ログインを確認できました。" : "ログインを確認できませんでした";
+			return res != null;
+		} catch (Exception e) {
+			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			return false;
+		}
+	}
+	public static string getMyName(CookieContainer cc) {
+		try {
+			var url = "https://nvapi.nicovideo.jp/v1/users/me";
+			var us = cc.GetCookies(new Uri(url))["user_session"];
+			if (us == null) return null;
+			var _h = new Dictionary<string, string>() {
+				{"User-Agent", "Niconico/1.0 (Linux; U; Android 7.1.2; ja-jp; nicoandroid LGM-V300K) Version/5.38.0"},
+				{"Cookie", "user_session=" + us.Value},
+					{"X-Frontend-Id", "1"},
+					{"X-Frontend-Version", "5.38.0"},
+					{"Connection", "keep-alive"},
+					{"Upgrade-Insecure-Requests", "1"},
+				};
+			var r = sendRequest(url, _h, null, "GET");
+			if (r == null) return null;
+			using (var st = r.GetResponseStream())
+			using (var sr = new StreamReader(st)) {
+				var res = sr.ReadToEnd();
+				var n = util.getRegGroup(res, "\"nickname\":\"(.+?)\"");
+				return n;
+			}
+		} catch (Exception e) {
+			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+		}
+		return null;
 	}
 }
