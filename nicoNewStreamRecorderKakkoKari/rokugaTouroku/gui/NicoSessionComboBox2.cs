@@ -70,30 +70,41 @@ namespace rokugaTouroku
             {
                 try
                 {
-                    var url = new Uri("https://www.nicovideo.jp/my/channel");
+                    var myPage = new Uri("https://www.nicovideo.jp/my/channel");
+                    
                     var container = new CookieContainer();
-                    var client = new HttpClient(new HttpClientHandler() { CookieContainer = container });
-                    var result = await cookieImporter.GetCookiesAsync(url);
+                    container.PerDomainCapacity = 100;
+                    var client = new HttpClient(new HttpClientHandler() { CookieContainer = container, Proxy = null, UseProxy = false });
+                    
+                    var result = await cookieImporter.GetCookiesAsync(myPage);
                     
 					if (result.Status != CookieImportState.Success) return null;
                     foreach(Cookie c in result.Cookies) {
                     	if (Regex.IsMatch(c.Name, "[^0-9a-zA-Z\\._\\-\\[\\]%#&=\":\\{\\} \\(\\)/\\?\\|]") ||
                     	   		Regex.IsMatch(c.Value, "[^0-9a-zA-Z\\._\\-\\[\\]%#&=\":\\{\\} \\(\\)/\\?\\|]")) {
-                    		System.Diagnostics.Debug.WriteLine(c.Name + " " + c.Value);
+                    		util.debugWriteLine(c.Name + " " + c.Value);
                     		continue;
                     	}
                     	try {
                     		container.Add(new Cookie(c.Name, c.Value, c.Path, c.Domain));
                     	} catch (Exception e) {
-                    		System.Diagnostics.Debug.WriteLine(e.Message + e.StackTrace + e.TargetSite + e.Source);
+                    		util.debugWriteLine(e.Message + e.StackTrace + e.TargetSite + e.Source);
                     	}
 	        			
 	        		}
                     
 //                    if (result.AddTo(container) != CookieImportState.Success)
 //                        return null;
-
-                    var res = await client.GetStringAsync(url);
+					
+					var us = container.GetCookies(myPage)["user_session"];
+					if (us == null) {
+						return null;
+					}
+					
+					var n = util.getMyName(container);
+					return n;
+					/*
+                    var res = await client.GetStringAsync(myPage);
                     if (string.IsNullOrEmpty(res))
                         return null;
                     var namem = Regex.Match(res, "nickname = \"([^<>]+)\";", RegexOptions.Singleline);
@@ -101,6 +112,7 @@ namespace rokugaTouroku
                         return namem.Groups[1].Value;
                     else
                         return null;
+                    */
                 }
                 catch (System.Net.Http.HttpRequestException) { return null; }
             }

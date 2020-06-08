@@ -617,7 +617,6 @@ class util {
 				req.Timeout = timeoutMs;
 				req.KeepAlive = true;
 				req.Accept = "*/*";
-				ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls |SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;  
 				
 				using (var res = (HttpWebResponse)req.GetResponse())
 				using (var dataStream = res.GetResponseStream())

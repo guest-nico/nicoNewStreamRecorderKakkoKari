@@ -73,7 +73,7 @@ namespace namaichi
                     var myPage = new Uri("https://www.nicovideo.jp/my/channel");
                     
                     var container = new CookieContainer();
-                    container.PerDomainCapacity = 100;
+                    container.PerDomainCapacity = 200;
                     var client = new HttpClient(new HttpClientHandler() { CookieContainer = container, Proxy = util.httpProxy, UseProxy = true });
                     
                     var result = await cookieImporter.GetCookiesAsync(myPage);
@@ -97,7 +97,7 @@ namespace namaichi
 //                        return null;
 					
 					var us = container.GetCookies(myPage)["user_session"];
-					var cccc = container.GetCookieHeader(myPage);
+					//var cccc = container.GetCookieHeader(myPage);
 					if (us == null) {
 						return null;
 					}

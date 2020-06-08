@@ -156,10 +156,10 @@ namespace rokugaTouroku.rec
 			    (uss == null || uss.Length == 0)) return null;
 			var cc = new CookieContainer();
 			
-			var c = new Cookie("user_session", us);
-			var secureC = new Cookie("user_session_secure", uss);
-			cc = copyUserSession(cc, c, secureC);
- 			cc.Add(TargetUrl, new Cookie("player_version", "leo"));
+			var c = new Cookie("user_session", us, "/", ".nicovideo.jp");
+			var secureC = new Cookie("user_session_secure", uss, "/", ".nicovideo.jp");
+			cc = setUserSession(cc, c, secureC);
+ 			cc.Add(new Cookie("player_version", "leo", "/", ".nicovideo.jp"));
 			
 			//test
 //			cc.Add(TargetUrl, new Cookie("nicosid", "1527623077.1259703149"));
@@ -192,9 +192,12 @@ namespace rokugaTouroku.rec
 			//util.debugWriteLine("usersession " + cookie);
 			
 			var cc = new CookieContainer();
+			cc.PerDomainCapacity = 200;
 			foreach(Cookie _c in result.Cookies) {
 				try {
-					cc.Add(_c);
+					if (_c.Name == "age_auth" || _c.Name.IndexOf("user_session") > -1) {
+						cc.Add(_c);
+					}
 				} catch (Exception e) {
 					util.debugWriteLine("cookie add browser " + _c.ToString() + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
@@ -203,7 +206,7 @@ namespace rokugaTouroku.rec
 			
 			var c = cc.GetCookies(TargetUrl)["user_session"];
 			var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
-			cc = copyUserSession(cc, c, secureC);
+			//cc = setUserSession(cc, c, secureC);
 			
 			
 			return cc;
@@ -242,17 +245,27 @@ namespace rokugaTouroku.rec
 			
 			if (mail == null || pass == null) return null;
 			
-			var loginUrl = "https://secure.nicovideo.jp/secure/login?site=nicolive";
-//			var param = "mail=" + mail + "&password=" + pass;
+			var isNew = true;
+			
+			string loginUrl;
+			Dictionary<string, string> param;
+			if (isNew) {
+				loginUrl = "https://account.nicovideo.jp/login/redirector";
+				param = new Dictionary<string, string> {
+					{"mail_tel", mail}, {"password", pass}, {"auth_id", "15263781"}//dummy
+				};
+			} else {
+				loginUrl = "https://secure.nicovideo.jp/secure/login?site=nicolive";
+				param = new Dictionary<string, string> {
+					{"mail", mail}, {"password", pass}
+				};
+			}
 			
 			try {
 				var handler = new System.Net.Http.HttpClientHandler();
 				handler.UseCookies = true;
 				var http = new System.Net.Http.HttpClient(handler);
-				var content = new System.Net.Http.FormUrlEncodedContent(new Dictionary<string, string>
-				{
-					{"mail", mail}, {"password", pass}
-				});
+				var content = new System.Net.Http.FormUrlEncodedContent(param);
 				
 				var _res = await http.PostAsync(loginUrl, content);
 				var res = await _res.Content.ReadAsStringAsync();
@@ -271,7 +284,7 @@ namespace rokugaTouroku.rec
 			
 			var c = cc.GetCookies(TargetUrl)["user_session"];
 			var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
-			cc = copyUserSession(cc, c, secureC);
+			//cc = copyUserSession(cc, c, secureC);
 			log += (c == null) ? "ユーザーセッションが見つかりませんでした。" : "ユーザーセッションが見つかりました。";
 			log += (secureC == null) ? "secureユーザーセッションが見つかりませんでした。" : "secureユーザーセッションが見つかりました。";
 			if (c == null && secureC == null) return null;
@@ -287,17 +300,13 @@ namespace rokugaTouroku.rec
 			return cc;
 				
 		}
-		private CookieContainer copyUserSession(CookieContainer cc, 
+		private CookieContainer setUserSession(CookieContainer cc, 
 				Cookie c, Cookie secureC) {
 			if (c != null && c.Value != "") {
-				cc.Add(TargetUrl, new Cookie(c.Name, c.Value));
-				cc.Add(TargetUrl2, new Cookie(c.Name, c.Value));
-				cc.Add(TargetUrl3, new Cookie(c.Name, c.Value));
+				cc.Add(new Cookie(c.Name, c.Value, "/", ".nicovideo.jp"));
 			}
 			if (secureC != null && secureC.Value != "") {
-				cc.Add(TargetUrl, new Cookie(secureC.Name, secureC.Value));
-				cc.Add(TargetUrl2, new Cookie(secureC.Name, secureC.Value));
-				cc.Add(TargetUrl3, new Cookie(secureC.Name, secureC.Value));
+				cc.Add(new Cookie(secureC.Name, secureC.Value, "/", ".nicovideo.jp"));
 			}
 			return cc;
 		}

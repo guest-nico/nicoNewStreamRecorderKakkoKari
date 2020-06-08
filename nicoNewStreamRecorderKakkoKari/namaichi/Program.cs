@@ -8,6 +8,7 @@
  */
 using System;
 using System.Windows.Forms;
+using System.Net;
 
 
 namespace namaichi
@@ -38,6 +39,7 @@ namespace namaichi
 				
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls |SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
 			
 //			args = new string[]{"-nowindo", "lv316266831", "-stdIO"};
 //			args = new String[]{"lv316036760", "-ts-start=5m0s", "-ts-end=5m10s", "-afterConvertMode=4"};

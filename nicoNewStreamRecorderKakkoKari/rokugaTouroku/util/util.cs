@@ -476,8 +476,8 @@ class util {
 				if (container != null) req.CookieContainer = container;
 				req.Headers.Add("Accept-Encoding", "gzip,deflate");
 				req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-
 				req.Timeout = timeoutMs;
+				
 				var res = (HttpWebResponse)req.GetResponse();
 				var dataStream = res.GetResponseStream();
 				var reader = new StreamReader(dataStream);
@@ -793,5 +793,85 @@ class util {
 			return null;
 		}
 		return icon.ToBitmap();
+	}
+	public static string getMyName(CookieContainer cc) {
+		try {
+			var url = "https://nvapi.nicovideo.jp/v1/users/me";
+			var us = cc.GetCookies(new Uri(url))["user_session"];
+			if (us == null) return null;
+			var _h = new Dictionary<string, string>() {
+				{"User-Agent", "Niconico/1.0 (Linux; U; Android 7.1.2; ja-jp; nicoandroid LGM-V300K) Version/5.38.0"},
+				{"Cookie", "user_session=" + us.Value},
+					{"X-Frontend-Id", "1"},
+					{"X-Frontend-Version", "5.38.0"},
+					{"Connection", "keep-alive"},
+					{"Upgrade-Insecure-Requests", "1"},
+				};
+			var r = sendRequest(url, _h, null, "GET");
+			if (r == null) return null;
+			using (var st = r.GetResponseStream())
+			using (var sr = new StreamReader(st)) {
+				var res = sr.ReadToEnd();
+				var n = util.getRegGroup(res, "\"nickname\":\"(.+?)\"");
+				return n;
+			}
+		} catch (Exception e) {
+			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+		}
+		return null;
+	}
+	public static HttpWebResponse sendRequest(string url, Dictionary<string, string> headers, byte[] content, string method) {
+		try {
+			var req = (HttpWebRequest)WebRequest.Create(url);
+			req.Method = method;
+			req.Proxy = null;
+			req.Headers.Add("Accept-Encoding", "gzip,deflate");
+			req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+			
+			if (headers != null) {
+				foreach (var h in headers) {
+					if (h.Key.ToLower().Replace("-", "") == "contenttype")
+						req.ContentType = h.Value;
+					else if (h.Key.ToLower().Replace("-", "") == "useragent")
+						req.UserAgent = h.Value;
+					else if (h.Key.ToLower().Replace("-", "") == "connection")
+						req.KeepAlive = h.Value.ToLower().Replace("-", "") == "keepalive";
+					else if (h.Key.ToLower().Replace("-", "") == "accept")
+						req.Accept = h.Value;
+					else if (h.Key.ToLower().Replace("-", "") == "referer")
+						req.Referer = h.Value;
+					else req.Headers.Add(h.Key, h.Value);
+				}
+			}
+				
+			if (content != null) {
+				using (var stream = req.GetRequestStream()) {
+					try {
+						stream.Write(content, 0, content.Length);
+					} catch (Exception ee) {
+			       		debugWriteLine(ee.Message + " " + ee.StackTrace + " " + ee.Source + " " + ee.TargetSite);
+			       	}
+				}
+			}
+//					stream.Close();
+
+			return (HttpWebResponse)req.GetResponse();
+			
+		} catch (WebException ee) {
+			util.debugWriteLine(ee.Data + ee.Message + ee.Source + ee.StackTrace + ee.Status);
+			try {
+				return (HttpWebResponse)ee.Response;
+				//using (var _rs = ee.Response.GetResponseStream())
+				//using (var rs = new StreamReader(_rs)) {
+				//	return rs.ReadToEnd();
+				//}
+			} catch (Exception eee) {
+				util.debugWriteLine(eee.Message + eee.Source + eee.StackTrace);
+				return null;
+			}
+		} catch (Exception ee) {
+			debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+			return null;
+		}
 	}
 }

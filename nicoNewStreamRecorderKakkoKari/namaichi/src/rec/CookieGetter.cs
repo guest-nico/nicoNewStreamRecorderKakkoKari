@@ -129,8 +129,8 @@ namespace namaichi.rec
 			var c = new Cookie("user_session", us);
 			var secureC = new Cookie("user_session_secure", uss);
 			var age_auth = new Cookie("age_auth", cfg.get("age_auth"));
-			cc = copyUserSession(cc, c, secureC, age_auth);
- 			cc.Add(TargetUrl, new Cookie("player_version", "leo"));
+			cc = setUserSession(cc, c, secureC, age_auth);
+ 			cc.Add(TargetUrl, new Cookie("player_version", "leo", "/", ".nicovideo.jp"));
 			
 			//test
 //			cc.Add(TargetUrl, new Cookie("nicosid", "1527623077.1259703149"));
@@ -180,11 +180,12 @@ namespace namaichi.rec
 						
 			var c = cc.GetCookies(TargetUrl)["user_session"];
 			var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
+			
 			if (c == null) {
 				log += "ブラウザでログインし直すか、別のブラウザを試すか、アカウントログインを試すと上手くいくかもしれません。"; 
 			}
 			
-			cc = copyUserSession(cc, c, secureC);
+			//cc = copyUserSession(cc, c, secureC);
 			return cc;
 			
 		}
@@ -313,7 +314,7 @@ namespace namaichi.rec
 			
 			var c = cc.GetCookies(TargetUrl)["user_session"];
 			var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
-			cc = copyUserSession(cc, c, secureC);
+			//cc = copyUserSession(cc, c, secureC);
 			log += (c == null) ? "ユーザーセッションが見つかりませんでした。" : "ユーザーセッションが見つかりました。";
 			log += (secureC == null) ? "secureユーザーセッションが見つかりませんでした。" : "secureユーザーセッションが見つかりました。";
 			if (c == null && secureC == null) return null;
@@ -329,47 +330,19 @@ namespace namaichi.rec
 			return cc;
 				
 		}
-		private CookieContainer copyUserSession(CookieContainer cc, 
+		private CookieContainer setUserSession(CookieContainer cc, 
 				Cookie c, Cookie secureC, Cookie age_auth = null) {
 			if (c != null && c.Value != "") {
 				cc.Add(new Cookie(c.Name, c.Value, "/", ".nicovideo.jp"));
-				/*
-				cc.Add(TargetUrl, new Cookie(c.Name, c.Value));
-				cc.Add(TargetUrl2, new Cookie(c.Name, c.Value));
-				cc.Add(TargetUrl3, new Cookie(c.Name, c.Value));
-				cc.Add(TargetUrl4, new Cookie(c.Name, c.Value));
-				cc.Add(TargetUrl5, new Cookie(c.Name, c.Value));
-				*/
 			}
 			if (secureC != null && secureC.Value != "") {
 				cc.Add(new Cookie(secureC.Name, secureC.Value, "/", ".nicovideo.jp"));
-				/*
-				cc.Add(TargetUrl, new Cookie(secureC.Name, secureC.Value));
-				cc.Add(TargetUrl2, new Cookie(secureC.Name, secureC.Value));
-				cc.Add(TargetUrl3, new Cookie(secureC.Name, secureC.Value));
-				cc.Add(TargetUrl4, new Cookie(secureC.Name, secureC.Value));
-				cc.Add(TargetUrl5, new Cookie(secureC.Name, secureC.Value));
-				*/
 			}
 			if (age_auth != null && age_auth.Value != "") {
 				cc.Add(new Cookie(age_auth.Name, age_auth.Value, "/", ".nicovideo.jp"));
-				/*
-				cc.Add(TargetUrl, new Cookie(age_auth.Name, age_auth.Value));
-				cc.Add(TargetUrl2, new Cookie(age_auth.Name, age_auth.Value));
-				cc.Add(TargetUrl3, new Cookie(age_auth.Name, age_auth.Value));
-				cc.Add(TargetUrl4, new Cookie(age_auth.Name, age_auth.Value));
-				cc.Add(TargetUrl5, new Cookie(age_auth.Name, age_auth.Value));
-				*/
+				//var ageAuth = "0";
+				//"https://live2.nicovideo.jp/watch/lv320739154
 			}
-			/*
-			var ageAuth = "0";
-			cc.Add(TargetUrl, new Cookie("age_auth", ageAuth));
-			cc.Add(TargetUrl2, new Cookie("age_auth", ageAuth));
-			cc.Add(TargetUrl3, new Cookie("age_auth", ageAuth));
-			cc.Add(TargetUrl4, new Cookie("age_auth", ageAuth));
-			cc.Add(TargetUrl5, new Cookie("age_auth", ageAuth));
-			var a = util.getPageSource("https://live2.nicovideo.jp/watch/lv320739154", cc);
-			*/
 			return cc;
 		}
 	}

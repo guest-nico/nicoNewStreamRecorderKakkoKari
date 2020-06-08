@@ -8,6 +8,7 @@
  */
 using System;
 using System.Windows.Forms;
+using System.Net;
 
 namespace rokugaTouroku
 {
@@ -35,10 +36,11 @@ namespace rokugaTouroku
 			System.Threading.Tasks.TaskScheduler.UnobservedTaskException += taskSchedulerUnobservedTaskException;
 			AppDomain.CurrentDomain.FirstChanceException += firstChanceException;
 			
-			System.Net.ServicePointManager.DefaultConnectionLimit = 20;
-			
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
+			System.Net.ServicePointManager.DefaultConnectionLimit = 20;
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls |SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+			
 			Application.Run(new MainForm(args));
 			//args = new string[]{"lv888"};
 			//var a = new MainForm(args);
