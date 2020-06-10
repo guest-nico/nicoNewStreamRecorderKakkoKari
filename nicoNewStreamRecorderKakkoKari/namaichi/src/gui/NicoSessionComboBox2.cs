@@ -85,6 +85,7 @@ namespace namaichi
                     		util.debugWriteLine(c.Name + " " + c.Value);
                     		continue;
                     	}
+						if (c.Name != "user_session") continue;
                     	try {
                     		container.Add(new Cookie(c.Name, c.Value, c.Path, c.Domain));
                     	} catch (Exception e) {
@@ -97,14 +98,15 @@ namespace namaichi
 //                        return null;
 					
 					var us = container.GetCookies(myPage)["user_session"];
-					//var cccc = container.GetCookieHeader(myPage);
 					if (us == null) {
 						return null;
 					}
 					
-					var n = util.getMyName(container);
+					var n = util.getMyName(container, us.Value);
 					return n;
+					
 					/*
+					//if (n != null) return n;
                     var res = await client.GetStringAsync(myPage);
                     if (string.IsNullOrEmpty(res))
                         return null;
@@ -114,6 +116,7 @@ namespace namaichi
                     else
                         return null;
                     */
+                    
                 }
                 catch (System.Net.Http.HttpRequestException) { return null; }
             }

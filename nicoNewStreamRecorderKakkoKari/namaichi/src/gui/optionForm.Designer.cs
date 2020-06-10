@@ -714,7 +714,7 @@ namespace namaichi
 			this.groupBox10.Controls.Add(this.segmentRadioBtnPanel);
 			this.groupBox10.Location = new System.Drawing.Point(5, 10);
 			this.groupBox10.Name = "groupBox10";
-			this.groupBox10.Size = new System.Drawing.Size(385, 347);
+			this.groupBox10.Size = new System.Drawing.Size(408, 347);
 			this.groupBox10.TabIndex = 0;
 			this.groupBox10.TabStop = false;
 			this.groupBox10.Text = "録画エンジン";
@@ -760,9 +760,9 @@ namespace namaichi
 			// 
 			this.isRtmpEngine.Location = new System.Drawing.Point(6, 245);
 			this.isRtmpEngine.Name = "isRtmpEngine";
-			this.isRtmpEngine.Size = new System.Drawing.Size(373, 15);
+			this.isRtmpEngine.Size = new System.Drawing.Size(414, 15);
 			this.isRtmpEngine.TabIndex = 27;
-			this.isRtmpEngine.Text = "RTMP録画エンジンを使う(旧配信で提供されているタイムシフト放送のみ)";
+			this.isRtmpEngine.Text = "RTMP録画エンジンを使う(旧配信のタイムシフト及び公式のリアルタイム配信のみ)";
 			this.isRtmpEngine.UseVisualStyleBackColor = true;
 			this.isRtmpEngine.CheckedChanged += new System.EventHandler(this.isDefaultEngineChkBox_CheckedChanged);
 			// 

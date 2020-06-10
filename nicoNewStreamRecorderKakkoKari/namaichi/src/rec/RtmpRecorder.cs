@@ -161,8 +161,12 @@ namespace namaichi.rec
 						try {
 							var f = new FileInfo(util.getOkSJisOut(recFolderFile) + ".flv");
 							if (f != null && f.Exists && f.Length == 0) {
+								util.debugWriteLine("rtmp delete " + recFolderFile);
 								//File.Delete(f.FullName + ".flv");
 								File.Delete(f.FullName + "");
+								f = new FileInfo(util.getOkSJisOut(recFolderFile) + ".xml");
+								if (f != null && f.Exists)
+								    File.Delete(f.FullName);
 								
 								isFailedRec = true;
 							} else {

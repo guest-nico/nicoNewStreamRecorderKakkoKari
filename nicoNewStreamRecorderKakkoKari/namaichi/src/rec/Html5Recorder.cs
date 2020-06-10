@@ -72,6 +72,10 @@ namespace namaichi.rec
 			util.debugWriteLine("broadcastid " + broadcastId);
 			
 			
+			if (isRtmp) {
+				wsUrl = wsUrl.Replace("v2", "v1");
+				broadcastId = util.getRegGroup(wsUrl, "watch/.*?(\\d+)");
+			}
 			
 			//rtmp {"type":"watch","body":{"command":"getpermit","requirement":{"broadcastId":"17684079051334","route":"","stream":{"protocol":"rtmp","requireNewStream":true},"room":{"isCommentable":true,"protocol":"webSocket"}}}}
 			string request = null;
@@ -95,7 +99,8 @@ namespace namaichi.rec
 						//("{\"type\":\"watch\",\"body\":{\"command\":\"getpermit\",\"requirement\":{\"broadcastId\":\"" + broadcastId + "\",\"route\":\"\",\"stream\":{\"protocol\":\"hls\",\"requireNewStream\":true,\"priorStreamQuality\":\"normal\", \"isLowLatency\": false},\"room\":{\"isCommentable\":true,\"protocol\":\"webSocket\"}}}}");
 						("{\"type\":\"watch\",\"body\":{\"command\":\"getpermit\",\"requirement\":{\"broadcastId\":\"" + broadcastId + "\",\"route\":\"\",\"stream\":{\"protocol\":\"hls\",\"requireNewStream\":true,\"priorStreamQuality\":\"normal\", \"isLowLatency\": false,\"isChasePlay\":false},\"room\":{\"isCommentable\":true,\"protocol\":\"webSocket\"}}}}");
 			} else if (ver == "2") {
-				request = "{\"type\":\"startWatching\",\"data\":{\"stream\":{\"quality\":\"normal\",\"protocol\":\"hls\",\"latency\":\"high\",\"chasePlay\":false},\"room\":{\"protocol\":\"webSocket\",\"commentable\":true},\"reconnect\":false}}";
+				request = isRtmp ? "{\"type\":\"startWatching\",\"data\":{\"stream\":{\"quality\":\"normal\",\"protocol\":\"rtmp\",\"latency\":\"high\",\"chasePlay\":false},\"room\":{\"protocol\":\"webSocket\",\"commentable\":true},\"reconnect\":false}}"
+					: "{\"type\":\"startWatching\",\"data\":{\"stream\":{\"quality\":\"normal\",\"protocol\":\"hls\",\"latency\":\"high\",\"chasePlay\":false},\"room\":{\"protocol\":\"webSocket\",\"commentable\":true},\"reconnect\":false}}";
 			} else {
 				form.addLogText("unknown type " + ver);
 				return null;
@@ -212,8 +217,8 @@ namespace namaichi.rec
 				}
 				//util.debugWriteLine(data);
 				
-				var isChase = isChaseRec(isChaseCheck, isChasable, lvid);
-				if (isChase) isTimeShift = true;
+				var isChase = isChaseRec(isChaseCheck, isChasable, lvid) && !isRtmp;
+				if (isChase && !isRtmp) isTimeShift = true;
 				
 				//;,&quot;permissions&quot;:[&quot;CHASE_PLAY&quot;],&quot;
 				//var pageType = util.getPageType(res);

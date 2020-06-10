@@ -794,14 +794,14 @@ class util {
 		}
 		return icon.ToBitmap();
 	}
-	public static string getMyName(CookieContainer cc) {
+	public static string getMyName(CookieContainer cc, string us) {
 		try {
 			var url = "https://nvapi.nicovideo.jp/v1/users/me";
-			var us = cc.GetCookies(new Uri(url))["user_session"];
-			if (us == null) return null;
+			//var us = cc.GetCookies(new Uri(url))["user_session"];
+			//if (us == null) return null;
 			var _h = new Dictionary<string, string>() {
 				{"User-Agent", "Niconico/1.0 (Linux; U; Android 7.1.2; ja-jp; nicoandroid LGM-V300K) Version/5.38.0"},
-				{"Cookie", "user_session=" + us.Value},
+				{"Cookie", "user_session=" + us},
 					{"X-Frontend-Id", "1"},
 					{"X-Frontend-Version", "5.38.0"},
 					{"Connection", "keep-alive"},

@@ -30,8 +30,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.03";
-	public static string versionDayStr = "2020/06/07";
+	public static string versionStr = "ver0.88.04";
+	public static string versionDayStr = "2020/06/11";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -1249,14 +1249,14 @@ class util {
 			return false;
 		}
 	}
-	public static string getMyName(CookieContainer cc) {
+	public static string getMyName(CookieContainer cc, string us) {
 		try {
 			var url = "https://nvapi.nicovideo.jp/v1/users/me";
-			var us = cc.GetCookies(new Uri(url))["user_session"];
-			if (us == null) return null;
+			//var us = cc.GetCookies(new Uri(url))["user_session"];
+			//if (us == null) return null;
 			var _h = new Dictionary<string, string>() {
 				{"User-Agent", "Niconico/1.0 (Linux; U; Android 7.1.2; ja-jp; nicoandroid LGM-V300K) Version/5.38.0"},
-				{"Cookie", "user_session=" + us.Value},
+				{"Cookie", "user_session=" + us},
 					{"X-Frontend-Id", "1"},
 					{"X-Frontend-Version", "5.38.0"},
 					{"Connection", "keep-alive"},

@@ -214,10 +214,11 @@ namespace namaichi.rec
 				}
 				
 				if (ws != null) {
-					if (ws != null && ws.State != WebSocketState.Open && ws == lastWebSocket) {
+					if ((ws.State != WebSocketState.Open || (rec != null && rec.isReConnecting)) 
+					    		&& ws == lastWebSocket) {
 						stopWsCount++;
 						if (stopWsCount > 10) {
-							addDebugBuf("stop ws count " + stopWsCount + " close ws");
+							addDebugBuf("stop ws count " + stopWsCount + " close ws / rec.isreconnecting " + (rec != null ? rec.isReConnecting.ToString() : ""));
 							
 							//test
 							rm.form.addLogText("再接続中");
@@ -366,7 +367,7 @@ namespace namaichi.rec
 			
 			if (sender != ws) {
 				((WebSocket)sender).Close();
-				addDebugBuf("hukusuu ws close");
+				addDebugBuf("hukusuu ws close " + sender + "/" + ws);
 			}
 			
 			if (isNoPermission) {
@@ -441,11 +442,11 @@ namespace namaichi.rec
 		private void onMessageReceive(object sender, MessageReceivedEventArgs e) {
 			addDebugBuf("receive " + e.Message);
 			displayDebug("ws receive " + new Regex("ht2_nicolive=\\d+").Replace(e.Message, "ht2_nicolive=0"));
-			var type = util.getRegGroup(e.Message, "\"" + (webSocketInfo[2] == "1" ? "command" : "type") + "\":\"(.+?)\"");
+			var type = util.getRegGroup(e.Message, "\"" + ((webSocketInfo[2] == "1" && e.Message.IndexOf("\"command\"") > -1) ? "command" : "type") + "\":\"(.+?)\"");
 			
 			if (sender != ws) {
 				((WebSocket)sender).Close();
-				addDebugBuf("hukusuu ws close");
+				addDebugBuf("hukusuu ws close " + sender + "/" + ws);
 			}
 			
 //			addDebugBuf("ws " + ws);
@@ -456,7 +457,7 @@ namespace namaichi.rec
 			}
 			
 			//get message
-			if (type == "room" || type == "messageServerUri") {
+			if (type == "room" || type == "messageServerUri" || type == "currentroom") {
 				//if (isSub) return;
 				if (!isSaveComment) return;
 				
@@ -652,6 +653,9 @@ namespace namaichi.rec
 					Console.WriteLine("info.programTime:" + programTime.ToString("h'時間'mm'分'ss'秒'"));
 				}
 			}
+			if (e.Message.IndexOf("\"NO_STREAM_AVAILABLE\"") >= 0) {
+				rm.form.addLogText("配信データが取得できませんでした");
+			}
 			if (type == "postkey") {
 				if (sendCommentBuf != null && (rm.isPlayOnlyMode || wsc != null))
 					sendCommentWsc(e.Message);
@@ -771,6 +775,7 @@ namespace namaichi.rec
 			header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Protocol", "msg.nicovideo.jp#json"));
 			wsc = new WebSocket(msUri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.None);
 			//wsc = new WebSocket(msUri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
+			ws.Proxy = util.wsProxy;
 			wsc.Opened += onWscOpen;
 			wsc.Closed += onWscClose;
 			wsc.MessageReceived += onWscMessageReceive;
@@ -1206,7 +1211,9 @@ namespace namaichi.rec
 				req = (isRtmp) ?
 						("{\"type\":\"watch\",\"body\":{\"command\":\"getstream\",\"requirement\":{\"protocol\":\"rtmp\",\"quality\":\"" + bestGettableQuolity + "\"}}}")
 						: ("{\"type\":\"watch\",\"body\":{\"command\":\"getstream\",\"requirement\":{\"protocol\":\"hls\",\"quality\":\"" + bestGettableQuolity + "\",\"isLowLatency\":false}}}");
-			} else req = "{\"type\":\"changeStream\",\"data\":{\"quality\":\"" + bestGettableQuolity + "\",\"protocol\":\"hls\",\"latency\":\"high\",\"chasePlay\":" + isChase.ToString().ToLower() + "}}";
+			} else {
+				req = "{\"type\":\"changeStream\",\"data\":{\"quality\":\"" + bestGettableQuolity + "\",\"protocol\":\"hls\",\"latency\":\"high\",\"chasePlay\":" + isChase.ToString().ToLower() + "}}";
+			}
 			
 			sendMessage(ws, req);
 		}

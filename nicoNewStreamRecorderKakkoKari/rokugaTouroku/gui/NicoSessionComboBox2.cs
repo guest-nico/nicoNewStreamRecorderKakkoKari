@@ -73,7 +73,7 @@ namespace rokugaTouroku
                     var myPage = new Uri("https://www.nicovideo.jp/my/channel");
                     
                     var container = new CookieContainer();
-                    container.PerDomainCapacity = 100;
+                    container.PerDomainCapacity = 200;
                     var client = new HttpClient(new HttpClientHandler() { CookieContainer = container, Proxy = null, UseProxy = false });
                     
                     var result = await cookieImporter.GetCookiesAsync(myPage);
@@ -85,6 +85,7 @@ namespace rokugaTouroku
                     		util.debugWriteLine(c.Name + " " + c.Value);
                     		continue;
                     	}
+						if (c.Name != "user_session") continue;
                     	try {
                     		container.Add(new Cookie(c.Name, c.Value, c.Path, c.Domain));
                     	} catch (Exception e) {
@@ -101,9 +102,11 @@ namespace rokugaTouroku
 						return null;
 					}
 					
-					var n = util.getMyName(container);
+					var n = util.getMyName(container, us.Value);
 					return n;
+					
 					/*
+					//if (n != null) return n;
                     var res = await client.GetStringAsync(myPage);
                     if (string.IsNullOrEmpty(res))
                         return null;
@@ -113,6 +116,7 @@ namespace rokugaTouroku
                     else
                         return null;
                     */
+                    
                 }
                 catch (System.Net.Http.HttpRequestException) { return null; }
             }

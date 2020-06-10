@@ -769,9 +769,9 @@ namespace rokugaTouroku
 			// 
 			this.isRtmpEngine.Location = new System.Drawing.Point(6, 245);
 			this.isRtmpEngine.Name = "isRtmpEngine";
-			this.isRtmpEngine.Size = new System.Drawing.Size(390, 15);
+			this.isRtmpEngine.Size = new System.Drawing.Size(409, 15);
 			this.isRtmpEngine.TabIndex = 28;
-			this.isRtmpEngine.Text = "RTMP録画エンジンを使う(旧配信で提供されているタイムシフト放送のみ)";
+			this.isRtmpEngine.Text = "RTMP録画エンジンを使う(旧配信のタイムシフト及び公式のリアルタイム配信のみ)";
 			this.isRtmpEngine.UseVisualStyleBackColor = true;
 			this.isRtmpEngine.CheckedChanged += new System.EventHandler(this.isDefaultEngineChkBox_CheckedChanged);
 			// 

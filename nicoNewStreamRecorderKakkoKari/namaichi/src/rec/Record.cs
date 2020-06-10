@@ -696,7 +696,7 @@ namespace namaichi.rec
 				}
 				*/
 			}
-
+			addDebugBuf("wait for recording end");
 		}
 		public void waitForEnd() {
 			rm.form.addLogTextDebug("record waitend ");
@@ -754,7 +754,7 @@ namespace namaichi.rec
 			//if (res == null) {
 				addDebugBuf("nuke? lastSegmentNo " + lastSegmentNo + " min " + " min " + min + " res " + res);
 //				rm.form.addLogText("リトライ lastSegmentNo " + lastSegmentNo + " res " + res + " min " + min);
-				((WebSocketRecorder)wr).displayDebug("ts task res " + res + " / lastsegno " + lastSegmentNo + " / min " + min);
+				((WebSocketRecorder)wr).displayDebug("ts task res " + res + " / lastsegno " + lastSegmentNo + " / min " + min + " reconnect");
 				setReconnecting(true);
 //				if (!isReConnecting) 
 					reConnect();
@@ -902,40 +902,7 @@ namespace namaichi.rec
 			var url = nti.url;
 			var startTime = nti.startSecond;
 			
-			//byte[] tsBytes;
 			try {
-				/*
-				var isDebug = false;
-				if (isDebug) {
-					var getFileMaeTime = DateTime.Now;
-					var tsBytes0 = util.getFileBytes(url, container, true, 0);
-					var getFileAto0 = DateTime.Now;
-					var tsBytes1 = util.getFileBytes(url, container, false, 0);
-					var getFileAto1 = DateTime.Now;
-					var tsBytes2 = util.getFileBytes(url, container, true, 2);
-					var getFileAto2 = DateTime.Now;
-					var tsBytes3 = util.getFileBytes(url, container, false, 2);
-					var getFileAto3 = DateTime.Now;
-					tsBytes = tsBytes0;
-					
-					//test
-					var thTime0 = DateTime.Now;
-					byte[] ff0, ff1;
-					var t0 = Task.Run(() => ff0 = util.getFileBytes(url, container, false, 2));
-					var t1 = Task.Run(() => ff1 = util.getFileBytes(url, container, false, 2));
-					var rr0 = t0.Result;
-					var rr1 = t1.Result;
-					var thTime1 = DateTime.Now;
-					
-					addDebugBuf("getTsTask getFileBytes getFileTime " + (getFileAto3 - getFileAto2) + " " + (getFileAto2 - getFileAto1) + " " + (getFileAto1 - getFileAto0) + " " + (getFileAto0 - getFileMaeTime) + " b " + (thTime1 - thTime0));
-					rm.form.addLogText("ファイル取得時間 A " +   + (getFileAto3 - getFileAto2) + " " + (getFileAto2 - getFileAto1) + " " + (getFileAto1 - getFileAto0) + " " + (getFileAto0 - getFileMaeTime) + " b " + (thTime1 - thTime0));
-					addDebugBuf("getfilebytes did url " + url + " " + tsBytes);
-				} else {
-					tsBytes = util.getFileBytes(url, container, true, 2);
-					addDebugBuf("getfilebytes did url " + url + " " + tsBytes);
-				}
-				*/
-				
 				lock (newGetTsTaskList) {
 					for (int i = 0; i < newGetTsTaskList.Count; i++) {
 						if (newGetTsTaskList[i].url == url) {
@@ -954,8 +921,10 @@ namespace namaichi.rec
 							}
 							var a = recordedSecond;
 							newGetTsTaskList[i].res = tsBytes;
-							recordedSecond += newGetTsTaskList[i].second;
-							recordedBytes += tsBytes.Length;
+							if (!((WebSocketRecorder)wr).isChase) {
+								recordedSecond += newGetTsTaskList[i].second; 	
+								recordedBytes += tsBytes.Length;
+							}
 							var b = recordedSecond;
 							addDebugBuf("aads " + a + " " + b + " no " + newGetTsTaskList[i].no);
 						}
@@ -970,7 +939,12 @@ namespace namaichi.rec
 						}
 						bool ret;
 						if (isPlayOnlyMode) ret = true;
-						else ret = writeFile(newGetTsTaskList[i]);
+						else {
+							if (((WebSocketRecorder)wr).isChase)
+								gotTsList.Add(newGetTsTaskList[i]);
+							else ret = writeFile(newGetTsTaskList[i]);
+							ret = true;
+						}
 
 						addDebugBuf("write ok " + ret + " " + newGetTsTaskList[i].no);
 						if (ret) {
@@ -1014,7 +988,7 @@ namespace namaichi.rec
 					}
 					*/
 				}
-				if (!isPlayOnlyMode)
+				if (!isPlayOnlyMode && !((WebSocketRecorder)wr).isChase)
 					setRecordState();
 				/*
 				if (isTimeShift) {
@@ -1332,8 +1306,10 @@ namespace namaichi.rec
 			hlsSegM3uUrl = getHlsSegM3uUrl(baseMasterUrl);
 			rm.hlsUrl = hlsSegM3uUrl;
 			rm.form.setPlayerBtnEnable(true);
-				
-//			if (isFFmpegThrough()) realtimeFFmpeg = new RealTimeFFmpeg();
+			
+			var isWriteEnd = new bool[1]{false};
+			if (engineMode == "0" && ((WebSocketRecorder)wr).isChase)
+				tsWriterTask = Task.Run(() => timeShiftWriter(isWriteEnd));
 			while (rm.rfu == rfu && isRetry) {
 				if (isReConnecting) {
 					Thread.Sleep(3000);
@@ -1386,15 +1362,21 @@ namespace namaichi.rec
 				
 			}
 			rm.hlsUrl = "end";
+			isWriteEnd[0] = true;
+			
 //			rm.form.setPlayerBtnEnable(false);
 			
-			if (isEndProgram && !((WebSocketRecorder)wr).isHokan) {
-				rm.form.addLogText("録画を完了しました");
-			}
+			
 			if (rm.cfg.get("fileNameType") == "10" && (recFolderFile.IndexOf("{w}") > -1 || recFolderFile.IndexOf("{c}") > -1))
 				renameStatistics();
 			
 			if (engineMode == "0" && !isPlayOnlyMode) {
+				if (gotTsList.Count > 10) {
+					displayWriteRemainGotTsData();
+				}
+				if (((WebSocketRecorder)wr).isChase)
+					waitForRecording();
+			
 				if (isEndProgram && segmentSaveType == 0) {
 					renameWithoutTime(recFolderFile);
 					
@@ -1415,7 +1397,48 @@ namespace namaichi.rec
 					}
 				}
 			}
+			if (isEndProgram && !((WebSocketRecorder)wr).isHokan) {
+				rm.form.addLogText("録画を完了しました");
+			}
 			isEnd = true;
+		}
+		private void timeShiftWriter(bool[] isWriteEnd) {
+			var lastWroteNo = -1;
+			while (true) {
+				try {
+					//util.debugWriteLine("timeshift writer + " + gotTsList.Count);
+					if (isWriteEnd[0] && gotTsList.Count == 0) break;
+					
+					var removeNti = new List<numTaskInfo>();
+					lock (gotTsList) {
+						
+						for (var i = 0; i < (gotTsList.Count < 5 ? gotTsList.Count : 5); i++) {
+							if (gotTsList[i].no <= lastWroteNo) continue;
+							
+							var r = writeFile(gotTsList[i]);
+							util.debugWriteLine("timeshift writer write " + r + " " + gotTsList[i].no + " " + gotTsList.Count + " " + i + " " + rm.hlsUrl);
+							if (r) {
+								recordedSecond += gotTsList[i].second;
+								recordedBytes += gotTsList[i].res.Count();
+								removeNti.Add(gotTsList[i]);
+								lastWroteNo = gotTsList[i].no;
+								
+							} else {
+								break;
+							}
+						}
+						foreach (var n in removeNti)
+							gotTsList.Remove(n);
+					}
+					if (removeNti.Count != 0)
+						setRecordState();
+					
+					Thread.Sleep(300);
+				} catch (Exception e) {
+					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				}
+			}
+			util.debugWriteLine("timeshift writer end");
 		}
 		private double getBaseTimeFromPlaylist(string res) {
 			//most extinf second
@@ -1458,6 +1481,8 @@ namespace namaichi.rec
 		private string newTimeShiftFileName(string nowName, string newInfoName) {
 			var newFileTime = util.getRegGroup(newInfoName, "(\\d+h\\d+m\\d+s)");
 			var nowFileTime = util.getRegGroup(nowName, "(\\d+h\\d+m\\d+s)");
+			if (newFileTime == null || nowFileTime == null)
+				util.debugWriteLine("newtimeshift file name null " + newFileTime + " / " + nowFileTime);
 			return nowName.Replace(nowFileTime, newFileTime);
 		}
 		private void setReconnecting(bool b) {
