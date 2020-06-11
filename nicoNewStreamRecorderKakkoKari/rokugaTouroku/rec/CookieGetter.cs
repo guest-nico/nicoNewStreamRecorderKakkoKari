@@ -21,7 +21,6 @@ namespace rokugaTouroku.rec
 	/// </summary>
 	public class CookieGetter
 	{
-		private CookieContainer cc;
 		public string pageSource = null;
 		public bool isHtml5 = false;
 		private config.config cfg;
@@ -196,7 +195,7 @@ namespace rokugaTouroku.rec
 			foreach(Cookie _c in result.Cookies) {
 				try {
 					if (_c.Name == "age_auth" || _c.Name.IndexOf("user_session") > -1) {
-						cc.Add(_c);
+						cc.Add(new Cookie(_c.Name, _c.Value, "/", ".nicovideo.jp"));
 					}
 				} catch (Exception e) {
 					util.debugWriteLine("cookie add browser " + _c.ToString() + e.Message + e.Source + e.StackTrace + e.TargetSite);
@@ -273,31 +272,21 @@ namespace rokugaTouroku.rec
 				
 	//			if (res.IndexOf("login_status = 'login'") < 0) return null;
 				
-				cc = handler.CookieContainer;
+				var cc = handler.CookieContainer;
+				var c = cc.GetCookies(TargetUrl)["user_session"];
+				var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
+				//cc = copyUserSession(cc, c, secureC);
+				log += (c == null) ? "ユーザーセッションが見つかりませんでした。" : "ユーザーセッションが見つかりました。";
+				log += (secureC == null) ? "secureユーザーセッションが見つかりませんでした。" : "secureユーザーセッションが見つかりました。";
+				if (c == null && secureC == null) return null;
 				
-//				return cc;
+				return cc;
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message+e.StackTrace);
 				return null;
 			}
 			
 			
-			var c = cc.GetCookies(TargetUrl)["user_session"];
-			var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
-			//cc = copyUserSession(cc, c, secureC);
-			log += (c == null) ? "ユーザーセッションが見つかりませんでした。" : "ユーザーセッションが見つかりました。";
-			log += (secureC == null) ? "secureユーザーセッションが見つかりませんでした。" : "secureユーザーセッションが見つかりました。";
-			if (c == null && secureC == null) return null;
-			/*
-			var encoder = System.Text.Encoding.GetEncoding("UTF=8");
-			var sr = new System.IO.StreamReader(resStream, encoder);
-			var xml = sr.ReadToEnd();
-			sr.Close();
-			resStream.Close();
-			
-			if (xml.IndexOf("not login") != -1) return null;
-			*/
-			return cc;
 				
 		}
 		private CookieContainer setUserSession(CookieContainer cc, 

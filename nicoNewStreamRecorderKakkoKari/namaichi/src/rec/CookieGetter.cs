@@ -22,7 +22,6 @@ namespace namaichi.rec
 	/// </summary>
 	public class CookieGetter
 	{
-		private CookieContainer cc;
 		public string pageSource = null;
 		public bool isHtml5 = false;
 		private config.config cfg;
@@ -169,7 +168,7 @@ namespace namaichi.rec
 				try {
 					//cc.Add(_c);
 					if (_c.Name == "age_auth" || _c.Name.IndexOf("user_session") > -1) {
-						requireCookies.Add(_c);
+						requireCookies.Add(new Cookie(_c.Name, _c.Value, "/", ".nicovideo.jp"));
 					}
 				} catch (Exception e) {
 					util.debugWriteLine("cookie add browser " + _c.ToString() + e.Message + e.Source + e.StackTrace + e.TargetSite);
@@ -182,7 +181,8 @@ namespace namaichi.rec
 			var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
 			
 			if (c == null) {
-				log += "ブラウザでログインし直すか、別のブラウザを試すか、アカウントログインを試すと上手くいくかもしれません。"; 
+				log += "ブラウザでログインし直すか、別のブラウザを試すか、アカウントログインを試すと上手くいくかもしれません。";
+				return null;
 			}
 			
 			//cc = copyUserSession(cc, c, secureC);
@@ -191,13 +191,14 @@ namespace namaichi.rec
 		}
 		private bool isHtml5Login(CookieContainer cc, string url) {
 			//cc.Add(new Uri(url), new Cookie("age_auth", "0"));
+			//cc = new CookieContainer();
+			//cc.SetCookies(new Uri(url), "nicosid=1546686738.281900968; _ga=GA1.2.1892466675.1546686717; nicorepo_filter=myself; _a1_sync=!rld|1554233235889; __gads=ID=bbe8b59a1a1b56cf:T=1561492336:S=ALNI_Ma4kmS8DGEBaEGXwCi23MfjLj42XA; __utma=8292653.1892466675.1546686717.1591843710.1591846656.472; __utmz=8292653.1591846656.472.472.utmcsr=com.nicovideo.jp|utmccn=(referral)|utmcmd=referral|utmcct=/bbs/co13528; _ga_8W314HNSE8=GS1.1.1591655100.48.1.1591655101.0; nicolivehistory=%5B326227658%2C326227874%2C326232036%2C325096106%2C326370706%2C326365094%2C326371606%2C326371601%2C326367676%2C326360477%2C326367014%2C326320571%2C326344349%2C326221118%2C326344412%2C326271502%2C326250313%2C326360917%2C326271409%2C326359986%2C326371303%2C325885062%2C326368355%2C326391017%2C326341505%2C326334584%2C326392793%2C326409873%2C326423760%2C326162806%5D; cto_bundle=0DSTLl9DZTkzY01sQnlXSExUWTRqNnJtaGU4SkNPaU9LNk54czQ2RlBWbEs5SzlpVnBPQTdhZVZ5ODY4UkJJZmI1azBKN3pNbEclMkJOWHh2eGxDQVZyM0w0d1dpekxPcFlia3BoZmpSZyUyRkRwYzRwcUt6eiUyRkZhWUZlc1ZScVpVQ21KVHJ1amMwQ3lDeDdyekNHVEVVUjdhbyUyRjA3d2N3aHhZWnRzSGhpJTJGWjR1MDZEbXVKem9TSERaTFh1czJtRDN4VDBXOSUyRm4; optimizelyEndUserId=oeu1586031666784r0.061993650074855355; optimizelySegments=%7B%223176911475%22%3A%22referral%22%2C%223188621092%22%3A%22ff%22%2C%223192211201%22%3A%22false%22%2C%223217420529%22%3A%22none%22%7D; optimizelyBuckets=%7B%7D; _gid=GA1.2.1042875258.1590148254; user_session=user_session_94891892_a185c5a223715a06175322b8fbba9e7da493ed42b41eead10c10087711e4cc6a; user_session_secure=OTQ4OTE4OTI6TGNjQ2JOU1dxWWNhRDZ4TElrTFNmcXlNbm8tU2pWd2pPbDExSnpqUHNPbg; _td=f8e7235a-76a7-4e6f-8191-e75ca65aaff5; __utmc=8292653; pt_s_4ef1ca6b=1591584731613; pt_s_57cf6e43=1591761797274; _dd_l=1; _dd=4c25775e-2e9e-498c-becc-cf1020e55e26; _gali=root".Replace(";", ","));
 			var ccc = cc.GetCookieHeader(new Uri(url));
 			for (var i = 0; i < 3; i++) {
 				//var headers = new WebHeaderCollection();
 				try {
 					util.debugWriteLine("ishtml5login getpage " + url);
 					var _url = (isRtmp) ? ("https://live.nicovideo.jp/api/getplayerstatus/" + util.getRegGroup(url, "(lv\\d+)")) : url;
-					//var _url = url;
 					pageSource = util.getPageSource(_url, cc);
 					
 					util.debugWriteLine("ishtml5login getpage ok");
@@ -299,36 +300,24 @@ namespace namaichi.rec
 				
 				var _res = await http.PostAsync(loginUrl, content);
 				var res = await _res.Content.ReadAsStringAsync();
-	//			var a = _res.Headers;
+
+				var cc = handler.CookieContainer;
+				var cookies = cc.GetCookies(TargetUrl);
+				var c = cookies["user_session"];
+				var secureC = cookies["user_session_secure"];
+				//cc = copyUserSession(cc, c, secureC);
+				log += (c == null) ? "ユーザーセッションが見つかりませんでした。" : "ユーザーセッションが見つかりました。";
+				log += (secureC == null) ? "secureユーザーセッションが見つかりませんでした。" : "secureユーザーセッションが見つかりました。";
+				if (c == null && secureC == null) return null;
 				
-	//			if (res.IndexOf("login_status = 'login'") < 0) return null;
-				
-				cc = handler.CookieContainer;
-				
-//				return cc;
+				return cc;
+			
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message+e.StackTrace);
 				return null;
 			}
 			
 			
-			var c = cc.GetCookies(TargetUrl)["user_session"];
-			var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
-			//cc = copyUserSession(cc, c, secureC);
-			log += (c == null) ? "ユーザーセッションが見つかりませんでした。" : "ユーザーセッションが見つかりました。";
-			log += (secureC == null) ? "secureユーザーセッションが見つかりませんでした。" : "secureユーザーセッションが見つかりました。";
-			if (c == null && secureC == null) return null;
-			/*
-			var encoder = System.Text.Encoding.GetEncoding("UTF=8");
-			var sr = new System.IO.StreamReader(resStream, encoder);
-			var xml = sr.ReadToEnd();
-			sr.Close();
-			resStream.Close();
-			
-			if (xml.IndexOf("not login") != -1) return null;
-			*/
-			return cc;
-				
 		}
 		private CookieContainer setUserSession(CookieContainer cc, 
 				Cookie c, Cookie secureC, Cookie age_auth = null) {

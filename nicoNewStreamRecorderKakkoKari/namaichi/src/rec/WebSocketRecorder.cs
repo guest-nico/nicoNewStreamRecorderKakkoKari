@@ -531,10 +531,10 @@ namespace namaichi.rec
 				    || e.Message.IndexOf("\"TEMPORARILY_CROWDED\"") >= 0
 				    || e.Message.IndexOf("\"CROWDED\"") >= 0
 				    || e.Message.IndexOf("\"CONNECT_ERROR\"") >= 0) {
-				if (e.Message.IndexOf("\"TAKEOVER\"") >= 0 && !isRtmp) rm.form.addLogText("追い出されました。");
+				if (e.Message.IndexOf("\"TAKEOVER\"") >= 0) rm.form.addLogText("追い出されました。");
 				
 				//SERVICE_TEMPORARILY_UNAVAILABLE 予約枠開始後に何らかの問題？
-				if (e.Message.IndexOf("\"SERVICE_TEMPORARILY_UNAVAILABLE\"") > 0 && !isRtmp) {
+				if (e.Message.IndexOf("\"SERVICE_TEMPORARILY_UNAVAILABLE\"") > 0) {
 					rm.form.addLogText("サーバーからデータの受信ができませんでした。リトライします。");
 					Thread.Sleep(3000);
 				}
@@ -558,10 +558,10 @@ namespace namaichi.rec
 					isWaitNextConnection = true;
 					//{"type":"error","body":{"code":"CONNECT_ERROR"}}
 					
-					if ((e.Message.IndexOf("\"TEMPORARILY_CROWDED\"") >= 0 || e.Message.IndexOf("CROWDED") > -1) && !isRtmp)
+					if (e.Message.IndexOf("\"TEMPORARILY_CROWDED\"") >= 0 || e.Message.IndexOf("CROWDED") > -1)
 						rm.form.addLogText("満員でした");
 					
-					if (e.Message.IndexOf("\"CONNECT_ERROR\"") >= 0 && !isRtmp)
+					if (e.Message.IndexOf("\"CONNECT_ERROR\"") >= 0)
 						rm.form.addLogText("接続エラーでした");
 					#if DEBUG
 					#endif
@@ -609,8 +609,7 @@ namespace namaichi.rec
 					addDebugBuf("notify ws close exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 				}
 				#if DEBUG
-					if (!isRtmp)
-						rm.form.addLogText("notify reconnect");
+					rm.form.addLogText("notify reconnect");
 				#endif
 			}
 			//if (e.Message.IndexOf("{\"type\":\"error\",\"body\":{\"code\":\"CONTENT_NOT_READY\"}}") > -1) {
@@ -980,15 +979,28 @@ namespace namaichi.rec
 					if (rm.cfg.get("fileNameType") == "10" && (name.IndexOf("{w}") > -1 || name.IndexOf("{c}") > -1)) {
 						Task.Run(() => {
 				         	setRealTimeStatistics();
-				         	File.Move(name, name.Replace("{w}", visitCount.Replace("-", "")).Replace("{c}", commentCount.Replace("-", "")));
+				         	var _name = name.Replace("{w}", visitCount.Replace("-", "")).Replace("{c}", commentCount.Replace("-", "")); 
+				         	File.Move(name, _name);
+				         	name = _name;
 						});
 					}
 				} catch (Exception e) {
 					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
+				if (isRtmp) {
+					var baseN = util.getRegGroup(name, "(.+)\\.");
+					util.debugWriteLine("closeWscProcess rtmp comment delete " + name + " " + baseN);
+					if (baseN != null && !File.Exists(baseN + ".flv")) {
+						try {
+							if (File.ReadAllText(name).IndexOf("chat") == -1)
+								File.Delete(name);
+						} catch (Exception e) {
+							util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+						}
+					}
+				}
 			}
 			
-
 			//stopRecording();
 //			endStreamProcess();
 		}
@@ -1067,7 +1079,7 @@ namespace namaichi.rec
 				}
 				
 				try {
-					if (isGetCommentXmlInfo) {
+					if (isGetCommentXmlInfo && commentSW != null) {
 						if (!isTimeShift || isRealtimeChase)
 							commentSW.WriteLine("<StartTime>" + serverTime + "</StartTime>");							
 						else {
