@@ -27,7 +27,7 @@ namespace namaichi.rec
 			//this.isSub = isSub;
 		}
 		public bool 
-			followCommunity(string res, CookieContainer cc, MainForm form, config.config cfg) {
+			followCommunity(string res, CookieContainer cc, MainForm form, config.config cfg, bool isPlayOnlyMode) {
 			var isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
 			var comId = (isJikken) ? util.getRegGroup(res, "&quot;followPageUrl&quot;\\:&quot;.+?motion/(.+?)&quot;") :
 					//util.getRegGroup(res, "Nicolive_JS_Conf\\.Recommend = \\{type\\: 'community', community_id\\: '(co\\d+)'");
@@ -38,12 +38,12 @@ namespace namaichi.rec
 				return false;
 			}
 			
-			var isJoinedTask = join(comId, cc, form, cfg);
+			var isJoinedTask = join(comId, cc, form, cfg, isPlayOnlyMode);
 //			isJoinedTask.Wait();
 			return isJoinedTask;
 //			return false;
 		}
-		private bool join(string comId, CookieContainer cc, MainForm form, config.config cfg) {
+		private bool join(string comId, CookieContainer cc, MainForm form, config.config cfg, bool isPlayOnlyMode) {
 			for (int i = 0; i < 5; i++) {
 				//var myPageUrl = "https://www.nicovideo.jp/my";
 				var comUrl = "https://com.nicovideo.jp/community/" + comId; 
@@ -130,7 +130,7 @@ namespace namaichi.rec
 						var resStr = resStream.ReadToEnd();
 		
 						var isSuccess = resStr.IndexOf("フォローしました") > -1;
-						var _m = (form.rec.isPlayOnlyMode) ? "視聴" : "録画";
+						var _m = (isPlayOnlyMode) ? "視聴" : "録画";
 						form.addLogText((isSuccess ?
 						                 "フォローしました。" + _m + "開始までしばらくお待ちください。" : "フォローに失敗しました。"));
 						return isSuccess;

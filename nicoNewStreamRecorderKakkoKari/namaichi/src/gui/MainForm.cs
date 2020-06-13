@@ -133,7 +133,7 @@ namespace namaichi
 				ar.read();
 				if (ar.isConcatMode) {
 					urlText.Text = string.Join("|", args);
-	            	rec.rec();
+	            	rec.rec(false);
 				} else {
 					if (ar.lvid != null) urlText.Text = ar.lvid;
 					config.argConfig = ar.argConfig;
@@ -141,7 +141,7 @@ namespace namaichi
 					rec.isRecording = true;
 //					rec.setArgConfig(args);
 					if (ar.isPlayMode) player.play();
-					else rec.rec();
+					else rec.rec(false);
 				}
 				if (bool.Parse(config.get("Isminimized"))) {
 					this.WindowState = FormWindowState.Minimized;
@@ -151,7 +151,7 @@ namespace namaichi
 
 		private void recBtnAction(object sender, EventArgs e) {
 			rec.isClickedRecBtn = true;
-			rec.rec();
+			rec.rec(false);
 			
 		}
 		/*
@@ -305,7 +305,7 @@ namespace namaichi
             if (args.Length > 0) {
             	urlText.Text = args[0];
 //            	rec = new rec.RecordingManager(this);
-            	rec.rec();
+            	rec.rec(false);
 
             }
 			
@@ -514,7 +514,7 @@ namespace namaichi
 		}
 		bool kakuninClose() {
 			if (rec.rfu != null && bool.Parse(config.get("IsConfirmCloseMsgBox"))) {
-				var _m = (rec.isPlayOnlyMode) ? "視聴" : "録画";
+				var _m = (rec.rfu.isPlayOnlyMode) ? "視聴" : "録画";
 				DialogResult res = MessageBox.Show(_m + "中ですが終了しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 				if (res == DialogResult.No) return false;
 			}
@@ -547,7 +547,7 @@ namespace namaichi
 			try  {
 				if (rec != null && rec.rfu != null && rec.rfu.h5r != null && rec.rfu.h5r.wsr != null) {
 					var _r = rec.rfu.h5r.wsr;
-					rec.stopRecording();
+					rec.stopRecording(rec.rfu.isPlayOnlyMode);
 					for (var i = 0; i < 100; i++) {
 //						util.debugWriteLine("close rec commentSW " + i);
 						if (_r.commentSW == null) break;
@@ -681,7 +681,7 @@ namespace namaichi
 						if (a == null || a.Length == 0) continue;
 						if (a == "stop end") {
 							if (rec.rfu != null) {
-								rec.stopRecording();
+								rec.stopRecording(rec.rfu.isPlayOnlyMode);
 							}
 							while (rec.recordRunningList.Count > 0) {
 								Thread.Sleep(1000);

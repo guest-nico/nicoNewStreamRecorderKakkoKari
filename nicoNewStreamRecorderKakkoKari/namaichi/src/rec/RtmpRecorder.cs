@@ -78,7 +78,7 @@ namespace namaichi.rec
 
 			//endcode 0-その他の理由 1-stop 2-最初に終了 3-始まった後に番組終了
 			util.debugWriteLine("rtmp recorder" + util.getMainSubStr(isSub, true));
-			var _m = (rm.isPlayOnlyMode) ? "視聴" : "録画";
+			var _m = (rfu.isPlayOnlyMode) ? "視聴" : "録画";
 			if (wr.isTimeShift) {
 				rm.form.addLogText("タイムシフトの" + _m + "を開始します");
 			} else {
@@ -115,7 +115,7 @@ namespace namaichi.rec
 					}
 					if (rtmpdumpArg == null) continue;
 					
-					if (rm.isPlayOnlyMode) {
+					if (rfu.isPlayOnlyMode) {
 						while(rm.rfu == rfu && retryMode == 0) {
 							Thread.Sleep(1000);
 						}
@@ -127,11 +127,11 @@ namespace namaichi.rec
 						return;
 					}
 					
-					if (!rm.isPlayOnlyMode)
+					if (!rfu.isPlayOnlyMode)
 						getProcess(out rtmpdumpP, out ffmpegP, rtmpdumpArg);
 					
 					if (!isSub) {
-						if (!isFirst && !rm.isPlayOnlyMode && !isFailedRec) wr.resetCommentFile();
+						if (!isFirst && !rfu.isPlayOnlyMode && !isFailedRec) wr.resetCommentFile();
 						isFirst = false;
 						isFailedRec = false;
 						
@@ -139,8 +139,8 @@ namespace namaichi.rec
 						
 						testDebugWriteLine("rtmpdump　待機");
 						while(rm.rfu == rfu && retryMode == 0 && !rtmpdumpP.HasExited) {
-							if (!rm.isPlayOnlyMode && rtmpdumpP.WaitForExit(1000)) break;
-							if (rm.isPlayOnlyMode) Thread.Sleep(1000);
+							if (!rfu.isPlayOnlyMode && rtmpdumpP.WaitForExit(1000)) break;
+							if (rfu.isPlayOnlyMode) Thread.Sleep(1000);
 						}
 						testDebugWriteLine("rtmpdump　終了準備　" + retryMode);
 						
@@ -354,7 +354,7 @@ namespace namaichi.rec
 								return null;
 							}
 							if (!isSub) rm.hlsUrl = arg;
-							if (!isSub && !rm.isPlayOnlyMode) arg += " -o \"" + util.getOkSJisOut(recFolderFile) + ".flv\"";
+							if (!isSub && !rfu.isPlayOnlyMode) arg += " -o \"" + util.getOkSJisOut(recFolderFile) + ".flv\"";
 							util.debugWriteLine(arg + util.getMainSubStr(isSub, true));
 							return arg;
 						}
@@ -375,7 +375,7 @@ namespace namaichi.rec
 					var arg = "-vr " + rtmpUrl + "/" + lvid + " -N " + contentsUrl + " -C S:" + ticket;
 					if (!isSub) rm.hlsUrl = arg;
 					
-					if (!isSub && !rm.isPlayOnlyMode) arg += " -o \"" + util.getOkSJisOut(recFolderFile) + ".flv\"";
+					if (!isSub && !rfu.isPlayOnlyMode) arg += " -o \"" + util.getOkSJisOut(recFolderFile) + ".flv\"";
 					util.debugWriteLine(arg + util.getMainSubStr(isSub, true));
 					if (contentsUrl == null || rtmpUrl == null || ticket == null) {
 						Thread.Sleep(3000);
@@ -423,8 +423,13 @@ namespace namaichi.rec
 						var app = util.getRegGroup(rtmpUrl, "(fileorigin.+)");
 						//var _a = (true && quePosTimeList[i] < startRecVpos) ? "" : (" -A " + (startRecVpos - quePosTimeList[i]));
 						var _a = "";
-						arg += "-r " + rtmpUrl + " -y mp4:" + a + " -a " + app + " -p http://live.nicovideo.jp/watch/" + lvid + " -s \"http://live.nicovideo.jp/nicoliveplayer.swf\" -f \"WIN 29,0,0,113\" -t " + rtmpUrl + " -C S:" + ticket + _a + " -o ";
+						
+						var _y = a.IndexOf(".flv") > -1 ? "/mp4:" : " -y mp4:";
+						//_y = " -y mp4:";
+						
+						arg += "-r " + rtmpUrl + _y + a + " -a " + app + " -p http://live.nicovideo.jp/watch/" + lvid + " -s \"http://live.nicovideo.jp/nicoliveplayer.swf\" -f \"WIN 29,0,0,113\" -t " + rtmpUrl + " -C S:" + ticket + _a + " -m 200 -o ";
 						//arg += "-r " + url + " -y mp4:" + a + " -C S:" + ticket + " -o ";
+						 
 					}
 					rm.hlsUrl = "timeshift";
 					util.debugWriteLine(arg + util.getMainSubStr(isSub, true));
@@ -788,7 +793,7 @@ namespace namaichi.rec
 			Task.Run(() => {
 				try {
 					while (!p.HasExited) {
-			         	Thread.Sleep(10000);
+			         	Thread.Sleep(200000);
 			         	if (receivedData == lastReceivedData) {
 			         		_stopRecording(p);
 			         		break;
@@ -976,9 +981,9 @@ namespace namaichi.rec
 			return wr.getRecFilePath()[1];
 		}
 		private void testDebugWriteLine(string s) {
-			//rm.form.addLogText(s);
+			util.debugWriteLine("rtmp debug " + s);
 			#if DEBUG
-				
+				//rm.form.addLogText(s);	
 			#endif
 		}
 		private void setFileNameList(int listNum, string recFolderFile) {

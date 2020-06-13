@@ -69,7 +69,7 @@ namespace namaichi.play
 		         			setPlayerBtnText("視聴");
 		         			form.recBtn.Enabled = true;
 						});
-		         		form.rec.isPlayOnlyMode = false;
+		         		//form.rec.rfu.isPlayOnlyMode = false;
 		         		return;
 		         	}
 					
@@ -84,6 +84,7 @@ namespace namaichi.play
 			}
 		}
 		private void end() {
+			util.debugWriteLine("play end");
 			Task.Run(() => {
 			    setPlayerBtnText("視聴");
 				stopPlaying(true, true);
@@ -93,15 +94,15 @@ namespace namaichi.play
 				form.Invoke((MethodInvoker)delegate() {
 					if (!form.recBtn.Enabled) {
 						form.recBtn.Enabled = true;
-						form.rec.rec();
+						form.rec.rec(false);
 					}
-				    form.rec.isPlayOnlyMode = false;
+				    //form.rec.isPlayOnlyMode = false;
 				});
 			});
 		}
 		private void videoPlay(bool isStart) {
 			isRecording = true;
-			isDefaultPlayer = bool.Parse(config.get("IsDefaultPlayer"));
+			isDefaultPlayer = bool.Parse(config.get("IsDefaultPlayer")) && false;
 			if (isStart) {
 				Task.Run(() => {
 					var isStarted = false;
@@ -456,8 +457,8 @@ namespace namaichi.play
 		private bool getHlsUrl() {
 			if (form.rec.rfu == null) {
 				form.rec.hlsUrl = null;
-				form.rec.isPlayOnlyMode = true;
-				form.rec.rec();
+				//form.rec.isPlayOnlyMode = true;
+				form.rec.rec(true);
 				form.Invoke((MethodInvoker)delegate() {
 					form.recBtn.Enabled = false;
 				});

@@ -283,7 +283,7 @@ namespace namaichi.rec
 				var isRealtimeChase =  isChase && !isChaseCheck && 
 						!(rm.form.args.Length > 0 && bool.Parse(rm.cfg.get("IsArgChaseRecFromFirst")));
 				
-				if (!rm.isPlayOnlyMode) {
+				if (!rfu.isPlayOnlyMode) {
 					util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode());
 					if (recFolderFile == null)
 						recFolderFile = getRecFilePath(isRtmp);
@@ -299,12 +299,12 @@ namespace namaichi.rec
 				}
 			
 				//display set
-				var rss = new RecordStateSetter(rm.form, rm, rfu, isTimeShift, false, recFolderFile, rm.isPlayOnlyMode, isRtmpOnlyPage, isChase);
+				var rss = new RecordStateSetter(rm.form, rm, rfu, isTimeShift, false, recFolderFile, rfu.isPlayOnlyMode, isRtmpOnlyPage, isChase);
 				Task.Run(() => {
 				       	rss.set(data, type, recFolderFileInfo);
 				       	
 				       	//hosoInfo
-						if (rm.cfg.get("IshosoInfo") == "true" && !rm.isPlayOnlyMode)
+						if (rm.cfg.get("IshosoInfo") == "true" && !rfu.isPlayOnlyMode)
 							rss.writeHosoInfo();
 					});
 				

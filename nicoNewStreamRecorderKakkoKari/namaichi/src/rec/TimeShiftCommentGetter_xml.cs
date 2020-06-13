@@ -394,7 +394,7 @@ namespace namaichi.rec
 				if (chatinfo.root == "thread") {
 					if (threadLine == null) {
 						threadLine = s;
-						if (!rm.isPlayOnlyMode)
+						if (!rfu.isPlayOnlyMode)
 							form.addLogText("アリーナ席に" + chatinfo.lastRes + "件ぐらいのコメントが見つかりました(追い出しコメント含む)");
 					}
 	            } else {
@@ -406,7 +406,7 @@ namespace namaichi.rec
 	            		gotCommentList.Add(s);
 					gotCount++;
 	            	
-	            	if (gotCount % 2000 == 0 && !rm.isPlayOnlyMode) form.addLogText(gotCount + "件のコメントを保存しました");
+	            	if (gotCount % 2000 == 0 && !rfu.isPlayOnlyMode) form.addLogText(gotCount + "件のコメントを保存しました");
 	            }
 				
 //				util.debugWriteLine("write comment " + s);
@@ -426,7 +426,7 @@ namespace namaichi.rec
 			return Encoding.UTF8.GetBytes(reqStr);
 		}
 		private void endProcess() {
-			var isWrite = (rm.cfg.get("IsgetComment") == "true" && !rm.isPlayOnlyMode);
+			var isWrite = (rm.cfg.get("IsgetComment") == "true" && !rfu.isPlayOnlyMode);
 			if (isWrite)
 				form.addLogText("コメントの後処理を開始します");
 			/*

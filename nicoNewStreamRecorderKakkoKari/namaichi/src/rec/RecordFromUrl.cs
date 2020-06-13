@@ -35,14 +35,15 @@ namespace namaichi.rec
 		public bool isRtmpMain = false;
 		//public bool isRtmpTimeShiftEnabled = true;
 		public byte[] firstFlvData = null;
+		public bool isPlayOnlyMode = false;
 		
 		public Html5Recorder h5r = null;
 		
-		public RecordFromUrl(RecordingManager rm)
+		public RecordFromUrl(RecordingManager rm, bool isPlayOnlyMode)
 		{
 			this.rm = rm;
 			isRtmpMain = rm.cfg.get("EngineMode") == "2";
-			
+			this.isPlayOnlyMode = isPlayOnlyMode; 
 		}
 		public int rec(string url, string lvid) {
 			//endcode 0-その他の理由 1-stop 2-最初に終了 3-始まった後に番組終了
@@ -98,7 +99,7 @@ namespace namaichi.rec
 					var isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
 					int recResult = 0;
 					
-					if (rm.isPlayOnlyMode && pageType == 7 && isRtmp) isRtmp = false;
+					if (isPlayOnlyMode && pageType == 7 && isRtmp) isRtmp = false;
 					
 					if (isJikken) {
 						//実験放送　なくし
@@ -171,7 +172,7 @@ namespace namaichi.rec
 					util.debugWriteLine(rm.cfg.get("IsautoFollowComgen"));
 					if (bool.Parse(rm.cfg.get("IsautoFollowComgen"))) {
 						
-						var isFollow = new FollowCommunity().followCommunity(res, cc, rm.form, rm.cfg);
+						var isFollow = new FollowCommunity().followCommunity(res, cc, rm.form, rm.cfg, isPlayOnlyMode);
 						util.debugWriteLine("isfollow " + isFollow);
 						if (isFollow) {
 							pageType = getPageAfterFollow(url, lvid, ref jr, out cc);
@@ -308,7 +309,12 @@ namespace namaichi.rec
 					//if (res.IndexOf("siteId&quot;:&quot;nicolive2") > -1) {
 //					if (isRtmp) return getRtmpPageType(res, isSub, out rr, cc);
 					if (isRtmpMain) {
-						if (res.IndexOf("%3Cgetplayerstatus%20") > -1) {
+						//if (res.IndexOf("%3Cgetplayerstatus%20") > -1) {
+						if (res.IndexOf("player_type = null") > -1) {
+							if (res.IndexOf("\"timeshift_reservation") > -1) return 9;
+							else if (res.IndexOf("\"Nicolive.WatchingReservation.confirm") > -1) return 10;
+							return 2;
+						} else if (res.IndexOf("player_type = 'flash'") > -1) {
 							var _res = util.getRegGroup(res, "(%3Cgetplayerstatus%20.+?%3C%2Fgetplayerstatus%3E)");
 							_res = System.Net.WebUtility.UrlDecode(_res);
 							var isTimeShift = true;

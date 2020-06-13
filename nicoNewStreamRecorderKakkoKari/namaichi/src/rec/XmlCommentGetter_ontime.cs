@@ -223,7 +223,7 @@ namespace namaichi.rec
 				var isGetComment = rm.cfg.get("IsgetComment");
 				var isGetCommentXml = rm.cfg.get("IsgetcommentXml");
 				
-				if (bool.Parse(isGetComment) && commentSW == null && !rm.isPlayOnlyMode) {
+				if (bool.Parse(isGetComment) && commentSW == null && !rfu.isPlayOnlyMode) {
 					var fName = (commentFileName == null) ? recFolderFile : incrementRecFolderFile(commentFileName);
 					commentFileName = fName;
 					var _commentFileName = util.getOkCommentFileName(rm.cfg, fName, lvid, isTimeShift, isRtmp);

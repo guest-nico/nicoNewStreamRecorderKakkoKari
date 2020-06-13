@@ -49,7 +49,7 @@ namespace namaichi.rec
 		public RedistInfo ri = null;
 		
 		public bool isTitleBarInfo = false;
-		public bool isPlayOnlyMode = false;
+		//public bool isPlayOnlyMode = false;
 		
 		public TimeShiftConfig argTsConfig;
 		public utility.RegGetter regGetter = new namaichi.utility.RegGetter();
@@ -60,7 +60,7 @@ namespace namaichi.rec
 			this.cfg = cfg;
 		}
 		
-		public void rec() {
+		public void rec(bool isPlayOnlyMode) {
             util.debugWriteLine("rm");
            
 			if (rfu == null) {
@@ -79,17 +79,17 @@ namespace namaichi.rec
 							form.formAction(() => MessageBox.Show("not found lvid"), false);
 							return;
 						}
-						startRecording(lv);
+						startRecording(lv, isPlayOnlyMode);
             		}
 	        	} catch (Exception e) {
 	        		util.debugWriteLine(e.Message + " " + e.Source + " " + e.StackTrace + " " + e.TargetSite);
 	        	}
             	
 			} else {
-				stopRecording();
+				stopRecording(rfu.isPlayOnlyMode);
 			}
 		}
-		private void startRecording(string lvid) {
+		private void startRecording(string lvid, bool isPlayOnlyMode) {
 			util.setProxy(cfg, form);
 			isRecording = true;
 			form.formAction(() => {
@@ -100,7 +100,7 @@ namespace namaichi.rec
 				recordingUrl = form.urlText.Text;
 			}, false);
 			
-			rfu = new RecordFromUrl(this);
+			rfu = new RecordFromUrl(this, isPlayOnlyMode);
 			Task.Run(() => {
 				try {
 				    var _rfu = rfu;
@@ -154,7 +154,7 @@ namespace namaichi.rec
 		public void setRedistInfo(string[] args) {
 			ri = new RedistInfo(args);
 		}
-		public void stopRecording() {
+		public void stopRecording(bool isPlayOnlyMode) {
 			setRecModeForm(false);
 			var _m = (isPlayOnlyMode) ? "視聴" : "録画";
 			form.addLogText(_m + "を中断しました");

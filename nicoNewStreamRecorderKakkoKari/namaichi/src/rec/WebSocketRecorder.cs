@@ -656,7 +656,7 @@ namespace namaichi.rec
 				rm.form.addLogText("配信データが取得できませんでした");
 			}
 			if (type == "postkey") {
-				if (sendCommentBuf != null && (rm.isPlayOnlyMode || wsc != null))
+				if (sendCommentBuf != null && (rfu.isPlayOnlyMode || wsc != null))
 					sendCommentWsc(e.Message);
 			}
 		}
@@ -892,7 +892,7 @@ namespace namaichi.rec
 				return;
 			}			
 			try {
-				if (bool.Parse(isGetComment) && commentSW == null && !rm.isPlayOnlyMode) {
+				if (bool.Parse(isGetComment) && commentSW == null && !rfu.isPlayOnlyMode) {
 					if (DateTime.Now < lastOpenCommentSwDt + TimeSpan.FromSeconds(3) 
 					    	&& (rec.engineMode != "0" && rec.engineMode != "3")) {
 						var __commentFileName = util.getOkCommentFileName(rm.cfg, commentFileName, lvid, isTimeShift, isRtmp);
@@ -1422,7 +1422,7 @@ namespace namaichi.rec
 				
 				try {
 					
-					if (bool.Parse(rm.cfg.get("IsgetComment")) && commentSW == null && !rm.isPlayOnlyMode) {
+					if (bool.Parse(rm.cfg.get("IsgetComment")) && commentSW == null && !rfu.isPlayOnlyMode) {
 						if (DateTime.Now < lastOpenCommentSwDt + TimeSpan.FromSeconds(3) 
 						    	&& (rec.engineMode != "0" && rec.engineMode != "3")) {
 							var __commentFileName = util.getOkCommentFileName(rm.cfg, commentFileName, lvid, isTimeShift, isRtmp);

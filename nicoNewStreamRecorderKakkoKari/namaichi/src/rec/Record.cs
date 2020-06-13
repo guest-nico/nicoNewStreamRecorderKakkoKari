@@ -110,12 +110,12 @@ namespace namaichi.rec
 			this.lvid = lvid;
 			this.tsConfig = tsConfig;
 			engineMode = rm.cfg.get("EngineMode");
-			if (rm.isPlayOnlyMode) engineMode = "0";
+			if (rfu.isPlayOnlyMode) engineMode = "0";
 			anotherEngineCommand = rm.cfg.get("anotherEngineCommand");
 			targetDuration = (isTimeShift) ? 5 : 2;
 			
 			rm.isTitleBarInfo = bool.Parse(rm.cfg.get("IstitlebarInfo"));
-			isPlayOnlyMode = rm.isPlayOnlyMode;
+			isPlayOnlyMode = rfu.isPlayOnlyMode;
 			this._openTime = _openTime;
 			this.ws = ws;
 			this.recFolderFileOrigin = recFolderFileOrigin;
