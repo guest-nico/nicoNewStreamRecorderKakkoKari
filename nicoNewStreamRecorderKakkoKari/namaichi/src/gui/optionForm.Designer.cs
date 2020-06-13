@@ -153,23 +153,23 @@ namespace namaichi
 			this.proxyPortText = new System.Windows.Forms.TextBox();
 			this.proxyAddressText = new System.Windows.Forms.TextBox();
 			this.tabPage7 = new System.Windows.Forms.TabPage();
-			this.groupBox13 = new System.Windows.Forms.GroupBox();
-			this.isUseCommentViewerChkBox = new System.Windows.Forms.CheckBox();
-			this.isAnotherCommentViewerRadioBtn = new System.Windows.Forms.RadioButton();
-			this.isDefaultCommentViewerRadioBtn = new System.Windows.Forms.RadioButton();
-			this.anotherCommentViewerPathText = new System.Windows.Forms.TextBox();
-			this.anotherCommentViewerSanshouBtn = new System.Windows.Forms.Button();
 			this.groupBox8 = new System.Windows.Forms.GroupBox();
 			this.label12 = new System.Windows.Forms.Label();
 			this.label11 = new System.Windows.Forms.Label();
 			this.label10 = new System.Windows.Forms.Label();
 			this.label9 = new System.Windows.Forms.Label();
 			this.isUsePlayerChkBox = new System.Windows.Forms.CheckBox();
+			this.isAnotherPlayerRadioBtn = new System.Windows.Forms.RadioButton();
+			this.isDefaultPlayerRadioBtn = new System.Windows.Forms.RadioButton();
 			this.playerArgsText = new System.Windows.Forms.TextBox();
 			this.anotherPlayerPathText = new System.Windows.Forms.TextBox();
 			this.anotherPlayerSanshouBtn = new System.Windows.Forms.Button();
-			this.isDefaultPlayerRadioBtn = new System.Windows.Forms.RadioButton();
-			this.isAnotherPlayerRadioBtn = new System.Windows.Forms.RadioButton();
+			this.groupBox13 = new System.Windows.Forms.GroupBox();
+			this.isUseCommentViewerChkBox = new System.Windows.Forms.CheckBox();
+			this.isAnotherCommentViewerRadioBtn = new System.Windows.Forms.RadioButton();
+			this.isDefaultCommentViewerRadioBtn = new System.Windows.Forms.RadioButton();
+			this.anotherCommentViewerPathText = new System.Windows.Forms.TextBox();
+			this.anotherCommentViewerSanshouBtn = new System.Windows.Forms.Button();
 			this.tabPage3 = new System.Windows.Forms.TabPage();
 			this.label13 = new System.Windows.Forms.Label();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -222,8 +222,8 @@ namespace namaichi
 			this.tabPage10.SuspendLayout();
 			this.groupBox15.SuspendLayout();
 			this.tabPage7.SuspendLayout();
-			this.groupBox13.SuspendLayout();
 			this.groupBox8.SuspendLayout();
+			this.groupBox13.SuspendLayout();
 			this.tabPage3.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox1.SuspendLayout();
@@ -1478,10 +1478,8 @@ namespace namaichi
 			// 
 			// tabPage7
 			// 
-			this.tabPage7.Controls.Add(this.groupBox13);
 			this.tabPage7.Controls.Add(this.groupBox8);
-			this.tabPage7.Controls.Add(this.isDefaultPlayerRadioBtn);
-			this.tabPage7.Controls.Add(this.isAnotherPlayerRadioBtn);
+			this.tabPage7.Controls.Add(this.groupBox13);
 			this.tabPage7.Location = new System.Drawing.Point(4, 22);
 			this.tabPage7.Name = "tabPage7";
 			this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
@@ -1490,6 +1488,113 @@ namespace namaichi
 			this.tabPage7.Text = "視聴";
 			this.tabPage7.UseVisualStyleBackColor = true;
 			// 
+			// groupBox8
+			// 
+			this.groupBox8.Controls.Add(this.label12);
+			this.groupBox8.Controls.Add(this.label11);
+			this.groupBox8.Controls.Add(this.label10);
+			this.groupBox8.Controls.Add(this.label9);
+			this.groupBox8.Controls.Add(this.isUsePlayerChkBox);
+			this.groupBox8.Controls.Add(this.isAnotherPlayerRadioBtn);
+			this.groupBox8.Controls.Add(this.isDefaultPlayerRadioBtn);
+			this.groupBox8.Controls.Add(this.playerArgsText);
+			this.groupBox8.Controls.Add(this.anotherPlayerPathText);
+			this.groupBox8.Controls.Add(this.anotherPlayerSanshouBtn);
+			this.groupBox8.Location = new System.Drawing.Point(5, 10);
+			this.groupBox8.Name = "groupBox8";
+			this.groupBox8.Size = new System.Drawing.Size(385, 231);
+			this.groupBox8.TabIndex = 21;
+			this.groupBox8.TabStop = false;
+			this.groupBox8.Text = "プレイヤー";
+			// 
+			// label12
+			// 
+			this.label12.Location = new System.Drawing.Point(18, 168);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(205, 13);
+			this.label12.TabIndex = 26;
+			this.label12.Text = "(例) -window_title {f}";
+			// 
+			// label11
+			// 
+			this.label11.Location = new System.Drawing.Point(148, 150);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(68, 13);
+			this.label11.TabIndex = 24;
+			this.label11.Text = "{t} タイトル";
+			// 
+			// label10
+			// 
+			this.label10.Location = new System.Drawing.Point(18, 150);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(99, 13);
+			this.label10.TabIndex = 24;
+			this.label10.Text = "{f} 録画ファイル名";
+			// 
+			// label9
+			// 
+			this.label9.Location = new System.Drawing.Point(18, 130);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(152, 16);
+			this.label9.TabIndex = 22;
+			this.label9.Text = "追加引数";
+			// 
+			// isUsePlayerChkBox
+			// 
+			this.isUsePlayerChkBox.Location = new System.Drawing.Point(6, 22);
+			this.isUsePlayerChkBox.Name = "isUsePlayerChkBox";
+			this.isUsePlayerChkBox.Size = new System.Drawing.Size(210, 15);
+			this.isUsePlayerChkBox.TabIndex = 21;
+			this.isUsePlayerChkBox.Text = "視聴時にプレイヤーを使用する";
+			this.isUsePlayerChkBox.UseVisualStyleBackColor = true;
+			this.isUsePlayerChkBox.CheckedChanged += new System.EventHandler(this.IsUsePlayerChkBoxCheckedChanged);
+			// 
+			// isAnotherPlayerRadioBtn
+			// 
+			this.isAnotherPlayerRadioBtn.Location = new System.Drawing.Point(18, 64);
+			this.isAnotherPlayerRadioBtn.Name = "isAnotherPlayerRadioBtn";
+			this.isAnotherPlayerRadioBtn.Size = new System.Drawing.Size(211, 18);
+			this.isAnotherPlayerRadioBtn.TabIndex = 20;
+			this.isAnotherPlayerRadioBtn.TabStop = true;
+			this.isAnotherPlayerRadioBtn.Text = "外部のプレイヤーを使う";
+			this.isAnotherPlayerRadioBtn.UseVisualStyleBackColor = true;
+			// 
+			// isDefaultPlayerRadioBtn
+			// 
+			this.isDefaultPlayerRadioBtn.Location = new System.Drawing.Point(18, 42);
+			this.isDefaultPlayerRadioBtn.Name = "isDefaultPlayerRadioBtn";
+			this.isDefaultPlayerRadioBtn.Size = new System.Drawing.Size(249, 18);
+			this.isDefaultPlayerRadioBtn.TabIndex = 20;
+			this.isDefaultPlayerRadioBtn.TabStop = true;
+			this.isDefaultPlayerRadioBtn.Text = "デフォルトのプレイヤーを使う（途切れやすいです）";
+			this.isDefaultPlayerRadioBtn.UseVisualStyleBackColor = true;
+			this.isDefaultPlayerRadioBtn.CheckedChanged += new System.EventHandler(this.IsUsePlayerChkBoxCheckedChanged);
+			// 
+			// playerArgsText
+			// 
+			this.playerArgsText.Location = new System.Drawing.Point(18, 196);
+			this.playerArgsText.Name = "playerArgsText";
+			this.playerArgsText.Size = new System.Drawing.Size(297, 19);
+			this.playerArgsText.TabIndex = 19;
+			// 
+			// anotherPlayerPathText
+			// 
+			this.anotherPlayerPathText.Location = new System.Drawing.Point(18, 98);
+			this.anotherPlayerPathText.Name = "anotherPlayerPathText";
+			this.anotherPlayerPathText.Size = new System.Drawing.Size(297, 19);
+			this.anotherPlayerPathText.TabIndex = 19;
+			// 
+			// anotherPlayerSanshouBtn
+			// 
+			this.anotherPlayerSanshouBtn.Location = new System.Drawing.Point(321, 96);
+			this.anotherPlayerSanshouBtn.Margin = new System.Windows.Forms.Padding(2);
+			this.anotherPlayerSanshouBtn.Name = "anotherPlayerSanshouBtn";
+			this.anotherPlayerSanshouBtn.Size = new System.Drawing.Size(40, 23);
+			this.anotherPlayerSanshouBtn.TabIndex = 17;
+			this.anotherPlayerSanshouBtn.Text = "参照";
+			this.anotherPlayerSanshouBtn.UseVisualStyleBackColor = true;
+			this.anotherPlayerSanshouBtn.Click += new System.EventHandler(this.anotherPlayerSanshouBtn_Click);
+			// 
 			// groupBox13
 			// 
 			this.groupBox13.Controls.Add(this.isUseCommentViewerChkBox);
@@ -1497,7 +1602,7 @@ namespace namaichi
 			this.groupBox13.Controls.Add(this.isDefaultCommentViewerRadioBtn);
 			this.groupBox13.Controls.Add(this.anotherCommentViewerPathText);
 			this.groupBox13.Controls.Add(this.anotherCommentViewerSanshouBtn);
-			this.groupBox13.Location = new System.Drawing.Point(5, 203);
+			this.groupBox13.Location = new System.Drawing.Point(5, 255);
 			this.groupBox13.Name = "groupBox13";
 			this.groupBox13.Size = new System.Drawing.Size(385, 133);
 			this.groupBox13.TabIndex = 20;
@@ -1552,113 +1657,6 @@ namespace namaichi
 			this.anotherCommentViewerSanshouBtn.Text = "参照";
 			this.anotherCommentViewerSanshouBtn.UseVisualStyleBackColor = true;
 			this.anotherCommentViewerSanshouBtn.Click += new System.EventHandler(this.anotherCommentViewerSanshouBtn_Click);
-			// 
-			// groupBox8
-			// 
-			this.groupBox8.Controls.Add(this.label12);
-			this.groupBox8.Controls.Add(this.label11);
-			this.groupBox8.Controls.Add(this.label10);
-			this.groupBox8.Controls.Add(this.label9);
-			this.groupBox8.Controls.Add(this.isUsePlayerChkBox);
-			this.groupBox8.Controls.Add(this.playerArgsText);
-			this.groupBox8.Controls.Add(this.anotherPlayerPathText);
-			this.groupBox8.Controls.Add(this.anotherPlayerSanshouBtn);
-			this.groupBox8.Location = new System.Drawing.Point(5, 10);
-			this.groupBox8.Name = "groupBox8";
-			this.groupBox8.Size = new System.Drawing.Size(385, 187);
-			this.groupBox8.TabIndex = 19;
-			this.groupBox8.TabStop = false;
-			this.groupBox8.Text = "プレイヤー";
-			// 
-			// label12
-			// 
-			this.label12.Location = new System.Drawing.Point(18, 126);
-			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(205, 13);
-			this.label12.TabIndex = 26;
-			this.label12.Text = "(例) -window_title {f}";
-			// 
-			// label11
-			// 
-			this.label11.Location = new System.Drawing.Point(148, 108);
-			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(68, 13);
-			this.label11.TabIndex = 24;
-			this.label11.Text = "{t} タイトル";
-			// 
-			// label10
-			// 
-			this.label10.Location = new System.Drawing.Point(18, 108);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(99, 13);
-			this.label10.TabIndex = 24;
-			this.label10.Text = "{f} 録画ファイル名";
-			// 
-			// label9
-			// 
-			this.label9.Location = new System.Drawing.Point(18, 88);
-			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(152, 16);
-			this.label9.TabIndex = 22;
-			this.label9.Text = "追加引数";
-			// 
-			// isUsePlayerChkBox
-			// 
-			this.isUsePlayerChkBox.Location = new System.Drawing.Point(6, 22);
-			this.isUsePlayerChkBox.Name = "isUsePlayerChkBox";
-			this.isUsePlayerChkBox.Size = new System.Drawing.Size(210, 15);
-			this.isUsePlayerChkBox.TabIndex = 21;
-			this.isUsePlayerChkBox.Text = "視聴時にプレイヤーを使用する";
-			this.isUsePlayerChkBox.UseVisualStyleBackColor = true;
-			this.isUsePlayerChkBox.CheckedChanged += new System.EventHandler(this.IsUsePlayerChkBoxCheckedChanged);
-			// 
-			// playerArgsText
-			// 
-			this.playerArgsText.Location = new System.Drawing.Point(18, 154);
-			this.playerArgsText.Name = "playerArgsText";
-			this.playerArgsText.Size = new System.Drawing.Size(297, 19);
-			this.playerArgsText.TabIndex = 19;
-			// 
-			// anotherPlayerPathText
-			// 
-			this.anotherPlayerPathText.Location = new System.Drawing.Point(18, 56);
-			this.anotherPlayerPathText.Name = "anotherPlayerPathText";
-			this.anotherPlayerPathText.Size = new System.Drawing.Size(297, 19);
-			this.anotherPlayerPathText.TabIndex = 19;
-			// 
-			// anotherPlayerSanshouBtn
-			// 
-			this.anotherPlayerSanshouBtn.Location = new System.Drawing.Point(321, 54);
-			this.anotherPlayerSanshouBtn.Margin = new System.Windows.Forms.Padding(2);
-			this.anotherPlayerSanshouBtn.Name = "anotherPlayerSanshouBtn";
-			this.anotherPlayerSanshouBtn.Size = new System.Drawing.Size(40, 23);
-			this.anotherPlayerSanshouBtn.TabIndex = 17;
-			this.anotherPlayerSanshouBtn.Text = "参照";
-			this.anotherPlayerSanshouBtn.UseVisualStyleBackColor = true;
-			this.anotherPlayerSanshouBtn.Click += new System.EventHandler(this.anotherPlayerSanshouBtn_Click);
-			// 
-			// isDefaultPlayerRadioBtn
-			// 
-			this.isDefaultPlayerRadioBtn.Location = new System.Drawing.Point(23, 408);
-			this.isDefaultPlayerRadioBtn.Name = "isDefaultPlayerRadioBtn";
-			this.isDefaultPlayerRadioBtn.Size = new System.Drawing.Size(211, 18);
-			this.isDefaultPlayerRadioBtn.TabIndex = 20;
-			this.isDefaultPlayerRadioBtn.TabStop = true;
-			this.isDefaultPlayerRadioBtn.Text = "デフォルトのプレイヤーを使う";
-			this.isDefaultPlayerRadioBtn.UseVisualStyleBackColor = true;
-			this.isDefaultPlayerRadioBtn.Visible = false;
-			this.isDefaultPlayerRadioBtn.CheckedChanged += new System.EventHandler(this.isDefaultPlayerRadioBtn_CheckedChanged);
-			// 
-			// isAnotherPlayerRadioBtn
-			// 
-			this.isAnotherPlayerRadioBtn.Location = new System.Drawing.Point(23, 430);
-			this.isAnotherPlayerRadioBtn.Name = "isAnotherPlayerRadioBtn";
-			this.isAnotherPlayerRadioBtn.Size = new System.Drawing.Size(211, 18);
-			this.isAnotherPlayerRadioBtn.TabIndex = 20;
-			this.isAnotherPlayerRadioBtn.TabStop = true;
-			this.isAnotherPlayerRadioBtn.Text = "外部のプレイヤーを使う";
-			this.isAnotherPlayerRadioBtn.UseVisualStyleBackColor = true;
-			this.isAnotherPlayerRadioBtn.Visible = false;
 			// 
 			// tabPage3
 			// 
@@ -2020,10 +2018,10 @@ namespace namaichi
 			this.groupBox15.ResumeLayout(false);
 			this.groupBox15.PerformLayout();
 			this.tabPage7.ResumeLayout(false);
-			this.groupBox13.ResumeLayout(false);
-			this.groupBox13.PerformLayout();
 			this.groupBox8.ResumeLayout(false);
 			this.groupBox8.PerformLayout();
+			this.groupBox13.ResumeLayout(false);
+			this.groupBox13.PerformLayout();
 			this.tabPage3.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox1.ResumeLayout(false);

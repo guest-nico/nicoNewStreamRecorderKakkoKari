@@ -774,7 +774,7 @@ namespace namaichi
 			isDefaultEngineChkBox_UpdateAction();
 		}
 		void setPlayerType() {
-			if (bool.Parse(cfg.get("IsDefaultPlayer")) && false)
+			if (bool.Parse(cfg.get("IsDefaultPlayer")))
 				isDefaultPlayerRadioBtn.Checked = true;
 			else  
 				isAnotherPlayerRadioBtn.Checked = true;

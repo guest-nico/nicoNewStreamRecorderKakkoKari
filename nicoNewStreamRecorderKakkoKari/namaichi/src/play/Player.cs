@@ -102,7 +102,7 @@ namespace namaichi.play
 		}
 		private void videoPlay(bool isStart) {
 			isRecording = true;
-			isDefaultPlayer = bool.Parse(config.get("IsDefaultPlayer")) && false;
+			isDefaultPlayer = bool.Parse(config.get("IsDefaultPlayer"));
 			if (isStart) {
 				Task.Run(() => {
 					var isStarted = false;
@@ -326,25 +326,15 @@ namespace namaichi.play
 				var _is = process2.StandardInput.BaseStream;
 				
 	//			var f = new FileStream("aa.ts", FileMode.Create);
-				var head = new byte[16*16];
+				//var head = new byte[16*16];
 				//var isFirst = true;
 				//var cc = 0;
 				
-				var d = DateTime.Now;
-//				Task.Run(() => readFfmpeg(ffmpegP));
+				
 				var b = new byte[100000000];
 				while (!process.HasExited && !process2.HasExited) {
 					try {
 						var i = o.Read(b, 0, b.Length);
-	//					if (isFirst) 
-//						Debug.WriteLine(i);
-						/*
-						using (var _wf = new FileStream(cc + ".flv", FileMode.Create)) {
-							_wf.Write(b, 0, i);
-							_wf.Flush();
-							cc++;
-						}
-						*/
 						
 						_is.Write(b, 0, i);
 						_is.Flush();
