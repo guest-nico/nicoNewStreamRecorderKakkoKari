@@ -37,8 +37,9 @@ namespace namaichi.rec
 			if (isConvert && afterConvertMode > 0) 
 				getConvertPaths(path, ref tmp, ref outPath, afterConvertMode);
 			string _command;
-			//10-mp3 8-vob 11-wav
-			if (afterConvertMode == 10 || afterConvertMode == 8 || afterConvertMode == 11)
+			//10-mp3 8-vob 11-wav 15-mp4(再エンコード)
+			if (afterConvertMode == 10 || afterConvertMode == 8 || 
+			    	afterConvertMode == 11 || afterConvertMode == 15)
 				_command = ("-i \"" + path + "\" \"" + tmp + "\"");
 			//12-wma
 			else if (afterConvertMode == 12)
@@ -90,10 +91,10 @@ namespace namaichi.rec
 				util.debugWriteLine(ee.Message + ee.StackTrace);
 			}
 			
-			
 			try {
 				if (!File.Exists(tmp)) {
 					util.debugWriteLine("through ffmpeg not exist tmp " + tmp);
+					rm.form.addLogText("FFmpeg処理中に一時ファイルが見つかりませんでした");
 					return;
 				}
 				File.Delete(path);
@@ -135,6 +136,7 @@ namespace namaichi.rec
 			if (afterConvertMode == 12) ext = "wma";
 			if (afterConvertMode == 13) ext = "aac";
 			if (afterConvertMode == 14) ext = "ogg";
+			if (afterConvertMode == 15) ext = "mp4";
 			var originalExtLen = tmp.EndsWith("ts") ? 2 : 3;
 			tmp = tmp.Substring(0, tmp.Length - originalExtLen) + ext;
 //			tmp = tmp.Substring(0, tmp.Length - 2) + ext;

@@ -155,6 +155,7 @@ namespace namaichi
 				{"anotherEngineCommand",anotherEngineCommandText.Text},
 				{"IsDefaultRtmpPath",isDefaultRtmpChkBox.Checked.ToString().ToLower()},
 				{"rtmpPath",rtmpPathText.Text},
+				{"latency",latencyList.Text},
 				{"IsChaseRecord",isChaseRecordRadioBtn.Checked.ToString().ToLower()},
 				{"IsArgChaseRecFromFirst",isArgChaseRecFromFirstChkBox.Checked.ToString().ToLower()},
 				{"IsOnlyTimeShiftChase",isOnlyTimeShiftChaseChkBox.Checked.ToString().ToLower()},
@@ -395,6 +396,7 @@ namespace namaichi
 			isDefaultRtmpChkBox.Checked = bool.Parse(cfg.get("IsDefaultRtmpPath"));
 			rtmpPathText.Text = cfg.get("rtmpPath");
 			isDefaultEngineChkBox_UpdateAction();
+			latencyList.Text = cfg.get("latency");
 			isChaseRecordRadioBtn.Checked = bool.Parse(cfg.get("IsChaseRecord"));
 			isArgChaseRecFromFirstChkBox.Checked = bool.Parse(cfg.get("IsArgChaseRecFromFirst"));
 			isOnlyTimeShiftChaseChkBox.Checked = bool.Parse(cfg.get("IsOnlyTimeShiftChase"));
@@ -850,6 +852,7 @@ namespace namaichi
 			if (afterConvertMode == 12) t = "wma(音声)";
 			if (afterConvertMode == 13) t = "aac(音声)";
 			if (afterConvertMode == 14) t = "ogg(音声)";
+			if (afterConvertMode == 15) t = "mp4(再エンコード)";
 			afterConvertModeList.Text = t;
 		}
 		private string getAfterConvertType() {
@@ -869,6 +872,7 @@ namespace namaichi
 			if (t == "wma(音声)") return "12";
 			if (t == "aac(音声)") return "13";
 			if (t == "ogg(音声)") return "14";
+			if (t == "mp4(再エンコード)") return "15";
 			return t;
 		}
 		

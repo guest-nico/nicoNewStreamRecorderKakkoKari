@@ -601,78 +601,7 @@ namespace namaichi.rec
 			*/
 			return null;
 		}
-		private void h5rTekina() {
-			
-			/*
-			recFolderFileInfo = null;
-			string[] recFolderFile = null;
-			var type = util.getRegGroup(res, "<provider_type>(.+?)</provider_type>");
-			
-			long openTime = 0;
-			if (data == null || 
-			    !long.TryParse(util.getRegGroup(data, "<start_time>(\\d+)</start_time>"), out openTime))
-					return 3;
-//				var openTime = long.Parse(util.getRegGroup(data, "\"beginTimeMs\":(\\d+)"));
-			openTime = openTime;
-			long endTime = 0;
-			if (data == null || 
-			    !long.TryParse(util.getRegGroup(data, "<end_time>(\\d+)</end_time>"), out endTime))
-					return 3;				
-			endTime = endTime;
-			var programTime = util.getUnixToDatetime(endTime) - util.getUnixToDatetime(openTime);
-			long releaseTime = 0;
-			if (data == null || 
-			    !long.TryParse(util.getRegGroup(data, "<start_time>(\\d+)</start_time>"), out releaseTime))
-					return 3;				
-			releaseTime = releaseTime;
-			
-			recFolderFileInfo = getRecFolderFileInfo(res, type);
-			if (!isSub) {
-				timeShiftConfig = null;
-				if (!isLive) {
-					if (rm.ri != null) timeShiftConfig = rm.ri.tsConfig;
-					if (rm.argTsConfig != null) {
-						timeShiftConfig = getReadyArgTsConfig(rm.argTsConfig, recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], releaseTime);
-					} else {
-						timeShiftConfig = getTimeShiftConfig(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, releaseTime);
-						if (timeShiftConfig == null) return 2;
-						
-					}
-				}
-				
-				if (!rm.isPlayOnlyMode) {
-		//			util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rfu.GetHashCode() + util.getMainSubStr(isSub, true));
-		//			if (recFolderFile == null)
-						recFolderFile = getRecFilePath(releaseTime);
-					if (recFolderFile == null || recFolderFile[0] == null) {
-						//パスが長すぎ
-						rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);
-						util.debugWriteLine("too long path? " + recFolderFile[1] + util.getMainSubStr(isSub, true));
-						return 2;
-					}
-				} else recFolderFile = new string[]{"", "", ""};
-					
-				//display set
-				var b = new RecordStateSetter(rm.form, rm, rfu, !isLive, true, recFolderFile, rm.isPlayOnlyMode);
-				Task.Run(() => {
-					b.set(data, type, recFolderFileInfo);
-				});
-				
-				//hosoInfo
-				if (rm.cfg.get("IshosoInfo") == "true" && !rm.isPlayOnlyMode)
-					Task.Run(() => {b.writeHosoInfo();});
-					
-				
-				util.debugWriteLine("form disposed" + rm.form.IsDisposed + util.getMainSubStr(isSub, true));
-				util.debugWriteLine("recfolderfile test " + recFolderFileInfo + util.getMainSubStr(isSub, true));
-				
-				var fileName = System.IO.Path.GetFileName(recFolderFile[1]);
-				rm.form.setTitle(fileName);
-			} else {
-				recFolderFile = new string[]{"", "", ""};
-			}
-			*/
-		}
+		
 		private void getProcess(out Process rtmpdumpP, out Process ffmpegP, string rtmpdumpArg) {
 			testDebugWriteLine("rtmpdump起動");
 			

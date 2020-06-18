@@ -30,8 +30,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.06.1";
-	public static string versionDayStr = "2020/06/14";
+	public static string versionStr = "ver0.88.07";
+	public static string versionDayStr = "2020/06/18";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -664,8 +664,6 @@ class util {
 		for (int i = 0; i < 1; i++) {
 			try {
 				
-				//test
-				//var mode = 0;
 				if (mode == 0 || mode == 1) {
 					var req = (HttpWebRequest)WebRequest.Create(url);
 					req.Proxy = httpProxy;
@@ -972,16 +970,6 @@ class util {
 	public static void debugWriteLine(object str) {
 		var dt = DateTime.Now.ToLongTimeString();
 		
-		//test
-		try {
-			if (str != null && (str.ToString().IndexOf("exception") > -1 ||
-			                    str.ToString().IndexOf("s") > -1)) {
-//				app.form.formAction(() => app.form.testLogText.AppendText(dt + " " + str));
-			}
-		} catch (Exception) {
-			
-		}
-		
 		try {
 			#if DEBUG
 				System.Diagnostics.Debug.WriteLine(str);
@@ -1051,7 +1039,6 @@ class util {
 		#endif
 	}
 	public static void setLog(config config, string lv) {
-		//test
 		if (bool.Parse(config.get("IsLogFile"))) {
 			//var name = (args.Length == 0) ? "lv_" : util.getRegGroup(args[0], "(lv\\d+)");
 			var name = (lv == null) ? "lv_" : lv;

@@ -181,6 +181,7 @@ public class config
 			{"anotherEngineCommand",""},
 			{"IsDefaultRtmpPath","true"},
 			{"rtmpPath",""},
+			{"latency","3.0"},
 			{"IsNoRecordRtmpBlackScreen","false"},
 			{"IsChaseRecord","false"},
 			{"IsArgChaseRecFromFirst","false"},

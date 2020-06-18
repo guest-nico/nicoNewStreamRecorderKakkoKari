@@ -220,7 +220,6 @@ namespace namaichi.rec
 						if (stopWsCount > 10) {
 							addDebugBuf("stop ws count " + stopWsCount + " close ws / rec.isreconnecting " + (rec != null ? rec.isReConnecting.ToString() : ""));
 							
-							//test
 							rm.form.addLogText("再接続中");
 							
 							#if DEBUG
@@ -1224,7 +1223,8 @@ namespace namaichi.rec
 						("{\"type\":\"watch\",\"body\":{\"command\":\"getstream\",\"requirement\":{\"protocol\":\"rtmp\",\"quality\":\"" + bestGettableQuolity + "\"}}}")
 						: ("{\"type\":\"watch\",\"body\":{\"command\":\"getstream\",\"requirement\":{\"protocol\":\"hls\",\"quality\":\"" + bestGettableQuolity + "\",\"isLowLatency\":false}}}");
 			} else {
-				req = "{\"type\":\"changeStream\",\"data\":{\"quality\":\"" + bestGettableQuolity + "\",\"protocol\":\"hls\",\"latency\":\"high\",\"chasePlay\":" + isChase.ToString().ToLower() + "}}";
+				var latency = float.Parse(rm.cfg.get("latency")) < 1.1 ? "low" : "high";
+				req = "{\"type\":\"changeStream\",\"data\":{\"quality\":\"" + bestGettableQuolity + "\",\"protocol\":\"hls\",\"latency\":\"" + latency + "\",\"chasePlay\":" + isChase.ToString().ToLower() + "}}";
 			}
 			
 			sendMessage(ws, req);

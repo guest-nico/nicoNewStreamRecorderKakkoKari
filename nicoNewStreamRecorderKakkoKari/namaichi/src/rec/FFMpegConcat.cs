@@ -49,8 +49,8 @@ namespace namaichi.rec
 			
 			outPath = replacedKakutyousi(outPath);
 			
-			//10-mp3 8-vob 11-wav
-			if (afterConvertMode == 10 || afterConvertMode == 8 || afterConvertMode == 11)
+			//10-mp3 8-vob 11-wav 15-mp4(再エンコード)
+			if (afterConvertMode == 10 || afterConvertMode == 8 || afterConvertMode == 11 || afterConvertMode == 15)
 				arg += (" \"" + outPath + "\"");
 			//12-wma
 			else if (afterConvertMode == 12)
@@ -64,6 +64,8 @@ namespace namaichi.rec
 			else arg += (" -c copy \"" + outPath + "\"");
 			
 			//var arg = " -c copy \"" + outPath + "\" -y";
+			
+			
 			arg = arg.Replace("\\", "/");
 			try {
 				EventHandler e = new EventHandler(appExitHandler);
@@ -276,9 +278,10 @@ namespace namaichi.rec
 			if (afterConvertMode == 12) ext = "wma";
 			if (afterConvertMode == 13) ext = "aac";
 			if (afterConvertMode == 14) ext = "ogg";
+			if (afterConvertMode == 15) ext = "mp4";
 			var originalExtLen = origin.EndsWith("ts") ? 2 : 3;
 			var withoutExt = origin.Substring(0, origin.Length - originalExtLen - 1);
-			withoutExt = util.getRegGroup(withoutExt, "(.+?)\\d+$");
+			withoutExt = util.getRegGroup(withoutExt, "(.+?)(\\d+)*$");
 			var a = withoutExt.Length;
 			for (var i = 0; i < 10000; i++)
 				if (!File.Exists(withoutExt + i + "." + ext))

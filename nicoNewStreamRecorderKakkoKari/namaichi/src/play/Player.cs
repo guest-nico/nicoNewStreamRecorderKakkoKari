@@ -282,7 +282,13 @@ namespace namaichi.play
 				
 			} catch (Exception ee) {
 				util.debugWriteLine(ee.Message + ee.StackTrace + ee.Source + ee.TargetSite);
-				form.addLogText("プレイヤーを開始できませんでした " + exe + " " + args);
+				
+				form.addLogText("プレイヤーの起動中に問題が発生しました");
+				form.addLogText("デフォルトプレイヤー: " + isDefaultPlayer.ToString());
+				form.addLogText("プレイヤーのパス: " + exe);
+				if (string.IsNullOrEmpty(exe)) form.addLogText("プレイヤーのパスが設定されていませんでした");
+				else if (!File.Exists(exe)) form.addLogText("プレイヤーのパスの場所にファイルが見つかりませんでした");
+				else form.addLogText("その他の理由でプレイヤーを開始できませんでした\n" + exe + "\n引数: " + args);
 			}
 		}
 		private void playCommandStd(string exe, string args) {
@@ -304,7 +310,6 @@ namespace namaichi.play
 				
 				process2 = new Process();
 				var ffmpegSi = new ProcessStartInfo();
-//				ffmpegSi.FileName = "vlc.exe";
 				ffmpegSi.FileName = exe;
 //				var ffmpegArg = "- /new";
 				
@@ -324,12 +329,6 @@ namespace namaichi.play
 				
 				var o = process.StandardOutput.BaseStream;
 				var _is = process2.StandardInput.BaseStream;
-				
-	//			var f = new FileStream("aa.ts", FileMode.Create);
-				//var head = new byte[16*16];
-				//var isFirst = true;
-				//var cc = 0;
-				
 				
 				var b = new byte[100000000];
 				while (!process.HasExited && !process2.HasExited) {
@@ -470,6 +469,7 @@ namespace namaichi.play
 			//form.addLogText(pn);
 			p.StandardInput.WriteLine(pn);
 			p.StandardInput.Flush();
+			
 			//a
 			/*
 			for (var i = 0; i < 10; i++) {
@@ -515,6 +515,7 @@ namespace namaichi.play
 				pipeWriter = new StreamWriter(server);
 			} catch (Exception e) {
 				util.debugWriteLine("named pipe sleep  " + " " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+				form.addLogText("デフォルトのプレイヤーの起動設定中に問題が発生しました" + e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
 			
 	//                while (server.IsConnected) {

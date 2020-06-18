@@ -80,6 +80,9 @@ namespace namaichi
 			this.label4 = new System.Windows.Forms.Label();
 			this.afterConvertModeList = new System.Windows.Forms.ComboBox();
 			this.groupBox10 = new System.Windows.Forms.GroupBox();
+			this.label15 = new System.Windows.Forms.Label();
+			this.latencyList = new System.Windows.Forms.ComboBox();
+			this.label14 = new System.Windows.Forms.Label();
 			this.rtmpPathSanshouBtn = new System.Windows.Forms.Button();
 			this.isDefaultRtmpChkBox = new System.Windows.Forms.CheckBox();
 			this.rtmpPathText = new System.Windows.Forms.TextBox();
@@ -245,7 +248,7 @@ namespace namaichi
 			this.tabControl1.Margin = new System.Windows.Forms.Padding(2);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(436, 525);
+			this.tabControl1.Size = new System.Drawing.Size(456, 535);
 			this.tabControl1.TabIndex = 1;
 			this.tabControl1.Click += new System.EventHandler(this.btnReload_Click);
 			// 
@@ -256,7 +259,7 @@ namespace namaichi
 			this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(2);
-			this.tabPage1.Size = new System.Drawing.Size(428, 499);
+			this.tabPage1.Size = new System.Drawing.Size(448, 509);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "一般";
 			this.tabPage1.UseVisualStyleBackColor = true;
@@ -502,7 +505,7 @@ namespace namaichi
 			this.tabPage8.Controls.Add(this.groupBox9);
 			this.tabPage8.Location = new System.Drawing.Point(4, 22);
 			this.tabPage8.Name = "tabPage8";
-			this.tabPage8.Size = new System.Drawing.Size(428, 499);
+			this.tabPage8.Size = new System.Drawing.Size(448, 509);
 			this.tabPage8.TabIndex = 8;
 			this.tabPage8.Text = "一般2";
 			this.tabPage8.UseVisualStyleBackColor = true;
@@ -645,7 +648,7 @@ namespace namaichi
 			this.tabPage6.Location = new System.Drawing.Point(4, 22);
 			this.tabPage6.Name = "tabPage6";
 			this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage6.Size = new System.Drawing.Size(428, 499);
+			this.tabPage6.Size = new System.Drawing.Size(448, 509);
 			this.tabPage6.TabIndex = 5;
 			this.tabPage6.Text = "録画方法";
 			this.tabPage6.UseVisualStyleBackColor = true;
@@ -654,25 +657,24 @@ namespace namaichi
 			// 
 			this.groupBox4.Controls.Add(this.label4);
 			this.groupBox4.Controls.Add(this.afterConvertModeList);
-			this.groupBox4.Location = new System.Drawing.Point(5, 363);
+			this.groupBox4.Location = new System.Drawing.Point(5, 404);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(385, 125);
+			this.groupBox4.Size = new System.Drawing.Size(408, 99);
 			this.groupBox4.TabIndex = 2;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "変換・FFmpeg処理";
 			// 
 			// label4
 			// 
-			this.label4.Location = new System.Drawing.Point(12, 50);
+			this.label4.Location = new System.Drawing.Point(12, 45);
 			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(360, 77);
-			this.label4.TabIndex = 1;
-			this.label4.Text = "形式を変更せず処理する\r\n\r\n（プレイヤーにより音声が出ないことがある問題が減り、ファイルサイズも若干小さくなりますが、録画後に処理のための時間がかかります。後か" +
-			"らエクスプローラ上で.tsファイルや.tsファイルの入ったフォルダをexeファイルにドロップしても同様の処理を行うことができます。）\r\n";
+			this.label4.Size = new System.Drawing.Size(390, 56);
+			this.label4.TabIndex = 7;
+			this.label4.Text = "形式を変更せず処理する\r\n（プレイヤーにより音声が出ないことがある問題が減り、ファイルサイズも若干小さくなります。後からエクスプローラ上で.tsファイルや.tsフ" +
+			"ァイルの入ったフォルダをexeファイルにドロップしても同様の処理を行うことができます。）\r\n\r\n";
 			// 
 			// afterConvertModeList
 			// 
-			this.afterConvertModeList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.afterConvertModeList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.afterConvertModeList.FormattingEnabled = true;
 			this.afterConvertModeList.Items.AddRange(new object[] {
@@ -690,7 +692,8 @@ namespace namaichi
 									"wav(音声)",
 									"wma(音声)",
 									"aac(音声)",
-									"ogg(音声)"});
+									"ogg(音声)",
+									"mp4(再エンコード)"});
 			this.afterConvertModeList.Location = new System.Drawing.Point(12, 18);
 			this.afterConvertModeList.Name = "afterConvertModeList";
 			this.afterConvertModeList.Size = new System.Drawing.Size(149, 20);
@@ -698,6 +701,9 @@ namespace namaichi
 			// 
 			// groupBox10
 			// 
+			this.groupBox10.Controls.Add(this.label15);
+			this.groupBox10.Controls.Add(this.latencyList);
+			this.groupBox10.Controls.Add(this.label14);
 			this.groupBox10.Controls.Add(this.rtmpPathSanshouBtn);
 			this.groupBox10.Controls.Add(this.isDefaultRtmpChkBox);
 			this.groupBox10.Controls.Add(this.rtmpPathText);
@@ -714,10 +720,41 @@ namespace namaichi
 			this.groupBox10.Controls.Add(this.segmentRadioBtnPanel);
 			this.groupBox10.Location = new System.Drawing.Point(5, 10);
 			this.groupBox10.Name = "groupBox10";
-			this.groupBox10.Size = new System.Drawing.Size(408, 347);
+			this.groupBox10.Size = new System.Drawing.Size(437, 388);
 			this.groupBox10.TabIndex = 0;
 			this.groupBox10.TabStop = false;
 			this.groupBox10.Text = "録画エンジン";
+			// 
+			// label15
+			// 
+			this.label15.Font = new System.Drawing.Font("MS UI Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.label15.Location = new System.Drawing.Point(6, 369);
+			this.label15.Name = "label15";
+			this.label15.Size = new System.Drawing.Size(425, 16);
+			this.label15.TabIndex = 34;
+			this.label15.Text = "(小さくすると視聴機能時に遅延が減りますがセグメント抜けしやすくなります.追っかけ再生では無効)";
+			// 
+			// latencyList
+			// 
+			this.latencyList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.latencyList.FormattingEnabled = true;
+			this.latencyList.Items.AddRange(new object[] {
+									"0.5",
+									"1.0",
+									"1.5",
+									"3.0"});
+			this.latencyList.Location = new System.Drawing.Point(138, 345);
+			this.latencyList.Name = "latencyList";
+			this.latencyList.Size = new System.Drawing.Size(44, 20);
+			this.latencyList.TabIndex = 33;
+			// 
+			// label14
+			// 
+			this.label14.Location = new System.Drawing.Point(6, 348);
+			this.label14.Name = "label14";
+			this.label14.Size = new System.Drawing.Size(140, 19);
+			this.label14.TabIndex = 32;
+			this.label14.Text = "HLS接続時の遅延レベル：";
 			// 
 			// rtmpPathSanshouBtn
 			// 
@@ -873,7 +910,7 @@ namespace namaichi
 			this.tabPage9.Controls.Add(this.groupBox11);
 			this.tabPage9.Location = new System.Drawing.Point(4, 22);
 			this.tabPage9.Name = "tabPage9";
-			this.tabPage9.Size = new System.Drawing.Size(428, 499);
+			this.tabPage9.Size = new System.Drawing.Size(448, 509);
 			this.tabPage9.TabIndex = 9;
 			this.tabPage9.Text = "追っかけ録画";
 			this.tabPage9.UseVisualStyleBackColor = true;
@@ -968,7 +1005,7 @@ namespace namaichi
 			this.tabPage5.Location = new System.Drawing.Point(4, 22);
 			this.tabPage5.Name = "tabPage5";
 			this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage5.Size = new System.Drawing.Size(428, 499);
+			this.tabPage5.Size = new System.Drawing.Size(448, 509);
 			this.tabPage5.TabIndex = 4;
 			this.tabPage5.Text = "画質";
 			this.tabPage5.UseVisualStyleBackColor = true;
@@ -1051,7 +1088,7 @@ namespace namaichi
 			this.tabPage2.Margin = new System.Windows.Forms.Padding(2);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(2);
-			this.tabPage2.Size = new System.Drawing.Size(428, 499);
+			this.tabPage2.Size = new System.Drawing.Size(448, 509);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "アカウント設定";
 			this.tabPage2.UseVisualStyleBackColor = true;
@@ -1224,7 +1261,7 @@ namespace namaichi
 			this.tabPage4.Location = new System.Drawing.Point(4, 22);
 			this.tabPage4.Name = "tabPage4";
 			this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage4.Size = new System.Drawing.Size(428, 499);
+			this.tabPage4.Size = new System.Drawing.Size(448, 509);
 			this.tabPage4.TabIndex = 7;
 			this.tabPage4.Text = "補完設定";
 			this.tabPage4.UseVisualStyleBackColor = true;
@@ -1409,7 +1446,7 @@ namespace namaichi
 			this.tabPage10.Location = new System.Drawing.Point(4, 22);
 			this.tabPage10.Name = "tabPage10";
 			this.tabPage10.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage10.Size = new System.Drawing.Size(428, 499);
+			this.tabPage10.Size = new System.Drawing.Size(448, 509);
 			this.tabPage10.TabIndex = 10;
 			this.tabPage10.Text = "接続";
 			this.tabPage10.UseVisualStyleBackColor = true;
@@ -1483,7 +1520,7 @@ namespace namaichi
 			this.tabPage7.Location = new System.Drawing.Point(4, 22);
 			this.tabPage7.Name = "tabPage7";
 			this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage7.Size = new System.Drawing.Size(428, 499);
+			this.tabPage7.Size = new System.Drawing.Size(448, 509);
 			this.tabPage7.TabIndex = 6;
 			this.tabPage7.Text = "視聴";
 			this.tabPage7.UseVisualStyleBackColor = true;
@@ -1667,7 +1704,7 @@ namespace namaichi
 			this.tabPage3.Margin = new System.Windows.Forms.Padding(2);
 			this.tabPage3.Name = "tabPage3";
 			this.tabPage3.Padding = new System.Windows.Forms.Padding(2);
-			this.tabPage3.Size = new System.Drawing.Size(428, 499);
+			this.tabPage3.Size = new System.Drawing.Size(448, 509);
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "録画";
 			this.tabPage3.UseVisualStyleBackColor = true;
@@ -1957,7 +1994,7 @@ namespace namaichi
 			// 
 			// button3
 			// 
-			this.button3.Location = new System.Drawing.Point(249, 540);
+			this.button3.Location = new System.Drawing.Point(249, 550);
 			this.button3.Name = "button3";
 			this.button3.Size = new System.Drawing.Size(74, 23);
 			this.button3.TabIndex = 1;
@@ -1967,7 +2004,7 @@ namespace namaichi
 			// 
 			// button4
 			// 
-			this.button4.Location = new System.Drawing.Point(329, 540);
+			this.button4.Location = new System.Drawing.Point(329, 550);
 			this.button4.Name = "button4";
 			this.button4.Size = new System.Drawing.Size(74, 23);
 			this.button4.TabIndex = 1;
@@ -1979,7 +2016,7 @@ namespace namaichi
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(448, 585);
+			this.ClientSize = new System.Drawing.Size(468, 595);
 			this.Controls.Add(this.button4);
 			this.Controls.Add(this.button3);
 			this.Controls.Add(this.tabControl1);
@@ -2028,6 +2065,10 @@ namespace namaichi
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label label14;
+		public System.Windows.Forms.ComboBox latencyList;
+		private System.Windows.Forms.Label label15;
+		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.CheckBox useProxyChkBox;
 		private System.Windows.Forms.TextBox proxyAddressText;
 		private System.Windows.Forms.TextBox proxyPortText;
@@ -2119,7 +2160,6 @@ namespace namaichi
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.GroupBox groupBox10;
-		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.CheckBox isRenketuAfterChkBox;
 		private System.Windows.Forms.RadioButton isSegmentRenketuRadioBtn;
 		private System.Windows.Forms.RadioButton isSegmentNotRenketuRadioBtn;

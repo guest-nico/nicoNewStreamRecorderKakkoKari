@@ -63,7 +63,8 @@ namespace namaichi.rec
 			var wsUrl = util.getRegGroup(data, "\"webSocketUrl\":\"(ws[\\d\\D]+?)\"");
 			if (wsUrl == null) return null;
 
-			wsUrl += "&frontend_id=90";
+			var latency = float.Parse(form.rec.cfg.get("latency"));
+			wsUrl += "&frontend_id=" + (latency % 1 == 0 || isRtmp ? "90" : "12");
 			util.debugWriteLine("wsurl " + wsUrl);
 			
 			var broadcastId = util.getRegGroup(data, "\"broadcastId\"\\:\"(\\d+)\"");
@@ -100,7 +101,7 @@ namespace namaichi.rec
 						("{\"type\":\"watch\",\"body\":{\"command\":\"getpermit\",\"requirement\":{\"broadcastId\":\"" + broadcastId + "\",\"route\":\"\",\"stream\":{\"protocol\":\"hls\",\"requireNewStream\":true,\"priorStreamQuality\":\"normal\", \"isLowLatency\": false,\"isChasePlay\":false},\"room\":{\"isCommentable\":true,\"protocol\":\"webSocket\"}}}}");
 			} else if (ver == "2") {
 				request = isRtmp ? "{\"type\":\"startWatching\",\"data\":{\"stream\":{\"quality\":\"normal\",\"protocol\":\"rtmp\",\"latency\":\"high\",\"chasePlay\":false},\"room\":{\"protocol\":\"webSocket\",\"commentable\":true},\"reconnect\":false}}"
-					: "{\"type\":\"startWatching\",\"data\":{\"stream\":{\"quality\":\"normal\",\"protocol\":\"hls\",\"latency\":\"high\",\"chasePlay\":false},\"room\":{\"protocol\":\"webSocket\",\"commentable\":true},\"reconnect\":false}}";
+					: "{\"type\":\"startWatching\",\"data\":{\"stream\":{\"quality\":\"normal\",\"protocol\":\"hls\",\"latency\":\"" + (latency < 1.1 ? "low" : "high") + "\",\"chasePlay\":false},\"room\":{\"protocol\":\"webSocket\",\"commentable\":true},\"reconnect\":false}}";
 			} else {
 				form.addLogText("unknown type " + ver);
 				return null;

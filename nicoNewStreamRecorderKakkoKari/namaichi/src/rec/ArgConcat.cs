@@ -35,6 +35,11 @@ namespace namaichi.rec
 				rm.form.addLogText(".tsファイルが見つかりませんでした");
 				return;
 			}
+			if (files.Count == 1) {
+				convertFile(files[0]);
+				rm.form.addLogText("変換を終了します");
+				return;
+			}
 			
 			foreach (var a in files)
 				util.debugWriteLine(a);
@@ -42,6 +47,7 @@ namespace namaichi.rec
 			util.debugWriteLine("concat get files " + files.Count());
 			rm.form.addLogText(files.Count() + "のファイルが見つかりました");
 			//var outPath = concatFiles(files);
+			
 			var outPath = concatFiles(files);
 			
 //			if (rm.cfg.get("IsAfterRenketuFFmpeg") == "true" ||
@@ -53,10 +59,15 @@ namespace namaichi.rec
 		private List<string> getFiles() {
 			var ret = new List<string>();
 			var keys = new List<int>();
+			
+			if (arr.Length == 1 && File.Exists(arr[0].Trim()))
+				return new List<string>(){arr[0]};
+			
 			foreach (var f in arr) {
 				var _f = f.Trim();
-				if (File.Exists(_f) && 
+				if (File.Exists(_f) &&
 				    util.getRegGroup(_f, "(.+\\.ts$)") != null) {
+				    
 					ret.Add(_f);
 					
 					util.debugWriteLine(_f);
@@ -133,8 +144,8 @@ namespace namaichi.rec
 				}
 				if (int.Parse(rm.cfg.get("afterConvertMode")) > 0) {
 					var tf = new ThroughFFMpeg(rm);
-				tf.start(outPath, true);
-			}
+					tf.start(outPath, true);
+				}
 			}
 			util.debugWriteLine("concated count " + count);
 			return outPath;
@@ -192,6 +203,33 @@ namespace namaichi.rec
 				}
 			}
 			return null;
+		}
+		private void convertFile(string f) {
+			f = f.Trim();
+			var ext = util.getRegGroup(f, ".+\\.(.+)");
+			if (ext == null) {
+				rm.form.addLogText("拡張子が見つかりませんでした");
+				return;
+			}
+			var baseName = util.getRegGroup(f.Substring(0, f.Length - ext.Length - 1), "(.+?)(\\d+)*$");
+			util.debugWriteLine(baseName);
+			
+			for (var i = 0; i < 10000; i++) {
+				var n = baseName + i + "." + ext;
+				if (!File.Exists(n)) {
+					try {
+						File.Copy(f, n);
+						if (!File.Exists(n)) throw new Exception("ファイルのコピーに失敗しました");
+					} catch (Exception e) {
+						util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+						rm.form.addLogText("FFmpeg処理のための一時ファイルが作成できませんでした " + n);
+						continue;
+					}
+					new ThroughFFMpeg(rm).start(n, true);
+					return;
+				}
+			}
+			return;
 		}
 	}
 }
