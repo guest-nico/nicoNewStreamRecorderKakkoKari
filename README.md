@@ -43,10 +43,6 @@ Copyright (c) 2007 James Newton-King
 licensed under the MIT License  
 <https://github.com/JamesNK/Newtonsoft.Json/blob/master/LICENSE.md>  
   
-RtmpSharp2  
-<https://github.com/ashindlecker/RtmpSharp2>  
-Copyright (c) 2013 ashindlecker  
-  
 RTMPDump  
 <https://rtmpdump.mplayerhq.hu/>  
 Copyright (C) 2009 Andrej Stepanchuk  

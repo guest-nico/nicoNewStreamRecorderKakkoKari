@@ -71,9 +71,6 @@
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="RtmpSharp2">
-      <HintPath>..\packages\RtmpSharp2.dll</HintPath>
-    </Reference>
     <Reference Include="SnkLib.App.CookieGetter">
       <HintPath>..\packages\SnkLib.App.CookieGetter.2.4.0.0\lib\net45\SnkLib.App.CookieGetter.dll</HintPath>
     </Reference>

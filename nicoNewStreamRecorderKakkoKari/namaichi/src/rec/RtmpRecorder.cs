@@ -427,7 +427,7 @@ namespace namaichi.rec
 						var _y = a.IndexOf(".flv") > -1 ? "/mp4:" : " -y mp4:";
 						//_y = " -y mp4:";
 						
-						arg += "-r " + rtmpUrl + _y + a + " -a " + app + " -p http://live.nicovideo.jp/watch/" + lvid + " -s \"http://live.nicovideo.jp/nicoliveplayer.swf\" -f \"WIN 29,0,0,113\" -t " + rtmpUrl + " -C S:" + ticket + _a + " -m 200 -o ";
+						arg += "-r " + rtmpUrl + _y + a + " -a " + app + " -p http://live.nicovideo.jp/watch/" + lvid + " -s \"http://live.nicovideo.jp/nicoliveplayer.swf\" -f \"WIN 29,0,0,113\" -t " + rtmpUrl + " -C S:" + ticket + _a + " -m 300 -o ";
 						//arg += "-r " + url + " -y mp4:" + a + " -C S:" + ticket + " -o ";
 						 
 					}
@@ -872,16 +872,19 @@ namespace namaichi.rec
 			return isEndProgram;
 		}
 		private void makeTs(string _arg) {
-			util.debugWriteLine("make ts " + _arg);
+			util.debugWriteLine("make ts no " + _arg);
+			return;
+			/*
 			var start = DateTime.Now;
 			var que = util.getRegGroup(_arg, "(/content.+?) ");
 			//while (rm.rfu == rfu && DateTime.Now - start < TimeSpan.FromSeconds(10)) {
 			while (rm.rfu == rfu) {
-				var cl = new RtmpClient(rtmpUrl, que, ticket, rm);
-				if (cl.makeTs()) break;
+				//var cl = new RtmpClient(rtmpUrl, que, ticket, rm);
+				//if (cl.makeTs()) break;
 			}
 			Thread.Sleep(5000);
 			util.debugWriteLine("make ts end");
+			*/
 		}
 		private string incrementRecFolderFile(string recFolderFile) {
 			var r = new Regex("(\\d+)$");

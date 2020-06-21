@@ -6,6 +6,8 @@
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
+ 
+/*
 using System;
 using System.IO;
 using System.Net.Sockets;
@@ -116,7 +118,7 @@ namespace namaichi.rec
             SendMessage(new Play(_usher.Streams[0].PlayStream));
             *
         }
-        */
+        /
        public static string getRegGroup(string target, string reg, int group = 1, Regex r = null) {
 			if (r == null)
 				 r = new Regex(reg);
@@ -144,7 +146,7 @@ namespace namaichi.rec
 		            connect.App = "fileorigin/01";
 		            connect.ServerUrl = "rtmp://nlace02.live.nicovideo.jp:1935/fileorigin/01";         
 		            connect.Data = Encoding.ASCII.GetBytes("225832:lv316983063:0:1543462925:7c12cb3f6a81c679");
-		            */
+		            /
 		           connect.App = getRegGroup(url, "(fileorigin.+)");
 		           connect.ServerUrl = url;
 		//           connect.Data = Encoding.ASCII.GetBytes(ticket);
@@ -280,3 +282,4 @@ namespace namaichi.rec
         }
     }
 }
+*/

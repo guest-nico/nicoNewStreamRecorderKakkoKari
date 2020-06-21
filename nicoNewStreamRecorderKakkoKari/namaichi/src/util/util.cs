@@ -1160,7 +1160,8 @@ class util {
 	public static void dllCheck(namaichi.MainForm form) {
 		var path = getJarPath()[0];
 		var dlls = new string[]{"websocket4net.dll", "NAudio.dll",
-				"RtmpSharp2.dll", "SnkLib.App.CookieGetter.Forms.dll",
+				//"RtmpSharp2.dll", 
+				"SnkLib.App.CookieGetter.Forms.dll",
 				"SnkLib.App.CookieGetter.dll", "SuperSocket.ClientEngine.dll",
 				"Microsoft.Web.XmlTransform.dll", "Newtonsoft.Json.dll",
 				"System.Data.SQLite.dll", "x64/SQLite.Interop.dll",

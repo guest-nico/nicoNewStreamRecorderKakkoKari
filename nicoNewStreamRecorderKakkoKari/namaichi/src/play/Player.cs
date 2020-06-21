@@ -279,7 +279,7 @@ namespace namaichi.play
 				Thread.Sleep(1000);
 				if (isDefaultPlayer)
 					setPipeName(process);
-				
+			
 			} catch (Exception ee) {
 				util.debugWriteLine(ee.Message + ee.StackTrace + ee.Source + ee.TargetSite);
 				
