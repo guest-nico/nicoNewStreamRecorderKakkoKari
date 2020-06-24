@@ -50,12 +50,6 @@ Copyright (C) 2010-2011 Howard Chu
 The Flvstreamer Team  
 License: GPLv2  
   
-NAudio  
-<https://github.com/naudio/NAudio/>  
-Copyright (C) 2011 Mark Heath  
-Microsoft Public License  
-<https://github.com/naudio/NAudio/blob/master/license.txt>  
-  
 Bouncy Castle  
 <http://www.bouncycastle.org/>  
 Copyright (c) 2000 - 2020 The Legion of the Bouncy Castle Inc.  
@@ -64,7 +58,6 @@ MIT license
   
 <https://github.com/guest-nico/WebSocket4Net_deflate>  
 <https://github.com/guest-nico/settableVolumeUsingNamedPipeFFplay>  
-<https://github.com/guest-nico/RtmpSharp2_connectSendData>  
   
   
 ## 開発環境  

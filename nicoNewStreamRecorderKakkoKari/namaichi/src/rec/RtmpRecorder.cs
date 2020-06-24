@@ -872,7 +872,7 @@ namespace namaichi.rec
 			return isEndProgram;
 		}
 		private void makeTs(string _arg) {
-			util.debugWriteLine("make ts no " + _arg);
+			util.debugWriteLine("make ts " + _arg);
 			return;
 			/*
 			var start = DateTime.Now;

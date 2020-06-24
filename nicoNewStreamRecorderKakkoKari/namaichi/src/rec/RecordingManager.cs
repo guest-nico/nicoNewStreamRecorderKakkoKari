@@ -124,7 +124,7 @@ namespace namaichi.rec
 		}
 		private void endProcess(int endCode, bool isSameRfu) {
 			if (endCode == 3 && bool.Parse(cfg.get("IsSoundEnd")))
-				util.soundEnd(cfg);
+				util.soundEnd(cfg, form);
         	
         	if (isSameRfu) {
             	isRecording = false;

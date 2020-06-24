@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using Microsoft.Win32;
 using System.Threading;
 using System.Runtime.InteropServices;
+using System.Text;
 using namaichi;
 using namaichi.config;
 using namaichi.info;
@@ -1110,38 +1111,90 @@ class util {
 		if (isKakko) ret = "(" + ret + ")";
 		return ret;		
 	}
-	public static void soundEnd(config cfg) {
+public static void soundEnd(config cfg, MainForm form) {
 		try {
 			var path = (bool.Parse(cfg.get("IsSoundDefault"))) ? 
-				(util.getJarPath()[0] + "/Sound/se_soc02.wav") : cfg.get("soundPath");
+					(util.getJarPath()[0] + "/Sound/se_soc02.wav") : cfg.get("soundPath");
 			if (path == "") path = util.getJarPath()[0] + "/Sound/se_soc02.wav";
-			util.debugWriteLine("sound path " + path);
 			
-			var reader = new NAudio.Wave.AudioFileReader(path);
-				
-			var waveOut = new NAudio.Wave.WaveOut();
-			waveOut.Init(reader);
 			var volume = float.Parse(cfg.get("soundVolume")) / 100;
 			if (volume < 0) volume = (float)0;
 			if (volume > 1) volume = (float)1;
-			waveOut.Volume = volume;
-			util.debugWriteLine("volume " + waveOut.Volume);
-			waveOut.Play();
-			while (waveOut.PlaybackState == NAudio.Wave.PlaybackState.Playing) Thread.Sleep(100);
-			//waveOut.Dispose();
-			reader.Close();
-				
-			/*
-			var path = (bool.Parse(cfg.get("IsSoundDefault"))) ? 
-				(util.getJarPath()[0] + "/Sound/se_soc02.wav") : cfg.get("soundPath");
-			util.debugWriteLine(path);
-			var m = new System.Media.SoundPlayer(path);
+			util.debugWriteLine("sound path " + path + " volume " + volume);
 			
-			m.PlaySync();
-			*/
+			var isMCI = true;
+			if (isMCI) {
+				volume *= 1000;
+				//path = "C:\\Users\\zack\\Desktop\\c#project\\merge git\\sound\\sound\\bin\\Debug\\あああ\\c.mp3";
+				
+				playSoundMCI(path, (int)volume, false, form);
+			} else {
+				//naudio
+				/*
+				var reader = new NAudio.Wave.AudioFileReader(path);
+				var waveOut = new NAudio.Wave.WaveOut();
+				waveOut.Init(reader);
+				
+				waveOut.Volume = volume;
+				util.debugWriteLine("volume " + waveOut.Volume);
+				waveOut.Play();
+				while (waveOut.PlaybackState == NAudio.Wave.PlaybackState.Playing) Thread.Sleep(100);
+				//waveOut.Dispose();
+				reader.Close();
+				*/
+			}
+			
 		} catch (Exception e) {
 			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 		}                                
+	}
+	[System.Runtime.InteropServices.DllImport("winmm.dll",
+    		CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+	private static extern int mciSendString(string command,
+				[MarshalAs(UnmanagedType.LPTStr), Out] StringBuilder buffer, int bufferSize, IntPtr hwndCallback);
+	[System.Runtime.InteropServices.DllImport("winmm.dll",
+    		CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+    public static extern bool mciGetErrorString(int dwError, 
+			[MarshalAs(UnmanagedType.LPTStr), Out] StringBuilder lpstrBuffer, int uLength);
+    
+	public static void playSoundMCI(string path, int volume, bool isAsync, MainForm form) {
+		debugWriteLine("playsound mci " + path + " volume " + volume + " " + isAsync);
+		
+		var name = Guid.NewGuid();
+	    var cmd = "open \"" + path + "\" type mpegvideo alias " + name;
+	    debugWriteLine(cmd);
+	    var ret = mciSendStringForm(cmd, null, 0, IntPtr.Zero, form);
+	    
+	    if (ret != 0) {
+	    	debugWriteLine("playsound mci open error " + ret + " " + cmd);
+	    	StringBuilder errMsg = new StringBuilder(1000);
+			mciGetErrorString(ret, errMsg, 1000);
+			debugWriteLine("mci err " + errMsg);
+			form.addLogText("サウンドの再生中に問題が発生しました。ERROR:" + ret + ", メッセージ:" + errMsg + " パス:" + path + ", volume:" + volume);
+	        return;
+	    }
+	    ret = mciSendStringForm("setaudio " + name + " volume to " + volume.ToString(), null, 0, IntPtr.Zero, form);
+	    
+	    mciSendStringForm("play " + name, null, 0, IntPtr.Zero, form);
+	    
+	    if (!isAsync) {
+	    	StringBuilder status = new StringBuilder();
+		    while(true) {
+	    		Thread.Sleep(1000);
+		    	status = new StringBuilder();
+		    	ret = mciSendStringForm("status " + name + " mode", status, 256, IntPtr.Zero, form);
+		    	
+		    	debugWriteLine("rc " + ret + " " + status);
+		    	if (status.ToString() != "playing") break;
+		    }
+	    }
+	}
+	private static int mciSendStringForm(string command,
+			StringBuilder buffer, int bufferSize, IntPtr hwndCallback, MainForm form) {
+		var ret = 0;
+		form.formAction(() => 
+				ret = mciSendString(command, buffer, bufferSize, hwndCallback), false);
+		return ret;
 	}
 	[DllImport("kernel32.dll")]
 	extern static int SetThreadExecutionState(uint esFlags);
@@ -1159,7 +1212,8 @@ class util {
 	}
 	public static void dllCheck(namaichi.MainForm form) {
 		var path = getJarPath()[0];
-		var dlls = new string[]{"websocket4net.dll", "NAudio.dll",
+		var dlls = new string[]{"websocket4net.dll", 
+				//"NAudio.dll",
 				//"RtmpSharp2.dll", 
 				"SnkLib.App.CookieGetter.Forms.dll",
 				"SnkLib.App.CookieGetter.dll", "SuperSocket.ClientEngine.dll",
