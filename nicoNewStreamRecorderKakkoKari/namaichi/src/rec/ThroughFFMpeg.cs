@@ -37,10 +37,16 @@ namespace namaichi.rec
 			if (isConvert && afterConvertMode > 0) 
 				getConvertPaths(path, ref tmp, ref outPath, afterConvertMode);
 			string _command;
-			//10-mp3 8-vob 11-wav 15-mp4(再エンコード)
-			if (afterConvertMode == 10 || afterConvertMode == 8 || 
+			//8-vob 11-wav 15-mp4(再エンコード)
+			if (afterConvertMode == 8 || 
 			    	afterConvertMode == 11 || afterConvertMode == 15)
 				_command = ("-i \"" + path + "\" \"" + tmp + "\"");
+			//10-mp3
+			else if (afterConvertMode == 10)
+				_command = ("-i \"" + path + "\" -q:a 1 \"" + tmp + "\"");
+			//13-aac
+			else if (afterConvertMode == 13)
+				_command = ("-i \"" + path + "\" -f mp4 -vn -c copy \"" + tmp + "\"");
 			//12-wma
 			else if (afterConvertMode == 12)
 				_command =  ("-i \"" + path + "\" -vn -c copy \"" + tmp + "\"");

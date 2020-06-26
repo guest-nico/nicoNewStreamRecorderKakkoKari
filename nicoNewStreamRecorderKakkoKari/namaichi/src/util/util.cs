@@ -31,8 +31,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.07";
-	public static string versionDayStr = "2020/06/18";
+	public static string versionStr = "ver0.88.09";
+	public static string versionDayStr = "2020/06/26";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -1125,8 +1125,6 @@ public static void soundEnd(config cfg, MainForm form) {
 			var isMCI = true;
 			if (isMCI) {
 				volume *= 1000;
-				//path = "C:\\Users\\zack\\Desktop\\c#project\\merge git\\sound\\sound\\bin\\Debug\\‚ ‚ ‚ \\c.mp3";
-				
 				playSoundMCI(path, (int)volume, false, form);
 			} else {
 				//naudio

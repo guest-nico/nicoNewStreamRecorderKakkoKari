@@ -49,12 +49,18 @@ namespace namaichi.rec
 			
 			outPath = replacedKakutyousi(outPath);
 			
-			//10-mp3 8-vob 11-wav 15-mp4(再エンコード)
-			if (afterConvertMode == 10 || afterConvertMode == 8 || afterConvertMode == 11 || afterConvertMode == 15)
+			//8-vob 11-wav 15-mp4(再エンコード)
+			if (afterConvertMode == 8 || afterConvertMode == 11 || afterConvertMode == 15)
 				arg += (" \"" + outPath + "\"");
+			//10-mp3
+			else if (afterConvertMode == 10)
+				arg += (" -q:a 1 \"" + outPath + "\"");
 			//12-wma
 			else if (afterConvertMode == 12)
 				arg +=  (" -vn -c copy \"" + outPath + "\"");
+			//13-aac
+			else if (afterConvertMode == 13)
+				arg += (" -f mp4 -vn -c copy \"" + outPath + "\"");
 			//14-ogg
 			else if (afterConvertMode == 14)
 				arg +=  (" -vn \"" + outPath + "\"");
