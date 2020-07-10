@@ -165,7 +165,7 @@ public class config
 			{"IsDisplayComment","true"},
 			{"IstitlebarSamune","true"},
 			{"IsautoFollowComgen","false"},
-			{"qualityRank","0,1,2,3,4"},
+			{"qualityRank","0,1,2,3,4,5"},
 			{"IsMiniStart","false"},
 			{"IsConfirmCloseMsgBox","true"},
 			{"IsLogFile","false"},
@@ -205,6 +205,7 @@ public class config
 			{"tsBaseOpenTimeEnd","false"},
 			{"tsIsRenketu","false"},
 			{"IsVposStartTime","true"},
+			{"IsAfterStartTimeComment","false"},
 			
 			{"IsUrlList","false"},
 			{"IsM3u8List","false"},

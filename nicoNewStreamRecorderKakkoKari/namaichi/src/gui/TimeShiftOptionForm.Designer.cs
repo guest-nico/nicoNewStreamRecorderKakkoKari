@@ -37,6 +37,7 @@ namespace namaichi
 		private void InitializeComponent()
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.isAfterStartTimeCommentChkBox = new System.Windows.Forms.CheckBox();
 			this.isOpenTimeBaseStartChkBox = new System.Windows.Forms.CheckBox();
 			this.isMostStartTimeRadioBtn = new System.Windows.Forms.RadioButton();
 			this.isSetVposStartTime = new System.Windows.Forms.CheckBox();
@@ -86,6 +87,7 @@ namespace namaichi
 			// groupBox1
 			// 
 			this.groupBox1.BackColor = System.Drawing.SystemColors.Window;
+			this.groupBox1.Controls.Add(this.isAfterStartTimeCommentChkBox);
 			this.groupBox1.Controls.Add(this.isOpenTimeBaseStartChkBox);
 			this.groupBox1.Controls.Add(this.isMostStartTimeRadioBtn);
 			this.groupBox1.Controls.Add(this.isSetVposStartTime);
@@ -101,10 +103,19 @@ namespace namaichi
 			this.groupBox1.Controls.Add(this.isStartTimeRadioBtn);
 			this.groupBox1.Location = new System.Drawing.Point(5, 10);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(329, 190);
+			this.groupBox1.Size = new System.Drawing.Size(329, 212);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "録画開始時間";
+			// 
+			// isAfterStartTimeCommentChkBox
+			// 
+			this.isAfterStartTimeCommentChkBox.Location = new System.Drawing.Point(6, 181);
+			this.isAfterStartTimeCommentChkBox.Name = "isAfterStartTimeCommentChkBox";
+			this.isAfterStartTimeCommentChkBox.Size = new System.Drawing.Size(244, 24);
+			this.isAfterStartTimeCommentChkBox.TabIndex = 8;
+			this.isAfterStartTimeCommentChkBox.Text = "録画開始時間付近以降のコメントを保存する";
+			this.isAfterStartTimeCommentChkBox.UseVisualStyleBackColor = true;
 			// 
 			// isOpenTimeBaseStartChkBox
 			// 
@@ -228,7 +239,7 @@ namespace namaichi
 			// 
 			// cancelBtn
 			// 
-			this.cancelBtn.Location = new System.Drawing.Point(245, 330);
+			this.cancelBtn.Location = new System.Drawing.Point(245, 352);
 			this.cancelBtn.Name = "cancelBtn";
 			this.cancelBtn.Size = new System.Drawing.Size(74, 23);
 			this.cancelBtn.TabIndex = 16;
@@ -238,7 +249,7 @@ namespace namaichi
 			// 
 			// okBtn
 			// 
-			this.okBtn.Location = new System.Drawing.Point(165, 330);
+			this.okBtn.Location = new System.Drawing.Point(165, 352);
 			this.okBtn.Name = "okBtn";
 			this.okBtn.Size = new System.Drawing.Size(74, 23);
 			this.okBtn.TabIndex = 15;
@@ -366,7 +377,7 @@ namespace namaichi
 			// 
 			// resetBtn
 			// 
-			this.resetBtn.Location = new System.Drawing.Point(85, 330);
+			this.resetBtn.Location = new System.Drawing.Point(85, 352);
 			this.resetBtn.Name = "resetBtn";
 			this.resetBtn.Size = new System.Drawing.Size(74, 23);
 			this.resetBtn.TabIndex = 32;
@@ -376,7 +387,7 @@ namespace namaichi
 			// 
 			// lastSettingBtn
 			// 
-			this.lastSettingBtn.Location = new System.Drawing.Point(5, 330);
+			this.lastSettingBtn.Location = new System.Drawing.Point(5, 352);
 			this.lastSettingBtn.Name = "lastSettingBtn";
 			this.lastSettingBtn.Size = new System.Drawing.Size(74, 23);
 			this.lastSettingBtn.TabIndex = 31;
@@ -397,7 +408,7 @@ namespace namaichi
 			this.groupBox2.Controls.Add(this.endHText);
 			this.groupBox2.Controls.Add(this.isManualEndTimeRadioBtn);
 			this.groupBox2.Controls.Add(this.isEndTimeRadioBtn);
-			this.groupBox2.Location = new System.Drawing.Point(5, 206);
+			this.groupBox2.Location = new System.Drawing.Point(5, 228);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(329, 108);
 			this.groupBox2.TabIndex = 28;
@@ -499,7 +510,7 @@ namespace namaichi
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Window;
-			this.ClientSize = new System.Drawing.Size(341, 362);
+			this.ClientSize = new System.Drawing.Size(341, 384);
 			this.Controls.Add(this.resetBtn);
 			this.Controls.Add(this.lastSettingBtn);
 			this.Controls.Add(this.groupBox2);
@@ -520,6 +531,7 @@ namespace namaichi
 			this.groupBox2.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox isAfterStartTimeCommentChkBox;
 		private System.Windows.Forms.CheckBox isOpenTimeBaseEndChkBox;
 		private System.Windows.Forms.CheckBox isOpenTimeBaseStartChkBox;
 		private System.Windows.Forms.Button lastSettingBtn;

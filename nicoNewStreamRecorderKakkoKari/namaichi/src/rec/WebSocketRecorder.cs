@@ -469,7 +469,7 @@ namespace namaichi.rec
 								programType, _openTime, this, 
 								(isRtmp) ? 0 : tsConfig.timeSeconds, 
 								(isRtmp) ? false : tsConfig.isVposStartTime, 
-								isRtmp, rr, rss, roomName);
+								isRtmp, rr, rss, roomName, tsConfig);
 						tscg.save();
 					}
 					
@@ -1196,14 +1196,14 @@ namespace namaichi.rec
 		private string getBestGettableQuolity(string msg) {
 			var qualityList = new List<string>{//"abr",
 				"super_high", "high",
-				"normal", "low", "super_low"};
+				"normal", "low", "super_low", "audio_high"};
 			
 			var gettableList = webSocketInfo[2] == "1" ? 
 					util.getRegGroup(msg, "\"qualityTypes\"\\:\\[(.+?)\\]").Replace("\"", "").Split(',')
 					: util.getRegGroup(msg, "\"availableQualities\"\\:\\[(.+?)\\]").Replace("\"", "").Split(',');
 			var ranks = (rm.ri == null) ? (qualityRank.Split(',')) :
 					rm.ri.qualityRank;
-			if (ranks.Length == 6) qualityList.Insert(0, "abr");
+			//if (ranks.Length == 6) qualityList.Insert(0, "abr");
 			
 			var bestGettableQuality = "normal";
 			foreach(var r in ranks) {

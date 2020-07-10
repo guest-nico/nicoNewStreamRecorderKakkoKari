@@ -202,6 +202,7 @@ namespace namaichi
 			this.recordDirectoryText = new System.Windows.Forms.TextBox();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
+			this.label16 = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox6.SuspendLayout();
@@ -1012,6 +1013,7 @@ namespace namaichi
 			// 
 			// groupBox7
 			// 
+			this.groupBox7.Controls.Add(this.label16);
 			this.groupBox7.Controls.Add(this.downBtn);
 			this.groupBox7.Controls.Add(this.upBtn);
 			this.groupBox7.Controls.Add(this.qualityListBox);
@@ -1021,7 +1023,7 @@ namespace namaichi
 			this.groupBox7.Margin = new System.Windows.Forms.Padding(2);
 			this.groupBox7.Name = "groupBox7";
 			this.groupBox7.Padding = new System.Windows.Forms.Padding(2);
-			this.groupBox7.Size = new System.Drawing.Size(385, 197);
+			this.groupBox7.Size = new System.Drawing.Size(394, 217);
 			this.groupBox7.TabIndex = 2;
 			this.groupBox7.TabStop = false;
 			this.groupBox7.Text = "録画画質優先順位";
@@ -1055,7 +1057,8 @@ namespace namaichi
 									"2. 2Mbps(high・高画質) (実験放送:superhigh)",
 									"3. 1Mbps(normal・低画質) (実験放送:high)",
 									"4. 384kbps(low) (実験放送:middle)",
-									"5. 192kbps(super_low) (実験放送:low)"});
+									"5. 192kbps(super_low) (実験放送:low)",
+									"6. 音声のみ(audio_high) (実験放送:audio_high)"});
 			this.qualityListBox.Location = new System.Drawing.Point(26, 27);
 			this.qualityListBox.Name = "qualityListBox";
 			this.qualityListBox.Size = new System.Drawing.Size(247, 112);
@@ -1063,7 +1066,7 @@ namespace namaichi
 			// 
 			// lowRankBtn
 			// 
-			this.lowRankBtn.Location = new System.Drawing.Point(129, 156);
+			this.lowRankBtn.Location = new System.Drawing.Point(129, 176);
 			this.lowRankBtn.Name = "lowRankBtn";
 			this.lowRankBtn.Size = new System.Drawing.Size(86, 23);
 			this.lowRankBtn.TabIndex = 1;
@@ -1073,7 +1076,7 @@ namespace namaichi
 			// 
 			// highRankBtn
 			// 
-			this.highRankBtn.Location = new System.Drawing.Point(26, 156);
+			this.highRankBtn.Location = new System.Drawing.Point(26, 176);
 			this.highRankBtn.Name = "highRankBtn";
 			this.highRankBtn.Size = new System.Drawing.Size(86, 23);
 			this.highRankBtn.TabIndex = 1;
@@ -2012,6 +2015,14 @@ namespace namaichi
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
 			// 
+			// label16
+			// 
+			this.label16.Location = new System.Drawing.Point(26, 145);
+			this.label16.Name = "label16";
+			this.label16.Size = new System.Drawing.Size(370, 21);
+			this.label16.TabIndex = 5;
+			this.label16.Text = "※「音声のみ」は遅延設定が1.0または3.0になっている場合のみ取得できます。";
+			// 
 			// optionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -2065,6 +2076,7 @@ namespace namaichi
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label label16;
 		private System.Windows.Forms.Label label14;
 		public System.Windows.Forms.ComboBox latencyList;
 		private System.Windows.Forms.Label label15;

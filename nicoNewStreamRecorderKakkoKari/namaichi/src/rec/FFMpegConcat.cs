@@ -54,7 +54,7 @@ namespace namaichi.rec
 				arg += (" \"" + outPath + "\"");
 			//10-mp3
 			else if (afterConvertMode == 10)
-				arg += (" -q:a 1 \"" + outPath + "\"");
+				arg += (" -b:a 128k \"" + outPath + "\"");
 			//12-wma
 			else if (afterConvertMode == 12)
 				arg +=  (" -vn -c copy \"" + outPath + "\"");

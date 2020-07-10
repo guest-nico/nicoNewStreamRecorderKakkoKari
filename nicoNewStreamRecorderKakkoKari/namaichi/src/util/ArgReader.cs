@@ -71,7 +71,7 @@ namespace namaichi.utility
 			var lowKeys = new List<string>(config.defaultConfig.Keys.Select((x) => x.ToLower()));
 			var values = config.defaultConfig.Values.ToList<string>();
 			var keys = config.defaultConfig.Keys.ToList();
-			lowKeys.AddRange(new string[] {"ts-start", "ts-end", "ts-list", "ts-list-update", "ts-list-command", "ts-list-open", "ts-list-m3u8", "ts-vpos-starttime"});
+			lowKeys.AddRange(new string[] {"ts-start", "ts-end", "ts-list", "ts-list-update", "ts-list-command", "ts-list-open", "ts-list-m3u8", "ts-vpos-starttime", "ts-starttime-comment", "ts-starttime-open", "ts-endtime-open"});
 			foreach (var a in args) {
 				if (a.StartsWith("-")) {
 					var name = util.getRegGroup(a, "-(.*)=");
@@ -119,7 +119,7 @@ namespace namaichi.utility
 						setName = keys[i];
 						return true;
 					} else {
-						form.addLogText(name + "の値が設定できませんでした(例 「0,1,2,4,3」) " + val, false);
+						form.addLogText(name + "の値が設定できませんでした(例 「0,1,2,4,3,5」) " + val, false);
 						return false;
 					}
 				}
@@ -209,6 +209,20 @@ namespace namaichi.utility
 						return false;
 					}
 				}
+				if (lowKeys[i] == "soundvolume") {
+					int _s = 0;
+					if (int.TryParse(val, out _s)) {
+						if (_s < 0) val = "0";
+						if (_s > 100) val = "100";
+						setVal = val;
+						setName = keys[i];
+						return true;
+					} else {
+						form.addLogText(name + "の値が設定できませんでした(0から100の整数) " + val, false);
+						return false;
+					}
+				}
+				
 				//ts
 				if (lowKeys[i] == "ts-start") {
 					var _t = Regex.Match(val.ToLower(), "((\\d*)h)*((\\d*)m)*((\\d*)s)*");
@@ -324,17 +338,40 @@ namespace namaichi.utility
 						return false;;
 					}
 				}
-				if (lowKeys[i] == "soundvolume") {
-					int _s = 0;
-					if (int.TryParse(val, out _s)) {
-						if (_s < 0) val = "0";
-						if (_s > 100) val = "100";
+				if (lowKeys[i] == "ts-starttime-comment") {
+					if (val.ToLower() == "true" || val.ToLower() == "false") {
+						setName = "IsAfterStartTimeComment";
 						setVal = val;
-						setName = keys[i];
+						if (tsConfig == null) tsConfig = new TimeShiftConfig();
+						tsConfig.isAfterStartTimeComment = bool.Parse(val);
 						return true;
-					} else {
-						form.addLogText(name + "の値が設定できませんでした(0から100の整数) " + val, false);
-						return false;
+				   	} else {
+						form.addLogText(name + "の値が設定できませんでした(true or false) " + val, false);
+						return false;;
+					}
+				}
+				if (lowKeys[i] == "ts-starttime-open") {
+					if (val.ToLower() == "true" || val.ToLower() == "false") {
+						setName = "tsBaseOpenTimeStart";
+						setVal = val;
+						if (tsConfig == null) tsConfig = new TimeShiftConfig();
+						tsConfig.isOpenTimeBaseStartArg = bool.Parse(val);
+						return true;
+				   	} else {
+						form.addLogText(name + "の値が設定できませんでした(true or false) " + val, false);
+						return false;;
+					}
+				}
+				if (lowKeys[i] == "ts-endtime-open") {
+					if (val.ToLower() == "true" || val.ToLower() == "false") {
+						setName = "tsBaseOpenTimeEnd";
+						setVal = val;
+						if (tsConfig == null) tsConfig = new TimeShiftConfig();
+						tsConfig.isOpenTimeBaseEndArg = bool.Parse(val);
+						return true;
+				   	} else {
+						form.addLogText(name + "の値が設定できませんでした(true or false) " + val, false);
+						return false;;
 					}
 				}
 				setName = keys[i];
@@ -347,8 +384,8 @@ namespace namaichi.utility
 		private bool isValidQualityRank(string val) {
 			try {
 				var l = val.Split(',').Select((x) => int.Parse(x));
-				if (l.Count() != 5) return false;
-				var a = new List<int>{0,1,2,3,4};
+				if (l.Count() != 6) return false;
+				var a = new List<int>{0,1,2,3,4,5};
 				foreach (var _l in l) a.Remove(_l);
 				return a.Count == 0;
 			} catch (Exception e) {

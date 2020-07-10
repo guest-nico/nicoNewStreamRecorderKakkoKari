@@ -58,6 +58,7 @@ namespace namaichi
 			updateListSecondText.Text = config.get("M3u8UpdateSeconds");
 			isOpenListCommandChkBox.Checked = bool.Parse(config.get("IsOpenUrlList"));
 			isSetVposStartTime.Checked = bool.Parse(config.get("IsVposStartTime"));
+			isAfterStartTimeCommentChkBox.Checked = bool.Parse(config.get("IsAfterStartTimeComment"));
 			updateTimeShiftStartTimeChkBox();
 			updateIsM3u8RadioBtn_CheckedChanged();
 			updateIsOpenListCommandChkBoxCheckedChanged();
@@ -78,13 +79,9 @@ namespace namaichi
 			}
 		}
 		private void updateTimeShiftStartTimeChkBox() {
-			//isRenketuLastFile.Enabled = !isStartTimeRadioBtn.Checked;
 			hText.Enabled = mText.Enabled = sText.Enabled =
 					isOpenTimeBaseStartChkBox.Enabled = 
 						isStartTimeRadioBtn.Checked;
-			//hLabel.Enabled = isStartTimeRadioBtn.Checked;
-			//mLabel.Enabled = isStartTimeRadioBtn.Checked;
-			//sLabel.Enabled = isStartTimeRadioBtn.Checked;
 		}	
 		void cancelBtn_Click(object sender, EventArgs e)
 		{
@@ -173,7 +170,8 @@ namespace namaichi
 			ret = new TimeShiftConfig(startType, 
 				h, m, s, endH, endM, endS, isRenketuLastFile.Checked, isUrlList, 
 				openListCommand, isM3u8List, m3u8UpdateSeconds, isOpenUrlList,
-				isSetVposStartTime.Checked, startTimeMode, endTimeMode);
+				isSetVposStartTime.Checked, startTimeMode, endTimeMode, 
+				isAfterStartTimeCommentChkBox.Checked);
 			
 			var l = new List<KeyValuePair<string, string>>();
 			l.Add(new KeyValuePair<string, string>("IsUrlList", isUrlList.ToString().ToLower()));
@@ -192,6 +190,7 @@ namespace namaichi
 				l.Add(new KeyValuePair<string, string>("tsBaseOpenTimeStart", isOpenTimeBaseStartChkBox.Checked.ToString().ToLower()));
 				l.Add(new KeyValuePair<string, string>("tsBaseOpenTimeEnd", isOpenTimeBaseEndChkBox.Checked.ToString().ToLower()));
 			}
+			l.Add(new KeyValuePair<string, string>("IsAfterStartTimeComment", isAfterStartTimeCommentChkBox.Checked.ToString().ToLower()));
 			config.set(l);
 			/*
 			config.set("IsUrlList", isUrlList.ToString().ToLower());
@@ -278,6 +277,7 @@ namespace namaichi
 			endSText.Text = ((int)((endSeconds % 60) / 1)).ToString();
 			isRenketuLastFile.Checked = bool.Parse(config.get("tsIsRenketu"));
 			isSetVposStartTime.Checked = bool.Parse(config.get("IsVposStartTime"));
+			isAfterStartTimeCommentChkBox.Checked = bool.Parse(config.get("IsAfterStartTimeComment"));
 			
 			if (prepTime > 0) {
 				isOpenTimeBaseStartChkBox.Checked = bool.Parse(config.get("tsBaseOpenTimeStart"));
@@ -299,6 +299,7 @@ namespace namaichi
 			isSetVposStartTime.Checked = true;
 			isOpenTimeBaseStartChkBox.Checked = false;
 			isOpenTimeBaseEndChkBox.Checked = false;
+			isAfterStartTimeCommentChkBox.Checked = false;
 		}
 		
 		void LastSettingBtnClick(object sender, EventArgs e)

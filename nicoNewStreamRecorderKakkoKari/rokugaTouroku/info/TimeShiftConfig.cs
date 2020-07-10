@@ -40,10 +40,15 @@ namespace rokugaTouroku.info
 		public bool isVposStartTime;
 		
 		public string startTimeStr;
+		public bool isAfterStartTimeComment;
+		public bool isOpenTimeBaseStartArg;
+		public bool isOpenTimeBaseEndArg;
 
 		public TimeShiftConfig(int startType, 
 				int h, int m, int s, bool isContinueConcat, 
-				bool isVposStartTime, int startTimeMode, int endTimeMode)
+				bool isVposStartTime, int startTimeMode, int endTimeMode,
+				bool isAfterStartTimeComment, bool isOpenTimeBaseStart,
+				bool isOpenTimeBaseEnd)
 		{
 			this.startType = startType;
 			this.h = h;
@@ -58,13 +63,18 @@ namespace rokugaTouroku.info
 			timeType = (startType == 0) ? 0 : 1;
 			startTimeStr = (startType == 0) ? (timeSeconds + "s") :
 				((isContinueConcat) ? "continue-concat" : "continue");
+			this.isAfterStartTimeComment = isAfterStartTimeComment;
+			this.isOpenTimeBaseStartArg = isOpenTimeBaseStart;
+			this.isOpenTimeBaseEndArg = isOpenTimeBaseEnd;
 		}
 		public TimeShiftConfig(int startType, 
 				int h, int m, int s, int endH, int endM, int endS,
 				bool isContinueConcat, bool isOutputUrlList, 
 				string openListCommand, bool isM3u8List, 
 				double m3u8UpdateSeconds, bool isOpenUrlList,
-				bool isVposStartTime, int startTimeMode, int endTimeMode)
+				bool isVposStartTime, int startTimeMode, int endTimeMode,
+				bool isAfterStartTimeComment, bool isOpenTimeBaseStart,
+				bool isOpenTimeBaseEnd)
 		{
 			this.startType = startType;
 			this.h = h;
@@ -89,8 +99,11 @@ namespace rokugaTouroku.info
 			
 			startTimeStr = (startType == 0) ? (timeSeconds + "s") :
 				((isContinueConcat) ? "continue-concat" : "continue");
+			this.isAfterStartTimeComment = isAfterStartTimeComment;
+			this.isOpenTimeBaseStartArg = isOpenTimeBaseStart;
+			this.isOpenTimeBaseEndArg = isOpenTimeBaseEnd;
 		}
 		public TimeShiftConfig() : this(0, 0, 0, 0, 0, 0, 0, 
-				false, false, "notepad {i}", false, 5, false, false, 0, 0) {}
+				false, false, "notepad {i}", false, 5, false, false, 0, 0, false, false, false) {}
 	}
 }

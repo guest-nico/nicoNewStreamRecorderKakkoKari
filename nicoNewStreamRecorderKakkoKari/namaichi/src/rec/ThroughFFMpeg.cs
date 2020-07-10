@@ -43,7 +43,7 @@ namespace namaichi.rec
 				_command = ("-i \"" + path + "\" \"" + tmp + "\"");
 			//10-mp3
 			else if (afterConvertMode == 10)
-				_command = ("-i \"" + path + "\" -q:a 1 \"" + tmp + "\"");
+				_command = ("-i \"" + path + "\" -b:a 128k \"" + tmp + "\"");
 			//13-aac
 			else if (afterConvertMode == 13)
 				_command = ("-i \"" + path + "\" -f mp4 -vn -c copy \"" + tmp + "\"");

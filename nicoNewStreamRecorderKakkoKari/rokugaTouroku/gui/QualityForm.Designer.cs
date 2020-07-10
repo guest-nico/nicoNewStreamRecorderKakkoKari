@@ -88,12 +88,12 @@ namespace rokugaTouroku
 			this.qualityListBox.FormattingEnabled = true;
 			this.qualityListBox.ItemHeight = 12;
 			this.qualityListBox.Items.AddRange(new object[] {
-									//"1. 自動(abr)",
 									"1. 3Mbps(super_high)",
 									"2. 2Mbps(high・高画質)",
 									"3. 1Mbps(normal・低画質)",
 									"4. 384kbps(low)",
-									"5. 192kbps(super_low)"});
+									"5. 192kbps(super_low)",
+									"6. 音声のみ(audio_high)"});
 			this.qualityListBox.Location = new System.Drawing.Point(26, 27);
 			this.qualityListBox.Name = "qualityListBox";
 			this.qualityListBox.Size = new System.Drawing.Size(143, 112);

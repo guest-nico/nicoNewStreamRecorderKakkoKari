@@ -81,7 +81,13 @@ namespace rokugaTouroku
 			rec = new RecListManager(this, recListDataSource, config);
 			recList.DataSource = recListDataSource;
 			
+			if (config.get("qualityRank").Split(',').Length == 5)
+				config.set("qualityRank", config.get("qualityRank") + ",5");
+			if (config.get("rokugaTourokuQualityRank").Split(',').Length == 5)
+				config.set("rokugaTourokuQualityRank", config.get("rokugaTourokuQualityRank") + ",5");
+			
 			qualityRank = config.get("rokugaTourokuQualityRank");
+			/*
 			if (qualityRank.Split(',').Length == 6) {
 				var l = new List<string>();
 				l.AddRange(qualityRank.Split(','));
@@ -90,12 +96,15 @@ namespace rokugaTouroku
 					l[i] = (int.Parse(l[i]) - 1).ToString();
 				qualityRank = string.Join(",", l.ToArray());
 			}
+			*/
 			qualityBtn.Text = getQualityRankStr(qualityRank);
 			setConvertList(int.Parse(config.get("afterConvertMode")));
 			recCommmentList.Text = "映像＋コメント";
 			
 			setBackColor(Color.FromArgb(int.Parse(config.get("tourokuBackColor"))));
 			setForeColor(Color.FromArgb(int.Parse(config.get("tourokuForeColor"))));
+			
+			
 		}
 		void optionItem_Select(object sender, EventArgs e)
         { 
@@ -311,7 +320,7 @@ namespace rokugaTouroku
 			return qualityRank//.Replace("0", "自")
 				.Replace("0", "超高").Replace("1", "高")
 				.Replace("2", "中").Replace("3", "低")
-				.Replace("4", "超低");
+				.Replace("4", "超低").Replace("5", "音");
 		}
 		public void displayRiInfo(RecInfo ri, string ctrl = null, string val = null) {
 			var isChange = displayingRi != ri;

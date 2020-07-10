@@ -616,13 +616,13 @@ namespace namaichi
 		
 		void highRankBtn_Click(object sender, EventArgs e)
 		{
-			int[] ranks = {0,1,2,3,4};
+			int[] ranks = {0,1,2,3,4,5};
 			qualityListBox.Items.Clear();
 			qualityListBox.Items.AddRange(getRanksToItems(ranks, qualityListBox));
 		}
 		void lowRankBtn_Click(object sender, EventArgs e)
 		{
-			int[] ranks = {4, 3, 2, 1, 0};
+			int[] ranks = {5, 4, 3, 2, 1, 0};
 			qualityListBox.Items.Clear();
 			qualityListBox.Items.AddRange(getRanksToItems(ranks, qualityListBox));
 		}
@@ -632,6 +632,7 @@ namespace namaichi
 				{0, "3Mbps(super_high)"},
 				{1, "2Mbps(high)"}, {2, "1Mbps(normal)"},
 				{3, "384kbps(low)"}, {4, "192kbps(super_low)"},
+				{5, "音声のみ(audio_high)"}
 			};
 //			var ret = new ListBox.ObjectCollection(owner);
 			var ret = new List<object>();
@@ -676,6 +677,7 @@ namespace namaichi
 				{0, "3Mbps(super_high)"},
 				{1, "2Mbps(high)"}, {2, "1Mbps(normal)"},
 				{3, "384kbps(low)"}, {4, "192kbps(super_low)"},
+				{5, "音声のみ(audio_high)"}
 			};
 			var ret = new List<int>();
 			for (int i = 0; i < items.Count; i++) {
@@ -700,7 +702,7 @@ namespace namaichi
 //			ranks.AddRange(qualityRank.Split(','));
 			
 			qualityListBox.Items.Clear();
-			if (ranks.Count == 6) {
+			if (ranks.Count == 6 && false) {
 				ranks.Remove(0);
 				for (var i = 0; i < ranks.Count; i++) ranks[i] -= 1;
 			}

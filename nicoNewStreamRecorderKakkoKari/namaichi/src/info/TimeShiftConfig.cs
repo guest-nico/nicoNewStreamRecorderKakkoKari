@@ -38,6 +38,9 @@ namespace namaichi.info
 		public double m3u8UpdateSeconds;
 		public bool isOpenUrlList;
 		public bool isVposStartTime;
+		public bool isAfterStartTimeComment;
+		public bool isOpenTimeBaseStartArg;
+		public bool isOpenTimeBaseEndArg;
 		
 		//public string startTimeStr;
 		
@@ -46,7 +49,8 @@ namespace namaichi.info
 				bool isContinueConcat, bool isOutputUrlList, 
 				string openListCommand, bool isM3u8List, 
 				double m3u8UpdateSeconds, bool isOpenUrlList,
-				bool isVposStartTime, int startTimeMode, int endTimeMode)
+				bool isVposStartTime, int startTimeMode, int endTimeMode,
+				bool isAfterStartTimeComment)
 		{
 			this.startType = startType;
 			this.h = h;
@@ -74,16 +78,19 @@ namespace namaichi.info
 			endTimeSeconds = (endTimeMode == 0) ? 0 : (endH * 3600 + endM * 60 + endS);
 			
 			if (startType == 0) this.isContinueConcat = false;
+			this.isAfterStartTimeComment = isAfterStartTimeComment;
 		}
 		public TimeShiftConfig() : this(0, 0, 0, 0, 0, 0, 0, 
-				false, false, "notepad {i}", false, 5, false, false, 0, 0) {}
+				false, false, "notepad {i}", false, 5, false, false, 0, 0, false) {}
 		public TimeShiftConfig clone() {
 			return new TimeShiftConfig(startType, h, m, s,
 					endH, endM, endS, isContinueConcat,
 					timeSeconds, timeType, endTimeSeconds,
 					isOutputUrlList, openListCommand, isM3u8List,
 					m3u8UpdateSeconds, isOpenUrlList, isVposStartTime, 
-					startTimeMode, endTimeMode);
+					startTimeMode, endTimeMode, isAfterStartTimeComment,
+					isOpenTimeBaseStartArg, isOpenTimeBaseEndArg
+				);
 		}
 		public TimeShiftConfig(int startType, int h, int m, int s, 
 				int endH, int endM, int endS, bool isContinueConcat,
@@ -91,7 +98,9 @@ namespace namaichi.info
 				bool isOutputUrlList, string openListCommand,
 				bool isM3u8List, double m3u8UpdateSeconds, 
 				bool isOpenUrlList, bool isVposStartTime, 
-				int startTimeMode, int endTimeMode) {
+				int startTimeMode, int endTimeMode, 
+				bool isAfterStartTimeComment, 
+				bool isOpenTimeBaseStartArg, bool isOpenTimeBaseEndArg) {
 			this.startType = startType;
 			this.h = h;
 			this.m = m;
@@ -111,6 +120,9 @@ namespace namaichi.info
 			this.isVposStartTime = isVposStartTime;
 			this.startTimeMode = startTimeMode;
 			this.endTimeMode = endTimeMode;
+			this.isAfterStartTimeComment = isAfterStartTimeComment;
+			this.isOpenTimeBaseStartArg = isOpenTimeBaseStartArg;
+			this.isOpenTimeBaseEndArg = isOpenTimeBaseEndArg;
 		}
 	}
 }

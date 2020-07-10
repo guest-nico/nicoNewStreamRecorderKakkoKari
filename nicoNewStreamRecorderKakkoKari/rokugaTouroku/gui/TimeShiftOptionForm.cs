@@ -86,13 +86,9 @@ namespace rokugaTouroku
 			updateIsManualEndTimeRadioBtn();
 		}
 		private void updateTimeShiftStartTimeChkBox() {
-			//isRenketuLastFile.Enabled = !isStartTimeRadioBtn.Checked;
-			hText.Enabled = isStartTimeRadioBtn.Checked;
-			//hLabel.Enabled = isStartTimeRadioBtn.Checked;
-			mText.Enabled = isStartTimeRadioBtn.Checked;
-			//mLabel.Enabled = isStartTimeRadioBtn.Checked;
-			sText.Enabled = isStartTimeRadioBtn.Checked;
-			//sLabel.Enabled = isStartTimeRadioBtn.Checked;
+			hText.Enabled = mText.Enabled = sText.Enabled =
+					isOpenTimeBaseStartChkBox.Enabled = 
+						isStartTimeRadioBtn.Checked;;
 		}	
 		void cancelBtn_Click(object sender, EventArgs e)
 		{
@@ -167,11 +163,15 @@ namespace rokugaTouroku
 			var isOpenUrlList = false;
 			//var startTimeMode = (isMostStartTimeRadioBtn.Checked ? 0 :((isStartTimeRadioBtn.Checked) ? 1 : 2));
 			//var endTimeMode = isEndTimeRadioBtn.Checked ? 0 : 1;
+			var isOpenTimeBaseStart = startTimeMode != 1 ? false : isOpenTimeBaseStartChkBox.Checked;
+			var isOpenTimeBaseEnd = endTimeMode != 1 ? false : isOpenTimeBaseEndChkBox.Checked;
 			
 			ret = new TimeShiftConfig(startType, 
 				h, m, s, endH, endM, endS, isRenketuLastFile.Checked, isUrlList, 
 				openListCommand, isM3u8List, m3u8UpdateSeconds, isOpenUrlList,
-				isSetVposStartTime.Checked, startTimeMode, endTimeMode);
+				isSetVposStartTime.Checked, startTimeMode, endTimeMode, 
+				isAfterStartTimeCommentChkBox.Checked, 
+				isOpenTimeBaseStart, isOpenTimeBaseEnd);
 			
 			config.set("IsUrlList", isUrlList.ToString().ToLower());
 			config.set("IsM3u8List", isM3u8List.ToString().ToLower());
@@ -184,6 +184,9 @@ namespace rokugaTouroku
 			config.set("tsEndSecond", (endH * 3600 + endM * 60 + endS).ToString());
 			config.set("tsIsRenketu", isRenketuLastFile.Checked.ToString().ToLower());
 			config.set("IsVposStartTime", isSetVposStartTime.Checked.ToString().ToLower());
+			config.set("IsAfterStartTimeComment", isAfterStartTimeCommentChkBox.Checked.ToString().ToLower());
+			config.set("tsBaseOpenTimeStart", isOpenTimeBaseStartChkBox.Checked.ToString().ToLower());
+			config.set("tsBaseOpenTimeEnd", isOpenTimeBaseEndChkBox.Checked.ToString().ToLower());
 			Close();
 		}
 		
@@ -239,8 +242,8 @@ namespace rokugaTouroku
 		}
 		void updateIsManualEndTimeRadioBtn() {
 			endHText.Enabled = endMText.Enabled = 
-					endSText.Enabled = isManualEndTimeRadioBtn.Checked;
-			
+					endSText.Enabled = isOpenTimeBaseEndChkBox.Enabled =  
+					isManualEndTimeRadioBtn.Checked;
 		}
 		private void setFormFromConfig() {
 			var startMode = config.get("tsStartTimeMode");
@@ -263,7 +266,9 @@ namespace rokugaTouroku
 			}
 			isRenketuLastFile.Checked = bool.Parse(config.get("tsIsRenketu"));
 			isSetVposStartTime.Checked = bool.Parse(config.get("IsVposStartTime"));
-			
+			isAfterStartTimeCommentChkBox.Checked = bool.Parse(config.get("IsAfterStartTimeComment"));
+			isOpenTimeBaseStartChkBox.Checked = bool.Parse(config.get("tsBaseOpenTimeStart"));
+			isOpenTimeBaseEndChkBox.Checked = bool.Parse(config.get("tsBaseOpenTimeStart"));
 		}
 		void LastSettingBtnClick(object sender, System.EventArgs e)
 		{
@@ -281,6 +286,9 @@ namespace rokugaTouroku
 			endSText.Text = "0";
 			isRenketuLastFile.Checked = false;
 			isSetVposStartTime.Checked = true;
+			isOpenTimeBaseStartChkBox.Checked = false;
+			isOpenTimeBaseEndChkBox.Checked = false;
+			isAfterStartTimeCommentChkBox.Checked = false;
 		}
 	}
 }

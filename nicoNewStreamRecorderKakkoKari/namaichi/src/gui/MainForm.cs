@@ -70,7 +70,7 @@ namespace namaichi
 			InitializeComponent();
 			Text = "ニコ生新配信録画ツール（仮 " + util.versionStr;
 			defIcon = Icon;
-			
+
 			this.args = args;
 			
 			rec = new rec.RecordingManager(this, config);
@@ -115,6 +115,9 @@ namespace namaichi
 			setBackColor(Color.FromArgb(int.Parse(config.get("recBackColor"))));
 			setForeColor(Color.FromArgb(int.Parse(config.get("recForeColor"))));
 			setLinkColor(Color.FromArgb(int.Parse(config.get("recLinkColor"))));
+			
+			if (config.get("qualityRank").Split(',').Length == 5)
+				config.set("qualityRank", config.get("qualityRank") + ",5");
 		}
 		private void init() {
 			var lv = (args.Length == 0) ? null : util.getRegGroup(args[0], "(lv\\d+(,\\d+)*)");

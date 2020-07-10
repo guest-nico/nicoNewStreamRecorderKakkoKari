@@ -37,6 +37,8 @@ namespace rokugaTouroku
 		private void InitializeComponent()
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.isOpenTimeBaseStartChkBox = new System.Windows.Forms.CheckBox();
+			this.isAfterStartTimeCommentChkBox = new System.Windows.Forms.CheckBox();
 			this.isSetVposStartTime = new System.Windows.Forms.CheckBox();
 			this.isRenketuLastFile = new System.Windows.Forms.CheckBox();
 			this.sLabel = new System.Windows.Forms.Label();
@@ -51,6 +53,7 @@ namespace rokugaTouroku
 			this.cancelBtn = new System.Windows.Forms.Button();
 			this.okBtn = new System.Windows.Forms.Button();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.isOpenTimeBaseEndChkBox = new System.Windows.Forms.CheckBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.endSText = new System.Windows.Forms.TextBox();
@@ -84,6 +87,8 @@ namespace rokugaTouroku
 			// groupBox1
 			// 
 			this.groupBox1.BackColor = System.Drawing.SystemColors.Window;
+			this.groupBox1.Controls.Add(this.isOpenTimeBaseStartChkBox);
+			this.groupBox1.Controls.Add(this.isAfterStartTimeCommentChkBox);
 			this.groupBox1.Controls.Add(this.isSetVposStartTime);
 			this.groupBox1.Controls.Add(this.isRenketuLastFile);
 			this.groupBox1.Controls.Add(this.sLabel);
@@ -97,10 +102,28 @@ namespace rokugaTouroku
 			this.groupBox1.Controls.Add(this.isStartTimeRadioBtn);
 			this.groupBox1.Location = new System.Drawing.Point(5, 32);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(329, 176);
+			this.groupBox1.Size = new System.Drawing.Size(329, 198);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "録画開始時間";
+			// 
+			// isOpenTimeBaseStartChkBox
+			// 
+			this.isOpenTimeBaseStartChkBox.Location = new System.Drawing.Point(189, 45);
+			this.isOpenTimeBaseStartChkBox.Name = "isOpenTimeBaseStartChkBox";
+			this.isOpenTimeBaseStartChkBox.Size = new System.Drawing.Size(135, 15);
+			this.isOpenTimeBaseStartChkBox.TabIndex = 10;
+			this.isOpenTimeBaseStartChkBox.Text = "開演時間を基準にする";
+			this.isOpenTimeBaseStartChkBox.UseVisualStyleBackColor = true;
+			// 
+			// isAfterStartTimeCommentChkBox
+			// 
+			this.isAfterStartTimeCommentChkBox.Location = new System.Drawing.Point(6, 167);
+			this.isAfterStartTimeCommentChkBox.Name = "isAfterStartTimeCommentChkBox";
+			this.isAfterStartTimeCommentChkBox.Size = new System.Drawing.Size(244, 24);
+			this.isAfterStartTimeCommentChkBox.TabIndex = 9;
+			this.isAfterStartTimeCommentChkBox.Text = "録画開始時間付近以降のコメントを保存する";
+			this.isAfterStartTimeCommentChkBox.UseVisualStyleBackColor = true;
 			// 
 			// isSetVposStartTime
 			// 
@@ -207,7 +230,7 @@ namespace rokugaTouroku
 			// 
 			// cancelBtn
 			// 
-			this.cancelBtn.Location = new System.Drawing.Point(245, 338);
+			this.cancelBtn.Location = new System.Drawing.Point(245, 360);
 			this.cancelBtn.Name = "cancelBtn";
 			this.cancelBtn.Size = new System.Drawing.Size(74, 23);
 			this.cancelBtn.TabIndex = 16;
@@ -217,7 +240,7 @@ namespace rokugaTouroku
 			// 
 			// okBtn
 			// 
-			this.okBtn.Location = new System.Drawing.Point(165, 338);
+			this.okBtn.Location = new System.Drawing.Point(165, 360);
 			this.okBtn.Name = "okBtn";
 			this.okBtn.Size = new System.Drawing.Size(74, 23);
 			this.okBtn.TabIndex = 15;
@@ -228,6 +251,7 @@ namespace rokugaTouroku
 			// groupBox2
 			// 
 			this.groupBox2.BackColor = System.Drawing.SystemColors.Window;
+			this.groupBox2.Controls.Add(this.isOpenTimeBaseEndChkBox);
 			this.groupBox2.Controls.Add(this.label1);
 			this.groupBox2.Controls.Add(this.label6);
 			this.groupBox2.Controls.Add(this.endSText);
@@ -237,12 +261,21 @@ namespace rokugaTouroku
 			this.groupBox2.Controls.Add(this.endHText);
 			this.groupBox2.Controls.Add(this.isManualEndTimeRadioBtn);
 			this.groupBox2.Controls.Add(this.isEndTimeRadioBtn);
-			this.groupBox2.Location = new System.Drawing.Point(5, 214);
+			this.groupBox2.Location = new System.Drawing.Point(5, 236);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(329, 108);
 			this.groupBox2.TabIndex = 27;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "録画終了時間";
+			// 
+			// isOpenTimeBaseEndChkBox
+			// 
+			this.isOpenTimeBaseEndChkBox.Location = new System.Drawing.Point(189, 45);
+			this.isOpenTimeBaseEndChkBox.Name = "isOpenTimeBaseEndChkBox";
+			this.isOpenTimeBaseEndChkBox.Size = new System.Drawing.Size(135, 15);
+			this.isOpenTimeBaseEndChkBox.TabIndex = 10;
+			this.isOpenTimeBaseEndChkBox.Text = "開演時間を基準にする";
+			this.isOpenTimeBaseEndChkBox.UseVisualStyleBackColor = true;
 			// 
 			// label1
 			// 
@@ -445,7 +478,7 @@ namespace rokugaTouroku
 			// 
 			// resetBtn
 			// 
-			this.resetBtn.Location = new System.Drawing.Point(85, 338);
+			this.resetBtn.Location = new System.Drawing.Point(85, 360);
 			this.resetBtn.Name = "resetBtn";
 			this.resetBtn.Size = new System.Drawing.Size(74, 23);
 			this.resetBtn.TabIndex = 30;
@@ -455,7 +488,7 @@ namespace rokugaTouroku
 			// 
 			// lastSettingBtn
 			// 
-			this.lastSettingBtn.Location = new System.Drawing.Point(5, 338);
+			this.lastSettingBtn.Location = new System.Drawing.Point(5, 360);
 			this.lastSettingBtn.Name = "lastSettingBtn";
 			this.lastSettingBtn.Size = new System.Drawing.Size(74, 23);
 			this.lastSettingBtn.TabIndex = 29;
@@ -476,7 +509,7 @@ namespace rokugaTouroku
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Window;
-			this.ClientSize = new System.Drawing.Size(341, 370);
+			this.ClientSize = new System.Drawing.Size(341, 392);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
@@ -498,6 +531,9 @@ namespace rokugaTouroku
 			this.panel2.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox isOpenTimeBaseEndChkBox;
+		private System.Windows.Forms.CheckBox isOpenTimeBaseStartChkBox;
+		private System.Windows.Forms.CheckBox isAfterStartTimeCommentChkBox;
 		private System.Windows.Forms.Button lastSettingBtn;
 		private System.Windows.Forms.Button resetBtn;
 		private System.Windows.Forms.Label label2;

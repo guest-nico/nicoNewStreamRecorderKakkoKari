@@ -119,7 +119,24 @@ namespace rokugaTouroku.rec
 				var isGetRec = (ri.recComment == "映像＋コメント" || ri.recComment == "映像のみ") ? 
 					((rlm.cfg.get("EngineMode") == "3") ? " -EngineMode=0" : "") :
 					" -EngineMode=3";
-				si.Arguments = "-nowindo -stdIO -IsmessageBox=false -IscloseExit=true " + ri.id + " -ts-start=" + ri.tsConfig.startTimeStr + " -ts-end=" + ri.tsConfig.endTimeSeconds + "s -ts-list=" + ri.tsConfig.isOutputUrlList.ToString().ToLower() + " -ts-list-m3u8=" + ri.tsConfig.isM3u8List.ToString().ToLower() + " -ts-list-update=" + (int)ri.tsConfig.m3u8UpdateSeconds + " -ts-list-open=" + ri.tsConfig.isOpenUrlList.ToString().ToLower() + " -ts-list-command=\"" + ri.tsConfig.openListCommand + "\" -ts-vpos-starttime=" + ri.tsConfig.isVposStartTime.ToString().ToLower() + " -afterConvertMode=" + ri.getAfterConvertTypeNum() + " -qualityRank=" + ri.qualityRank + " -IsLogFile=false -std-read " + isGetComment + isGetRec;
+				
+				si.Arguments = "-nowindo -stdIO -IsmessageBox=false ";
+				si.Arguments += "-IscloseExit=true " + ri.id;
+				si.Arguments += " -ts-start=" + ri.tsConfig.startTimeStr;
+				si.Arguments += " -ts-end=" + ri.tsConfig.endTimeSeconds + "s";
+				si.Arguments += " -ts-list=" + ri.tsConfig.isOutputUrlList.ToString().ToLower();
+				si.Arguments += " -ts-list-m3u8=" + ri.tsConfig.isM3u8List.ToString().ToLower();
+				si.Arguments += " -ts-list-update=" + (int)ri.tsConfig.m3u8UpdateSeconds;
+				si.Arguments += " -ts-list-open=" + ri.tsConfig.isOpenUrlList.ToString().ToLower();
+				si.Arguments += " -ts-list-command=\"" + ri.tsConfig.openListCommand + "\"";
+				si.Arguments += " -ts-vpos-starttime=" + ri.tsConfig.isVposStartTime.ToString().ToLower();
+				si.Arguments += " -ts-starttime-comment=" + ri.tsConfig.isAfterStartTimeComment.ToString().ToLower();
+				si.Arguments += " -ts-starttime-open=" + ri.tsConfig.isOpenTimeBaseStartArg.ToString().ToLower();
+				si.Arguments += " -ts-endtime-open=" + ri.tsConfig.isOpenTimeBaseEndArg.ToString().ToLower();
+				si.Arguments += " -afterConvertMode=" + ri.getAfterConvertTypeNum();
+				si.Arguments += " -qualityRank=" + ri.qualityRank;
+				si.Arguments += " -IsLogFile=false -std-read ";
+				si.Arguments += isGetComment + isGetRec;
 				util.debugWriteLine(si.Arguments);
 				//si.CreateNoWindow = true;
 				si.UseShellExecute = false;

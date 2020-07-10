@@ -75,6 +75,7 @@ namespace namaichi.rec
 		private int[] quePosTimeList;
 		private RtmpRecorder rr;
 		private bool isConvertSpace;
+		private TimeShiftConfig tsConfig = null;
 		
 		public TimeShiftCommentGetter(string message, 
 				string userId, RecordingManager rm, 
@@ -85,7 +86,7 @@ namespace namaichi.rec
 				WebSocketRecorder rp, int startSecond, 
 				bool isVposStartTime, bool isRtmp, 
 				RtmpRecorder rr, RecordStateSetter rss, 
-				string roomName)
+				string roomName, TimeShiftConfig tsConfig)
 		{
 			this.uri = util.getRegGroup(message, rp.webSocketInfo[2] == "1" ? 
 					"messageServerUri\"\\:\"(ws.+?)\"" : "uri\"\\:\"(ws.+?)\"");
@@ -110,6 +111,7 @@ namespace namaichi.rec
 			this.rr = rr;
 			isConvertSpace = bool.Parse(rm.cfg.get("IsCommentConvertSpace"));
 			this.roomName = roomName;
+			this.tsConfig = tsConfig;
 		}
 		public void save() {
 			if (!bool.Parse(rm.cfg.get("IsgetComment"))) {
@@ -350,12 +352,16 @@ namespace namaichi.rec
 	//		            	commentSW.Flush();
 	//		            	gotCount++;
 	//		            	if (gotCount % 2000 == 0) form.addLogText(gotCount + "件のコメントを保存しました");
-							gotCommentListBuf.Add(new GotCommentInfo(s, chatinfo.no, chatinfo.date, chatinfo.vpos));
-							gotCount++;
-			            	
-							if (gotCount % 2000 == 0 && !rfu.isPlayOnlyMode) {
-								form.addLogText(gotCount + "件のコメントを保存しました");
-								gotCommentList = gotCommentList.Distinct().ToList();
+							
+							if (!tsConfig.isAfterStartTimeComment || 
+	    							chatinfo.date > _openTime + tsConfig.timeSeconds - 10) {
+								gotCommentListBuf.Add(new GotCommentInfo(s, chatinfo.no, chatinfo.date, chatinfo.vpos));
+								gotCount++;
+				            	
+								if (gotCount % 2000 == 0 && !rfu.isPlayOnlyMode) {
+									form.addLogText(gotCount + "件のコメントを保存しました");
+									gotCommentList = gotCommentList.Distinct().ToList();
+								}
 							}
 			            }
 	//				}

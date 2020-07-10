@@ -163,6 +163,7 @@ public class config
 			{"tsBaseOpenTimeEnd","false"},
 			{"tsIsRenketu","false"},
 			{"IsVposStartTime","true"},
+			{"IsAfterStartTimeComment","false"},
 			
 			{"IsUrlList","false"},
 			{"IsM3u8List","false"},
