@@ -160,6 +160,7 @@ public class config
 			{"IsdeleteExit","false"},
 			{"IsgetcommentXml","true"},
 			{"IsgetcommentXmlInfo","false"},
+			{"IsgetcommentStore","false"},
 			{"IsCommentConvertSpace","false"},
 			{"IsSaveCommentOnlyRetryingRec","false"},
 			{"IsDisplayComment","true"},

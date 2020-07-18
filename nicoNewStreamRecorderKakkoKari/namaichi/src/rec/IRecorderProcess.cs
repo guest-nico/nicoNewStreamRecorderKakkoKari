@@ -18,9 +18,11 @@ namespace namaichi.rec
 	{
 		public DateTime tsHlsRequestTime = DateTime.MinValue;
 		public TimeSpan tsStartTime;
-		public string msUri;
 		public bool isTimeShift = false;
+		public string msUri;
 		public string[] msReq;
+		public string msStoreUri;
+		public string[] msStoreReq;
 		public long openTime;
 		public bool isJikken;
 		public string[] gotTsCommentList;

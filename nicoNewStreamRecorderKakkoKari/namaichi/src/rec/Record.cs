@@ -88,6 +88,7 @@ namespace namaichi.rec
 		private bool isSpeedUp = false;
 		private string ua = null;//"Lavf/56.36.100";
 		private string referer = null;
+		public static bool isWriteCancel = false;
 		
 		public Record(RecordingManager rm, bool isFFmpeg, 
 		              RecordFromUrl rfu, string hlsUrl, 
@@ -537,6 +538,8 @@ namespace namaichi.rec
 						if (isPlayOnlyMode) ret = true;
 						else {
 							var before = DateTime.Now;
+							
+							if (isWriteCancel) return;
 							ret = writeFile(s);
 							addDebugBuf("write time " + (DateTime.Now - before));
 							if (DateTime.Now - before > TimeSpan.FromSeconds(2))
@@ -575,6 +578,9 @@ namespace namaichi.rec
 							
 							if (rfu.subGotNumTaskInfo != null)
 								deleteOldSubTs();
+						} else {
+							Thread.Sleep(1000);
+							break;
 						}
 						gotTsList.Remove(s);
 						Thread.Sleep(100);
@@ -940,6 +946,8 @@ namespace namaichi.rec
 						bool ret;
 						if (isPlayOnlyMode) ret = true;
 						else {
+							if (isWriteCancel) return;
+							
 							if (((WebSocketRecorder)wr).isChase)
 								gotTsList.Add(newGetTsTaskList[i]);
 							else ret = writeFile(newGetTsTaskList[i]);
@@ -1042,7 +1050,7 @@ namespace namaichi.rec
 		}
 		private bool writeFile(numTaskInfo info) {
 			var ret = false;
-			checkFreeSpace(info);
+			if (!checkFreeSpace(info)) return false;
 			if (segmentSaveType == 0) {
 				ret = streamRenketuRecord(info);
 			} else {
@@ -1180,6 +1188,7 @@ namespace namaichi.rec
 			hlsMasterUrl = url;
 			if (isTimeShift) {
 				var start = 0;
+				//var recorded = lastRecordedSeconds < lastSegmentNo / 1000 ? lastRecordedSeconds : lastSegmentNo; 
 				if (lastRecordedSeconds == -1) {
 					start = (tsConfig.timeSeconds - 10 < 0) ? 0 : (tsConfig.timeSeconds - 10);
 				} else {
@@ -1310,6 +1319,7 @@ namespace namaichi.rec
 			var isWriteEnd = new bool[1]{false};
 			if (engineMode == "0" && ((WebSocketRecorder)wr).isChase)
 				tsWriterTask = Task.Run(() => timeShiftWriter(isWriteEnd));
+			var isFirst = true;
 			while (rm.rfu == rfu && isRetry) {
 				if (isReConnecting) {
 					Thread.Sleep(3000);
@@ -1339,6 +1349,9 @@ namespace namaichi.rec
 					Thread.Sleep(elapsedTime > intervalTime ? 0 : intervalTime - elapsedTime);
 					lastAccessPlaylistTime = DateTime.Now;
 				} else {
+					if (!isFirst) wr.resetCommentFile();
+					isFirst = false;
+					
 					var recStartTime = DateTime.Now;
 					var startPlayList = util.getPageSource(hlsSegM3uUrl, null, referer, false, 2000, ua);
 					
@@ -1347,7 +1360,7 @@ namespace namaichi.rec
 					var aer = new AnotherEngineRecorder(rm, rfu);
 					aer.record(hlsSegM3uUrl, recFolderFile, anotherEngineCommand);
 					
-					if (isAnotherEngineTimeShiftEnd(recStartTime, hlsSegM3uUrl, startPlayList)) {
+					if (isAnotherEngineTimeShiftEnd(recStartTime, hlsSegM3uUrl, startPlayList) && !isRealtimeChase) {
 						isEndProgram = true;
 						break;
 					}
@@ -1417,6 +1430,7 @@ namespace namaichi.rec
 							
 							var r = writeFile(gotTsList[i]);
 							util.debugWriteLine("timeshift writer write " + r + " " + gotTsList[i].no + " " + gotTsList.Count + " " + i + " " + rm.hlsUrl);
+							if (isWriteCancel) return;
 							if (r) {
 								recordedSecond += gotTsList[i].second;
 								recordedBytes += gotTsList[i].res.Count();
@@ -1426,6 +1440,7 @@ namespace namaichi.rec
 							} else {
 								break;
 							}
+							
 						}
 						foreach (var n in removeNti)
 							gotTsList.Remove(n);
@@ -1713,6 +1728,7 @@ namespace namaichi.rec
 		}
 		
 		private void displayWriteRemainGotTsData() {
+			if (isWriteCancel) return;
 //			Task.Run(() => {
 				while (gotTsList.Count > 0) {
 					rm.form.addLogText("未書き込みのデータを書き込んでいます...(" + gotTsList.Count + "件)");
@@ -1801,10 +1817,12 @@ namespace namaichi.rec
 			}
 		}
 		
-		private void checkFreeSpace(numTaskInfo nti) {
+		private bool checkFreeSpace(numTaskInfo nti) {
+			if (isWriteCancel) return false;
+			
 			var d = Directory.GetDirectoryRoot(recFolderFile);
-			if (d == null) return;
-			if (util.getRegGroup(d[0].ToString(), "([a-zA-Z])") == null) return;
+			if (d == null) return true;
+			if (util.getRegGroup(d[0].ToString(), "([a-zA-Z])") == null) return true;
 
 			var di = new DriveInfo(d);
 			
@@ -1813,15 +1831,24 @@ namespace namaichi.rec
 				
 				util.debugWriteLine(m);
 				rm.form.addLogText(m);
+				var isBreak = false;
 				rm.form.formAction(() => {
 					try {
-						var r = MessageBox.Show(rm.form, m, "", MessageBoxButtons.OK);
+						var r = MessageBox.Show(rm.form, m, "", MessageBoxButtons.RetryCancel);
+						if (r == DialogResult.Cancel) {
+							rm.stopRecording(false);
+							
+							isWriteCancel = true;
+							isBreak = true;
+						}
 					} catch (Exception e) {
 						util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 					}
 				}, false);
+				if (isBreak) return false;
 			}
 			util.debugWriteLine("free space " + di.AvailableFreeSpace);
+			return true;
 		}
 	}
 	class NtiGetter {

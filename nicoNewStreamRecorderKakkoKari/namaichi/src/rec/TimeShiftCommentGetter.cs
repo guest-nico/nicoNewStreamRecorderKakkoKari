@@ -32,6 +32,8 @@ namespace namaichi.rec
 	{
 		string uri;
 		string thread;
+		string uriStore;
+		string threadStore;
 		string userId;
 		MainForm form;
 		RecordingManager rm;
@@ -76,11 +78,13 @@ namespace namaichi.rec
 		private RtmpRecorder rr;
 		private bool isConvertSpace;
 		private TimeShiftConfig tsConfig = null;
+		private bool isStore;
 		
-		public TimeShiftCommentGetter(string message, 
+		public TimeShiftCommentGetter(string uri, string thread,
+				string uriStore, string threadStore,        
 				string userId, RecordingManager rm, 
 				RecordFromUrl rfu, MainForm form, 
-				long openTime, string[] recFolderFile, 
+				long openTime, string recFolderFile, 
 				string lvid, CookieContainer container, 
 				string programType, long _openTime, 
 				WebSocketRecorder rp, int startSecond, 
@@ -88,15 +92,15 @@ namespace namaichi.rec
 				RtmpRecorder rr, RecordStateSetter rss, 
 				string roomName, TimeShiftConfig tsConfig)
 		{
-			this.uri = util.getRegGroup(message, rp.webSocketInfo[2] == "1" ? 
-					"messageServerUri\"\\:\"(ws.+?)\"" : "uri\"\\:\"(ws.+?)\"");
-			this.thread = util.getRegGroup(message, "threadId\":\"(.+?)\"");
+			this.uri = uri;
+			this.thread = thread;
+
 			this.rm = rm;
 			this.rfu = rfu;
 			this.userId = userId;
 			this.form = form;
 			this.openTime = openTime;
-			this.recFolderFile = recFolderFile[1];
+			this.recFolderFile = recFolderFile;
 			this.lvid = lvid;
 			this.container = container;
 			this.isGetXml = bool.Parse(rm.cfg.get("IsgetcommentXml"));
@@ -112,8 +116,16 @@ namespace namaichi.rec
 			isConvertSpace = bool.Parse(rm.cfg.get("IsCommentConvertSpace"));
 			this.roomName = roomName;
 			this.tsConfig = tsConfig;
+			
+			this.uriStore = uriStore;
+			this.threadStore = threadStore;
 		}
-		public void save() {
+		public void save(bool isStore, string _uri = null, string _thread = null) {
+			this.isStore = isStore;
+			if (_uri != null) {
+				uri = _uri;
+				thread = _thread;
+			}
 			if (!bool.Parse(rm.cfg.get("IsgetComment"))) {
 				isEnd = true;
 				return;
@@ -345,7 +357,7 @@ namespace namaichi.rec
 							if (threadLine == null) {
 								threadLine = s;
 								if (!rfu.isPlayOnlyMode)
-									form.addLogText("アリーナ席に" + chatinfo.lastRes + "件ぐらいのコメントが見つかりました(追い出しコメント含む)");
+									form.addLogText("アリーナ席に" + chatinfo.lastRes + "件ぐらいの" + (isStore ? "ストア" : "") + "コメントが見つかりました(追い出しコメント含む)");
 							}
 			            } else {
 	//		            	commentSW.WriteLine(s + "}>");
@@ -400,52 +412,47 @@ namespace namaichi.rec
 			isRetry = b;
 		}
 		private void endProcess() {
-			var isWrite = (rm.cfg.get("IsgetComment") == "true" && !rfu.isPlayOnlyMode && !rp.isChase);
+			if (isStore) return;
+			
+			if (uriStore != null)
+				saveStore();
+			
+			var isWrite = (!rfu.isPlayOnlyMode && !rp.isChase);
 			if (isWrite)
 				form.addLogText("コメントの後処理を開始します");
 			
 			gotCommentList = gotCommentList.Distinct().ToList();
-			//foreach (var gci in gotCommentList)
-			//	if (unique.IndexOf(gci) == -1) unique.Add(gci);
-			//gotCommentList = unique;
-			
-			/*
-			try {
-				if (commentSW != null) commentSW.Close();
-			} catch (Exception e) {
-				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
-			}
-			*/
+
 			util.debugWriteLine("end proccess gotCommentList count " + gotCommentList.Count);
-//			string[] chats;
-//			using(var r = new StreamReader(fileName)) {
-//				chats = r.ReadToEnd().Split(new string[]{"}>\r\n"}, StringSplitOptions.RemoveEmptyEntries);
-//		    }
-			//var isXml = bool.Parse(rm.cfg.get("IsgetcommentXml"));
+
 			while (isRtmp && (rr == null || rr.fileNameList == null)) {
 				Thread.Sleep(1000);
 			}
-				
+			
+			util.debugWriteLine("end proccess a");
+			
 			var keys = new List<int>();
 			foreach (var c in gotCommentList) {
-//				util.debugWriteLine(c);
-//				util.debugWriteLine(util.getRegGroup(c, "date.+?(\\d+)"));
-				//var date = int.Parse(util.getRegGroup(c, "date.+?(\\d+)"));
 				var date = c.date;
 				keys.Add(date);
 			}
 			
-			//Array.Sort(keys.ToArray(), chats);
+			util.debugWriteLine("end proccess b");
 			
 			gotCommentList.Sort(new Comparison<GotCommentInfo>(commentListCompare));
 			var chats = gotCommentList.Select(x => x.comment).ToArray();
 			rp.gotTsCommentList = chats;
+			
+			util.debugWriteLine("end proccess d");
 			
 			if (rp.isChase) {
 				while (rp.chaseCommentBuf.Count == 0 
 				       && rm.rfu == rfu) Thread.Sleep(1000);
 				rp.chaseCommentSum();
 			}
+			
+			util.debugWriteLine("end proccess c");
+			
 			if (!isWrite) return;
 			
 			var fileNum = (quePosTimeList != null) ? quePosTimeList.Length : 1;
@@ -604,6 +611,24 @@ namespace namaichi.rec
 			public override int GetHashCode() {
 				return comment.GetHashCode();
 			}
+		}
+		private void saveStore() {
+			util.debugWriteLine("saveStore");
+			var tscg = new TimeShiftCommentGetter(uri, thread,
+					uriStore, threadStore,
+					userId, rm, rfu, rm.form, openTime, 
+					recFolderFile, lvid, container, 
+					programType, _openTime, rp, 
+					startSecond, 
+					isVposStartTime, 
+					isRtmp, rr, null, roomName, tsConfig);
+			tscg.save(true);
+				
+			while (!tscg.isEnd && rm.rfu == rfu && isRetry && rp.isRetry) {
+				Thread.Sleep(500);
+			}
+			util.debugWriteLine("saveStore wait end " + tscg.gotCommentList.Count);
+			gotCommentList.AddRange(tscg.gotCommentList);
 		}
 	}
 }

@@ -42,7 +42,7 @@ namespace namaichi.rec
 		private RecordFromUrl rfu;
 		public Html5Recorder h5r;
 		private WebSocket ws;
-		private WebSocket wsc;
+		private WebSocket[] wsc = new WebSocket[2];
 		public Record rec;
 		public RecordStateSetter rss = null;
 		public StreamWriter commentSW;
@@ -52,6 +52,7 @@ namespace namaichi.rec
 		private string ticket;
 		public bool isRetry = true;
 		private string msThread;
+		private string msStoreThread;
 		private string sendCommentBuf = null;
 		private bool isSend184 = true;
 		
@@ -114,6 +115,8 @@ namespace namaichi.rec
 		private bool isConvertSpace;
 		private bool isSaveCommentOnlyRetryingRec;
 		public long sync = 0;
+		private object commentLock = new object();
+		private bool isLogEnd = false;
 		
 		public WebSocketRecorder(string[] webSocketInfo, 
 				CookieContainer container, string[] recFolderFile, 
@@ -292,8 +295,11 @@ namespace namaichi.rec
 			}
 			addDebugBuf("closed saikai");
 			
+			isLogEnd = true;
+			if (rec != null) Record.isWriteCancel = false;
 			return isNoPermission;
 		}
+		
 		private bool connect() {
 			displayDebug("ws connect");
 			lock (this) {
@@ -463,20 +469,20 @@ namespace namaichi.rec
 				setMsInfo(e.Message);
 				if (isTimeShift && !isRealtimeChase) {
 					if (tscg == null) {
-						tscg = new TimeShiftCommentGetter(e.Message, 
+						tscg = new TimeShiftCommentGetter(msUri, msThread, msStoreUri, msStoreThread,                                  
 								userId, rm, rfu, rm.form, openTime, 
-								recFolderFile, lvid, container, 
+								recFolderFile[1], lvid, container,
 								programType, _openTime, this, 
 								(isRtmp) ? 0 : tsConfig.timeSeconds, 
 								(isRtmp) ? false : tsConfig.isVposStartTime, 
 								isRtmp, rr, rss, roomName, tsConfig);
-						tscg.save();
+						tscg.save(false);
 					}
 					
 				}
 				if (!isTimeShift || isChase) {
-					if (rfu == rm.rfu && wsc == null && isRetry) {
-						connectMessageServer(e.Message, (WebSocket)sender);
+					if (rfu == rm.rfu && wsc[0] == null && isRetry) {
+						connectMessageServer((WebSocket)sender);
 					}
 				}
 			}
@@ -655,7 +661,7 @@ namespace namaichi.rec
 				rm.form.addLogText("配信データが取得できませんでした");
 			}
 			if (type == "postkey") {
-				if (sendCommentBuf != null && (rfu.isPlayOnlyMode || wsc != null))
+				if (sendCommentBuf != null && (rfu.isPlayOnlyMode || wsc[0] != null))
 					sendCommentWsc(e.Message);
 			}
 		}
@@ -746,64 +752,62 @@ namespace namaichi.rec
 				//});
 	        }
 		}
-		private void connectMessageServer(string message, WebSocket _ws) {
+		private void connectMessageServer(WebSocket _ws) {
 	    	addDebugBuf("connect message server");
 	    	addDebugBuf("isretry " + isRetry + " isend " + isEndProgram);
-//			msUri = util.getRegGroup(message, "messageServerUri\"\\:\"(ws.+?)\"");
-//			msThread = util.getRegGroup(message, "threadId\":\"(.+?)\"");
-	//		String msReq = "[truncated][{\"ping\":{\"content\":\"rs:0\"}},{\"ping\":{\"content\":\"ps:0\"}},{\"thread\":{\"thread\":\"" + msThread + "\",\"version\":\"20061206\",\"fork\":0,\"user_id\":\"" + userId + "\",\"res_from\":-1000,\"with_global\":1,\"scores\":1,\"nicoru\":0}},{\"ping\":{\"content\":\"pf:0\"}},{\"ping\":{\"content\":\"rf:0\"}}]\0";
-	
-//			var res_from = (isTimeShift) ? "-2000" : "-10";
-//			msReq = new string[] {"[{\"ping\":{\"content\":\"rs:0\"}},{\"ping\":{\"content\":\"ps:0\"}},{\"thread\":{\"thread\":\"" + msThread + "\",\"version\":\"20061206\",\"fork\":0,\"user_id\":\"" + userId + "\",\"res_from\":" + res_from + ",\"with_global\":1,\"scores\":0,\"nicoru\":0}},{\"ping\":{\"content\":\"pf:0\"}},{\"ping\":{\"content\":\"rf:0\"}}]"};
-//			msReq = "[{\"ping\":{\"content\":\"rs:0\"}},{\"ping\":{\"content\":\"ps:0\"}},{\"thread\":{\"thread\":\"" + msThread + "\",\"version\":\"20061206\",\"fork\":0,\"user_id\":\"" + userId + "\",\"res_from\":1,\"with_global\":1,\"scores\":0,\"nicoru\":0}},{\"ping\":{\"content\":\"pf:0\"}},{\"ping\":{\"content\":\"rf:0\"}}]";
-			
-	//		String msReq = "{\"thread\":{\"thread\":\"" + msThread + "\",\"version\":\"20061206\",\"fork\":0,\"user_id\":\"" + userId + "\",\"res_from\":-100,\"with_global\":1,\"scores\":1,\"nicoru\":0}}";
-	//		String msReq = "{\"thread\":{\"thread\":\"" + msThread + "\",\"version\":\"20061206\",\"res_from\":-1000}}";
-	//		String msReq = "<thread thread=\"" + msThread + "\" version=\"20061206\" res_from=\"-100\" />\0";
-			//string msPort = util.getRegGroup(message, "jp:(.+?)/");
-			//string msAddr = util.getRegGroup(message, "://(.+?):");
-			
-			//addDebugBuf(msAddr + " " + msPort);
-			//addDebugBuf("msuri " + msUri);
-			//addDebugBuf("msreq " + msReq[0]);
-//			if (rm.isPlayOnlyMode) return;
-			//msUri += "store";
 			
 			var header =  new List<KeyValuePair<string, string>>();
 			header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Protocol", "msg.nicovideo.jp#json"));
-			wsc = new WebSocket(msUri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.None);
+			wsc[0] = new WebSocket(msUri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.None);
 			//wsc = new WebSocket(msUri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
-			ws.Proxy = util.wsProxy;
-			wsc.Opened += onWscOpen;
-			wsc.Closed += onWscClose;
-			wsc.MessageReceived += onWscMessageReceive;
-			wsc.Error += onWscError;
+			wsc[0].Proxy = util.wsProxy;
+			wsc[0].Opened += onWscOpen;
+			wsc[0].Closed += onWscClose;
+			wsc[0].MessageReceived += onWscMessageReceive;
+			wsc[0].Error += onWscError;
 //			himodukeWS[0] = _ws;
 //			himodukeWS[1] = wsc;
 			
 	        addDebugBuf(msUri);
 	        
-	        wsc.Open();
-	        	        
+	        wsc[0].Open();
+			
+	        if (msStoreUri != null) {
+	        	wsc[1] = new WebSocket(msStoreUri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.None);
+	        	wsc[1].Opened += onWscOpen;
+	        	wsc[1].Closed += onWscClose;
+	        	wsc[1].MessageReceived += onWscMessageReceive;
+	        	wsc[1].Error += onWscError;
+	        	wsc[1].Open();
+	        }
 	        
 			addDebugBuf("ms start");
 			
 			
 		}
 		public void setMsInfo(string msg) {
-			//msUri = util.getRegGroup(msg, "messageServerUri\"\\:\"(ws.+?)\"");
+			
 			msUri = util.getRegGroup(msg, webSocketInfo[2] == "1" ? 
 					"messageServerUri\"\\:\"(ws.+?)\"" : "\"uri\":\"(ws.+?)\"");
 			
 			msThread = util.getRegGroup(msg, "threadId\":\"(.+?)\"");
+			
 			var res_from = (isTimeShift && !isChase) ? "-2000" : "-10";
 			msReq = new string[] {"[{\"ping\":{\"content\":\"rs:0\"}},{\"ping\":{\"content\":\"ps:0\"}},{\"thread\":{\"thread\":\"" + msThread + "\",\"version\":\"20061206\",\"fork\":0,\"user_id\":\"" + userId + "\",\"res_from\":" + res_from + ",\"with_global\":1,\"scores\":1,\"nicoru\":0}},{\"ping\":{\"content\":\"pf:0\"}},{\"ping\":{\"content\":\"rf:0\"}}]"};
-			//var _roomName = util.getRegGroup(msg, "\"roomName\":\"(.+?)\"");
+			
+			
+			if (bool.Parse(rm.cfg.get("IsgetcommentStore"))) {
+				msStoreUri = util.getRegGroup(msg, webSocketInfo[2] == "1" ? 
+					"messageServerUri\"\\:\"(ws.+?)\"" : "\"uri\":\"(ws.+?)\"");
+				msStoreThread = util.getRegGroup(msg, "threadId\":\"(.+?)\"");
+				msStoreReq = new string[] {"[{\"ping\":{\"content\":\"rs:0\"}},{\"ping\":{\"content\":\"ps:0\"}},{\"thread\":{\"thread\":\"" + msThread + "\",\"version\":\"20061206\",\"fork\":0,\"user_id\":\"" + userId + "\",\"res_from\":" + res_from + ",\"with_global\":1,\"scores\":1,\"nicoru\":0}},{\"ping\":{\"content\":\"pf:0\"}},{\"ping\":{\"content\":\"rf:0\"}}]"};
+			}
+			
 			var _roomName = util.getRegGroup(msg, webSocketInfo[2] == "1" ? 
 					"\"roomName\":\"(.+?)\"" : "\"name\":\"(.+?)\"");
 			if (_roomName != null) roomName = _roomName;
 		}
-		public void stopRecording(WebSocket _ws, WebSocket _wsc) {
+		public void stopRecording(WebSocket _ws, WebSocket[] _wsc) {
 			displayDebug("stop recording");
 			addDebugBuf("stop recording");
 			try {
@@ -820,12 +824,21 @@ namespace namaichi.rec
 				addDebugBuf(e.Message + e.StackTrace);
 			}
 			try {
-				if (_wsc != null && _wsc.State != WebSocketState.Closed && _wsc.State != WebSocketState.Closing) {
-					addDebugBuf("state close wsc " + _wsc.State);					
-					_wsc.Close();
+				if (_wsc[0] != null && _wsc[0].State != WebSocketState.Closed && _wsc[0].State != WebSocketState.Closing) {
+					addDebugBuf("state close wsc " + _wsc[0].State);
+					_wsc[0].Close();
 				}
 			} catch (Exception e) {
-				addDebugBuf("wsc close error");
+				addDebugBuf("wsc0 close error");
+				addDebugBuf(e.Message + e.StackTrace);
+			}
+			try {
+				if (_wsc[1] != null && _wsc[1].State != WebSocketState.Closed && _wsc[1].State != WebSocketState.Closing) {
+					addDebugBuf("state close wsc " + _wsc[1].State);
+					_wsc[1].Close();
+				}
+			} catch (Exception e) {
+				addDebugBuf("wsc1 close error");
 				addDebugBuf(e.Message + e.StackTrace);
 			}
 			try {
@@ -881,8 +894,7 @@ namespace namaichi.rec
 		}
 		private void onWscOpen(object sender, EventArgs e) {
 			addDebugBuf("ms open a");
-			//wsc.Send(msReq[0]);
-			sendMessage(wsc, msReq[0]);
+			sendMessage((WebSocket)sender, sender == wsc[0] ? msReq[0] : msStoreReq[0]);
 			addDebugBuf("ms open b");
 			
 			if (rm.rfu != rfu) {
@@ -891,7 +903,7 @@ namespace namaichi.rec
 				return;
 			}			
 			try {
-				if (bool.Parse(isGetComment) && commentSW == null && !rfu.isPlayOnlyMode) {
+				if (bool.Parse(isGetComment) && commentSW == null && !rfu.isPlayOnlyMode && sender == wsc[0]) {
 					if (DateTime.Now < lastOpenCommentSwDt + TimeSpan.FromSeconds(3) 
 					    	&& (rec.engineMode != "0" && rec.engineMode != "3")) {
 						var __commentFileName = util.getOkCommentFileName(rm.cfg, commentFileName, lvid, isTimeShift, isRtmp);
@@ -939,10 +951,11 @@ namespace namaichi.rec
 		private void onWscClose(object sender, EventArgs e) {
 			addDebugBuf("ms onclose");
 			
-			if (rec != null && rec.engineMode != "0" & rec.engineMode != "3")
+			if (rec != null && rec.engineMode != "0" & rec.engineMode != "3" && sender == wsc[0])
 			//    DateTime.Now > lastOpenCommentSwDt + TimeSpan.FromSeconds(3)) return;
 				closeWscProcess();
-			wsc = null;
+			if (sender == wsc[0]) wsc[0] = null;
+			else wsc[1] = null;
 			try {
 				if (rm.rfu == rfu && isRetry && !isTimeShiftCommentGetEnd) {
 					try {
@@ -1012,7 +1025,7 @@ namespace namaichi.rec
 			addDebugBuf("on wsc message " + e.Message);
 			var eMessage = isConvertSpace ? util.getOkSJisOut(e.Message, " ") : e.Message;
 			
-			if (isTimeShift && eMessage.StartsWith("{\"ping\":{\"content\":\"rf:") && !isChase) {
+			if (isTimeShift && eMessage.StartsWith("{\"ping\":{\"content\":\"rf:") && !isChase && sender == wsc[0]) {
 				closeWscProcess();
 				try {commentSW.Close();}
 				catch (Exception eee) {addDebugBuf(eee.Message + eee.Source + eee.StackTrace + eee.TargetSite);}
@@ -1022,9 +1035,14 @@ namespace namaichi.rec
 			
 			if (rm.rfu != rfu || ((!isTimeShift || isChase) && !isRetry)) {
 				try {
-					if (wsc != null) wsc.Close();
+					if (wsc[0] != null) wsc[0].Close();
 				} catch (Exception ee) {
-					addDebugBuf("wsc message receive exception " + ee.Source + " " + ee.StackTrace + " " + ee.TargetSite + " " + ee.Message);
+					addDebugBuf("wsc0 message receive exception " + ee.Source + " " + ee.StackTrace + " " + ee.TargetSite + " " + ee.Message);
+				}
+				try {
+					if (wsc[1] != null) wsc[1].Close();
+				} catch (Exception ee) {
+					addDebugBuf("wsc1 message receive exception " + ee.Source + " " + ee.StackTrace + " " + ee.TargetSite + " " + ee.Message);
 				}
 				//stopRecording();
 				addDebugBuf("tigau rfu comment" + eMessage);
@@ -1078,7 +1096,7 @@ namespace namaichi.rec
 				}
 				
 				try {
-					if (isGetCommentXmlInfo && commentSW != null) {
+					if (isGetCommentXmlInfo && commentSW != null && sender == wsc[0]) {
 						if (!isTimeShift || isRealtimeChase)
 							commentSW.WriteLine("<StartTime>" + serverTime + "</StartTime>");							
 						else {
@@ -1107,33 +1125,40 @@ namespace namaichi.rec
 //            addDebugBuf(jsonCommentToXML(text));
 			
 			try {
-				if (commentSW != null) {
-					var writeStr = (bool.Parse(isGetCommentXml)) ? 
-						chatXml.ToString() : 
-						(Regex.Replace(eMessage, 
-			            	"\"vpos\"\\:(\\d+)", 
-			            	"\"vpos\":" + chatinfo.vpos + ""));
-					writeStr = util.getOkSJisOut(writeStr, " ");
-					
-					if (isChase && !isRealtimeChase && chaseCommentBuf != null) {
-						chaseCommentBuf.Add(writeStr);
+				lock(commentLock) {
+					if (commentSW != null) {
+						var writeStr = (bool.Parse(isGetCommentXml)) ? 
+							chatXml.ToString() : 
+							(Regex.Replace(eMessage, 
+				            	"\"vpos\"\\:(\\d+)", 
+				            	"\"vpos\":" + chatinfo.vpos + ""));
+						writeStr = util.getOkSJisOut(writeStr, " ");
 						
-//						if (tscg.isEnd)
-//							chaseCommentSum();
-					} else {
-						if (lastSaveComments.IndexOf(writeStr) == -1 &&
-						    	!(lastSaveComments.Count > 0 && chatinfo.root == "thread")) {
-							if (!isSaveCommentOnlyRetryingRec || (rec == null || DateTime.Now - rec.lastWroteSegmentDt < TimeSpan.FromSeconds(10))) {
-								commentSW.WriteLine(writeStr);
-								commentSW.Flush();
+						if (isChase && !isRealtimeChase && chaseCommentBuf != null) {
+							if (chaseCommentBuf.IndexOf(writeStr) == -1) {
+								chaseCommentBuf.Add(writeStr);
+								
+								util.debugWriteLine("chase comment add " + writeStr);
+								
+								lastSaveComments.Add(writeStr);
+								if (lastSaveComments.Count > 52)
+									lastSaveComments.RemoveRange(0, lastSaveComments.Count - 12);
 							}
+						} else {
+							if (lastSaveComments.IndexOf(writeStr) == -1 &&
+							    	!(lastSaveComments.Count > 0 && chatinfo.root == "thread")) {
+								if (!isSaveCommentOnlyRetryingRec || (rec == null || DateTime.Now - rec.lastWroteSegmentDt < TimeSpan.FromSeconds(10))) {
+									commentSW.WriteLine(writeStr);
+									commentSW.Flush();
+								}
+							}
+							lastSaveComments.Add(writeStr);
+							if (lastSaveComments.Count > 52)
+								lastSaveComments.RemoveRange(0, lastSaveComments.Count - 12);
 						}
-						lastSaveComments.Add(writeStr);
-						if (lastSaveComments.Count > 12)
-							lastSaveComments.RemoveRange(0, lastSaveComments.Count - 12);
+						addDebugBuf("write comment " + writeStr);
+			             
 					}
-					addDebugBuf("write comment " + writeStr);
-		             
 				}
            
 			} catch (Exception ee) {addDebugBuf("comment write exception " + ee.Message + " " + ee.StackTrace);}
@@ -1330,7 +1355,7 @@ namespace namaichi.rec
 				postKey = util.getRegGroup(s, "\"value\":\"(.+?)\"");
 			}
 			var command = "[{\"ping\":{\"content\":\"rs:1\"}},{\"ping\":{\"content\":\"ps:5\"}},{\"chat\":{\"thread\":\"" + msThread + "\",\"vpos\":" + vpos + mail + ",\"ticket\":\"" + ticket + "\",\"user_id\":\"" + userId + "\",\"content\":\"" + sendCommentBuf + "\",\"postkey\":\"" + postKey + "\", \"premium\":" + premium + "}},{\"ping\":{\"content\":\"pf:5\"}},{\"ping\":{\"content\":\"rf:1\"}}]";
-			sendMessage(wsc, command);
+			sendMessage(wsc[0], command);
 			sendCommentBuf = null;
 		}
 		//override public string[] getRecFilePath(long openTime) {
@@ -1344,7 +1369,7 @@ namespace namaichi.rec
 			#if !DEBUG
 //				return;
 			#endif
-			while ((rm.rfu == rfu && isRetry) || debugWriteBuf.Count > 0) {
+			while ((rm.rfu == rfu && !isLogEnd) || debugWriteBuf.Count > 0) {
 				try {
 					lock (debugWriteBuf) {
 						string[] l = new String[debugWriteBuf.Count + 10];
@@ -1451,10 +1476,15 @@ namespace namaichi.rec
 					util.debugWriteLine(ee.Message + " " + ee.StackTrace);
 				}
 				try {
-					//wsc.Send(msReq[0]);
-					sendMessage(wsc, msReq[0]);
+					sendMessage(wsc[0], msReq[0]);
 				} catch (Exception ee) {
-					util.debugWriteLine("on open wsc req send exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+					util.debugWriteLine("on open wsc0 req send exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+				}
+				try {
+					if (wsc[1] != null)
+						sendMessage(wsc[1], msStoreReq[0]);
+				} catch (Exception ee) {
+					util.debugWriteLine("on open wsc1 req send exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 				}
 			}
 		}
@@ -1579,26 +1609,38 @@ namespace namaichi.rec
 			return ret;
 		}
 		public void chaseCommentSum() {
+			util.debugWriteLine("chaseCommentSum " + gotTsCommentList.Count() + " " + chaseCommentBuf.Count);
 			var gotComList = new List<string>();
 			gotComList.AddRange(gotTsCommentList);
-			foreach (var c in chaseCommentBuf) {
-				if (gotComList.IndexOf(c) > -1)
-					gotComList.Remove(c);
+			while (true) {
+				try {
+					foreach (var c in chaseCommentBuf) {
+						if (gotComList.IndexOf(c) > -1) {
+							gotComList.Remove(c);
+							util.debugWriteLine("remove gotcomlist " + c);
+						}
+					}
+					break;
+				} catch (Exception e) {
+					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				}
 			}
 			
-			//var d = chaseCommentBuf[0];
-			if (chaseCommentBuf.Count > 0)
-				chaseCommentBuf.RemoveAt(0);
-			//var f = chaseCommentBuf[0];
+			util.debugWriteLine("chasecomment sum gotts " + (gotTsCommentList.Length == 0 ? "no" : gotTsCommentList[0]));
+			util.debugWriteLine("chasecomment sum chasecombuf " + (chaseCommentBuf.Count == 0 ? "no" : chaseCommentBuf[0]));
 			
-			//var a = gotComList[gotComList.Count - 1];
-			//var b = chaseCommentBuf[0];
+			string threadLine = null; 
+			if (chaseCommentBuf.Count > 0) {
+				threadLine = chaseCommentBuf[0];
+				chaseCommentBuf.RemoveAt(0);
+			}
+			
 			
 			try {
+				if (threadLine != null) commentSW.WriteLine(threadLine);
 				for (var i = 0; i < gotComList.Count; i++) {
 					commentSW.WriteLine(gotComList[i]);
 				}
-				//commentSW.WriteLine("aaaaa");
 				foreach (var c in chaseCommentBuf)
 					commentSW.WriteLine(c);
 				commentSW.Flush();
