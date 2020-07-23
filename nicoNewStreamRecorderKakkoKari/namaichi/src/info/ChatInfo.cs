@@ -99,7 +99,7 @@ namespace namaichi.info
 			if (root == "control") _xml.Root.Name = "chat";
 			var thread = _xml.Root.Attribute("thread");
 			if (thread != null) 
-				_xml.Root.SetAttributeValue("thread", util.getRegGroup(thread.Value, "(\\d+)"));
+				_xml.Root.SetAttributeValue("thread", thread.Value);
 				
 //			_xml.Add(new XElement("ele", o));
 //			http://live2.nicovideo.jp/watch/lv312502201?ref=top&zroute=index&kind=top_onair&row=3

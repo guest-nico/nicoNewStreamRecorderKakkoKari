@@ -189,8 +189,10 @@ namespace namaichi.rec
 					Thread.Sleep(500);
 					
 				} else {
-					((WebSocketRecorder)wr).setSync(0, 0, hlsSegM3uUrl);
-					if (!isFirst) wr.resetCommentFile();
+					if (wr != null) {
+						((WebSocketRecorder)wr).setSync(0, 0, hlsSegM3uUrl);
+						if (!isFirst) wr.resetCommentFile();
+					}
 					isFirst = false;
 					
 					var aer = new AnotherEngineRecorder(rm, rfu);
@@ -200,7 +202,8 @@ namespace namaichi.rec
 					setReconnecting(true);
 //					if (!isReConnecting)
 					//((WebSocketRecorder)wr).setSync(0, 0, hlsSegM3uUrl);					
-					((WebSocketRecorder)wr).sync = 0;
+					if (wr != null)
+						((WebSocketRecorder)wr).sync = 0;
 					
 					reConnect();
 					continue;
@@ -548,7 +551,7 @@ namespace namaichi.rec
 						//util.debugWriteLine("write ok " + s.no);
 						
 						if (ret) {
-							if (wr.firstSegmentSecond == -1) 
+							if (wr != null && wr.firstSegmentSecond == -1) 
 								wr.firstSegmentSecond = s.startSecond;
 							
 							addDebugBuf("write ok " + s.no + " origin " + s.originNo);
@@ -1057,7 +1060,7 @@ namespace namaichi.rec
 				ret = originalTsRecord(info);
 			}
 			
-			if (lastSegmentNo == -1) {
+			if (lastSegmentNo == -1 && wr != null) {
 				((WebSocketRecorder)wr).setSync(
 					info.no, info.second,hlsSegM3uUrl);
 			}
@@ -1619,6 +1622,7 @@ namespace namaichi.rec
 			});
 		}
 		private void reConnect() {
+			if (wr == null) return;
 			if (wr.isJikken) {
 				wr.reConnect();
 			} else {

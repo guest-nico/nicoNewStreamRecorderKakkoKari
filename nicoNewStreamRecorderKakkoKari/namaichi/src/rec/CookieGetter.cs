@@ -96,7 +96,6 @@ namespace namaichi.rec
 						util.debugWriteLine("browser login ok");
 						return cc;
 					}
-					
 				}
 			}
 			
@@ -115,6 +114,8 @@ namespace namaichi.rec
 					}
 				}
 			}
+			
+			if (isPlayable(url)) return new CookieContainer();
 			return null;
 		}
 		private CookieContainer getUserSessionCC(string us, string uss) {
@@ -316,8 +317,6 @@ namespace namaichi.rec
 				util.debugWriteLine(e.Message+e.StackTrace);
 				return null;
 			}
-			
-			
 		}
 		private CookieContainer setUserSession(CookieContainer cc, 
 				Cookie c, Cookie secureC, Cookie age_auth = null) {
@@ -333,6 +332,20 @@ namespace namaichi.rec
 				//"https://live2.nicovideo.jp/watch/lv320739154
 			}
 			return cc;
+		}
+		private bool isPlayable(string url) {
+			try {
+				util.debugWriteLine("isPlayable " + url);
+				var res = util.getPageSource(url);
+				if (res != null && res.IndexOf("wss://a.") > -1) {
+					id = "0";
+					pageSource = res;
+					return true;
+				}
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
+			return false;
 		}
 	}
 }

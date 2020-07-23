@@ -9,6 +9,7 @@
 using System;
 using System.Net;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using namaichi.config;
@@ -81,6 +82,11 @@ namespace namaichi.rec
 			//rtmp {"type":"watch","body":{"command":"getpermit","requirement":{"broadcastId":"17684079051334","route":"","stream":{"protocol":"rtmp","requireNewStream":true},"room":{"isCommentable":true,"protocol":"webSocket"}}}}
 			string request = null;
 			var ver = util.getRegGroup(wsUrl, "/v(\\d+)/");
+			if (ver != "1" && ver != "2") {
+				wsUrl = Regex.Replace(wsUrl, "/v" + ver + "/", "/v2/");
+				ver = "2";
+			}
+				
 			if (ver == "1") {
 				if (broadcastId == null) {
 					//broadcastId = util.getRegGroup(data, "webSocketUrl.+?watch/(\\d+).+?audience_token");
@@ -324,6 +330,10 @@ namespace namaichi.rec
 					
 				
 				var userId = util.getRegGroup(res, "\"user\"\\:\\{\"user_id\"\\:(.+?),");
+				if (userId == "null") {
+					userId = "guest";
+					rm.form.addLogText("非ログインで開始を試みます");
+				}
 				var isPremium = res.IndexOf("\"member_status\":\"premium\"") > -1;
 				wsr = new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rfu, this, openTime, isTimeShift, lvid, timeShiftConfig, userId, isPremium, programTime, type, _openTime, isRtmp, isRtmpOnlyPage, isChase, isRealtimeChase, true, rss, vposBaseTime);
 				rm.wsr = wsr;
