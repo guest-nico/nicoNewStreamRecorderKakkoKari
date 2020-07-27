@@ -664,6 +664,8 @@ namespace namaichi.rec
 				if (sendCommentBuf != null && (rfu.isPlayOnlyMode || wsc[0] != null))
 					sendCommentWsc(e.Message);
 			}
+			if (type == "postCommentResult") {
+			}
 		}
 		public void displaySchedule() {
 			DateTime keikaTimeStart = DateTime.MinValue;
@@ -1331,10 +1333,12 @@ namespace namaichi.rec
 			if (msThread == null) return;
 			sendCommentBuf = s;
 			isSend184 = is184;
+			var vpos = (int)(((TimeSpan)(DateTime.Now - util.getUnixToDatetime(openTime))).TotalMilliseconds / 10) + 60000 + 780;
 			//ws.Send("{\"type\":\"watch\",\"body\":{\"command\":\"getpostkey\",\"params\":[\"" + msThread + "\"]}}");
 			if (webSocketInfo[2] == "1")
 				sendMessage(ws, "{\"type\":\"watch\",\"body\":{\"command\":\"getpostkey\",\"params\":[\"" + msThread + "\"]}}");
-			else sendMessage(ws, "{\"type\":\"getPostkey\"}");
+			//else sendMessage(ws, "{\"type\":\"getPostkey\"}");
+			else sendMessage(ws, "{\"type\":\"postComment\",\"data\":{\"text\":\"" + s + "\",\"vpos\":" + vpos + ",\"isAnonymous\":" + is184.ToString().ToLower() + ",\"color\":\"white\",\"size\":\"medium\",\"position\":\"naka\"}}");
 		}
 		public void sendCommentWsc(string s) {
 			var vpos = (int)(((TimeSpan)(DateTime.Now - util.getUnixToDatetime(openTime))).TotalMilliseconds / 10) + 60000 + 780;
