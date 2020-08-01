@@ -62,6 +62,7 @@ namespace namaichi
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
+			util.setFontSize(int.Parse(config.get("fontSize")), this, false);
 		}
 		private void commentPanelBorderPaint(object sender, PaintEventArgs e) {
 			var color = Color.FromArgb(229, 229, 229);

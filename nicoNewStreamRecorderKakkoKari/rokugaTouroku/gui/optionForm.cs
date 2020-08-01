@@ -51,6 +51,8 @@ namespace rokugaTouroku
 			//tabControl1.TabPages.RemoveAt(6);
 			setBackColor(Color.FromArgb(int.Parse(cfg.get("tourokuBackColor"))));
 			setForeColor(Color.FromArgb(int.Parse(cfg.get("tourokuForeColor"))));
+			
+			util.setFontSize(int.Parse(cfg.get("fontSize")), this, false);
 		}
 		
 		void hozonFolderSanshouBtn_Click(object sender, EventArgs e)
@@ -71,7 +73,7 @@ namespace rokugaTouroku
 		}
 		void FileNameDokujiSetteiBtn_Click(object sender, EventArgs e)
 		{
-			var a = new fileNameOptionForm(fileNameFormat);
+			var a = new fileNameOptionForm(fileNameFormat, int.Parse(cfg.get("fontSize")));
 			var res = a.ShowDialog();
 			if (res != DialogResult.OK) return;
 			fileNameTypeDokujiSetteiBtn.Text = util.getFileNameTypeSample(a.ret);
@@ -101,6 +103,8 @@ namespace rokugaTouroku
 			if (isCookieFileSiteiChkBox2.Checked)
 				SourceInfoSerialize.save(si2.GenerateCopy(si2.BrowserName, si2.ProfileName, cookieFileText2.Text), true);
 			else SourceInfoSerialize.save(si2, true);
+			
+			DialogResult = DialogResult.OK;
 		}
 
 		private Dictionary<string, string> getFormData() {
@@ -200,6 +204,8 @@ namespace rokugaTouroku
 				{"useProxy",useProxyChkBox.Checked.ToString().ToLower()},
 				{"proxyAddress",proxyAddressText.Text},
 				{"proxyPort",proxyPortText.Text},
+				
+				{"fontSize",fontList.Value.ToString()},
 			};
 			
 		}
@@ -461,6 +467,8 @@ namespace rokugaTouroku
         	proxyAddressText.Text = cfg.get("proxyAddress");
         	proxyPortText.Text = cfg.get("proxyPort");
         	useProxyChkBox.Checked = bool.Parse(cfg.get("useProxy"));
+        	
+        	fontList.Value = decimal.Parse(cfg.get("fontSize"));
         }
         private void setSubFolderNameType(int subFolderNameType) {
         	if (subFolderNameType == 1) housoushaRadioBtn.Checked = true;
@@ -1052,6 +1060,10 @@ namespace rokugaTouroku
 			proxyAddressText.Enabled = proxyPortText.Enabled = 
 				proxyAddressLabel.Enabled = proxyPortLabel.Enabled = 
 					useProxyChkBox.Checked;
+		}
+		void ApplyBtnClick(object sender, EventArgs e)
+		{
+			util.setFontSize((int)fontList.Value, this, false);
 		}
 	}
 }

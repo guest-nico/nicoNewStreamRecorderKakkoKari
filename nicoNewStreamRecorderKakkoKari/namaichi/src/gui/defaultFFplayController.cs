@@ -66,6 +66,7 @@ namespace namaichi
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
+			util.setFontSize(int.Parse(config.get("fontSize")), this, false);
 		}
 		private void timeBorderPaint(object sender, PaintEventArgs e) {
 			ControlPaint.DrawBorder(e.Graphics, timeLabel.ClientRectangle, Color.FromArgb(64, 64, 64), ButtonBorderStyle.Solid);

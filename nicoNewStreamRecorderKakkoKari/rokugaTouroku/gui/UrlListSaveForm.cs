@@ -18,7 +18,7 @@ namespace rokugaTouroku
 	/// </summary>
 	public partial class UrlListSaveForm : Form
 	{
-		public UrlListSaveForm(string t)
+		public UrlListSaveForm(string t, int fontSize)
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -30,6 +30,7 @@ namespace rokugaTouroku
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
+			util.setFontSize(fontSize, this, false);
 		}
 		
 		void CancelBtnClick(object sender, EventArgs e)

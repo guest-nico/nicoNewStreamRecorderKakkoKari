@@ -104,12 +104,19 @@ namespace rokugaTouroku
 			setBackColor(Color.FromArgb(int.Parse(config.get("tourokuBackColor"))));
 			setForeColor(Color.FromArgb(int.Parse(config.get("tourokuForeColor"))));
 			
-			
+			util.setFontSize(int.Parse(config.get("fontSize")), this, true);
 		}
 		void optionItem_Select(object sender, EventArgs e)
         { 
-        	try {
-	        	optionForm o = new optionForm(config); o.ShowDialog();
+			try {
+	        	optionForm o = new optionForm(config);
+
+	        	var size = config.get("fontSize");
+	        	if (o.ShowDialog() == DialogResult.OK) {
+	        		var newSize = config.get("fontSize");
+	        		if (size != newSize)
+	        			util.setFontSize(int.Parse(newSize), this, true);
+	        	}
 	        } catch (Exception ee) {
         		util.debugWriteLine(ee.Message + " " + ee.StackTrace);
 	        }
@@ -304,7 +311,7 @@ namespace rokugaTouroku
 		
 		void qualityBtn_Click(object sender, EventArgs e)
 		{
-			var o = new QualityForm(qualityRank);
+			var o = new QualityForm(qualityRank, int.Parse(config.get("fontSize")));
 	       	try {
     	    	o.ShowDialog(this);
 	       	} catch (Exception ee) {
@@ -566,13 +573,13 @@ namespace rokugaTouroku
 		}
 		void versionMenu_Click(object sender, EventArgs e)
 		{
-			var v = new VersionForm();
+			var v = new VersionForm(int.Parse(config.get("fontSize")));
 			v.ShowDialog();
 		}
 		
 		void urlBulkRegistMenu_Click(object sender, EventArgs e)
 		{
-			var f = new UrlBulkRegistForm();
+			var f = new UrlBulkRegistForm(int.Parse(config.get("fontSize")));
 			f.ShowDialog();
 			if (f.res == null) return;
 			
@@ -594,7 +601,7 @@ namespace rokugaTouroku
 				_url = "https://live2.nicovideo.jp/watch/" + _url;
 				t += _url + "\r\n";
 			}
-			var f = new UrlListSaveForm(t);
+			var f = new UrlListSaveForm(t, int.Parse(config.get("fontSize")));
 			f.ShowDialog();
 		}
 		
@@ -708,7 +715,7 @@ namespace rokugaTouroku
 		}
 		void UpdateMenuClick(object sender, EventArgs e)
 		{
-			var v = new UpdateForm();
+			var v = new UpdateForm(int.Parse(config.get("fontSize")));
 			v.ShowDialog();
 		}
 		void FormColorMenuItemClick(object sender, EventArgs e)

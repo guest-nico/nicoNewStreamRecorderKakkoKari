@@ -20,7 +20,7 @@ namespace rokugaTouroku
 	{
 		public string ret = null;
 		public string qualityStr = null;
-		public QualityForm(string qualityRank)
+		public QualityForm(string qualityRank, int fontSize)
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -31,6 +31,7 @@ namespace rokugaTouroku
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
+			util.setFontSize(fontSize, this, false);
 		}
 		void highRankBtn_Click(object sender, EventArgs e)
 		{

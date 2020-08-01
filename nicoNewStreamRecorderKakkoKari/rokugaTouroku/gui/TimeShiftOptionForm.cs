@@ -84,6 +84,8 @@ namespace rokugaTouroku
 			updateIsOpenListCommandChkBoxCheckedChanged();
 			updateUrlListChkBoxCheckedChanged();
 			updateIsManualEndTimeRadioBtn();
+			
+			util.setFontSize(int.Parse(config.get("fontSize")), this, false);
 		}
 		private void updateTimeShiftStartTimeChkBox() {
 			hText.Enabled = mText.Enabled = sText.Enabled =

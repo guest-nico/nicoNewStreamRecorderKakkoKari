@@ -62,6 +62,10 @@ namespace rokugaTouroku
 			this.isRetryChkBox = new System.Windows.Forms.CheckBox();
 			this.isMinimizedChkBox = new System.Windows.Forms.CheckBox();
 			this.tabPage9 = new System.Windows.Forms.TabPage();
+			this.displayGroup = new System.Windows.Forms.GroupBox();
+			this.fontList = new System.Windows.Forms.NumericUpDown();
+			this.label64 = new System.Windows.Forms.Label();
+			this.applyBtn = new System.Windows.Forms.Button();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.isDefaultBrowserPathChkBox = new System.Windows.Forms.CheckBox();
 			this.browserPathSanshouBtn = new System.Windows.Forms.Button();
@@ -110,6 +114,7 @@ namespace rokugaTouroku
 			this.isChaseRecordRadioBtn = new System.Windows.Forms.RadioButton();
 			this.tabPage5 = new System.Windows.Forms.TabPage();
 			this.groupBox7 = new System.Windows.Forms.GroupBox();
+			this.label17 = new System.Windows.Forms.Label();
 			this.downBtn = new System.Windows.Forms.Button();
 			this.upBtn = new System.Windows.Forms.Button();
 			this.qualityListBox = new System.Windows.Forms.ListBox();
@@ -207,11 +212,12 @@ namespace rokugaTouroku
 			this.label3 = new System.Windows.Forms.Label();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
-			this.label17 = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox6.SuspendLayout();
 			this.tabPage9.SuspendLayout();
+			this.displayGroup.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.fontList)).BeginInit();
 			this.groupBox5.SuspendLayout();
 			this.groupBox9.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.volumeBar)).BeginInit();
@@ -510,6 +516,7 @@ namespace rokugaTouroku
 			// 
 			// tabPage9
 			// 
+			this.tabPage9.Controls.Add(this.displayGroup);
 			this.tabPage9.Controls.Add(this.groupBox5);
 			this.tabPage9.Controls.Add(this.groupBox9);
 			this.tabPage9.Location = new System.Drawing.Point(4, 40);
@@ -519,6 +526,59 @@ namespace rokugaTouroku
 			this.tabPage9.TabIndex = 9;
 			this.tabPage9.Text = "一般2";
 			this.tabPage9.UseVisualStyleBackColor = true;
+			// 
+			// displayGroup
+			// 
+			this.displayGroup.Controls.Add(this.fontList);
+			this.displayGroup.Controls.Add(this.label64);
+			this.displayGroup.Controls.Add(this.applyBtn);
+			this.displayGroup.Location = new System.Drawing.Point(5, 258);
+			this.displayGroup.Name = "displayGroup";
+			this.displayGroup.Size = new System.Drawing.Size(372, 46);
+			this.displayGroup.TabIndex = 9;
+			this.displayGroup.TabStop = false;
+			this.displayGroup.Text = "表示設定";
+			// 
+			// fontList
+			// 
+			this.fontList.Location = new System.Drawing.Point(101, 17);
+			this.fontList.Maximum = new decimal(new int[] {
+									72,
+									0,
+									0,
+									0});
+			this.fontList.Minimum = new decimal(new int[] {
+									1,
+									0,
+									0,
+									0});
+			this.fontList.Name = "fontList";
+			this.fontList.Size = new System.Drawing.Size(51, 19);
+			this.fontList.TabIndex = 14;
+			this.fontList.Value = new decimal(new int[] {
+									9,
+									0,
+									0,
+									0});
+			// 
+			// label64
+			// 
+			this.label64.Location = new System.Drawing.Point(6, 18);
+			this.label64.Name = "label64";
+			this.label64.Size = new System.Drawing.Size(92, 18);
+			this.label64.TabIndex = 13;
+			this.label64.Text = "フォントサイズ：";
+			this.label64.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// applyBtn
+			// 
+			this.applyBtn.Location = new System.Drawing.Point(174, 14);
+			this.applyBtn.Name = "applyBtn";
+			this.applyBtn.Size = new System.Drawing.Size(51, 23);
+			this.applyBtn.TabIndex = 34;
+			this.applyBtn.Text = "テスト";
+			this.applyBtn.UseVisualStyleBackColor = true;
+			this.applyBtn.Click += new System.EventHandler(this.ApplyBtnClick);
 			// 
 			// groupBox5
 			// 
@@ -1036,6 +1096,14 @@ namespace rokugaTouroku
 			this.groupBox7.TabIndex = 2;
 			this.groupBox7.TabStop = false;
 			this.groupBox7.Text = "録画画質優先順位";
+			// 
+			// label17
+			// 
+			this.label17.Location = new System.Drawing.Point(26, 145);
+			this.label17.Name = "label17";
+			this.label17.Size = new System.Drawing.Size(370, 21);
+			this.label17.TabIndex = 6;
+			this.label17.Text = "※「音声のみ」は遅延設定が1.0または3.0になっている場合のみ取得できます。";
 			// 
 			// downBtn
 			// 
@@ -2081,14 +2149,6 @@ namespace rokugaTouroku
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
 			// 
-			// label17
-			// 
-			this.label17.Location = new System.Drawing.Point(26, 145);
-			this.label17.Name = "label17";
-			this.label17.Size = new System.Drawing.Size(370, 21);
-			this.label17.TabIndex = 6;
-			this.label17.Text = "※「音声のみ」は遅延設定が1.0または3.0になっている場合のみ取得できます。";
-			// 
 			// optionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -2107,6 +2167,8 @@ namespace rokugaTouroku
 			this.tabPage1.ResumeLayout(false);
 			this.groupBox6.ResumeLayout(false);
 			this.tabPage9.ResumeLayout(false);
+			this.displayGroup.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.fontList)).EndInit();
 			this.groupBox5.ResumeLayout(false);
 			this.groupBox5.PerformLayout();
 			this.groupBox9.ResumeLayout(false);
@@ -2145,6 +2207,10 @@ namespace rokugaTouroku
 			((System.ComponentModel.ISupportInitialize)(this.maxRecordingNum)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Button applyBtn;
+		private System.Windows.Forms.Label label64;
+		private System.Windows.Forms.NumericUpDown fontList;
+		private System.Windows.Forms.GroupBox displayGroup;
 		private System.Windows.Forms.Label label17;
 		private System.Windows.Forms.Label label16;
 		public System.Windows.Forms.ComboBox latencyList;

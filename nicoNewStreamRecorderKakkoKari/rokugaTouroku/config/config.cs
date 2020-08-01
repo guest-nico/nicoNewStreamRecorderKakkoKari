@@ -190,6 +190,7 @@ public class config
 			{"Width","715"},
 			{"X",""},
 			{"Y",""},
+			{"fontSize","9"},
 			{"defaultControllerX","100"},
 			{"defaultControllerY","100"},
 			{"volume","50"},

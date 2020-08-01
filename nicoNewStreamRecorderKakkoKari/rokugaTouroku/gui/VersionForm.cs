@@ -17,7 +17,7 @@ namespace rokugaTouroku
 	/// </summary>
 	public partial class VersionForm : Form
 	{
-		public VersionForm()
+		public VersionForm(int fontSize)
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -29,6 +29,7 @@ namespace rokugaTouroku
 			//
 			versionLabel.Text = util.versionStr + " (" + util.versionDayStr + ")";
 			//communityLinkLabel.Links.Add(0, communityLinkLabel.Text.Length, "https://com.nicovideo.jp/community/co2414037");
+			util.setFontSize(fontSize, this, false);
 		}
 		
 		void okBtnClick(object sender, EventArgs e)

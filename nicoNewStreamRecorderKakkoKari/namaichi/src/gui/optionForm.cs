@@ -52,6 +52,8 @@ namespace namaichi
 			setBackColor(Color.FromArgb(int.Parse(cfg.get("recBackColor"))));
 			setForeColor(Color.FromArgb(int.Parse(cfg.get("recForeColor"))));
 			util.setProxy(cfg);
+			
+			util.setFontSize(int.Parse(cfg.get("fontSize")), this, false);
 		}
 		
 		void hozonFolderSanshouBtn_Click(object sender, EventArgs e)
@@ -72,7 +74,7 @@ namespace namaichi
 		}
 		void FileNameDokujiSetteiBtn_Click(object sender, EventArgs e)
 		{
-			var a = new fileNameOptionForm(fileNameFormat);
+			var a = new fileNameOptionForm(fileNameFormat, int.Parse(cfg.get("fontSize")));
 			var res = a.ShowDialog();
 			if (res != DialogResult.OK) return;
 			fileNameTypeDokujiSetteiBtn.Text = util.getFileNameTypeSample(a.ret);
@@ -104,6 +106,7 @@ namespace namaichi
 					SourceInfoSerialize.save(si2.GenerateCopy(si2.BrowserName, si2.ProfileName, cookieFileText2.Text), true);
 				else SourceInfoSerialize.save(si2, true);
 			}
+			DialogResult = DialogResult.OK;
 		}
 
 		private Dictionary<string, string> getFormData() {
@@ -200,6 +203,8 @@ namespace namaichi
 				{"useProxy",useProxyChkBox.Checked.ToString().ToLower()},
 				{"proxyAddress",proxyAddressText.Text},
 				{"proxyPort",proxyPortText.Text},
+				
+				{"fontSize",fontList.Value.ToString()},
 			};
 			
 		}
@@ -455,7 +460,7 @@ namespace namaichi
         	proxyPortText.Text = cfg.get("proxyPort");
         	useProxyChkBox.Checked = bool.Parse(cfg.get("useProxy"));
         	
-        	
+        	fontList.Value = decimal.Parse(cfg.get("fontSize"));
         }
         private void setSubFolderNameType(int subFolderNameType) {
         	if (subFolderNameType == 1) housoushaRadioBtn.Checked = true;
@@ -1045,6 +1050,10 @@ namespace namaichi
 			proxyAddressText.Enabled = proxyPortText.Enabled = 
 				proxyAddressLabel.Enabled = proxyPortLabel.Enabled = 
 					useProxyChkBox.Checked;
+		}
+		void ApplyBtnClick(object sender, EventArgs e)
+		{
+			util.setFontSize((int)fontList.Value, this, false);
 		}
 	}
 }

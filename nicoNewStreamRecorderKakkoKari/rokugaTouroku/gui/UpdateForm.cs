@@ -17,7 +17,7 @@ namespace rokugaTouroku
 	/// </summary>
 	public partial class UpdateForm : Form
 	{
-		public UpdateForm()
+		public UpdateForm(int fontSize)
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -27,6 +27,7 @@ namespace rokugaTouroku
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
+			util.setFontSize(fontSize, this, false);
 		}
 		void okBtnClick(object sender, EventArgs e)
 		{

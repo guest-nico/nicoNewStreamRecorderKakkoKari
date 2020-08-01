@@ -19,7 +19,7 @@ namespace namaichi
 	{
 		public string ret;
 		
-		public fileNameOptionForm(string filenameformat)
+		public fileNameOptionForm(string filenameformat, int fontSize)
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -32,6 +32,7 @@ namespace namaichi
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
+			util.setFontSize(fontSize, this, false);
 		}
 		
 		void fileNameTypeOkBtn_Click(object sender, EventArgs e)

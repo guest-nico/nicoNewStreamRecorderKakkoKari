@@ -118,6 +118,8 @@ namespace namaichi
 			
 			if (config.get("qualityRank").Split(',').Length == 5)
 				config.set("qualityRank", config.get("qualityRank") + ",5");
+			
+			util.setFontSize(int.Parse(config.get("fontSize")), this, false);
 		}
 		private void init() {
 			var lv = (args.Length == 0) ? null : util.getRegGroup(args[0], "(lv\\d+(,\\d+)*)");
@@ -220,7 +222,14 @@ namespace namaichi
         void optionItem_Select(object sender, EventArgs e)
         { 
         	try {
-	        	optionForm o = new optionForm(config); o.ShowDialog();
+	        	optionForm o = new optionForm(config);
+
+	        	var size = config.get("fontSize");
+	        	if (o.ShowDialog() == DialogResult.OK) {
+	        		var newSize = config.get("fontSize");
+	        		if (size != newSize)
+	        			util.setFontSize(int.Parse(newSize), this, false);
+	        	}
 	        } catch (Exception ee) {
         		util.debugWriteLine(ee.Message + " " + ee.StackTrace);
 	        }
@@ -665,7 +674,7 @@ namespace namaichi
 		
 		void versionMenu_Click(object sender, EventArgs e)
 		{
-			var v = new VersionForm();
+			var v = new VersionForm(int.Parse(config.get("fontSize")));
 			v.ShowDialog();
 		}
 		void startStdRead() {
@@ -874,7 +883,7 @@ namespace namaichi
 		}
 		void updateMenu_Click(object sender, EventArgs e)
 		{
-			var v = new UpdateForm();
+			var v = new UpdateForm(int.Parse(config.get("fontSize")));
 			v.ShowDialog();
 		}
 		void ColorMenuItemClick(object sender, EventArgs e)
