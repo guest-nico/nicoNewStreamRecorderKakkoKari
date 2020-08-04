@@ -54,6 +54,10 @@ namespace rokugaTouroku
 			Text = "録画登録ツール（仮 " + util.versionStr;
 			afterConvertModeList.SelectedIndex = 0;
 			
+			var fontSize = config.get("fontSize");  
+			if (fontSize != "9")
+				util.setFontSize(int.Parse(fontSize), this, true, 523);
+			
 			try {
 				Width = int.Parse(config.get("rokugaTourokuWidth"));
 				Height = int.Parse(config.get("rokugaTourokuHeight"));
@@ -79,24 +83,19 @@ namespace rokugaTouroku
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
 			rec = new RecListManager(this, recListDataSource, config);
-			recList.DataSource = recListDataSource;
+			
 			
 			if (config.get("qualityRank").Split(',').Length == 5)
 				config.set("qualityRank", config.get("qualityRank") + ",5");
 			if (config.get("rokugaTourokuQualityRank").Split(',').Length == 5)
 				config.set("rokugaTourokuQualityRank", config.get("rokugaTourokuQualityRank") + ",5");
 			
+			
+		}
+		private void formInitSetting() {
+			recList.DataSource = recListDataSource;
+			
 			qualityRank = config.get("rokugaTourokuQualityRank");
-			/*
-			if (qualityRank.Split(',').Length == 6) {
-				var l = new List<string>();
-				l.AddRange(qualityRank.Split(','));
-				l.Remove("0");
-				for (var i = 0; i < l.Count(); i++)
-					l[i] = (int.Parse(l[i]) - 1).ToString();
-				qualityRank = string.Join(",", l.ToArray());
-			}
-			*/
 			qualityBtn.Text = getQualityRankStr(qualityRank);
 			setConvertList(int.Parse(config.get("afterConvertMode")));
 			recCommmentList.Text = "映像＋コメント";
@@ -104,7 +103,20 @@ namespace rokugaTouroku
 			setBackColor(Color.FromArgb(int.Parse(config.get("tourokuBackColor"))));
 			setForeColor(Color.FromArgb(int.Parse(config.get("tourokuForeColor"))));
 			
-			util.setFontSize(int.Parse(config.get("fontSize")), this, true);
+			System.Type d = typeof(DataGridView);
+			System.Type t = typeof(TextBox);
+			System.Reflection.PropertyInfo dinfo =
+		　　　　　　d.GetProperty(
+		　　　　　　"DoubleBuffered", System.Reflection.BindingFlags.Instance |
+		　　　　　　System.Reflection.BindingFlags.NonPublic);
+			System.Reflection.PropertyInfo tinfo =
+		　　　　　　t.GetProperty(
+		　　　　　　"DoubleBuffered", System.Reflection.BindingFlags.Instance |
+		　　　　　　System.Reflection.BindingFlags.NonPublic);
+			dinfo.SetValue(recList, true);
+			tinfo.SetValue(logText, true);
+			
+			
 		}
 		void optionItem_Select(object sender, EventArgs e)
         { 
@@ -114,8 +126,15 @@ namespace rokugaTouroku
 	        	var size = config.get("fontSize");
 	        	if (o.ShowDialog() == DialogResult.OK) {
 	        		var newSize = config.get("fontSize");
-	        		if (size != newSize)
-	        			util.setFontSize(int.Parse(newSize), this, true);
+	        		util.debugWriteLine("size " + size + " new size " + newSize);
+	        		if (size != newSize) {
+	        			var formSize = Size;
+	        			var loc = Location;
+	        			loadControlLayout();
+	        			util.setFontSize(int.Parse(newSize), this, true, 523);
+	        			Size = formSize;
+	        			Location = loc;
+	        		}
 	        	}
 	        } catch (Exception ee) {
         		util.debugWriteLine(ee.Message + " " + ee.StackTrace);
@@ -494,23 +513,15 @@ namespace rokugaTouroku
 		}
 		void form_Load(object sender, EventArgs e)
 		{
+			formInitSetting();
+			loadList();
+			
 			if (config.brokenCopyFile != null)
 				addLogText("設定ファイルを読み込めませんでした。設定ファイルをバックアップしました。" + config.brokenCopyFile);
 			
-			System.Type d = typeof(DataGridView);
-			System.Type t = typeof(TextBox);
-			System.Reflection.PropertyInfo dinfo =
-		　　　　　　d.GetProperty(
-		　　　　　　"DoubleBuffered", System.Reflection.BindingFlags.Instance |
-		　　　　　　System.Reflection.BindingFlags.NonPublic);
-			System.Reflection.PropertyInfo tinfo =
-		　　　　　　t.GetProperty(
-		　　　　　　"DoubleBuffered", System.Reflection.BindingFlags.Instance |
-		　　　　　　System.Reflection.BindingFlags.NonPublic);
-			dinfo.SetValue(recList, true);
-			tinfo.SetValue(logText, true);
 			
-			loadList();
+			
+			
 		}
 		
 		void recList_DataError(object sender, DataGridViewDataErrorEventArgs e)
@@ -766,6 +777,32 @@ namespace rokugaTouroku
 		{
 			saveList();
 		}
-		
+		private void loadControlLayout() {
+			try {
+				saveList();
+				config.set("rokugaTourokuQualityRank", qualityRank);
+				var convertText = afterConvertModeList.Text;
+				var recCommmentText = recCommmentList.Text;
+				var timeshiftText = setTimeshiftBtn.Text;
+				var _urlText = urlText.Text;
+				recList.DataSource = null;
+				
+				Font = new Font(Font.FontFamily, 9);
+				Controls.Clear();
+				
+				InitializeComponent();
+				formInitSetting();
+				afterConvertModeList.Text = convertText;
+				recCommmentList.Text = recCommmentText;
+				setTimeshiftBtn.Text = timeshiftText;
+				urlText.Text = _urlText;
+				
+				Update();
+
+				return;
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
+		}
 	}
 }

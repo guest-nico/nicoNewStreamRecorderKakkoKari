@@ -22,8 +22,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.10.31";
-	public static string versionDayStr = "2020/08/01";
+	public static string versionStr = "ver0.1.3.10.32";
+	public static string versionDayStr = "2020/08/05";
 	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);
@@ -886,34 +886,41 @@ class util {
 		//util.debugWriteLine(c.Name + " " + ret.Count);
 		return ret;
 	}
-	public static void setFontSize(float size, Form form, bool isKeepSize) {
+	public static void setFontSize(float size, Form form, bool isKeepSize, int baseHeight = -1) {
     	try {
+    		var workingArea = Screen.GetWorkingArea(new Point(0,0));
+    		
 			var _formsize = form.Size;
 			var _bStyle = form.FormBorderStyle;
-			if (isKeepSize)
-				form.Size = new Size(200, 200);
-			//form.FormBorderStyle = BorderStyle.
+			
+			baseHeight = baseHeight == -1 ? form.Height : baseHeight;
+			
+			if (size > form.Font.Size)
+				form.Size = new Size(isKeepSize ? 918 : form.Width, baseHeight);
+			
+			var max = (int)(form.Font.Size * (workingArea.Height * 0.9 / form.Height));
+			
+			if (size > max) {
+				size = max;
+				System.Windows.Forms.MessageBox.Show("âÊñ è„Ç…ï\é¶Ç≈Ç´Ç»Ç≠Ç»ÇÈâ¬î\ê´Ç™Ç†ÇÈÇΩÇﬂÅA" + size + "Ç…ê›íËÇ≥ÇÍÇ‹Ç∑");
+			}
+			
 			form.Font = new Font(form.Font.FontFamily, size);
-			if (isKeepSize)
-				form.Size = _formsize;
-			//form.bor
+			if (isKeepSize) {
+				//form.Size = _formsize;
+			}
 			
 			var controls = util.getChildControls(form);
 			foreach (Control c in controls) {
 				if (c.ContextMenuStrip != null)
 					c.ContextMenuStrip.Font = new Font(c.Font.FontFamily, size);
-				/*
-				if (c is MenuStrip) {
-					foreach (ToolStripMenuItem s in ((MenuStrip)c).Items)
-						s.Font = new Font(Font.FontFamily, size);
-				}
-				*/
+
 				if (c is DataGridView) {
 					((DataGridView)c).ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 					((DataGridView)c).ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.False;
 					
-					//((DataGridView)c).RowTemplate.Height = (int)size;
-					//((DataGridView)c).AutoSizeRowsMode = true;
+					((DataGridView)c).RowTemplate.Height = (int)size;
+					((DataGridView)c).AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
 				}
 				if (c is StatusStrip) {
 					foreach (ToolStripLabel s in ((StatusStrip)c).Items)
@@ -921,7 +928,6 @@ class util {
 				}
 				c.Font = new Font(c.Font.FontFamily, size);
 			}
-			//menuStrip1.Font = new Font(form.Font.FontFamily, size);
     	} catch (Exception e) {
     		util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
     	}

@@ -78,16 +78,12 @@ namespace namaichi
 			
 			if (Array.IndexOf(args, "-stdIO") > -1) util.isStdIO = true;
 			
-			
-
 			util.debugWriteLine("arg len " + args.Length);
 			util.debugWriteLine("arg join " + string.Join(" ", args));
 			
-			
-            //nicoSessionComboBox1.Selector.PropertyChanged += Selector_PropertyChanged;
-//            checkBoxShowAll.Checked = bool.Parse(config.get("isAllBrowserMode"));
-			//if (isInitRun) initRec();
-			//MessageBox.Show(config.get("Isminimized") + " " + config.get("Width") + " " + config.get("Height") + " " + config.get("X") + " " + config.get("Y"));
+			var fontSize = config.get("fontSize");  
+			if (fontSize != "9")
+				util.setFontSize(int.Parse(fontSize), this, true, 400);
 			
 			try {
 				Width = int.Parse(config.get("Width"));
@@ -112,14 +108,16 @@ namespace namaichi
 			
 			if (bool.Parse(config.get("IsMiniStart")))
 				changeSize(true);
-			setBackColor(Color.FromArgb(int.Parse(config.get("recBackColor"))));
-			setForeColor(Color.FromArgb(int.Parse(config.get("recForeColor"))));
-			setLinkColor(Color.FromArgb(int.Parse(config.get("recLinkColor"))));
+			
 			
 			if (config.get("qualityRank").Split(',').Length == 5)
 				config.set("qualityRank", config.get("qualityRank") + ",5");
 			
-			util.setFontSize(int.Parse(config.get("fontSize")), this, false);
+		}
+		private void formInitSetting() {
+			setBackColor(Color.FromArgb(int.Parse(config.get("recBackColor"))));
+			setForeColor(Color.FromArgb(int.Parse(config.get("recForeColor"))));
+			setLinkColor(Color.FromArgb(int.Parse(config.get("recLinkColor"))));
 		}
 		private void init() {
 			var lv = (args.Length == 0) ? null : util.getRegGroup(args[0], "(lv\\d+(,\\d+)*)");
@@ -223,12 +221,18 @@ namespace namaichi
         { 
         	try {
 	        	optionForm o = new optionForm(config);
-
 	        	var size = config.get("fontSize");
 	        	if (o.ShowDialog() == DialogResult.OK) {
 	        		var newSize = config.get("fontSize");
-	        		if (size != newSize)
-	        			util.setFontSize(int.Parse(newSize), this, false);
+	        		if (size != newSize) {
+	        			//var formSize = Size;
+	        			//var loc = Location;
+	        			loadControlLayout();
+	        			util.setFontSize(int.Parse(newSize), this, true, 400);
+	        			//Size = formSize;
+	        			//Location = loc;
+	        			//check.popup.setPopupSize();
+	        		}
 	        	}
 	        } catch (Exception ee) {
         		util.debugWriteLine(ee.Message + " " + ee.StackTrace);
@@ -629,6 +633,8 @@ namespace namaichi
 		
 		void mainForm_Load(object sender, EventArgs e)
 		{
+			formInitSetting();
+			
 			init();
 			
 			if (!util.isShowWindow) return;
@@ -944,6 +950,22 @@ namespace namaichi
 			}
 			util.debugWriteLine(c.Name + " " + ret.Count);
 			return ret;
+		}
+		private void loadControlLayout() {
+			try {
+				
+				Font = new Font(Font.FontFamily, 9);
+				Controls.Clear();
+				
+				InitializeComponent();
+				formInitSetting();
+				
+				Update();
+				
+				return;
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
 		}
 	}
 }

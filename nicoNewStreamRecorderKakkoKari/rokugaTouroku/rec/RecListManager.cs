@@ -83,18 +83,21 @@ namespace rokugaTouroku.rec
 			
 			if (rdg == null) {
 				form.recBtn.Text = "録画停止";
+				form.optionMenuItem.Enabled = false;
 				Task.Run(() => {
 					rdg = new RecDataGetter(this);
 					rdg.rec();
 					rdg = null;
 					form.Invoke((MethodInvoker)delegate() {
 		            	form.recBtn.Text = "録画開始";
+		            	form.optionMenuItem.Enabled = true;
 		            });
 				});
 			} else {
 				rdg.stopRecording();
 				rdg = null;
 				form.recBtn.Text = "録画開始";
+				form.optionMenuItem.Enabled = true;
 			}
 			
 		}
