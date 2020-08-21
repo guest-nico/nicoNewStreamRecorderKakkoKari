@@ -445,7 +445,7 @@ namespace namaichi
 				util.debugWriteLine(ee.Message + " " + ee.StackTrace);
 			}
 		}
-		void titleLabel_Click(object _sender, LinkLabelLinkClickedEventArgs e)
+		public void titleLabel_Click(object _sender, LinkLabelLinkClickedEventArgs e)
 		{
 			util.debugWriteLine("click");
 			LinkLabel sender = (LinkLabel)_sender;
@@ -680,7 +680,7 @@ namespace namaichi
 		
 		void versionMenu_Click(object sender, EventArgs e)
 		{
-			var v = new VersionForm(int.Parse(config.get("fontSize")));
+			var v = new VersionForm(int.Parse(config.get("fontSize")), this);
 			v.ShowDialog();
 		}
 		void startStdRead() {

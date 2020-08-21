@@ -667,7 +667,16 @@ namespace namaichi.rec
 				}
 				if (isTimeShift) {
 					var newName = newTimeShiftFileName(recFolderFile, info.fileName);
-					File.Move(recFolderFile + ".ts", newName + ".ts");
+					while (true) {
+						try {
+							File.Move(recFolderFile + ".ts", newName + ".ts");
+							break;
+						} catch (Exception e) {
+							util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+							rm.form.addLogText("ファイルの書き込み後の処理に失敗しました。リトライします。");
+							Thread.Sleep(1000);
+						}
+					}
 					recFolderFile = newName;
 				}
 				return true; 
@@ -951,10 +960,13 @@ namespace namaichi.rec
 						else {
 							if (isWriteCancel) return;
 							
-							if (((WebSocketRecorder)wr).isChase)
-								gotTsList.Add(newGetTsTaskList[i]);
+							if (((WebSocketRecorder)wr).isChase) {
+								lock (gotTsList) {
+									gotTsList.Add(newGetTsTaskList[i]);
+								}
+								ret = true;
+							}
 							else ret = writeFile(newGetTsTaskList[i]);
-							ret = true;
 						}
 
 						addDebugBuf("write ok " + ret + " " + newGetTsTaskList[i].no);
@@ -1041,7 +1053,7 @@ namespace namaichi.rec
 			ret += "bitrate= " + bitrate.ToString("0.0") + "kbits/s";
 			
 			if (isTimeShift && !((WebSocketRecorder)wr).isChase) {
-				var per = (int)(((lastSegmentNo + 5000) / 10) / allDuration);
+				var per = (int)(((lastSegmentNo + 5100) / 10) / allDuration);
 				if (per > 100) per = 100;
 				ret = "(" + per + "%) " + ret;
 				//ret += "(" + (int)((lastSegmentNo / 10) / allDuration) + "%)";

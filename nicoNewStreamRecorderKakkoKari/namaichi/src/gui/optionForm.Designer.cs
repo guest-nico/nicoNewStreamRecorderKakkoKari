@@ -1017,7 +1017,7 @@ namespace namaichi
 			this.isArgChaseRecFromFirstChkBox.Name = "isArgChaseRecFromFirstChkBox";
 			this.isArgChaseRecFromFirstChkBox.Size = new System.Drawing.Size(309, 15);
 			this.isArgChaseRecFromFirstChkBox.TabIndex = 3;
-			this.isArgChaseRecFromFirstChkBox.Text = "他のツールから起動された時は番組の最初から録画する";
+			this.isArgChaseRecFromFirstChkBox.Text = "他のツールから起動されたときは番組の最初から録画する";
 			this.isArgChaseRecFromFirstChkBox.UseVisualStyleBackColor = true;
 			// 
 			// label3
@@ -1056,7 +1056,7 @@ namespace namaichi
 			this.isChaseRecordRadioBtn.Name = "isChaseRecordRadioBtn";
 			this.isChaseRecordRadioBtn.Size = new System.Drawing.Size(394, 15);
 			this.isChaseRecordRadioBtn.TabIndex = 0;
-			this.isChaseRecordRadioBtn.Text = "追っかけ再生が取得できるときは直近の追っかけ再生から取得する";
+			this.isChaseRecordRadioBtn.Text = "追っかけ再生が取得できるときは追っかけ再生から取得する";
 			this.isChaseRecordRadioBtn.UseVisualStyleBackColor = true;
 			this.isChaseRecordRadioBtn.CheckedChanged += new System.EventHandler(this.IsChaseRecordRadioBtnCheckedChanged);
 			// 

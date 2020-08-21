@@ -27,7 +27,7 @@ namespace rokugaTouroku
 	/// </summary>
 	public partial class MainForm : Form
 	{
-		private rokugaTouroku.config.config config = new rokugaTouroku.config.config();
+		public rokugaTouroku.config.config config = new rokugaTouroku.config.config();
 		private BindingSource recListDataSource = new BindingSource();
 		private RecListManager rec;
 		public TimeShiftConfig setTsConfig = new TimeShiftConfig();
@@ -584,7 +584,7 @@ namespace rokugaTouroku
 		}
 		void versionMenu_Click(object sender, EventArgs e)
 		{
-			var v = new VersionForm(int.Parse(config.get("fontSize")));
+			var v = new VersionForm(int.Parse(config.get("fontSize")), this);
 			v.ShowDialog();
 		}
 		
