@@ -314,7 +314,8 @@ namespace namaichi.rec
 							if (res.IndexOf("\"timeshift_reservation") > -1) return 9;
 							else if (res.IndexOf("\"Nicolive.WatchingReservation.confirm") > -1) return 10;
 							return 2;
-						} else if (res.IndexOf("player_type = 'flash'") > -1) {
+						} else if (res.IndexOf("player_type = 'flash'") > -1 && 
+						           res.IndexOf("%3Cgetplayerstatus%20") > -1) {
 							var _res = util.getRegGroup(res, "(%3Cgetplayerstatus%20.+?%3C%2Fgetplayerstatus%3E)");
 							_res = System.Net.WebUtility.UrlDecode(_res);
 							var isTimeShift = true;

@@ -40,7 +40,7 @@ namespace namaichi.rec
 			//8-vob 11-wav 15-mp4(再エンコード)
 			if (afterConvertMode == 8 || 
 			    	afterConvertMode == 11 || afterConvertMode == 15)
-				_command = ("-i \"" + path + "\" \"" + tmp + "\"");
+				_command = ("-i \"" + path + "\" -max_muxing_queue_size 1024 \"" + tmp + "\"");
 			//10-mp3
 			else if (afterConvertMode == 10)
 				_command = ("-i \"" + path + "\" -b:a 128k \"" + tmp + "\"");
@@ -52,7 +52,7 @@ namespace namaichi.rec
 				_command =  ("-i \"" + path + "\" -vn -c copy \"" + tmp + "\"");
 			//14-ogg
 			else if (afterConvertMode == 14)
-				_command =  ("-i \"" + path + "\" -vn \"" + tmp + "\"");
+				_command =  ("-i \"" + path + "\" -vn -max_muxing_queue_size 1024 \"" + tmp + "\"");
 			//5-flv
 			else if (afterConvertMode == 5)
 				_command = ("-i \"" + path + "\" -c:v copy -c:a aac -bsf:a aac_adtstoasc \"" + tmp + "\"");
