@@ -116,7 +116,8 @@ namespace rokugaTouroku
 			dinfo.SetValue(recList, true);
 			tinfo.SetValue(logText, true);
 			
-			
+			setFormState();
+			applyMenuSetting();
 		}
 		void optionItem_Select(object sender, EventArgs e)
         { 
@@ -195,6 +196,8 @@ namespace rokugaTouroku
 			}
 			//player.stopPlaying(true, true);
 			saveList();
+			saveFormState();
+			saveMenuSetting();
 			return true;
 		}
 		public void addLogText(string t) {
@@ -513,15 +516,11 @@ namespace rokugaTouroku
 		}
 		void form_Load(object sender, EventArgs e)
 		{
-			formInitSetting();
 			loadList();
+			formInitSetting();
 			
 			if (config.brokenCopyFile != null)
 				addLogText("設定ファイルを読み込めませんでした。設定ファイルをバックアップしました。" + config.brokenCopyFile);
-			
-			
-			
-			
 		}
 		
 		void recList_DataError(object sender, DataGridViewDataErrorEventArgs e)
@@ -802,6 +801,63 @@ namespace rokugaTouroku
 				return;
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
+		}
+		void setFormState() {
+			try {
+				var recListWidth = config.get("RecListColumnWidth");
+				if (recListWidth != "") {
+					var w = recListWidth.Split(',');
+					for (var i = 0; i < w.Length; i++) {
+						DataGridViewColumn c  = recList.Columns[i];
+						c.Width = int.Parse(w[i]);
+					}
+				}
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
+		}
+		void saveFormState() {
+			var recListWidth = new List<string>();
+			foreach (DataGridViewColumn c in recList.Columns)
+				recListWidth.Add(c.Width.ToString());
+			config.set("RecListColumnWidth", string.Join(",", recListWidth.ToArray()));
+		}
+		void applyMenuSetting() {
+			var showRecListColumns = config.get("ShowRecColumns");
+			for(var i = 0; i < recList.Columns.Count; i++) {
+				recList.Columns[i].Visible = showRecListColumns[i] == '1';
+				var menu = (ToolStripMenuItem)displayRecListMenu.DropDownItems[i];
+				menu.Checked = recList.Columns[i].Visible;
+			}
+		}
+		void saveMenuSetting() {
+			var buf = "";
+			for(var i = 0; i < recList.Columns.Count; i++) {
+				buf += recList.Columns[i].Visible ? "1" : "0";
+			}
+			config.set("ShowRecColumns", buf);
+		}
+		
+		void DisplayRecListMenuDropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+		{
+			var i = displayRecListMenu.DropDownItems.IndexOf(e.ClickedItem);
+			recList.Columns[i].Visible = !recList.Columns[i].Visible;
+			((ToolStripMenuItem)displayRecListMenu.DropDownItems[i]).Checked = recList.Columns[i].Visible;
+		}
+		
+		void RecListCellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+		{
+			try {
+				if (e.ColumnIndex != 3 || 
+				    	(!e.Value.Equals("録画完了") && !e.Value.Equals("録画失敗"))) return;
+				var ri = (RecInfo)recListDataSource[e.RowIndex];
+				if (ri.state == "録画完了") 
+					e.CellStyle.BackColor = Color.FromArgb(207, 255, 117);
+				if (ri.state == "録画失敗")
+					e.CellStyle.BackColor = Color.FromArgb(255, 255, 155);
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
 		}
 	}

@@ -74,6 +74,20 @@ namespace rokugaTouroku
 			this.toolMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.visualMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.displayRecListMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.isDisplayRecLvidMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.isDisplayRecConvertTypeMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.isDisplayRecQualityMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.isDisplayRecStateMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.isDisplayRecCommentMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.isDisplayRecTimeShiftMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.isDisplayRecTitleMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.isDisplayRecHostNameMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.isDisplayRecCommunityNameMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.isDisplayRecStartTimeMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.isDisplayRecEndTimMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.isDisplayRecLogMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.formColorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.characterColorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -181,6 +195,7 @@ namespace rokugaTouroku
 			this.recList.RowTemplate.Height = 21;
 			this.recList.Size = new System.Drawing.Size(876, 187);
 			this.recList.TabIndex = 6;
+			this.recList.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.RecListCellFormatting);
 			this.recList.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.recListCell_MouseDown);
 			this.recList.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.recList_FocusRowEnter);
 			this.recList.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.RecListRowsRemoved);
@@ -214,7 +229,6 @@ namespace rokugaTouroku
 			// 
 			this.タイムシフト設定.DataPropertyName = "timeShift";
 			this.タイムシフト設定.HeaderText = "タイムシフト設定";
-			this.タイムシフト設定.MinimumWidth = 195;
 			this.タイムシフト設定.Name = "タイムシフト設定";
 			this.タイムシフト設定.ReadOnly = true;
 			this.タイムシフト設定.Resizable = System.Windows.Forms.DataGridViewTriState.True;
@@ -225,7 +239,6 @@ namespace rokugaTouroku
 			// 
 			this.recComment.DataPropertyName = "recComment";
 			this.recComment.HeaderText = "映像・コメント";
-			this.recComment.MinimumWidth = 85;
 			this.recComment.Name = "recComment";
 			this.recComment.ReadOnly = true;
 			this.recComment.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -278,7 +291,6 @@ namespace rokugaTouroku
 			this.ログ.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
 			this.ログ.DataPropertyName = "log";
 			this.ログ.HeaderText = "ログ";
-			this.ログ.MinimumWidth = 60;
 			this.ログ.Name = "ログ";
 			this.ログ.ReadOnly = true;
 			// 
@@ -448,11 +460,110 @@ namespace rokugaTouroku
 			// visualMenuItem
 			// 
 			this.visualMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+									this.displayRecListMenu,
+									this.toolStripSeparator6,
 									this.formColorMenuItem,
 									this.characterColorMenuItem});
 			this.visualMenuItem.Name = "visualMenuItem";
 			this.visualMenuItem.Size = new System.Drawing.Size(62, 22);
 			this.visualMenuItem.Text = "表示(&V)";
+			// 
+			// displayRecListMenu
+			// 
+			this.displayRecListMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+									this.isDisplayRecLvidMenu,
+									this.isDisplayRecConvertTypeMenu,
+									this.isDisplayRecQualityMenu,
+									this.isDisplayRecStateMenu,
+									this.isDisplayRecCommentMenu,
+									this.isDisplayRecTimeShiftMenu,
+									this.isDisplayRecTitleMenu,
+									this.isDisplayRecHostNameMenu,
+									this.isDisplayRecCommunityNameMenu,
+									this.isDisplayRecStartTimeMenu,
+									this.isDisplayRecEndTimMenu,
+									this.isDisplayRecLogMenu});
+			this.displayRecListMenu.Name = "displayRecListMenu";
+			this.displayRecListMenu.Size = new System.Drawing.Size(182, 22);
+			this.displayRecListMenu.Text = "表示列(&D)";
+			this.displayRecListMenu.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.DisplayRecListMenuDropDownItemClicked);
+			// 
+			// isDisplayRecLvidMenu
+			// 
+			this.isDisplayRecLvidMenu.Name = "isDisplayRecLvidMenu";
+			this.isDisplayRecLvidMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecLvidMenu.Text = "放送ID";
+			// 
+			// isDisplayRecConvertTypeMenu
+			// 
+			this.isDisplayRecConvertTypeMenu.Name = "isDisplayRecConvertTypeMenu";
+			this.isDisplayRecConvertTypeMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecConvertTypeMenu.Text = "形式";
+			// 
+			// isDisplayRecQualityMenu
+			// 
+			this.isDisplayRecQualityMenu.Name = "isDisplayRecQualityMenu";
+			this.isDisplayRecQualityMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecQualityMenu.Text = "画質";
+			// 
+			// isDisplayRecStateMenu
+			// 
+			this.isDisplayRecStateMenu.Name = "isDisplayRecStateMenu";
+			this.isDisplayRecStateMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecStateMenu.Text = "状態";
+			// 
+			// isDisplayRecCommentMenu
+			// 
+			this.isDisplayRecCommentMenu.Name = "isDisplayRecCommentMenu";
+			this.isDisplayRecCommentMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecCommentMenu.Text = "映像・コメント";
+			// 
+			// isDisplayRecTimeShiftMenu
+			// 
+			this.isDisplayRecTimeShiftMenu.Name = "isDisplayRecTimeShiftMenu";
+			this.isDisplayRecTimeShiftMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecTimeShiftMenu.Text = "タイムシフト設定";
+			// 
+			// isDisplayRecTitleMenu
+			// 
+			this.isDisplayRecTitleMenu.Name = "isDisplayRecTitleMenu";
+			this.isDisplayRecTitleMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecTitleMenu.Text = "タイトル";
+			// 
+			// isDisplayRecHostNameMenu
+			// 
+			this.isDisplayRecHostNameMenu.Name = "isDisplayRecHostNameMenu";
+			this.isDisplayRecHostNameMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecHostNameMenu.Text = "放送者";
+			// 
+			// isDisplayRecCommunityNameMenu
+			// 
+			this.isDisplayRecCommunityNameMenu.Name = "isDisplayRecCommunityNameMenu";
+			this.isDisplayRecCommunityNameMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecCommunityNameMenu.Text = "コミュニティ名";
+			// 
+			// isDisplayRecStartTimeMenu
+			// 
+			this.isDisplayRecStartTimeMenu.Name = "isDisplayRecStartTimeMenu";
+			this.isDisplayRecStartTimeMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecStartTimeMenu.Text = "開始時刻";
+			// 
+			// isDisplayRecEndTimMenu
+			// 
+			this.isDisplayRecEndTimMenu.Name = "isDisplayRecEndTimMenu";
+			this.isDisplayRecEndTimMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecEndTimMenu.Text = "終了時刻";
+			// 
+			// isDisplayRecLogMenu
+			// 
+			this.isDisplayRecLogMenu.Name = "isDisplayRecLogMenu";
+			this.isDisplayRecLogMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecLogMenu.Text = "ログ";
+			// 
+			// toolStripSeparator6
+			// 
+			this.toolStripSeparator6.Name = "toolStripSeparator6";
+			this.toolStripSeparator6.Size = new System.Drawing.Size(179, 6);
 			// 
 			// formColorMenuItem
 			// 
@@ -925,6 +1036,20 @@ namespace rokugaTouroku
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+		private System.Windows.Forms.ToolStripMenuItem isDisplayRecLogMenu;
+		private System.Windows.Forms.ToolStripMenuItem isDisplayRecEndTimMenu;
+		private System.Windows.Forms.ToolStripMenuItem isDisplayRecStartTimeMenu;
+		private System.Windows.Forms.ToolStripMenuItem isDisplayRecCommunityNameMenu;
+		private System.Windows.Forms.ToolStripMenuItem isDisplayRecHostNameMenu;
+		private System.Windows.Forms.ToolStripMenuItem isDisplayRecTitleMenu;
+		private System.Windows.Forms.ToolStripMenuItem isDisplayRecTimeShiftMenu;
+		private System.Windows.Forms.ToolStripMenuItem isDisplayRecCommentMenu;
+		private System.Windows.Forms.ToolStripMenuItem isDisplayRecStateMenu;
+		private System.Windows.Forms.ToolStripMenuItem isDisplayRecQualityMenu;
+		private System.Windows.Forms.ToolStripMenuItem isDisplayRecConvertTypeMenu;
+		private System.Windows.Forms.ToolStripMenuItem isDisplayRecLvidMenu;
+		private System.Windows.Forms.ToolStripMenuItem displayRecListMenu;
 		private System.Windows.Forms.ToolStripMenuItem characterColorMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem formColorMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem visualMenuItem;

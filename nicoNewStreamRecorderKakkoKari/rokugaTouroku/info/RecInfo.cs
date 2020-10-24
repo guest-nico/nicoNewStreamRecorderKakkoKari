@@ -130,36 +130,6 @@ namespace rokugaTouroku.info
             get { return id; }
             set { this.id = value; }
         }
-        public string State
-        {
-            get { return state; }
-            set { this.state = value; }
-        }
-        public string Title
-        {
-            get { return title; }
-            set { this.title = value; }
-        }
-        public string Host
-        {
-            get { return host; }
-            set { this.host = value; }
-        }
-        public string CommunityName
-        {
-            get { return communityName; }
-            set { this.communityName = value; }
-        }
-        public string StartTime
-        {
-            get { return startTime; }
-            set { this.startTime = value; }
-        }
-        public string EndTime
-        {
-            get { return endTime; }
-            set { this.endTime = value; }
-        }
         /*
         public string ProgramTime
         {
@@ -174,26 +144,58 @@ namespace rokugaTouroku.info
             set { this.keikaTime = value; }
         }
         */
-        public string Log
-        {
-            get { return log; }
-            set { this.log = value; }
-        }
+        
         public string AfterConvertType  {
         	get { return afterConvertType; }
         	set {this.afterConvertType = value; }
         }
-        public string TimeShift  {
-        	get { return timeShift; }
-        	set {this.timeShift = value; }
-        }
+        
         public string Quality  {
         	get { return quality; }
         	set {this.quality = value; }
         }
+		public string State
+        {
+            get { return state; }
+            set { this.state = value; }
+        }
         public string RecComment  {
         	get { return recComment; }
         	set {this.recComment = value; }
+        }
+		public string Title
+        {
+            get { return title; }
+            set { this.title = value; }
+        }
+        public string Host
+        {
+            get { return host; }
+            set { this.host = value; }
+        }
+		public string TimeShift  {
+        	get { return timeShift; }
+        	set {this.timeShift = value; }
+        }
+		public string CommunityName
+        {
+            get { return communityName; }
+            set { this.communityName = value; }
+        }
+		public string StartTime
+        {
+            get { return startTime; }
+            set { this.startTime = value; }
+        }
+        public string EndTime
+        {
+            get { return endTime; }
+            set { this.endTime = value; }
+        }
+       	public string Log
+        {
+            get { return log; }
+            set { this.log = value; }
         }
         public void addLog(string s) {
         	if (log != "") log += "\r\n";

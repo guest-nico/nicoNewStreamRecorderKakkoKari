@@ -198,6 +198,8 @@ public class config
 			{"defaultCommentFormY","100"},
 			{"defaultCommentFormWidth","500"},
 			{"defaultCommentFormHeight","520"},
+			{"RecListColumnWidth",""},
+			{"ShowRecColumns","111111111111"},
 			
 			{"rokugaTourokuWidth","950"},
 			{"rokugaTourokuHeight","500"},
