@@ -154,14 +154,18 @@ namespace rokugaTouroku.info
         	get { return quality; }
         	set {this.quality = value; }
         }
-		public string State
-        {
-            get { return state; }
-            set { this.state = value; }
+       public string TimeShift  {
+        	get { return timeShift; }
+        	set {this.timeShift = value; }
         }
         public string RecComment  {
         	get { return recComment; }
         	set {this.recComment = value; }
+        }
+       public string State
+        {
+            get { return state; }
+            set { this.state = value; }
         }
 		public string Title
         {
@@ -172,10 +176,6 @@ namespace rokugaTouroku.info
         {
             get { return host; }
             set { this.host = value; }
-        }
-		public string TimeShift  {
-        	get { return timeShift; }
-        	set {this.timeShift = value; }
         }
 		public string CommunityName
         {

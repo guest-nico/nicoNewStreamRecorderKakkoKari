@@ -44,8 +44,8 @@ namespace rokugaTouroku
 			this.形式 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.画質 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.タイムシフト設定 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.recComment = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.状態 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.recComment = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.タイトル = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.放送者 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.コミュニティ名 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -78,9 +78,9 @@ namespace rokugaTouroku
 			this.isDisplayRecLvidMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.isDisplayRecConvertTypeMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.isDisplayRecQualityMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.isDisplayRecTimeShiftMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.isDisplayRecStateMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.isDisplayRecCommentMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.isDisplayRecTimeShiftMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.isDisplayRecTitleMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.isDisplayRecHostNameMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.isDisplayRecCommunityNameMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -179,8 +179,8 @@ namespace rokugaTouroku
 									this.形式,
 									this.画質,
 									this.タイムシフト設定,
-									this.recComment,
 									this.状態,
+									this.recComment,
 									this.タイトル,
 									this.放送者,
 									this.コミュニティ名,
@@ -235,6 +235,13 @@ namespace rokugaTouroku
 			this.タイムシフト設定.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.タイムシフト設定.Width = 195;
 			// 
+			// 状態
+			// 
+			this.状態.DataPropertyName = "state";
+			this.状態.HeaderText = "状態";
+			this.状態.Name = "状態";
+			this.状態.ReadOnly = true;
+			// 
 			// recComment
 			// 
 			this.recComment.DataPropertyName = "recComment";
@@ -243,13 +250,6 @@ namespace rokugaTouroku
 			this.recComment.ReadOnly = true;
 			this.recComment.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.recComment.Width = 85;
-			// 
-			// 状態
-			// 
-			this.状態.DataPropertyName = "state";
-			this.状態.HeaderText = "状態";
-			this.状態.Name = "状態";
-			this.状態.ReadOnly = true;
 			// 
 			// タイトル
 			// 
@@ -474,9 +474,9 @@ namespace rokugaTouroku
 									this.isDisplayRecLvidMenu,
 									this.isDisplayRecConvertTypeMenu,
 									this.isDisplayRecQualityMenu,
-									this.isDisplayRecStateMenu,
-									this.isDisplayRecCommentMenu,
 									this.isDisplayRecTimeShiftMenu,
+									this.isDisplayRecCommentMenu,
+									this.isDisplayRecStateMenu,
 									this.isDisplayRecTitleMenu,
 									this.isDisplayRecHostNameMenu,
 									this.isDisplayRecCommunityNameMenu,
@@ -486,6 +486,7 @@ namespace rokugaTouroku
 			this.displayRecListMenu.Name = "displayRecListMenu";
 			this.displayRecListMenu.Size = new System.Drawing.Size(182, 22);
 			this.displayRecListMenu.Text = "表示列(&D)";
+			this.displayRecListMenu.DropDownOpened += new System.EventHandler(this.DisplayRecListMenuDropDownOpened);
 			this.displayRecListMenu.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.DisplayRecListMenuDropDownItemClicked);
 			// 
 			// isDisplayRecLvidMenu
@@ -506,6 +507,12 @@ namespace rokugaTouroku
 			this.isDisplayRecQualityMenu.Size = new System.Drawing.Size(172, 22);
 			this.isDisplayRecQualityMenu.Text = "画質";
 			// 
+			// isDisplayRecTimeShiftMenu
+			// 
+			this.isDisplayRecTimeShiftMenu.Name = "isDisplayRecTimeShiftMenu";
+			this.isDisplayRecTimeShiftMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecTimeShiftMenu.Text = "タイムシフト設定";
+			// 
 			// isDisplayRecStateMenu
 			// 
 			this.isDisplayRecStateMenu.Name = "isDisplayRecStateMenu";
@@ -517,12 +524,6 @@ namespace rokugaTouroku
 			this.isDisplayRecCommentMenu.Name = "isDisplayRecCommentMenu";
 			this.isDisplayRecCommentMenu.Size = new System.Drawing.Size(172, 22);
 			this.isDisplayRecCommentMenu.Text = "映像・コメント";
-			// 
-			// isDisplayRecTimeShiftMenu
-			// 
-			this.isDisplayRecTimeShiftMenu.Name = "isDisplayRecTimeShiftMenu";
-			this.isDisplayRecTimeShiftMenu.Size = new System.Drawing.Size(172, 22);
-			this.isDisplayRecTimeShiftMenu.Text = "タイムシフト設定";
 			// 
 			// isDisplayRecTitleMenu
 			// 

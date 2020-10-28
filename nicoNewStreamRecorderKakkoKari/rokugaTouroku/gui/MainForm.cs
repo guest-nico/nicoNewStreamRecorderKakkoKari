@@ -841,9 +841,11 @@ namespace rokugaTouroku
 		
 		void DisplayRecListMenuDropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
 		{
-			var i = displayRecListMenu.DropDownItems.IndexOf(e.ClickedItem);
+			var i = 0;
+			for (var j = 0; j < recList.Columns.Count; j++)
+				if (recList.Columns[j].HeaderText == e.ClickedItem.Text) i = j;
 			recList.Columns[i].Visible = !recList.Columns[i].Visible;
-			((ToolStripMenuItem)displayRecListMenu.DropDownItems[i]).Checked = recList.Columns[i].Visible;
+			((ToolStripMenuItem)e.ClickedItem).Checked = recList.Columns[i].Visible;
 		}
 		
 		void RecListCellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -858,6 +860,14 @@ namespace rokugaTouroku
 					e.CellStyle.BackColor = Color.FromArgb(255, 255, 155);
 			} catch (Exception ee) {
 				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+			}
+		}
+		
+		void DisplayRecListMenuDropDownOpened(object sender, EventArgs e)
+		{
+			for (var i = 0; i < recList.Columns.Count; i++) {
+				displayRecListMenu.DropDownItems[i].Text = recList.Columns[i].HeaderText;
+				((ToolStripMenuItem)displayRecListMenu.DropDownItems[i]).Checked = recList.Columns[i].Visible;
 			}
 		}
 	}
