@@ -851,8 +851,9 @@ namespace rokugaTouroku
 		void RecListCellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
 		{
 			try {
-				if (e.ColumnIndex != 3 || 
-				    	(!e.Value.Equals("録画完了") && !e.Value.Equals("録画失敗"))) return;
+				if (recList.Columns[e.ColumnIndex].HeaderText != "状態" ||
+				    	e.Value == null || (!e.Value.Equals("録画完了") && !e.Value.Equals("録画失敗"))) return;
+				
 				var ri = (RecInfo)recListDataSource[e.RowIndex];
 				if (ri.state == "録画完了") 
 					e.CellStyle.BackColor = Color.FromArgb(207, 255, 117);
