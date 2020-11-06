@@ -79,8 +79,8 @@ namespace rokugaTouroku
 			this.isDisplayRecConvertTypeMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.isDisplayRecQualityMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.isDisplayRecTimeShiftMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.isDisplayRecStateMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.isDisplayRecCommentMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.isDisplayRecStateMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.isDisplayRecTitleMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.isDisplayRecHostNameMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.isDisplayRecCommunityNameMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -102,6 +102,7 @@ namespace rokugaTouroku
 			this.setTimeshiftBtn = new System.Windows.Forms.Button();
 			this.qualityBtn = new System.Windows.Forms.Button();
 			this.addListBtn = new System.Windows.Forms.Button();
+			this.deleteFinishedBtn = new System.Windows.Forms.Button();
 			this.clearBtn = new System.Windows.Forms.Button();
 			this.recBtn = new System.Windows.Forms.Button();
 			this.urlText = new System.Windows.Forms.TextBox();
@@ -513,17 +514,17 @@ namespace rokugaTouroku
 			this.isDisplayRecTimeShiftMenu.Size = new System.Drawing.Size(172, 22);
 			this.isDisplayRecTimeShiftMenu.Text = "タイムシフト設定";
 			// 
-			// isDisplayRecStateMenu
-			// 
-			this.isDisplayRecStateMenu.Name = "isDisplayRecStateMenu";
-			this.isDisplayRecStateMenu.Size = new System.Drawing.Size(172, 22);
-			this.isDisplayRecStateMenu.Text = "状態";
-			// 
 			// isDisplayRecCommentMenu
 			// 
 			this.isDisplayRecCommentMenu.Name = "isDisplayRecCommentMenu";
 			this.isDisplayRecCommentMenu.Size = new System.Drawing.Size(172, 22);
 			this.isDisplayRecCommentMenu.Text = "映像・コメント";
+			// 
+			// isDisplayRecStateMenu
+			// 
+			this.isDisplayRecStateMenu.Name = "isDisplayRecStateMenu";
+			this.isDisplayRecStateMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecStateMenu.Text = "状態";
 			// 
 			// isDisplayRecTitleMenu
 			// 
@@ -620,6 +621,7 @@ namespace rokugaTouroku
 			this.panel1.Controls.Add(this.afterConvertModeList);
 			this.panel1.Controls.Add(this.qualityBtn);
 			this.panel1.Controls.Add(this.addListBtn);
+			this.panel1.Controls.Add(this.deleteFinishedBtn);
 			this.panel1.Controls.Add(this.clearBtn);
 			this.panel1.Controls.Add(this.recBtn);
 			this.panel1.Controls.Add(this.urlText);
@@ -710,14 +712,25 @@ namespace rokugaTouroku
 			this.addListBtn.UseVisualStyleBackColor = true;
 			this.addListBtn.Click += new System.EventHandler(this.addListBtn_Click);
 			// 
+			// deleteFinishedBtn
+			// 
+			this.deleteFinishedBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.deleteFinishedBtn.Location = new System.Drawing.Point(136, 264);
+			this.deleteFinishedBtn.Name = "deleteFinishedBtn";
+			this.deleteFinishedBtn.Size = new System.Drawing.Size(117, 23);
+			this.deleteFinishedBtn.TabIndex = 7;
+			this.deleteFinishedBtn.Text = "完了した行を削除";
+			this.deleteFinishedBtn.UseVisualStyleBackColor = true;
+			this.deleteFinishedBtn.Click += new System.EventHandler(this.DeleteFinishedBtnClick);
+			// 
 			// clearBtn
 			// 
 			this.clearBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.clearBtn.Location = new System.Drawing.Point(13, 264);
 			this.clearBtn.Name = "clearBtn";
-			this.clearBtn.Size = new System.Drawing.Size(95, 23);
+			this.clearBtn.Size = new System.Drawing.Size(117, 23);
 			this.clearBtn.TabIndex = 7;
-			this.clearBtn.Text = "リストのクリア";
+			this.clearBtn.Text = "全ての行を削除";
 			this.clearBtn.UseVisualStyleBackColor = true;
 			this.clearBtn.Click += new System.EventHandler(this.clearBtn_Click);
 			// 
@@ -1037,6 +1050,7 @@ namespace rokugaTouroku
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.Button deleteFinishedBtn;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
 		private System.Windows.Forms.ToolStripMenuItem isDisplayRecLogMenu;
 		private System.Windows.Forms.ToolStripMenuItem isDisplayRecEndTimMenu;

@@ -871,5 +871,24 @@ namespace rokugaTouroku
 				((ToolStripMenuItem)displayRecListMenu.DropDownItems[i]).Checked = recList.Columns[i].Visible;
 			}
 		}
+		
+		void DeleteFinishedBtnClick(object sender, EventArgs e)
+		{
+			var deleteList = new List<RecInfo>();
+			foreach(RecInfo ri in recListDataSource) {
+				if (ri.state == "録画完了") deleteList.Add(ri);
+			}
+			while (true) {
+				try {
+					foreach (var ri in deleteList) {
+						if (recListDataSource.IndexOf(ri) > -1)
+							recListDataSource.Remove(ri);
+					}
+					return;
+				} catch (Exception ee) {
+					util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+				}
+			}
+		}
 	}
 }
