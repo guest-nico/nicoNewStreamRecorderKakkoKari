@@ -128,8 +128,8 @@ namespace namaichi.rec
 				//wsc = new WebSocket(msUri,  "", null, header, "", "", WebSocketVersion.Rfc6455);
 				header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Extensions", "permessage-deflate"));
 				header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Version", "13"));
-				wsc = new WebSocket(uri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, uri.StartsWith("wss") ? SslProtocols.Tls12 : SslProtocols.None);
-				//wsc = new WebSocket(uri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
+				wsc = new WebSocket(uri, "", null, header, util.userAgent, "", WebSocketVersion.Rfc6455, null, uri.StartsWith("wss") ? SslProtocols.Tls12 : SslProtocols.None);
+				//wsc = new WebSocket(uri, "", null, header, util.userAgent, "", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
 				wsc.Opened += onWscOpen;
 				wsc.Closed += onWscClose;
 				wsc.MessageReceived += onWscMessageReceive;

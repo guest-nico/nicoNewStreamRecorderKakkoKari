@@ -185,7 +185,7 @@ namespace namaichi.rec
 			header.Add("Content-Type", "application/x-www-form-urlencoded");
 			header.Add("Referer", "https://live2.nicovideo.jp/watch/lv" + id);
 			header.Add("Origin", "https://live2.nicovideo.jp");
-			//header.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; W…) Gecko/20100101 Firefox/65.0");
+			//header.Add("User-Agent", util.userAgent);
 			return header;
 		}
 	}

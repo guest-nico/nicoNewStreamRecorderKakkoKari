@@ -321,8 +321,8 @@ namespace namaichi.rec
 			try {
 				//ws = new WebSocket(webSocketInfo[0]);
 				addDebugBuf("ws connect webSocketInfo[0] " + webSocketInfo[0] + " wsList " + wsList.Count);
-				//ws = new WebSocket(webSocketInfo[0], "", null, null, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
-				ws = new WebSocket(webSocketInfo[0], "", null, null, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.None);
+				//ws = new WebSocket(webSocketInfo[0], "", null, null, util.userAgent, "", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
+				ws = new WebSocket(webSocketInfo[0], "", null, null, util.userAgent, "", WebSocketVersion.Rfc6455, null, SslProtocols.None);
 				ws.Proxy = util.wsProxy;
 				ws.Opened += onOpen;
 				ws.Closed += onClose;
@@ -760,8 +760,8 @@ namespace namaichi.rec
 			
 			var header =  new List<KeyValuePair<string, string>>();
 			header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Protocol", "msg.nicovideo.jp#json"));
-			wsc[0] = new WebSocket(msUri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.None);
-			//wsc = new WebSocket(msUri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
+			wsc[0] = new WebSocket(msUri, "", null, header, util.userAgent, "", WebSocketVersion.Rfc6455, null, SslProtocols.None);
+			//wsc = new WebSocket(msUri, "", null, header, util.userAgent, "", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
 			wsc[0].Proxy = util.wsProxy;
 			wsc[0].Opened += onWscOpen;
 			wsc[0].Closed += onWscClose;
@@ -775,7 +775,7 @@ namespace namaichi.rec
 	        wsc[0].Open();
 			
 	        if (msStoreUri != null) {
-	        	wsc[1] = new WebSocket(msStoreUri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "", WebSocketVersion.Rfc6455, null, SslProtocols.None);
+	        	wsc[1] = new WebSocket(msStoreUri, "", null, header, util.userAgent, "", WebSocketVersion.Rfc6455, null, SslProtocols.None);
 	        	wsc[1].Opened += onWscOpen;
 	        	wsc[1].Closed += onWscClose;
 	        	wsc[1].MessageReceived += onWscMessageReceive;

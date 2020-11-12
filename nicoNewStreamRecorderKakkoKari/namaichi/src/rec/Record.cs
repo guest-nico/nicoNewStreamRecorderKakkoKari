@@ -906,7 +906,7 @@ namespace namaichi.rec
 				util.debugWriteLine("lateTime " + lateTime);
 				if (lateTime > 11 || !((WebSocketRecorder)wr).isChase) {
 					if (!isSpeedUp) setSpeed(true);
-				} else if (lateTime < 7) {
+				} else if (lateTime < 7 && false) {
 					if (isSpeedUp) {
 						setSpeed(false);
 					}

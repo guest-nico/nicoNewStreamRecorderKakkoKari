@@ -250,7 +250,7 @@ namespace namaichi.rec
 				http.DefaultRequestHeaders.Add("X-Frontend-Id", "91");
 				http.DefaultRequestHeaders.Add("X-Connection-Environment", "ethernet");
 				http.DefaultRequestHeaders.Add("Host", "api.cas.nicovideo.jp");
-				http.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0");
+				http.DefaultRequestHeaders.Add("User-Agent", util.userAgent);
 				http.DefaultRequestHeaders.Add("Accept", "application/json");
 				
 //				var contentStr = "{\"actionTrackId\":\"" + actionTrackId + "\",\"streamProtocol\":\"rtmp\",\"streamQuality\":\"" + requestQuality + "\"";
@@ -293,7 +293,7 @@ namespace namaichi.rec
 					http.DefaultRequestHeaders.Add("X-Frontend-Id", "91");
 					http.DefaultRequestHeaders.Add("X-Connection-Environment", "ethernet");
 					http.DefaultRequestHeaders.Add("Host", "api.cas.nicovideo.jp");
-					http.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0");
+					http.DefaultRequestHeaders.Add("User-Agent", util.userAgent);
 					http.DefaultRequestHeaders.Add("Accept", "application/json");
 					
 					var contentStr = "{\"actionTrackId\":\"" + actionTrackId + "\",\"isBroadcaster\":\"" + isBroadcaster.ToString().ToLower() + "\"}";
@@ -336,7 +336,7 @@ namespace namaichi.rec
 				http.DefaultRequestHeaders.Add("X-Frontend-Id", "91");
 				http.DefaultRequestHeaders.Add("X-Connection-Environment", "ethernet");
 				http.DefaultRequestHeaders.Add("Host", "api.cas.nicovideo.jp");
-				http.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0");
+				http.DefaultRequestHeaders.Add("User-Agent", util.userAgent);
 				http.DefaultRequestHeaders.Add("Accept", "application/json");
 				
 				var _184 = (is184) ? "184 " : "";

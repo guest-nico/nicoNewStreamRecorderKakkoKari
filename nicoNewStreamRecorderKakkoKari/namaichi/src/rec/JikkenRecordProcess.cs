@@ -653,9 +653,9 @@ namespace namaichi.rec
 //				foreach (Cookie kv in container.GetCookies(new Uri(wi.msUri)))
 //					cookieKV.Add(new KeyValuePair<string, string>(kv.Name, kv.Value));
 //				msUri = "ws://nmsg.nicovideo.jp:2581/websocket";
-				wsc = new WebSocket(msUri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "https://cas.nicovideo.jp", WebSocketVersion.Rfc6455, null, msUri.StartsWith("wss") ? SslProtocols.Tls12 : SslProtocols.None);
-				//wsc = new WebSocket(msUri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "https://cas.nicovideo.jp", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
-//				wsc = new WebSocket(msUri, "", null, header, "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36", "https://cas.nicovideo.jp", WebSocketVersion.Rfc6455);
+				wsc = new WebSocket(msUri, "", null, header, util.userAgent, "https://cas.nicovideo.jp", WebSocketVersion.Rfc6455, null, msUri.StartsWith("wss") ? SslProtocols.Tls12 : SslProtocols.None);
+				//wsc = new WebSocket(msUri, "", null, header, util.userAgent, "https://cas.nicovideo.jp", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
+//				wsc = new WebSocket(msUri, "", null, header, util.userAgent, "https://cas.nicovideo.jp", WebSocketVersion.Rfc6455);
 //				wsc.Security.AllowUnstrustedCertificate = true;
 //				wsc.Security.
 				wsc.Opened += onWscOpen;

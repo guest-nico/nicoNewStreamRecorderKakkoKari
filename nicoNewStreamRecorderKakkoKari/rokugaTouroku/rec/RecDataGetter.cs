@@ -120,8 +120,8 @@ namespace rokugaTouroku.rec
 					((rlm.cfg.get("EngineMode") == "3") ? " -EngineMode=0" : "") :
 					" -EngineMode=3";
 				
-				si.Arguments = "-nowindo -stdIO -IsmessageBox=false ";
-				si.Arguments += "-IscloseExit=true " + ri.id;
+				si.Arguments = "-nowindo -stdIO -IsmessageBox=false";
+				si.Arguments += " -IscloseExit=true " + ri.id;
 				si.Arguments += " -ts-start=" + ri.tsConfig.startTimeStr;
 				si.Arguments += " -ts-end=" + ri.tsConfig.endTimeSeconds + "s";
 				si.Arguments += " -ts-list=" + ri.tsConfig.isOutputUrlList.ToString().ToLower();
@@ -137,6 +137,8 @@ namespace rokugaTouroku.rec
 				si.Arguments += " -qualityRank=" + ri.qualityRank;
 				si.Arguments += " -IsLogFile=false -std-read ";
 				si.Arguments += isGetComment + isGetRec;
+				if (ri.isChase) si.Arguments += " -chase ";
+				
 				util.debugWriteLine(si.Arguments);
 				//si.CreateNoWindow = true;
 				si.UseShellExecute = false;

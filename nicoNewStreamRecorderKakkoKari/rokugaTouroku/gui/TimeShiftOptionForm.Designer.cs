@@ -368,7 +368,7 @@ namespace rokugaTouroku
 			this.groupBox3.Controls.Add(this.isOpenListCommandChkBox);
 			this.groupBox3.Controls.Add(this.openListCommandText);
 			this.groupBox3.Controls.Add(this.isUrlListChkBox);
-			this.groupBox3.Location = new System.Drawing.Point(5, 236);
+			this.groupBox3.Location = new System.Drawing.Point(207, 370);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(299, 197);
 			this.groupBox3.TabIndex = 27;
@@ -500,9 +500,9 @@ namespace rokugaTouroku
 			// 
 			this.label2.Location = new System.Drawing.Point(5, 10);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(266, 19);
+			this.label2.Size = new System.Drawing.Size(353, 19);
 			this.label2.TabIndex = 28;
-			this.label2.Text = "この設定はタイムシフト録画時にのみ使用されます。";
+			this.label2.Text = "この設定はタイムシフト又は追っかけ再生の録画時にのみ使用されます";
 			// 
 			// TimeShiftOptionForm
 			// 
@@ -520,7 +520,7 @@ namespace rokugaTouroku
 			this.Controls.Add(this.groupBox3);
 			this.Name = "TimeShiftOptionForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "タイムシフト録画設定";
+			this.Text = "タイムシフト・追っかけ録画設定";
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);

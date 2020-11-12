@@ -967,5 +967,47 @@ namespace namaichi
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
 		}
+		
+		void OpenSettingFolderMenuClick(object sender, EventArgs e)
+		{
+			string[] jarpath = util.getJarPath();
+			string dirPath = jarpath[0];
+			try {
+				if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
+				System.Diagnostics.Process.Start(dirPath);
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + " " + ee.StackTrace);
+			}
+		}
+		
+		void OpenReadmeMenuClick(object sender, EventArgs e)
+		{
+			string[] jarpath = util.getJarPath();
+			string path = jarpath[0] + "/readme.html";
+			try {
+				if (!File.Exists(path)) {
+					MessageBox.Show("readme.htmlが見つかりませんでした");
+					return;
+				}
+				System.Diagnostics.Process.Start(path);
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + " " + ee.StackTrace);
+			}
+		}
+		
+		void OpenTourokuExeMenuClick(object sender, EventArgs e)
+		{
+			string[] jarpath = util.getJarPath();
+			string path = jarpath[0] + "/録画登録ツール（仮.exe";
+			try {
+				if (!File.Exists(path)) {
+					MessageBox.Show("録画登録ツール（仮.exeが見つかりませんでした");
+					return;
+				}
+				System.Diagnostics.Process.Start(path);
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + " " + ee.StackTrace);
+			}
+		}
 	}
 }

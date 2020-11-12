@@ -48,6 +48,9 @@ namespace namaichi
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.録画フォルダを開くToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.openSettingFolderMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+			this.openTourokuExeMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.終了ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,9 +58,11 @@ namespace namaichi
 			this.visualMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.formColorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.characterColorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.linkColorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.バージョン情報VToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.openReadmeMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.更新方法VToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.バージョン情報VToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.streamInfoGroupBox = new System.Windows.Forms.GroupBox();
 			this.endTimeLabel = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
@@ -96,7 +101,6 @@ namespace namaichi
 			this.playerBtn = new System.Windows.Forms.Button();
 			this.miniBtn = new System.Windows.Forms.Button();
 			this.isChaseChkBtn = new System.Windows.Forms.CheckBox();
-			this.linkColorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.samuneBox)).BeginInit();
 			this.menuStrip1.SuspendLayout();
 			this.streamInfoGroupBox.SuspendLayout();
@@ -185,6 +189,9 @@ namespace namaichi
 			// 
 			this.fileMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 									this.録画フォルダを開くToolStripMenuItem,
+									this.openSettingFolderMenu,
+									this.toolStripSeparator3,
+									this.openTourokuExeMenu,
 									this.toolStripSeparator1,
 									this.終了ToolStripMenuItem});
 			this.fileMenuItem.Name = "fileMenuItem";
@@ -195,19 +202,38 @@ namespace namaichi
 			// 録画フォルダを開くToolStripMenuItem
 			// 
 			this.録画フォルダを開くToolStripMenuItem.Name = "録画フォルダを開くToolStripMenuItem";
-			this.録画フォルダを開くToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.録画フォルダを開くToolStripMenuItem.Size = new System.Drawing.Size(261, 22);
 			this.録画フォルダを開くToolStripMenuItem.Text = "録画フォルダを開く(&O)";
 			this.録画フォルダを開くToolStripMenuItem.Click += new System.EventHandler(this.openRecFolderMenu_Click);
+			// 
+			// openSettingFolderMenu
+			// 
+			this.openSettingFolderMenu.Name = "openSettingFolderMenu";
+			this.openSettingFolderMenu.Size = new System.Drawing.Size(261, 22);
+			this.openSettingFolderMenu.Text = "設定ファイルフォルダーを開く(&F)";
+			this.openSettingFolderMenu.Click += new System.EventHandler(this.OpenSettingFolderMenuClick);
+			// 
+			// toolStripSeparator3
+			// 
+			this.toolStripSeparator3.Name = "toolStripSeparator3";
+			this.toolStripSeparator3.Size = new System.Drawing.Size(258, 6);
+			// 
+			// openTourokuExeMenu
+			// 
+			this.openTourokuExeMenu.Name = "openTourokuExeMenu";
+			this.openTourokuExeMenu.Size = new System.Drawing.Size(261, 22);
+			this.openTourokuExeMenu.Text = "録画登録ツールを起動する(&E)";
+			this.openTourokuExeMenu.Click += new System.EventHandler(this.OpenTourokuExeMenuClick);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(200, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(258, 6);
 			// 
 			// 終了ToolStripMenuItem
 			// 
 			this.終了ToolStripMenuItem.Name = "終了ToolStripMenuItem";
-			this.終了ToolStripMenuItem.Size = new System.Drawing.Size(203, 22);
+			this.終了ToolStripMenuItem.Size = new System.Drawing.Size(261, 22);
 			this.終了ToolStripMenuItem.Text = "終了(&X)";
 			this.終了ToolStripMenuItem.Click += new System.EventHandler(this.endMenu_Click);
 			// 
@@ -252,29 +278,44 @@ namespace namaichi
 			this.characterColorMenuItem.Text = "文字の色(&S)";
 			this.characterColorMenuItem.Click += new System.EventHandler(this.CharacterColorMenuItemClick);
 			// 
+			// linkColorMenuItem
+			// 
+			this.linkColorMenuItem.Name = "linkColorMenuItem";
+			this.linkColorMenuItem.Size = new System.Drawing.Size(182, 22);
+			this.linkColorMenuItem.Text = "リンク文字の色(&L)";
+			this.linkColorMenuItem.Click += new System.EventHandler(this.LinkColorMenuItemClick);
+			// 
 			// helpMenuItem
 			// 
 			this.helpMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.バージョン情報VToolStripMenuItem,
-									this.更新方法VToolStripMenuItem});
+									this.openReadmeMenu,
+									this.更新方法VToolStripMenuItem,
+									this.バージョン情報VToolStripMenuItem});
 			this.helpMenuItem.Name = "helpMenuItem";
 			this.helpMenuItem.ShowShortcutKeys = false;
 			this.helpMenuItem.Size = new System.Drawing.Size(75, 22);
 			this.helpMenuItem.Text = "ヘルプ(&H)";
 			// 
-			// バージョン情報VToolStripMenuItem
+			// openReadmeMenu
 			// 
-			this.バージョン情報VToolStripMenuItem.Name = "バージョン情報VToolStripMenuItem";
-			this.バージョン情報VToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
-			this.バージョン情報VToolStripMenuItem.Text = "バージョン情報(&A)";
-			this.バージョン情報VToolStripMenuItem.Click += new System.EventHandler(this.versionMenu_Click);
+			this.openReadmeMenu.Name = "openReadmeMenu";
+			this.openReadmeMenu.Size = new System.Drawing.Size(206, 22);
+			this.openReadmeMenu.Text = "readme.htmlを開く(&V)";
+			this.openReadmeMenu.Click += new System.EventHandler(this.OpenReadmeMenuClick);
 			// 
 			// 更新方法VToolStripMenuItem
 			// 
 			this.更新方法VToolStripMenuItem.Name = "更新方法VToolStripMenuItem";
-			this.更新方法VToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+			this.更新方法VToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
 			this.更新方法VToolStripMenuItem.Text = "更新方法(&U)";
 			this.更新方法VToolStripMenuItem.Click += new System.EventHandler(this.updateMenu_Click);
+			// 
+			// バージョン情報VToolStripMenuItem
+			// 
+			this.バージョン情報VToolStripMenuItem.Name = "バージョン情報VToolStripMenuItem";
+			this.バージョン情報VToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.バージョン情報VToolStripMenuItem.Text = "バージョン情報(&A)";
+			this.バージョン情報VToolStripMenuItem.Click += new System.EventHandler(this.versionMenu_Click);
 			// 
 			// streamInfoGroupBox
 			// 
@@ -614,17 +655,10 @@ namespace namaichi
 			// 
 			this.isChaseChkBtn.Location = new System.Drawing.Point(319, 65);
 			this.isChaseChkBtn.Name = "isChaseChkBtn";
-			this.isChaseChkBtn.Size = new System.Drawing.Size(104, 15);
+			this.isChaseChkBtn.Size = new System.Drawing.Size(171, 15);
 			this.isChaseChkBtn.TabIndex = 24;
-			this.isChaseChkBtn.Text = "追っかけ録画";
+			this.isChaseChkBtn.Text = "録画設定して追っかけ録画";
 			this.isChaseChkBtn.UseVisualStyleBackColor = true;
-			// 
-			// linkColorMenuItem
-			// 
-			this.linkColorMenuItem.Name = "linkColorMenuItem";
-			this.linkColorMenuItem.Size = new System.Drawing.Size(182, 22);
-			this.linkColorMenuItem.Text = "リンク文字の色(&L)";
-			this.linkColorMenuItem.Click += new System.EventHandler(this.LinkColorMenuItemClick);
 			// 
 			// MainForm
 			// 
@@ -634,12 +668,12 @@ namespace namaichi
 			this.BackColor = System.Drawing.SystemColors.Window;
 			this.ClientSize = new System.Drawing.Size(719, 362);
 			this.ContextMenuStrip = this.mainWindowRightClickMenu;
+			this.Controls.Add(this.streamStateGroupBox);
 			this.Controls.Add(this.isChaseChkBtn);
 			this.Controls.Add(this.miniBtn);
 			this.Controls.Add(this.playerBtn);
 			this.Controls.Add(this.commentList);
 			this.Controls.Add(this.recordGroupBox);
-			this.Controls.Add(this.streamStateGroupBox);
 			this.Controls.Add(this.urlLabel);
 			this.Controls.Add(this.streamInfoGroupBox);
 			this.Controls.Add(this.logText);
@@ -667,6 +701,10 @@ namespace namaichi
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+		private System.Windows.Forms.ToolStripMenuItem openTourokuExeMenu;
+		private System.Windows.Forms.ToolStripMenuItem openReadmeMenu;
+		private System.Windows.Forms.ToolStripMenuItem openSettingFolderMenu;
 		private System.Windows.Forms.ToolStripMenuItem linkColorMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem characterColorMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem formColorMenuItem;

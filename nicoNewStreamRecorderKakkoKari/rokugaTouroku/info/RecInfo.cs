@@ -39,6 +39,7 @@ namespace rokugaTouroku.info
 		public Image samune;
 		public string quality;
 		public string recComment = "";
+		public bool isChase = false;
 		
 		public info.TimeShiftConfig tsConfig;
 		public Process process;
@@ -49,7 +50,7 @@ namespace rokugaTouroku.info
 		public RecInfo() {
 			
 		}
-		public RecInfo(string id, string url, RecDataGetter rdg, string afterConvertType, info.TimeShiftConfig tsConfig, string tsStr, string qualityRankStr, string qualityRank, string recComment) {
+		public RecInfo(string id, string url, RecDataGetter rdg, string afterConvertType, info.TimeShiftConfig tsConfig, string tsStr, string qualityRankStr, string qualityRank, string recComment, bool isChase) {
 			this.id = id;
 			var lvM = Regex.Match(url, "lv\\d+");
 			if (lvM != null && !string.IsNullOrEmpty(lvM.Value)) {
@@ -69,6 +70,7 @@ namespace rokugaTouroku.info
 			quality = qualityRankStr;
 			this.qualityRank = qualityRank;
 			this.recComment = recComment;
+			this.isChase = isChase;
 		}
 		public RecInfo(string id, string title, 
 				string host, string communityName,
@@ -76,7 +78,7 @@ namespace rokugaTouroku.info
 				string programTime, string url, 
 				string communityUrl, string description,
 				string qualityRank, TimeShiftConfig tsConfig, 
-				RecDataGetter rdg, string recComment) {
+				RecDataGetter rdg, string recComment, bool isChase) {
 			this.id = id;
 			this.title = title;
 			this.host = host;
@@ -91,6 +93,7 @@ namespace rokugaTouroku.info
 			this.tsConfig = tsConfig;
 			this.rdg = rdg;
 			this.recComment = recComment;
+			this.isChase = isChase;
 		}
 		public void setHosoInfo(MainForm form) {
          	var hig = new namaichi.rec.HosoInfoGetter();
@@ -154,9 +157,13 @@ namespace rokugaTouroku.info
         	get { return quality; }
         	set {this.quality = value; }
         }
-       public string TimeShift  {
+       	public string TimeShift  {
         	get { return timeShift; }
         	set {this.timeShift = value; }
+        }
+		public string Chase  {
+       		get { return isChase ? "追" : ""; }
+       		set {this.isChase = value.Equals("追"); }
         }
         public string RecComment  {
         	get { return recComment; }
