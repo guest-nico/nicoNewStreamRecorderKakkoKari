@@ -137,21 +137,6 @@ namespace namaichi.rec
 					return;
 				}
 			}
-				try {
-//					if (!rm.isPlayOnlyMode)
-//						fileName = util.getOkCommentFileName(rm.cfg, recFolderFile[1], lvid, true);
-					/*
-					var isExists = File.Exists(fileName);
-					commentSW = new StreamWriter(fileName, false, System.Text.Encoding.UTF8);
-					if (isGetXml && !isExists) {
-						//commentSW.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
-					    //commentSW.WriteLine("<packet>");
-					    //commentSW.Flush();
-					}
-					*/
-				} catch (Exception ee) {
-					util.debugWriteLine(ee.Message + " " + ee.StackTrace);
-				}
 			
 			when = util.getUnixTime();//(int)openTime;
 			gotMinTime = when;
@@ -476,10 +461,11 @@ namespace namaichi.rec
 						else {
 							writeXmlStreamInfo(w);
 						}
-					    
 					    w.Flush();
+					} else {
+						w.WriteLine("[");
 					}
-					w.WriteLine(threadLine);
+					w.WriteLine(threadLine + ((!isGetXml && chats.Length != 0) ? "," : ""));
 					for (var i = 0; i < chats.Length; i++) {
 						if (quePosTimeList != null) {
 							if (chats[i] == null) continue;
@@ -497,13 +483,18 @@ namespace namaichi.rec
 								chats[i] = null;
 							}
 						} else {
-							w.WriteLine(chats[i]);
+							w.WriteLine(chats[i] + ((!isGetXml && i != chats.Length - 1) ? "," : ""));
 						}
 						
 					}
 					if (isGetXml) {
 						w.WriteLine("</packet>");
+					} else {
+						//w.BaseStream.Position -= 3;
+						//w.WriteLine("");
+						w.WriteLine("]");
 					}
+					w.Flush();
 					//w.Close();
 				}
 				File.Delete(fileName);

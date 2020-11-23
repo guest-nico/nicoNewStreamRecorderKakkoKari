@@ -94,7 +94,7 @@ namespace namaichi.rec
 		
 		private string qualityRank = null;
 		private string isGetComment = null;
-		private string isGetCommentXml = null;
+		private bool isGetCommentXml = false;
 		private bool isGetCommentXmlInfo = false;
 		private string commentFileName = null;
 //		private string commentHead = null;
@@ -154,7 +154,7 @@ namespace namaichi.rec
 			
 			this.qualityRank = rm.cfg.get("qualityRank");
 			this.isGetComment = rm.cfg.get("IsgetComment");
-			this.isGetCommentXml = rm.cfg.get("IsgetcommentXml");
+			this.isGetCommentXml = bool.Parse(rm.cfg.get("IsgetcommentXml"));
 			this.isGetCommentXmlInfo = bool.Parse(rm.cfg.get("IsgetcommentXmlInfo"));
 			this.engineMode = rm.cfg.get("EngineMode");
 			this.isNotSleep = bool.Parse(rm.cfg.get("IsNotSleep"));
@@ -922,16 +922,20 @@ namespace namaichi.rec
 					commentSW = new StreamWriter(_commentFileName, false, System.Text.Encoding.UTF8);
 					lastOpenCommentSwDt = DateTime.Now;
 					
-					if (bool.Parse(isGetCommentXml) && !isExists) {
-						commentSW.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
-						if (!isGetCommentXmlInfo) 
-							commentSW.WriteLine("<packet>");
-						else {
-							writeXmlStreamInfo(commentSW);
+					if (!isExists) {
+						if (isGetCommentXml) {
+							commentSW.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
+							if (!isGetCommentXmlInfo) 
+								commentSW.WriteLine("<packet>");
+							else {
+								writeXmlStreamInfo(commentSW);
+							}
+					        commentSW.Flush();
+						} else {
+							commentSW.WriteLine("[");
 						}
-				        
-				        commentSW.Flush();
-					} 
+					}
+					
 			       
 				}
 			} catch (Exception ee) {
@@ -976,14 +980,19 @@ namespace namaichi.rec
 			if (isTimeShift && isTimeShiftCommentGetEnd) return;
 			
 			if (commentSW != null) {
-				if (bool.Parse(isGetCommentXml)) {
-					try {
+				try {
+					if (isGetCommentXml)
 						commentSW.WriteLine("</packet>");
-						commentSW.Flush();
-					} catch (Exception ee) {
-						addDebugBuf(ee.Message + " " + ee.StackTrace + " " + ee.TargetSite);
+					else {
+						commentSW.BaseStream.Position -= 3;
+						commentSW.WriteLine("");
+						commentSW.WriteLine("]");
 					}
+					commentSW.Flush();
+				} catch (Exception ee) {
+					addDebugBuf(ee.Message + " " + ee.StackTrace + " " + ee.TargetSite);
 				}
+				
 				
 				var name = ((FileStream)commentSW.BaseStream).Name; 
 				commentSW.Close();
@@ -1129,7 +1138,7 @@ namespace namaichi.rec
 			try {
 				lock(commentLock) {
 					if (commentSW != null) {
-						var writeStr = (bool.Parse(isGetCommentXml)) ? 
+						var writeStr = (isGetCommentXml) ? 
 							chatXml.ToString() : 
 							(Regex.Replace(eMessage, 
 				            	"\"vpos\"\\:(\\d+)", 
@@ -1150,7 +1159,7 @@ namespace namaichi.rec
 							if (lastSaveComments.IndexOf(writeStr) == -1 &&
 							    	!(lastSaveComments.Count > 0 && chatinfo.root == "thread")) {
 								if (!isSaveCommentOnlyRetryingRec || (rec == null || DateTime.Now - rec.lastWroteSegmentDt < TimeSpan.FromSeconds(10))) {
-									commentSW.WriteLine(writeStr);
+									commentSW.WriteLine(writeStr + (isGetCommentXml ? "" : ","));
 									commentSW.Flush();
 								}
 							}
@@ -1437,14 +1446,19 @@ namespace namaichi.rec
 				xcg.resetCommentFile();
 			} else {
 				try {
-					if (bool.Parse(isGetCommentXml)) {
-						if (commentSW != null) {
+					if (commentSW != null) {
+						if (isGetCommentXml)
 							commentSW.WriteLine("</packet>");
-							commentSW.Close();
-							commentSW = null;
-							lastSaveComments.Clear();
+						else {
+							commentSW.BaseStream.Position -= 3;
+							commentSW.WriteLine("");
+							commentSW.WriteLine("]");
 						}
+						commentSW.Close();
+						commentSW = null;
+						lastSaveComments.Clear();
 					}
+					
 				} catch (Exception e) {
 					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
@@ -1467,14 +1481,17 @@ namespace namaichi.rec
 						commentSW = new StreamWriter(_commentFileName, false, System.Text.Encoding.UTF8);
 						lastOpenCommentSwDt = DateTime.Now;
 						
-						if (bool.Parse(isGetCommentXml) && !isExists) {
-							commentSW.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
-					        commentSW.WriteLine("<packet>");
-	//				        if (commentHead != null)
-	//				        	commentSW.WriteLine(commentHead);
-					        commentSW.Flush();
-						} 
-				       
+						if (!isExists) {
+							if (isGetCommentXml) {
+								commentSW.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
+						        commentSW.WriteLine("<packet>");
+		//				        if (commentHead != null)
+		//				        	commentSW.WriteLine(commentHead);
+						        commentSW.Flush();
+							}
+						} else {
+							commentSW.WriteLine("[");
+						}
 					}
 				} catch (Exception ee) {
 					util.debugWriteLine(ee.Message + " " + ee.StackTrace);
