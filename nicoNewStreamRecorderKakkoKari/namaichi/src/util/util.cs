@@ -32,8 +32,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.19";
-	public static string versionDayStr = "2020/11/24";
+	public static string versionStr = "ver0.88.20";
+	public static string versionDayStr = "2020/12/04";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -530,58 +530,6 @@ class util {
 		}
 		return null;
 	}
-	/*
-	public static string getPageSource(string _url, ref WebHeaderCollection getheaders, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 5000, string userAgent = null) {
-		util.debugWriteLine("access__ getpage " + _url);
-		timeoutMs = 5000;
-		
-//		if (isFirstLog)
-//			util.debugWriteLine("getpagesource " + _url + " ");
-			
-//		util.debugWriteLine("getpage 02");
-		for (int i = 0; i < 1; i++) {
-			try {
-//				util.debugWriteLine("getpage 00");
-				var req = (HttpWebRequest)WebRequest.Create(_url);
-				req.Proxy = null;
-				req.AllowAutoRedirect = true;
-	//			req.Headers = getheaders;
-//				util.debugWriteLine("getpage 03");
-				if (referer != null) req.Referer = referer;
-//				util.debugWriteLine("getpage 04");
-				if (container != null) req.CookieContainer = container;
-//				util.debugWriteLine("getpage 05");
-				req.Headers.Add("Accept-Encoding", "gzip,deflate");
-				if (userAgent != null) 
-					req.UserAgent = userAgent;//"Lavf/56.36.100";
-				req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-
-				req.Timeout = timeoutMs;
-				using (var res = (HttpWebResponse)req.GetResponse())
-				using (var dataStream = res.GetResponseStream())
-				using (var reader = new StreamReader(dataStream)) {
-					
-					
-	//				util.debugWriteLine("getpage 3");
-					var resStr = reader.ReadToEnd();
-	//				util.debugWriteLine("getpage 4");
-					
-					getheaders = res.Headers;
-					return resStr;
-				}
-	
-			} catch (Exception e) {
-				System.Threading.Tasks.Task.Run(() => {
-					util.debugWriteLine("getpage error " + _url + e.Message+e.StackTrace);
-				});
-	//				System.Threading.Thread.Sleep(3000);
-				continue;
-			}
-		}
-			
-		return null;
-	}
-	*/
 	public static string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36";
 	public static string getPageSource(string _url, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 0, string userAgent = null, bool isGetErrorPage = false) {
 		util.debugWriteLine("access__ getpage " + _url);
@@ -762,13 +710,14 @@ class util {
 			return null;
 		}
 	}
-	public static HttpWebResponse sendRequest(string url, Dictionary<string, string> headers, byte[] content, string method) {
+	public static HttpWebResponse sendRequest(string url, Dictionary<string, string> headers, byte[] content, string method, CookieContainer cc = null) {
 		try {
 			var req = (HttpWebRequest)WebRequest.Create(url);
 			req.Method = method;
 			req.Proxy = httpProxy;
 			req.Headers.Add("Accept-Encoding", "gzip,deflate");
 			req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+			req.CookieContainer = cc;
 			
 			if (headers != null) {
 				foreach (var h in headers) {
@@ -1298,13 +1247,13 @@ public static void soundEnd(config cfg, MainForm form) {
 			//if (us == null) return null;
 			var _h = new Dictionary<string, string>() {
 				{"User-Agent", "Niconico/1.0 (Linux; U; Android 7.1.2; ja-jp; nicoandroid LGM-V300K) Version/5.38.0"},
-				{"Cookie", "user_session=" + us},
+				//{"Cookie", "user_session=" + us},
 					{"X-Frontend-Id", "1"},
 					{"X-Frontend-Version", "5.38.0"},
 					{"Connection", "keep-alive"},
 					{"Upgrade-Insecure-Requests", "1"},
 				};
-			var r = sendRequest(url, _h, null, "GET");
+			var r = sendRequest(url, _h, null, "GET", cc);
 			if (r == null) return null;
 			using (var st = r.GetResponseStream())
 			using (var sr = new StreamReader(st)) {

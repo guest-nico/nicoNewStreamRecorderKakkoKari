@@ -1143,7 +1143,7 @@ namespace namaichi.rec
 							(Regex.Replace(eMessage, 
 				            	"\"vpos\"\\:(\\d+)", 
 				            	"\"vpos\":" + chatinfo.vpos + ""));
-						writeStr = util.getOkSJisOut(writeStr, " ");
+						//writeStr = util.getOkSJisOut(writeStr, " ");
 						
 						if (isChase && !isRealtimeChase && chaseCommentBuf != null) {
 							if (chaseCommentBuf.IndexOf(writeStr) == -1) {
@@ -1658,12 +1658,12 @@ namespace namaichi.rec
 			
 			
 			try {
-				if (threadLine != null) commentSW.WriteLine(threadLine);
+				if (threadLine != null) commentSW.WriteLine(threadLine + (isGetCommentXml ? "" : ","));
 				for (var i = 0; i < gotComList.Count; i++) {
-					commentSW.WriteLine(gotComList[i]);
+					commentSW.WriteLine(gotComList[i] + (isGetCommentXml ? "" : ","));
 				}
 				foreach (var c in chaseCommentBuf)
-					commentSW.WriteLine(c);
+					commentSW.WriteLine(c + (isGetCommentXml ? "" : ","));
 				commentSW.Flush();
 				chaseCommentBuf = null;
 			} catch (Exception e) {

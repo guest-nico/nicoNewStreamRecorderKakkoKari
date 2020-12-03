@@ -53,9 +53,9 @@ namespace namaichi.rec
 			headers.Add("Accept-Language", "ja,en-US;q=0.7,en;q=0.3");
 			headers.Add("Referer", "https://com.nicovideo.jp/motion/" + comId);
 			headers.Add("User-Agent", util.userAgent);
-			headers.Add("Cookie", cc.GetCookieHeader(new Uri(comApiUrl)));
+			//headers.Add("Cookie", cc.GetCookieHeader(new Uri(comApiUrl)));
 			try {
-				var res = util.sendRequest(comApiUrl, headers, null, "GET");
+				var res = util.sendRequest(comApiUrl, headers, null, "GET", cc);
 				if (res == null) {
 					form.addLogText("コミュニティ情報の取得に失敗しました");
 					return false;
@@ -84,7 +84,7 @@ namespace namaichi.rec
 				headers.Add("Origin", "https://com.nicovideo.jp");
 				headers.Add("X-Requested-By", "https://com.nicovideo.jp/motion/" + comId);
 				foreach (var h in headers) util.debugWriteLine(h.Key + " " + h.Value);
-				var res = util.sendRequest(joinUrl, headers, null, "POST");
+				var res = util.sendRequest(joinUrl, headers, null, "POST", cc);
 				if (res == null) {
 					form.addLogText("フォローへのアクセスに失敗しました");
 					return false;
