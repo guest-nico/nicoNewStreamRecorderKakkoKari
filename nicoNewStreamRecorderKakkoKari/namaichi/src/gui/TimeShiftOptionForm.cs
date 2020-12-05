@@ -59,6 +59,7 @@ namespace namaichi
 			isOpenListCommandChkBox.Checked = bool.Parse(config.get("IsOpenUrlList"));
 			isSetVposStartTime.Checked = bool.Parse(config.get("IsVposStartTime"));
 			isAfterStartTimeCommentChkBox.Checked = bool.Parse(config.get("IsAfterStartTimeComment"));
+			isBeforeEndTimeCommentChkBox.Checked = bool.Parse(config.get("IsBeforeEndTimeComment"));
 			updateTimeShiftStartTimeChkBox();
 			updateIsM3u8RadioBtn_CheckedChanged();
 			updateIsOpenListCommandChkBoxCheckedChanged();
@@ -172,7 +173,7 @@ namespace namaichi
 				h, m, s, endH, endM, endS, isRenketuLastFile.Checked, isUrlList, 
 				openListCommand, isM3u8List, m3u8UpdateSeconds, isOpenUrlList,
 				isSetVposStartTime.Checked, startTimeMode, endTimeMode, 
-				isAfterStartTimeCommentChkBox.Checked);
+				isAfterStartTimeCommentChkBox.Checked, isBeforeEndTimeCommentChkBox.Checked);
 			
 			var l = new List<KeyValuePair<string, string>>();
 			l.Add(new KeyValuePair<string, string>("IsUrlList", isUrlList.ToString().ToLower()));
@@ -192,6 +193,7 @@ namespace namaichi
 				l.Add(new KeyValuePair<string, string>("tsBaseOpenTimeEnd", isOpenTimeBaseEndChkBox.Checked.ToString().ToLower()));
 			}
 			l.Add(new KeyValuePair<string, string>("IsAfterStartTimeComment", isAfterStartTimeCommentChkBox.Checked.ToString().ToLower()));
+			l.Add(new KeyValuePair<string, string>("IsBeforeEndTimeComment", isBeforeEndTimeCommentChkBox.Checked.ToString().ToLower()));
 			config.set(l);
 			/*
 			config.set("IsUrlList", isUrlList.ToString().ToLower());
@@ -279,6 +281,7 @@ namespace namaichi
 			isRenketuLastFile.Checked = bool.Parse(config.get("tsIsRenketu"));
 			isSetVposStartTime.Checked = bool.Parse(config.get("IsVposStartTime"));
 			isAfterStartTimeCommentChkBox.Checked = bool.Parse(config.get("IsAfterStartTimeComment"));
+			isBeforeEndTimeCommentChkBox.Checked = bool.Parse(config.get("IsBeforeEndTimeComment"));
 			
 			if (prepTime > 0) {
 				isOpenTimeBaseStartChkBox.Checked = bool.Parse(config.get("tsBaseOpenTimeStart"));
@@ -301,6 +304,7 @@ namespace namaichi
 			isOpenTimeBaseStartChkBox.Checked = false;
 			isOpenTimeBaseEndChkBox.Checked = false;
 			isAfterStartTimeCommentChkBox.Checked = false;
+			isBeforeEndTimeCommentChkBox.Checked = false;
 		}
 		
 		void LastSettingBtnClick(object sender, EventArgs e)

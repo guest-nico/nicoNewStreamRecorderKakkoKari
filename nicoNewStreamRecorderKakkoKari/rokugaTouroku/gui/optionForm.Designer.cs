@@ -1670,10 +1670,10 @@ namespace rokugaTouroku
 			// 
 			this.isAnotherPlayerRadioBtn.Location = new System.Drawing.Point(18, 64);
 			this.isAnotherPlayerRadioBtn.Name = "isAnotherPlayerRadioBtn";
-			this.isAnotherPlayerRadioBtn.Size = new System.Drawing.Size(211, 18);
+			this.isAnotherPlayerRadioBtn.Size = new System.Drawing.Size(343, 18);
 			this.isAnotherPlayerRadioBtn.TabIndex = 20;
 			this.isAnotherPlayerRadioBtn.TabStop = true;
-			this.isAnotherPlayerRadioBtn.Text = "外部のプレイヤーを使う";
+			this.isAnotherPlayerRadioBtn.Text = "外部のプレイヤーを使う(HLSまたはRTMPのURLを再生できるもの)";
 			this.isAnotherPlayerRadioBtn.UseVisualStyleBackColor = true;
 			// 
 			// isDefaultPlayerRadioBtn

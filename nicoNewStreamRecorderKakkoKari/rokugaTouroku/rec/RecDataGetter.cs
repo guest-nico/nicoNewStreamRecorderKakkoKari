@@ -131,6 +131,7 @@ namespace rokugaTouroku.rec
 				si.Arguments += " -ts-list-command=\"" + ri.tsConfig.openListCommand + "\"";
 				si.Arguments += " -ts-vpos-starttime=" + ri.tsConfig.isVposStartTime.ToString().ToLower();
 				si.Arguments += " -ts-starttime-comment=" + ri.tsConfig.isAfterStartTimeComment.ToString().ToLower();
+				si.Arguments += " -ts-endtime-comment=" + ri.tsConfig.isBeforeEndTimeComment.ToString().ToLower();
 				si.Arguments += " -ts-starttime-open=" + ri.tsConfig.isOpenTimeBaseStartArg.ToString().ToLower();
 				si.Arguments += " -ts-endtime-open=" + ri.tsConfig.isOpenTimeBaseEndArg.ToString().ToLower();
 				si.Arguments += " -afterConvertMode=" + ri.getAfterConvertTypeNum();

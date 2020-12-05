@@ -350,8 +350,14 @@ namespace namaichi.rec
 	//		            	gotCount++;
 	//		            	if (gotCount % 2000 == 0) form.addLogText(gotCount + "件のコメントを保存しました");
 							
-							if (!tsConfig.isAfterStartTimeComment || 
-	    							chatinfo.date > _openTime + tsConfig.timeSeconds - 10) {
+							var isComSave = (!tsConfig.isAfterStartTimeComment ||
+	              					chatinfo.date > _openTime + tsConfig.timeSeconds - 10) && 
+									(!tsConfig.isBeforeEndTimeComment || 
+										tsConfig.endTimeSeconds == 0 || 
+		  								chatinfo.date < _openTime + tsConfig.endTimeSeconds + 10);
+							//if (!tsConfig.isAfterStartTimeComment || 
+	    					//		chatinfo.date > _openTime + tsConfig.timeSeconds - 10) {
+	    					if (isComSave) {
 								gotCommentListBuf.Add(new GotCommentInfo(s, chatinfo.no, chatinfo.date, chatinfo.vpos));
 								gotCount++;
 				            	

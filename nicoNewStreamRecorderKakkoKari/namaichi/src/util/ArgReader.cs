@@ -350,6 +350,18 @@ namespace namaichi.utility
 						return false;;
 					}
 				}
+				if (lowKeys[i] == "ts-endtime-comment") {
+					if (val.ToLower() == "true" || val.ToLower() == "false") {
+						setName = "IsBeforeEndTimeComment";
+						setVal = val;
+						if (tsConfig == null) tsConfig = new TimeShiftConfig();
+						tsConfig.isBeforeEndTimeComment = bool.Parse(val);
+						return true;
+				   	} else {
+						form.addLogText(name + "の値が設定できませんでした(true or false) " + val, false);
+						return false;;
+					}
+				}
 				if (lowKeys[i] == "ts-starttime-open") {
 					if (val.ToLower() == "true" || val.ToLower() == "false") {
 						setName = "tsBaseOpenTimeStart";

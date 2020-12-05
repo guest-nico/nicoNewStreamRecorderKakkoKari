@@ -41,14 +41,15 @@ namespace rokugaTouroku.info
 		
 		public string startTimeStr;
 		public bool isAfterStartTimeComment;
+		public bool isBeforeEndTimeComment;
 		public bool isOpenTimeBaseStartArg;
 		public bool isOpenTimeBaseEndArg;
-
+		
 		public TimeShiftConfig(int startType, 
 				int h, int m, int s, bool isContinueConcat, 
 				bool isVposStartTime, int startTimeMode, int endTimeMode,
 				bool isAfterStartTimeComment, bool isOpenTimeBaseStart,
-				bool isOpenTimeBaseEnd)
+				bool isOpenTimeBaseEnd, bool isBeforeEndTimeComment)
 		{
 			this.startType = startType;
 			this.h = h;
@@ -64,6 +65,7 @@ namespace rokugaTouroku.info
 			startTimeStr = (startType == 0) ? (timeSeconds + "s") :
 				((isContinueConcat) ? "continue-concat" : "continue");
 			this.isAfterStartTimeComment = isAfterStartTimeComment;
+			this.isBeforeEndTimeComment = isBeforeEndTimeComment;
 			this.isOpenTimeBaseStartArg = isOpenTimeBaseStart;
 			this.isOpenTimeBaseEndArg = isOpenTimeBaseEnd;
 		}
@@ -74,7 +76,7 @@ namespace rokugaTouroku.info
 				double m3u8UpdateSeconds, bool isOpenUrlList,
 				bool isVposStartTime, int startTimeMode, int endTimeMode,
 				bool isAfterStartTimeComment, bool isOpenTimeBaseStart,
-				bool isOpenTimeBaseEnd)
+				bool isOpenTimeBaseEnd, bool isBeforeEndTimeComment)
 		{
 			this.startType = startType;
 			this.h = h;
@@ -102,8 +104,9 @@ namespace rokugaTouroku.info
 			this.isAfterStartTimeComment = isAfterStartTimeComment;
 			this.isOpenTimeBaseStartArg = isOpenTimeBaseStart;
 			this.isOpenTimeBaseEndArg = isOpenTimeBaseEnd;
+			this.isBeforeEndTimeComment = isBeforeEndTimeComment;
 		}
 		public TimeShiftConfig() : this(0, 0, 0, 0, 0, 0, 0, 
-				false, false, "notepad {i}", false, 5, false, false, 0, 0, false, false, false) {}
+				false, false, "notepad {i}", false, 5, false, false, 0, 0, false, false, false, false) {}
 	}
 }

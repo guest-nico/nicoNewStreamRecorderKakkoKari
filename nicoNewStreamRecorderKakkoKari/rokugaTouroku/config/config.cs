@@ -165,6 +165,7 @@ public class config
 			{"tsIsRenketu","false"},
 			{"IsVposStartTime","true"},
 			{"IsAfterStartTimeComment","false"},
+			{"IsBeforeEndTimeComment","false"},
 			
 			{"IsUrlList","false"},
 			{"IsM3u8List","false"},

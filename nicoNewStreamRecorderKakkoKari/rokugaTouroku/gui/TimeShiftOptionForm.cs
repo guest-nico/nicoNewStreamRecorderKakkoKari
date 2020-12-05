@@ -173,7 +173,8 @@ namespace rokugaTouroku
 				openListCommand, isM3u8List, m3u8UpdateSeconds, isOpenUrlList,
 				isSetVposStartTime.Checked, startTimeMode, endTimeMode, 
 				isAfterStartTimeCommentChkBox.Checked, 
-				isOpenTimeBaseStart, isOpenTimeBaseEnd);
+				isOpenTimeBaseStart, isOpenTimeBaseEnd, 
+				isBeforeEndTimeCommentChkBox.Checked);
 			
 			config.set("IsUrlList", isUrlList.ToString().ToLower());
 			config.set("IsM3u8List", isM3u8List.ToString().ToLower());
@@ -189,6 +190,7 @@ namespace rokugaTouroku
 			config.set("IsAfterStartTimeComment", isAfterStartTimeCommentChkBox.Checked.ToString().ToLower());
 			config.set("tsBaseOpenTimeStart", isOpenTimeBaseStartChkBox.Checked.ToString().ToLower());
 			config.set("tsBaseOpenTimeEnd", isOpenTimeBaseEndChkBox.Checked.ToString().ToLower());
+			config.set("IsBeforeEndTimeComment", isBeforeEndTimeCommentChkBox.Checked.ToString().ToLower());
 			Close();
 		}
 		
@@ -269,6 +271,7 @@ namespace rokugaTouroku
 			isRenketuLastFile.Checked = bool.Parse(config.get("tsIsRenketu"));
 			isSetVposStartTime.Checked = bool.Parse(config.get("IsVposStartTime"));
 			isAfterStartTimeCommentChkBox.Checked = bool.Parse(config.get("IsAfterStartTimeComment"));
+			isBeforeEndTimeCommentChkBox.Checked = bool.Parse(config.get("IsBeforeEndTimeComment"));
 			isOpenTimeBaseStartChkBox.Checked = bool.Parse(config.get("tsBaseOpenTimeStart"));
 			isOpenTimeBaseEndChkBox.Checked = bool.Parse(config.get("tsBaseOpenTimeStart"));
 		}
@@ -291,6 +294,7 @@ namespace rokugaTouroku
 			isOpenTimeBaseStartChkBox.Checked = false;
 			isOpenTimeBaseEndChkBox.Checked = false;
 			isAfterStartTimeCommentChkBox.Checked = false;
+			isBeforeEndTimeCommentChkBox.Checked = false;
 		}
 	}
 }

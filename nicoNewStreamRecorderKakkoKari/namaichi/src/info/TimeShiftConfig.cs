@@ -39,6 +39,7 @@ namespace namaichi.info
 		public bool isOpenUrlList;
 		public bool isVposStartTime;
 		public bool isAfterStartTimeComment;
+		public bool isBeforeEndTimeComment;
 		public bool isOpenTimeBaseStartArg;
 		public bool isOpenTimeBaseEndArg;
 		
@@ -50,7 +51,7 @@ namespace namaichi.info
 				string openListCommand, bool isM3u8List, 
 				double m3u8UpdateSeconds, bool isOpenUrlList,
 				bool isVposStartTime, int startTimeMode, int endTimeMode,
-				bool isAfterStartTimeComment)
+				bool isAfterStartTimeComment, bool isBeforeEndTimeComment)
 		{
 			this.startType = startType;
 			this.h = h;
@@ -79,9 +80,10 @@ namespace namaichi.info
 			
 			if (startType == 0) this.isContinueConcat = false;
 			this.isAfterStartTimeComment = isAfterStartTimeComment;
+			this.isBeforeEndTimeComment = isBeforeEndTimeComment;
 		}
 		public TimeShiftConfig() : this(0, 0, 0, 0, 0, 0, 0, 
-				false, false, "notepad {i}", false, 5, false, false, 0, 0, false) {}
+				false, false, "notepad {i}", false, 5, false, false, 0, 0, false, false) {}
 		public TimeShiftConfig clone() {
 			return new TimeShiftConfig(startType, h, m, s,
 					endH, endM, endS, isContinueConcat,
@@ -89,7 +91,8 @@ namespace namaichi.info
 					isOutputUrlList, openListCommand, isM3u8List,
 					m3u8UpdateSeconds, isOpenUrlList, isVposStartTime, 
 					startTimeMode, endTimeMode, isAfterStartTimeComment,
-					isOpenTimeBaseStartArg, isOpenTimeBaseEndArg
+					isOpenTimeBaseStartArg, isOpenTimeBaseEndArg,
+					isBeforeEndTimeComment
 				);
 		}
 		public TimeShiftConfig(int startType, int h, int m, int s, 
@@ -100,7 +103,8 @@ namespace namaichi.info
 				bool isOpenUrlList, bool isVposStartTime, 
 				int startTimeMode, int endTimeMode, 
 				bool isAfterStartTimeComment, 
-				bool isOpenTimeBaseStartArg, bool isOpenTimeBaseEndArg) {
+				bool isOpenTimeBaseStartArg, bool isOpenTimeBaseEndArg,
+				bool isBeforeEndTimeComment) {
 			this.startType = startType;
 			this.h = h;
 			this.m = m;
@@ -123,6 +127,7 @@ namespace namaichi.info
 			this.isAfterStartTimeComment = isAfterStartTimeComment;
 			this.isOpenTimeBaseStartArg = isOpenTimeBaseStartArg;
 			this.isOpenTimeBaseEndArg = isOpenTimeBaseEndArg;
+			this.isBeforeEndTimeComment = isBeforeEndTimeComment;
 		}
 	}
 }
