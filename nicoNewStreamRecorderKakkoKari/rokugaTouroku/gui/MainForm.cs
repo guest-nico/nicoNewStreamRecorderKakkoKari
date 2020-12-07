@@ -808,9 +808,11 @@ namespace rokugaTouroku
 				var recListWidth = config.get("RecListColumnWidth");
 				if (recListWidth != "") {
 					var w = recListWidth.Split(',');
-					for (var i = 0; i < w.Length; i++) {
-						DataGridViewColumn c  = recList.Columns[i];
-						c.Width = int.Parse(w[i]);
+					foreach (var _w in w) {
+						var nv = _w.Split(':');
+						foreach (DataGridViewColumn c in recList.Columns) {
+							if (c.HeaderText == nv[0]) c.Width = int.Parse(nv[1]);
+						}
 					}
 				}
 			} catch (Exception e) {
@@ -820,7 +822,7 @@ namespace rokugaTouroku
 		void saveFormState() {
 			var recListWidth = new List<string>();
 			foreach (DataGridViewColumn c in recList.Columns)
-				recListWidth.Add(c.Width.ToString());
+				recListWidth.Add(c.HeaderText + ":" + c.Width.ToString());
 			config.set("RecListColumnWidth", string.Join(",", recListWidth.ToArray()));
 		}
 		void applyMenuSetting() {
