@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
@@ -103,7 +103,7 @@ class util {
 		var name = getFileName(host, group, title, lvId, communityNum,  cfg);
 		if (name.Length > 200) name = name.Substring(0, 200);
 		
-		//’·‚¢ƒpƒX’²®
+		//é•·ã„ãƒ‘ã‚¹èª¿æ•´
 		if (name.Length + dirPath.Length > 234) {
 			name = lvId;
 			if (name.Length + dirPath.Length > 234 && sfn != null) {
@@ -205,7 +205,7 @@ class util {
 		var _hiduke = DateTime.Now;
 		var month = (_hiduke.Month < 10) ? ("0" + _hiduke.Month.ToString()) : (_hiduke.Month.ToString());
 		var day = (_hiduke.Day < 10) ? ("0" + _hiduke.Day.ToString()) : (_hiduke.Day.ToString());
-		var hiduke = _hiduke.Year + "”N" + month + "Œ" + day + "“ú";
+		var hiduke = _hiduke.Year + "å¹´" + month + "æœˆ" + day + "æ—¥";
 		if (n == null) n = "1";
 		if (n == "1") return host + "_" + communityNum + "(" + group + ")_" + lvId + "(" + title + ")";
 		else if (n == "2") return communityNum + "(" + group + ")_" + host + "_" + lvId + "(" + title + ")";
@@ -259,7 +259,7 @@ class util {
 	}
 	public static string getFileNameTypeSample(string filenametype) {
 			//var format = cfg.get("filenameformat");
-			return getDokujiSetteiFileName("•ú‘—Ò–¼", "ƒRƒ~ƒ…–¼", "ƒ^ƒCƒgƒ‹", "lv12345", "co9876", filenametype, DateTime.Now).Replace("{w}", "2").Replace("{c}", "1");
+			return getDokujiSetteiFileName("æ”¾é€è€…å", "ã‚³ãƒŸãƒ¥å", "ã‚¿ã‚¤ãƒˆãƒ«", "lv12345", "co9876", filenametype, DateTime.Now).Replace("{w}", "2").Replace("{c}", "1");
 		}
 	public static string getOkCommentFileName(config cfg, string fName, string lvid, bool isTimeShift) {
 		var kakutyousi = (cfg.get("IsgetcommentXml") == "true") ? ".xml" : ".json";
@@ -308,7 +308,7 @@ class util {
 		var name = getFileName(host, group, title, lvId, communityNum,  cfg);
 		if (name.Length > 200) name = name.Substring(0, 200);
 		
-		//’·‚¢ƒpƒX’²®
+		//é•·ã„ãƒ‘ã‚¹èª¿æ•´
 		if (name.Length + dirPath.Length > 234) {
 			name = lvId;
 			if (name.Length + dirPath.Length > 234 && sfn != null) {
@@ -577,24 +577,24 @@ class util {
 			var status = (data == null) ? null : util.getRegGroup(data, "&quot;status&quot;:&quot;(.+?)&quot;");
 			if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ON_AIR" && data.IndexOf("webSocketUrl&quot;:&quot;ws") > -1) return 0;
 			else if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ENDED" && data.IndexOf("webSocketUrl&quot;:&quot;ws") > -1) return 7;
-			else if (util.getRegGroup(res, "(¬G’†‚Å‚·‚ªAƒvƒŒƒ~ƒAƒ€‰ïˆõ‚Ì•û‚Í—Dæ‚µ‚Ä“üê‚ª‚Å‚«‚Ü‚·)") != null ||
-			        util.getRegGroup(res, "(‚½‚¾‚¢‚ÜA–ˆõ‚Ì‚½‚ß“üê‚Å‚«‚Ü‚¹‚ñ)") != null) return 1;
-	//		else if (util.getRegGroup(res, "<div id=\"comment_arealv\\d+\">[^<]+‚±‚Ì”Ô‘g‚Í\\d+/\\d+/\\d+\\(.\\) \\d+:\\d+‚ÉI—¹‚¢‚½‚µ‚Ü‚µ‚½B<br>") != null) return 2;
+			else if (util.getRegGroup(res, "(æ··é›‘ä¸­ã§ã™ãŒã€ãƒ—ãƒ¬ãƒŸã‚¢ãƒ ä¼šå“¡ã®æ–¹ã¯å„ªå…ˆã—ã¦å…¥å ´ãŒã§ãã¾ã™)") != null ||
+			        util.getRegGroup(res, "(ãŸã ã„ã¾ã€æº€å“¡ã®ãŸã‚å…¥å ´ã§ãã¾ã›ã‚“)") != null) return 1;
+	//		else if (util.getRegGroup(res, "<div id=\"comment_arealv\\d+\">[^<]+ã“ã®ç•ªçµ„ã¯\\d+/\\d+/\\d+\\(.\\) \\d+:\\d+ã«çµ‚äº†ã„ãŸã—ã¾ã—ãŸã€‚<br>") != null) return 2;
 			else if (res.IndexOf(" onclick=\"Nicolive.ProductSerial") > -1) return 8;
-			//else if (res.IndexOf("¦‚±‚Ì•ú‘—‚Íƒ^ƒCƒ€ƒVƒtƒg‚É‘Î‰‚µ‚Ä‚¨‚è‚Ü‚¹‚ñB") > -1 && 
-			//         res.IndexOf("‚ÉI—¹‚¢‚½‚µ‚Ü‚µ‚½") > -1) return 2;
-			//else if (util.getRegGroup(res, "(ƒRƒ~ƒ…ƒjƒeƒBƒtƒHƒƒ[ŒÀ’è”Ô‘g‚Å‚·B<br>)") != null) return 4;
+			//else if (res.IndexOf("â€»ã“ã®æ”¾é€ã¯ã‚¿ã‚¤ãƒ ã‚·ãƒ•ãƒˆã«å¯¾å¿œã—ã¦ãŠã‚Šã¾ã›ã‚“ã€‚") > -1 && 
+			//         res.IndexOf("ã«çµ‚äº†ã„ãŸã—ã¾ã—ãŸ") > -1) return 2;
+			//else if (util.getRegGroup(res, "(ã‚³ãƒŸãƒ¥ãƒ‹ãƒ†ã‚£ãƒ•ã‚©ãƒ­ãƒ¯ãƒ¼é™å®šç•ªçµ„ã§ã™ã€‚<br>)") != null) return 4;
 			else if (res.IndexOf("isFollowerOnly&quot;:true") > -1 && res.IndexOf("isFollowed&quot;:false") > -1) return 4;
 			else if (data.IndexOf("webSocketUrl&quot;:&quot;ws") == -1 && 
 			         status == "ENDED") return 2;
 			
 			else if (status == "ENDED" && res.IndexOf(" onclick=\"Nicolive.WatchingReservation") > -1) return 9;
-			//else if (util.getRegGroup(res, "(‚ÉI—¹‚¢‚½‚µ‚Ü‚µ‚½)") != null) return 2;
+			//else if (util.getRegGroup(res, "(ã«çµ‚äº†ã„ãŸã—ã¾ã—ãŸ)") != null) return 2;
 			else if (status == "ENDED") return 2;
 			else if (util.getRegGroup(res, "(<archive>1</archive>)") != null) return 3;
-			else if (util.getRegGroup(res, "(ƒ`ƒƒƒ“ƒlƒ‹‰ïˆõŒÀ’è”Ô‘g‚Å‚·B<br>)") != null) return 4;
-			else if (util.getRegGroup(res, "(<h3>y‰ïê‚Ì‚²ˆÄ“àz</h3>)") != null) return 6;
-			else if (util.getRegGroup(res, "(‚±‚Ì”Ô‘g‚Í•ú‘—Ò‚É‚æ‚èíœ‚³‚ê‚Ü‚µ‚½B<br />|íœ‚³‚ê‚½‰Â”\«‚ª‚ ‚è‚Ü‚·B<br />)") != null) return 2;
+			else if (util.getRegGroup(res, "(ãƒãƒ£ãƒ³ãƒãƒ«ä¼šå“¡é™å®šç•ªçµ„ã§ã™ã€‚<br>)") != null) return 4;
+			else if (util.getRegGroup(res, "(<h3>ã€ä¼šå ´ã®ã”æ¡ˆå†…ã€‘</h3>)") != null) return 6;
+			else if (util.getRegGroup(res, "(ã“ã®ç•ªçµ„ã¯æ”¾é€è€…ã«ã‚ˆã‚Šå‰Šé™¤ã•ã‚Œã¾ã—ãŸã€‚<br />|å‰Šé™¤ã•ã‚ŒãŸå¯èƒ½æ€§ãŒã‚ã‚Šã¾ã™ã€‚<br />)") != null) return 2;
 			return 5;
 		//}
 		//return 5;
@@ -610,7 +610,7 @@ class util {
 		var minute = ((int)((seconds % 3600 / 60))).ToString("00");
 		var hour = ((int)((seconds / 3600) * 1));
 		var _hour = (hour < 100) ? hour.ToString("00") : hour.ToString();;
-		return _hour + "ŠÔ" + minute + "•ª" + second + "•b";
+		return _hour + "æ™‚é–“" + minute + "åˆ†" + second + "ç§’";
 	}
 	public static string getUserName(string userId, out bool isFollow, CookieContainer container) {
 		isFollow = false; 
@@ -624,10 +624,10 @@ class util {
 		if (res == null) return null;
 		var name = util.getRegGroup(res, "<meta property=\"og:title\" content=\"(.+?)\">"); 
 		if (name == null)
-			name = util.getRegGroup(res, "<meta property=\"og:title\" content=\"(.+?)‚³‚ñ‚Ìƒ†[ƒU[ƒy[ƒW\">");
+			name = util.getRegGroup(res, "<meta property=\"og:title\" content=\"(.+?)ã•ã‚“ã®ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒšãƒ¼ã‚¸\">");
 		if (name == null) return null;
-		if (name.EndsWith(" - niconico(ƒjƒRƒjƒR)")) 
-			name = name.Replace(" - niconico(ƒjƒRƒjƒR)", "");
+		if (name.EndsWith(" - niconico(ãƒ‹ã‚³ãƒ‹ã‚³)")) 
+			name = name.Replace(" - niconico(ãƒ‹ã‚³ãƒ‹ã‚³)", "");
 		//watching nowatching class
 		if (res.IndexOf("class=\"watching\"") > -1) isFollow = true;
 		return name;
@@ -651,20 +651,20 @@ class util {
 				("https://com.nicovideo.jp/motion/" + communityNum);
 			res = util.getPageSource(url, cc);
 			if (res == null) return null;
-			isFollow = res.IndexOf("<h2 class=\"pageHeader_title\">ƒRƒ~ƒ…ƒjƒeƒB‚ÉƒtƒHƒ[ƒŠƒNƒGƒXƒg‚ğ‘—‚é</h2>") == -1 &&
-					util.getRegGroup(res, "<p class=\"error_description\">[\\s\\S]*?(ƒRƒ~ƒ…ƒjƒeƒBƒtƒHƒƒ[)‚Å‚Í‚ ‚è‚Ü‚¹‚ñB") == null &&
-					res.IndexOf("<h2 class=\"pageHeader_title\">ƒRƒ~ƒ…ƒjƒeƒB‚ğƒtƒHƒ[‚·‚é</h2>") == -1;
+			isFollow = res.IndexOf("<h2 class=\"pageHeader_title\">ã‚³ãƒŸãƒ¥ãƒ‹ãƒ†ã‚£ã«ãƒ•ã‚©ãƒ­ãƒ¼ãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚’é€ã‚‹</h2>") == -1 &&
+					util.getRegGroup(res, "<p class=\"error_description\">[\\s\\S]*?(ã‚³ãƒŸãƒ¥ãƒ‹ãƒ†ã‚£ãƒ•ã‚©ãƒ­ãƒ¯ãƒ¼)ã§ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚") == null &&
+					res.IndexOf("<h2 class=\"pageHeader_title\">ã‚³ãƒŸãƒ¥ãƒ‹ãƒ†ã‚£ã‚’ãƒ•ã‚©ãƒ­ãƒ¼ã™ã‚‹</h2>") == -1;
 		} else {
 			isFollow = (isChannel) ? 
 				(res.IndexOf("class=\"bookmark following btn_follow\"") > -1):
-				(res.IndexOf("followButton follow\">ƒtƒHƒ[") == -1);
+				(res.IndexOf("followButton follow\">ãƒ•ã‚©ãƒ­ãƒ¼") == -1);
 		}
 		if (res == null) return null;
 		var title = (isChannel) ? 
-//			util.getRegGroup(res, "<meta property=\"og\\:title\" content=\"(.+?) - ƒjƒRƒjƒRƒ`ƒƒƒ“ƒlƒ‹") :
+//			util.getRegGroup(res, "<meta property=\"og\\:title\" content=\"(.+?) - ãƒ‹ã‚³ãƒ‹ã‚³ãƒãƒ£ãƒ³ãƒãƒ«") :
 			util.getRegGroup(res, "<meta property=\"og:site_name\" content=\"(.+?)\"") :
-			util.getRegGroup(res, "<meta property=\"og\\:title\" content=\"(.+?)-ƒjƒRƒjƒRƒ~ƒ…ƒjƒeƒB\"");
-		if (title == null) title = util.getRegGroup(res, "<meta property=\"og:title\" content=\"(.+?)‚³‚ñ‚ÌƒRƒ~ƒ…ƒjƒeƒB-ƒjƒRƒjƒRƒ~ƒ…ƒjƒeƒB\">");
+			util.getRegGroup(res, "<meta property=\"og\\:title\" content=\"(.+?)-ãƒ‹ã‚³ãƒ‹ã‚³ãƒŸãƒ¥ãƒ‹ãƒ†ã‚£\"");
+		if (title == null) title = util.getRegGroup(res, "<meta property=\"og:title\" content=\"(.+?)ã•ã‚“ã®ã‚³ãƒŸãƒ¥ãƒ‹ãƒ†ã‚£-ãƒ‹ã‚³ãƒ‹ã‚³ãƒŸãƒ¥ãƒ‹ãƒ†ã‚£\">");
 		
 		//not login
 		if (title == null) {
@@ -903,7 +903,7 @@ class util {
 			
 			if (size > max) {
 				size = max;
-				System.Windows.Forms.MessageBox.Show("‰æ–Êã‚É•\¦‚Å‚«‚È‚­‚È‚é‰Â”\«‚ª‚ ‚é‚½‚ßA" + size + "‚Éİ’è‚³‚ê‚Ü‚·");
+				System.Windows.Forms.MessageBox.Show("ç”»é¢ä¸Šã«è¡¨ç¤ºã§ããªããªã‚‹å¯èƒ½æ€§ãŒã‚ã‚‹ãŸã‚ã€" + size + "ã«è¨­å®šã•ã‚Œã¾ã™");
 			}
 			
 			form.Font = new Font(form.Font.FontFamily, size);
