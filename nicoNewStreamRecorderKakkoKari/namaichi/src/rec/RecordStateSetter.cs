@@ -183,7 +183,7 @@ namespace namaichi.rec
 					isWrite = true;
 				}
 			} catch (Exception e) {
-				rm.form.addLogText(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				rm.form.addLogText("番組情報をテキストへ保存中に問題が発生しました。 " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				rm.form.addLogText(recFolderFile[2] + ext);
 				return;
 			}
@@ -237,7 +237,7 @@ namespace namaichi.rec
 				}
 				//sw.Close();
 			} catch (Exception e) {
-				rm.form.addLogText(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				rm.form.addLogText("放送終了時間を番組情報テキストへ書き込みに問題が発生しました。 " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				rm.form.addLogText(recFolderFile[2] + ext);
 				return;
 			}

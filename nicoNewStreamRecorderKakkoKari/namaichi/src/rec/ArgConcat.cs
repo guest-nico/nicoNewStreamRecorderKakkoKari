@@ -196,7 +196,7 @@ namespace namaichi.rec
 						
 						} catch (Exception eee) {
 							util.debugWriteLine("renketu after exception" + eee.Message + eee.StackTrace + eee.Source + eee.TargetSite);
-							rm.form.addLogText("出力先ファイルを作成できませんでした");
+							rm.form.addLogText("出力先ファイルを作成できませんでした " + eee.Message + eee.Source + eee.StackTrace + eee.TargetSite);
 							return null;
 						}
 					}

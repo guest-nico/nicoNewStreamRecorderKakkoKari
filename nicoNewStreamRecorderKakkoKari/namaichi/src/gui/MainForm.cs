@@ -268,9 +268,6 @@ namespace namaichi
 								
 			});
 		}
-        public void addLogTextTest(string t) {
-       		addLogText(t);
-        }
 		public void setRecordState(String t, string titleT = null) {
        		//util.debugWriteLine("setRecordState form");
        		formAction(() => {

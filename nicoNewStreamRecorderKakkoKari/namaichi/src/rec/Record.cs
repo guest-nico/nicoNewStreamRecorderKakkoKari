@@ -369,7 +369,7 @@ namespace namaichi.rec
 					addDebugBuf("targetduration " + targetDuration);
 				} catch (Exception e) {
 					addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
-					rm.form.addLogText(e.Message + e.Source + e.StackTrace + e.TargetSite);
+					rm.form.addLogText("プレイリストの取得中に何らかの問題が発生しました " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
 			}
 			addDebugBuf("m3u8 getter end segm8u8List len " + segM3u8List.Count);
@@ -499,7 +499,7 @@ namespace namaichi.rec
 					
 				} catch (Exception e) {
 					addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
-					rm.form.addLogText(e.Message + e.Source + e.StackTrace + e.TargetSite);
+					rm.form.addLogText("動画ファイルの取得中に何らかの問題が発生しました " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
 			}
 			
@@ -594,7 +594,7 @@ namespace namaichi.rec
 					Thread.Sleep(300);
 				} catch (Exception e) {
 					addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
-					rm.form.addLogText(e.Message + e.Source + e.StackTrace + e.TargetSite);
+					rm.form.addLogText("動画データの書き込みに何らかの問題が発生しました " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
 			}
 			addDebugBuf("ts writer end gotTsList len " + gotTsList.Count);
@@ -682,7 +682,7 @@ namespace namaichi.rec
 				return true; 
 			} catch (Exception e) {
 				addDebugBuf(e.Message+e.StackTrace + e.Source + e.TargetSite);
-				rm.form.addLogText(e.Message + e.StackTrace);
+				rm.form.addLogText("セグメントファイルを連結して書き込み中に何らかの問題が発生しました。 " + e.Message + e.StackTrace);
 				return false;
 			}
 		}
@@ -1091,7 +1091,7 @@ namespace namaichi.rec
 				return true; 
 			} catch (Exception e) {
 				addDebugBuf("original ts record exception " + e.Message+e.StackTrace + e.Source + e.TargetSite);
-				rm.form.addLogText(e.Message + e.StackTrace);
+				rm.form.addLogText("セグメントファイルを連結せずに書き込み中に何らかの問題が発生しました。 " + e.Message + e.StackTrace);
 				return false;
 			}
 		}
