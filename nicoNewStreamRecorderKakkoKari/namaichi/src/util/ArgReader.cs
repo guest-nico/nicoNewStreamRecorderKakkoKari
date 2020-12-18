@@ -71,7 +71,7 @@ namespace namaichi.utility
 			var lowKeys = new List<string>(config.defaultConfig.Keys.Select((x) => x.ToLower()));
 			var values = config.defaultConfig.Values.ToList<string>();
 			var keys = config.defaultConfig.Keys.ToList();
-			lowKeys.AddRange(new string[] {"ts-start", "ts-end", "ts-list", "ts-list-update", "ts-list-command", "ts-list-open", "ts-list-m3u8", "ts-vpos-starttime", "ts-starttime-comment", "ts-starttime-open", "ts-endtime-open"});
+			lowKeys.AddRange(new string[] {"ts-start", "ts-end", "ts-list", "ts-list-update", "ts-list-command", "ts-list-open", "ts-list-m3u8", "ts-vpos-starttime", "ts-starttime-comment", "ts-endtime-comment", "ts-starttime-open", "ts-endtime-open"});
 			foreach (var a in args) {
 				if (a.StartsWith("-")) {
 					var name = util.getRegGroup(a, "-(.*)=");

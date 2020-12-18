@@ -594,7 +594,7 @@ namespace namaichi.rec
 					Thread.Sleep(300);
 				} catch (Exception e) {
 					addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
-					rm.form.addLogText("動画データの書き込みに何らかの問題が発生しました " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+					rm.form.addLogText("動画データの書き込み中に何らかの問題が発生しました " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
 			}
 			addDebugBuf("ts writer end gotTsList len " + gotTsList.Count);

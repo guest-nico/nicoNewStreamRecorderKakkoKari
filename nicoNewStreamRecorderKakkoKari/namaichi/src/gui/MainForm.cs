@@ -59,6 +59,13 @@ namespace namaichi
 		
 		public MainForm(string[] args)
 		{
+			string lv = null;
+			foreach (var arg in args) {
+				lv = util.getRegGroup(arg, "(lv\\d+(,\\d+)*)");
+				if (lv != null) break;
+			}
+			util.setLog(config, lv);
+			
 			madeThread = Thread.CurrentThread;
 			
 			//read std
@@ -120,8 +127,6 @@ namespace namaichi
 			setLinkColor(Color.FromArgb(int.Parse(config.get("recLinkColor"))));
 		}
 		private void init() {
-			var lv = (args.Length == 0) ? null : util.getRegGroup(args[0], "(lv\\d+(,\\d+)*)");
-			util.setLog(config, lv);
 			
 			if (args.Length > 0) {
 				var ar = new ArgReader(args, config, this);
