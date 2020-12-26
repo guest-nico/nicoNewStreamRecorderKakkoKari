@@ -79,6 +79,7 @@ namespace namaichi.rec
 		private bool isConvertSpace;
 		private TimeShiftConfig tsConfig = null;
 		private bool isStore;
+		private bool isNormalizeComment;
 		
 		public TimeShiftCommentGetter(string uri, string thread,
 				string uriStore, string threadStore,        
@@ -114,6 +115,7 @@ namespace namaichi.rec
 			this.isRtmp = isRtmp;
 			this.rr = rr;
 			isConvertSpace = bool.Parse(rm.cfg.get("IsCommentConvertSpace"));
+			isNormalizeComment = bool.Parse(rm.cfg.get("IsNormalizeComment"));
 			this.roomName = roomName;
 			this.tsConfig = tsConfig;
 			
@@ -243,7 +245,7 @@ namespace namaichi.rec
 		
 		private void onWscMessageReceive(object sender, MessageReceivedEventArgs e) {
 			var eMessage = isConvertSpace ? util.getOkSJisOut(e.Message, " ") : e.Message;
-			
+			if (isNormalizeComment) eMessage = eMessage.Replace("\"premium\":24", "\"premium\":0");
 			try {
 				if (rm.rfu != rfu || !isRetry) {
 					try {

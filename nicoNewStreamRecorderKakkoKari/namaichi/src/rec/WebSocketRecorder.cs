@@ -114,6 +114,7 @@ namespace namaichi.rec
 		private DateTime lastOpenCommentSwDt = DateTime.MinValue;
 		private bool isConvertSpace;
 		private bool isSaveCommentOnlyRetryingRec;
+		private bool isNormalizeComment;
 		public long sync = 0;
 		private object commentLock = new object();
 		private bool isLogEnd = false;
@@ -165,6 +166,7 @@ namespace namaichi.rec
 			if (isChase && !isSaveComment) isHokan = true;
 			isConvertSpace = bool.Parse(rm.cfg.get("IsCommentConvertSpace"));
 			isSaveCommentOnlyRetryingRec = bool.Parse(rm.cfg.get("IsSaveCommentOnlyRetryingRec"));
+			isNormalizeComment = bool.Parse(rm.cfg.get("IsNormalizeComment"));
 			this.vposBaseTime = vposBaseTime;
 		}
 		public bool start() {
@@ -1035,6 +1037,7 @@ namespace namaichi.rec
 		private void onWscMessageReceive(object sender, MessageReceivedEventArgs e) {
 			addDebugBuf("on wsc message " + e.Message);
 			var eMessage = isConvertSpace ? util.getOkSJisOut(e.Message, " ") : e.Message;
+			if (isNormalizeComment) eMessage = eMessage.Replace("\"premium\":24", "\"premium\":0");
 			
 			if (isTimeShift && eMessage.StartsWith("{\"ping\":{\"content\":\"rf:") && !isChase && sender == wsc[0]) {
 				closeWscProcess();

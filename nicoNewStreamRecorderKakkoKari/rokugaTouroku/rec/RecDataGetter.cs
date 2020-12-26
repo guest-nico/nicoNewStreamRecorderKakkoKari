@@ -136,7 +136,7 @@ namespace rokugaTouroku.rec
 				si.Arguments += " -ts-endtime-open=" + ri.tsConfig.isOpenTimeBaseEndArg.ToString().ToLower();
 				si.Arguments += " -afterConvertMode=" + ri.getAfterConvertTypeNum();
 				si.Arguments += " -qualityRank=" + ri.qualityRank;
-				si.Arguments += " -IsLogFile=false -std-read ";
+				si.Arguments += " -std-read ";
 				si.Arguments += isGetComment + isGetRec;
 				if (ri.isChase) si.Arguments += " -chase ";
 				

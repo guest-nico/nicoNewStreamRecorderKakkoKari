@@ -164,6 +164,8 @@ public class config
 			{"IsCommentConvertSpace","false"},
 			{"IsSaveCommentOnlyRetryingRec","false"},
 			{"IsDisplayComment","true"},
+			{"IsNormalizeComment","false"},
+			
 			{"IstitlebarSamune","true"},
 			{"IsautoFollowComgen","false"},
 			{"qualityRank","0,1,2,3,4,5"},

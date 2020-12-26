@@ -125,6 +125,8 @@ public class config
 			{"IsCommentConvertSpace","false"},
 			{"IsSaveCommentOnlyRetryingRec","false"},
 			{"IsDisplayComment","true"},
+			{"IsNormalizeComment","false"},
+			
 			{"IstitlebarSamune","true"},
 			{"IsautoFollowComgen","false"},
 			{"qualityRank","0,1,2,3,4"},
@@ -200,7 +202,7 @@ public class config
 			{"defaultCommentFormWidth","500"},
 			{"defaultCommentFormHeight","520"},
 			{"RecListColumnWidth",""},
-			{"ShowRecColumns","111111111111"},
+			{"ShowRecColumns","1111111111111"},
 			
 			{"rokugaTourokuWidth","950"},
 			{"rokugaTourokuHeight","500"},
