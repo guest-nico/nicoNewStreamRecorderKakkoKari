@@ -7,6 +7,7 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Text;
 using System.Windows.Forms;
@@ -15,7 +16,6 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
-
 using rokugaTouroku.config;
 using SunokoLibrary.Application;
 using SunokoLibrary.Windows.ViewModels;
@@ -143,6 +143,7 @@ namespace rokugaTouroku
 				{"qualityRank",getQualityRank()},
 				{"IsMiniStart",isMiniStartChkBox.Checked.ToString().ToLower()},
 				{"IsConfirmCloseMsgBox",isConfirmCloseMsgBoxChkBox.Checked.ToString().ToLower()},
+				{"IsRecBtnOnlyMouse",isRecBtnOnlyMouseChkBox.Checked.ToString().ToLower()},
 				{"IsLogFile",isLogFileChkBox.Checked.ToString().ToLower()},
 				{"IsNotSleep",isNotSleepChkBox.Checked.ToString().ToLower()},
 				{"IsRestoreLocation",isRestoreLocationChkBox.Checked.ToString().ToLower()},
@@ -390,6 +391,7 @@ namespace rokugaTouroku
         	setInitQualityRankList(cfg.get("qualityRank"));
         	isMiniStartChkBox.Checked = bool.Parse(cfg.get("IsMiniStart"));
         	isConfirmCloseMsgBoxChkBox.Checked = bool.Parse(cfg.get("IsConfirmCloseMsgBox"));
+        	isRecBtnOnlyMouseChkBox.Checked = bool.Parse(cfg.get("IsRecBtnOnlyMouse"));
         	isLogFileChkBox.Checked = bool.Parse(cfg.get("IsLogFile"));
         	isNotSleepChkBox.Checked = bool.Parse(cfg.get("IsNotSleep"));
         	isRestoreLocationChkBox.Checked = bool.Parse(cfg.get("IsRestoreLocation"));
@@ -894,7 +896,7 @@ namespace rokugaTouroku
 			if (t == "aac(音声)") return "13";
 			if (t == "ogg(音声)") return "14";
 			if (t == "mp4(再エンコード)") return "15";
-			return t;
+			return "0";
 		}
 		
 		

@@ -87,99 +87,100 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="config\config.cs" />
-    <Compile Include="gui\fileNameOptionForm.cs">
+    <Compile Include="src\config\config.cs" />
+    <Compile Include="src\gui\fileNameOptionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="gui\fileNameOptionForm.Designer.cs">
+    <Compile Include="src\gui\fileNameOptionForm.Designer.cs">
       <DependentUpon>fileNameOptionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="gui\MainForm.cs" />
-    <Compile Include="gui\MainForm.Designer.cs">
+    <Compile Include="src\gui\MainForm.cs" />
+    <Compile Include="src\gui\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="gui\NicoSessionComboBox2.cs" />
-    <Compile Include="gui\optionForm.cs">
+    <Compile Include="src\gui\NicoSessionComboBox2.cs" />
+    <Compile Include="src\gui\optionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="gui\optionForm.Designer.cs">
+    <Compile Include="src\gui\optionForm.Designer.cs">
       <DependentUpon>optionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="gui\QualityForm.cs" />
-    <Compile Include="gui\QualityForm.Designer.cs">
+    <Compile Include="src\gui\QualityForm.cs" />
+    <Compile Include="src\gui\QualityForm.Designer.cs">
       <DependentUpon>QualityForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="gui\TimeShiftOptionForm.cs">
+    <Compile Include="src\gui\TimeShiftOptionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="gui\TimeShiftOptionForm.Designer.cs">
+    <Compile Include="src\gui\TimeShiftOptionForm.Designer.cs">
       <DependentUpon>TimeShiftOptionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="gui\UpdateForm.cs" />
-    <Compile Include="gui\UpdateForm.Designer.cs">
+    <Compile Include="src\gui\UpdateForm.cs" />
+    <Compile Include="src\gui\UpdateForm.Designer.cs">
       <DependentUpon>UpdateForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="gui\UrlBulkRegistForm.cs">
+    <Compile Include="src\gui\UrlBulkRegistForm.cs">
       <DependentUpon>VersionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="gui\UrlBulkRegistForm.Designer.cs">
+    <Compile Include="src\gui\UrlBulkRegistForm.Designer.cs">
       <DependentUpon>UrlBulkRegistForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="gui\UrlListSaveForm.cs" />
-    <Compile Include="gui\UrlListSaveForm.Designer.cs">
+    <Compile Include="src\gui\UrlListSaveForm.cs" />
+    <Compile Include="src\gui\UrlListSaveForm.Designer.cs">
       <DependentUpon>UrlListSaveForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="gui\VersionForm.cs" />
-    <Compile Include="gui\VersionForm.Designer.cs">
+    <Compile Include="src\gui\VersionForm.cs" />
+    <Compile Include="src\gui\VersionForm.Designer.cs">
       <DependentUpon>VersionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="info\RecInfo.cs" />
-    <Compile Include="info\TimeShiftConfig.cs" />
-    <Compile Include="Logger\TraceListener.cs" />
+    <Compile Include="src\info\RecInfo.cs" />
+    <Compile Include="src\info\TimeShiftConfig.cs" />
+    <Compile Include="src\Logger\TraceListener.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="rec\CookieGetter.cs" />
-    <Compile Include="rec\HosoInfoGetter.cs" />
-    <Compile Include="rec\RecDataGetter.cs" />
-    <Compile Include="rec\RecListManager.cs" />
-    <Compile Include="util\SourceInfoSerialize.cs" />
-    <Compile Include="util\util.cs" />
+    <Compile Include="src\rec\CookieGetter.cs" />
+    <Compile Include="src\rec\HosoInfoGetter.cs" />
+    <Compile Include="src\rec\RecDataGetter.cs" />
+    <Compile Include="src\rec\RecListManager.cs" />
+    <Compile Include="src\util\SourceInfoSerialize.cs" />
+    <Compile Include="src\util\util.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="config" />
-    <Folder Include="info" />
-    <Folder Include="Logger" />
-    <Folder Include="gui" />
-    <Folder Include="rec" />
-    <Folder Include="util" />
+    <Folder Include="src\config" />
+    <Folder Include="src\info" />
+    <Folder Include="src\Logger" />
+    <Folder Include="src\gui" />
+    <Folder Include="src" />
+    <Folder Include="src\rec" />
+    <Folder Include="src\util" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="gui\fileNameOptionForm.resx">
+    <EmbeddedResource Include="src\gui\fileNameOptionForm.resx">
       <DependentUpon>fileNameOptionForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="gui\MainForm.resx">
+    <EmbeddedResource Include="src\gui\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="gui\optionForm.resx">
+    <EmbeddedResource Include="src\gui\optionForm.resx">
       <DependentUpon>optionForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="gui\QualityForm.resx">
+    <EmbeddedResource Include="src\gui\QualityForm.resx">
       <DependentUpon>QualityForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="gui\TimeShiftOptionForm.resx">
+    <EmbeddedResource Include="src\gui\TimeShiftOptionForm.resx">
       <DependentUpon>TimeShiftOptionForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="gui\UrlBulkRegistForm.resx">
+    <EmbeddedResource Include="src\gui\UrlBulkRegistForm.resx">
       <DependentUpon>UrlBulkRegistForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="gui\UrlListSaveForm.resx">
+    <EmbeddedResource Include="src\gui\UrlListSaveForm.resx">
       <DependentUpon>UrlListSaveForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="gui\VersionForm.resx">
+    <EmbeddedResource Include="src\gui\VersionForm.resx">
       <DependentUpon>VersionForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

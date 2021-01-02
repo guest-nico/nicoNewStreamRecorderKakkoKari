@@ -146,6 +146,7 @@ namespace namaichi
 				{"qualityRank",getQualityRank()},
 				{"IsMiniStart",isMiniStartChkBox.Checked.ToString().ToLower()},
 				{"IsConfirmCloseMsgBox",isConfirmCloseMsgBoxChkBox.Checked.ToString().ToLower()},
+				{"IsRecBtnOnlyMouse",isRecBtnOnlyMouseChkBox.Checked.ToString().ToLower()},
 				{"IsLogFile",isLogFileChkBox.Checked.ToString().ToLower()},
 				{"IsNotSleep",isNotSleepChkBox.Checked.ToString().ToLower()},
 				{"IsRestoreLocation",isRestoreLocationChkBox.Checked.ToString().ToLower()},
@@ -388,6 +389,7 @@ namespace namaichi
         	setInitQualityRankList(cfg.get("qualityRank"));
         	isMiniStartChkBox.Checked = bool.Parse(cfg.get("IsMiniStart"));
         	isConfirmCloseMsgBoxChkBox.Checked = bool.Parse(cfg.get("IsConfirmCloseMsgBox"));
+        	isRecBtnOnlyMouseChkBox.Checked = bool.Parse(cfg.get("IsRecBtnOnlyMouse"));
         	isLogFileChkBox.Checked = bool.Parse(cfg.get("IsLogFile"));
         	isSegmentNukeInfoChkBox.Checked = bool.Parse(cfg.get("IsSegmentNukeInfo"));
         	isNotSleepChkBox.Checked = bool.Parse(cfg.get("IsNotSleep"));
@@ -882,7 +884,7 @@ namespace namaichi
 			if (t == "aac(音声)") return "13";
 			if (t == "ogg(音声)") return "14";
 			if (t == "mp4(再エンコード)") return "15";
-			return t;
+			return "0";
 		}
 		
 		void isSubHokanChkBox_CheckedChanged(object sender, EventArgs e)

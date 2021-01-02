@@ -116,9 +116,10 @@ namespace namaichi
 			if (bool.Parse(config.get("IsMiniStart")))
 				changeSize(true);
 			
-			
 			if (config.get("qualityRank").Split(',').Length == 5)
 				config.set("qualityRank", config.get("qualityRank") + ",5");
+			
+			changeRecBtnClickEvent(bool.Parse(config.get("IsRecBtnOnlyMouse")));
 			
 		}
 		private void formInitSetting() {
@@ -228,6 +229,8 @@ namespace namaichi
 	        	optionForm o = new optionForm(config);
 	        	var size = config.get("fontSize");
 	        	if (o.ShowDialog() == DialogResult.OK) {
+	        		changeRecBtnClickEvent(bool.Parse(config.get("IsRecBtnOnlyMouse")));
+	        		
 	        		var newSize = config.get("fontSize");
 	        		if (size != newSize) {
 	        			//var formSize = Size;
@@ -1009,6 +1012,15 @@ namespace namaichi
 				System.Diagnostics.Process.Start(path);
 			} catch (Exception ee) {
 				util.debugWriteLine(ee.Message + " " + ee.StackTrace);
+			}
+		}
+		void changeRecBtnClickEvent(bool isRecBtnOnlyMouse) {
+			recBtn.Click -= new EventHandler(recBtnAction);
+			recBtn.MouseClick -= new MouseEventHandler(recBtnAction);
+			if (isRecBtnOnlyMouse) {
+				recBtn.MouseClick += new MouseEventHandler(recBtnAction);
+			} else {
+				recBtn.Click += new EventHandler(recBtnAction);
 			}
 		}
 	}

@@ -12,15 +12,13 @@ using System.Collections.Generic;
 using System.Threading;
 using System.IO;
 
-namespace namaichi.config {
+namespace rokugaTouroku.config {
 /// <summary>
 /// Description of config.
 /// </summary>
 public class config
 {
 	private Configuration cfg;
-	public Dictionary<string, string> defaultConfig;
-	public Dictionary<string, string> argConfig = new Dictionary<string, string>();
 	public string brokenCopyFile = null;
 	
 	public config()
@@ -33,7 +31,7 @@ public class config
 		for (var i = 0; i < 5; i++) {
 			try {
 				var jarPath = util.getJarPath();
-				var configFile = jarPath[0] + "\\" + jarPath[1] + ".config";
+				var configFile = jarPath[0] + "\\ニコ生新配信録画ツール（仮.config";
 				if (i > 3) System.IO.File.Delete(configFile);
 				//util.debugWriteLine(configFile);
 		        var exeFileMap = new System.Configuration. ExeConfigurationFileMap { ExeConfigFilename = configFile };
@@ -51,13 +49,9 @@ public class config
 		return this.cfg;
 	}
 	public void set(string key, string value) {
-		if (key.IndexOf("user_session") == -1 && 
-				key.IndexOf("account") == -1)
-			util.debugWriteLine("config set " + key + " " + value);
-		else util.debugWriteLine("config set " + key);
+		util.debugWriteLine("config set " + key);
 		for (var i = 0; i < 100; i++) {
 			cfg = getConfig();
-			
 			
 			var keys = cfg.AppSettings.Settings.AllKeys;
 			if (System.Array.IndexOf(keys, key) < 0)
@@ -73,54 +67,21 @@ public class config
 			}
 		}
 	}
-	public void set(List<KeyValuePair<string, string>> l) {
-		foreach (var _l in l) {
-			if (_l.Key.IndexOf("user_session") == -1 && 
-					_l.Key.IndexOf("account") == -1)
-				util.debugWriteLine("config set " + _l.Key + " " + _l.Value);
-			else util.debugWriteLine("config set " + _l.Key);
-		}
-		for (var i = 0; i < 100; i++) {
-			cfg = getConfig();
-			
-			var keys = cfg.AppSettings.Settings.AllKeys;
-			
-			foreach (var _l in l) {
-				if (System.Array.IndexOf(keys, _l.Key) < 0)
-					cfg.AppSettings.Settings.Add(_l.Key, _l.Value);
-				else cfg.AppSettings.Settings[_l.Key].Value = _l.Value;
-			}
-			try {
-				cfg.Save();
-				return;
-			} catch (Exception e) {
-				util.debugWriteLine(e.Message + " " + e.StackTrace);
-				System.Threading.Thread.Sleep(500);
-				continue;
-			}
-		}
-	}
 	public string get(string key) {
 		util.debugWriteLine("config get " + key);
 		try {
-			if (key.IndexOf("user_session") == -1 && 
-			    	key.IndexOf("account") == -1) {
+			if (key != "accountId" && key != "accountPass" &&
+			   		key != "user_session" && key != "user_session_secure") {
 				util.debugWriteLine(key + " " + cfg.AppSettings.Settings[key].Value);
-			} else util.debugWriteLine(key);
+			}
 		} catch (Exception e) {
 			util.debugWriteLine("config get exception " + key + " " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 			return null;
 		}
-		try {
-			if (argConfig.ContainsKey(key)) 
-				return argConfig[key];
-			return cfg.AppSettings.Settings[key].Value;
-		} catch (Exception) {
-			return null;
-		}
+		return cfg.AppSettings.Settings[key].Value;
 	}
 	private void defaultMergeFile() {
-		defaultConfig = new Dictionary<string, string>(){
+		var defaulBuf = new Dictionary<string, string>(){
 			{"accountId",""},
 			{"accountPass",""},
 			{"user_session",""},
@@ -128,7 +89,6 @@ public class config
 			{"browserNum","1"},
 //			{"isAllBrowserMode","true"},
 			{"issecondlogin","false"},
-			{"age_auth","0"},
 			
 			{"IsHokan","true"},
 			{"accountId2",""},
@@ -139,6 +99,7 @@ public class config
 			{"issecondlogin2","false"},
 			{"cookieFile2",""},
 			{"iscookie2","false"},
+			{"IsBrowserShowAll","false"},
 			
 			{"useProxy","false"},
 			{"proxyAddress",""},
@@ -164,11 +125,11 @@ public class config
 			{"IsCommentConvertSpace","false"},
 			{"IsSaveCommentOnlyRetryingRec","false"},
 			{"IsDisplayComment","true"},
-			{"IsNormalizeComment","false"},
+			//{"IsNormalizeComment","false"},
 			
 			{"IstitlebarSamune","true"},
 			{"IsautoFollowComgen","false"},
-			{"qualityRank","0,1,2,3,4,5"},
+			{"qualityRank","0,1,2,3,4"},
 			{"IsMiniStart","false"},
 			{"IsConfirmCloseMsgBox","true"},
 			{"IsRecBtnOnlyMouse","false"},
@@ -180,18 +141,15 @@ public class config
 			{"segmentSaveType","0"},
 			{"IsRenketuAfter","true"},
 //			{"IsAfterRenketuFFmpeg","false"},
-//			{"IsDefaultEngine","true"},
 			{"EngineMode","0"},
 			{"anotherEngineCommand",""},
 			{"IsDefaultRtmpPath","true"},
 			{"rtmpPath",""},
 			{"latency","3.0"},
-			{"IsNoRecordRtmpBlackScreen","false"},
 			{"IsChaseRecord","false"},
 			{"IsArgChaseRecFromFirst","false"},
 			{"IsOnlyTimeShiftChase","true"},
 			{"IsChaseReserveRec","false"},
-			
 			{"IsUsePlayer","true"},
 			{"IsDefaultPlayer","true"},
 			{"IsUseCommentViewer","true"},
@@ -225,7 +183,6 @@ public class config
 			
 			{"cookieFile",""},
 			{"iscookie","false"},
-			{"IsBrowserShowAll","false"},
 			{"recordDir",""},
 			{"IsdefaultRecordDir","true"},
 			{"IscreateSubfolder","true"},
@@ -234,11 +191,10 @@ public class config
 			{"filenameformat","{Y}年{M}月{D}日{h}時{m}分{0}_{1}_{2}_{3}_{4}"},
 			{"ffmpegopt",""},
 			{"Height","400"},
-			{"Width","735"},
+			{"Width","715"},
 			{"X",""},
 			{"Y",""},
 			{"fontSize","9"},
-			
 			{"defaultControllerX","100"},
 			{"defaultControllerY","100"},
 			{"volume","50"},
@@ -246,9 +202,13 @@ public class config
 			{"defaultCommentFormY","100"},
 			{"defaultCommentFormWidth","500"},
 			{"defaultCommentFormHeight","520"},
+			{"RecListColumnWidth",""},
+			{"ShowRecColumns","1111111111111"},
 			
 			{"rokugaTourokuWidth","950"},
 			{"rokugaTourokuHeight","500"},
+			{"rokugaTourokuX",""},
+			{"rokugaTourokuY",""},
 			{"rokugaTourokuMaxRecordingNum","10"},
 			{"IsDuplicateConfirm","false"},
 			{"rokugaTourokuQualityRank","0,1,2,3,4"},
@@ -256,7 +216,7 @@ public class config
 			{"recBackColor","-1"},
 			{"recForeColor","-16777216"},
 			{"recLinkColor","-16776961"},
-			{"tourokuBackColor","-1"},
+			{"tourokuBackColor","-986896"},
 			{"tourokuForeColor","-16777216"},
 		};
 		try {
@@ -266,8 +226,8 @@ public class config
 			}
 			
 			cfg.AppSettings.Settings.Clear();
-			foreach (var k in defaultConfig.Keys) {
-				var v = (buf.ContainsKey(k)) ? buf[k] : defaultConfig[k];
+			foreach (var k in defaulBuf.Keys) {
+				var v = (buf.ContainsKey(k)) ? buf[k] : defaulBuf[k];
 				cfg.AppSettings.Settings.Add(k, v);
 			}
 			try {
@@ -280,14 +240,22 @@ public class config
 			resetConfig();
 		}
 		
+		
 		// Dictionary<string, string>
 	}
 	public void saveFromForm(Dictionary<string, string> formData) {
 		cfg = getConfig();
 		
 		foreach (var k in formData.Keys) {
-			cfg.AppSettings.Settings[k].Value = formData[k];
-			//util.debugWriteLine(k + formData[k]);
+			util.debugWriteLine(k + formData[k]);
+			try {
+				if (cfg.AppSettings.Settings[k] == null)
+					cfg.AppSettings.Settings.Add(new KeyValueConfigurationElement(k, formData[k]));
+				else cfg.AppSettings.Settings[k].Value = formData[k];
+				
+			} catch (Exception e) {
+				util.debugWriteLine("config set exception name " + k + " data " + formData[k] + " " + e.Message + e.TargetSite + e.StackTrace + e.Source);
+			}
 		}		
 		try {
 			cfg.Save();
@@ -297,7 +265,7 @@ public class config
 	}
 	private bool resetConfig() {
 		var jarPath = util.getJarPath();
-		var configFile = jarPath[0] + "\\" + jarPath[1] + ".config";
+		var configFile = jarPath[0] + "\\ニコ生新配信録画ツール（仮.config";
 		if (File.Exists(configFile)) {
 			var n = DateTime.Now;
 			var fn = jarPath[0] + "\\" + n.ToString("yyyyMMddhhmmss") + "ニコ生新配信録画ツール（仮.config";
@@ -328,6 +296,7 @@ public class config
 		}
 		return true;
 	}
+//	private string[] defaultConfig = {};
 }
 
 }

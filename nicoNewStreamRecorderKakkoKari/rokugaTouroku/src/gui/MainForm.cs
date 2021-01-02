@@ -90,7 +90,7 @@ namespace rokugaTouroku
 			if (config.get("rokugaTourokuQualityRank").Split(',').Length == 5)
 				config.set("rokugaTourokuQualityRank", config.get("rokugaTourokuQualityRank") + ",5");
 			
-			
+			changeRecBtnClickEvent(bool.Parse(config.get("IsRecBtnOnlyMouse")));
 		}
 		private void formInitSetting() {
 			recList.DataSource = recListDataSource;
@@ -126,6 +126,8 @@ namespace rokugaTouroku
 
 	        	var size = config.get("fontSize");
 	        	if (o.ShowDialog() == DialogResult.OK) {
+	        		changeRecBtnClickEvent(bool.Parse(config.get("IsRecBtnOnlyMouse")));
+	        		
 	        		var newSize = config.get("fontSize");
 	        		util.debugWriteLine("size " + size + " new size " + newSize);
 	        		if (size != newSize) {
@@ -932,6 +934,15 @@ namespace rokugaTouroku
 				System.Diagnostics.Process.Start(path);
 			} catch (Exception ee) {
 				util.debugWriteLine(ee.Message + " " + ee.StackTrace);
+			}
+		}
+		void changeRecBtnClickEvent(bool isRecBtnOnlyMouse) {
+			recBtn.Click -= new EventHandler(recBtn_Click);
+			recBtn.MouseClick -= new MouseEventHandler(recBtn_Click);
+			if (isRecBtnOnlyMouse) {
+				recBtn.MouseClick += new MouseEventHandler(recBtn_Click);
+			} else {
+				recBtn.Click += new EventHandler(recBtn_Click);
 			}
 		}
 	}
