@@ -55,6 +55,11 @@ namespace namaichi
 			this.終了ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.optionMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+			this.recEndMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.recEndNothingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.recEndShutdownMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.recEndLogOffMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.visualMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.formColorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.characterColorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -101,6 +106,7 @@ namespace namaichi
 			this.playerBtn = new System.Windows.Forms.Button();
 			this.miniBtn = new System.Windows.Forms.Button();
 			this.isChaseChkBtn = new System.Windows.Forms.CheckBox();
+			this.recEndSuspendMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.samuneBox)).BeginInit();
 			this.menuStrip1.SuspendLayout();
 			this.streamInfoGroupBox.SuspendLayout();
@@ -240,7 +246,9 @@ namespace namaichi
 			// toolMenuItem
 			// 
 			this.toolMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-									this.optionMenuItem});
+									this.optionMenuItem,
+									this.toolStripSeparator4,
+									this.recEndMenuItem});
 			this.toolMenuItem.Name = "toolMenuItem";
 			this.toolMenuItem.ShowShortcutKeys = false;
 			this.toolMenuItem.Size = new System.Drawing.Size(74, 22);
@@ -250,9 +258,46 @@ namespace namaichi
 			// 
 			this.optionMenuItem.Name = "optionMenuItem";
 			this.optionMenuItem.ShowShortcutKeys = false;
-			this.optionMenuItem.Size = new System.Drawing.Size(147, 22);
+			this.optionMenuItem.Size = new System.Drawing.Size(172, 22);
 			this.optionMenuItem.Text = "オプション(&O)";
 			this.optionMenuItem.Click += new System.EventHandler(this.optionItem_Select);
+			// 
+			// toolStripSeparator4
+			// 
+			this.toolStripSeparator4.Name = "toolStripSeparator4";
+			this.toolStripSeparator4.Size = new System.Drawing.Size(169, 6);
+			// 
+			// recEndMenuItem
+			// 
+			this.recEndMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+									this.recEndNothingMenuItem,
+									this.recEndShutdownMenuItem,
+									this.recEndLogOffMenuItem,
+									this.recEndSuspendMenuItem});
+			this.recEndMenuItem.Name = "recEndMenuItem";
+			this.recEndMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.recEndMenuItem.Text = "録画終了時の処理";
+			this.recEndMenuItem.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.RecEndMenuItemDropDownItemClicked);
+			// 
+			// recEndNothingMenuItem
+			// 
+			this.recEndNothingMenuItem.Checked = true;
+			this.recEndNothingMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.recEndNothingMenuItem.Name = "recEndNothingMenuItem";
+			this.recEndNothingMenuItem.Size = new System.Drawing.Size(213, 22);
+			this.recEndNothingMenuItem.Text = "何もしない";
+			// 
+			// recEndShutdownMenuItem
+			// 
+			this.recEndShutdownMenuItem.Name = "recEndShutdownMenuItem";
+			this.recEndShutdownMenuItem.Size = new System.Drawing.Size(213, 22);
+			this.recEndShutdownMenuItem.Text = "OSをシャットダウンする";
+			// 
+			// recEndLogOffMenuItem
+			// 
+			this.recEndLogOffMenuItem.Name = "recEndLogOffMenuItem";
+			this.recEndLogOffMenuItem.Size = new System.Drawing.Size(213, 22);
+			this.recEndLogOffMenuItem.Text = "OSをログオフする";
 			// 
 			// visualMenuItem
 			// 
@@ -660,6 +705,12 @@ namespace namaichi
 			this.isChaseChkBtn.Text = "録画設定して追っかけ録画";
 			this.isChaseChkBtn.UseVisualStyleBackColor = true;
 			// 
+			// recEndSuspendMenuItem
+			// 
+			this.recEndSuspendMenuItem.Name = "recEndSuspendMenuItem";
+			this.recEndSuspendMenuItem.Size = new System.Drawing.Size(213, 22);
+			this.recEndSuspendMenuItem.Text = "OSを休止状態にする";
+			// 
 			// MainForm
 			// 
 			this.AllowDrop = true;
@@ -701,6 +752,12 @@ namespace namaichi
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripMenuItem recEndSuspendMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem recEndLogOffMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem recEndShutdownMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem recEndNothingMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem recEndMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private System.Windows.Forms.ToolStripMenuItem openTourokuExeMenu;
 		private System.Windows.Forms.ToolStripMenuItem openReadmeMenu;

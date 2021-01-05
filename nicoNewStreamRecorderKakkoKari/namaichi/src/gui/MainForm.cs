@@ -56,6 +56,7 @@ namespace namaichi
 		private Thread madeThread;
 		private Size originalSize = Size.Empty;
 		private Icon defIcon;
+		public string recEndProcess = null;
 		
 		public MainForm(string[] args)
 		{
@@ -1022,6 +1023,13 @@ namespace namaichi
 			} else {
 				recBtn.Click += new EventHandler(recBtnAction);
 			}
+		}
+		void RecEndMenuItemDropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+		{
+			foreach (ToolStripMenuItem i in recEndMenuItem.DropDownItems)
+				i.Checked = i == e.ClickedItem;
+			var t = e.ClickedItem.Text;
+			recEndProcess = t == "何もしない" ? null : t;
 		}
 	}
 }

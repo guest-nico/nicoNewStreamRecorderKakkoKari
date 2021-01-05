@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
@@ -32,8 +33,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.25";
-	public static string versionDayStr = "2021/01/03";
+	public static string versionStr = "ver0.88.26";
+	public static string versionDayStr = "2021/01/05";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -1323,5 +1324,31 @@ public static void soundEnd(config cfg, MainForm form) {
     	} catch (Exception e) {
     		util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
     	}
+	}
+	public static void shutdown(string recEndProcess) {
+		try {
+			var p = new Process();
+			p.StartInfo.FileName = "shutdown.exe";
+			
+			if (recEndProcess == "OSをシャットダウンする") {
+				p.StartInfo.Arguments = "/s /t 60";
+			} else if (recEndProcess == "OSをログオフする")
+				p.StartInfo.Arguments = "/l";
+			else if (recEndProcess == "OSを休止状態にする")
+				p.StartInfo.Arguments = "/h";
+			p.Start();
+			
+			if (recEndProcess == "OSをシャットダウンする") {
+				var r = MessageBox.Show("1分後にシャットアウトしてよろしいですか？", "確認", MessageBoxButtons.YesNo);
+				if (r == DialogResult.No) {
+					var _p = new Process();
+					_p.StartInfo.FileName = "shutdown.exe";
+					p.StartInfo.Arguments = "/a";
+					p.Start();
+				}
+			}
+		} catch (Exception e) {
+			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+		}
 	}
 }

@@ -131,6 +131,11 @@ namespace namaichi.rec
 				rfu = null;
 				setRecModeForm(false);
 				
+				if (form.recEndProcess != null && endCode == 3) {
+					form.formAction(() => 
+							util.shutdown(form.recEndProcess));
+				}
+				
 				util.debugWriteLine("end rec " + rfu);
 				if (!isClickedRecBtn && endCode == 3) {
 					Environment.ExitCode = 5;
