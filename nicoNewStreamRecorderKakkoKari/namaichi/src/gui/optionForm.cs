@@ -147,6 +147,7 @@ namespace namaichi
 				{"IsMiniStart",isMiniStartChkBox.Checked.ToString().ToLower()},
 				{"IsConfirmCloseMsgBox",isConfirmCloseMsgBoxChkBox.Checked.ToString().ToLower()},
 				{"IsRecBtnOnlyMouse",isRecBtnOnlyMouseChkBox.Checked.ToString().ToLower()},
+				{"reserveMessage",reserveMessageList.Text},
 				{"IsLogFile",isLogFileChkBox.Checked.ToString().ToLower()},
 				{"IsNotSleep",isNotSleepChkBox.Checked.ToString().ToLower()},
 				{"IsRestoreLocation",isRestoreLocationChkBox.Checked.ToString().ToLower()},
@@ -390,6 +391,7 @@ namespace namaichi
         	isMiniStartChkBox.Checked = bool.Parse(cfg.get("IsMiniStart"));
         	isConfirmCloseMsgBoxChkBox.Checked = bool.Parse(cfg.get("IsConfirmCloseMsgBox"));
         	isRecBtnOnlyMouseChkBox.Checked = bool.Parse(cfg.get("IsRecBtnOnlyMouse"));
+        	reserveMessageList.Text = string.IsNullOrEmpty(cfg.get("reserveMessage")) ? "ダイアログで確認" : cfg.get("reserveMessage");
         	isLogFileChkBox.Checked = bool.Parse(cfg.get("IsLogFile"));
         	isSegmentNukeInfoChkBox.Checked = bool.Parse(cfg.get("IsSegmentNukeInfo"));
         	isNotSleepChkBox.Checked = bool.Parse(cfg.get("IsNotSleep"));

@@ -198,10 +198,16 @@ namespace namaichi.rec
 					rm.form.addLogText("この番組の視聴には予約が必要です。");
 					
 					DialogResult isYoyakuRes = DialogResult.None;
-					rm.form.formAction(() => {
-						isYoyakuRes = MessageBox.Show(rm.form, "この番組の視聴には予約が必要です。予約しますか？", "", MessageBoxButtons.YesNo);
-					}, false);
+					var reserveMessage = rm.cfg.get("reserveMessage");
+					if (reserveMessage != "ダイアログで確認") {
+						isYoyakuRes = reserveMessage == "常に予約する" ? DialogResult.Yes : DialogResult.No;
+					} else {
+						rm.form.formAction(() => {
+							isYoyakuRes = MessageBox.Show(rm.form, "この番組の視聴には予約が必要です。予約しますか？", "", MessageBoxButtons.YesNo);
+						}, false);
+					}
 					if (isYoyakuRes == DialogResult.No) return 2;
+					
 					
 					var r = new Reservation(cc, lvid);
 					//var reserveRet = r.reserve();

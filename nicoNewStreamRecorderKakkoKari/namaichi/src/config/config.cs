@@ -172,6 +172,8 @@ public class config
 			{"IsMiniStart","false"},
 			{"IsConfirmCloseMsgBox","true"},
 			{"IsRecBtnOnlyMouse","false"},
+			{"reserveMessage","ダイアログで確認"},
+			
 			{"IsLogFile","false"},
 			{"IsSegmentNukeInfo","true"},
 			{"IsNotSleep","false"},

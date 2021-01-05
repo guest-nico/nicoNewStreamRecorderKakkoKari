@@ -38,16 +38,14 @@ namespace namaichi
 		{
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.groupBox17 = new System.Windows.Forms.GroupBox();
-			this.isNormalizeCommentChkBox = new System.Windows.Forms.CheckBox();
-			this.isCommentXmlInfo = new System.Windows.Forms.RadioButton();
-			this.isSaveCommentOnlyRetryingRecChkBox = new System.Windows.Forms.CheckBox();
-			this.isGetCommentChkBox = new System.Windows.Forms.CheckBox();
-			this.isCommentConvertSpaceChkbox = new System.Windows.Forms.CheckBox();
-			this.isCommentXML = new System.Windows.Forms.RadioButton();
-			this.isCommentJson = new System.Windows.Forms.RadioButton();
-			this.isDisplayCommentChkbox = new System.Windows.Forms.CheckBox();
+			this.groupBox16 = new System.Windows.Forms.GroupBox();
+			this.isRestoreLocationChkBox = new System.Windows.Forms.CheckBox();
+			this.isMiniStartChkBox = new System.Windows.Forms.CheckBox();
+			this.isMinimizedChkBox = new System.Windows.Forms.CheckBox();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.reserveMessageList = new System.Windows.Forms.ComboBox();
+			this.label17 = new System.Windows.Forms.Label();
+			this.isRecBtnOnlyMouseChkBox = new System.Windows.Forms.CheckBox();
 			this.isNotSleepChkBox = new System.Windows.Forms.CheckBox();
 			this.isAutoFollowComGen = new System.Windows.Forms.CheckBox();
 			this.isLogFileChkBox = new System.Windows.Forms.CheckBox();
@@ -61,14 +59,19 @@ namespace namaichi
 			this.isMessageBoxChkBox = new System.Windows.Forms.CheckBox();
 			this.isRetryChkBox = new System.Windows.Forms.CheckBox();
 			this.tabPage8 = new System.Windows.Forms.TabPage();
-			this.groupBox16 = new System.Windows.Forms.GroupBox();
-			this.isRestoreLocationChkBox = new System.Windows.Forms.CheckBox();
-			this.isMiniStartChkBox = new System.Windows.Forms.CheckBox();
-			this.isMinimizedChkBox = new System.Windows.Forms.CheckBox();
 			this.displayGroup = new System.Windows.Forms.GroupBox();
 			this.fontList = new System.Windows.Forms.NumericUpDown();
 			this.label64 = new System.Windows.Forms.Label();
 			this.applyBtn = new System.Windows.Forms.Button();
+			this.groupBox17 = new System.Windows.Forms.GroupBox();
+			this.isNormalizeCommentChkBox = new System.Windows.Forms.CheckBox();
+			this.isCommentXmlInfo = new System.Windows.Forms.RadioButton();
+			this.isSaveCommentOnlyRetryingRecChkBox = new System.Windows.Forms.CheckBox();
+			this.isGetCommentChkBox = new System.Windows.Forms.CheckBox();
+			this.isCommentConvertSpaceChkbox = new System.Windows.Forms.CheckBox();
+			this.isCommentXML = new System.Windows.Forms.RadioButton();
+			this.isCommentJson = new System.Windows.Forms.RadioButton();
+			this.isDisplayCommentChkbox = new System.Windows.Forms.CheckBox();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.isDefaultBrowserPathChkBox = new System.Windows.Forms.CheckBox();
 			this.browserPathSanshouBtn = new System.Windows.Forms.Button();
@@ -210,15 +213,14 @@ namespace namaichi
 			this.recordDirectoryText = new System.Windows.Forms.TextBox();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
-			this.isRecBtnOnlyMouseChkBox = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
-			this.groupBox17.SuspendLayout();
+			this.groupBox16.SuspendLayout();
 			this.groupBox6.SuspendLayout();
 			this.tabPage8.SuspendLayout();
-			this.groupBox16.SuspendLayout();
 			this.displayGroup.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.fontList)).BeginInit();
+			this.groupBox17.SuspendLayout();
 			this.groupBox5.SuspendLayout();
 			this.groupBox9.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.volumeBar)).BeginInit();
@@ -267,7 +269,7 @@ namespace namaichi
 			// 
 			// tabPage1
 			// 
-			this.tabPage1.Controls.Add(this.groupBox17);
+			this.tabPage1.Controls.Add(this.groupBox16);
 			this.tabPage1.Controls.Add(this.groupBox6);
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
@@ -278,101 +280,49 @@ namespace namaichi
 			this.tabPage1.Text = "一般";
 			this.tabPage1.UseVisualStyleBackColor = true;
 			// 
-			// groupBox17
+			// groupBox16
 			// 
-			this.groupBox17.Controls.Add(this.isNormalizeCommentChkBox);
-			this.groupBox17.Controls.Add(this.isCommentXmlInfo);
-			this.groupBox17.Controls.Add(this.isSaveCommentOnlyRetryingRecChkBox);
-			this.groupBox17.Controls.Add(this.isGetCommentChkBox);
-			this.groupBox17.Controls.Add(this.isCommentConvertSpaceChkbox);
-			this.groupBox17.Controls.Add(this.isCommentXML);
-			this.groupBox17.Controls.Add(this.isCommentJson);
-			this.groupBox17.Controls.Add(this.isDisplayCommentChkbox);
-			this.groupBox17.Location = new System.Drawing.Point(5, 352);
-			this.groupBox17.Name = "groupBox17";
-			this.groupBox17.Size = new System.Drawing.Size(395, 153);
-			this.groupBox17.TabIndex = 10;
-			this.groupBox17.TabStop = false;
-			this.groupBox17.Text = "コメント";
+			this.groupBox16.Controls.Add(this.isRestoreLocationChkBox);
+			this.groupBox16.Controls.Add(this.isMiniStartChkBox);
+			this.groupBox16.Controls.Add(this.isMinimizedChkBox);
+			this.groupBox16.Location = new System.Drawing.Point(5, 379);
+			this.groupBox16.Name = "groupBox16";
+			this.groupBox16.Size = new System.Drawing.Size(372, 84);
+			this.groupBox16.TabIndex = 13;
+			this.groupBox16.TabStop = false;
+			this.groupBox16.Text = "起動";
 			// 
-			// isNormalizeCommentChkBox
+			// isRestoreLocationChkBox
 			// 
-			this.isNormalizeCommentChkBox.Location = new System.Drawing.Point(19, 127);
-			this.isNormalizeCommentChkBox.Name = "isNormalizeCommentChkBox";
-			this.isNormalizeCommentChkBox.Size = new System.Drawing.Size(322, 19);
-			this.isNormalizeCommentChkBox.TabIndex = 8;
-			this.isNormalizeCommentChkBox.Text = "流量調整により薄くなったコメントを通常コメントとして保存する";
-			this.isNormalizeCommentChkBox.UseVisualStyleBackColor = true;
+			this.isRestoreLocationChkBox.Location = new System.Drawing.Point(19, 62);
+			this.isRestoreLocationChkBox.Name = "isRestoreLocationChkBox";
+			this.isRestoreLocationChkBox.Size = new System.Drawing.Size(291, 19);
+			this.isRestoreLocationChkBox.TabIndex = 7;
+			this.isRestoreLocationChkBox.Text = "前回の終了位置にメインウィンドウを表示する";
+			this.isRestoreLocationChkBox.UseVisualStyleBackColor = true;
 			// 
-			// isCommentXmlInfo
+			// isMiniStartChkBox
 			// 
-			this.isCommentXmlInfo.Location = new System.Drawing.Point(241, 39);
-			this.isCommentXmlInfo.Name = "isCommentXmlInfo";
-			this.isCommentXmlInfo.Size = new System.Drawing.Size(154, 16);
-			this.isCommentXmlInfo.TabIndex = 7;
-			this.isCommentXmlInfo.Text = "XML(開始時間付)で保存";
-			this.isCommentXmlInfo.UseVisualStyleBackColor = true;
+			this.isMiniStartChkBox.Location = new System.Drawing.Point(19, 40);
+			this.isMiniStartChkBox.Name = "isMiniStartChkBox";
+			this.isMiniStartChkBox.Size = new System.Drawing.Size(271, 19);
+			this.isMiniStartChkBox.TabIndex = 6;
+			this.isMiniStartChkBox.Text = "縮小画面で起動する";
+			this.isMiniStartChkBox.UseVisualStyleBackColor = true;
 			// 
-			// isSaveCommentOnlyRetryingRecChkBox
+			// isMinimizedChkBox
 			// 
-			this.isSaveCommentOnlyRetryingRecChkBox.Location = new System.Drawing.Point(19, 83);
-			this.isSaveCommentOnlyRetryingRecChkBox.Name = "isSaveCommentOnlyRetryingRecChkBox";
-			this.isSaveCommentOnlyRetryingRecChkBox.Size = new System.Drawing.Size(271, 19);
-			this.isSaveCommentOnlyRetryingRecChkBox.TabIndex = 6;
-			this.isSaveCommentOnlyRetryingRecChkBox.Text = "動画の再接続中はコメントを保存しない";
-			this.isSaveCommentOnlyRetryingRecChkBox.UseVisualStyleBackColor = true;
-			// 
-			// isGetCommentChkBox
-			// 
-			this.isGetCommentChkBox.Location = new System.Drawing.Point(19, 18);
-			this.isGetCommentChkBox.Name = "isGetCommentChkBox";
-			this.isGetCommentChkBox.Size = new System.Drawing.Size(271, 19);
-			this.isGetCommentChkBox.TabIndex = 2;
-			this.isGetCommentChkBox.Text = "同時にコメントも取得し保存する";
-			this.isGetCommentChkBox.UseVisualStyleBackColor = true;
-			this.isGetCommentChkBox.CheckedChanged += new System.EventHandler(this.isGetCommentChkBox_CheckedChanged);
-			// 
-			// isCommentConvertSpaceChkbox
-			// 
-			this.isCommentConvertSpaceChkbox.Location = new System.Drawing.Point(19, 61);
-			this.isCommentConvertSpaceChkbox.Name = "isCommentConvertSpaceChkbox";
-			this.isCommentConvertSpaceChkbox.Size = new System.Drawing.Size(271, 19);
-			this.isCommentConvertSpaceChkbox.TabIndex = 6;
-			this.isCommentConvertSpaceChkbox.Text = "コメントの特殊文字を空白に変換する";
-			this.isCommentConvertSpaceChkbox.UseVisualStyleBackColor = true;
-			// 
-			// isCommentXML
-			// 
-			this.isCommentXML.Checked = true;
-			this.isCommentXML.Location = new System.Drawing.Point(47, 39);
-			this.isCommentXML.Name = "isCommentXML";
-			this.isCommentXML.Size = new System.Drawing.Size(91, 16);
-			this.isCommentXML.TabIndex = 3;
-			this.isCommentXML.TabStop = true;
-			this.isCommentXML.Text = "XMLで保存";
-			this.isCommentXML.UseVisualStyleBackColor = true;
-			// 
-			// isCommentJson
-			// 
-			this.isCommentJson.Location = new System.Drawing.Point(144, 39);
-			this.isCommentJson.Name = "isCommentJson";
-			this.isCommentJson.Size = new System.Drawing.Size(91, 16);
-			this.isCommentJson.TabIndex = 3;
-			this.isCommentJson.Text = "JSONで保存";
-			this.isCommentJson.UseVisualStyleBackColor = true;
-			// 
-			// isDisplayCommentChkbox
-			// 
-			this.isDisplayCommentChkbox.Location = new System.Drawing.Point(19, 105);
-			this.isDisplayCommentChkbox.Name = "isDisplayCommentChkbox";
-			this.isDisplayCommentChkbox.Size = new System.Drawing.Size(271, 19);
-			this.isDisplayCommentChkbox.TabIndex = 2;
-			this.isDisplayCommentChkbox.Text = "右下にコメントを表示する";
-			this.isDisplayCommentChkbox.UseVisualStyleBackColor = true;
-			this.isDisplayCommentChkbox.CheckedChanged += new System.EventHandler(this.isGetCommentChkBox_CheckedChanged);
+			this.isMinimizedChkBox.Location = new System.Drawing.Point(19, 18);
+			this.isMinimizedChkBox.Name = "isMinimizedChkBox";
+			this.isMinimizedChkBox.Size = new System.Drawing.Size(271, 19);
+			this.isMinimizedChkBox.TabIndex = 3;
+			this.isMinimizedChkBox.Text = "自動起動時は最小化(非アクティブ)状態で起動する";
+			this.isMinimizedChkBox.UseVisualStyleBackColor = true;
 			// 
 			// groupBox6
 			// 
+			this.groupBox6.Controls.Add(this.reserveMessageList);
+			this.groupBox6.Controls.Add(this.label17);
 			this.groupBox6.Controls.Add(this.isRecBtnOnlyMouseChkBox);
 			this.groupBox6.Controls.Add(this.isNotSleepChkBox);
 			this.groupBox6.Controls.Add(this.isAutoFollowComGen);
@@ -388,10 +338,40 @@ namespace namaichi
 			this.groupBox6.Controls.Add(this.isRetryChkBox);
 			this.groupBox6.Location = new System.Drawing.Point(5, 10);
 			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(395, 336);
+			this.groupBox6.Size = new System.Drawing.Size(395, 363);
 			this.groupBox6.TabIndex = 0;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Recorder設定";
+			// 
+			// reserveMessageList
+			// 
+			this.reserveMessageList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.reserveMessageList.FormattingEnabled = true;
+			this.reserveMessageList.Items.AddRange(new object[] {
+									"ダイアログで確認",
+									"常に予約する",
+									"常に予約しない"});
+			this.reserveMessageList.Location = new System.Drawing.Point(125, 312);
+			this.reserveMessageList.Name = "reserveMessageList";
+			this.reserveMessageList.Size = new System.Drawing.Size(117, 20);
+			this.reserveMessageList.TabIndex = 35;
+			// 
+			// label17
+			// 
+			this.label17.Location = new System.Drawing.Point(19, 315);
+			this.label17.Name = "label17";
+			this.label17.Size = new System.Drawing.Size(140, 19);
+			this.label17.TabIndex = 34;
+			this.label17.Text = "予約が必要な放送：";
+			// 
+			// isRecBtnOnlyMouseChkBox
+			// 
+			this.isRecBtnOnlyMouseChkBox.Location = new System.Drawing.Point(19, 290);
+			this.isRecBtnOnlyMouseChkBox.Name = "isRecBtnOnlyMouseChkBox";
+			this.isRecBtnOnlyMouseChkBox.Size = new System.Drawing.Size(307, 19);
+			this.isRecBtnOnlyMouseChkBox.TabIndex = 6;
+			this.isRecBtnOnlyMouseChkBox.Text = "録画・中断ボタンをマウスクリックのみで操作できるようにする";
+			this.isRecBtnOnlyMouseChkBox.UseVisualStyleBackColor = true;
 			// 
 			// isNotSleepChkBox
 			// 
@@ -413,7 +393,7 @@ namespace namaichi
 			// 
 			// isLogFileChkBox
 			// 
-			this.isLogFileChkBox.Location = new System.Drawing.Point(19, 312);
+			this.isLogFileChkBox.Location = new System.Drawing.Point(19, 339);
 			this.isLogFileChkBox.Name = "isLogFileChkBox";
 			this.isLogFileChkBox.Size = new System.Drawing.Size(271, 19);
 			this.isLogFileChkBox.TabIndex = 2;
@@ -505,8 +485,8 @@ namespace namaichi
 			// 
 			// tabPage8
 			// 
-			this.tabPage8.Controls.Add(this.groupBox16);
 			this.tabPage8.Controls.Add(this.displayGroup);
+			this.tabPage8.Controls.Add(this.groupBox17);
 			this.tabPage8.Controls.Add(this.groupBox5);
 			this.tabPage8.Controls.Add(this.groupBox9);
 			this.tabPage8.Location = new System.Drawing.Point(4, 22);
@@ -516,54 +496,15 @@ namespace namaichi
 			this.tabPage8.Text = "一般2";
 			this.tabPage8.UseVisualStyleBackColor = true;
 			// 
-			// groupBox16
-			// 
-			this.groupBox16.Controls.Add(this.isRestoreLocationChkBox);
-			this.groupBox16.Controls.Add(this.isMiniStartChkBox);
-			this.groupBox16.Controls.Add(this.isMinimizedChkBox);
-			this.groupBox16.Location = new System.Drawing.Point(5, 258);
-			this.groupBox16.Name = "groupBox16";
-			this.groupBox16.Size = new System.Drawing.Size(372, 84);
-			this.groupBox16.TabIndex = 9;
-			this.groupBox16.TabStop = false;
-			this.groupBox16.Text = "起動";
-			// 
-			// isRestoreLocationChkBox
-			// 
-			this.isRestoreLocationChkBox.Location = new System.Drawing.Point(19, 62);
-			this.isRestoreLocationChkBox.Name = "isRestoreLocationChkBox";
-			this.isRestoreLocationChkBox.Size = new System.Drawing.Size(291, 19);
-			this.isRestoreLocationChkBox.TabIndex = 7;
-			this.isRestoreLocationChkBox.Text = "前回の終了位置にメインウィンドウを表示する";
-			this.isRestoreLocationChkBox.UseVisualStyleBackColor = true;
-			// 
-			// isMiniStartChkBox
-			// 
-			this.isMiniStartChkBox.Location = new System.Drawing.Point(19, 40);
-			this.isMiniStartChkBox.Name = "isMiniStartChkBox";
-			this.isMiniStartChkBox.Size = new System.Drawing.Size(271, 19);
-			this.isMiniStartChkBox.TabIndex = 6;
-			this.isMiniStartChkBox.Text = "縮小画面で起動する";
-			this.isMiniStartChkBox.UseVisualStyleBackColor = true;
-			// 
-			// isMinimizedChkBox
-			// 
-			this.isMinimizedChkBox.Location = new System.Drawing.Point(19, 18);
-			this.isMinimizedChkBox.Name = "isMinimizedChkBox";
-			this.isMinimizedChkBox.Size = new System.Drawing.Size(271, 19);
-			this.isMinimizedChkBox.TabIndex = 3;
-			this.isMinimizedChkBox.Text = "自動起動時は最小化(非アクティブ)状態で起動する";
-			this.isMinimizedChkBox.UseVisualStyleBackColor = true;
-			// 
 			// displayGroup
 			// 
 			this.displayGroup.Controls.Add(this.fontList);
 			this.displayGroup.Controls.Add(this.label64);
 			this.displayGroup.Controls.Add(this.applyBtn);
-			this.displayGroup.Location = new System.Drawing.Point(5, 345);
+			this.displayGroup.Location = new System.Drawing.Point(5, 417);
 			this.displayGroup.Name = "displayGroup";
 			this.displayGroup.Size = new System.Drawing.Size(372, 46);
-			this.displayGroup.TabIndex = 8;
+			this.displayGroup.TabIndex = 15;
 			this.displayGroup.TabStop = false;
 			this.displayGroup.Text = "表示設定";
 			// 
@@ -606,7 +547,97 @@ namespace namaichi
 			this.applyBtn.TabIndex = 34;
 			this.applyBtn.Text = "テスト";
 			this.applyBtn.UseVisualStyleBackColor = true;
-			this.applyBtn.Click += new System.EventHandler(this.ApplyBtnClick);
+			// 
+			// groupBox17
+			// 
+			this.groupBox17.Controls.Add(this.isNormalizeCommentChkBox);
+			this.groupBox17.Controls.Add(this.isCommentXmlInfo);
+			this.groupBox17.Controls.Add(this.isSaveCommentOnlyRetryingRecChkBox);
+			this.groupBox17.Controls.Add(this.isGetCommentChkBox);
+			this.groupBox17.Controls.Add(this.isCommentConvertSpaceChkbox);
+			this.groupBox17.Controls.Add(this.isCommentXML);
+			this.groupBox17.Controls.Add(this.isCommentJson);
+			this.groupBox17.Controls.Add(this.isDisplayCommentChkbox);
+			this.groupBox17.Location = new System.Drawing.Point(5, 83);
+			this.groupBox17.Name = "groupBox17";
+			this.groupBox17.Size = new System.Drawing.Size(395, 153);
+			this.groupBox17.TabIndex = 11;
+			this.groupBox17.TabStop = false;
+			this.groupBox17.Text = "コメント";
+			// 
+			// isNormalizeCommentChkBox
+			// 
+			this.isNormalizeCommentChkBox.Location = new System.Drawing.Point(19, 127);
+			this.isNormalizeCommentChkBox.Name = "isNormalizeCommentChkBox";
+			this.isNormalizeCommentChkBox.Size = new System.Drawing.Size(322, 19);
+			this.isNormalizeCommentChkBox.TabIndex = 8;
+			this.isNormalizeCommentChkBox.Text = "流量調整により薄くなったコメントを通常コメントとして保存する";
+			this.isNormalizeCommentChkBox.UseVisualStyleBackColor = true;
+			// 
+			// isCommentXmlInfo
+			// 
+			this.isCommentXmlInfo.Location = new System.Drawing.Point(241, 39);
+			this.isCommentXmlInfo.Name = "isCommentXmlInfo";
+			this.isCommentXmlInfo.Size = new System.Drawing.Size(154, 16);
+			this.isCommentXmlInfo.TabIndex = 7;
+			this.isCommentXmlInfo.Text = "XML(開始時間付)で保存";
+			this.isCommentXmlInfo.UseVisualStyleBackColor = true;
+			// 
+			// isSaveCommentOnlyRetryingRecChkBox
+			// 
+			this.isSaveCommentOnlyRetryingRecChkBox.Location = new System.Drawing.Point(19, 83);
+			this.isSaveCommentOnlyRetryingRecChkBox.Name = "isSaveCommentOnlyRetryingRecChkBox";
+			this.isSaveCommentOnlyRetryingRecChkBox.Size = new System.Drawing.Size(271, 19);
+			this.isSaveCommentOnlyRetryingRecChkBox.TabIndex = 6;
+			this.isSaveCommentOnlyRetryingRecChkBox.Text = "動画の再接続中はコメントを保存しない";
+			this.isSaveCommentOnlyRetryingRecChkBox.UseVisualStyleBackColor = true;
+			// 
+			// isGetCommentChkBox
+			// 
+			this.isGetCommentChkBox.Location = new System.Drawing.Point(19, 18);
+			this.isGetCommentChkBox.Name = "isGetCommentChkBox";
+			this.isGetCommentChkBox.Size = new System.Drawing.Size(271, 19);
+			this.isGetCommentChkBox.TabIndex = 2;
+			this.isGetCommentChkBox.Text = "同時にコメントも取得し保存する";
+			this.isGetCommentChkBox.UseVisualStyleBackColor = true;
+			// 
+			// isCommentConvertSpaceChkbox
+			// 
+			this.isCommentConvertSpaceChkbox.Location = new System.Drawing.Point(19, 61);
+			this.isCommentConvertSpaceChkbox.Name = "isCommentConvertSpaceChkbox";
+			this.isCommentConvertSpaceChkbox.Size = new System.Drawing.Size(271, 19);
+			this.isCommentConvertSpaceChkbox.TabIndex = 6;
+			this.isCommentConvertSpaceChkbox.Text = "コメントの特殊文字を空白に変換する";
+			this.isCommentConvertSpaceChkbox.UseVisualStyleBackColor = true;
+			// 
+			// isCommentXML
+			// 
+			this.isCommentXML.Checked = true;
+			this.isCommentXML.Location = new System.Drawing.Point(47, 39);
+			this.isCommentXML.Name = "isCommentXML";
+			this.isCommentXML.Size = new System.Drawing.Size(91, 16);
+			this.isCommentXML.TabIndex = 3;
+			this.isCommentXML.TabStop = true;
+			this.isCommentXML.Text = "XMLで保存";
+			this.isCommentXML.UseVisualStyleBackColor = true;
+			// 
+			// isCommentJson
+			// 
+			this.isCommentJson.Location = new System.Drawing.Point(144, 39);
+			this.isCommentJson.Name = "isCommentJson";
+			this.isCommentJson.Size = new System.Drawing.Size(91, 16);
+			this.isCommentJson.TabIndex = 3;
+			this.isCommentJson.Text = "JSONで保存";
+			this.isCommentJson.UseVisualStyleBackColor = true;
+			// 
+			// isDisplayCommentChkbox
+			// 
+			this.isDisplayCommentChkbox.Location = new System.Drawing.Point(19, 105);
+			this.isDisplayCommentChkbox.Name = "isDisplayCommentChkbox";
+			this.isDisplayCommentChkbox.Size = new System.Drawing.Size(271, 19);
+			this.isDisplayCommentChkbox.TabIndex = 2;
+			this.isDisplayCommentChkbox.Text = "右下にコメントを表示する";
+			this.isDisplayCommentChkbox.UseVisualStyleBackColor = true;
 			// 
 			// groupBox5
 			// 
@@ -657,7 +688,7 @@ namespace namaichi
 			this.groupBox9.Controls.Add(this.isDefaultSoundChkBtn);
 			this.groupBox9.Controls.Add(this.soundSanshouBtn);
 			this.groupBox9.Controls.Add(this.soundPathText);
-			this.groupBox9.Location = new System.Drawing.Point(5, 83);
+			this.groupBox9.Location = new System.Drawing.Point(5, 242);
 			this.groupBox9.Name = "groupBox9";
 			this.groupBox9.Size = new System.Drawing.Size(372, 169);
 			this.groupBox9.TabIndex = 1;
@@ -1018,19 +1049,17 @@ namespace namaichi
 			this.groupBox14.Controls.Add(this.isChaseReserveRecChkBox);
 			this.groupBox14.Location = new System.Drawing.Point(5, 201);
 			this.groupBox14.Name = "groupBox14";
-			this.groupBox14.Size = new System.Drawing.Size(385, 48);
-			this.groupBox14.TabIndex = 2;
+			this.groupBox14.Size = new System.Drawing.Size(385, 47);
+			this.groupBox14.TabIndex = 9;
 			this.groupBox14.TabStop = false;
-			this.groupBox14.Text = "放送終了時";
+			this.groupBox14.Text = "録画終了時";
 			// 
 			// isChaseReserveRecChkBox
 			// 
-			this.isChaseReserveRecChkBox.Checked = true;
-			this.isChaseReserveRecChkBox.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.isChaseReserveRecChkBox.Location = new System.Drawing.Point(19, 18);
 			this.isChaseReserveRecChkBox.Name = "isChaseReserveRecChkBox";
-			this.isChaseReserveRecChkBox.Size = new System.Drawing.Size(281, 15);
-			this.isChaseReserveRecChkBox.TabIndex = 1;
+			this.isChaseReserveRecChkBox.Size = new System.Drawing.Size(271, 19);
+			this.isChaseReserveRecChkBox.TabIndex = 8;
 			this.isChaseReserveRecChkBox.Text = "公式放送の場合は自動で予約して続きを録画する";
 			this.isChaseReserveRecChkBox.UseVisualStyleBackColor = true;
 			// 
@@ -2120,15 +2149,6 @@ namespace namaichi
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
 			// 
-			// isRecBtnOnlyMouseChkBox
-			// 
-			this.isRecBtnOnlyMouseChkBox.Location = new System.Drawing.Point(19, 290);
-			this.isRecBtnOnlyMouseChkBox.Name = "isRecBtnOnlyMouseChkBox";
-			this.isRecBtnOnlyMouseChkBox.Size = new System.Drawing.Size(307, 19);
-			this.isRecBtnOnlyMouseChkBox.TabIndex = 6;
-			this.isRecBtnOnlyMouseChkBox.Text = "録画・中断ボタンをマウスクリックのみで操作できるようにする";
-			this.isRecBtnOnlyMouseChkBox.UseVisualStyleBackColor = true;
-			// 
 			// optionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -2145,12 +2165,12 @@ namespace namaichi
 			this.Load += new System.EventHandler(this.OptionFormLoad);
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
-			this.groupBox17.ResumeLayout(false);
+			this.groupBox16.ResumeLayout(false);
 			this.groupBox6.ResumeLayout(false);
 			this.tabPage8.ResumeLayout(false);
-			this.groupBox16.ResumeLayout(false);
 			this.displayGroup.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.fontList)).EndInit();
+			this.groupBox17.ResumeLayout(false);
 			this.groupBox5.ResumeLayout(false);
 			this.groupBox5.PerformLayout();
 			this.groupBox9.ResumeLayout(false);
@@ -2186,6 +2206,9 @@ namespace namaichi
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.GroupBox groupBox14;
+		private System.Windows.Forms.Label label17;
+		public System.Windows.Forms.ComboBox reserveMessageList;
 		private System.Windows.Forms.CheckBox isRecBtnOnlyMouseChkBox;
 		private System.Windows.Forms.CheckBox isNormalizeCommentChkBox;
 		private System.Windows.Forms.GroupBox groupBox17;
@@ -2219,7 +2242,6 @@ namespace namaichi
 		private System.Windows.Forms.CheckBox isNotSleepChkBox;
 		private System.Windows.Forms.CheckBox isArgChaseRecFromFirstChkBox;
 		private System.Windows.Forms.CheckBox isChaseReserveRecChkBox;
-		private System.Windows.Forms.GroupBox groupBox14;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.RadioButton isChaseRecordRadioBtn;
 		private System.Windows.Forms.CheckBox isOnlyTimeShiftChaseChkBox;

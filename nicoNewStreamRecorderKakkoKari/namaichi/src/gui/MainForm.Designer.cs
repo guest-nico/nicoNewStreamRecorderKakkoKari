@@ -60,6 +60,7 @@ namespace namaichi
 			this.recEndNothingMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.recEndShutdownMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.recEndLogOffMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.recEndSuspendMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.visualMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.formColorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.characterColorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -106,7 +107,6 @@ namespace namaichi
 			this.playerBtn = new System.Windows.Forms.Button();
 			this.miniBtn = new System.Windows.Forms.Button();
 			this.isChaseChkBtn = new System.Windows.Forms.CheckBox();
-			this.recEndSuspendMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.samuneBox)).BeginInit();
 			this.menuStrip1.SuspendLayout();
 			this.streamInfoGroupBox.SuspendLayout();
@@ -276,7 +276,7 @@ namespace namaichi
 									this.recEndSuspendMenuItem});
 			this.recEndMenuItem.Name = "recEndMenuItem";
 			this.recEndMenuItem.Size = new System.Drawing.Size(172, 22);
-			this.recEndMenuItem.Text = "録画終了時の処理";
+			this.recEndMenuItem.Text = "録画終了時の動作";
 			this.recEndMenuItem.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.RecEndMenuItemDropDownItemClicked);
 			// 
 			// recEndNothingMenuItem
@@ -298,6 +298,12 @@ namespace namaichi
 			this.recEndLogOffMenuItem.Name = "recEndLogOffMenuItem";
 			this.recEndLogOffMenuItem.Size = new System.Drawing.Size(213, 22);
 			this.recEndLogOffMenuItem.Text = "OSをログオフする";
+			// 
+			// recEndSuspendMenuItem
+			// 
+			this.recEndSuspendMenuItem.Name = "recEndSuspendMenuItem";
+			this.recEndSuspendMenuItem.Size = new System.Drawing.Size(213, 22);
+			this.recEndSuspendMenuItem.Text = "OSを休止状態にする";
 			// 
 			// visualMenuItem
 			// 
@@ -704,12 +710,6 @@ namespace namaichi
 			this.isChaseChkBtn.TabIndex = 24;
 			this.isChaseChkBtn.Text = "録画設定して追っかけ録画";
 			this.isChaseChkBtn.UseVisualStyleBackColor = true;
-			// 
-			// recEndSuspendMenuItem
-			// 
-			this.recEndSuspendMenuItem.Name = "recEndSuspendMenuItem";
-			this.recEndSuspendMenuItem.Size = new System.Drawing.Size(213, 22);
-			this.recEndSuspendMenuItem.Text = "OSを休止状態にする";
 			// 
 			// MainForm
 			// 
