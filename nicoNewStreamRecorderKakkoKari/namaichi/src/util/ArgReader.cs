@@ -225,7 +225,7 @@ namespace namaichi.utility
 				
 				//ts
 				if (lowKeys[i] == "ts-start") {
-					var _t = Regex.Match(val.ToLower(), "((\\d*)h)*((\\d*)m)*((\\d*)s)*");
+					var _t = Regex.Match(val.ToLower(), "((-*\\d*)h)*((-*\\d*)m)*((-*\\d*)s)*");
 					if (_t.Length != 0) {
 						if (tsConfig == null) tsConfig = new TimeShiftConfig();
 						
@@ -248,7 +248,7 @@ namespace namaichi.utility
 					}
 				}
 				if (lowKeys[i] == "ts-end") {
-					var _t = Regex.Match(val.ToLower(), "((\\d*)h)*((\\d*)m)*((\\d*)s)*");
+					var _t = Regex.Match(val.ToLower(), "((-*\\d*)h)*((-*\\d*)m)*((-*\\d*)s)*");
 					if (_t.Length != 0) {
 						if (tsConfig == null) tsConfig = new TimeShiftConfig();
 						
