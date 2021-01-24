@@ -25,35 +25,38 @@ namespace namaichi.rec
 		
 		int startNum;
 		public bool isStarted = false;
+		private string ext = null;
+		
 		public OutputTimeShiftTsUrlList(TimeShiftConfig tsConfig, RecordingManager rm)
 		{
 			this.tsConfig = tsConfig;
 			this.rm = rm;
+			ext = rm.rfu.h5r.isFmp4 ? ".mp4" : ".ts";
 		}
 		public void setStartNum(string playList) {
-			startNum = int.Parse(util.getRegGroup(playList, "(\\d+).ts"));
+			startNum = int.Parse(util.getRegGroup(playList, "(\\d+)" + ext));
 		}
 		public void write(string playList, string _path, string baseUrl, TimeShiftConfig tsConfig) {
 			isStarted = true;
 			var path = _path + ((tsConfig.isM3u8List) ? ".m3u8" : ".txt");
 			
-			var _hasuu = util.getRegGroup(playList, "(\\d\\d+).ts");
+			var _hasuu = util.getRegGroup(playList, "(\\d\\d+)" + ext);
 			var hasuu = (_hasuu == null) ? 0 : int.Parse(_hasuu);
 			hasuu = hasuu % 5000;
 			var _duration = util.getRegGroup(playList, "#DMC-STREAM-DURATION:(.+)");
 			var duration = double.Parse(_duration, System.Globalization.NumberStyles.Float);
-			var _temp = util.getRegGroup(playList, "(.+\\.ts.+)");
+			var _temp = util.getRegGroup(playList, "(.+\\" + ext + ".+)");
 			var temp = baseUrl + _temp;
 			var tempNum = util.getRegGroup(_temp, "(\\d+)");
 			
 			var ret = "";
 			if (startNum >= tsConfig.timeSeconds * 1000) 
-				ret += temp.Replace(tempNum + ".ts", startNum.ToString() + ".ts");
+				ret += temp.Replace(tempNum + ext, startNum.ToString() + ext);
 			for (var i = 5000 + hasuu; i < duration * 1000; i += 5000) {
 				if (i < tsConfig.timeSeconds * 1000 || 
 				    (tsConfig.endTimeSeconds != 0 && i > tsConfig.endTimeSeconds * 1000)) continue;
 				if (ret != "") ret += "\r\n";
-				ret += temp.Replace(tempNum + ".ts", i + ".ts");
+				ret += temp.Replace(tempNum + ext, i + ext);
 			}
 			
 			if (tsConfig.isM3u8List) {
@@ -70,7 +73,7 @@ namespace namaichi.rec
 		}
 		private string openFile(string listPath) {
 			var listDirPath = new FileInfo(listPath).Directory.ToString();
-			//var o = listDirPath + "/out.ts";
+			//var o = listDirPath + "/out" + ext;
 			//var _command = tsConfig.openListCommand.Replace("{i}", "\"" + listPath + "\"");
 			//var _i = util.getRegGroup(tsConfig.openListCommand, "(\\{i\\}[^s]*)");
 			//var _command = Regex.Replace(tsConfig.openListCommand, "\\{i\\}([^s]*)", "{$1}

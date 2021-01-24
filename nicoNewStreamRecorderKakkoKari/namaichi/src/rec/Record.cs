@@ -17,6 +17,7 @@ using System.Threading;
 using WebSocket4Net;
 using System.Globalization;
 using System.Diagnostics;
+using System.Text;
 using namaichi.info;
 
 namespace namaichi.rec
@@ -89,6 +90,9 @@ namespace namaichi.rec
 		private string ua = null;//"Lavf/56.36.100";
 		private string referer = null;
 		public static bool isWriteCancel = false;
+		public string ext = null;
+		private int baseTfdt = -1;
+		private byte[] initMp4 = null;
 		
 		public Record(RecordingManager rm, bool isFFmpeg, 
 		              RecordFromUrl rfu, string hlsUrl, 
@@ -124,6 +128,7 @@ namespace namaichi.rec
 			this.isRealtimeChase = isRealtimeChase;
 			this.h5r = h5r;
 			this.referer = null;//rfu.url;
+			ext = h5r.isFmp4 ? ".mp4" : ".ts";
 		}
 		public void record(string quality) {
 			recordingQuality = quality;
@@ -266,7 +271,7 @@ namespace namaichi.rec
 //					     	int.Parse(rm.cfg.get("afterConvertMode")) != 1)) {
 					if (int.Parse(rm.cfg.get("afterConvertMode")) > 0) {
 						var tf = new ThroughFFMpeg(rm);
-						tf.start(recFolderFile + ".ts", true);
+						tf.start(recFolderFile + ext, true);
 					}
 				}
 				rm.form.addLogText("録画終了処理を完了しました");
@@ -401,6 +406,20 @@ namespace namaichi.rec
 							foreach (var s in _s.Split('\n')) {
 	//							var s = line[i];
 								//var _second = util.getRegGroup(s, "^#EXTINF:(\\d+(\\.\\d+)*)");
+								
+								var _initMp4 = util.getRegGroup(s, null, 1, rm.regGetter.getExtXMap());
+								if (_initMp4 != null && initMp4 == null) {
+									var _url = baseUrl + _initMp4;
+									var nti = new numTaskInfo(-1, _url, 0, null, 0, 0);
+									var r = getFileBytesNti(nti);
+									if (r == null) {
+										segM3u8List.Clear();
+										break;
+									}
+									else getFileBytesTasks.Add(r);
+									continue;
+								}
+								
 								var _second = util.getRegGroup(s, "^#EXTINF:(.+),", 1, rm.regGetter.getExtInf());
 								if (_second != null) {
 									second = double.Parse(_second, NumberStyles.Float);
@@ -421,8 +440,8 @@ namespace namaichi.rec
 									allDuration = double.Parse(_allDuration, NumberStyles.Float);
 								}
 								
-								if (s.IndexOf(".ts") < 0) continue;
-								var no = int.Parse(util.getRegGroup(s, "(\\d+).ts", 1, rm.regGetter.getTs()));
+								if (s.IndexOf(ext) < 0) continue;
+								var no = int.Parse(util.getRegGroup(s, "(\\d+)" + ext, 1, rm.regGetter.getTs()));
 								var url = baseUrl + s;
 								
 								var isInList = false;
@@ -438,10 +457,10 @@ namespace namaichi.rec
 								var startTimeStr = util.getSecondsToStr(startTime);
 								
 								if (no + baseNo > lastSegmentNo && !isInList && no + baseNo > gotTsMaxNo) {
-									var fileName = util.getRegGroup(s, "(.+?.ts)\\?", 1, rm.regGetter.getTs2());
-									//fileName = util.getRegGroup(fileName, "(\\d+)") + ".ts";
-									//fileName = util.getRegGroup(fileName, "(\\d+)\\.") + "_" + startTimeStr + ".ts";
-									fileName = (no + baseNo).ToString() + "_" + startTimeStr + ".ts";
+									var fileName = util.getRegGroup(s, "(.+?" + ext + ")\\?", 1, rm.regGetter.getTs2());
+									//fileName = util.getRegGroup(fileName, "(\\d+)") + ext;
+									//fileName = util.getRegGroup(fileName, "(\\d+)\\.") + "_" + startTimeStr + ext;
+									fileName = (no + baseNo).ToString() + "_" + startTimeStr + ext;
 									addDebugBuf(no + " " + fileName + " baseNo " + baseNo);
 									//util.debugWriteLine(no + " " + fileName);
 									
@@ -481,7 +500,12 @@ namespace namaichi.rec
 							
 								//if (isSub) rfu.subGotNumTaskInfo.Add(_res);
 								//else 
+								if (_res.url.IndexOf("init1.mp4") > -1)
+									initMp4 = _res.res;
+								else {
+									if (h5r.isFmp4) baseTfdt = getChangedTfdtMp4(_res.res, baseTfdt, out _res.res);
 									gotTsList.Add(_res);
+								}
 								
 								recordedSecond += _res.second;
 								recordedBytes += _res.res.Length;
@@ -624,8 +648,8 @@ namespace namaichi.rec
 				var tuikaArr = tuika.Split(' ');
 				string[] _command = {
 						"-i", "" + hlsMasterUrl + "", 
-						"-c", "copy", "\"" + recFolderFile + ".ts\"" };
-//						"-c", "copy", "-bsf:a", "aac_adtstoasc", "\"" + recFolderFile[1] + ".ts\"" };
+						"-c", "copy", "\"" + recFolderFile + ext + "\"" };
+//						"-c", "copy", "-bsf:a", "aac_adtstoasc", "\"" + recFolderFile[1] + ext + "\"" };
 //				var _buf = new List<string>();
 				var _buf = string.Join(" ", _command);
 				_buf += " " + tuika;
@@ -646,18 +670,21 @@ namespace namaichi.rec
 		private bool streamRenketuRecord(numTaskInfo info) {
 			try {
 				addDebugBuf(info.no + " " + info.url);
-				addDebugBuf("record file path " + recFolderFile + ".ts");
+				addDebugBuf("record file path " + recFolderFile + ext);
 				
 				//file lock check
-				if (File.Exists(recFolderFile + ".ts")) {
-					//File.Move(recFolderFile + ".ts", recFolderFile + ".ts");
-					using (var checkIO = new FileStream(recFolderFile + ".ts", FileMode.Append, FileAccess.Write)) {
+				if (File.Exists(recFolderFile + ext)) {
+					//File.Move(recFolderFile + ext, recFolderFile + ext);
+					using (var checkIO = new FileStream(recFolderFile + ext, FileMode.Append, FileAccess.Write)) {
 					}
 				}
-				addDebugBuf("test record file path " + recFolderFile + ".ts");
+				addDebugBuf("test record file path " + recFolderFile + ext);
 				
-				using (var w = new FileStream(recFolderFile + ".ts", FileMode.Append, FileAccess.Write)) {
+				var isWriteInitMp4 = !File.Exists(recFolderFile + ext) && initMp4 != null;
+				using (var w = new FileStream(recFolderFile + ext, FileMode.Append, FileAccess.Write)) {
 					w.Seek(0, SeekOrigin.End);
+					if (isWriteInitMp4) w.Write(initMp4, 0, initMp4.Length);
+					
 					util.debugWriteLine("streamRenketuRecord cc　" + info.res.Length);
 					w.Write(info.res, 0, info.res.Length);
 					//w.Close();
@@ -669,7 +696,7 @@ namespace namaichi.rec
 					var newName = newTimeShiftFileName(recFolderFile, info.fileName);
 					while (true) {
 						try {
-							File.Move(recFolderFile + ".ts", newName + ".ts");
+							File.Move(recFolderFile + ext, newName + ext);
 							break;
 						} catch (Exception e) {
 							util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
@@ -766,7 +793,7 @@ namespace namaichi.rec
 			
 			
 			//shuusei? 
-			int min = (res == null) ? -1 : int.Parse(util.getRegGroup(res, "(\\d+).ts", 1, rm.regGetter.getTs()));
+			int min = (res == null) ? -1 : int.Parse(util.getRegGroup(res, "(\\d+)" + ext, 1, rm.regGetter.getTs()));
 			//if (res == null || (lastSegmentNo != -1 && res.IndexOf(lastSegmentNo.ToString()) == -1)) {
 			if (res == null || (lastSegmentNo != -1 && min != -1 && min > lastSegmentNo)) {
 			//if (res == null) {
@@ -818,7 +845,7 @@ namespace namaichi.rec
 						allDuration = double.Parse(_allDuration, NumberStyles.Float);
 					}
 					
-					if (s.IndexOf(".ts") < 0) continue;
+					if (s.IndexOf(ext) < 0) continue;
 					var no = lastListSegNo = int.Parse(util.getRegGroup(s, "(\\d+)"));
 					var url = baseUrl + s;
 					
@@ -855,9 +882,9 @@ namespace namaichi.rec
 							break;
 						}
 						
-						var fileName = util.getRegGroup(s, "(.+?.ts)\\?");
-						//fileName = util.getRegGroup(fileName, "(\\d+)") + ".ts";
-						fileName = util.getRegGroup(fileName, "(\\d+)\\.") + "_" + startTimeStr + ".ts";
+						var fileName = util.getRegGroup(s, "(.+?" + ext + ")\\?");
+						//fileName = util.getRegGroup(fileName, "(\\d+)") + ext;
+						fileName = util.getRegGroup(fileName, "(\\d+)\\.") + "_" + startTimeStr + ext;
 						addDebugBuf(no + " " + fileName);
 						
 						newGetTsTaskList.Add(new numTaskInfo(no, url, second, fileName, startTime));
@@ -1085,6 +1112,7 @@ namespace namaichi.rec
 			addDebugBuf("original ts record " + path);
 			try {
 				using (var w = new FileStream(path, FileMode.Create, FileAccess.Write)) {
+					if (initMp4 != null) w.Write(initMp4, 0, initMp4.Length);
 					w.Write(info.res, 0, info.res.Length);
 					//w.Close();
 				}
@@ -1184,10 +1212,10 @@ namespace namaichi.rec
 					isEnd = true;
 					continue;
 				}
-				if (s.IndexOf(".ts?") < 0) continue;
-				var no = int.Parse(util.getRegGroup(s, "(\\d+).ts"));
+				if (s.IndexOf(ext + "?") < 0) continue;
+				var no = int.Parse(util.getRegGroup(s, "(\\d+)" + ext));
 				var tsUrl = baseUrl + s;
-				var fileName = util.getRegGroup(s, "(.+?.ts)\\?");
+				var fileName = util.getRegGroup(s, "(.+?" + ext + ")\\?");
 				ret.Add(new numTaskInfo(no, tsUrl, second, fileName));
 			}
 			return ret;
@@ -1248,24 +1276,24 @@ namespace namaichi.rec
 			var fName = util.getRegGroup(recFolderFile, ".+/(.+)");
 			var m3u8 = "#EXTM3U\n#EXT-X-VERSION:3\n#EXT-X-TARGETDURATION:60\n";
 			foreach (var s in recordedNo) 
-				//m3u8 += "#EXTINF:0\n" + recFolderFile + "/" + s + ".ts\n";
+				//m3u8 += "#EXTINF:0\n" + recFolderFile + "/" + s + ext + "\n";
 				m3u8 += "#EXTINF:0\n" + recFolderFile + "/" + s + "\n";
 			m3u8 += "#EXT-X-ENDLIST\n";
 			var pipeName = DateTime.UtcNow.Hour + "" + DateTime.UtcNow.Minute + "" + DateTime.UtcNow.Second;
-			string args = "-i \\\\.\\pipe\\" + pipeName + " -c copy \"" + recFolderFile + "/" + fName + ".ts\"";
+			string args = "-i \\\\.\\pipe\\" + pipeName + " -c copy \"" + recFolderFile + "/" + fName + ext + "\"";
 			
 			var r = new FFMpegConcat(rm, rfu);
 			r.recordCommand(args.Split(' '), m3u8, pipeName);
 		}
 		private string streamRenketuAfter() {
 			var fName = util.getRegGroup(recFolderFile, ".+/(.+)");
-			var outFName = recFolderFile + "/" + fName + ".ts";
+			var outFName = recFolderFile + "/" + fName + ext;
 			
 			FileStream w; 
 			try {
 				addDebugBuf("renketu after out fname " + outFName);			
-				if (outFName.Length > 245) outFName = recFolderFile + "/" + lvid + ".ts";
-				if (outFName.Length > 245) outFName = recFolderFile + "/out.ts";
+				if (outFName.Length > 245) outFName = recFolderFile + "/" + lvid + ext;
+				if (outFName.Length > 245) outFName = recFolderFile + "/out" + ext;
 				addDebugBuf("renketu after out fname shuusei go " + outFName);
 				using (w = new FileStream(outFName, FileMode.Append, FileAccess.Write)) {
 					_streamRenketuAfterWrite(w);
@@ -1273,21 +1301,21 @@ namespace namaichi.rec
 				}
 			} catch (PathTooLongException) {
 				try {
-					addDebugBuf("renketu after out fname " + recFolderFile + "/" + lvid + ".ts");			
-					using (w = new FileStream(recFolderFile + "/" + lvid + ".ts", FileMode.Append, FileAccess.Write)) {
+					addDebugBuf("renketu after out fname " + recFolderFile + "/" + lvid + ext);			
+					using (w = new FileStream(recFolderFile + "/" + lvid + ext, FileMode.Append, FileAccess.Write)) {
 						_streamRenketuAfterWrite(w);
 						return w.Name;
 					}
 				} catch (PathTooLongException) {
 					try {
-						addDebugBuf("renketu after out fname " + recFolderFile + "/_.ts");			
-						using (w = new FileStream(recFolderFile + "/_.ts", FileMode.Append, FileAccess.Write)) {
+						addDebugBuf("renketu after out fname " + recFolderFile + "/_" + ext);			
+						using (w = new FileStream(recFolderFile + "/_" + ext, FileMode.Append, FileAccess.Write)) {
 							_streamRenketuAfterWrite(w);
 							return w.Name;
 						}
 					} catch (PathTooLongException) {
 						addDebugBuf("renketu after too long");
-						rm.form.addLogText("録画後に連結しようとしましたがパスが長すぎてファイルが開けませんでした " + recFolderFile + "/_.ts");
+						rm.form.addLogText("録画後に連結しようとしましたがパスが長すぎてファイルが開けませんでした " + recFolderFile + "/_" + ext);
 						return null;
 					}
 				}
@@ -1420,7 +1448,7 @@ namespace namaichi.rec
 //				    	    int.Parse(rm.cfg.get("afterConvertMode")) > 1) {
 					if (int.Parse(rm.cfg.get("afterConvertMode")) > 0) {
 						var tf = new ThroughFFMpeg(rm);
-						tf.start(recFolderFile + ".ts", true);
+						tf.start(recFolderFile + ext, true);
 						
 					}
 				}
@@ -1573,8 +1601,8 @@ namespace namaichi.rec
 			var maxLine = "";
 			var minNo = 0;
 			foreach (var l in res.Split('\n')) {
-				if (l.IndexOf(".ts") != -1) {
-					maxNo = int.Parse(util.getRegGroup(l, "(\\d+)\\.ts", 1, rm.regGetter.getMaxNo()));
+				if (l.IndexOf(ext) != -1 && !l.StartsWith("#")) {
+					maxNo = int.Parse(util.getRegGroup(l, "^(\\d+)\\" + ext, 1, rm.regGetter.getMaxNo()));
 					maxLine = l;
 					if (minNo == 0) minNo = maxNo; 
 				}
@@ -1603,7 +1631,7 @@ namespace namaichi.rec
 				for (var i = startNo; i < minNo; i++) {
 					if (i < 0) continue;
 					ins += "#EXTINF:" + inf + ",\n";
-					ins += maxLine.Replace(maxNo.ToString() + ".ts", i.ToString() + ".ts") + "\n";
+					ins += maxLine.Replace(maxNo.ToString() + ext, i.ToString() + ext) + "\n";
 				}
 				res = res.Insert(res.IndexOf("EXTINF:") - 1, ins);
 				addDebugBuf("added list " + res);
@@ -1668,7 +1696,7 @@ namespace namaichi.rec
 		}
 		private bool isAnotherEngineTimeShiftEnd(DateTime recStartTime, string hlsSegM3uUrl, string startPlayList) {
 			if (startPlayList == null) return false;
-			var lastTsNum = util.getRegGroup(startPlayList, "[\\s\\S]+\n(\\d+).ts", 1, rm.regGetter.getLastTsNum());
+			var lastTsNum = util.getRegGroup(startPlayList, "[\\s\\S]+\n(\\d+)" + ext, 1, rm.regGetter.getLastTsNum());
 			if (lastTsNum == null) 
 				return false;
 			
@@ -1685,7 +1713,7 @@ namespace namaichi.rec
 			/*
 			var a = new System.Net.WebHeaderCollection();
 			var _resM3u8 = util.getPageSource(hlsSegM3uUrl, ref a, container);
-			var _lastSegTime = (_resM3u8 == null) ? null : util.getRegGroup(_resM3u8, ".+(\\d+).ts");
+			var _lastSegTime = (_resM3u8 == null) ? null : util.getRegGroup(_resM3u8, ".+(\\d+)" + ext);
 			var lastSegTime = (_lastSegTime == null) ? -1 : double.Parse(_lastSegTime);
 			
 			double streamDuration = -1;
@@ -1760,8 +1788,8 @@ namespace namaichi.rec
 			try {
 				for (int i = int.Parse(num); i < 1000; i++) {
 					var newName = name.Replace("_" + time + "_" + num, i.ToString());
-					if (File.Exists(newName + ".ts")) continue;
-					File.Move(recFolderFile + ".ts", newName + ".ts");
+					if (File.Exists(newName + ext)) continue;
+					File.Move(recFolderFile + ext, newName + ext);
 					recFolderFile = newName;
 					return;
 				}
@@ -1774,9 +1802,9 @@ namespace namaichi.rec
 				var wsr = (WebSocketRecorder)wr;
 				wsr.setRealTimeStatistics();
 				
-				if (File.Exists(recFolderFile + ".ts")) {
+				if (File.Exists(recFolderFile + ext)) {
 					var newName = recFolderFile.Replace("{w}", wsr.visitCount.Replace("-", "")).Replace("{c}", wsr.commentCount.Replace("-", ""));
-					File.Move(recFolderFile + ".ts", newName + ".ts");
+					File.Move(recFolderFile + ext, newName + ext);
 					recFolderFile = newName;
 				}
 				
@@ -1865,6 +1893,83 @@ namespace namaichi.rec
 			}
 			util.debugWriteLine("free space " + di.AvailableFreeSpace);
 			return true;
+		}
+		private int getChangedTfdtMp4(byte[] b, int baseTfdt, out byte[] newTfdtB) {
+			newTfdtB = null;
+			var isLog = false;
+			try {
+				var pos = 0;
+				using (var ms = new MemoryStream()) {
+					while (pos < b.Length) {
+						var size = BitConverter.ToInt32((new byte[]{b[pos + 3], b[pos + 2], b[pos + 1], b[pos + 0]}), 0);
+						if (size == 0) {
+							Debug.WriteLine("atom parse error size 0");
+							rm.form.addLogText("atom parse error size 0");
+							return -1;
+						}
+						var type = Encoding.ASCII.GetString(b, pos + 4, 4);
+						
+						if (isLog) Debug.WriteLine("size " + size + " pos " + pos + " type " + type);
+						if (type == "moof") {
+							var _pos = pos + 8;
+							while (_pos < pos + size) {
+								var _size = BitConverter.ToInt32((new byte[]{b[_pos + 3], b[_pos + 2], b[_pos + 1], b[_pos + 0]}), 0);
+								if (_size == 0) {
+									Debug.WriteLine("atom parse error size 0");
+									rm.form.addLogText("atom parse error size 0");
+									return -1;
+								}
+								var _type = Encoding.ASCII.GetString(b, _pos + 4, 4);
+								if (isLog) Debug.WriteLine("  moof " + _size + " " + _type);
+								if (_type == "traf") {
+									var __pos = _pos + 8;
+									while (__pos < _pos + _size) {
+										var __size = BitConverter.ToInt32((new byte[]{b[__pos + 3], b[__pos + 2], b[__pos + 1], b[__pos + 0]}), 0);
+										if (__size == 0) {
+											Debug.WriteLine("atom parse error size 0");
+											rm.form.addLogText("atom parse error size 0");
+											return -1;
+										}
+										var __type = Encoding.ASCII.GetString(b, __pos + 4, 4);
+										if (isLog) Debug.WriteLine("    traf " + __size + " " + __type);
+										if (__type == "tfdt") {
+											var ___size = BitConverter.ToInt32((new byte[]{b[__pos + 3], b[__pos + 2], b[__pos + 1], b[__pos + 0]}), 0);
+											if (___size == 0) {
+												Debug.WriteLine("atom parse error size 0");
+												rm.form.addLogText("atom parse error size 0");
+												return -1;
+											}
+											var tfdt = BitConverter.ToInt32((new byte[]{b[__pos + ___size - 1], b[__pos + ___size - 2], b[__pos + ___size - 3], b[__pos + ___size - 4]}), 0);
+											if (isLog) Debug.WriteLine("      tfdt " + tfdt);
+											if (baseTfdt == -1) 
+												baseTfdt = tfdt;
+											var newTfdt = BitConverter.GetBytes(tfdt - baseTfdt);
+											if (isLog) Debug.WriteLine("      new tfdt " + (tfdt - baseTfdt) + " " + newTfdt);
+											
+											for (var i = 1; i < 5; i++) 
+												b[__pos + ___size - i] = i > newTfdt.Length ? (byte)0 : newTfdt[i - 1];
+											tfdt = BitConverter.ToInt32((new byte[]{b[__pos + ___size - 1], b[__pos + ___size - 2], b[__pos + ___size - 3], b[__pos + ___size - 4]}), 0);
+											if (isLog) Debug.WriteLine("      tfdt2 " + tfdt);
+											
+										}
+										__pos += __size;
+									}
+								}
+								_pos += _size;
+							}
+						}
+						ms.Write(b, pos, size);
+						
+						pos += (int)size;
+					}
+					newTfdtB = ms.ToArray();
+					return baseTfdt;
+				}
+			} catch (Exception ee) {
+				Debug.WriteLine("atom parse error " + ee.Message + ee.Source + ee.StackTrace);
+				rm.form.addLogText("atom parse error " + ee.Message + ee.Source + ee.StackTrace);
+				return -1;
+			}
 		}
 	}
 	class NtiGetter {

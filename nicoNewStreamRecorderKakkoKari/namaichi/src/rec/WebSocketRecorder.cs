@@ -1074,7 +1074,10 @@ namespace namaichi.rec
 					if (programType == "official") {
 						chatXml = chatinfo.getFormatXml(0, true, serverTime - _openTime);
 					//} else chatXml = chatinfo.getFormatXml(serverTime);
-					} else chatXml = chatinfo.getFormatXml(0, true, serverTime - _openTime);
+					} else {
+						//chatXml = chatinfo.getFormatXml(0, true, serverTime - _openTime);
+						chatXml = chatinfo.getFormatXml(serverTime);
+					}
 				} else {
 					while (firstSegmentSecond == -1 && rm.rfu == rfu) {
 						Thread.Sleep(1000);
@@ -1263,7 +1266,7 @@ namespace namaichi.rec
 						: ("{\"type\":\"watch\",\"body\":{\"command\":\"getstream\",\"requirement\":{\"protocol\":\"hls\",\"quality\":\"" + bestGettableQuolity + "\",\"isLowLatency\":false}}}");
 			} else {
 				var latency = float.Parse(rm.cfg.get("latency")) < 1.1 ? "low" : "high";
-				req = "{\"type\":\"changeStream\",\"data\":{\"quality\":\"" + bestGettableQuolity + "\",\"protocol\":\"hls\",\"latency\":\"" + latency + "\",\"chasePlay\":" + isChase.ToString().ToLower() + "}}";
+				req = "{\"type\":\"changeStream\",\"data\":{\"quality\":\"" + bestGettableQuolity + "\",\"protocol\":\"hls" + (h5r.isFmp4 ? "+fmp4" : "") + "\",\"latency\":\"" + latency + "\",\"chasePlay\":" + isChase.ToString().ToLower() + "}}";
 			}
 			
 			sendMessage(ws, req);
@@ -1289,6 +1292,7 @@ namespace namaichi.rec
 			}
 		}
 		public bool isEndedProgram() {
+			var type = -1;
 			try {
 				var isPass = (DateTime.Now - lastEndProgramCheckTime < TimeSpan.FromSeconds(5));
 				addDebugBuf("ispass " + isPass + " lastendprogramchecktime " + lastEndProgramCheckTime);
@@ -1299,6 +1303,10 @@ namespace namaichi.rec
 				var res = util.getPageSource(h5r.url, container, null, false, 15000);
 				addDebugBuf("isendedprogram url " + h5r.url + " res==null " + (res == null));
 				if (res == null) return isEndedProgramRtmp();
+				type = util.getPageType(res);
+				if (type == 0) return true;
+				else if (type == 7 || type == 2 || type == 3 || type == 9) return false;
+				
 				if (res.IndexOf("user.login_status = 'not_login'") > -1) {
 					addDebugBuf("isendprogram not login");
 					var cg = new CookieGetter(rm.cfg);
@@ -1308,16 +1316,16 @@ namespace namaichi.rec
 					res = util.getPageSource(h5r.url, container, null, false, 5000);
 					if (res == null) return isEndedProgramRtmp();
 					res = System.Web.HttpUtility.HtmlDecode(res);
-					var _webSocketInfo = Html5Recorder.getWebSocketInfo(res, isRtmp, isChase, isTimeShift, rm.form);
+					var _webSocketInfo = Html5Recorder.getWebSocketInfo(res, isRtmp, isChase, isTimeShift, rm.form, h5r.isFmp4);
 					isNoPermission = true;
 					addDebugBuf("isendprogram login websocketInfo " + webSocketInfo[0] + " " + webSocketInfo[1]);
 					if (_webSocketInfo == null || _webSocketInfo[0] == null || _webSocketInfo[1] == null) {
 						addDebugBuf(res);
 					} else webSocketInfo = _webSocketInfo;
-					return isEndedProgramRtmp();
+					//return isEndedProgramRtmp();
 				}
 				if (res == null) return false;
-				var type = util.getPageType(res);
+				type = util.getPageType(res);
 				addDebugBuf("is ended program  pagetype " + type);
 				var isEnd = (type == 7 || type == 2 || type == 3 || type == 9);
 				return isEnd;
@@ -1325,21 +1333,26 @@ namespace namaichi.rec
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				return isEndedProgramRtmp();
 				//return false;
+			} finally {
+				addDebugBuf("is ended program  pagetype " + type);
 			}
 		}
 		public bool isEndedProgramRtmp() {
 			util.debugWriteLine("isEndedProgramRtmp");
+			return false;
+			/*
 			try {
-					var url = "http://live.nicovideo.jp/api/getplayerstatus?v=" + lvid;
-					var r = util.getPageSource(url, container);
-					var isTs = false;
-					var type = util.getPageTypeRtmp(r, ref isTs, false);
-					var isEnd = (type == 7 || type == 2 || type == 3 || type == 9);
-					return isEnd;
-				} catch (Exception ee) {
-					util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
-					return false;
-				}
+				var url = "http://live.nicovideo.jp/api/getplayerstatus?v=" + lvid;
+				var r = util.getPageSource(url, container);
+				var isTs = false;
+				var type = util.getPageTypeRtmp(r, ref isTs, false);
+				var isEnd = (type == 7 || type == 2 || type == 3 || type == 9);
+				return isEnd;
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+				return false;
+			}
+			*/
 		}
 		override public void sendComment(string s, bool is184) {
 			if (msThread == null) return;
@@ -1427,7 +1440,7 @@ namespace namaichi.rec
 				}
 				res = System.Web.HttpUtility.HtmlDecode(res);
 				
-				var _webSocketInfo = Html5Recorder.getWebSocketInfo(res, isRtmp, isChase, isTimeShift, rm.form);
+				var _webSocketInfo = Html5Recorder.getWebSocketInfo(res, isRtmp, isChase, isTimeShift, rm.form, h5r.isFmp4);
 				if (_webSocketInfo == null) {
 					addDebugBuf("resetWebsocketInfo _websocketInfo null");
 					return;
@@ -1719,13 +1732,15 @@ namespace namaichi.rec
 				
 				util.debugWriteLine("setSync " + no + " " + second + " " + m3u8Url + " " + _openTime + " " + openTime + " " + vposBaseTime);
 				//var url = util.getRegGroup(mes, "\"syncUri\":\"(.+?)\"");
-				var url = m3u8Url.Replace("ts/playlist.m3u8", "stream_sync.json");
+				var url = m3u8Url.Replace((h5r.isFmp4 ? "mp4" : "ts") + "/playlist.m3u8", "stream_sync.json");
 				var res = util.getPageSource(url);
 				util.debugWriteLine("setSync res " + res);
 				if (res == null) return;
 				var m = new Regex("\"beginning_timestamp\":(\\d+),\"sequence\":(\\d+)").Match(res);
 				if (!m.Success) return;
-				var beginTime = long.Parse(m.Groups[1].Value) + (_openTime - vposBaseTime) * 1000;
+				
+				var a = (_openTime - vposBaseTime);
+				var beginTime = long.Parse(m.Groups[1].Value);
 				if (second != 0)
 					sync = (long)(beginTime - (long.Parse(m.Groups[2].Value) - no) * second * 1000);
 				else sync = beginTime;

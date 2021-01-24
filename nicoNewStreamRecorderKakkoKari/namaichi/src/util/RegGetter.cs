@@ -21,6 +21,7 @@ namespace namaichi.utility
 		private Regex _extXTargetDuration;
 		private Regex extInf;
 		private Regex extXEndlist;
+		private Regex extXMap;
 		private Regex streamDuration;
 		private Regex ts;
 		private Regex ts2;
@@ -59,6 +60,11 @@ namespace namaichi.utility
 				_extXTargetDuration = new Regex("^#EXT-X-TARGETDURATION:(\\d+(\\.\\d+)*(e\\d+)*)");
 			return _extXTargetDuration;
 		}
+		public Regex getExtXMap() {
+			if (extXMap == null)
+				extXMap = new Regex("^#EXT-X-MAP:URI=\"(.+)\"");
+			return extXMap;
+		}
 		public Regex getExtXEndlist() {
 			if (extXEndlist == null)
 				extXEndlist = new Regex("^(#EXT-X-ENDLIST)$");
@@ -71,12 +77,12 @@ namespace namaichi.utility
 		}
 		public Regex getTs() {
 			if (ts == null)
-				ts = new Regex("(\\d+).ts");
+				ts = new Regex("(\\d+).(ts|mp4)");
 			return ts;
 		}
 		public Regex getTs2() {
 			if (ts2 == null)
-				ts2 = new Regex("(.+?.ts)\\?");
+				ts2 = new Regex("(.+?.(ts|mp4))\\?");
 			return ts2;
 		}
 		public Regex getFName() {
@@ -91,12 +97,12 @@ namespace namaichi.utility
 		}
 		public Regex getMaxNo() {
 			if (maxNo == null)
-				maxNo = new Regex("(\\d+)\\.ts");
+				maxNo = new Regex("^(\\d+)\\.(ts|mp4)");
 			return maxNo;
 		}
 		public Regex getLastTsNum() {
 			if (lastTsNum == null)
-				lastTsNum = new Regex("[\\s\\S]+\n(\\d+).ts");
+				lastTsNum = new Regex("[\\s\\S]+\n(\\d+).(ts|mp4)");
 			return lastTsNum;
 		}
 		public Regex getRenameWithoutTime_time() {

@@ -23,12 +23,13 @@ namespace namaichi.rec
 		private RecordingManager rm;
 		private RecordFromUrl rfu;
 		private System.Diagnostics.Process process;
-		public string ext = ".ts";
+		public string ext = null;
 		
 		public AnotherEngineRecorder(RecordingManager rm, RecordFromUrl rfu)
 		{
 			this.rm = rm;
 			this.rfu = rfu;
+			ext = rfu.h5r.isFmp4 ? ".mp4" : ".ts";
 		}
 		public void record(string hlsSegM3uUrl, string recFolderFile, string command) {
 			util.debugWriteLine("another rec start");
@@ -167,7 +168,7 @@ namespace namaichi.rec
 				ext = m.Groups[1].ToString();
 			
 			command = r.Replace(command, "\"" + recFolderFile + "${1}\"");
-			command = command.Replace("{o}", "\"" + recFolderFile + ".ts\"");
+			command = command.Replace("{o}", "\"" + recFolderFile + ext + "\"");
 //			if (recFolderFile.IndexOf(" ") > -1) o = "\"" + o + "\"";
 //			_command = _command.Replace("{o}", o);
 			return command;

@@ -38,6 +38,7 @@ namespace namaichi.rec
 		
 		private long openTime;
 		public WebSocketRecorder wsr = null;
+		public bool isFmp4 = false;
 	
 		public Html5Recorder(string url, CookieContainer container, 
 				string lvid, RecordingManager rm, RecordFromUrl rfu,
@@ -59,7 +60,7 @@ namespace namaichi.rec
 			return ret;
 		}
 		
-		public static string[] getWebSocketInfo(string data, bool isRtmp, bool isChase, bool isTimeShift, MainForm form) {
+		public static string[] getWebSocketInfo(string data, bool isRtmp, bool isChase, bool isTimeShift, MainForm form, bool isFmp4) {
 //			util.debugWriteLine(data);
 			var wsUrl = util.getRegGroup(data, "\"webSocketUrl\":\"(ws[\\d\\D]+?)\"");
 			if (wsUrl == null) return null;
@@ -106,9 +107,9 @@ namespace namaichi.rec
 						//("{\"type\":\"watch\",\"body\":{\"command\":\"getpermit\",\"requirement\":{\"broadcastId\":\"" + broadcastId + "\",\"route\":\"\",\"stream\":{\"protocol\":\"hls\",\"requireNewStream\":true,\"priorStreamQuality\":\"normal\", \"isLowLatency\": false},\"room\":{\"isCommentable\":true,\"protocol\":\"webSocket\"}}}}");
 						("{\"type\":\"watch\",\"body\":{\"command\":\"getpermit\",\"requirement\":{\"broadcastId\":\"" + broadcastId + "\",\"route\":\"\",\"stream\":{\"protocol\":\"hls\",\"requireNewStream\":true,\"priorStreamQuality\":\"normal\", \"isLowLatency\": false,\"isChasePlay\":false},\"room\":{\"isCommentable\":true,\"protocol\":\"webSocket\"}}}}");
 			} else if (ver == "2") {
+				
 				request = isRtmp ? "{\"type\":\"startWatching\",\"data\":{\"stream\":{\"quality\":\"normal\",\"protocol\":\"rtmp\",\"latency\":\"high\",\"chasePlay\":false},\"room\":{\"protocol\":\"webSocket\",\"commentable\":true},\"reconnect\":false}}"
-					//: "{\"type\":\"startWatching\",\"data\":{\"stream\":{\"quality\":\"normal\",\"protocol\":\"hls\",\"latency\":\"" + (latency < 1.1 ? "low" : "high") + "\",\"chasePlay\":false},\"room\":{\"protocol\":\"webSocket\",\"commentable\":true},\"reconnect\":false}}";
-					: "{\"type\":\"startWatching\",\"data\":{\"stream\":{\"quality\":\"normal\",\"protocol\":\"hls\",\"latency\":\"" + (latency < 1.1 ? "low" : "high") + "\",\"chasePlay\":" + (isChase ? "true" : "false") + "},\"room\":{\"protocol\":\"webSocket\",\"commentable\":true},\"reconnect\":false}}";
+					: "{\"type\":\"startWatching\",\"data\":{\"stream\":{\"quality\":\"normal\",\"protocol\":\"hls" + (isFmp4 ? "+fmp4" : "") + "\",\"latency\":\"" + (latency < 1.1 ? "low" : "high") + "\",\"chasePlay\":" + (isChase ? "true" : "false") + "},\"room\":{\"protocol\":\"webSocket\",\"commentable\":true},\"reconnect\":false}}";
 			} else {
 				form.addLogText("unknown type " + ver);
 				return null;
@@ -226,7 +227,7 @@ namespace namaichi.rec
 				}
 				//util.debugWriteLine(data);
 				
-				var isChase = isChaseRec(isChaseCheck, isChasable, lvid) && !isRtmp;
+				var isChase = isChaseRec(isChaseCheck, isChasable, data) && !isRtmp;
 				if (isChase && !isRtmp) isTimeShift = true;
 				
 				//;,&quot;permissions&quot;:[&quot;CHASE_PLAY&quot;],&quot;
@@ -263,8 +264,11 @@ namespace namaichi.rec
 				var programTime = util.getUnixToDatetime(endTime) - util.getUnixToDatetime(openTime);
 				var jisa = util.getUnixToDatetime(serverTime / 1000) - DateTime.Now;
 
+				isFmp4 = data.IndexOf("\"providerType\":\"community\"") > -1 &&
+							pageType == 0 && !isTimeShift && false;
+				
 				//0-wsUrl 1-request
-				webSocketRecInfo = getWebSocketInfo(data, isRtmp, isChase, isTimeShift, rm.form);
+				webSocketRecInfo = getWebSocketInfo(data, isRtmp, isChase, isTimeShift, rm.form, isFmp4);
 				util.debugWriteLine("websocketrecinfo " + webSocketRecInfo);
 				if (!isRtmpOnlyPage && webSocketRecInfo == null) break;
 				
@@ -485,9 +489,9 @@ namespace namaichi.rec
 				long openTime) {
 			var segmentSaveType = cfg.get("segmentSaveType");
 			var lastFile = util.getLastTimeshiftFileName(host,
-					group, title, lvId, communityNum, userId, cfg, startTime);
+					group, title, lvId, communityNum, userId, cfg, startTime, isFmp4);
 			util.debugWriteLine("timeshift lastfile " + lastFile);
-			string[] lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType);
+			string[] lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType, isFmp4);
 			if (lastFileTime == null)
 				util.debugWriteLine("timeshift lastfiletime " + 
 				                    ((lastFileTime == null) ? "null" : string.Join(" ", lastFileTime)));
@@ -519,7 +523,7 @@ namespace namaichi.rec
 		public string[] getRecFilePath(bool isRtmp) {
 			util.debugWriteLine(openTime + " c " + recFolderFileInfo[0] + " timeshiftConfig " + timeShiftConfig);
 			try {
-				return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, isTimeShift, timeShiftConfig, openTime, isRtmp);
+				return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, isTimeShift, timeShiftConfig, openTime, isRtmp, isFmp4);
 			} catch (Exception e) {
 				rm.form.addLogText("保存先パスの取得もしくはフォルダの作成に失敗しました");
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
@@ -534,10 +538,10 @@ namespace namaichi.rec
 			
 			var segmentSaveType = rm.cfg.get("segmentSaveType");
 			var lastFile = util.getLastTimeshiftFileName(host,
-					group, title, lvId, communityNum, userId, rm.cfg, _openTime);
+					group, title, lvId, communityNum, userId, rm.cfg, _openTime, isFmp4);
 			util.debugWriteLine("timeshift lastfile " + lastFile + " host " + host + " title " + title);
 			
-			var lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType);
+			var lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType, isFmp4);
 			if (lastFileTime == null) {
 				_tsConfig.timeType = 0;
 			} else {
@@ -583,7 +587,7 @@ namespace namaichi.rec
 			}
 			return true;
 		}
-		bool isChaseRec(bool isChaseCheck, bool isChasable, string lvid) {
+		bool isChaseRec(bool isChaseCheck, bool isChasable, string data) {
 			if (isChaseCheck) return true;
 			if (isTimeShift) return false;
 			if (!isChasable) return false;
@@ -593,10 +597,12 @@ namespace namaichi.rec
 			var isOnlyTimeShiftChase = bool.Parse(rm.cfg.get("IsOnlyTimeShiftChase"));
 			if (!isOnlyTimeShiftChase) return true;
 			
-			var res = util.getPageSource("http://live.nicovideo.jp/api/getplayerstatus/" + lvid, container);
-			if (res == null) return false;
-			return res.IndexOf("<is_nonarchive_timeshift_enabled>1") > -1 ||
-				res.IndexOf("is_archiveplayserver>1") > -1;
+			var isReservation = data.IndexOf("&quot;reservation&quot;") > -1;
+			return isReservation;
+			//var res = util.getPageSource("http://live.nicovideo.jp/api/getplayerstatus/" + lvid, container);
+			//if (res == null) return false;
+			//return res.IndexOf("<is_nonarchive_timeshift_enabled>1") > -1 ||
+			//	res.IndexOf("is_archiveplayserver>1") > -1;
 		}
 		private void renameStatistics(RecordStateSetter rss) {
 			try {

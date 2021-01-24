@@ -116,7 +116,7 @@ namespace namaichi.rec
 				if (data == null) return null;
 				data = System.Web.HttpUtility.HtmlDecode(data);
 				var type = util.getRegGroup(res, "\"content_type\":\"(.+?)\"");
-				var webSocketRecInfo = Html5Recorder.getWebSocketInfo(data, false, true, true, rm.form);
+				var webSocketRecInfo = Html5Recorder.getWebSocketInfo(data, false, true, true, rm.form, h5r.isFmp4);
 				if (webSocketRecInfo == null) return null;
 				
 				

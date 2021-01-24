@@ -115,22 +115,22 @@ namespace namaichi.rec
 				if (data == null) return null;
 				data = System.Web.HttpUtility.HtmlDecode(data);
 				var type = util.getRegGroup(res, "\"content_type\":\"(.+?)\"");
-				var webSocketRecInfo = Html5Recorder.getWebSocketInfo(data, false, false, true, rm.form);
+				var webSocketRecInfo = Html5Recorder.getWebSocketInfo(data, false, false, true, rm.form, h5r.isFmp4);
 				if (webSocketRecInfo == null) return null;
 				
 				//var a = recFolderFileInfo;
 				var segmentSaveType = rm.cfg.get("segmentSaveType");
 				var lastFile = util.getLastTimeshiftFileName(
-					recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, openTime);
+					recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, openTime, h5r.isFmp4);
 				util.debugWriteLine("timeshift lastfile " + lastFile);
-				string[] lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType);
+				string[] lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType, h5r.isFmp4);
 				if (lastFileTime == null)
 					util.debugWriteLine("timeshift lastfiletime " + 
 					                    ((lastFileTime == null) ? "null" : string.Join(" ", lastFileTime)));
 				var tsConfig = new TimeShiftConfig(1, int.Parse(lastFileTime[0]), int.Parse(lastFileTime[1]), int.Parse(lastFileTime[2]), 0, 0, 0, true, false, "", false, 0, false, false, 2, 0, false, false);
 				tsConfig.endTimeMode = this.tsConfig.endTimeMode;
 				tsConfig.endTimeSeconds = this.tsConfig.endTimeSeconds;
-				var	recFolderFile = util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, true, tsConfig, openTime, false);
+				var	recFolderFile = util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, true, tsConfig, openTime, false, h5r.isFmp4);
 				if (recFolderFile == null || recFolderFile[0] == null) {
 					//パスが長すぎ
 					rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);

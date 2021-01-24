@@ -26,6 +26,7 @@ namespace namaichi.rec
 		}
 		public void start(string path, bool isConvert) {
 			util.debugWriteLine("through ffmpeg path " + path);
+			if (!spaceCheck(path)) return;
 			rm.form.addLogText("FFmpeg処理を開始します");
 			var fName = util.getRegGroup(path, ".+(\\\\|/)(.+)", 2);
 			var dir = util.getRegGroup(path, "(.+(\\\\|/)).+");
@@ -224,6 +225,30 @@ namespace namaichi.rec
 //				util.getShiftJisToUni
 //			else rm.form.addLogText(line);
 			
+		}
+		private bool spaceCheck(string path) {
+			try {
+				var d = Directory.GetDirectoryRoot(path);
+				if (d == null) return true;
+				if (util.getRegGroup(d[0].ToString(), "([a-zA-Z])") == null) return true;
+	
+				var di = new DriveInfo(d);
+				if (!File.Exists(path)) {
+					rm.form.addLogText("変換対象のファイルが見つかりませんでした");
+					return false;
+				}
+					
+				if (di.AvailableFreeSpace < new FileInfo(path).Length * 1.5) {
+					DialogResult adr = DialogResult.None;
+					rm.form.formAction(() => adr = MessageBox.Show("空き容量が少なくなっています。変換しますか？", "", MessageBoxButtons.YesNo), false);
+					return adr == DialogResult.Yes; 
+				}
+				return true;
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				rm.form.addLogText("変換前の容量チェック中に問題が発生しました " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+				return false;
+			}
 		}
 	}
 }

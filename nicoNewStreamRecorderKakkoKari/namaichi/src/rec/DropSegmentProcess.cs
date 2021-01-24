@@ -218,7 +218,6 @@ namespace namaichi.rec
 		private string[] getOkFileName() {
 			//var ext = (rfu.isSubAccountHokan) ? ".ts" : ".flv";
 			//var ext = ".flv";
-			//ext = ".ts";
 			//ext = "";
 			var files = Directory.GetFiles(Directory.GetParent(recFolderFileOrigin).FullName);
 			var dirs = Directory.GetDirectories(Directory.GetParent(recFolderFileOrigin).FullName);

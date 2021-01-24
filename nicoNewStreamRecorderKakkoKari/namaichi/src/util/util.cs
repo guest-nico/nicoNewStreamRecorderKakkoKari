@@ -33,8 +33,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.28";
-	public static string versionDayStr = "2021/01/12";
+	public static string versionStr = "ver0.88.29";
+	public static string versionDayStr = "2021/01/25";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -90,11 +90,12 @@ class util {
 			string group, string title, string lvId, 
 			string communityNum, string userId, config cfg, 
 			bool isTimeShift, TimeShiftConfig tsConfig, 
-			long _openTime, bool isRtmp) {
+			long _openTime, bool isRtmp, bool isFmp4) {
 		
 		host = getOkFileName(host, isRtmp, false);
 		group = getOkFileName(group, isRtmp, false);
 		title = getOkFileName(title, isRtmp, false);
+		string ext = (isFmp4 ? ".mp4" : ".ts");
 		
 		string[] jarpath = getJarPath();
 //		util.debugWriteLine(jarpath);
@@ -173,8 +174,8 @@ class util {
 				
 				if (segmentSaveType == "0") {
 					var _existFile = util.existFile(files, "_ts(_\\d+h\\d+m\\d+s_)*" + i.ToString() + "", name);
-					var _existDt = util.existFile(files, "_ts_(\\d+h\\d+m\\d+s)_" + i.ToString() + ".ts", name);
-					var reg = "_ts_(\\d+h\\d+m\\d+s)_" + i.ToString() + ".ts";
+					var _existDt = util.existFile(files, "_ts_(\\d+h\\d+m\\d+s)_" + i.ToString() + ext, name);
+					var reg = "_ts_(\\d+h\\d+m\\d+s)_" + i.ToString() + ext;
 					if (_existDt != null) {
 						existDt = util.getRegGroup(_existDt, "(\\d+h\\d+m\\d+s)");
 						existDtFile = _existDt;
@@ -190,7 +191,7 @@ class util {
 							return retb;
 						} else {
 							//fName = dirPath + "/" + name + "_" + ((isTimeShift) ? "ts" : "") + (i - 1).ToString();
-//							if (_existDt == null) existFile = dirPath + "/" + name + "_ts_" + existDt + "_" + i.ToString() + ".ts";
+//							if (_existDt == null) existFile = dirPath + "/" + name + "_ts_" + existDt + "_" + i.ToString() + ext;
 //							existFile = Regex.Replace(existDtFile, "\\d+h\\d+m\\d+s", existDt);
 							existFile = existDtFile.Substring(0, existDtFile.LastIndexOf("."));
 //							existFile = existFile.Substring(0, existFile.Length - 3);
@@ -337,10 +338,11 @@ class util {
 	}
 	public static string getLastTimeshiftFileName(string host, 
 			string group, string title, string lvId, string communityNum, 
-			string userId, config cfg, long _openTime) {
+			string userId, config cfg, long _openTime, bool isFmp4) {
 		host = getOkFileName(host, false, false);
 		group = getOkFileName(group, false, false);
 		title = getOkFileName(title, false, false);
+		var ext = (isFmp4 ? ".mp4" : ".ts");
 		
 		string[] jarpath = getJarPath();
 //		util.debugWriteLine(jarpath);
@@ -407,7 +409,7 @@ class util {
 			
 			if (segmentSaveType == "0") {
 				//util.existFile(dirPath, name + "_ts_\\d+h\\d+m\\d+s_" + i.ToString());
-				var _existFile = util.existFile(files, "_ts_(\\d+h\\d+m\\d+s)_" + i.ToString() + ".ts", name);
+				var _existFile = util.existFile(files, "_ts_(\\d+h\\d+m\\d+s)_" + i.ToString() + ext, name);
 				util.debugWriteLine("getLastTimeshiftFileName existfile " + _existFile);
 				if (_existFile != null) {
 					existFile = _existFile;
@@ -448,16 +450,18 @@ class util {
 		}
 		return null;
 	}
-	public static string[] getLastTimeShiftFileTime(string lastFile, string segmentSaveType) {
+	public static string[] getLastTimeShiftFileTime(string lastFile, string segmentSaveType, bool isFmp4) {
 		if (lastFile == null) return null;
 		string fname = null;
+		var ext = (isFmp4 ? ".mp4" : ".ts");
+		
 		if (segmentSaveType == "0") {
 			fname = lastFile + "";
 		} else {
 			var ss = new List<string>();
 			var key = new List<int>();
 			foreach (var f in Directory.GetFiles(lastFile)) {
-				if (!f.EndsWith(".ts")) continue;
+				if (!f.EndsWith(ext)) continue;
 				var name = util.getRegGroup(f, ".+\\\\(.+)");
 				if (name == null) continue;
 				if (util.getRegGroup(name, "(\\d+h\\d+m\\d+s)") == null) continue;;
@@ -531,7 +535,7 @@ class util {
 		}
 		return null;
 	}
-	public static string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36";
+	public static string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36";
 	public static string getPageSource(string _url, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 0, string userAgent = null, bool isGetErrorPage = false) {
 		util.debugWriteLine("access__ getpage " + _url);
 		//if (timeoutMs == 0) timeoutMs = 5000;
@@ -834,7 +838,8 @@ class util {
 			//else if (res.IndexOf("※この放送はタイムシフトに対応しておりません。") > -1 && 
 			//         res.IndexOf("に終了いたしました") > -1) return 2;
 			//else if (util.getRegGroup(res, "(コミュニティフォロワー限定番組です。<br>)") != null) return 4;
-			else if (res.IndexOf("isFollowerOnly&quot;:true") > -1 && res.IndexOf("isFollowed&quot;:false") > -1 && res.IndexOf("[&quot;noTimeshiftProgram") == -1) return 4;
+			else if (res.IndexOf("isFollowerOnly&quot;:true") > -1 && res.IndexOf("isJoined&quot;:false") > -1 && res.IndexOf("[&quot;noTimeshiftProgram") == -1) return 4;
+			
 			else if (status == "ENDED" && res.IndexOf("rejectedReasons&quot;:[&quot;notHaveTimeshiftTicket") > -1) return 9;
 			else if (status == "ENDED" && res.IndexOf("rejectedReasons&quot;:[&quot;notUseTimeshiftTicket") > -1) return 10;
 			else if (data.IndexOf("webSocketUrl&quot;:&quot;ws") == -1 &&
@@ -845,7 +850,7 @@ class util {
 			//else if (util.getRegGroup(res, "(に終了いたしました)") != null) return 2;
 			else if (status == "ENDED") return 2;
 			else if (util.getRegGroup(res, "(<archive>1</archive>)") != null) return 3;
-			else if (util.getRegGroup(res, "(チャンネル会員限定番組です。<br>)") != null) return 4;
+			//else if (util.getRegGroup(res, "(チャンネル会員限定番組です。<br>)") != null) return 4;
 			else if (util.getRegGroup(res, "(<h3>【会場のご案内】</h3>)") != null) return 6;
 			else if (util.getRegGroup(res, "(この番組は放送者により削除されました。<br />|削除された可能性があります。<br />)") != null) return 2;
 			return 5;
