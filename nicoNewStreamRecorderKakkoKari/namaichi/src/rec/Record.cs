@@ -8,6 +8,7 @@
  */
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -1673,6 +1674,16 @@ namespace namaichi.rec
 			var ret = streamDuration - ((double)lastSegmentNo / 1000 + second) < 0.5;
 			if (lastSegmentNo > 5 && lastWroteFileSecond != 5 && lastWroteFileSecond != -1 && ret) ret = true;
 			addDebugBuf("isendTimeshift streamDuration " + streamDuration + " second " + second + " lastSegmentNo " + lastSegmentNo + " " + lastWroteFileSecond + " ret " + ret);
+			
+			if (res.IndexOf("#EXT-X-ENDLIST") > -1) {
+				var lastTs = new Regex("(\\d+).ts\\?start").Matches(res);
+				if (lastTs.Count > 0 && lastSegmentNo == int.Parse(lastTs[lastTs.Count - 1].Groups[1].Value)) {
+					ret = true;
+					#if DEBUG
+						rm.form.addLogText("isendTimeShift EXT-X-endlist end ts ret " + ret);
+					#endif
+				}
+			}
 //			var ret = lastSegmentNo
 //			var rett = streamDuration - (lastSegmentNo / 1000 + second);
 			if (ret)

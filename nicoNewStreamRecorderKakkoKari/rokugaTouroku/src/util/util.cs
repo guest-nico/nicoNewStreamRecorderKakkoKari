@@ -22,8 +22,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.10.44";
-	public static string versionDayStr = "2021/01/06";
+	public static string versionStr = "ver0.1.3.10.45";
+	public static string versionDayStr = "2021/01/29";
 	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);
@@ -800,14 +800,14 @@ class util {
 			//var us = cc.GetCookies(new Uri(url))["user_session"];
 			//if (us == null) return null;
 			var _h = new Dictionary<string, string>() {
-				{"User-Agent", "Niconico/1.0 (Linux; U; Android 7.1.2; ja-jp; nicoandroid LGM-V300K) Version/5.38.0"},
-				//{"Cookie", "user_session=" + us},
+				{"User-Agent", "Niconico/1.0 (Linux; U; Android 7.1.2; ja-jp; nicoandroid LGM-V300K) Version/6.14.1"},
+				{"Cookie", "user_session=" + us},
 					{"X-Frontend-Id", "1"},
-					{"X-Frontend-Version", "5.38.0"},
+					{"X-Frontend-Version", "6.14.1"},
 					{"Connection", "keep-alive"},
 					{"Upgrade-Insecure-Requests", "1"},
 				};
-			var r = sendRequest(url, _h, null, "GET", cc);
+			var r = sendRequest(url, _h, null, "GET");
 			if (r == null) return null;
 			using (var st = r.GetResponseStream())
 			using (var sr = new StreamReader(st)) {

@@ -1304,8 +1304,8 @@ namespace namaichi.rec
 				addDebugBuf("isendedprogram url " + h5r.url + " res==null " + (res == null));
 				if (res == null) return isEndedProgramRtmp();
 				type = util.getPageType(res);
-				if (type == 0) return true;
-				else if (type == 7 || type == 2 || type == 3 || type == 9) return false;
+				if (type == 0) return false;
+				else if (type == 7 || type == 2 || type == 3 || type == 9) return true;
 				
 				if (res.IndexOf("user.login_status = 'not_login'") > -1) {
 					addDebugBuf("isendprogram not login");
