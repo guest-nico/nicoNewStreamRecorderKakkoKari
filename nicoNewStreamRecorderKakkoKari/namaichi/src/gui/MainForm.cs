@@ -335,9 +335,11 @@ namespace namaichi
 	       		    titleLabel.Links.Clear();
 	       		    hostLabel.Links.Clear();
 	       		    communityLabel.Links.Clear();
+	       		    notifyIcon.Text = "ニコ生新配信録画ツール（仮";
 	       		    
 	        	    titleLabel.Text = title;
 	        	    titleLabel.Links.Add(0, titleLabel.Text.Length, url);
+	        	    notifyIcon.Text = title + "-" + "ニコ生新配信録画ツール（仮";
 	        	    hostLabel.Text = host;
 	        	    if (hostUrl != null) {
 		        	    hostLabel.Links.Add(0, hostLabel.Text.Length, hostUrl);
@@ -1030,6 +1032,39 @@ namespace namaichi
 				i.Checked = i == e.ClickedItem;
 			var t = e.ClickedItem.Text;
 			recEndProcess = t == "何もしない" ? null : t;
+		}
+		void MainFormSizeChanged(object sender, EventArgs e)
+		{
+			if (WindowState == FormWindowState.Minimized
+			    	&& bool.Parse(config.get("IsTray"))) {
+				Visible = false;
+				ShowInTaskbar = false;
+				notifyIcon.Visible = true;
+			}
+				
+		}
+		void activateForm() {
+			Visible = true;
+			ShowInTaskbar = true;
+			if (WindowState == FormWindowState.Minimized) {
+				WindowState = FormWindowState.Normal;
+			}
+			Activate();
+			notifyIcon.Visible = false;
+		}
+		void NotifyIconDoubleClick(object sender, EventArgs e)
+		{
+			activateForm();
+		}
+		
+		void OpenNotifyIconMenuClick(object sender, EventArgs e)
+		{
+			activateForm();
+		}
+		
+		void CloseNotifyIconMenuClick(object sender, EventArgs e)
+		{
+			close();
 		}
 	}
 }

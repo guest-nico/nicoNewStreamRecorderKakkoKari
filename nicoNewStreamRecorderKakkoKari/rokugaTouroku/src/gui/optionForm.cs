@@ -208,6 +208,7 @@ namespace rokugaTouroku
 				{"proxyPort",proxyPortText.Text},
 				
 				{"fontSize",fontList.Value.ToString()},
+				{"IsTray",IsTrayChkBox.Checked.ToString().ToLower()},
 			};
 			
 		}
@@ -473,6 +474,7 @@ namespace rokugaTouroku
         	useProxyChkBox.Checked = bool.Parse(cfg.get("useProxy"));
         	
         	fontList.Value = decimal.Parse(cfg.get("fontSize"));
+        	IsTrayChkBox.Checked = bool.Parse(cfg.get("IsTray"));
         }
         private void setSubFolderNameType(int subFolderNameType) {
         	if (subFolderNameType == 1) housoushaRadioBtn.Checked = true;

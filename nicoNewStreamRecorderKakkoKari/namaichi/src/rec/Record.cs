@@ -37,7 +37,7 @@ namespace namaichi.rec
 		public string recFolderFile;
 		private string lvid;
 		private long _openTime;
-		private int lastSegmentNo = -1;
+		public int lastSegmentNo = -1;
 		public DateTime lastWroteSegmentDt = DateTime.MinValue;
 		//private int lastAccessingSegmentNo;
 		private CookieContainer container;
@@ -108,7 +108,7 @@ namespace namaichi.rec
 			this.rfu = rfu;
 			this.hlsMasterUrl = hlsUrl;
 			this.recFolderFile = recFolderFile;
-			//this.lastSegmentNo = lastSegmentNo;
+			//if (tsConfig != null) this.lastSegmentNo = tsConfig.lastSegmentNo;
 			this.container = container;
 			this.isTimeShift = isTimeShift;
 			segmentSaveType = int.Parse(rm.cfg.get("segmentSaveType"));
@@ -860,9 +860,17 @@ namespace namaichi.rec
 						addDebugBuf("isEndTimeshift true");
 						_isRetry = false;
 						_isEndProgram = true;
+						lastSegmentNo = no;
 					}
 					
+					util.debugWriteLine("tsconfig type time " + tsConfig.timeType + " " + tsConfig.timeSeconds);
 					var startTime = baseTime + secondSum - second;
+					var startTimeStr = util.getSecondsToStr(startTime);
+					if (lastSegmentNo == -1 && tsConfig.timeSeconds != 0) {
+						if (recFolderFile.IndexOf(startTimeStr) > -1)
+							lastSegmentNo = no;
+					}
+					
 					if (isTimeShift && 
 					    	((tsConfig.timeType == 0 && startTime < tsConfig.timeSeconds) ||
 					     	(tsConfig.timeType == 1 && startTime <= tsConfig.timeSeconds))) continue;
@@ -872,7 +880,7 @@ namespace namaichi.rec
 						_isEndProgram = true;
 						continue;
 					}
-					var startTimeStr = util.getSecondsToStr(startTime);
+					
 					
 					if (no > lastSegmentNo && !isInList) {
 						if (engineMode == "3") {
@@ -957,7 +965,7 @@ namespace namaichi.rec
 								if (!isReConnecting) {
 									addDebugBuf("getTsTask !isReconnecting reconnect");
 									//debug
-									((WebSocketRecorder)wr).displayDebug("get bytes " + tsBytes + " / lastsegno " + lastSegmentNo + "/ no " + (newGetTsTaskList != null && newGetTsTaskList.Count > 0 ? newGetTsTaskList[0].no : -10));
+									util.debugWriteLine("get bytes " + tsBytes + " / lastsegno " + lastSegmentNo + "/ no " + (newGetTsTaskList != null && newGetTsTaskList.Count > 0 ? newGetTsTaskList[0].no : -10));
 									
 									reConnect();
 								}
@@ -1676,13 +1684,27 @@ namespace namaichi.rec
 			addDebugBuf("isendTimeshift streamDuration " + streamDuration + " second " + second + " lastSegmentNo " + lastSegmentNo + " " + lastWroteFileSecond + " ret " + ret);
 			
 			if (res.IndexOf("#EXT-X-ENDLIST") > -1) {
-				var lastTs = new Regex("(\\d+).ts\\?start").Matches(res);
-				if (lastTs.Count > 0 && lastSegmentNo == int.Parse(lastTs[lastTs.Count - 1].Groups[1].Value)) {
-					ret = true;
-					#if DEBUG
-						rm.form.addLogText("isendTimeShift EXT-X-endlist end ts ret " + ret);
-					#endif
+				var tsNumList = new Regex("(\\d+).ts\\?start").Matches(res);
+				if (tsNumList.Count > 0) {
+					var last = int.Parse(tsNumList[tsNumList.Count - 1].Groups[1].Value);
+					if (lastSegmentNo == last) {
+						#if DEBUG
+							rm.form.addLogText("isendTimeShift EXT-X-endlist end ts ret " + ret);
+						#endif
+						ret = true;
+					}
+					if (isTimeShift && tsConfig != null &&
+							((tsConfig.timeType == 0 && last / 1000 < tsConfig.timeSeconds) ||
+					     (tsConfig.timeType == 1 && last / 1000 <= tsConfig.timeSeconds))) {
+						#if DEBUG
+							rm.form.addLogText("isendTimeShift EXT-X-endlist end timeseconds last" + ret);
+						#endif
+						ret = true;
+					}
+					
 				}
+				
+				
 			}
 //			var ret = lastSegmentNo
 //			var rett = streamDuration - (lastSegmentNo / 1000 + second);
@@ -1981,6 +2003,10 @@ namespace namaichi.rec
 				rm.form.addLogText("atom parse error " + ee.Message + ee.Source + ee.StackTrace);
 				return -1;
 			}
+		}
+		private int getLastSegmentNo(string recFolderFile) {
+			//tsConfig
+			return -1;
 		}
 	}
 	class NtiGetter {

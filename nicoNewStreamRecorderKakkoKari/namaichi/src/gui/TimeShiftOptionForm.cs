@@ -174,6 +174,7 @@ namespace namaichi
 				openListCommand, isM3u8List, m3u8UpdateSeconds, isOpenUrlList,
 				isSetVposStartTime.Checked, startTimeMode, endTimeMode, 
 				isAfterStartTimeCommentChkBox.Checked, isBeforeEndTimeCommentChkBox.Checked);
+			ret.lastFileTime = lastFileTime;
 			
 			var l = new List<KeyValuePair<string, string>>();
 			l.Add(new KeyValuePair<string, string>("IsUrlList", isUrlList.ToString().ToLower()));

@@ -69,6 +69,7 @@ namespace rokugaTouroku
 			this.isCommentXML = new System.Windows.Forms.RadioButton();
 			this.isCommentJson = new System.Windows.Forms.RadioButton();
 			this.displayGroup = new System.Windows.Forms.GroupBox();
+			this.IsTrayChkBox = new System.Windows.Forms.CheckBox();
 			this.fontList = new System.Windows.Forms.NumericUpDown();
 			this.label64 = new System.Windows.Forms.Label();
 			this.applyBtn = new System.Windows.Forms.Button();
@@ -599,15 +600,25 @@ namespace rokugaTouroku
 			// 
 			// displayGroup
 			// 
+			this.displayGroup.Controls.Add(this.IsTrayChkBox);
 			this.displayGroup.Controls.Add(this.fontList);
 			this.displayGroup.Controls.Add(this.label64);
 			this.displayGroup.Controls.Add(this.applyBtn);
 			this.displayGroup.Location = new System.Drawing.Point(5, 417);
 			this.displayGroup.Name = "displayGroup";
-			this.displayGroup.Size = new System.Drawing.Size(372, 46);
+			this.displayGroup.Size = new System.Drawing.Size(372, 67);
 			this.displayGroup.TabIndex = 9;
 			this.displayGroup.TabStop = false;
 			this.displayGroup.Text = "表示設定";
+			// 
+			// IsTrayChkBox
+			// 
+			this.IsTrayChkBox.Location = new System.Drawing.Point(19, 44);
+			this.IsTrayChkBox.Name = "IsTrayChkBox";
+			this.IsTrayChkBox.Size = new System.Drawing.Size(271, 19);
+			this.IsTrayChkBox.TabIndex = 35;
+			this.IsTrayChkBox.Text = "最小化時に通知領域に収納する";
+			this.IsTrayChkBox.UseVisualStyleBackColor = true;
 			// 
 			// fontList
 			// 
@@ -2277,6 +2288,7 @@ namespace rokugaTouroku
 			((System.ComponentModel.ISupportInitialize)(this.maxRecordingNum)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox IsTrayChkBox;
 		private System.Windows.Forms.Label label18;
 		public System.Windows.Forms.ComboBox reserveMessageList;
 		private System.Windows.Forms.CheckBox isRecBtnOnlyMouseChkBox;

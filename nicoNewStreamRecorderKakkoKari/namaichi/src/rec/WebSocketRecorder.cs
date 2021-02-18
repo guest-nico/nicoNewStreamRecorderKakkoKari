@@ -293,7 +293,10 @@ namespace namaichi.rec
 					rm.form.addLogText("追っかけ録画処理開始");
 				#endif
 				
-				new ChaseLastRecord(lvid, container, rm, h5r.recFolderFileInfo, openTime, h5r, tsConfig, rfu).rec();
+				new ChaseLastRecord(lvid, container, rm, 
+						h5r.recFolderFileInfo, openTime, h5r, 
+						tsConfig, rfu, 
+						rec != null ? rec.lastSegmentNo : -1).rec();
 			}
 			addDebugBuf("closed saikai");
 			

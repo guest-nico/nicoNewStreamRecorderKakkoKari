@@ -240,6 +240,7 @@ public class config
 			{"X",""},
 			{"Y",""},
 			{"fontSize","9"},
+			{"IsTray","false"},
 			
 			{"defaultControllerX","100"},
 			{"defaultControllerY","100"},

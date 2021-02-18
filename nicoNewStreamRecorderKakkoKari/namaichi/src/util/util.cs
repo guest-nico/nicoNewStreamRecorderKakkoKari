@@ -33,8 +33,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.30";
-	public static string versionDayStr = "2021/01/29";
+	public static string versionStr = "ver0.88.31";
+	public static string versionDayStr = "2021/02/19";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -345,8 +345,6 @@ class util {
 		var ext = (isFmp4 ? ".mp4" : ".ts");
 		
 		string[] jarpath = getJarPath();
-//		util.debugWriteLine(jarpath);
-		//string dirPath = jarpath[0] + "\\rec\\" + host;
 		string _dirPath = (cfg.get("IsdefaultRecordDir") == "true") ?
 			(jarpath[0] + "\\rec") : cfg.get("recordDir");
 		string dirPath = _dirPath;
@@ -379,13 +377,10 @@ class util {
 				sfn = sfn.Substring(0, 3);
 				dirPath = _dirPath + "/" + sfn;
 								
-//				if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
-				
 				if (!Directory.Exists(dirPath)) {
 					util.debugWriteLine("getLastTS FN too long not exist dir path " + dirPath);
 					return null;
 				}
-				
 			}
 		}
 		
@@ -394,7 +389,6 @@ class util {
 			return null;
 		}
 		
-//		if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
 		if (!Directory.Exists(dirPath)) {
 			util.debugWriteLine("no exists " + dirPath);
 			return null;
@@ -408,16 +402,44 @@ class util {
 			var fName = dirPath + "/" + name + "_" + "ts" + i.ToString();
 			
 			if (segmentSaveType == "0") {
-				//util.existFile(dirPath, name + "_ts_\\d+h\\d+m\\d+s_" + i.ToString());
-				var _existFile = util.existFile(files, "_ts_(\\d+h\\d+m\\d+s)_" + i.ToString() + ext, name);
+				//debug
+				//name = lvId;
+				var reg = "_ts_(\\d+h\\d+m\\d+s)_" + i.ToString() + ext;
+				var _name = new List<string>(files).Find(x => {
+				        var _f = getRegGroup(x, ".+\\\\(.+)");
+				        return util.getRegGroup(x, reg) != null && _f.IndexOf(lvId) > -1;
+				});
+				if (_name == null) {
+					if (existFile == null) continue;
+					else {
+						if (existFile != fName && !File.Exists(fName)) {
+							try {
+								//File.Move(existFile, fName);
+							} catch (Exception e) {
+								util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+							}
+						}
+						return File.Exists(fName) ? fName : existFile;
+					}
+				}
+				
+				
+				_name = getRegGroup(_name, ".+\\\\(.+)");
+				if (_name == null) {
+					util.debugWriteLine("getLastTimeshiftFileName error _name0 " + _name);
+					continue;
+				}
+				_name = util.getRegGroup(_name, "(.+)" + reg);
+					
+				
+				
+				var _existFile = util.existFile(files, "_ts_(\\d+h\\d+m\\d+s)_" + i.ToString() + ext, _name);
 				util.debugWriteLine("getLastTimeshiftFileName existfile " + _existFile);
 				if (_existFile != null) {
 					existFile = _existFile;
 					continue;
 				}
-			}
-			
-			if (segmentSaveType == "1") {
+			} else if (segmentSaveType == "1") {
 				if (Directory.Exists(fName)) {
 					return fName;
 				}

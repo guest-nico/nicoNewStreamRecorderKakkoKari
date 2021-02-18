@@ -107,6 +107,12 @@ namespace namaichi
 			this.playerBtn = new System.Windows.Forms.Button();
 			this.miniBtn = new System.Windows.Forms.Button();
 			this.isChaseChkBtn = new System.Windows.Forms.CheckBox();
+			this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+			this.notifyIconMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.notifyIconRecentSeparator = new System.Windows.Forms.ToolStripSeparator();
+			this.openNotifyIconMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+			this.closeNotifyIconMenu = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.samuneBox)).BeginInit();
 			this.menuStrip1.SuspendLayout();
 			this.streamInfoGroupBox.SuspendLayout();
@@ -114,6 +120,7 @@ namespace namaichi
 			this.streamStateGroupBox.SuspendLayout();
 			this.recordGroupBox.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.commentList)).BeginInit();
+			this.notifyIconMenuStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// urlText
@@ -711,6 +718,49 @@ namespace namaichi
 			this.isChaseChkBtn.Text = "録画設定して追っかけ録画";
 			this.isChaseChkBtn.UseVisualStyleBackColor = true;
 			// 
+			// notifyIcon
+			// 
+			this.notifyIcon.BalloonTipTitle = "title";
+			this.notifyIcon.ContextMenuStrip = this.notifyIconMenuStrip;
+			this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
+			this.notifyIcon.Text = "ニコ生新配信録画ツール（仮";
+			this.notifyIcon.DoubleClick += new System.EventHandler(this.NotifyIconDoubleClick);
+			// 
+			// notifyIconMenuStrip
+			// 
+			this.notifyIconMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+									this.notifyIconRecentSeparator,
+									this.openNotifyIconMenu,
+									this.toolStripSeparator5,
+									this.closeNotifyIconMenu});
+			this.notifyIconMenuStrip.Name = "notifyIconMenuStrip";
+			this.notifyIconMenuStrip.Size = new System.Drawing.Size(153, 82);
+			// 
+			// notifyIconRecentSeparator
+			// 
+			this.notifyIconRecentSeparator.Name = "notifyIconRecentSeparator";
+			this.notifyIconRecentSeparator.Size = new System.Drawing.Size(149, 6);
+			this.notifyIconRecentSeparator.Visible = false;
+			// 
+			// openNotifyIconMenu
+			// 
+			this.openNotifyIconMenu.Name = "openNotifyIconMenu";
+			this.openNotifyIconMenu.Size = new System.Drawing.Size(152, 22);
+			this.openNotifyIconMenu.Text = "開く";
+			this.openNotifyIconMenu.Click += new System.EventHandler(this.OpenNotifyIconMenuClick);
+			// 
+			// toolStripSeparator5
+			// 
+			this.toolStripSeparator5.Name = "toolStripSeparator5";
+			this.toolStripSeparator5.Size = new System.Drawing.Size(149, 6);
+			// 
+			// closeNotifyIconMenu
+			// 
+			this.closeNotifyIconMenu.Name = "closeNotifyIconMenu";
+			this.closeNotifyIconMenu.Size = new System.Drawing.Size(152, 22);
+			this.closeNotifyIconMenu.Text = "終了";
+			this.closeNotifyIconMenu.Click += new System.EventHandler(this.CloseNotifyIconMenuClick);
+			// 
 			// MainForm
 			// 
 			this.AllowDrop = true;
@@ -739,6 +789,7 @@ namespace namaichi
 			this.Text = "ニコ生新配信録画ツール（仮 ver0.86.15";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.form_Close);
 			this.Load += new System.EventHandler(this.mainForm_Load);
+			this.SizeChanged += new System.EventHandler(this.MainFormSizeChanged);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MainFormDragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.MainFormDragEnter);
 			((System.ComponentModel.ISupportInitialize)(this.samuneBox)).EndInit();
@@ -749,9 +800,16 @@ namespace namaichi
 			this.streamStateGroupBox.ResumeLayout(false);
 			this.recordGroupBox.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.commentList)).EndInit();
+			this.notifyIconMenuStrip.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripMenuItem closeNotifyIconMenu;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
+		private System.Windows.Forms.ToolStripMenuItem openNotifyIconMenu;
+		private System.Windows.Forms.ToolStripSeparator notifyIconRecentSeparator;
+		private System.Windows.Forms.ContextMenuStrip notifyIconMenuStrip;
+		public System.Windows.Forms.NotifyIcon notifyIcon;
 		private System.Windows.Forms.ToolStripMenuItem recEndSuspendMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem recEndLogOffMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem recEndShutdownMenuItem;
