@@ -573,9 +573,6 @@ namespace namaichi.rec
 					
 					if (e.Message.IndexOf("\"CONNECT_ERROR\"") >= 0)
 						rm.form.addLogText("接続エラーでした");
-					#if DEBUG
-					#endif
-					
 				//stopRecording();
 //				reConnect();
 //				Task.Run(() => {
@@ -1305,7 +1302,12 @@ namespace namaichi.rec
 				var a = new System.Net.WebHeaderCollection();
 				var res = util.getPageSource(h5r.url, container, null, false, 15000);
 				addDebugBuf("isendedprogram url " + h5r.url + " res==null " + (res == null));
-				if (res == null) return isEndedProgramRtmp();
+				if (res == null) {
+					res = util.getPageSource(h5r.url, container, null, false, 15000, null, true);
+					if (res != null && res.IndexOf("<title>ご指定のページが見つかりませんでした") > -1)
+						return true;
+					return isEndedProgramRtmp();
+				}
 				type = util.getPageType(res);
 				if (type == 0) return false;
 				else if (type == 7 || type == 2 || type == 3 || type == 9) return true;
@@ -1325,7 +1327,6 @@ namespace namaichi.rec
 					if (_webSocketInfo == null || _webSocketInfo[0] == null || _webSocketInfo[1] == null) {
 						addDebugBuf(res);
 					} else webSocketInfo = _webSocketInfo;
-					//return isEndedProgramRtmp();
 				}
 				if (res == null) return false;
 				type = util.getPageType(res);

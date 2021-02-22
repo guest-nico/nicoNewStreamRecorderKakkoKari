@@ -339,7 +339,6 @@ namespace namaichi
 	       		    
 	        	    titleLabel.Text = title;
 	        	    titleLabel.Links.Add(0, titleLabel.Text.Length, url);
-	        	    notifyIcon.Text = title + "-" + "ニコ生新配信録画ツール（仮";
 	        	    hostLabel.Text = host;
 	        	    if (hostUrl != null) {
 		        	    hostLabel.Links.Add(0, hostLabel.Text.Length, hostUrl);
@@ -354,6 +353,7 @@ namespace namaichi
 	        	    descriptLabel.Text = description;
 	        	    typeLabel.Text = (isJikken) ? "実験放送" : "ニコニコ生放送";
 	        	    endTimeLabel.Text = endTime;
+	        	    notifyIcon.Text = title.Substring(0, title.Length > 48 ? 48 : title.Length) + "-" + "ニコ生新配信録画ツール（仮";
 		       	} catch (Exception e) {
 		       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 		       	}
