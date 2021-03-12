@@ -917,7 +917,6 @@ namespace namaichi.rec
 						for (var i = 0; i < newGetTsTaskList.Count; i++) {
 							var ng = new NtiGetter(newGetTsTaskList[i]);
 							getByteThread[i] = Task.Run(() => ng.get(container));
-							
 						}
 						foreach (var t in getByteThread) t.Wait();
 						
@@ -2004,11 +2003,8 @@ namespace namaichi.rec
 				return -1;
 			}
 		}
-		private int getLastSegmentNo(string recFolderFile) {
-			//tsConfig
-			return -1;
-		}
 	}
+	
 	class NtiGetter {
 		private numTaskInfo nti;
 		public NtiGetter(numTaskInfo nti) {

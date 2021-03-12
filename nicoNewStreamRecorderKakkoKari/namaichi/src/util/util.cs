@@ -33,8 +33,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.32";
-	public static string versionDayStr = "2021/02/23";
+	public static string versionStr = "ver0.88.33";
+	public static string versionDayStr = "2021/03/13";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -376,7 +376,7 @@ class util {
 			if (name.Length + dirPath.Length > 234 && sfn != null) {
 				sfn = sfn.Substring(0, 3);
 				dirPath = _dirPath + "/" + sfn;
-								
+				
 				if (!Directory.Exists(dirPath)) {
 					util.debugWriteLine("getLastTS FN too long not exist dir path " + dirPath);
 					return null;
@@ -402,38 +402,8 @@ class util {
 			var fName = dirPath + "/" + name + "_" + "ts" + i.ToString();
 			
 			if (segmentSaveType == "0") {
-				//debug
-				//name = lvId;
-				var reg = "_ts_(\\d+h\\d+m\\d+s)_" + i.ToString() + ext;
-				var _name = new List<string>(files).Find(x => {
-				        var _f = getRegGroup(x, ".+\\\\(.+)");
-				        return util.getRegGroup(x, reg) != null && _f.IndexOf(lvId) > -1;
-				});
-				if (_name == null) {
-					if (existFile == null) continue;
-					else {
-						if (existFile != fName && !File.Exists(fName)) {
-							try {
-								//File.Move(existFile, fName);
-							} catch (Exception e) {
-								util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
-							}
-						}
-						return File.Exists(fName) ? fName : existFile;
-					}
-				}
-				
-				
-				_name = getRegGroup(_name, ".+\\\\(.+)");
-				if (_name == null) {
-					util.debugWriteLine("getLastTimeshiftFileName error _name0 " + _name);
-					continue;
-				}
-				_name = util.getRegGroup(_name, "(.+)" + reg);
-					
-				
-				
-				var _existFile = util.existFile(files, "_ts_(\\d+h\\d+m\\d+s)_" + i.ToString() + ext, _name);
+				//util.existFile(dirPath, name + "_ts_\\d+h\\d+m\\d+s_" + i.ToString());
+				var _existFile = util.existFile(files, "_ts_(\\d+h\\d+m\\d+s)_" + i.ToString() + ext, name);
 				util.debugWriteLine("getLastTimeshiftFileName existfile " + _existFile);
 				if (_existFile != null) {
 					existFile = _existFile;
