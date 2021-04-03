@@ -33,8 +33,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.33";
-	public static string versionDayStr = "2021/03/13";
+	public static string versionStr = "ver0.88.34";
+	public static string versionDayStr = "2021/04/03";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -845,6 +845,7 @@ class util {
 			//else if (util.getRegGroup(res, "(チャンネル会員限定番組です。<br>)") != null) return 4;
 			else if (util.getRegGroup(res, "(<h3>【会場のご案内】</h3>)") != null) return 6;
 			else if (util.getRegGroup(res, "(この番組は放送者により削除されました。<br />|削除された可能性があります。<br />)") != null) return 2;
+			else if (res.IndexOf("rejectedReasons&quot;:[&quot;notActivatedBySerial&quot;]") > -1) return 8;
 			return 5;
 		//}
 		//return 5;

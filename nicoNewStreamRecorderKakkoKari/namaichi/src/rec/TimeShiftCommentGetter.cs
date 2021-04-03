@@ -174,12 +174,29 @@ namespace namaichi.rec
 				wsc.MessageReceived += onWscMessageReceive;
 				wsc.Error += onWscError;
 				
-		        util.debugWriteLine(uri);
+		        util.debugWriteLine("connect tscg ms uri " + uri);
 		        
 		        wsc.Open();
+		        
+		        try {
+					Thread.Sleep(5000);
+					if (wsc != null && wsc.State == WebSocketState.Connecting) {
+						util.debugWriteLine("tscg wsc connect 5 seconds close");
+						try {
+							wsc.Close();
+						} catch (Exception e) {
+							util.debugWriteLine("tscg connect timeout ws exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+						}
+					}
+					
+				} catch (Exception ee) {
+					util.debugWriteLine("tscg ws connect exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+					return false;
+				}
+		        
 		        return true;
 			} catch (Exception e) {
-				util.debugWriteLine("connect exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+				util.debugWriteLine("tscg connect exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				return false;
 			}
 		}
@@ -189,9 +206,11 @@ namespace namaichi.rec
 			_gotMinTime = gotMinTime;
 			_gotMinXml = new String[]{gotMinXml[0], gotMinXml[1]};
 			
-			var req = getReq("-1000");
-			wsc.Send(req);
-			util.debugWriteLine("ms open b " + req);
+			if (wsc != null) {
+				var req = getReq("-1000");
+				wsc.Send(req);
+				util.debugWriteLine("ms open b " + req);
+			}
 			
 			if (rm.rfu != rfu) {
 				//stopRecording();
@@ -216,7 +235,12 @@ namespace namaichi.rec
 				if (rm.rfu == rfu && isRetry && !isEnd) {
 					while (true) {
 						try {
-							if (!connect()) continue;
+							if (!connect()) {
+								#if DEBUG
+									form.addLogText("tscg　再試行");
+								#endif
+								continue;
+							}
 							break;
 						} catch (Exception ee) {
 							util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
@@ -231,7 +255,8 @@ namespace namaichi.rec
 		}
 
 		private void onWscError(object sender, SuperSocket.ClientEngine.ErrorEventArgs e) {
-			util.debugWriteLine("ms onerror");
+			util.debugWriteLine("ms onerror " + e.Exception.Message + e.Exception.Source + e.Exception.StackTrace + e.Exception.TargetSite);
+			/*
 			gotCommentList = new List<TimeShiftCommentGetter.GotCommentInfo>();
 			gotCommentListBuf = new List<TimeShiftCommentGetter.GotCommentInfo>();
 			gotMinTime = util.getUnixTime();
@@ -239,6 +264,7 @@ namespace namaichi.rec
 			_gotMinTime = util.getUnixTime();
 			_gotMinXml = new string[2];
 			gotCount = 0;
+			*/
 		}
 		
 		

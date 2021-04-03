@@ -121,7 +121,6 @@ namespace namaichi
 				config.set("qualityRank", config.get("qualityRank") + ",5");
 			
 			changeRecBtnClickEvent(bool.Parse(config.get("IsRecBtnOnlyMouse")));
-			
 		}
 		private void formInitSetting() {
 			setBackColor(Color.FromArgb(int.Parse(config.get("recBackColor"))));
@@ -244,7 +243,7 @@ namespace namaichi
 	        		}
 	        	}
 	        } catch (Exception ee) {
-        		util.debugWriteLine(ee.Message + " " + ee.StackTrace);
+        		util.debugWriteLine(ee.Message + " " + ee.StackTrace + " " + ee.Source + " " + ee.TargetSite);
 	        }
         }
         

@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using namaichi.config;
 using SunokoLibrary.Application;
+using SunokoLibrary.Application.Browsers;
 using SunokoLibrary.Windows.ViewModels;
 
 namespace namaichi
@@ -304,7 +305,10 @@ namespace namaichi
 //			}
 				
 //			a.GetCookieImporter(new CookieSourceInfo("
-			var tsk = nicoSessionComboBox1.Selector.UpdateAsync(); 
+			SmartImporterFactory.blinkWithoutPathList.Clear();
+			SmartImporterFactory.geckoWithoutPathList.Clear();
+			var tsk = nicoSessionComboBox1.Selector.UpdateAsync();
+			
 		}
 		void btnReload2_Click(object sender, EventArgs e)
         { 
@@ -319,6 +323,8 @@ namespace namaichi
 //			}
 				
 //			a.GetCookieImporter(new CookieSourceInfo("
+			SmartImporterFactory.blinkWithoutPathList.Clear();
+			SmartImporterFactory.geckoWithoutPathList.Clear();
 			var tsk = nicoSessionComboBox2.Selector.UpdateAsync(); 
 		}
         void btnOpenCookieFileDialog_Click(object sender, EventArgs e)
@@ -457,7 +463,7 @@ namespace namaichi
         	isCookieFileSiteiChkBox2_UpdateAction();
         	cookieFileText2.Text = cfg.get("cookieFile2");
         	checkBoxShowAll.Checked = bool.Parse(cfg.get("IsBrowserShowAll"));
-        		
+        	
         	var si = SourceInfoSerialize.load(false);
         	nicoSessionComboBox1.Selector.SetInfoAsync(si);
         	var si2 = SourceInfoSerialize.load(true);
