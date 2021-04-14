@@ -2004,7 +2004,6 @@ namespace namaichi.rec
 			}
 		}
 	}
-	
 	class NtiGetter {
 		private numTaskInfo nti;
 		public NtiGetter(numTaskInfo nti) {

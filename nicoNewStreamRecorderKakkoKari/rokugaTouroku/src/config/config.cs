@@ -19,6 +19,7 @@ namespace rokugaTouroku.config {
 public class config
 {
 	private Configuration cfg;
+	public Dictionary<string, string> defaultConfig;
 	public string brokenCopyFile = null;
 	
 	public config()
@@ -81,7 +82,7 @@ public class config
 		return cfg.AppSettings.Settings[key].Value;
 	}
 	private void defaultMergeFile() {
-		var defaulBuf = new Dictionary<string, string>(){
+		defaultConfig = new Dictionary<string, string>(){
 			{"accountId",""},
 			{"accountPass",""},
 			{"user_session",""},
@@ -129,7 +130,8 @@ public class config
 			
 			{"IstitlebarSamune","true"},
 			{"IsautoFollowComgen","false"},
-			{"qualityRank","0,1,2,3,4"},
+			{"qualityRank","0,1,2,3,4,5,6"},
+			{"qualityList","{\"0\":\"3Mbps(super_high)\",\"1\":\"2Mbps(high)\",\"2\":\"1Mbps(normal)\",\"3\":\"384kbps(low)\",\"4\":\"192kbps(super_low)\",\"5\":\"音声のみ(audio_high)\",\"6\":\"6Mbps(6Mbps1080p30fps)\"}"},
 			{"IsMiniStart","false"},
 			{"IsConfirmCloseMsgBox","true"},
 			{"IsRecBtnOnlyMouse","false"},
@@ -215,7 +217,7 @@ public class config
 			{"rokugaTourokuY",""},
 			{"rokugaTourokuMaxRecordingNum","10"},
 			{"IsDuplicateConfirm","false"},
-			{"rokugaTourokuQualityRank","0,1,2,3,4"},
+			{"rokugaTourokuQualityRank","0,1,2,3,4,5,6"},
 			
 			{"recBackColor","-1"},
 			{"recForeColor","-16777216"},
@@ -230,8 +232,8 @@ public class config
 			}
 			
 			cfg.AppSettings.Settings.Clear();
-			foreach (var k in defaulBuf.Keys) {
-				var v = (buf.ContainsKey(k)) ? buf[k] : defaulBuf[k];
+			foreach (var k in defaultConfig.Keys) {
+				var v = (buf.ContainsKey(k)) ? buf[k] : defaultConfig[k];
 				cfg.AppSettings.Settings.Add(k, v);
 			}
 			try {
@@ -300,7 +302,11 @@ public class config
 		}
 		return true;
 	}
-//	private string[] defaultConfig = {};
-}
-
+	public static Dictionary<int, string> qualityList = new Dictionary<int, string>() {
+			{0, "3Mbps(super_high)"},
+			{1, "2Mbps(high)"}, {2, "1Mbps(normal)"},
+			{3, "384kbps(low)"}, {4, "192kbps(super_low)"},
+			{5, "音声のみ(audio_high)"}, {6, "6Mbps(6Mbps1080p30fps)"}
+		};
+	}
 }

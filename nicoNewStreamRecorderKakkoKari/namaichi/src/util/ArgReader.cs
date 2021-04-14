@@ -119,7 +119,10 @@ namespace namaichi.utility
 						setName = keys[i];
 						return true;
 					} else {
-						form.addLogText(name + "の値が設定できませんでした(例 「0,1,2,4,3,5」) " + val, false);
+						var rankStr = "";
+						for (var j = 0; j < namaichi.config.config.qualityList.Count; j++)
+							rankStr += (rankStr != "" ? "," : "") + j.ToString();
+						form.addLogText(name + "の値が設定できませんでした(例 「" + rankStr + "」) " + val, false);
 						return false;
 					}
 				}
@@ -395,11 +398,14 @@ namespace namaichi.utility
 		}
 		private bool isValidQualityRank(string val) {
 			try {
-				var l = val.Split(',').Select((x) => int.Parse(x));
-				if (l.Count() != 6) return false;
-				var a = new List<int>{0,1,2,3,4,5};
+				var l = val.Split(',').Select((x) => int.Parse(x)).ToList();
+				//if (l.Count() != namaichi.config.config.qualityList.Count) return false;
+				var a = new List<int>();
+				for (var i = 0; i < namaichi.config.config.qualityList.Count; i++)
+					a.Add(i);
 				foreach (var _l in l) a.Remove(_l);
-				return a.Count == 0;
+				//return a.Count == 0;
+				return a.Count != namaichi.config.config.qualityList.Count;
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				return false;

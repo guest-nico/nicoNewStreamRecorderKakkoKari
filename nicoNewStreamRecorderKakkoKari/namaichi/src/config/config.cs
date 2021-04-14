@@ -168,7 +168,8 @@ public class config
 			
 			{"IstitlebarSamune","true"},
 			{"IsautoFollowComgen","false"},
-			{"qualityRank","0,1,2,3,4,5"},
+			{"qualityRank","0,1,2,3,4,5,6"},
+			{"qualityList","{\"0\":\"3Mbps(super_high)\",\"1\":\"2Mbps(high)\",\"2\":\"1Mbps(normal)\",\"3\":\"384kbps(low)\",\"4\":\"192kbps(super_low)\",\"5\":\"音声のみ(audio_high)\",\"6\":\"6Mbps(6Mbps1080p30fps)\"}"},
 			{"IsMiniStart","false"},
 			{"IsConfirmCloseMsgBox","true"},
 			{"IsRecBtnOnlyMouse","false"},
@@ -331,6 +332,11 @@ public class config
 		}
 		return true;
 	}
-}
-
+	public static Dictionary<int, string> qualityList = new Dictionary<int, string>() {
+			{0, "3Mbps(super_high)"},
+			{1, "2Mbps(high)"}, {2, "1Mbps(normal)"},
+			{3, "384kbps(low)"}, {4, "192kbps(super_low)"},
+			{5, "音声のみ(audio_high)"}, {6, "6Mbps(6Mbps1080p30fps)"}
+		};
+	}
 }

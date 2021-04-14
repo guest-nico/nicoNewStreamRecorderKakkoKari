@@ -58,14 +58,14 @@ namespace rokugaTouroku
 			this.groupBox7.Margin = new System.Windows.Forms.Padding(2);
 			this.groupBox7.Name = "groupBox7";
 			this.groupBox7.Padding = new System.Windows.Forms.Padding(2);
-			this.groupBox7.Size = new System.Drawing.Size(248, 193);
+			this.groupBox7.Size = new System.Drawing.Size(258, 193);
 			this.groupBox7.TabIndex = 4;
 			this.groupBox7.TabStop = false;
 			this.groupBox7.Text = "録画画質優先順位";
 			// 
 			// downBtn
 			// 
-			this.downBtn.Location = new System.Drawing.Point(184, 63);
+			this.downBtn.Location = new System.Drawing.Point(194, 63);
 			this.downBtn.Name = "downBtn";
 			this.downBtn.Size = new System.Drawing.Size(42, 30);
 			this.downBtn.TabIndex = 4;
@@ -75,7 +75,7 @@ namespace rokugaTouroku
 			// 
 			// upBtn
 			// 
-			this.upBtn.Location = new System.Drawing.Point(184, 27);
+			this.upBtn.Location = new System.Drawing.Point(194, 27);
 			this.upBtn.Name = "upBtn";
 			this.upBtn.Size = new System.Drawing.Size(42, 30);
 			this.upBtn.TabIndex = 4;
@@ -93,10 +93,11 @@ namespace rokugaTouroku
 									"3. 1Mbps(normal・低画質)",
 									"4. 384kbps(low)",
 									"5. 192kbps(super_low)",
-									"6. 音声のみ(audio_high)"});
+									"6. 音声のみ(audio_high)",
+									"7. 6Mbps(6Mbps1080p30fps)"});
 			this.qualityListBox.Location = new System.Drawing.Point(26, 27);
 			this.qualityListBox.Name = "qualityListBox";
-			this.qualityListBox.Size = new System.Drawing.Size(143, 112);
+			this.qualityListBox.Size = new System.Drawing.Size(153, 112);
 			this.qualityListBox.TabIndex = 3;
 			// 
 			// lowRankBtn
@@ -144,7 +145,7 @@ namespace rokugaTouroku
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Window;
-			this.ClientSize = new System.Drawing.Size(258, 251);
+			this.ClientSize = new System.Drawing.Size(268, 251);
 			this.Controls.Add(this.button4);
 			this.Controls.Add(this.button3);
 			this.Controls.Add(this.groupBox7);

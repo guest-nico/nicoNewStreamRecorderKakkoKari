@@ -1236,9 +1236,12 @@ namespace namaichi.rec
 			
 		}
 		private string getBestGettableQuolity(string msg) {
-			var qualityList = new List<string>{//"abr",
-				"super_high", "high",
-				"normal", "low", "super_low", "audio_high"};
+			//var qualityList = new List<string>{//"abr",
+			//	"super_high", "high",
+			//	"normal", "low", "super_low", "audio_high", "6Mbps1080p30fps"};
+			var qualityList = config.config.qualityList.Values
+					.Select(x => x.IndexOf("(") > -1 ? 
+				    	util.getRegGroup(x, "\\((.+?)\\)") : x).ToList();
 			
 			var gettableList = webSocketInfo[2] == "1" ? 
 					util.getRegGroup(msg, "\"qualityTypes\"\\:\\[(.+?)\\]").Replace("\"", "").Split(',')
@@ -1249,12 +1252,28 @@ namespace namaichi.rec
 			
 			var bestGettableQuality = "normal";
 			foreach(var r in ranks) {
-				var q = qualityList[int.Parse(r)];
-				if (gettableList.Contains(q) && q != "abr") {
-					bestGettableQuality = q;
-					break;
+				try {
+					var i = int.Parse(r);
+					if (i >= qualityList.Count) continue;
+					var q = qualityList[i];
+					if (gettableList.Contains(q) && q != "abr") {
+						bestGettableQuality = q;
+						break;
+					}
+				} catch (Exception e) {
+					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
 			}
+			var configQ = config.config.qualityList.Values.ToArray();
+			var newQualities = gettableList.Where(x => 
+					Array.Find(configQ, y => y.IndexOf(x) > -1) == null);
+			foreach (var q in newQualities) {
+				if (q == "abr") continue;
+				config.config.qualityList.Add(config.config.qualityList.Count, q);
+				rm.cfg.set("qualityList", JsonConvert.SerializeObject(namaichi.config.config.qualityList));
+				rm.form.addLogText("未知の画質の" + q + "が見つかりました。画質設定に追加します。");
+			}
+			
 			return bestGettableQuality;
 		}
 		private void sendUseableStreamGetCommand(string bestGettableQuolity) {

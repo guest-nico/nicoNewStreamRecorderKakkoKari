@@ -35,29 +35,39 @@ namespace rokugaTouroku
 		}
 		void highRankBtn_Click(object sender, EventArgs e)
 		{
-			int[] ranks = {0,1,2,3,4,5};
+			List<int> ranks = new List<int>() {6,0,1,2,3,4,5};
+			for (var i = ranks.Count; i < config.config.qualityList.Count; i++)
+				ranks.Add(i);
 			qualityListBox.Items.Clear();
-			qualityListBox.Items.AddRange(getRanksToItems(ranks, qualityListBox));
+			qualityListBox.Items.AddRange(getRanksToItems(ranks.ToArray(), qualityListBox));
 		}
 		void lowRankBtn_Click(object sender, EventArgs e)
 		{
-			int[] ranks = {5, 4, 3, 2, 1, 0};
+			List<int> ranks = new List<int>() {5, 4, 3, 2, 1, 0, 6};
+			for (var i = ranks.Count; i < config.config.qualityList.Count; i++)
+				ranks.Add(i);
 			qualityListBox.Items.Clear();
-			qualityListBox.Items.AddRange(getRanksToItems(ranks, qualityListBox));
+			qualityListBox.Items.AddRange(getRanksToItems(ranks.ToArray(), qualityListBox));
 		}
 		public object[] getRanksToItems(int[] ranks, ListBox owner) {
+			var items = config.config.qualityList;
+			/*
 			var items = new Dictionary<int, string> {
 				//{0, "自動(abr)"}, 
 				{0, "3Mbps(super_high)"},
 				{1, "2Mbps(high)"}, {2, "1Mbps(normal)"},
 				{3, "384kbps(low)"}, {4, "192kbps(super_low)"},
-				{5, "音声のみ(audio_high)"}
+				{5, "音声のみ(audio_high)"}, {6, "6Mbps(6Mbps1080p30fps)"} 
 			};
+			*/
 //			var ret = new ListBox.ObjectCollection(owner);
 			var ret = new List<object>();
 			for (int i = 0; i < ranks.Length; i++) {
 				ret.Add((i + 1) + ". " + items[ranks[i]]);
 			}
+			foreach (var k in items.Keys)
+				if (Array.IndexOf(ranks, k) == -1)
+					ret.Add((ret.Count + 1) + ". " + items[k]);
 			return ret.ToArray();
 		}
 		void UpBtn_Click(object sender, EventArgs e)
@@ -78,12 +88,13 @@ namespace rokugaTouroku
 		void DownBtn_Click(object sender, EventArgs e)
 		{
 			var selectedIndex = qualityListBox.SelectedIndex;
-			if (selectedIndex > 4) return;
+			var itemCount = qualityListBox.Items.Count;
+			if (selectedIndex > itemCount - 2) return;
 			
 			var ranks = getItemsToRanks(qualityListBox.Items);
 			var selectedVal = ranks[selectedIndex + 0];
 			ranks.RemoveAt(selectedIndex);
-			var addIndex = (selectedIndex == 5) ? 5 : (selectedIndex + 1);
+			var addIndex = (selectedIndex == itemCount) ? itemCount : (selectedIndex + 1);
 			ranks.Insert(addIndex, selectedVal);
 			
 			qualityListBox.Items.Clear();
@@ -91,13 +102,16 @@ namespace rokugaTouroku
 			qualityListBox.SetSelected(addIndex, true);
 		}
 		List<int> getItemsToRanks(ListBox.ObjectCollection items) {
+			var itemsDic = config.config.qualityList;
+			/*
 			var itemsDic = new Dictionary<int, string> {
 				//{0, "自動(abr)"}, 
 				{0, "3Mbps(super_high)"},
 				{1, "2Mbps(high)"}, {2, "1Mbps(normal)"},
 				{3, "384kbps(low)"}, {4, "192kbps(super_low)"},
-				{5, "音声のみ(audio_high)"}
+				{5, "音声のみ(audio_high)"}, {6, "6Mbps(6Mbps1080p30fps)"}
 			};
+			*/
 			var ret = new List<int>();
 			for (int i = 0; i < items.Count; i++) {
 				foreach (KeyValuePair <int, string> p in itemsDic)
@@ -134,10 +148,30 @@ namespace rokugaTouroku
 			Close();
 		}
 		string getQualityRankStr(string qualityRank) {
+			var r = qualityRank.Split(',');
+			for (var i = 0; i < r.Length; i++) {
+				if (r[i] == "0") r[i] = "超高";
+				else if (r[i] == "1") r[i] = "高";
+				else if (r[i] == "2") r[i] = "中";
+				else if (r[i] == "3") r[i] = "低";
+				else if (r[i] == "4") r[i] = "超低";
+				else if (r[i] == "5") r[i] = "音";
+				else if (r[i] == "6") r[i] = "6M";
+				else {
+					util.debugWriteLine(r[i] + " " + i);
+					var ind = int.Parse(r[i]);
+					if (config.config.qualityList.ContainsKey(ind))
+						r[i] = config.config.qualityList[ind];
+				}
+			}
+			return string.Join(",", r);
+			/*
 			return qualityRank//.Replace("0", "自")
 				.Replace("0", "超高").Replace("1", "高")
 				.Replace("2", "中").Replace("3", "低")
-				.Replace("4", "超低").Replace("5", "音");
+				.Replace("4", "超低").Replace("5", "音")
+				.Replace("6", "6M");
+			*/
 		}
 		
 		void cancelBtn_Click(object sender, EventArgs e)

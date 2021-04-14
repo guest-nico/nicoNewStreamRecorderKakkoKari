@@ -12,9 +12,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
-
+using System.Windows.Forms;
 using SunokoLibrary.Windows.Forms;
+
 namespace namaichi
 {
 	using SunokoLibrary.Application;
@@ -28,10 +30,12 @@ namespace namaichi
 #pragma warning disable 1591
         protected override void InitLayout()
         {
+        	nscb = this;
             base.InitLayout();
             Initialize(new CookieSourceSelector(CookieGetters.Default, importer => new NicoAccountSelectorItem(importer)));
         }
 #pragma warning restore 1591
+		public static NicoSessionComboBox2 nscb = null;
 
         class NicoAccountSelectorItem : CookieSourceItem
         {
@@ -52,7 +56,7 @@ namespace namaichi
                 protected set
                 {
                     _displayText = value;
-                    OnPropertyChanged();
+                   	OnPropertyChanged();
                 }
             }
             public async override void Initialize()
@@ -62,9 +66,22 @@ namespace namaichi
                     Importer.SourceInfo.BrowserName,
                     Importer.SourceInfo.ProfileName.ToLowerInvariant() == "default" ? string.Empty : string.Format(" {0}", Importer.SourceInfo.ProfileName));
                 DisplayText = string.Format("{0} (loading...)", baseText);
-                AccountName = await GetUserName(Importer);
-                DisplayText = string.IsNullOrEmpty(AccountName) == false
-                    ? string.Format("{0} ({1})", baseText, AccountName) : baseText;
+                await Task.Factory.StartNew(async () => {
+	                AccountName = await GetUserName(Importer);
+	                
+	                try {
+	                	if (nscb != null && !nscb.IsDisposed) {
+	                		nscb.BeginInvoke((MethodInvoker)delegate() {
+								DisplayText = string.IsNullOrEmpty(AccountName) == false
+					                    ? string.Format("{0} ({1})", baseText, AccountName) : baseText;
+							});
+	                	}
+					} catch (Exception e) {
+						util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+					} 
+		                
+	                
+				});
             }
             static async Task<string> GetUserName(ICookieImporter cookieImporter)
             {

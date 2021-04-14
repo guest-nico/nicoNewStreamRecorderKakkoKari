@@ -13,22 +13,16 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using System.ComponentModel;
+using Newtonsoft.Json;
 using SunokoLibrary.Application;
-//using System;
-//using System.Collections.Generic;
-//using System.ComponentModel;
-//using System.Data;
-//using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-//using System.Windows.Forms;
 using System.Configuration;
 using System.IO;
-//using System.Text;
 using System.Threading;
 using System.Security.AccessControl;
 using namaichi.rec;
@@ -37,7 +31,6 @@ using namaichi.play;
 using namaichi.utility;
 using SuperSocket.ClientEngine;
 
-//using System.Diagnostics.Process;
 
 namespace namaichi
 {
@@ -117,10 +110,21 @@ namespace namaichi
 			if (bool.Parse(config.get("IsMiniStart")))
 				changeSize(true);
 			
-			if (config.get("qualityRank").Split(',').Length == 5)
-				config.set("qualityRank", config.get("qualityRank") + ",5");
+			var qr = config.get("qualityRank").Split(',').ToList();
+			var qrD = config.defaultConfig["qualityRank"].Split(',');
+			if (qr.Count != qrD.Length) {
+				foreach (var q in qrD) 
+					if (qr.IndexOf(q) == -1) qr.Add(q);
+			}
+			config.set("qualityRank", string.Join(",", qr.ToArray()));
 			
 			changeRecBtnClickEvent(bool.Parse(config.get("IsRecBtnOnlyMouse")));
+
+			var qualityCfg = config.get("qualityList");
+			if (string.IsNullOrEmpty(qualityCfg)) 
+				qualityCfg = config.defaultConfig["qualityList"];
+			namaichi.config.config.qualityList = 
+					JsonConvert.DeserializeObject<Dictionary<int, string>>(qualityCfg);
 		}
 		private void formInitSetting() {
 			setBackColor(Color.FromArgb(int.Parse(config.get("recBackColor"))));
