@@ -72,6 +72,7 @@ namespace namaichi
 			this.streamInfoGroupBox = new System.Windows.Forms.GroupBox();
 			this.endTimeLabel = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
+			this.miniStreamStateLabel = new System.Windows.Forms.Label();
 			this.typeLabel = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
 			this.label10 = new System.Windows.Forms.Label();
@@ -381,6 +382,7 @@ namespace namaichi
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.streamInfoGroupBox.Controls.Add(this.endTimeLabel);
 			this.streamInfoGroupBox.Controls.Add(this.label4);
+			this.streamInfoGroupBox.Controls.Add(this.miniStreamStateLabel);
 			this.streamInfoGroupBox.Controls.Add(this.typeLabel);
 			this.streamInfoGroupBox.Controls.Add(this.label7);
 			this.streamInfoGroupBox.Controls.Add(this.label10);
@@ -419,11 +421,19 @@ namespace namaichi
 			this.label4.TabIndex = 0;
 			this.label4.Text = "終了時刻";
 			// 
+			// miniStreamStateLabel
+			// 
+			this.miniStreamStateLabel.Location = new System.Drawing.Point(156, 50);
+			this.miniStreamStateLabel.Name = "miniStreamStateLabel";
+			this.miniStreamStateLabel.Size = new System.Drawing.Size(100, 17);
+			this.miniStreamStateLabel.TabIndex = 1;
+			this.miniStreamStateLabel.Visible = false;
+			// 
 			// typeLabel
 			// 
 			this.typeLabel.Location = new System.Drawing.Point(78, 106);
 			this.typeLabel.Name = "typeLabel";
-			this.typeLabel.Size = new System.Drawing.Size(118, 19);
+			this.typeLabel.Size = new System.Drawing.Size(118, 17);
 			this.typeLabel.TabIndex = 6;
 			// 
 			// label7
@@ -455,14 +465,14 @@ namespace namaichi
 			// 
 			this.keikaTimeLabel.Location = new System.Drawing.Point(78, 144);
 			this.keikaTimeLabel.Name = "keikaTimeLabel";
-			this.keikaTimeLabel.Size = new System.Drawing.Size(118, 25);
+			this.keikaTimeLabel.Size = new System.Drawing.Size(100, 17);
 			this.keikaTimeLabel.TabIndex = 3;
 			// 
 			// startTimeLabel
 			// 
 			this.startTimeLabel.Location = new System.Drawing.Point(78, 125);
 			this.startTimeLabel.Name = "startTimeLabel";
-			this.startTimeLabel.Size = new System.Drawing.Size(118, 19);
+			this.startTimeLabel.Size = new System.Drawing.Size(100, 17);
 			this.startTimeLabel.TabIndex = 3;
 			// 
 			// label8
@@ -477,7 +487,7 @@ namespace namaichi
 			// 
 			this.genteiLabel.Location = new System.Drawing.Point(78, 87);
 			this.genteiLabel.Name = "genteiLabel";
-			this.genteiLabel.Size = new System.Drawing.Size(118, 19);
+			this.genteiLabel.Size = new System.Drawing.Size(118, 17);
 			this.genteiLabel.TabIndex = 3;
 			// 
 			// label6
@@ -494,7 +504,7 @@ namespace namaichi
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.hostLabel.Location = new System.Drawing.Point(78, 68);
 			this.hostLabel.Name = "hostLabel";
-			this.hostLabel.Size = new System.Drawing.Size(438, 23);
+			this.hostLabel.Size = new System.Drawing.Size(438, 12);
 			this.hostLabel.TabIndex = 2;
 			this.hostLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.titleLabel_Click);
 			// 
@@ -520,7 +530,7 @@ namespace namaichi
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.titleLabel.Location = new System.Drawing.Point(78, 26);
 			this.titleLabel.Name = "titleLabel";
-			this.titleLabel.Size = new System.Drawing.Size(446, 23);
+			this.titleLabel.Size = new System.Drawing.Size(446, 12);
 			this.titleLabel.TabIndex = 2;
 			this.titleLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.titleLabel_Click);
 			// 
@@ -538,7 +548,7 @@ namespace namaichi
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.communityLabel.Location = new System.Drawing.Point(78, 49);
 			this.communityLabel.Name = "communityLabel";
-			this.communityLabel.Size = new System.Drawing.Size(446, 23);
+			this.communityLabel.Size = new System.Drawing.Size(446, 12);
 			this.communityLabel.TabIndex = 2;
 			this.communityLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.titleLabel_Click);
 			// 
@@ -734,30 +744,30 @@ namespace namaichi
 									this.toolStripSeparator5,
 									this.closeNotifyIconMenu});
 			this.notifyIconMenuStrip.Name = "notifyIconMenuStrip";
-			this.notifyIconMenuStrip.Size = new System.Drawing.Size(153, 82);
+			this.notifyIconMenuStrip.Size = new System.Drawing.Size(101, 60);
 			// 
 			// notifyIconRecentSeparator
 			// 
 			this.notifyIconRecentSeparator.Name = "notifyIconRecentSeparator";
-			this.notifyIconRecentSeparator.Size = new System.Drawing.Size(149, 6);
+			this.notifyIconRecentSeparator.Size = new System.Drawing.Size(97, 6);
 			this.notifyIconRecentSeparator.Visible = false;
 			// 
 			// openNotifyIconMenu
 			// 
 			this.openNotifyIconMenu.Name = "openNotifyIconMenu";
-			this.openNotifyIconMenu.Size = new System.Drawing.Size(152, 22);
+			this.openNotifyIconMenu.Size = new System.Drawing.Size(100, 22);
 			this.openNotifyIconMenu.Text = "開く";
 			this.openNotifyIconMenu.Click += new System.EventHandler(this.OpenNotifyIconMenuClick);
 			// 
 			// toolStripSeparator5
 			// 
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator5.Size = new System.Drawing.Size(97, 6);
 			// 
 			// closeNotifyIconMenu
 			// 
 			this.closeNotifyIconMenu.Name = "closeNotifyIconMenu";
-			this.closeNotifyIconMenu.Size = new System.Drawing.Size(152, 22);
+			this.closeNotifyIconMenu.Size = new System.Drawing.Size(100, 22);
 			this.closeNotifyIconMenu.Text = "終了";
 			this.closeNotifyIconMenu.Click += new System.EventHandler(this.CloseNotifyIconMenuClick);
 			// 
@@ -771,12 +781,12 @@ namespace namaichi
 			this.ContextMenuStrip = this.mainWindowRightClickMenu;
 			this.Controls.Add(this.streamStateGroupBox);
 			this.Controls.Add(this.isChaseChkBtn);
+			this.Controls.Add(this.streamInfoGroupBox);
 			this.Controls.Add(this.miniBtn);
 			this.Controls.Add(this.playerBtn);
 			this.Controls.Add(this.commentList);
 			this.Controls.Add(this.recordGroupBox);
 			this.Controls.Add(this.urlLabel);
-			this.Controls.Add(this.streamInfoGroupBox);
 			this.Controls.Add(this.logText);
 			this.Controls.Add(this.recBtn);
 			this.Controls.Add(this.urlText);
@@ -804,6 +814,7 @@ namespace namaichi
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		public System.Windows.Forms.Label miniStreamStateLabel;
 		private System.Windows.Forms.ToolStripMenuItem closeNotifyIconMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
 		private System.Windows.Forms.ToolStripMenuItem openNotifyIconMenu;

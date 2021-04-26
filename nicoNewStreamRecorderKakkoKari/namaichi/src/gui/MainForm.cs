@@ -416,6 +416,7 @@ namespace namaichi
 				try {
 	       			visitLabel.Text = visit;
 	       			commentLabel.Text = comment;
+	       			miniStreamStateLabel.Text = util.getAboutNumStr(visit) + "人/" + util.getAboutNumStr(comment) + "ｺﾒ";
 				} catch (Exception e) {
 					util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 				}
@@ -601,6 +602,7 @@ namespace namaichi
 			samuneBox.Image = ((System.Drawing.Image)(resources.GetObject("samuneBox.Image")));
 			visitLabel.Text = "";
 			commentLabel.Text = "";
+			miniStreamStateLabel.Text = "";
 			titleLabel.Text = "";
 //			titleLabel.Links.Clear();
 //			titleLabel.LinkArea = new LinkArea(0,0);
@@ -849,7 +851,6 @@ namespace namaichi
 			try {
 				urlLabel.Visible = !isMini;
 				commentList.Visible = !isMini;
-				logText.Visible = !isMini;
 				streamStateGroupBox.Visible = !isMini;
 				playerBtn.Visible = !isMini;
 				label10.Visible = !isMini;
@@ -864,19 +865,22 @@ namespace namaichi
 				typeLabel.Visible = !isMini;
 				genteiLabel.Visible = !isMini;
 				keikaTimeLabel.Height = isMini ? 13 : 25;
-				titleLabel.Location = isMini ? label5.Location : new Point(78,label5.Location.Y);
-				communityLabel.Location = isMini? label1.Location : new Point(78,label1.Location.Y);
-				hostLabel.Location = isMini ? label2.Location : new Point(78,label2.Location.Y);
+				titleLabel.Location = isMini ? new Point(6, 16) : new Point(78,label5.Location.Y);
+				titleLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 10, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
+				communityLabel.Location = isMini? new Point(6, 33) : new Point(78,label1.Location.Y);
+				hostLabel.Location = isMini ? new Point(6, 50) : new Point(78,label2.Location.Y);
 				genteiLabel.Location = isMini ? label3.Location : new Point(78,label3.Location.Y);
 				typeLabel.Location = isMini ? label7.Location : new Point(78,label7.Location.Y);
-				startTimeLabel.Location = isMini ? label3.Location : new Point(78,label6.Location.Y);
-				keikaTimeLabel.Location = isMini ? label7.Location : new Point(78,label8.Location.Y);
+				startTimeLabel.Location = isMini ? new Point(156, 16) : new Point(78,label6.Location.Y);
+				keikaTimeLabel.Location = isMini ? new Point(156, 33) : new Point(78,label8.Location.Y);
+				miniStreamStateLabel.Location = new Point(156, 50);
+				miniStreamStateLabel.Visible = isMini;
 				//groupBox5.Location = isMini ? new Point(160, 76) : new Point(179, 76);
 				recordGroupBox.Location = isMini ? new Point(6, 143) : new Point(6, 217);
 				
-				titleLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 10, 23) : new Size(streamInfoGroupBox.Width - 93, 23);
-				communityLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 10, 23) : new Size(streamInfoGroupBox.Width - 93, 23);
-				hostLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 10, 23) : new Size(streamInfoGroupBox.Width - 93, 23);
+				
+				communityLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 10, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
+				hostLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 10, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
 				samuneBox.Size = isMini ? new Size(87, 76) : new Size(141, 150);
 				
 				var urlTextX = isMini ? 19 : 69;
@@ -885,9 +889,21 @@ namespace namaichi
 				miniBtn.Location = new Point((isMini) ? (recBtn.Location.X + 83) : 698, miniBtn.Location.Y);
 				var _size = Size;
 				Size = isMini ? new Size(386, 236) : originalSize;
-				streamInfoGroupBox.Size = isMini ? new Size(Width - 196, 121) : new Size(Width - 196, 180);
+				streamInfoGroupBox.Location = isMini ? new Point(109, 76) : new Point(179, 76);
+				streamInfoGroupBox.Size = isMini ? new Size(Width - 126, 70) : new Size(Width - 196, 180);
 				originalSize = isMini ? _size : Size.Empty;
 				miniBtn.Text = isMini ? "戻" : "小";
+				isChaseChkBtn.Location = isMini ? new Point(265, 65) : new Point(319, 65);
+				isChaseChkBtn.Text = isMini ? "追っかけ録画" : "録画設定して追っかけ録画";
+				logText.Anchor = isMini ? (AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right) : 
+						(AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left);
+				logText.Location = isMini ? new Point(176, 149) : new Point(6, 276);
+				logText.Size = isMini ? new Size(193, 47) : new Size(249, Height - 326);
+				startTimeLabel.Anchor = isMini ? (AnchorStyles.Right) : (AnchorStyles.Top | AnchorStyles.Left);
+				keikaTimeLabel.Anchor = isMini ? (AnchorStyles.Right) : (AnchorStyles.Top | AnchorStyles.Left);
+				miniStreamStateLabel.Anchor = isMini ? (AnchorStyles.Right) : (AnchorStyles.Top | AnchorStyles.Left);
+				//communityLabel.Anchor = isMini ? (AnchorStyles.Right) : (AnchorStyles.Top | AnchorStyles.Left);
+				//hostLabel.Anchor = isMini ? (AnchorStyles.Right) : (AnchorStyles.Top | AnchorStyles.Left);
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}

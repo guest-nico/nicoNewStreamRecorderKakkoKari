@@ -6,7 +6,7 @@
 リファクタリング大歓迎です。  
   
 製作中に見つけた[ニコ生新配信の仕様](siyou.md)を記してみました。  
-[ツールのダウンロードページ](https://guest-nico.github.io/nicoNewStreamRecorderKakkoKari/)  
+[ツールのダウンロードページ](https://guest-nico.github.io/pages/downloads.html)  
 
   
 ## ライセンス  

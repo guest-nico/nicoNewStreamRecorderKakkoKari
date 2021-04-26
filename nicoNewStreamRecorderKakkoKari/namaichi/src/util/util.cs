@@ -33,8 +33,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.35";
-	public static string versionDayStr = "2021/04/14";
+	public static string versionStr = "ver0.88.35 debug5";
+	public static string versionDayStr = "2021/04/25";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -1349,5 +1349,11 @@ public static void soundEnd(config cfg, MainForm form) {
 		} catch (Exception e) {
 			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 		}
+	}
+	public static string getAboutNumStr(string s) {
+		if (s.Length >= 9) return s.Substring(0, s.Length - 8) + "億";
+		else if (s.Length >= 8) return s.Substring(0, s.Length - 7) + "千万";
+		else if (s.Length >= 5) return s.Substring(0, s.Length - 4) + "万";
+		return s;
 	}
 }

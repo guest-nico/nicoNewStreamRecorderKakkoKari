@@ -1021,7 +1021,8 @@ namespace namaichi.rec
 							if (isTimeShift && tsConfig.endTimeSeconds > 0 && newGetTsTaskList[i].startSecond + nti.second >= tsConfig.endTimeSeconds) {
 								addDebugBuf("getTsTask timeshift tsConfig.endtime " + tsConfig.endTimeSeconds + " now starttime " + startTime + " tsConfig.timeseconds " + tsConfig.timeSeconds);
 								isRetry = false;
-								isEndProgram = true;
+								//isEndProgram = true;
+								isEnd = true;
 								continue;
 							}
 							
@@ -1066,14 +1067,20 @@ namespace namaichi.rec
 			addDebugBuf("setRecordState " + recordedBytes + " " + recordedSecond);
 			var ret = "";
 			var bytes = recordedBytes;
-			long b = bytes % 1000;
-			long kb = (bytes % 1000000) / 1000;
-			long mb = (bytes % 1000000000) / 1000000;
-			long gb = (bytes % 1000000000000) / 1000000000;
-			string _kb = ((int)(bytes / 1000)).ToString();
-			for (var i = 0; i < 9 - _kb.Length; i++)
-				_kb = " " + _kb;
-			ret += "size=" + _kb + "kB\n";
+			//long b = bytes % 1000;
+			//long kb = (bytes % 1000000) / 1000;
+			//long mb = (bytes % 1000000000) / 1000000;
+			//long gb = (bytes % 1000000000000) / 1000000000;
+			//string _kb = ((int)(bytes / 1000)).ToString("n0");
+			 
+			//for (var i = 0; i < 9 - _kb.Length; i++)
+			//	_kb = " " + _kb;
+			//ret += "size=" + _kb + "kB\n";
+			var size = bytes > 1000000 ? 
+					((bytes / 1000000.0).ToString("n3") + "mB") :
+					(((int)(bytes / 1000)).ToString() + "kB");
+			ret += "size=   " + size + "\n";
+			
 			
 //			recordedSecond = 400000;
 			var dotSecond = ((int)((recordedSecond % 1) * 100)).ToString("00");
@@ -1443,7 +1450,6 @@ namespace namaichi.rec
 			
 				if (isEndProgram && segmentSaveType == 0) {
 					renameWithoutTime(recFolderFile);
-					
 				}
 				if (segmentSaveType == 1 &&
 				    	(rm.cfg.get("IsRenketuAfter") == "true" 
@@ -1465,6 +1471,7 @@ namespace namaichi.rec
 				rm.form.addLogText("録画を完了しました");
 			}
 			isEnd = true;
+			isEndProgram = true;
 		}
 		private void timeShiftWriter(bool[] isWriteEnd) {
 			var lastWroteNo = -1;

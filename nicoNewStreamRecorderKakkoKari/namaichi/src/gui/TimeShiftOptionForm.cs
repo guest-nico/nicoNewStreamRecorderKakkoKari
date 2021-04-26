@@ -45,7 +45,7 @@ namespace namaichi
 			}
 			isRenketuLastFile.Visible = (segmentSaveType == "0");
 			
-			
+			/*
 			var isUrlList = bool.Parse(config.get("IsUrlList"));
 			var openListCommand = config.get("openUrlListCommand");
 			
@@ -57,13 +57,14 @@ namespace namaichi
 				isM3u8RadioBtn.Checked = true;
 			updateListSecondText.Text = config.get("M3u8UpdateSeconds");
 			isOpenListCommandChkBox.Checked = bool.Parse(config.get("IsOpenUrlList"));
+			updateIsM3u8RadioBtn_CheckedChanged();
+			updateIsOpenListCommandChkBoxCheckedChanged();
+			updateUrlListChkBoxCheckedChanged();
+			*/
 			isSetVposStartTime.Checked = bool.Parse(config.get("IsVposStartTime"));
 			isAfterStartTimeCommentChkBox.Checked = bool.Parse(config.get("IsAfterStartTimeComment"));
 			isBeforeEndTimeCommentChkBox.Checked = bool.Parse(config.get("IsBeforeEndTimeComment"));
 			updateTimeShiftStartTimeChkBox();
-			updateIsM3u8RadioBtn_CheckedChanged();
-			updateIsOpenListCommandChkBoxCheckedChanged();
-			updateUrlListChkBoxCheckedChanged();
 			updateIsManualEndTimeRadioBtn();
 			this.config = config;
 			

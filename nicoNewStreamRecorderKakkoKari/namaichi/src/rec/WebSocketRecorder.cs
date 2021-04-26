@@ -1134,6 +1134,13 @@ namespace namaichi.rec
 			
 			addDebugBuf("wsc message " + ws);
 			
+			var isComSave = chatinfo.root == "thread" || ((!tsConfig.isAfterStartTimeComment ||
+					chatinfo.date > _openTime + tsConfig.timeSeconds - 10) && 
+				(!tsConfig.isBeforeEndTimeComment || 
+					tsConfig.endTimeSeconds == 0 || 
+					chatinfo.date < _openTime + tsConfig.endTimeSeconds + 10));
+			if (!isComSave) 
+				return;
 //			Newtonsoft.Json
 			//if (e.Message.IndexOf("chat") < 0 &&
 			//    	e.Message.IndexOf("thread") < 0) return;

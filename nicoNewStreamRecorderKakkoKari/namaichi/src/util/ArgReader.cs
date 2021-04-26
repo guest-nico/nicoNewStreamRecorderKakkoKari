@@ -71,7 +71,9 @@ namespace namaichi.utility
 			var lowKeys = new List<string>(config.defaultConfig.Keys.Select((x) => x.ToLower()));
 			var values = config.defaultConfig.Values.ToList<string>();
 			var keys = config.defaultConfig.Keys.ToList();
-			lowKeys.AddRange(new string[] {"ts-start", "ts-end", "ts-list", "ts-list-update", "ts-list-command", "ts-list-open", "ts-list-m3u8", "ts-vpos-starttime", "ts-starttime-comment", "ts-endtime-comment", "ts-starttime-open", "ts-endtime-open"});
+			lowKeys.AddRange(new string[] {"ts-start", "ts-end",
+			                 		//"ts-list", "ts-list-update", "ts-list-command", "ts-list-open", "ts-list-m3u8", 
+			                 		"ts-vpos-starttime", "ts-starttime-comment", "ts-endtime-comment", "ts-starttime-open", "ts-endtime-open"});
 			foreach (var a in args) {
 				if (a.StartsWith("-")) {
 					var name = util.getRegGroup(a, "-(.*)=");
@@ -265,6 +267,7 @@ namespace namaichi.utility
 						return false;
 					}
 				}
+				/*
 				//ts list
 				if (lowKeys[i] == "ts-list") {
 					if (val.ToLower() == "true" || val.ToLower() == "false") {
@@ -322,13 +325,12 @@ namespace namaichi.utility
 						if (tsConfig == null) tsConfig = new TimeShiftConfig();
 						tsConfig.openListCommand = val;
 						return true;
-					/*
-				   	} else {
-						form.addLogText(name + "の値が設定できませんでした(0以上の数値) " + val, false);
-						return false;;
-					}
-					*/
+				   	//} else {
+					//	form.addLogText(name + "の値が設定できませんでした(0以上の数値) " + val, false);
+					//	return false;;
+					//}
 				}
+				*/
 				if (lowKeys[i] == "ts-vpos-starttime") {
 					if (val.ToLower() == "true" || val.ToLower() == "false") {
 						setName = "IsVposStartTime";
