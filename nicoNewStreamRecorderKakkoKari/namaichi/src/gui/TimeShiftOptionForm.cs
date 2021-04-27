@@ -163,6 +163,11 @@ namespace namaichi
 			var isM3u8List = isM3u8RadioBtn.Checked;
 			var m3u8UpdateSeconds = updateSecond;
 			var isOpenUrlList = isOpenListCommandChkBox.Checked;
+			l.Add(new KeyValuePair<string, string>("IsUrlList", isUrlList.ToString().ToLower()));
+			l.Add(new KeyValuePair<string, string>("IsM3u8List", isM3u8List.ToString().ToLower()));
+			l.Add(new KeyValuePair<string, string>("M3u8UpdateSeconds", m3u8UpdateSeconds.ToString()));
+			l.Add(new KeyValuePair<string, string>("IsOpenUrlList", isOpenUrlList.ToString().ToLower()));
+			l.Add(new KeyValuePair<string, string>("openUrlListCommand", openListCommand));
 			*/
 			var isUrlList = false;
 			var openListCommand = "";
@@ -178,12 +183,6 @@ namespace namaichi
 			ret.lastFileTime = lastFileTime;
 			
 			var l = new List<KeyValuePair<string, string>>();
-			l.Add(new KeyValuePair<string, string>("IsUrlList", isUrlList.ToString().ToLower()));
-			l.Add(new KeyValuePair<string, string>("IsM3u8List", isM3u8List.ToString().ToLower()));
-			l.Add(new KeyValuePair<string, string>("M3u8UpdateSeconds", m3u8UpdateSeconds.ToString()));
-			l.Add(new KeyValuePair<string, string>("IsOpenUrlList", isOpenUrlList.ToString().ToLower()));
-			l.Add(new KeyValuePair<string, string>("openUrlListCommand", openListCommand));
-			
 			l.Add(new KeyValuePair<string, string>("tsStartTimeMode", startTimeMode.ToString()));
 			l.Add(new KeyValuePair<string, string>("tsEndTimeMode", endTimeMode.ToString()));
 			l.Add(new KeyValuePair<string, string>("tsStartSecond", (formH * 3600 + formM * 60 + formS).ToString()));
