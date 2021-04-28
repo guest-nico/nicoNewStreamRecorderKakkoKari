@@ -147,7 +147,7 @@ namespace namaichi
 				MessageBox.Show("終了時間が開始時間より前に設定されています");
 				return;
 			}
-			
+			/*
 			double updateSecond;
 			if (!double.TryParse(updateListSecondText.Text, out updateSecond)) {
 				MessageBox.Show("M3U8の更新間隔に数字以外が指定されています");
@@ -157,6 +157,7 @@ namespace namaichi
 				MessageBox.Show("M3U8の更新間隔に0.5以下を指定することはできません");
 				return;
 			}
+			*/
 			/*
 			var isUrlList = isUrlListChkBox.Checked;
 			var openListCommand = openListCommandText.Text;
