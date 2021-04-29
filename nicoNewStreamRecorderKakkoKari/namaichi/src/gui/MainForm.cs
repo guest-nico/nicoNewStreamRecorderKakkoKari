@@ -110,21 +110,10 @@ namespace namaichi
 			if (bool.Parse(config.get("IsMiniStart")))
 				changeSize(true);
 			
-			var qr = config.get("qualityRank").Split(',').ToList();
-			var qrD = config.defaultConfig["qualityRank"].Split(',');
-			if (qr.Count != qrD.Length) {
-				foreach (var q in qrD) 
-					if (qr.IndexOf(q) == -1) qr.Add(q);
-			}
-			config.set("qualityRank", string.Join(",", qr.ToArray()));
-			
 			changeRecBtnClickEvent(bool.Parse(config.get("IsRecBtnOnlyMouse")));
-
-			var qualityCfg = config.get("qualityList");
-			if (string.IsNullOrEmpty(qualityCfg)) 
-				qualityCfg = config.defaultConfig["qualityList"];
-			namaichi.config.config.qualityList = 
-					JsonConvert.DeserializeObject<Dictionary<int, string>>(qualityCfg);
+			
+			setQualitySetting();
+			
 		}
 		private void formInitSetting() {
 			setBackColor(Color.FromArgb(int.Parse(config.get("recBackColor"))));
@@ -1084,6 +1073,21 @@ namespace namaichi
 		void CloseNotifyIconMenuClick(object sender, EventArgs e)
 		{
 			close();
+		}
+		private void setQualitySetting() {
+			var qr = config.get("qualityRank").Split(',').ToList();
+			var qrD = config.defaultConfig["qualityRank"].Split(',');
+			if (qr.Count != qrD.Length) {
+				foreach (var q in qrD) 
+					if (qr.IndexOf(q) == -1) qr.Add(q);
+			}
+			config.set("qualityRank", string.Join(",", qr.ToArray()));
+			
+			var qualityCfg = config.get("qualityList");
+			if (string.IsNullOrEmpty(qualityCfg)) 
+				qualityCfg = config.defaultConfig["qualityList"];
+			namaichi.config.config.qualityList = 
+					JsonConvert.DeserializeObject<Dictionary<int, string>>(qualityCfg);
 		}
 	}
 }

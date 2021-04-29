@@ -46,7 +46,7 @@ namespace rokugaTouroku
 			*/
 			isRenketuLastFile.Visible = (segmentSaveType == "0");
 			
-			
+			/*
 			var isUrlList = bool.Parse(config.get("IsUrlList"));
 			var openListCommand = config.get("openUrlListCommand");
 			
@@ -58,7 +58,7 @@ namespace rokugaTouroku
 				isM3u8RadioBtn.Checked = true;
 			updateListSecondText.Text = config.get("M3u8UpdateSeconds");
 			isOpenListCommandChkBox.Checked = bool.Parse(config.get("IsOpenUrlList"));
-			
+			*/
 			setFormFromConfig();
 						
 			
@@ -80,9 +80,9 @@ namespace rokugaTouroku
 			
 			updateTimeShiftStartTimeChkBox();
 			updateIsFromLastTimeRadioBtn();
-			updateIsM3u8RadioBtn_CheckedChanged();
-			updateIsOpenListCommandChkBoxCheckedChanged();
-			updateUrlListChkBoxCheckedChanged();
+			//updateIsM3u8RadioBtn_CheckedChanged();
+			//updateIsOpenListCommandChkBoxCheckedChanged();
+			//updateUrlListChkBoxCheckedChanged();
 			updateIsManualEndTimeRadioBtn();
 			
 			util.setFontSize(int.Parse(config.get("fontSize")), this, false);
@@ -140,7 +140,7 @@ namespace rokugaTouroku
 				MessageBox.Show("終了時間が開始時間より前に設定されています");
 				return;
 			}
-			
+			/*
 			double updateSecond;
 			if (!double.TryParse(updateListSecondText.Text, out updateSecond)) {
 				MessageBox.Show("M3U8の更新間隔に数字以外が指定されています");
@@ -150,7 +150,7 @@ namespace rokugaTouroku
 				MessageBox.Show("M3U8の更新間隔に0.5以下を指定することはできません");
 				return;
 			}
-			
+			*/
 			/*
 			var isUrlList = isUrlListChkBox.Checked;
 			var openListCommand = openListCommandText.Text;
@@ -176,11 +176,13 @@ namespace rokugaTouroku
 				isOpenTimeBaseStart, isOpenTimeBaseEnd, 
 				isBeforeEndTimeCommentChkBox.Checked);
 			
+			/*
 			config.set("IsUrlList", isUrlList.ToString().ToLower());
 			config.set("IsM3u8List", isM3u8List.ToString().ToLower());
 			config.set("M3u8UpdateSeconds", m3u8UpdateSeconds.ToString());
 			config.set("IsOpenUrlList", isOpenUrlList.ToString().ToLower());
 			config.set("openUrlListCommand", openListCommand);
+			*/
 			config.set("tsStartTimeMode", startTimeMode.ToString());
 			config.set("tsEndTimeMode", endTimeMode.ToString());
 			config.set("tsStartSecond", (h * 3600 + m * 60 + s).ToString());

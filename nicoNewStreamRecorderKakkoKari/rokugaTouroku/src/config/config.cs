@@ -173,12 +173,13 @@ public class config
 			{"IsVposStartTime","true"},
 			{"IsAfterStartTimeComment","false"},
 			{"IsBeforeEndTimeComment","false"},
-			
+			/*
 			{"IsUrlList","false"},
 			{"IsM3u8List","false"},
 			{"M3u8UpdateSeconds","5"},
 			{"IsOpenUrlList","false"},
 			{"openUrlListCommand","notepad {i}"},
+			*/
 			{"afterConvertMode","0"},
 			{"IsSoundEnd","false"},
 			{"soundPath",""},

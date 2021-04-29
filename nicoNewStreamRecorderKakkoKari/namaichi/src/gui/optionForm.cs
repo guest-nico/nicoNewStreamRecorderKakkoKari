@@ -717,7 +717,7 @@ namespace namaichi
 			var ret = new List<int>();
 			for (int i = 0; i < items.Count; i++) {
 				foreach (KeyValuePair <int, string> p in itemsDic)
-					if (p.Value.IndexOf(((string)items[i]).Substring(3)) > -1) ret.Add(p.Key);
+					if (p.Value == items[i].ToString().Substring(3)) ret.Add(p.Key);
 			}
 			return ret;
 		}
