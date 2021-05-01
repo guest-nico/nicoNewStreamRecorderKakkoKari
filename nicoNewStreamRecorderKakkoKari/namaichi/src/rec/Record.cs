@@ -58,6 +58,7 @@ namespace namaichi.rec
 		private double lastFileSecond = 0;
 		private int gotTsMaxNo = -1;
 		public bool isEndProgram = false;
+		public bool isTsEndTimeEnd = false;
 		private double allDuration = -1;
 		public string engineMode = "0";
 		private string anotherEngineCommand = ""; 
@@ -548,7 +549,7 @@ namespace namaichi.rec
 					
 					var count = gotTsList.Count;
 					foreach (var s in new List<numTaskInfo>(gotTsList)) {
-						addDebugBuf("s " + s + " s == null " + (s == null));
+						addDebugBuf("s " + s + " s == null " + (s == null) + " gotTsListCount " + gotTsList.Count);
 						if (s == null) {
 							gotTsList.RemoveAt(0);
 							#if DEBUG
@@ -1021,7 +1022,8 @@ namespace namaichi.rec
 							if (isTimeShift && tsConfig.endTimeSeconds > 0 && newGetTsTaskList[i].startSecond + nti.second >= tsConfig.endTimeSeconds) {
 								addDebugBuf("getTsTask timeshift tsConfig.endtime " + tsConfig.endTimeSeconds + " now starttime " + startTime + " tsConfig.timeseconds " + tsConfig.timeSeconds);
 								isRetry = false;
-								//isEndProgram = true;
+								isEndProgram = true;
+								isTsEndTimeEnd = true;
 								isEnd = true;
 								continue;
 							}
@@ -1448,7 +1450,7 @@ namespace namaichi.rec
 				if (((WebSocketRecorder)wr).isChase)
 					waitForRecording();
 			
-				if (isEndProgram && segmentSaveType == 0) {
+				if (isEndProgram && segmentSaveType == 0 && !isTsEndTimeEnd) {
 					renameWithoutTime(recFolderFile);
 				}
 				if (segmentSaveType == 1 &&
@@ -1471,7 +1473,6 @@ namespace namaichi.rec
 				rm.form.addLogText("録画を完了しました");
 			}
 			isEnd = true;
-			isEndProgram = true;
 		}
 		private void timeShiftWriter(bool[] isWriteEnd) {
 			var lastWroteNo = -1;
