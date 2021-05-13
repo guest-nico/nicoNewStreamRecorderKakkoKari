@@ -498,7 +498,8 @@ namespace namaichi.rec
 			
 			try {
 				var prepTime = (int)(startTime - openTime);
-				var o = new TimeShiftOptionForm(lastFileTime, segmentSaveType, rm.cfg, isChase, prepTime);
+				var o = new TimeShiftOptionForm(lastFileTime, segmentSaveType, rm.cfg, isChase, prepTime, isFmp4);
+				
 				
 				try {
 					rm.form.formAction(() => {

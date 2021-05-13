@@ -130,7 +130,7 @@ namespace namaichi.rec
 				if (lastFileTime == null)
 					util.debugWriteLine("timeshift lastfiletime " + 
 					                    ((lastFileTime == null) ? "null" : string.Join(" ", lastFileTime)));
-				var tsConfig = new TimeShiftConfig(1, int.Parse(lastFileTime[0]), int.Parse(lastFileTime[1]), int.Parse(lastFileTime[2]), 0, 0, 0, true, false, "", false, 0, false, false, 2, 0, false, false);
+				var tsConfig = new TimeShiftConfig(1, int.Parse(lastFileTime[0]), int.Parse(lastFileTime[1]), int.Parse(lastFileTime[2]), 0, 0, 0, true, false, "", false, 0, false, false, 2, 0, false, false, this.tsConfig.isDeletePosTime);
 				tsConfig.endTimeMode = this.tsConfig.endTimeMode;
 				tsConfig.endTimeSeconds = this.tsConfig.endTimeSeconds;
 				tsConfig.lastSegmentNo = lastSegmentNo;

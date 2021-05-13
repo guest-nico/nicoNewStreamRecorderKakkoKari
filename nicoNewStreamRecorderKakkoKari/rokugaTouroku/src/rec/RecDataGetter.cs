@@ -129,6 +129,7 @@ namespace rokugaTouroku.rec
 				//si.Arguments += " -ts-list-update=" + (int)ri.tsConfig.m3u8UpdateSeconds;
 				//si.Arguments += " -ts-list-open=" + ri.tsConfig.isOpenUrlList.ToString().ToLower();
 				//si.Arguments += " -ts-list-command=\"" + ri.tsConfig.openListCommand + "\"";
+				si.Arguments += " -ts-endtime-delete-pos=" + ri.tsConfig.isDeletePosTime.ToString().ToLower();
 				si.Arguments += " -ts-vpos-starttime=" + ri.tsConfig.isVposStartTime.ToString().ToLower();
 				si.Arguments += " -ts-starttime-comment=" + ri.tsConfig.isAfterStartTimeComment.ToString().ToLower();
 				si.Arguments += " -ts-endtime-comment=" + ri.tsConfig.isBeforeEndTimeComment.ToString().ToLower();

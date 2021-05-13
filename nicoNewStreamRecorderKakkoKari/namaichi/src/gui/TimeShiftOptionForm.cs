@@ -24,8 +24,11 @@ namespace namaichi
 		public TimeShiftConfig ret = null;
 		private config.config config;
 		private int prepTime = 0;
+		private string lastFileName = null;
+		private string[] lastFileTimeSelected = null;
+		private bool isFmp4 = false;
 		public TimeShiftOptionForm(string[] lastFileTime, 
-				string segmentSaveType, config.config config, bool isChase, int prepTime)
+				string segmentSaveType, config.config config, bool isChase, int prepTime, bool isFmp4)
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -35,14 +38,7 @@ namespace namaichi
 			this.lastFileTime = lastFileTime;
 			this.segmentSaveType = segmentSaveType;
 			
-			if (lastFileTime != null)
-				lastFileInfoLabel.Text = "(" + lastFileTime[0] + 
-					"時間" + lastFileTime[1] + "分" + lastFileTime[2] + "秒まで録画済み)";
-			else {
-				lastFileInfoLabel.Text = "(前回の録画ファイルが見つかりませんでした)";
-				isRenketuLastFile.Enabled = false;
-				isFromLastTimeRadioBtn.Enabled = false;
-			}
+			setLastFileTime(lastFileTime);
 			isRenketuLastFile.Visible = (segmentSaveType == "0");
 			
 			/*
@@ -64,15 +60,18 @@ namespace namaichi
 			isSetVposStartTime.Checked = bool.Parse(config.get("IsVposStartTime"));
 			isAfterStartTimeCommentChkBox.Checked = bool.Parse(config.get("IsAfterStartTimeComment"));
 			isBeforeEndTimeCommentChkBox.Checked = bool.Parse(config.get("IsBeforeEndTimeComment"));
+			isDeletePosTimeChkBox.Checked = bool.Parse(config.get("tsIsDeletePosTime"));
 			updateTimeShiftStartTimeChkBox();
 			updateIsManualEndTimeRadioBtn();
 			this.config = config;
+			this.isFmp4 = isFmp4;
 			
 			if (isChase) {
 				Text = "追っかけ録画設定";
 				isFromLastTimeRadioBtn.Visible = false;
 				lastFileInfoLabel.Visible = false;
 				isRenketuLastFile.Visible = false;
+				openLastFileBtn.Visible = false;
 			}
 			if (prepTime > 0) {
 				isOpenTimeBaseStartChkBox.Visible = 
@@ -97,9 +96,10 @@ namespace namaichi
 			var startTimeMode = (isMostStartTimeRadioBtn.Checked ? 0 :((isStartTimeRadioBtn.Checked) ? 1 : 2));
 			var endTimeMode = isEndTimeRadioBtn.Checked ? 0 : 1;
 			
-			var _h = (startType == 0) ? hText.Text : lastFileTime[0];
-			var _m = (startType == 0) ? mText.Text : lastFileTime[1];
-			var _s = (startType == 0) ? sText.Text : lastFileTime[2];
+			var lft = lastFileTimeSelected == null ? lastFileTime : lastFileTimeSelected;
+			var _h = (startType == 0) ? hText.Text : lft[0];
+			var _m = (startType == 0) ? mText.Text : lft[1];
+			var _s = (startType == 0) ? sText.Text : lft[2];
 			if (startTimeMode == 0) _h = _m = _s = "0";
 			int h, formH;
 			int m, formM;
@@ -180,14 +180,17 @@ namespace namaichi
 				h, m, s, endH, endM, endS, isRenketuLastFile.Checked, isUrlList, 
 				openListCommand, isM3u8List, m3u8UpdateSeconds, isOpenUrlList,
 				isSetVposStartTime.Checked, startTimeMode, endTimeMode, 
-				isAfterStartTimeCommentChkBox.Checked, isBeforeEndTimeCommentChkBox.Checked);
+				isAfterStartTimeCommentChkBox.Checked, isBeforeEndTimeCommentChkBox.Checked,
+				isDeletePosTimeChkBox.Checked);
 			ret.lastFileTime = lastFileTime;
+			if (startTimeMode == 2) ret.lastFileName = lastFileName;
 			
 			var l = new List<KeyValuePair<string, string>>();
 			l.Add(new KeyValuePair<string, string>("tsStartTimeMode", startTimeMode.ToString()));
 			l.Add(new KeyValuePair<string, string>("tsEndTimeMode", endTimeMode.ToString()));
 			l.Add(new KeyValuePair<string, string>("tsStartSecond", (formH * 3600 + formM * 60 + formS).ToString()));
 			l.Add(new KeyValuePair<string, string>("tsEndSecond", (formEndH * 3600 + formEndM * 60 + formEndS).ToString()));
+			l.Add(new KeyValuePair<string, string>("tsIsDeletePosTime", isDeletePosTimeChkBox.Checked.ToString().ToLower()));
 			l.Add(new KeyValuePair<string, string>("tsIsRenketu", isRenketuLastFile.Checked.ToString().ToLower()));
 			l.Add(new KeyValuePair<string, string>("IsVposStartTime", isSetVposStartTime.Checked.ToString().ToLower()));
 			if (prepTime > 0) {
@@ -260,7 +263,8 @@ namespace namaichi
 		}
 		void updateIsManualEndTimeRadioBtn() {
 			endHText.Enabled = endMText.Enabled = 
-					endSText.Enabled = isOpenTimeBaseEndChkBox.Enabled =  
+					endSText.Enabled = isOpenTimeBaseEndChkBox.Enabled =
+					isDeletePosTimeChkBox.Enabled = 
 					isManualEndTimeRadioBtn.Checked;
 			
 		}
@@ -280,6 +284,7 @@ namespace namaichi
 			endHText.Text = ((int)(endSeconds / 3600)).ToString();
 			endMText.Text = ((int)((endSeconds % 3600) / 60)).ToString();
 			endSText.Text = ((int)((endSeconds % 60) / 1)).ToString();
+			isDeletePosTimeChkBox.Checked = bool.Parse(config.get("tsIsDeletePosTime"));
 			isRenketuLastFile.Checked = bool.Parse(config.get("tsIsRenketu"));
 			isSetVposStartTime.Checked = bool.Parse(config.get("IsVposStartTime"));
 			isAfterStartTimeCommentChkBox.Checked = bool.Parse(config.get("IsAfterStartTimeComment"));
@@ -301,17 +306,46 @@ namespace namaichi
 			endHText.Text = "0";
 			endMText.Text = "0";
 			endSText.Text = "0";
+			isDeletePosTimeChkBox.Checked = true;
 			isRenketuLastFile.Checked = false;
 			isSetVposStartTime.Checked = true;
 			isOpenTimeBaseStartChkBox.Checked = false;
 			isOpenTimeBaseEndChkBox.Checked = false;
 			isAfterStartTimeCommentChkBox.Checked = false;
 			isBeforeEndTimeCommentChkBox.Checked = false;
+			lastFileName = null;
+			lastFileTimeSelected = null;
+			setLastFileTime(null);
 		}
-		
 		void LastSettingBtnClick(object sender, EventArgs e)
 		{
 			setFormFromConfig();
+		}
+		void OpenLastFileBtnClick(object sender, EventArgs e)
+		{
+			var dialog = new OpenFileDialog();
+			dialog.Multiselect = false;
+			var result = dialog.ShowDialog();
+			if (result != DialogResult.OK) return;
+			
+			var f = dialog.FileName;
+			var t = util.getLastTimeShiftFileTime(f, config.get("segmentSaveType"), isFmp4);
+			setLastFileTime(t);
+			if (t != null) {
+				lastFileName = f;
+				lastFileTimeSelected = t;
+			} else {
+				lastFileName = null;
+				lastFileTimeSelected = null;
+			}
+		}
+		void setLastFileTime(string[] t) {
+			if (t != null)
+				lastFileInfoLabel.Text = "(" + t[0] + 
+					"時間" + t[1] + "分" + t[2] + "秒まで録画済み)";
+			else lastFileInfoLabel.Text = "(前回の録画ファイルが見つかりませんでした)";
+			isRenketuLastFile.Enabled = t != null;
+			isFromLastTimeRadioBtn.Enabled = t != null;
 		}
 	}
 }

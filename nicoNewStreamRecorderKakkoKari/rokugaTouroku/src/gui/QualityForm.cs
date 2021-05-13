@@ -63,6 +63,7 @@ namespace rokugaTouroku
 //			var ret = new ListBox.ObjectCollection(owner);
 			var ret = new List<object>();
 			for (int i = 0; i < ranks.Length; i++) {
+				util.debugWriteLine(ranks[i] + " ");
 				ret.Add((i + 1) + ". " + items[ranks[i]]);
 			}
 			foreach (var k in items.Keys)

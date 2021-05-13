@@ -32,6 +32,7 @@ namespace namaichi.info
 		public int timeType = 0; //0-record from 1-recorded until
 		
 		public int endTimeSeconds = 0;
+		public bool isDeletePosTime = false;
 		public bool isOutputUrlList;
 		public string openListCommand;
 		public bool isM3u8List;
@@ -44,6 +45,7 @@ namespace namaichi.info
 		public bool isOpenTimeBaseEndArg;
 		public int lastSegmentNo = -1;
 		public string[] lastFileTime = null;
+		public string lastFileName = null;
 		
 		//public string startTimeStr;
 		
@@ -53,7 +55,8 @@ namespace namaichi.info
 				string openListCommand, bool isM3u8List, 
 				double m3u8UpdateSeconds, bool isOpenUrlList,
 				bool isVposStartTime, int startTimeMode, int endTimeMode,
-				bool isAfterStartTimeComment, bool isBeforeEndTimeComment)
+				bool isAfterStartTimeComment, bool isBeforeEndTimeComment,
+				bool isDeletePosTime)
 		{
 			this.startType = startType;
 			this.h = h;
@@ -83,9 +86,10 @@ namespace namaichi.info
 			if (startType == 0) this.isContinueConcat = false;
 			this.isAfterStartTimeComment = isAfterStartTimeComment;
 			this.isBeforeEndTimeComment = isBeforeEndTimeComment;
+			this.isDeletePosTime = isDeletePosTime;
 		}
 		public TimeShiftConfig() : this(0, 0, 0, 0, 0, 0, 0, 
-				false, false, "notepad {i}", false, 5, false, false, 0, 0, false, false) {}
+				false, false, "notepad {i}", false, 5, false, false, 0, 0, false, false, true) {}
 		public TimeShiftConfig clone() {
 			return new TimeShiftConfig(startType, h, m, s,
 					endH, endM, endS, isContinueConcat,
@@ -94,7 +98,7 @@ namespace namaichi.info
 					m3u8UpdateSeconds, isOpenUrlList, isVposStartTime, 
 					startTimeMode, endTimeMode, isAfterStartTimeComment,
 					isOpenTimeBaseStartArg, isOpenTimeBaseEndArg,
-					isBeforeEndTimeComment
+					isBeforeEndTimeComment, isDeletePosTime
 				);
 		}
 		public TimeShiftConfig(int startType, int h, int m, int s, 
@@ -106,7 +110,7 @@ namespace namaichi.info
 				int startTimeMode, int endTimeMode, 
 				bool isAfterStartTimeComment, 
 				bool isOpenTimeBaseStartArg, bool isOpenTimeBaseEndArg,
-				bool isBeforeEndTimeComment) {
+				bool isBeforeEndTimeComment, bool isDeletePosTime) {
 			this.startType = startType;
 			this.h = h;
 			this.m = m;
@@ -130,6 +134,7 @@ namespace namaichi.info
 			this.isOpenTimeBaseStartArg = isOpenTimeBaseStartArg;
 			this.isOpenTimeBaseEndArg = isOpenTimeBaseEndArg;
 			this.isBeforeEndTimeComment = isBeforeEndTimeComment;
+			this.isDeletePosTime = isDeletePosTime;
 		}
 	}
 }

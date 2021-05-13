@@ -41,6 +41,7 @@ namespace namaichi
 			this.isOpenTimeBaseStartChkBox = new System.Windows.Forms.CheckBox();
 			this.isMostStartTimeRadioBtn = new System.Windows.Forms.RadioButton();
 			this.isSetVposStartTime = new System.Windows.Forms.CheckBox();
+			this.openLastFileBtn = new System.Windows.Forms.Button();
 			this.isRenketuLastFile = new System.Windows.Forms.CheckBox();
 			this.lastFileInfoLabel = new System.Windows.Forms.Label();
 			this.sLabel = new System.Windows.Forms.Label();
@@ -78,6 +79,7 @@ namespace namaichi
 			this.endHText = new System.Windows.Forms.TextBox();
 			this.isManualEndTimeRadioBtn = new System.Windows.Forms.RadioButton();
 			this.isEndTimeRadioBtn = new System.Windows.Forms.RadioButton();
+			this.isDeletePosTimeChkBox = new System.Windows.Forms.CheckBox();
 			this.isBeforeEndTimeCommentChkBox = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -92,6 +94,7 @@ namespace namaichi
 			this.groupBox1.Controls.Add(this.isOpenTimeBaseStartChkBox);
 			this.groupBox1.Controls.Add(this.isMostStartTimeRadioBtn);
 			this.groupBox1.Controls.Add(this.isSetVposStartTime);
+			this.groupBox1.Controls.Add(this.openLastFileBtn);
 			this.groupBox1.Controls.Add(this.isRenketuLastFile);
 			this.groupBox1.Controls.Add(this.lastFileInfoLabel);
 			this.groupBox1.Controls.Add(this.sLabel);
@@ -150,6 +153,16 @@ namespace namaichi
 			this.isSetVposStartTime.Text = "コメントのvposは録画開始時間を起点にする";
 			this.isSetVposStartTime.UseVisualStyleBackColor = true;
 			// 
+			// openLastFileBtn
+			// 
+			this.openLastFileBtn.Location = new System.Drawing.Point(235, 116);
+			this.openLastFileBtn.Name = "openLastFileBtn";
+			this.openLastFileBtn.Size = new System.Drawing.Size(88, 20);
+			this.openLastFileBtn.TabIndex = 15;
+			this.openLastFileBtn.Text = "ファイルを選択";
+			this.openLastFileBtn.UseVisualStyleBackColor = true;
+			this.openLastFileBtn.Click += new System.EventHandler(this.OpenLastFileBtnClick);
+			// 
 			// isRenketuLastFile
 			// 
 			this.isRenketuLastFile.Location = new System.Drawing.Point(26, 137);
@@ -163,7 +176,7 @@ namespace namaichi
 			// 
 			this.lastFileInfoLabel.Location = new System.Drawing.Point(25, 120);
 			this.lastFileInfoLabel.Name = "lastFileInfoLabel";
-			this.lastFileInfoLabel.Size = new System.Drawing.Size(250, 17);
+			this.lastFileInfoLabel.Size = new System.Drawing.Size(225, 17);
 			this.lastFileInfoLabel.TabIndex = 3;
 			this.lastFileInfoLabel.Text = "(?時間?分?秒まで録画済み)";
 			// 
@@ -240,7 +253,7 @@ namespace namaichi
 			// 
 			// cancelBtn
 			// 
-			this.cancelBtn.Location = new System.Drawing.Point(245, 374);
+			this.cancelBtn.Location = new System.Drawing.Point(245, 396);
 			this.cancelBtn.Name = "cancelBtn";
 			this.cancelBtn.Size = new System.Drawing.Size(74, 23);
 			this.cancelBtn.TabIndex = 16;
@@ -250,7 +263,7 @@ namespace namaichi
 			// 
 			// okBtn
 			// 
-			this.okBtn.Location = new System.Drawing.Point(165, 374);
+			this.okBtn.Location = new System.Drawing.Point(165, 396);
 			this.okBtn.Name = "okBtn";
 			this.okBtn.Size = new System.Drawing.Size(74, 23);
 			this.okBtn.TabIndex = 15;
@@ -378,7 +391,7 @@ namespace namaichi
 			// 
 			// resetBtn
 			// 
-			this.resetBtn.Location = new System.Drawing.Point(85, 374);
+			this.resetBtn.Location = new System.Drawing.Point(85, 396);
 			this.resetBtn.Name = "resetBtn";
 			this.resetBtn.Size = new System.Drawing.Size(74, 23);
 			this.resetBtn.TabIndex = 32;
@@ -388,7 +401,7 @@ namespace namaichi
 			// 
 			// lastSettingBtn
 			// 
-			this.lastSettingBtn.Location = new System.Drawing.Point(5, 374);
+			this.lastSettingBtn.Location = new System.Drawing.Point(5, 396);
 			this.lastSettingBtn.Name = "lastSettingBtn";
 			this.lastSettingBtn.Size = new System.Drawing.Size(74, 23);
 			this.lastSettingBtn.TabIndex = 31;
@@ -409,10 +422,11 @@ namespace namaichi
 			this.groupBox2.Controls.Add(this.endHText);
 			this.groupBox2.Controls.Add(this.isManualEndTimeRadioBtn);
 			this.groupBox2.Controls.Add(this.isEndTimeRadioBtn);
+			this.groupBox2.Controls.Add(this.isDeletePosTimeChkBox);
 			this.groupBox2.Controls.Add(this.isBeforeEndTimeCommentChkBox);
 			this.groupBox2.Location = new System.Drawing.Point(5, 228);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(329, 130);
+			this.groupBox2.Size = new System.Drawing.Size(329, 152);
 			this.groupBox2.TabIndex = 28;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "録画終了時間";
@@ -507,9 +521,18 @@ namespace namaichi
 			this.isEndTimeRadioBtn.Text = "最後まで";
 			this.isEndTimeRadioBtn.UseVisualStyleBackColor = true;
 			// 
+			// isDeletePosTimeChkBox
+			// 
+			this.isDeletePosTimeChkBox.Location = new System.Drawing.Point(25, 110);
+			this.isDeletePosTimeChkBox.Name = "isDeletePosTimeChkBox";
+			this.isDeletePosTimeChkBox.Size = new System.Drawing.Size(299, 17);
+			this.isDeletePosTimeChkBox.TabIndex = 8;
+			this.isDeletePosTimeChkBox.Text = "完了時にファイル名の時間位置を削除する";
+			this.isDeletePosTimeChkBox.UseVisualStyleBackColor = true;
+			// 
 			// isBeforeEndTimeCommentChkBox
 			// 
-			this.isBeforeEndTimeCommentChkBox.Location = new System.Drawing.Point(7, 111);
+			this.isBeforeEndTimeCommentChkBox.Location = new System.Drawing.Point(7, 133);
 			this.isBeforeEndTimeCommentChkBox.Name = "isBeforeEndTimeCommentChkBox";
 			this.isBeforeEndTimeCommentChkBox.Size = new System.Drawing.Size(250, 17);
 			this.isBeforeEndTimeCommentChkBox.TabIndex = 8;
@@ -521,7 +544,7 @@ namespace namaichi
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Window;
-			this.ClientSize = new System.Drawing.Size(341, 406);
+			this.ClientSize = new System.Drawing.Size(341, 428);
 			this.Controls.Add(this.resetBtn);
 			this.Controls.Add(this.lastSettingBtn);
 			this.Controls.Add(this.groupBox2);
@@ -542,6 +565,8 @@ namespace namaichi
 			this.groupBox2.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Button openLastFileBtn;
+		private System.Windows.Forms.CheckBox isDeletePosTimeChkBox;
 		private System.Windows.Forms.CheckBox isBeforeEndTimeCommentChkBox;
 		private System.Windows.Forms.CheckBox isAfterStartTimeCommentChkBox;
 		private System.Windows.Forms.CheckBox isOpenTimeBaseEndChkBox;

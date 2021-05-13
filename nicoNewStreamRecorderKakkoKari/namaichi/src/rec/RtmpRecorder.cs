@@ -175,7 +175,8 @@ namespace namaichi.rec
 								if (afterConvertMode > 0) {
 									convertList.Add(recFolderFile + ".flv");
 								}
-								recFolderFile = wr.getRecFilePath()[1];
+								//recFolderFile = wr.getRecFilePath()[1];
+								recFolderFile = util.incrementRecFolderFile(recFolderFile);//wr.getRecFilePath()[1];
 							}
 						} catch (Exception e) {
 							util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);

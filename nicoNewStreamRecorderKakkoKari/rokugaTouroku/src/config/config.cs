@@ -126,7 +126,7 @@ public class config
 			{"IsCommentConvertSpace","false"},
 			{"IsSaveCommentOnlyRetryingRec","false"},
 			{"IsDisplayComment","true"},
-			//{"IsNormalizeComment","false"},
+			{"IsNormalizeComment","false"},
 			
 			{"IstitlebarSamune","true"},
 			{"IsautoFollowComgen","false"},
@@ -167,6 +167,7 @@ public class config
 			{"tsEndTimeMode","0"},
 			{"tsStartSecond","0"},
 			{"tsEndSecond","0"},
+			{"tsIsDeletePosTime","true"},
 			{"tsBaseOpenTimeStart","false"},
 			{"tsBaseOpenTimeEnd","false"},
 			{"tsIsRenketu","false"},

@@ -77,6 +77,7 @@ namespace rokugaTouroku
 			
 			if (tsConfigIn.endTimeMode == 0) isEndTimeRadioBtn.Checked = true;
 			else if (tsConfigIn.endTimeMode == 1) isManualEndTimeRadioBtn.Checked = true;
+			if (!tsConfigIn.isDeletePosTime) isDeletePosTimeChkBox.Checked = false;
 			
 			updateTimeShiftStartTimeChkBox();
 			updateIsFromLastTimeRadioBtn();
@@ -174,7 +175,7 @@ namespace rokugaTouroku
 				isSetVposStartTime.Checked, startTimeMode, endTimeMode, 
 				isAfterStartTimeCommentChkBox.Checked, 
 				isOpenTimeBaseStart, isOpenTimeBaseEnd, 
-				isBeforeEndTimeCommentChkBox.Checked);
+				isBeforeEndTimeCommentChkBox.Checked, isDeletePosTimeChkBox.Checked);
 			
 			/*
 			config.set("IsUrlList", isUrlList.ToString().ToLower());
@@ -187,6 +188,7 @@ namespace rokugaTouroku
 			config.set("tsEndTimeMode", endTimeMode.ToString());
 			config.set("tsStartSecond", (h * 3600 + m * 60 + s).ToString());
 			config.set("tsEndSecond", (endH * 3600 + endM * 60 + endS).ToString());
+			config.set("tsIsDeletePosTime", isDeletePosTimeChkBox.Checked.ToString().ToLower());
 			config.set("tsIsRenketu", isRenketuLastFile.Checked.ToString().ToLower());
 			config.set("IsVposStartTime", isSetVposStartTime.Checked.ToString().ToLower());
 			config.set("IsAfterStartTimeComment", isAfterStartTimeCommentChkBox.Checked.ToString().ToLower());
@@ -248,7 +250,8 @@ namespace rokugaTouroku
 		}
 		void updateIsManualEndTimeRadioBtn() {
 			endHText.Enabled = endMText.Enabled = 
-					endSText.Enabled = isOpenTimeBaseEndChkBox.Enabled =  
+					endSText.Enabled = isOpenTimeBaseEndChkBox.Enabled = 
+					isDeletePosTimeChkBox.Enabled =
 					isManualEndTimeRadioBtn.Checked;
 		}
 		private void setFormFromConfig() {
@@ -270,6 +273,7 @@ namespace rokugaTouroku
 				endMText.Text = ((int)((endSeconds % 3600) / 60)).ToString();
 				endSText.Text = ((int)((endSeconds % 60) / 1)).ToString();
 			}
+			isDeletePosTimeChkBox.Checked = bool.Parse(config.get("tsIsDeletePosTime"));
 			isRenketuLastFile.Checked = bool.Parse(config.get("tsIsRenketu"));
 			isSetVposStartTime.Checked = bool.Parse(config.get("IsVposStartTime"));
 			isAfterStartTimeCommentChkBox.Checked = bool.Parse(config.get("IsAfterStartTimeComment"));
@@ -291,6 +295,7 @@ namespace rokugaTouroku
 			endHText.Text = "0";
 			endMText.Text = "0";
 			endSText.Text = "0";
+			isDeletePosTimeChkBox.Checked = true;
 			isRenketuLastFile.Checked = false;
 			isSetVposStartTime.Checked = true;
 			isOpenTimeBaseStartChkBox.Checked = false;

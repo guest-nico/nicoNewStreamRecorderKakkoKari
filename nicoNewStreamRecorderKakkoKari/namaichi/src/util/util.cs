@@ -33,8 +33,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.39";
-	public static string versionDayStr = "2021/05/01";
+	public static string versionStr = "ver0.88.41";
+	public static string versionDayStr = "2021/05/13";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -91,58 +91,64 @@ class util {
 			string communityNum, string userId, config cfg, 
 			bool isTimeShift, TimeShiftConfig tsConfig, 
 			long _openTime, bool isRtmp, bool isFmp4) {
-		
-		host = getOkFileName(host, isRtmp, false);
-		group = getOkFileName(group, isRtmp, false);
-		title = getOkFileName(title, isRtmp, false);
-		string ext = (isFmp4 ? ".mp4" : ".ts");
-		
-		string[] jarpath = getJarPath();
-//		util.debugWriteLine(jarpath);
-		//string dirPath = jarpath[0] + "\\rec\\" + host;
-		string _dirPath = (cfg.get("IsdefaultRecordDir") == "true") ?
-			(jarpath[0] + "\\rec") : cfg.get("recordDir");
-		string dirPath = _dirPath;
-		
-		string sfn = null;
-		if (cfg.get("IscreateSubfolder") == "true") {
-			sfn = getSubFolderName(host, group, title, lvId, communityNum, userId,  cfg);
-			if (sfn.Length > 120) sfn = sfn.Substring(0, 120);
-			if (sfn == null) return null;
-			dirPath += "/" + sfn;
-		}
-
-
-		var segmentSaveType = cfg.get("segmentSaveType");
-		if (cfg.get("EngineMode") != "0" || isRtmp) segmentSaveType = "0";
-		
+		string name = null, dirPath = null;
 		bool _isTimeShift = isTimeShift;
-		if (cfg.get("EngineMode") != "0") _isTimeShift = false;
-
-		var name = getFileName(host, group, title, lvId, communityNum,  cfg, _openTime);
-		if (name.IndexOf("\\") > -1) {
-			sfn += "\\" + name.Substring(0, name.LastIndexOf("\\"));
-			dirPath += "\\" + name.Substring(0, name.LastIndexOf("\\"));
-			name = name.Substring(name.LastIndexOf("\\") + 1);
-		}
-		if (name.Length > 200) name = name.Substring(0, 200);
-		
-		//長いパス調整
-		if (name.Length + dirPath.Length > 234) {
-			name = lvId;
-			if (name.Length + dirPath.Length > 234 && sfn != null) {
-				sfn = sfn.Substring(0, 3);
-				dirPath = _dirPath + "/" + sfn;
-								
-				if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
-				if (!Directory.Exists(dirPath)) return null;
-				
+		var segmentSaveType = cfg.get("segmentSaveType");
+		string ext = (isFmp4 ? ".mp4" : ".ts");
+		if (tsConfig != null && tsConfig.lastFileName != null) {
+			name = util.getRegGroup(tsConfig.lastFileName, ".+[\\\\/](.+)_ts_\\d+h\\d+m\\d+s");
+			dirPath = util.getRegGroup(tsConfig.lastFileName, "(.+[\\\\/])");
+			util.debugWriteLine("getRecFolderFilePath tsconfig.lastFileName " + name + " " + dirPath);
+		} else {
+			host = getOkFileName(host, isRtmp, false);
+			group = getOkFileName(group, isRtmp, false);
+			title = getOkFileName(title, isRtmp, false);
+			
+			string[] jarpath = getJarPath();
+	//		util.debugWriteLine(jarpath);
+			//string dirPath = jarpath[0] + "\\rec\\" + host;
+			string _dirPath = (cfg.get("IsdefaultRecordDir") == "true") ?
+				(jarpath[0] + "\\rec") : cfg.get("recordDir");
+			dirPath = _dirPath;
+			
+			string sfn = null;
+			if (cfg.get("IscreateSubfolder") == "true") {
+				sfn = getSubFolderName(host, group, title, lvId, communityNum, userId,  cfg);
+				if (sfn.Length > 120) sfn = sfn.Substring(0, 120);
+				if (sfn == null) return null;
+				dirPath += "/" + sfn;
 			}
+			
+			if (cfg.get("EngineMode") != "0" || isRtmp) segmentSaveType = "0";
+			
+			//bool _isTimeShift = isTimeShift;
+			if (cfg.get("EngineMode") != "0") _isTimeShift = false;
+	
+			name = getFileName(host, group, title, lvId, communityNum,  cfg, _openTime);
+			if (name.IndexOf("\\") > -1) {
+				sfn += "\\" + name.Substring(0, name.LastIndexOf("\\"));
+				dirPath += "\\" + name.Substring(0, name.LastIndexOf("\\"));
+				name = name.Substring(name.LastIndexOf("\\") + 1);
+			}
+			if (name.Length > 200) name = name.Substring(0, 200);
+			
+			//長いパス調整
+			if (name.Length + dirPath.Length > 234) {
+				name = lvId;
+				if (name.Length + dirPath.Length > 234 && sfn != null) {
+					sfn = sfn.Substring(0, 3);
+					dirPath = _dirPath + "/" + sfn;
+									
+					if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
+					if (!Directory.Exists(dirPath)) return null;
+					
+				}
+			}
+			if (name.Length + dirPath.Length > 234) return new string[]{null, name + " " + dirPath, null};
+			
+			if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
+			if (!Directory.Exists(dirPath)) return null;
 		}
-		if (name.Length + dirPath.Length > 234) return new string[]{null, name + " " + dirPath, null};
-		
-		if (!Directory.Exists(dirPath)) Directory.CreateDirectory(dirPath);
-		if (!Directory.Exists(dirPath)) return null;
 		
 		var files = Directory.GetFiles(dirPath);
 		string existFile = null;

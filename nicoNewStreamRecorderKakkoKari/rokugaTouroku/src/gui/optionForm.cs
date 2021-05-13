@@ -139,6 +139,7 @@ namespace rokugaTouroku
 				{"IsCommentConvertSpace",isCommentConvertSpaceChkbox.Checked.ToString().ToLower()},
 				{"IsSaveCommentOnlyRetryingRec",isSaveCommentOnlyRetryingRecChkBox.Checked.ToString().ToLower()},
 				{"IsDisplayComment",isDisplayCommentChkbox.Checked.ToString().ToLower()},
+				{"IsNormalizeComment",isNormalizeCommentChkBox.Checked.ToString().ToLower()},
 				{"IstitlebarSamune",isTitleBarSamune.Checked.ToString().ToLower()},
 				{"IsautoFollowComgen",isAutoFollowComGen.Checked.ToString().ToLower()},
 				{"qualityRank",getQualityRank()},
@@ -391,6 +392,7 @@ namespace rokugaTouroku
         	isCommentConvertSpaceChkbox.Checked = bool.Parse(cfg.get("IsCommentConvertSpace"));
         	isSaveCommentOnlyRetryingRecChkBox.Checked = bool.Parse(cfg.get("IsSaveCommentOnlyRetryingRec"));
         	isDisplayCommentChkbox.Checked = bool.Parse(cfg.get("IsDisplayComment"));
+        	isNormalizeCommentChkBox.Checked = bool.Parse(cfg.get("IsNormalizeComment"));
         	isTitleBarSamune.Checked = bool.Parse(cfg.get("IstitlebarSamune"));
         	isAutoFollowComGen.Checked = bool.Parse(cfg.get("IsautoFollowComgen"));
         	setInitQualityRankList(cfg.get("qualityRank"));

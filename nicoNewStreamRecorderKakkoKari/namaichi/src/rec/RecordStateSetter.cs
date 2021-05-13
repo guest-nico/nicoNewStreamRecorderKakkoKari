@@ -205,7 +205,7 @@ namespace namaichi.rec
 			Console.WriteLine("info.samuneUrl:" + samuneUrl);
 		}
 		private string getTag(string data) {
-			var _t = util.getRegGroup(data, "\"tag\":\\{\"list\":\\[(.+?)\\]");
+			var _t = util.getRegGroup(data, "\"tag\":\\{.*?\"list\":\\[{(\"text.+?)\\]");
 			MatchCollection m;
 			if (_t == null) {
 //				var __t = util.getRegGroup(data, "<ul id=\"livetags\"(.+?)</ul>");
@@ -215,7 +215,7 @@ namespace namaichi.rec
 //				foreach (Match _m in m) 
 //					util.debugWriteLine(_m.Groups[1]);
 			} else {
-				m = Regex.Matches(data, "\"text\":\"(.*?)\"");
+				m = Regex.Matches(_t, "\"text\":\"(.*?)\"");
 			}
 			var ret = "";
 			foreach (var _m in m) {

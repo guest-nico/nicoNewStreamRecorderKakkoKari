@@ -53,6 +53,7 @@ namespace rokugaTouroku
 			this.cancelBtn = new System.Windows.Forms.Button();
 			this.okBtn = new System.Windows.Forms.Button();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.isDeletePosTimeChkBox = new System.Windows.Forms.CheckBox();
 			this.isBeforeEndTimeCommentChkBox = new System.Windows.Forms.CheckBox();
 			this.isOpenTimeBaseEndChkBox = new System.Windows.Forms.CheckBox();
 			this.label1 = new System.Windows.Forms.Label();
@@ -231,7 +232,7 @@ namespace rokugaTouroku
 			// 
 			// cancelBtn
 			// 
-			this.cancelBtn.Location = new System.Drawing.Point(245, 382);
+			this.cancelBtn.Location = new System.Drawing.Point(245, 404);
 			this.cancelBtn.Name = "cancelBtn";
 			this.cancelBtn.Size = new System.Drawing.Size(74, 23);
 			this.cancelBtn.TabIndex = 16;
@@ -241,7 +242,7 @@ namespace rokugaTouroku
 			// 
 			// okBtn
 			// 
-			this.okBtn.Location = new System.Drawing.Point(165, 382);
+			this.okBtn.Location = new System.Drawing.Point(165, 404);
 			this.okBtn.Name = "okBtn";
 			this.okBtn.Size = new System.Drawing.Size(74, 23);
 			this.okBtn.TabIndex = 15;
@@ -252,6 +253,7 @@ namespace rokugaTouroku
 			// groupBox2
 			// 
 			this.groupBox2.BackColor = System.Drawing.SystemColors.Window;
+			this.groupBox2.Controls.Add(this.isDeletePosTimeChkBox);
 			this.groupBox2.Controls.Add(this.isBeforeEndTimeCommentChkBox);
 			this.groupBox2.Controls.Add(this.isOpenTimeBaseEndChkBox);
 			this.groupBox2.Controls.Add(this.label1);
@@ -265,14 +267,25 @@ namespace rokugaTouroku
 			this.groupBox2.Controls.Add(this.isEndTimeRadioBtn);
 			this.groupBox2.Location = new System.Drawing.Point(5, 236);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(329, 130);
+			this.groupBox2.Size = new System.Drawing.Size(329, 152);
 			this.groupBox2.TabIndex = 27;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "録画終了時間";
 			// 
+			// isDeletePosTimeChkBox
+			// 
+			this.isDeletePosTimeChkBox.Checked = true;
+			this.isDeletePosTimeChkBox.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.isDeletePosTimeChkBox.Location = new System.Drawing.Point(25, 110);
+			this.isDeletePosTimeChkBox.Name = "isDeletePosTimeChkBox";
+			this.isDeletePosTimeChkBox.Size = new System.Drawing.Size(299, 17);
+			this.isDeletePosTimeChkBox.TabIndex = 12;
+			this.isDeletePosTimeChkBox.Text = "完了時にファイル名の時間位置を削除する";
+			this.isDeletePosTimeChkBox.UseVisualStyleBackColor = true;
+			// 
 			// isBeforeEndTimeCommentChkBox
 			// 
-			this.isBeforeEndTimeCommentChkBox.Location = new System.Drawing.Point(7, 111);
+			this.isBeforeEndTimeCommentChkBox.Location = new System.Drawing.Point(7, 133);
 			this.isBeforeEndTimeCommentChkBox.Name = "isBeforeEndTimeCommentChkBox";
 			this.isBeforeEndTimeCommentChkBox.Size = new System.Drawing.Size(250, 17);
 			this.isBeforeEndTimeCommentChkBox.TabIndex = 11;
@@ -489,7 +502,7 @@ namespace rokugaTouroku
 			// 
 			// resetBtn
 			// 
-			this.resetBtn.Location = new System.Drawing.Point(85, 382);
+			this.resetBtn.Location = new System.Drawing.Point(85, 404);
 			this.resetBtn.Name = "resetBtn";
 			this.resetBtn.Size = new System.Drawing.Size(74, 23);
 			this.resetBtn.TabIndex = 30;
@@ -499,7 +512,7 @@ namespace rokugaTouroku
 			// 
 			// lastSettingBtn
 			// 
-			this.lastSettingBtn.Location = new System.Drawing.Point(5, 382);
+			this.lastSettingBtn.Location = new System.Drawing.Point(5, 404);
 			this.lastSettingBtn.Name = "lastSettingBtn";
 			this.lastSettingBtn.Size = new System.Drawing.Size(74, 23);
 			this.lastSettingBtn.TabIndex = 29;
@@ -520,7 +533,7 @@ namespace rokugaTouroku
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Window;
-			this.ClientSize = new System.Drawing.Size(341, 414);
+			this.ClientSize = new System.Drawing.Size(341, 436);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
@@ -542,6 +555,7 @@ namespace rokugaTouroku
 			this.panel2.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox isDeletePosTimeChkBox;
 		private System.Windows.Forms.CheckBox isBeforeEndTimeCommentChkBox;
 		private System.Windows.Forms.CheckBox isOpenTimeBaseEndChkBox;
 		private System.Windows.Forms.CheckBox isOpenTimeBaseStartChkBox;

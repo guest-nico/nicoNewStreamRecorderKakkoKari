@@ -202,7 +202,7 @@ namespace namaichi.rec
 					}
 					isFirst = false;
 					
-					var aer = new AnotherEngineRecorder(rm, rfu);
+					var aer = new AnotherEngineRecorder(rm, rfu, this);
 					aer.record(hlsSegM3uUrl, recFolderFile, anotherEngineCommand);
 					
 					recFolderFile = util.incrementRecFolderFile(recFolderFile);//wr.getRecFilePath()[1];
@@ -1023,7 +1023,7 @@ namespace namaichi.rec
 								addDebugBuf("getTsTask timeshift tsConfig.endtime " + tsConfig.endTimeSeconds + " now starttime " + startTime + " tsConfig.timeseconds " + tsConfig.timeSeconds);
 								isRetry = false;
 								isEndProgram = true;
-								isTsEndTimeEnd = true;
+								if (!tsConfig.isDeletePosTime) isTsEndTimeEnd = true;
 								isEnd = true;
 								continue;
 							}
@@ -1417,15 +1417,16 @@ namespace namaichi.rec
 					
 					var _currentPos = util.getRegGroup(startPlayList, "#CURRENT-POSITION:(\\d+)");
 					wr.firstSegmentSecond = (_currentPos == null) ? 0 : double.Parse(_currentPos, NumberStyles.Float);
-					var aer = new AnotherEngineRecorder(rm, rfu);
+					var aer = new AnotherEngineRecorder(rm, rfu, this);
 					aer.record(hlsSegM3uUrl, recFolderFile, anotherEngineCommand);
 					
-					if (isAnotherEngineTimeShiftEnd(recStartTime, hlsSegM3uUrl, startPlayList) && !isRealtimeChase) {
+					if (isEndProgram || isAnotherEngineTimeShiftEnd(recStartTime, hlsSegM3uUrl, startPlayList) && !isRealtimeChase) {
 						isEndProgram = true;
 						break;
 					}
 					
-					recFolderFile = wr.getRecFilePath()[1];
+					//recFolderFile = wr.getRecFilePath()[1];
+					recFolderFile = util.incrementRecFolderFile(recFolderFile);
 					 
 					setReconnecting(true);
 					reConnect();

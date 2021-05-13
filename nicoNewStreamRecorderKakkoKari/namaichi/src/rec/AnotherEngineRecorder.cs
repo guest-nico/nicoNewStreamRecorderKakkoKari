@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Text.RegularExpressions;
 using System.IO;
+using namaichi.info;
 
 namespace namaichi.rec
 {
@@ -24,12 +25,14 @@ namespace namaichi.rec
 		private RecordFromUrl rfu;
 		private System.Diagnostics.Process process;
 		public string ext = null;
+		private Record rec = null;
 		
-		public AnotherEngineRecorder(RecordingManager rm, RecordFromUrl rfu)
+		public AnotherEngineRecorder(RecordingManager rm, RecordFromUrl rfu, Record rec)
 		{
 			this.rm = rm;
 			this.rfu = rfu;
 			ext = rfu.h5r.isFmp4 ? ".mp4" : ".ts";
+			this.rec = rec;
 		}
 		public void record(string hlsSegM3uUrl, string recFolderFile, string command) {
 			util.debugWriteLine("another rec start");
@@ -99,7 +102,7 @@ namespace namaichi.rec
 //				         	getStandardOutput();
 //				});
 				
-				waitProcess();
+				waitProcess(hlsSegM3uUrl);
 				util.debugWriteLine("stop record");
 				stopRecording();
 				Application.ApplicationExit -= e;
@@ -149,14 +152,17 @@ namespace namaichi.rec
 
 
 		}
-		public void waitProcess() {
+		public void waitProcess(string hlsSegM3uUrl) {
 			//var es = process.StandardError;
 			
 			
 			while (!process.HasExited) {
-				//if (process.WaitForExit(100)) break;
-				Thread.Sleep(1000);
+				Thread.Sleep(3000);
 				
+				if (rec.tsConfig != null && isEndTime(hlsSegM3uUrl)) {
+					rec.isEndProgram = true;
+					stopRecording();
+				}
 				if (rm.rfu != rfu) stopRecording();
 			}
 			
@@ -190,6 +196,21 @@ namespace namaichi.rec
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
+		}
+		private bool isEndTime(string hlsSegM3uUrl) {
+			var res = util.getPageSource(hlsSegM3uUrl, null);
+			if (res == null) return false;
+			
+			var dur = util.getRegGroup(res, "#CURRENT-POSITION:(\\d+)");
+			if (dur == null) return false;
+			var m = new Regex("#EXTINF\\:(\\d+)").Matches(res);
+			if (m.Count == 0) return false;
+			double sum = 0;
+			foreach (Match _m in m) {
+				sum += double.Parse(_m.Groups[1].Value);
+			}
+			util.debugWriteLine(dur + " " + sum);
+			return double.Parse(dur) + sum > rec.tsConfig.endTimeSeconds + 10;
 		}
 	}
 }

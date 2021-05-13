@@ -1738,7 +1738,9 @@ namespace namaichi.rec
 		}
 		private void sendMessage(WebSocket w, string s) {
 			util.debugWriteLine("ws send " + s);
-			w.Send(s);
+			if (w != null)
+				w.Send(s);
+			else util.debugWriteLine("sendMessage w null");
 		}
 		public void setSync(int no, double second, string m3u8Url) {
 			try {

@@ -73,7 +73,7 @@ namespace namaichi.utility
 			var keys = config.defaultConfig.Keys.ToList();
 			lowKeys.AddRange(new string[] {"ts-start", "ts-end",
 			                 		//"ts-list", "ts-list-update", "ts-list-command", "ts-list-open", "ts-list-m3u8", 
-			                 		"ts-vpos-starttime", "ts-starttime-comment", "ts-endtime-comment", "ts-starttime-open", "ts-endtime-open"});
+			                 		"ts-vpos-starttime", "ts-starttime-comment", "ts-endtime-comment", "ts-starttime-open", "ts-endtime-open", "ts-endtime-delete-pos"});
 			foreach (var a in args) {
 				if (a.StartsWith("-")) {
 					var name = util.getRegGroup(a, "-(.*)=");
@@ -385,6 +385,18 @@ namespace namaichi.utility
 						setVal = val;
 						if (tsConfig == null) tsConfig = new TimeShiftConfig();
 						tsConfig.isOpenTimeBaseEndArg = bool.Parse(val);
+						return true;
+				   	} else {
+						form.addLogText(name + "の値が設定できませんでした(true or false) " + val, false);
+						return false;;
+					}
+				}
+				if (lowKeys[i] == "ts-endtime-delete-pos") {
+					if (val.ToLower() == "true" || val.ToLower() == "false") {
+						setName = "tsIsDeletePosTime";
+						setVal = val;
+						if (tsConfig == null) tsConfig = new TimeShiftConfig();
+						tsConfig.isDeletePosTime = bool.Parse(val);
 						return true;
 				   	} else {
 						form.addLogText(name + "の値が設定できませんでした(true or false) " + val, false);
