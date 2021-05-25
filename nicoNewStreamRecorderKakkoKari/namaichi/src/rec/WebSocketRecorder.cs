@@ -1093,7 +1093,8 @@ namespace namaichi.rec
 			}
 			if (isGetCommentXmlInfo && chatinfo.no == -1) 
 				chatXml.Root.Add(new XAttribute("no", "0"));
-			addDebugBuf("xml " + chatXml.ToString());
+			var chatXmlStr = chatXml.ToString();
+			addDebugBuf("xml " + chatXmlStr);
 			
 			if (chatinfo.root == "chat" && (chatinfo.contents.IndexOf("/hb ifseetno") != -1 && 
 					chatinfo.premium == "3")) return;
@@ -1146,7 +1147,7 @@ namespace namaichi.rec
 				lock(commentLock) {
 					if (commentSW != null) {
 						var writeStr = (isGetCommentXml) ? 
-							chatXml.ToString() : 
+							chatXmlStr : 
 							(Regex.Replace(eMessage, 
 				            	"\"vpos\"\\:(\\d+)", 
 				            	"\"vpos\":" + chatinfo.vpos + ""));

@@ -138,9 +138,8 @@ namespace namaichi.rec
 				
 				util.debugWriteLine("end rec " + rfu);
 				if (!isClickedRecBtn && endCode == 3) {
-					Environment.ExitCode = 5;
-					
 					if (util.isShowWindow && bool.Parse(cfg.get("IscloseExit"))) {
+						Environment.ExitCode = 5;
 						form.close();
             		}
 				}
@@ -152,7 +151,7 @@ namespace namaichi.rec
         		Environment.ExitCode = 5;
         		form.close();
         	}
-        	if (util.isStdIO && (endCode == 0 || endCode == 2 || endCode == 3)) {
+			if (util.isStdIO) {// && (endCode == 0 || endCode == 1 || endCode == 2 || endCode == 3)) {
         		form.close();
         	}
 		}

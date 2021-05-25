@@ -292,6 +292,12 @@ namespace namaichi.rec
 //							rm.form.addLogText("ログインに失敗しました。");
 							isFirst = false;
 						}
+						if (bool.Parse(rm.cfg.get("IsdeleteExit"))) {
+							cc = null;
+							rm.rfu = null;
+							rm.form.close();
+							return 2;
+						}
 						if (cg.reason != null) {
 							cc = null;
 							if (cg.reason == "not_login")

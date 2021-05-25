@@ -146,7 +146,7 @@ namespace namaichi.rec
 			
 			Task.Run(() => {
 			    while (true) {
-			        if (rp.isRtmp || rp.firstSegmentSecond != -1) break;
+			        if (rp.isRtmp || rp.firstSegmentSecond != -1 || !rp.isRetry) break;
 					Thread.Sleep(500);
 				}
 				connect();
@@ -202,22 +202,24 @@ namespace namaichi.rec
 		}
 		private void onWscOpen(object sender, EventArgs e) {
 			util.debugWriteLine("ms open a");
-			
-			_gotMinTime = gotMinTime;
-			_gotMinXml = new String[]{gotMinXml[0], gotMinXml[1]};
-			
-			if (wsc != null) {
-				var req = getReq("-1000");
-				wsc.Send(req);
-				util.debugWriteLine("ms open b " + req);
+			try {
+				_gotMinTime = gotMinTime;
+				_gotMinXml = new String[]{gotMinXml[0], gotMinXml[1]};
+				
+				if (wsc != null) {
+					var req = getReq("-1000");
+					wsc.Send(req);
+					util.debugWriteLine("ms open b " + req);
+				}
+				
+				if (rm.rfu != rfu) {
+					//stopRecording();
+	//				wsc.Close();
+					return;
+				}			
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
-			
-			if (rm.rfu != rfu) {
-				//stopRecording();
-//				wsc.Close();
-				return;
-			}			
-			
 
 		}
 		

@@ -7,6 +7,7 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.Collections.Specialized;
 using System.Drawing;
 using System.Drawing.Text;
 using System.IO;
@@ -48,6 +49,8 @@ namespace namaichi
 			
 			nicoSessionComboBox1.Selector.PropertyChanged += Selector_PropertyChanged;
 			nicoSessionComboBox2.Selector.PropertyChanged += Selector2_PropertyChanged;
+			nicoSessionComboBox1.Selector.Items.CollectionChanged += SelectorItem_CollectionChanged;
+			nicoSessionComboBox2.Selector.Items.CollectionChanged += SelectorItem_CollectionChanged2;
 			//setFormFromConfig();
 			
 			//tabControl1.TabPages.RemoveAt(6);
@@ -251,7 +254,7 @@ namespace namaichi
 //                        txtUserSession.Enabled = false;
 //                        btnOpenCookieFileDialog.Enabled = false;
                     }
-                    break;
+                    break;       
             }
         }
 		async void Selector2_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -293,6 +296,55 @@ namespace namaichi
                     break;
             }
         }
+		void SelectorItem_CollectionChanged(object o, NotifyCollectionChangedEventArgs e) {
+			moveToBackIE(nicoSessionComboBox1, e);
+		}
+		void SelectorItem_CollectionChanged2(object o, NotifyCollectionChangedEventArgs e) {
+			moveToBackIE(nicoSessionComboBox2, e);
+		}
+		void moveToBackIE(NicoSessionComboBox2 ncb, NotifyCollectionChangedEventArgs e) {
+			if (e.Action != NotifyCollectionChangedAction.Add || 
+			    	e.NewItems.Count == 0) return;
+			if (ncb.Tag == (object)"") ncb.SelectedIndex = 0;
+			
+        	var state = 0;
+			foreach (CookieSourceItem i in ncb.Selector.Items) {
+				if (i.BrowserName.StartsWith("IE ")) state |= 1;
+				else if ((state & 1) == 1) state |= 2;
+			}
+        	if ((state & 2) == 0) return;
+            
+			formAction(() => {
+				try {
+					var l = ncb.Selector.Items;
+					var ieL = l.Where(x => x.BrowserName.StartsWith("IE ")).ToList();
+					for (var i = 0; i < ieL.Count(); i++) l.Remove(ieL[i]);
+					foreach (var i in ieL) l.Add(i);
+				} catch (Exception ee) {
+					util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+				}
+			});
+		}
+		public bool formAction(Action a, bool isAsync = true) {
+			if (IsDisposed || !util.isShowWindow) return false;
+			
+			try {
+				var r = BeginInvoke((MethodInvoker)delegate() {
+					try {    
+			       		a.Invoke();
+			       	} catch (Exception e) {
+						util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+					}
+				});
+				if (!isAsync) 
+					EndInvoke(r);
+				return true;
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				return false;
+			} 
+			
+		}
 		void btnReload_Click(object sender, EventArgs e)
         { 
 			//var si = nicoSessionComboBox1.Selector.SelectedImporter.SourceInfo;
@@ -466,9 +518,11 @@ namespace namaichi
         	checkBoxShowAll.Checked = bool.Parse(cfg.get("IsBrowserShowAll"));
         	
         	var si = SourceInfoSerialize.load(false);
-        	nicoSessionComboBox1.Selector.SetInfoAsync(si);
+        	if (si != null) nicoSessionComboBox1.Selector.SetInfoAsync(si);
+        	else nicoSessionComboBox1.Tag = "";
         	var si2 = SourceInfoSerialize.load(true);
-        	nicoSessionComboBox2.Selector.SetInfoAsync(si2);
+        	if (si2 != null) nicoSessionComboBox2.Selector.SetInfoAsync(si2);
+        	else nicoSessionComboBox2.Tag = "";
 //			!bool.Parse(cfg.get("defaultBrowserPath"))
         	proxyAddressText.Text = cfg.get("proxyAddress");
         	proxyPortText.Text = cfg.get("proxyPort");

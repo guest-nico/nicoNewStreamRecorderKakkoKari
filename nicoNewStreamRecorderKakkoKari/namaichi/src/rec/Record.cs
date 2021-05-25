@@ -95,6 +95,7 @@ namespace namaichi.rec
 		public string ext = null;
 		private int baseTfdt = -1;
 		private byte[] initMp4 = null;
+		private numTaskInfo lastWriteFmp4Nti = null;
 		
 		public Record(RecordingManager rm, bool isFFmpeg, 
 		              RecordFromUrl rfu, string hlsUrl, 
@@ -563,12 +564,15 @@ namespace namaichi.rec
 							continue;
 						}
 						
+						var isNuke = lastSegmentNo != -1 && s.no - lastSegmentNo > 1;
 						bool ret;
 						if (isPlayOnlyMode) ret = true;
 						else {
 							var before = DateTime.Now;
 							
 							if (isWriteCancel) return;
+							if (h5r.isFmp4 && isNuke && lastWriteFmp4Nti != null)
+								writeComplementMp4File(s);
 							ret = writeFile(s);
 							addDebugBuf("write time " + (DateTime.Now - before));
 							if (DateTime.Now - before > TimeSpan.FromSeconds(2))
@@ -588,7 +592,7 @@ namespace namaichi.rec
 	//						var isDropTest = (lastSegmentNo % 20 == 0);
 	//						isDropTest = false;
 							
-							if (lastSegmentNo != -1 && s.no - lastSegmentNo > 1) {
+							if (isNuke) {
 	//						if (s.no - lastSegmentNo > 1) {
 								addDebugBuf("nuke ari s.no " + s.no + " lastsegmentno " + lastSegmentNo + " s.originNo " + s.originNo);
 								var _lastWroteSegmentDt = lastWroteSegmentDt;
@@ -601,6 +605,7 @@ namespace namaichi.rec
 							lastSegmentNo = s.no;
 							lastWroteSegmentDt = s.dt;
 							lastWroteFileSecond = s.second;
+							if (h5r.isFmp4) lastWriteFmp4Nti = s;
 							var fName = util.getRegGroup(s.fileName, ".*(\\\\|/|^)(.+)", 2, rm.regGetter.getFName());
 	//							if (fName == 
 							lastRecordedSeconds = util.getSecondsFromStr(fName);
@@ -1944,7 +1949,7 @@ namespace namaichi.rec
 					while (pos < b.Length) {
 						var size = BitConverter.ToInt32((new byte[]{b[pos + 3], b[pos + 2], b[pos + 1], b[pos + 0]}), 0);
 						if (size == 0) {
-							Debug.WriteLine("atom parse error size 0");
+							util.debugWriteLine("atom parse error size 0");
 							rm.form.addLogText("atom parse error size 0");
 							return -1;
 						}
@@ -1956,18 +1961,18 @@ namespace namaichi.rec
 							while (_pos < pos + size) {
 								var _size = BitConverter.ToInt32((new byte[]{b[_pos + 3], b[_pos + 2], b[_pos + 1], b[_pos + 0]}), 0);
 								if (_size == 0) {
-									Debug.WriteLine("atom parse error size 0");
+									util.debugWriteLine("atom parse error size 0");
 									rm.form.addLogText("atom parse error size 0");
 									return -1;
 								}
 								var _type = Encoding.ASCII.GetString(b, _pos + 4, 4);
-								if (isLog) Debug.WriteLine("  moof " + _size + " " + _type);
+								if (isLog) util.debugWriteLine("  moof " + _size + " " + _type);
 								if (_type == "traf") {
 									var __pos = _pos + 8;
 									while (__pos < _pos + _size) {
 										var __size = BitConverter.ToInt32((new byte[]{b[__pos + 3], b[__pos + 2], b[__pos + 1], b[__pos + 0]}), 0);
 										if (__size == 0) {
-											Debug.WriteLine("atom parse error size 0");
+											util.debugWriteLine("atom parse error size 0");
 											rm.form.addLogText("atom parse error size 0");
 											return -1;
 										}
@@ -1976,7 +1981,7 @@ namespace namaichi.rec
 										if (__type == "tfdt") {
 											var ___size = BitConverter.ToInt32((new byte[]{b[__pos + 3], b[__pos + 2], b[__pos + 1], b[__pos + 0]}), 0);
 											if (___size == 0) {
-												Debug.WriteLine("atom parse error size 0");
+												util.debugWriteLine("atom parse error size 0");
 												rm.form.addLogText("atom parse error size 0");
 												return -1;
 											}
@@ -1984,13 +1989,14 @@ namespace namaichi.rec
 											if (isLog) Debug.WriteLine("      tfdt " + tfdt);
 											if (baseTfdt == -1) 
 												baseTfdt = tfdt;
+											
 											var newTfdt = BitConverter.GetBytes(tfdt - baseTfdt);
-											if (isLog) Debug.WriteLine("      new tfdt " + (tfdt - baseTfdt) + " " + newTfdt);
+											if (isLog) util.debugWriteLine("      new tfdt " + (tfdt - baseTfdt) + " " + newTfdt);
 											
 											for (var i = 1; i < 5; i++) 
 												b[__pos + ___size - i] = i > newTfdt.Length ? (byte)0 : newTfdt[i - 1];
 											tfdt = BitConverter.ToInt32((new byte[]{b[__pos + ___size - 1], b[__pos + ___size - 2], b[__pos + ___size - 3], b[__pos + ___size - 4]}), 0);
-											if (isLog) Debug.WriteLine("      tfdt2 " + tfdt);
+											if (isLog) util.debugWriteLine("      tfdt2 " + tfdt);
 											
 										}
 										__pos += __size;
@@ -2011,6 +2017,11 @@ namespace namaichi.rec
 				rm.form.addLogText("atom parse error " + ee.Message + ee.Source + ee.StackTrace);
 				return -1;
 			}
+		}
+		void writeComplementMp4File(numTaskInfo nti) {
+			util.debugWriteLine("writeComplementMp4File " + lastSegmentNo + " " + nti.no);
+			for (var i = 0; i < nti.no - lastSegmentNo - 1; i++)
+				writeFile(lastWriteFmp4Nti);
 		}
 	}
 	class NtiGetter {

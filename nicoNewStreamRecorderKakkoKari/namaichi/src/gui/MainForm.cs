@@ -860,8 +860,6 @@ namespace namaichi
 				hostLabel.Location = isMini ? new Point(6, 50) : new Point(78,label2.Location.Y);
 				genteiLabel.Location = isMini ? label3.Location : new Point(78,label3.Location.Y);
 				typeLabel.Location = isMini ? label7.Location : new Point(78,label7.Location.Y);
-				startTimeLabel.Location = isMini ? new Point(156, 16) : new Point(78,label6.Location.Y);
-				keikaTimeLabel.Location = isMini ? new Point(156, 33) : new Point(78,label8.Location.Y);
 				miniStreamStateLabel.Location = new Point(156, 50);
 				miniStreamStateLabel.Visible = isMini;
 				//groupBox5.Location = isMini ? new Point(160, 76) : new Point(179, 76);
@@ -890,6 +888,8 @@ namespace namaichi
 				logText.Size = isMini ? new Size(193, 47) : new Size(249, Height - 326);
 				startTimeLabel.Anchor = isMini ? (AnchorStyles.Right) : (AnchorStyles.Top | AnchorStyles.Left);
 				keikaTimeLabel.Anchor = isMini ? (AnchorStyles.Right) : (AnchorStyles.Top | AnchorStyles.Left);
+				startTimeLabel.Location = isMini ? new Point(156, 16) : new Point(78,label6.Location.Y);
+				keikaTimeLabel.Location = isMini ? new Point(156, 33) : new Point(78,label8.Location.Y);
 				miniStreamStateLabel.Anchor = isMini ? (AnchorStyles.Right) : (AnchorStyles.Top | AnchorStyles.Left);
 				//communityLabel.Anchor = isMini ? (AnchorStyles.Right) : (AnchorStyles.Top | AnchorStyles.Left);
 				//hostLabel.Anchor = isMini ? (AnchorStyles.Right) : (AnchorStyles.Top | AnchorStyles.Left);

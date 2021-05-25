@@ -94,7 +94,10 @@ namespace rokugaTouroku
                     
                     var result = await cookieImporter.GetCookiesAsync(myPage);
                     
-					if (result.Status != CookieImportState.Success) return null;
+					if (cookieImporter.SourceInfo.BrowserName.StartsWith("IE ") && 
+                        result.Status == CookieImportState.AccessError) {
+                    	return "DLLエラー" + result.Status;
+                    } else if (result.Status != CookieImportState.Success) return null;
                     foreach(Cookie c in result.Cookies) {
                     	if (Regex.IsMatch(c.Name, "[^0-9a-zA-Z\\._\\-\\[\\]%#&=\":\\{\\} \\(\\)/\\?\\|]") ||
                     	   		Regex.IsMatch(c.Value, "[^0-9a-zA-Z\\._\\-\\[\\]%#&=\":\\{\\} \\(\\)/\\?\\|]")) {

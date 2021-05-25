@@ -265,7 +265,7 @@ namespace namaichi.rec
 				var jisa = util.getUnixToDatetime(serverTime / 1000) - DateTime.Now;
 
 				isFmp4 = data.IndexOf("\"providerType\":\"community\"") > -1 &&
-							pageType == 0 && !isTimeShift && false;
+							pageType == 0 && !isTimeShift && rm.form.rec.cfg.get("latency") == "0.5" && true;
 				
 				//0-wsUrl 1-request
 				webSocketRecInfo = getWebSocketInfo(data, isRtmp, isChase, isTimeShift, rm.form, isFmp4);

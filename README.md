@@ -6,7 +6,7 @@
 リファクタリング大歓迎です。  
   
 製作中に見つけた[ニコ生新配信の仕様](siyou.md)を記してみました。  
-[ツールのダウンロードページ](https://guest-nico.github.io/pages/downloads.html)  
+ツールのダウンロードは[コミュニティページ](https://com.nicovideo.jp/community/co2414037)または[こちら](https://guest-nico.github.io/pages/downloads.html)　　
 
   
 ## ライセンス  
