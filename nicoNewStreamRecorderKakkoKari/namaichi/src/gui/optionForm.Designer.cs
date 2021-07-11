@@ -65,6 +65,7 @@ namespace namaichi
 			this.applyBtn = new System.Windows.Forms.Button();
 			this.IsTrayChkBox = new System.Windows.Forms.CheckBox();
 			this.groupBox17 = new System.Windows.Forms.GroupBox();
+			this.commentConvertStrText = new System.Windows.Forms.TextBox();
 			this.isNormalizeCommentChkBox = new System.Windows.Forms.CheckBox();
 			this.isCommentXmlInfo = new System.Windows.Forms.RadioButton();
 			this.isSaveCommentOnlyRetryingRecChkBox = new System.Windows.Forms.CheckBox();
@@ -560,6 +561,7 @@ namespace namaichi
 			// 
 			// groupBox17
 			// 
+			this.groupBox17.Controls.Add(this.commentConvertStrText);
 			this.groupBox17.Controls.Add(this.isNormalizeCommentChkBox);
 			this.groupBox17.Controls.Add(this.isCommentXmlInfo);
 			this.groupBox17.Controls.Add(this.isSaveCommentOnlyRetryingRecChkBox);
@@ -574,6 +576,14 @@ namespace namaichi
 			this.groupBox17.TabIndex = 11;
 			this.groupBox17.TabStop = false;
 			this.groupBox17.Text = "コメント";
+			// 
+			// commentConvertStrText
+			// 
+			this.commentConvertStrText.Enabled = false;
+			this.commentConvertStrText.Location = new System.Drawing.Point(241, 60);
+			this.commentConvertStrText.Name = "commentConvertStrText";
+			this.commentConvertStrText.Size = new System.Drawing.Size(25, 19);
+			this.commentConvertStrText.TabIndex = 9;
 			// 
 			// isNormalizeCommentChkBox
 			// 
@@ -615,10 +625,11 @@ namespace namaichi
 			// 
 			this.isCommentConvertSpaceChkbox.Location = new System.Drawing.Point(19, 61);
 			this.isCommentConvertSpaceChkbox.Name = "isCommentConvertSpaceChkbox";
-			this.isCommentConvertSpaceChkbox.Size = new System.Drawing.Size(271, 19);
+			this.isCommentConvertSpaceChkbox.Size = new System.Drawing.Size(227, 19);
 			this.isCommentConvertSpaceChkbox.TabIndex = 6;
-			this.isCommentConvertSpaceChkbox.Text = "コメントの特殊文字を空白に変換する";
+			this.isCommentConvertSpaceChkbox.Text = "コメントの特殊文字を次の文字に変換する";
 			this.isCommentConvertSpaceChkbox.UseVisualStyleBackColor = true;
+			this.isCommentConvertSpaceChkbox.CheckedChanged += new System.EventHandler(this.IsCommentConvertSpaceChkboxCheckedChanged);
 			// 
 			// isCommentXML
 			// 
@@ -2181,6 +2192,7 @@ namespace namaichi
 			this.displayGroup.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.fontList)).EndInit();
 			this.groupBox17.ResumeLayout(false);
+			this.groupBox17.PerformLayout();
 			this.groupBox5.ResumeLayout(false);
 			this.groupBox5.PerformLayout();
 			this.groupBox9.ResumeLayout(false);
@@ -2216,6 +2228,7 @@ namespace namaichi
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.TextBox commentConvertStrText;
 		private System.Windows.Forms.CheckBox IsTrayChkBox;
 		private System.Windows.Forms.GroupBox groupBox14;
 		private System.Windows.Forms.Label label17;

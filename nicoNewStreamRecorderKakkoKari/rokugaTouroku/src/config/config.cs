@@ -124,6 +124,7 @@ public class config
 			{"IsgetcommentXmlInfo","false"},
 			{"IsgetcommentStore","false"},
 			{"IsCommentConvertSpace","false"},
+			{"commentConvertStr"," "},
 			{"IsSaveCommentOnlyRetryingRec","false"},
 			{"IsDisplayComment","true"},
 			{"IsNormalizeComment","false"},

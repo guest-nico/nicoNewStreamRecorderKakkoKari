@@ -1857,7 +1857,7 @@ namespace namaichi.rec
 				try {
 					if (Directory.Exists(recFolderFile)) {
 						//Thread.Sleep(5000);
-						wsr.isRetry = false;
+						wsr.IsRetry = false;
 						wsr.stopRecording();
 						//Thread.Sleep(2000);
 						var newName = recFolderFile.Replace("{w}", wsr.visitCount.Replace("-", "")).Replace("{c}", wsr.commentCount.Replace("-", ""));

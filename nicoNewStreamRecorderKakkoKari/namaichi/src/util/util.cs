@@ -33,8 +33,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.43";
-	public static string versionDayStr = "2021/05/29";
+	public static string versionStr = "ver0.88.44";
+	public static string versionDayStr = "2021/07/11";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -914,8 +914,12 @@ class util {
 	}
 	public static string getOkSJisOut(string s, string replaceStr = null) {
 		try {
+			replaceStr = replaceStr.Replace("\"", "\\\"");
+			
 			var a = System.Text.Encoding.GetEncoding("shift_jis");
-			return a.GetString(a.GetBytes(s)).Replace("?", replaceStr == null ? "_" : replaceStr);
+			var r = a.GetString(a.GetBytes(s.Replace("?", "\a")));
+			r = new Regex("\\?+").Replace(r, "?");
+			return r.Replace("?", replaceStr == null ? "_" : replaceStr).Replace("\a", "?");
 		} catch (Exception e) {
 			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			return s;

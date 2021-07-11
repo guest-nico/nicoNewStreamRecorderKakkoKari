@@ -67,6 +67,7 @@ namespace namaichi.rec
 		bool isRetry = true;
 		public bool isEnd = false;
 		public WebSocketRecorder rp;
+		private bool isLog = true;
 		//private RecordStateSetter rss;
 		
 		int gotCount = 0;
@@ -80,6 +81,8 @@ namespace namaichi.rec
 		private TimeShiftConfig tsConfig = null;
 		private bool isStore;
 		private bool isNormalizeComment;
+		private bool isReachStartTimeSave = false;
+		private string lastRealTimeComment = null;
 		
 		public TimeShiftCommentGetter(string uri, string thread,
 				string uriStore, string threadStore,        
@@ -91,7 +94,8 @@ namespace namaichi.rec
 				WebSocketRecorder rp, int startSecond, 
 				bool isVposStartTime, bool isRtmp, 
 				RtmpRecorder rr, RecordStateSetter rss, 
-				string roomName, TimeShiftConfig tsConfig)
+				string roomName, TimeShiftConfig tsConfig,
+				string lastRealTimeComment = null, bool isLog = true)
 		{
 			this.uri = uri;
 			this.thread = thread;
@@ -121,6 +125,8 @@ namespace namaichi.rec
 			
 			this.uriStore = uriStore;
 			this.threadStore = threadStore;
+			this.lastRealTimeComment = lastRealTimeComment;
+			this.isLog = isLog;
 		}
 		public void save(bool isStore, string _uri = null, string _thread = null) {
 			this.isStore = isStore;
@@ -146,7 +152,7 @@ namespace namaichi.rec
 			
 			Task.Run(() => {
 			    while (true) {
-			        if (rp.isRtmp || rp.firstSegmentSecond != -1 || !rp.isRetry) break;
+			        if (rp.isRtmp || rp.firstSegmentSecond != -1 || !rp.IsRetry) break;
 					Thread.Sleep(500);
 				}
 				connect();
@@ -228,7 +234,7 @@ namespace namaichi.rec
 			//closeWscProcess();
 			wsc = null;
 			try {
-				if (lastLastRes < 900) {
+				if (lastLastRes < 900 || isReachStartTimeSave) {
 					endProcess();
 					isEnd = true;
 //					rm.form.addLogText("コメントの保存を完了しました");
@@ -272,7 +278,7 @@ namespace namaichi.rec
 		
 		
 		private void onWscMessageReceive(object sender, MessageReceivedEventArgs e) {
-			var eMessage = isConvertSpace ? util.getOkSJisOut(e.Message, " ") : e.Message;
+			var eMessage = isConvertSpace ? util.getOkSJisOut(e.Message, rm.cfg.get("commentConvertStr")) : e.Message;
 			if (isNormalizeComment) eMessage = eMessage.Replace("\"premium\":24", "\"premium\":0");
 			try {
 				if (rm.rfu != rfu || !isRetry) {
@@ -286,8 +292,14 @@ namespace namaichi.rec
 					return;
 				}
 				
-				
-				var xml = JsonConvert.DeserializeXNode(eMessage);
+				XDocument xml = null;
+				try {
+					xml = JsonConvert.DeserializeXNode(eMessage);
+				} catch (Exception ee) {
+					util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite + eMessage);
+					rm.form.addLogText("error:" + eMessage);
+					return;
+				}
 				var chatinfo = new namaichi.info.ChatInfo(xml);
 				
 				XDocument chatXml;
@@ -296,12 +308,22 @@ namespace namaichi.rec
 				if (isRtmp) {
 					chatXml = chatinfo.getFormatXml(_openTime + vposStartTime);
 				} else {
-					if (programType == "official") {
-						chatXml = chatinfo.getFormatXml(0, true, vposStartTime);
-	//					chatXml = chatinfo.getFormatXml(_openTime + vposStartTime);
+					if (lastRealTimeComment == null) {
+						if (programType == "official") {
+							chatXml = chatinfo.getFormatXml(0, true, vposStartTime);
+		//					chatXml = chatinfo.getFormatXml(_openTime + vposStartTime);
+						} else {
+							chatXml = chatinfo.getFormatXml(openTime + vposStartTime);
+		
+						}
 					} else {
-						chatXml = chatinfo.getFormatXml(openTime + vposStartTime);
-	
+						if (programType == "official") {
+							chatXml = chatinfo.getFormatXml(0, true, rp.serverTime - _openTime);
+						//} else chatXml = chatinfo.getFormatXml(serverTime);
+						} else {
+							//chatXml = chatinfo.getFormatXml(0, true, serverTime - _openTime);
+							chatXml = chatinfo.getFormatXml(rp.serverTime);
+						}
 					}
 				}
 				if (isGetCommentXmlInfo && chatinfo.no == -1) 
@@ -371,28 +393,27 @@ namespace namaichi.rec
 			            if (chatinfo.root == "thread") {
 							if (threadLine == null) {
 								threadLine = s;
-								if (!rfu.isPlayOnlyMode)
+								if (!rfu.isPlayOnlyMode && isLog)
 									form.addLogText("アリーナ席に" + chatinfo.lastRes + "件ぐらいの" + (isStore ? "ストア" : "") + "コメントが見つかりました(追い出しコメント含む)");
 							}
 			            } else {
-	//		            	commentSW.WriteLine(s + "}>");
-	//		            	commentSW.Flush();
-	//		            	gotCount++;
-	//		            	if (gotCount % 2000 == 0) form.addLogText(gotCount + "件のコメントを保存しました");
-							
-							var isComSave = (!tsConfig.isAfterStartTimeComment ||
-	              					chatinfo.date > _openTime + tsConfig.timeSeconds - 10) && 
-									(!tsConfig.isBeforeEndTimeComment || 
+							var isMeetStartTimeSave = !tsConfig.isAfterStartTimeComment ||
+	              					chatinfo.date > _openTime + tsConfig.timeSeconds - 10;
+							var isMeetEndTimeSave = !tsConfig.isBeforeEndTimeComment || 
 										tsConfig.endTimeSeconds == 0 || 
-		  								chatinfo.date < _openTime + tsConfig.endTimeSeconds + 10);
-							//if (!tsConfig.isAfterStartTimeComment || 
-	    					//		chatinfo.date > _openTime + tsConfig.timeSeconds - 10) {
+		  								chatinfo.date < _openTime + tsConfig.endTimeSeconds + 10;
+							
+							if (!isMeetStartTimeSave || s == lastRealTimeComment)
+								isReachStartTimeSave = true;
+								
+							var isComSave = isMeetStartTimeSave && isMeetEndTimeSave;
 	    					if (isComSave) {
 								gotCommentListBuf.Add(new GotCommentInfo(s, chatinfo.no, chatinfo.date, chatinfo.vpos));
 								gotCount++;
 				            	
 								if (gotCount % 2000 == 0 && !rfu.isPlayOnlyMode) {
-									form.addLogText(gotCount + "件のコメントを保存しました");
+									if (isLog)
+										form.addLogText(gotCount + "件のコメントを保存しました");
 									gotCommentList = gotCommentList.Distinct().ToList();
 								}
 							}
@@ -438,8 +459,8 @@ namespace namaichi.rec
 			if (uriStore != null)
 				saveStore();
 			
-			var isWrite = (!rfu.isPlayOnlyMode && !rp.isChase);
-			if (isWrite)
+			var isWrite = (!rfu.isPlayOnlyMode && !rp.isChase && lastRealTimeComment == null);
+			if (isWrite && isLog)
 				form.addLogText("コメントの後処理を開始します");
 			
 			gotCommentList = gotCommentList.Distinct().ToList();
@@ -466,7 +487,7 @@ namespace namaichi.rec
 			
 			util.debugWriteLine("end proccess d");
 			
-			if (rp.isChase) {
+			if (rp.isChase && lastRealTimeComment == null) {
 				while (rp.chaseCommentBuf.Count == 0 
 				       && rm.rfu == rfu) Thread.Sleep(1000);
 				rp.chaseCommentSum();
@@ -536,7 +557,8 @@ namespace namaichi.rec
 				File.Delete(fileName);
 				File.Move(fileName + "_", fileName);
 			}
-			form.addLogText("コメントの保存を完了しました");
+			if (isLog)
+				form.addLogText("コメントの保存を完了しました");
 		}
 		private bool setQuePosList() {
 			var url = "https://live.nicovideo.jp/api/getplayerstatus/" + lvid;
@@ -651,7 +673,7 @@ namespace namaichi.rec
 					isRtmp, rr, null, roomName, tsConfig);
 			tscg.save(true);
 				
-			while (!tscg.isEnd && rm.rfu == rfu && isRetry && rp.isRetry) {
+			while (!tscg.isEnd && rm.rfu == rfu && isRetry && rp.IsRetry) {
 				Thread.Sleep(500);
 			}
 			util.debugWriteLine("saveStore wait end " + tscg.gotCommentList.Count);

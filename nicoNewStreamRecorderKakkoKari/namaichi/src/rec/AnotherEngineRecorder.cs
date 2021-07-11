@@ -200,6 +200,7 @@ namespace namaichi.rec
 		private bool isEndTime(string hlsSegM3uUrl) {
 			var res = util.getPageSource(hlsSegM3uUrl, null);
 			if (res == null) return false;
+			if (rec.tsConfig.endTimeSeconds == 0) return false;
 			
 			var dur = util.getRegGroup(res, "#CURRENT-POSITION:(\\d+)");
 			if (dur == null) return false;

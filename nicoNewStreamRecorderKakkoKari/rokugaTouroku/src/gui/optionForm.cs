@@ -138,6 +138,7 @@ namespace rokugaTouroku
 				{"IsgetcommentXml",(!isCommentJson.Checked).ToString().ToLower()},
 				{"IsgetcommentXmlInfo",isCommentXmlInfo.Checked.ToString().ToLower()},
 				{"IsCommentConvertSpace",isCommentConvertSpaceChkbox.Checked.ToString().ToLower()},
+				{"commentConvertStr",commentConvertStrText.Text},
 				{"IsSaveCommentOnlyRetryingRec",isSaveCommentOnlyRetryingRecChkBox.Checked.ToString().ToLower()},
 				{"IsDisplayComment",isDisplayCommentChkbox.Checked.ToString().ToLower()},
 				{"IsNormalizeComment",isNormalizeCommentChkBox.Checked.ToString().ToLower()},
@@ -391,6 +392,7 @@ namespace rokugaTouroku
         	setCommentChkBox();
         	isGetCommentChkBox_UpdateAction();
         	isCommentConvertSpaceChkbox.Checked = bool.Parse(cfg.get("IsCommentConvertSpace"));
+        	commentConvertStrText.Text = cfg.get("commentConvertStr");
         	isSaveCommentOnlyRetryingRecChkBox.Checked = bool.Parse(cfg.get("IsSaveCommentOnlyRetryingRec"));
         	isDisplayCommentChkbox.Checked = bool.Parse(cfg.get("IsDisplayComment"));
         	isNormalizeCommentChkBox.Checked = bool.Parse(cfg.get("IsNormalizeComment"));
@@ -1090,6 +1092,10 @@ namespace rokugaTouroku
 		void ApplyBtnClick(object sender, EventArgs e)
 		{
 			util.setFontSize((int)fontList.Value, this, false);
+		}
+		void IsCommentConvertSpaceChkboxCheckedChanged(object sender, EventArgs e)
+		{
+			commentConvertStrText.Enabled = isCommentConvertSpaceChkbox.Checked;
 		}
 	}
 }

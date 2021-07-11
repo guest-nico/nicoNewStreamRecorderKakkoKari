@@ -60,6 +60,7 @@ namespace rokugaTouroku
 			this.isRetryChkBox = new System.Windows.Forms.CheckBox();
 			this.tabPage9 = new System.Windows.Forms.TabPage();
 			this.groupBox18 = new System.Windows.Forms.GroupBox();
+			this.commentConvertStrText = new System.Windows.Forms.TextBox();
 			this.isNormalizeCommentChkBox = new System.Windows.Forms.CheckBox();
 			this.isSaveCommentOnlyRetryingRecChkBox = new System.Windows.Forms.CheckBox();
 			this.isDisplayCommentChkbox = new System.Windows.Forms.CheckBox();
@@ -508,6 +509,7 @@ namespace rokugaTouroku
 			// 
 			// groupBox18
 			// 
+			this.groupBox18.Controls.Add(this.commentConvertStrText);
 			this.groupBox18.Controls.Add(this.isNormalizeCommentChkBox);
 			this.groupBox18.Controls.Add(this.isSaveCommentOnlyRetryingRecChkBox);
 			this.groupBox18.Controls.Add(this.isDisplayCommentChkbox);
@@ -522,6 +524,14 @@ namespace rokugaTouroku
 			this.groupBox18.TabIndex = 13;
 			this.groupBox18.TabStop = false;
 			this.groupBox18.Text = "コメント";
+			// 
+			// commentConvertStrText
+			// 
+			this.commentConvertStrText.Enabled = false;
+			this.commentConvertStrText.Location = new System.Drawing.Point(241, 60);
+			this.commentConvertStrText.Name = "commentConvertStrText";
+			this.commentConvertStrText.Size = new System.Drawing.Size(25, 19);
+			this.commentConvertStrText.TabIndex = 12;
 			// 
 			// isNormalizeCommentChkBox
 			// 
@@ -563,10 +573,11 @@ namespace rokugaTouroku
 			// 
 			this.isCommentConvertSpaceChkbox.Location = new System.Drawing.Point(19, 61);
 			this.isCommentConvertSpaceChkbox.Name = "isCommentConvertSpaceChkbox";
-			this.isCommentConvertSpaceChkbox.Size = new System.Drawing.Size(271, 19);
+			this.isCommentConvertSpaceChkbox.Size = new System.Drawing.Size(227, 19);
 			this.isCommentConvertSpaceChkbox.TabIndex = 9;
-			this.isCommentConvertSpaceChkbox.Text = "コメントの特殊文字を空白に変換する";
+			this.isCommentConvertSpaceChkbox.Text = "コメントの特殊文字を次の文字に変換する";
 			this.isCommentConvertSpaceChkbox.UseVisualStyleBackColor = true;
+			this.isCommentConvertSpaceChkbox.CheckedChanged += new System.EventHandler(this.IsCommentConvertSpaceChkboxCheckedChanged);
 			// 
 			// isGetCommentChkBox
 			// 
@@ -2247,6 +2258,7 @@ namespace rokugaTouroku
 			this.groupBox6.ResumeLayout(false);
 			this.tabPage9.ResumeLayout(false);
 			this.groupBox18.ResumeLayout(false);
+			this.groupBox18.PerformLayout();
 			this.displayGroup.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.fontList)).EndInit();
 			this.groupBox5.ResumeLayout(false);
@@ -2287,6 +2299,7 @@ namespace rokugaTouroku
 			((System.ComponentModel.ISupportInitialize)(this.maxRecordingNum)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.TextBox commentConvertStrText;
 		private System.Windows.Forms.CheckBox IsTrayChkBox;
 		private System.Windows.Forms.Label label18;
 		public System.Windows.Forms.ComboBox reserveMessageList;
