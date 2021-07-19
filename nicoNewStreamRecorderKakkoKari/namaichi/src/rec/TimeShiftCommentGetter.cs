@@ -57,7 +57,7 @@ namespace namaichi.rec
 		string threadLine;
 		bool isGetXml = true;
 		bool isGetCommentXmlInfo = false;
-		List<GotCommentInfo> gotCommentList = new List<GotCommentInfo>();
+		public List<GotCommentInfo> gotCommentList = new List<GotCommentInfo>();
 		List<GotCommentInfo> gotCommentListBuf = new List<GotCommentInfo>();
 		
 		//private StreamWriter commentSW;
@@ -642,7 +642,7 @@ namespace namaichi.rec
 			w.WriteLine("<RoomLabel>" + roomName + "</RoomLabel>");
 			w.WriteLine("<StartTime>" + startTime + "</StartTime>");
 		}
-		class GotCommentInfo {
+		public class GotCommentInfo {
 			public string comment = null;
 			public int no;
 			public int date;

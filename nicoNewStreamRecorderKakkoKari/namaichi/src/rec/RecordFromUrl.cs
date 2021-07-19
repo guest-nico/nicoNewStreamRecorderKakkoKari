@@ -305,7 +305,9 @@ namespace namaichi.rec
 									MessageBox.Show("ログインに失敗しました。\n" + lvid));
 							return -1;
 						}
-						System.Threading.Thread.Sleep(3000);
+						System.Threading.Thread.Sleep(
+								(cg.pageSource != null && cg.pageSource.IndexOf("ご指定のページが見つかりませんでした") > -1 ||
+							 		cg.pageSource.IndexOf("ただいまメンテナンス中です。") > -1) ? 300000 : 10000);
 						continue;
 					}
 				//			if (cgret == null) return true;

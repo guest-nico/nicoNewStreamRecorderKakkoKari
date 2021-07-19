@@ -512,6 +512,31 @@ namespace rokugaTouroku
 			resetBindingList(selectedCell.RowIndex);
 			displayRiInfo(_ri);
 		}
+		void ReAddNewConfigRowMenuClick(object sender, EventArgs e)
+		{
+			if (recList.SelectedCells.Count == 0) return;
+			var selectedCell = recList.SelectedCells[0];
+			var ri = (RecInfo)recListDataSource[selectedCell.RowIndex];
+			if (ri.state == "録画中") {
+				MessageBox.Show("録画中は再登録できません", "", MessageBoxButtons.OK, MessageBoxIcon.None);
+				/*
+				DialogResult res = MessageBox.Show("録画中ですが中断しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				if (res == DialogResult.No) return;
+				try {
+					ri.process.Kill();
+				} catch (Exception ee) {
+					util.debugWriteLine("reAdd kill exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+				}
+				*/
+				return;
+			}
+			var _ri = new RecInfo(ri.id, ri.url, ri.rdg, afterConvertModeList.Text, setTsConfig, setTimeshiftBtn.Text, qualityBtn.Text, qualityRank, recCommmentList.Text, isChaseChkBox.Checked);
+			Task.Run(() => _ri.setHosoInfo(this));
+			
+			recListDataSource[selectedCell.RowIndex] = _ri;
+			resetBindingList(selectedCell.RowIndex);
+			displayRiInfo(_ri);
+		}
 		void deleteRowMenu_Click(object sender, EventArgs e)
 		{
 			if (recList.SelectedCells.Count == 0) return;

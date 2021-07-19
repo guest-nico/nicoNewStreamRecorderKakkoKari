@@ -223,7 +223,7 @@ namespace namaichi.rec
 				var isChaseCheck = rm.form.isChaseChkBtn.Checked;
 				if (isChaseCheck && (!isChasable || pageType != 0)) {
 					rm.form.addLogText("追いかけ再生ができませんでした");
-					return 3;
+					return 2;
 				}
 				//util.debugWriteLine(data);
 				

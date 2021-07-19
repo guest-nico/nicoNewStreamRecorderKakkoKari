@@ -1121,7 +1121,7 @@ namespace namaichi.rec
 				ret = originalTsRecord(info);
 			}
 			
-			if (lastSegmentNo == -1 && wr != null) {
+			if (((WebSocketRecorder)wr).sync == 0 && wr != null) {
 				((WebSocketRecorder)wr).setSync(
 					info.no, info.second,hlsSegM3uUrl);
 			}

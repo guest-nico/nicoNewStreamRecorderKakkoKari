@@ -111,8 +111,7 @@ namespace rokugaTouroku.info
          		title = hig.title;
 			if (string.IsNullOrEmpty(host) && 
          	    	!string.IsNullOrEmpty(hig.userId)) {
-         		var isFollow = false;
-         		var _host = util.getUserName(hig.userId, out isFollow, null);
+         		var _host = hig.userName;
          		if (_host != null) host = _host;
          	}
          	if (string.IsNullOrEmpty(communityName) && 

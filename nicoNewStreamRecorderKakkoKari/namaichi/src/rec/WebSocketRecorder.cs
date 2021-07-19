@@ -1801,7 +1801,6 @@ namespace namaichi.rec
 			util.debugWriteLine("checkmissingcomment");
 			try {
 				if (tscg != null) {
-					while (tscg != null) Thread.Sleep(1000);
 					return;
 				}
 				if (lastSaveComments.Count == 0) return;
@@ -1827,8 +1826,11 @@ namespace namaichi.rec
 						isRtmp, rr, rss, roomName, tsConfig, 
 						lastSaveComments[lastSaveComments.Count - 1], false);
 				tscg.save(false);
+				var t = DateTime.Now;
 				while (!tscg.isEnd) {
 					Thread.Sleep(1000);
+					if (DateTime.Now - t > TimeSpan.FromMinutes(1) && 
+					    	tscg.gotCommentList.Count == 0) return;
 					//if (rm.rfu != rfu || !isRetry) return;
 				}
 				var ind = Array.IndexOf(gotTsCommentList, lastSaveComments[lastSaveComments.Count - 1]);

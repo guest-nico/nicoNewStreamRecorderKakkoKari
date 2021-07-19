@@ -138,6 +138,7 @@ namespace rokugaTouroku
 			this.label3 = new System.Windows.Forms.Label();
 			this.samuneBox = new System.Windows.Forms.PictureBox();
 			this.logText = new System.Windows.Forms.TextBox();
+			this.reAddNewConfigRowMenu = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.recList)).BeginInit();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -321,72 +322,73 @@ namespace rokugaTouroku
 									this.openRecFolderMenu,
 									this.toolStripSeparator3,
 									this.reAddRowMenu,
+									this.reAddNewConfigRowMenu,
 									this.toolStripSeparator4,
 									this.deleteRowMenu});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(221, 176);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(257, 220);
 			// 
 			// openWatchUrlMenu
 			// 
 			this.openWatchUrlMenu.Name = "openWatchUrlMenu";
-			this.openWatchUrlMenu.Size = new System.Drawing.Size(220, 22);
+			this.openWatchUrlMenu.Size = new System.Drawing.Size(256, 22);
 			this.openWatchUrlMenu.Text = "放送ページへ移動";
 			this.openWatchUrlMenu.Click += new System.EventHandler(this.openWatchUrlMenu_Click);
 			// 
 			// openCommunityUrlMenu
 			// 
 			this.openCommunityUrlMenu.Name = "openCommunityUrlMenu";
-			this.openCommunityUrlMenu.Size = new System.Drawing.Size(220, 22);
+			this.openCommunityUrlMenu.Size = new System.Drawing.Size(256, 22);
 			this.openCommunityUrlMenu.Text = "コミュニティページへ移動";
 			this.openCommunityUrlMenu.Click += new System.EventHandler(this.openCommunityUrlMenu_Click);
 			// 
 			// copyWatchUrlMenu
 			// 
 			this.copyWatchUrlMenu.Name = "copyWatchUrlMenu";
-			this.copyWatchUrlMenu.Size = new System.Drawing.Size(220, 22);
+			this.copyWatchUrlMenu.Size = new System.Drawing.Size(256, 22);
 			this.copyWatchUrlMenu.Text = "放送URLをコピー";
 			this.copyWatchUrlMenu.Click += new System.EventHandler(this.copyWatchUrlMenu_Click);
 			// 
 			// copyCommunityUrlMenu
 			// 
 			this.copyCommunityUrlMenu.Name = "copyCommunityUrlMenu";
-			this.copyCommunityUrlMenu.Size = new System.Drawing.Size(220, 22);
+			this.copyCommunityUrlMenu.Size = new System.Drawing.Size(256, 22);
 			this.copyCommunityUrlMenu.Text = "コミュニティURLをコピー";
 			this.copyCommunityUrlMenu.Click += new System.EventHandler(this.copyCommunityUrlMenu_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(217, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(253, 6);
 			// 
 			// openRecFolderMenu
 			// 
 			this.openRecFolderMenu.Name = "openRecFolderMenu";
-			this.openRecFolderMenu.Size = new System.Drawing.Size(220, 22);
+			this.openRecFolderMenu.Size = new System.Drawing.Size(256, 22);
 			this.openRecFolderMenu.Text = "録画フォルダを開く";
 			this.openRecFolderMenu.Click += new System.EventHandler(this.openRecFolderMenu_Click);
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(217, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(253, 6);
 			// 
 			// reAddRowMenu
 			// 
 			this.reAddRowMenu.Name = "reAddRowMenu";
-			this.reAddRowMenu.Size = new System.Drawing.Size(220, 22);
+			this.reAddRowMenu.Size = new System.Drawing.Size(256, 22);
 			this.reAddRowMenu.Text = "この行を再登録する";
 			this.reAddRowMenu.Click += new System.EventHandler(this.reAddRowMenu_Click);
 			// 
 			// toolStripSeparator4
 			// 
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(217, 6);
+			this.toolStripSeparator4.Size = new System.Drawing.Size(253, 6);
 			// 
 			// deleteRowMenu
 			// 
 			this.deleteRowMenu.Name = "deleteRowMenu";
-			this.deleteRowMenu.Size = new System.Drawing.Size(220, 22);
+			this.deleteRowMenu.Size = new System.Drawing.Size(256, 22);
 			this.deleteRowMenu.Text = "この行を削除する";
 			this.deleteRowMenu.Click += new System.EventHandler(this.deleteRowMenu_Click);
 			// 
@@ -1086,6 +1088,13 @@ namespace rokugaTouroku
 			this.logText.Size = new System.Drawing.Size(187, 154);
 			this.logText.TabIndex = 8;
 			// 
+			// reAddNewConfigRowMenu
+			// 
+			this.reAddNewConfigRowMenu.Name = "reAddNewConfigRowMenu";
+			this.reAddNewConfigRowMenu.Size = new System.Drawing.Size(256, 22);
+			this.reAddNewConfigRowMenu.Text = "この行を新しい設定で再登録する";
+			this.reAddNewConfigRowMenu.Click += new System.EventHandler(this.ReAddNewConfigRowMenuClick);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1112,6 +1121,7 @@ namespace rokugaTouroku
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripMenuItem reAddNewConfigRowMenu;
 		private System.Windows.Forms.DataGridViewTextBoxColumn chaseColumn;
 		private System.Windows.Forms.ToolStripMenuItem isDisplayRecChaseMenu;
 		public System.Windows.Forms.CheckBox isChaseChkBox;
