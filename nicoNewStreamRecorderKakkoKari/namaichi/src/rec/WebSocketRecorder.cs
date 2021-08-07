@@ -482,15 +482,23 @@ namespace namaichi.rec
 				
 				setMsInfo(e.Message);
 				if (isTimeShift && !isRealtimeChase) {
+					//if (tscg == null && !(isChase && chaseCommentBuf == null)) {
 					if (tscg == null) {
-						tscg = new TimeShiftCommentGetter(msUri, msThread, msStoreUri, msStoreThread,                                  
-								userId, rm, rfu, rm.form, openTime, 
-								recFolderFile[1], lvid, container,
-								programType, _openTime, this, 
-								(isRtmp) ? 0 : tsConfig.timeSeconds, 
-								(isRtmp) ? false : tsConfig.isVposStartTime, 
-								isRtmp, rr, rss, roomName, tsConfig);
-						tscg.save(false);
+						if (!(isChase && chaseCommentBuf == null)) {
+							tscg = new TimeShiftCommentGetter(msUri, msThread, msStoreUri, msStoreThread,                                  
+									userId, rm, rfu, rm.form, openTime, 
+									recFolderFile[1], lvid, container,
+									programType, _openTime, this, 
+									(isRtmp) ? 0 : tsConfig.timeSeconds, 
+									(isRtmp) ? false : tsConfig.isVposStartTime, 
+									isRtmp, rr, rss, roomName, tsConfig);
+							tscg.save(false);
+						} else {
+							util.debugWriteLine("not tscg ischase commentbuf null");
+							#if DEBUG
+								rm.form.addLogText("not tscg ischase commentbuf null");
+							#endif
+						}
 					}
 					
 				}
@@ -794,7 +802,7 @@ namespace namaichi.rec
 	        	wsc[1].Open();
 	        }
 	        
-			addDebugBuf("ms start");
+			addDebugBuf("ms start ws");
 			
 			
 		}

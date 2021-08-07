@@ -320,7 +320,7 @@ namespace namaichi
 		public void setInfo(string host, string hostUrl, 
         		string group, string groupUrl, string title, string url, 
         		string gentei, string openTime, string description, bool isJikken, 
-        		string endTime) {
+        		string endTime, bool isReservation) {
        		util.debugWriteLine(hostUrl);
        		formAction(() => {
 		       	try {
@@ -346,6 +346,7 @@ namespace namaichi
 	        	    typeLabel.Text = (isJikken) ? "実験放送" : "ニコニコ生放送";
 	        	    endTimeLabel.Text = endTime;
 	        	    notifyIcon.Text = title.Substring(0, title.Length > 48 ? 48 : title.Length) + "-" + "ニコ生新配信録画ツール（仮";
+	        	    reservationBox.Visible = isReservation;  
 		       	} catch (Exception e) {
 		       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 		       	}
@@ -532,8 +533,13 @@ namespace namaichi
 				if (originalSize != Size.Empty) {
 					config.set("Width", originalSize.Width.ToString());
 					config.set("Height", originalSize.Height.ToString());
-					config.set("X", Location.X.ToString());
-					config.set("Y", Location.Y.ToString());
+					if (this.WindowState == FormWindowState.Normal) {
+						config.set("X", Location.X.ToString());
+						config.set("Y", Location.Y.ToString());
+					} else {
+						config.set("X", RestoreBounds.X.ToString());
+						config.set("Y", RestoreBounds.Y.ToString());
+					}
 				} else {
 					if (this.WindowState == FormWindowState.Normal) {
 						config.set("Width", Width.ToString());
@@ -607,6 +613,7 @@ namespace namaichi
 			Text = "ニコ生新配信録画ツール（仮 " + util.versionStr;
 			Icon = defIcon;
 			recordStateLabel.Text = "";
+			reservationBox.Visible = false;
 		}
 		public void setTitle(string s) {
 			formAction(() => {
@@ -865,7 +872,6 @@ namespace namaichi
 				//groupBox5.Location = isMini ? new Point(160, 76) : new Point(179, 76);
 				recordGroupBox.Location = isMini ? new Point(6, 143) : new Point(6, 217);
 				
-				
 				communityLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 10, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
 				hostLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 10, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
 				samuneBox.Size = isMini ? new Size(87, 76) : new Size(141, 150);
@@ -893,6 +899,7 @@ namespace namaichi
 				miniStreamStateLabel.Anchor = isMini ? (AnchorStyles.Right) : (AnchorStyles.Top | AnchorStyles.Left);
 				//communityLabel.Anchor = isMini ? (AnchorStyles.Right) : (AnchorStyles.Top | AnchorStyles.Left);
 				//hostLabel.Anchor = isMini ? (AnchorStyles.Right) : (AnchorStyles.Top | AnchorStyles.Left);
+				reservationBox.Location = isMini ? new Point(titleLabel.Location.X + 135, 13) : new Point(streamInfoGroupBox.Width - 21, 23);
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
@@ -1049,7 +1056,6 @@ namespace namaichi
 				ShowInTaskbar = false;
 				notifyIcon.Visible = true;
 			}
-				
 		}
 		void activateForm() {
 			Visible = true;

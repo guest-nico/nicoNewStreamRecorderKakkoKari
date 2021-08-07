@@ -60,6 +60,10 @@ namespace namaichi.rec
 				wrTask.Wait();
 				var wrRet = wrTask.Result;
 				util.debugWriteLine(wrRet);
+				if (wrRet == null) {
+					Thread.Sleep(5000);
+					continue;
+				}
 				if (wrRet.IndexOf("を削除して、新しくタイムシフト予約をします。") > -1) {
 					return "予約リストが一杯です。";
 				}

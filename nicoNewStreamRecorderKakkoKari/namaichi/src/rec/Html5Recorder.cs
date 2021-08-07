@@ -227,7 +227,8 @@ namespace namaichi.rec
 				}
 				//util.debugWriteLine(data);
 				
-				var isChase = isChaseRec(isChaseCheck, isChasable, data) && !isRtmp;
+				var isReservation = data.IndexOf("&quot;reservation&quot;") > -1;
+				var isChase = isChaseRec(isChaseCheck, isChasable, isReservation, data) && !isRtmp;
 				if (isChase && !isRtmp) isTimeShift = true;
 				
 				//;,&quot;permissions&quot;:[&quot;CHASE_PLAY&quot;],&quot;
@@ -312,7 +313,7 @@ namespace namaichi.rec
 				}
 			
 				//display set
-				var rss = new RecordStateSetter(rm.form, rm, rfu, isTimeShift, false, recFolderFile, rfu.isPlayOnlyMode, isRtmpOnlyPage, isChase);
+				var rss = new RecordStateSetter(rm.form, rm, rfu, isTimeShift, false, recFolderFile, rfu.isPlayOnlyMode, isRtmpOnlyPage, isChase, isReservation);
 				Task.Run(() => {
 				       	rss.set(data, type, recFolderFileInfo);
 				       	
@@ -588,7 +589,7 @@ namespace namaichi.rec
 			}
 			return true;
 		}
-		bool isChaseRec(bool isChaseCheck, bool isChasable, string data) {
+		bool isChaseRec(bool isChaseCheck, bool isChasable, bool isReservation, string data) {
 			if (isChaseCheck) return true;
 			if (isTimeShift) return false;
 			if (!isChasable) return false;
@@ -598,7 +599,6 @@ namespace namaichi.rec
 			var isOnlyTimeShiftChase = bool.Parse(rm.cfg.get("IsOnlyTimeShiftChase"));
 			if (!isOnlyTimeShiftChase) return true;
 			
-			var isReservation = data.IndexOf("&quot;reservation&quot;") > -1;
 			return isReservation;
 			//var res = util.getPageSource("http://live.nicovideo.jp/api/getplayerstatus/" + lvid, container);
 			//if (res == null) return false;

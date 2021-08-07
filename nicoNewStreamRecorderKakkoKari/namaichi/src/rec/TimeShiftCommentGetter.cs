@@ -155,8 +155,16 @@ namespace namaichi.rec
 			        if (rp.isRtmp || rp.firstSegmentSecond != -1 || !rp.IsRetry) break;
 					Thread.Sleep(500);
 				}
+	         	if (!rp.IsRetry) {
+	         		isEnd = true;
+	         		util.debugWriteLine("tscg end rp.IsrRtry");
+	         		#if DEBUG
+	         			form.addLogText("tscg end rp.IsrRtry");
+			        #endif
+	         		return;
+	         	}
+			    util.debugWriteLine("ms start tscg " + rp.IsRetry + " " + isLog);
 				connect();
-				util.debugWriteLine("ms start");
 			});
 			
 			
@@ -455,110 +463,114 @@ namespace namaichi.rec
 		}
 		private void endProcess() {
 			if (isStore) return;
+			try {
 			
-			if (uriStore != null)
-				saveStore();
-			
-			var isWrite = (!rfu.isPlayOnlyMode && !rp.isChase && lastRealTimeComment == null);
-			if (isWrite && isLog)
-				form.addLogText("コメントの後処理を開始します");
-			
-			gotCommentList = gotCommentList.Distinct().ToList();
-
-			util.debugWriteLine("end proccess gotCommentList count " + gotCommentList.Count);
-
-			while (isRtmp && (rr == null || rr.fileNameList == null)) {
-				Thread.Sleep(1000);
-			}
-			
-			util.debugWriteLine("end proccess a");
-			
-			var keys = new List<int>();
-			foreach (var c in gotCommentList) {
-				var date = c.date;
-				keys.Add(date);
-			}
-			
-			util.debugWriteLine("end proccess b");
-			
-			gotCommentList.Sort(new Comparison<GotCommentInfo>(commentListCompare));
-			var chats = gotCommentList.Select(x => x.comment).ToArray();
-			rp.gotTsCommentList = chats;
-			
-			util.debugWriteLine("end proccess d");
-			
-			if (rp.isChase && lastRealTimeComment == null) {
-				while (rp.chaseCommentBuf.Count == 0 
-				       && rm.rfu == rfu) Thread.Sleep(1000);
-				rp.chaseCommentSum();
-			}
-			
-			util.debugWriteLine("end proccess c");
-			
-			if (!isWrite) return;
-			
-			var fileNum = (quePosTimeList != null) ? quePosTimeList.Length : 1;
-			for (int j = 0; j < fileNum; j++) {
-				if (j != 0) recFolderFile = incrementRecFolderFile(recFolderFile);
+				if (uriStore != null)
+					saveStore();
 				
-				fileName = util.getOkCommentFileName(rm.cfg, recFolderFile, lvid, true, isRtmp);
-				if (isRtmp) {
-					//fileName = getTsRecordIndexRecFolderFile(fileName, j + 1);
-					fileName = rr.fileNameList[j] + 
-						((rm.cfg.get("IsgetcommentXml") == "true") ? ".xml" : ".json");
+				var isWrite = (!rfu.isPlayOnlyMode && !rp.isChase && lastRealTimeComment == null);
+				if (isWrite && isLog)
+					form.addLogText("コメントの後処理を開始します");
+				
+				gotCommentList = gotCommentList.Distinct().ToList();
+	
+				util.debugWriteLine("end proccess gotCommentList count " + gotCommentList.Count);
+	
+				while (isRtmp && (rr == null || rr.fileNameList == null)) {
+					Thread.Sleep(1000);
 				}
 				
-				if (rm.cfg.get("fileNameType") == "10")
-					fileName = fileName.Replace("{w}", rp.visitCount.ToString()).Replace("{c}", rp.commentCount.ToString());
-				using (var w = new StreamWriter(fileName + "_", false, System.Text.Encoding.UTF8)) {
-					if (isGetXml) {
-						w.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
-						if (!isGetCommentXmlInfo) 
-							w.WriteLine("<packet>");
-						else {
-							writeXmlStreamInfo(w);
-						}
-					    w.Flush();
-					} else {
-						w.WriteLine("[");
+				util.debugWriteLine("end proccess a");
+				
+				var keys = new List<int>();
+				foreach (var c in gotCommentList) {
+					var date = c.date;
+					keys.Add(date);
+				}
+				
+				util.debugWriteLine("end proccess b");
+				
+				gotCommentList.Sort(new Comparison<GotCommentInfo>(commentListCompare));
+				var chats = gotCommentList.Select(x => x.comment).ToArray();
+				rp.gotTsCommentList = chats;
+				
+				util.debugWriteLine("end proccess d");
+				
+				if (rp.isChase && lastRealTimeComment == null && rp.chaseCommentBuf != null) {
+					while (rp.chaseCommentBuf.Count == 0 
+					       && rm.rfu == rfu) Thread.Sleep(1000);
+					rp.chaseCommentSum();
+				}
+				
+				util.debugWriteLine("end proccess c");
+				
+				if (!isWrite) return;
+				
+				var fileNum = (quePosTimeList != null) ? quePosTimeList.Length : 1;
+				for (int j = 0; j < fileNum; j++) {
+					if (j != 0) recFolderFile = incrementRecFolderFile(recFolderFile);
+					
+					fileName = util.getOkCommentFileName(rm.cfg, recFolderFile, lvid, true, isRtmp);
+					if (isRtmp) {
+						//fileName = getTsRecordIndexRecFolderFile(fileName, j + 1);
+						fileName = rr.fileNameList[j] + 
+							((rm.cfg.get("IsgetcommentXml") == "true") ? ".xml" : ".json");
 					}
-					w.WriteLine(threadLine + ((!isGetXml && chats.Length != 0) ? "," : ""));
-					for (var i = 0; i < chats.Length; i++) {
-						if (quePosTimeList != null) {
-							if (chats[i] == null) continue;
-							var _vpos = util.getRegGroup(chats[i], "vpos.+?(-*\\d+)");
-							if (_vpos == null) continue;
-							var vpos = int.Parse(_vpos);
-							
-							if (isRtmp) {
-								
+					
+					if (rm.cfg.get("fileNameType") == "10")
+						fileName = fileName.Replace("{w}", rp.visitCount.ToString()).Replace("{c}", rp.commentCount.ToString());
+					using (var w = new StreamWriter(fileName + "_", false, System.Text.Encoding.UTF8)) {
+						if (isGetXml) {
+							w.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
+							if (!isGetCommentXmlInfo) 
+								w.WriteLine("<packet>");
+							else {
+								writeXmlStreamInfo(w);
 							}
-							if (j == fileNum - 1 || vpos < quePosTimeList[j + 1]) {
-								var oriVposPart = util.getRegGroup(chats[i], "(vpos.+?-*\\d+)");
-								var newVposPart = oriVposPart.Replace(vpos.ToString(), (vpos - quePosTimeList[j]).ToString());
-								w.WriteLine(chats[i].Replace(oriVposPart, newVposPart));
-								chats[i] = null;
-							}
+						    w.Flush();
 						} else {
-							w.WriteLine(chats[i] + ((!isGetXml && i != chats.Length - 1) ? "," : ""));
+							w.WriteLine("[");
 						}
-						
+						w.WriteLine(threadLine + ((!isGetXml && chats.Length != 0) ? "," : ""));
+						for (var i = 0; i < chats.Length; i++) {
+							if (quePosTimeList != null) {
+								if (chats[i] == null) continue;
+								var _vpos = util.getRegGroup(chats[i], "vpos.+?(-*\\d+)");
+								if (_vpos == null) continue;
+								var vpos = int.Parse(_vpos);
+								
+								if (isRtmp) {
+									
+								}
+								if (j == fileNum - 1 || vpos < quePosTimeList[j + 1]) {
+									var oriVposPart = util.getRegGroup(chats[i], "(vpos.+?-*\\d+)");
+									var newVposPart = oriVposPart.Replace(vpos.ToString(), (vpos - quePosTimeList[j]).ToString());
+									w.WriteLine(chats[i].Replace(oriVposPart, newVposPart));
+									chats[i] = null;
+								}
+							} else {
+								w.WriteLine(chats[i] + ((!isGetXml && i != chats.Length - 1) ? "," : ""));
+							}
+							
+						}
+						if (isGetXml) {
+							w.WriteLine("</packet>");
+						} else {
+							//w.BaseStream.Position -= 3;
+							//w.WriteLine("");
+							w.WriteLine("]");
+						}
+						w.Flush();
+						//w.Close();
 					}
-					if (isGetXml) {
-						w.WriteLine("</packet>");
-					} else {
-						//w.BaseStream.Position -= 3;
-						//w.WriteLine("");
-						w.WriteLine("]");
-					}
-					w.Flush();
-					//w.Close();
+					File.Delete(fileName);
+					File.Move(fileName + "_", fileName);
 				}
-				File.Delete(fileName);
-				File.Move(fileName + "_", fileName);
+				if (isLog)
+					form.addLogText("コメントの保存を完了しました");
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
 			}
-			if (isLog)
-				form.addLogText("コメントの保存を完了しました");
 		}
 		private bool setQuePosList() {
 			var url = "https://live.nicovideo.jp/api/getplayerstatus/" + lvid;

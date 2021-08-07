@@ -47,9 +47,10 @@ namespace namaichi.rec
 		private bool isDescriptionTag;
 		private bool isRtmpOnlyPage = false;
 		private bool isChase = false;
+		private bool isReservation = false;
 			
 		public bool isWrite = false;
-		public RecordStateSetter(MainForm form, RecordingManager rm, RecordFromUrl rfu, bool isTimeShift, bool isJikken, string[] recFolderFile, bool isPlayOnlyMode, bool isRtmpOnlyPage, bool isChase)
+		public RecordStateSetter(MainForm form, RecordingManager rm, RecordFromUrl rfu, bool isTimeShift, bool isJikken, string[] recFolderFile, bool isPlayOnlyMode, bool isRtmpOnlyPage, bool isChase, bool isReservation)
 		{
 			this.form = form;
 			this.rm = rm;
@@ -61,6 +62,7 @@ namespace namaichi.rec
 			this.isDescriptionTag = bool.Parse(rm.cfg.get("IsDescriptionTag"));
 			this.isRtmpOnlyPage = isRtmpOnlyPage;
 			this.isChase = isChase;
+			this.isReservation = isReservation;
 		}
 		public void set(string data, string type, string[] recFolderFileInfo) {
 			setInfo(data, form, type, recFolderFileInfo);
@@ -150,7 +152,7 @@ namespace namaichi.rec
 			tag = getTag(data);
 			var formEndTime = (isTimeShift && !isChase) ? endTime : "";
 			setStatistics(data);
-			form.setInfo(host, hostUrl, group, groupUrl, title, url, gentei, openTime, description, isJikken, formEndTime);
+			form.setInfo(host, hostUrl, group, groupUrl, title, url, gentei, openTime, description, isJikken, formEndTime, isReservation);
 		}
 		private void setSamune(string data, MainForm form) {
 			form.setSamune(samuneUrl);

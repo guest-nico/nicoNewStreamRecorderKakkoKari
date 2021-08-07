@@ -70,6 +70,7 @@ namespace namaichi
 			this.更新方法VToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.バージョン情報VToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.streamInfoGroupBox = new System.Windows.Forms.GroupBox();
+			this.reservationBox = new System.Windows.Forms.PictureBox();
 			this.endTimeLabel = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.miniStreamStateLabel = new System.Windows.Forms.Label();
@@ -117,6 +118,7 @@ namespace namaichi
 			((System.ComponentModel.ISupportInitialize)(this.samuneBox)).BeginInit();
 			this.menuStrip1.SuspendLayout();
 			this.streamInfoGroupBox.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.reservationBox)).BeginInit();
 			this.mainWindowRightClickMenu.SuspendLayout();
 			this.streamStateGroupBox.SuspendLayout();
 			this.recordGroupBox.SuspendLayout();
@@ -380,6 +382,7 @@ namespace namaichi
 			// 
 			this.streamInfoGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
 									| System.Windows.Forms.AnchorStyles.Right)));
+			this.streamInfoGroupBox.Controls.Add(this.reservationBox);
 			this.streamInfoGroupBox.Controls.Add(this.endTimeLabel);
 			this.streamInfoGroupBox.Controls.Add(this.label4);
 			this.streamInfoGroupBox.Controls.Add(this.miniStreamStateLabel);
@@ -405,6 +408,19 @@ namespace namaichi
 			this.streamInfoGroupBox.TabIndex = 17;
 			this.streamInfoGroupBox.TabStop = false;
 			this.streamInfoGroupBox.Text = "番組情報";
+			// 
+			// reservationBox
+			// 
+			this.reservationBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.reservationBox.Image = ((System.Drawing.Image)(resources.GetObject("reservationBox.Image")));
+			this.reservationBox.InitialImage = ((System.Drawing.Image)(resources.GetObject("reservationBox.InitialImage")));
+			this.reservationBox.Location = new System.Drawing.Point(518, 23);
+			this.reservationBox.Name = "reservationBox";
+			this.reservationBox.Size = new System.Drawing.Size(15, 15);
+			this.reservationBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+			this.reservationBox.TabIndex = 7;
+			this.reservationBox.TabStop = false;
+			this.reservationBox.Visible = false;
 			// 
 			// endTimeLabel
 			// 
@@ -806,6 +822,7 @@ namespace namaichi
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.streamInfoGroupBox.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.reservationBox)).EndInit();
 			this.mainWindowRightClickMenu.ResumeLayout(false);
 			this.streamStateGroupBox.ResumeLayout(false);
 			this.recordGroupBox.ResumeLayout(false);
@@ -814,6 +831,7 @@ namespace namaichi
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.PictureBox reservationBox;
 		public System.Windows.Forms.Label miniStreamStateLabel;
 		private System.Windows.Forms.ToolStripMenuItem closeNotifyIconMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
