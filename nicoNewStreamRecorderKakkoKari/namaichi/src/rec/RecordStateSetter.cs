@@ -169,7 +169,7 @@ namespace namaichi.rec
 					sw.WriteLine("[放送開始時間] " + openTimeDt.ToString("yyyy/MM/dd(ddd) HH:mm:ss") + br);
 					sw.WriteLine("[タイトル] " + title + br);
 					sw.WriteLine("[限定] " + gentei + br);
-					sw.WriteLine("[放送タイプ] " + ((isJikken) ? "nicocas" : (isRtmpOnlyPage) ? "nicolive" : "nicolive2") + br);
+					sw.WriteLine("[放送タイプ] " + ((isJikken) ? "nicocas" : (isRtmpOnlyPage) ? "nicolive" : "nicolive") + br);
 					sw.WriteLine("[放送者] " + host + br);
 					sw.WriteLine("[コミュニティ名] " + group + br);
 					sw.WriteLine("[説明] " + description + br);

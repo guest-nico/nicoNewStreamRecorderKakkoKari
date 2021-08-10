@@ -26,8 +26,9 @@ namespace namaichi.rec
 		private CookieContainer container = null;
 		private Html5Recorder h5r;
 		public WebSocketRecorder wr = null;
+		public string[] qualityRank = null;
 		public ChaseHokan(numTaskInfo nti, int lastSegmentNo, string[] name,
-				string lvid, RecordingManager rm, Html5Recorder h5r)
+		                  string lvid, RecordingManager rm, Html5Recorder h5r, string[] qualityRank)
 		{
 			this.nti = nti;
 			this.lastSegmentNo = lastSegmentNo;
@@ -35,6 +36,7 @@ namespace namaichi.rec
 			this.lvid = lvid;
 			this.rm = rm;
 			this.h5r = h5r;
+			this.qualityRank = qualityRank;
 		}
 		public void start() {
 			container = getCookie();
@@ -73,7 +75,7 @@ namespace namaichi.rec
 		}
 		private CookieContainer getCookie() {
 			try {
-				var url = "https://live2.nicovideo.jp/watch/" + lvid;
+				var url = "https://live.nicovideo.jp/watch/" + lvid;
 				for (var i = 0; i < 3; i++) {
 					var cg = new CookieGetter(rm.cfg);
 					var cgret = cg.getHtml5RecordCookie(url, true);
@@ -94,7 +96,7 @@ namespace namaichi.rec
 		string getRes() {
 			for (var i = 0; i < 3; i++) {
 				try {
-					var _res = util.getPageSource("https://live2.nicovideo.jp/watch/" + lvid, container);
+					var _res = util.getPageSource("https://live.nicovideo.jp/watch/" + lvid, container);
 					if (_res == null) continue;
 					
 					var pageType = util.getPageType(_res); 
@@ -132,7 +134,7 @@ namespace namaichi.rec
 				var n = nti;
 				var lastWroteSecondsAgo = (int)(((TimeSpan)(DateTime.Now - nti.dt)).TotalSeconds + (int)((nti.no - lastSegmentNo) * nti.second) + 25) * -1;
 				var endSecondsAgo = (int)(((TimeSpan)(DateTime.Now - nti.dt)).TotalSeconds - 15) * -1;
-				var tsConfig = new TimeShiftConfig(0, 0, 0, lastWroteSecondsAgo, 0, 0, endSecondsAgo, false, false, "", false, 0, false, false, 1, 1, false, false, false);
+				var tsConfig = new TimeShiftConfig(0, 0, 0, lastWroteSecondsAgo, 0, 0, endSecondsAgo, false, false, "", false, 0, false, false, 1, 1, false, false, false, qualityRank);
 				var recFolderFile = new string[] {h5r.recFolderFile[0], name[1], null};
 				/*
 				var	recFolderFile = util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, true, tsConfig, openTime, false);

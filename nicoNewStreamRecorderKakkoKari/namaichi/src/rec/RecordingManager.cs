@@ -93,7 +93,7 @@ namespace namaichi.rec
 			util.setProxy(cfg, form);
 			isRecording = true;
 			form.formAction(() => {
-			    form.urlText.Text = "https://live2.nicovideo.jp/watch/" + lvid;
+			    form.urlText.Text = "https://live.nicovideo.jp/watch/" + lvid;
 			    setRecModeForm(true);
 			
 				form.resetDisplay();

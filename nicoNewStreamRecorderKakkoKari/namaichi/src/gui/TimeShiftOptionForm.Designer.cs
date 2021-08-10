@@ -81,10 +81,18 @@ namespace namaichi
 			this.isEndTimeRadioBtn = new System.Windows.Forms.RadioButton();
 			this.isDeletePosTimeChkBox = new System.Windows.Forms.CheckBox();
 			this.isBeforeEndTimeCommentChkBox = new System.Windows.Forms.CheckBox();
+			this.groupBox7 = new System.Windows.Forms.GroupBox();
+			this.downBtn = new System.Windows.Forms.Button();
+			this.upBtn = new System.Windows.Forms.Button();
+			this.qualityListBox = new System.Windows.Forms.ListBox();
+			this.lowRankBtn = new System.Windows.Forms.Button();
+			this.highRankBtn = new System.Windows.Forms.Button();
+			this.openPanelBtn = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.panel2.SuspendLayout();
 			this.groupBox2.SuspendLayout();
+			this.groupBox7.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -539,12 +547,105 @@ namespace namaichi
 			this.isBeforeEndTimeCommentChkBox.Text = "録画終了時間付近以前のコメントを保存する";
 			this.isBeforeEndTimeCommentChkBox.UseVisualStyleBackColor = true;
 			// 
+			// groupBox7
+			// 
+			this.groupBox7.Controls.Add(this.downBtn);
+			this.groupBox7.Controls.Add(this.upBtn);
+			this.groupBox7.Controls.Add(this.qualityListBox);
+			this.groupBox7.Controls.Add(this.lowRankBtn);
+			this.groupBox7.Controls.Add(this.highRankBtn);
+			this.groupBox7.Location = new System.Drawing.Point(339, 11);
+			this.groupBox7.Margin = new System.Windows.Forms.Padding(2);
+			this.groupBox7.Name = "groupBox7";
+			this.groupBox7.Padding = new System.Windows.Forms.Padding(2);
+			this.groupBox7.Size = new System.Drawing.Size(273, 217);
+			this.groupBox7.TabIndex = 33;
+			this.groupBox7.TabStop = false;
+			this.groupBox7.Text = "録画画質優先順位";
+			this.groupBox7.Visible = false;
+			// 
+			// downBtn
+			// 
+			this.downBtn.Location = new System.Drawing.Point(220, 63);
+			this.downBtn.Name = "downBtn";
+			this.downBtn.Size = new System.Drawing.Size(42, 30);
+			this.downBtn.TabIndex = 4;
+			this.downBtn.Text = "下へ";
+			this.downBtn.UseVisualStyleBackColor = true;
+			this.downBtn.Click += new System.EventHandler(this.DownBtnClick);
+			// 
+			// upBtn
+			// 
+			this.upBtn.Location = new System.Drawing.Point(220, 27);
+			this.upBtn.Name = "upBtn";
+			this.upBtn.Size = new System.Drawing.Size(42, 30);
+			this.upBtn.TabIndex = 4;
+			this.upBtn.Text = "上へ";
+			this.upBtn.UseVisualStyleBackColor = true;
+			this.upBtn.Click += new System.EventHandler(this.UpBtnClick);
+			// 
+			// qualityListBox
+			// 
+			this.qualityListBox.FormattingEnabled = true;
+			this.qualityListBox.ItemHeight = 12;
+			this.qualityListBox.Items.AddRange(new object[] {
+									"1. 3Mbps(super_high)",
+									"2. 2Mbps(high・高画質)",
+									"3. 1Mbps(normal・低画質)",
+									"4. 384kbps(low)",
+									"5. 192kbps(super_low)",
+									"6. 音声のみ(audio_high)",
+									"7. 6Mbps(6Mbps1080p30fps)"});
+			this.qualityListBox.Location = new System.Drawing.Point(26, 27);
+			this.qualityListBox.Name = "qualityListBox";
+			this.qualityListBox.Size = new System.Drawing.Size(177, 112);
+			this.qualityListBox.TabIndex = 3;
+			// 
+			// lowRankBtn
+			// 
+			this.lowRankBtn.Location = new System.Drawing.Point(129, 176);
+			this.lowRankBtn.Name = "lowRankBtn";
+			this.lowRankBtn.Size = new System.Drawing.Size(86, 23);
+			this.lowRankBtn.TabIndex = 1;
+			this.lowRankBtn.Text = "なるべく低画質";
+			this.lowRankBtn.UseVisualStyleBackColor = true;
+			this.lowRankBtn.Click += new System.EventHandler(this.LowRankBtnClick);
+			// 
+			// highRankBtn
+			// 
+			this.highRankBtn.Location = new System.Drawing.Point(26, 176);
+			this.highRankBtn.Name = "highRankBtn";
+			this.highRankBtn.Size = new System.Drawing.Size(86, 23);
+			this.highRankBtn.TabIndex = 1;
+			this.highRankBtn.Text = "なるべく高画質";
+			this.highRankBtn.UseVisualStyleBackColor = true;
+			this.highRankBtn.Click += new System.EventHandler(this.HighRankBtnClick);
+			// 
+			// openPanelBtn
+			// 
+			this.openPanelBtn.BackColor = System.Drawing.SystemColors.Window;
+			this.openPanelBtn.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.openPanelBtn.Font = new System.Drawing.Font("MS UI Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.openPanelBtn.Location = new System.Drawing.Point(285, 2);
+			this.openPanelBtn.Name = "openPanelBtn";
+			this.openPanelBtn.Size = new System.Drawing.Size(54, 13);
+			this.openPanelBtn.TabIndex = 34;
+			this.openPanelBtn.Text = "追加設定";
+			this.openPanelBtn.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.openPanelBtn.Click += new System.EventHandler(this.openPanelBtnClick);
+			this.openPanelBtn.Leave += new System.EventHandler(this.OpenPanelBtnLeave);
+			this.openPanelBtn.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OpenPanelBtnMouseDown);
+			this.openPanelBtn.MouseLeave += new System.EventHandler(this.OpenPanelBtnMouseLeave);
+			this.openPanelBtn.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OpenPanelBtnMouseUp);
+			// 
 			// TimeShiftOptionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Window;
-			this.ClientSize = new System.Drawing.Size(341, 428);
+			this.ClientSize = new System.Drawing.Size(618, 428);
+			this.Controls.Add(this.openPanelBtn);
+			this.Controls.Add(this.groupBox7);
 			this.Controls.Add(this.resetBtn);
 			this.Controls.Add(this.lastSettingBtn);
 			this.Controls.Add(this.groupBox2);
@@ -552,6 +653,7 @@ namespace namaichi
 			this.Controls.Add(this.okBtn);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox1);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Name = "TimeShiftOptionForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "タイムシフト録画設定";
@@ -563,8 +665,16 @@ namespace namaichi
 			this.panel2.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
+			this.groupBox7.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label openPanelBtn;
+		private System.Windows.Forms.Button highRankBtn;
+		private System.Windows.Forms.Button lowRankBtn;
+		private System.Windows.Forms.ListBox qualityListBox;
+		private System.Windows.Forms.Button upBtn;
+		private System.Windows.Forms.Button downBtn;
+		private System.Windows.Forms.GroupBox groupBox7;
 		private System.Windows.Forms.Button openLastFileBtn;
 		private System.Windows.Forms.CheckBox isDeletePosTimeChkBox;
 		private System.Windows.Forms.CheckBox isBeforeEndTimeCommentChkBox;

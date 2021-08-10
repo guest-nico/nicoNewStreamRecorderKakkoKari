@@ -101,7 +101,7 @@ namespace namaichi.rec
 		public bool isRtmp;
 		private RtmpRecorder rr;
 		
-		private string qualityRank = null;
+		private string[] qualityRank = null;
 		private string isGetComment = null;
 		private bool isGetCommentXml = false;
 		private bool isGetCommentXmlInfo = false;
@@ -163,7 +163,7 @@ namespace namaichi.rec
 			this.isRtmp = isRtmp;
 			this.rss = rss;
 			
-			this.qualityRank = rm.cfg.get("qualityRank");
+			this.qualityRank = tsConfig == null ? rm.cfg.get("qualityRank").Split(',') : tsConfig.qualityRank;
 			this.isGetComment = rm.cfg.get("IsgetComment");
 			this.isGetCommentXml = bool.Parse(rm.cfg.get("IsgetcommentXml"));
 			this.isGetCommentXmlInfo = bool.Parse(rm.cfg.get("IsgetcommentXmlInfo"));
@@ -482,7 +482,6 @@ namespace namaichi.rec
 				
 				setMsInfo(e.Message);
 				if (isTimeShift && !isRealtimeChase) {
-					//if (tscg == null && !(isChase && chaseCommentBuf == null)) {
 					if (tscg == null) {
 						if (!(isChase && chaseCommentBuf == null)) {
 							tscg = new TimeShiftCommentGetter(msUri, msThread, msStoreUri, msStoreThread,                                  
@@ -1277,7 +1276,7 @@ namespace namaichi.rec
 			var gettableList = webSocketInfo[2] == "1" ? 
 					util.getRegGroup(msg, "\"qualityTypes\"\\:\\[(.+?)\\]").Replace("\"", "").Split(',')
 					: util.getRegGroup(msg, "\"availableQualities\"\\:\\[(.+?)\\]").Replace("\"", "").Split(',');
-			var ranks = (rm.ri == null) ? (qualityRank.Split(',')) :
+			var ranks = (rm.ri == null) ? (qualityRank) :
 					rm.ri.qualityRank;
 			//if (ranks.Length == 6) qualityList.Insert(0, "abr");
 			

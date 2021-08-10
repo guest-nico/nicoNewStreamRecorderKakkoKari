@@ -61,6 +61,7 @@ namespace namaichi
 			isAfterStartTimeCommentChkBox.Checked = bool.Parse(config.get("IsAfterStartTimeComment"));
 			isBeforeEndTimeCommentChkBox.Checked = bool.Parse(config.get("IsBeforeEndTimeComment"));
 			isDeletePosTimeChkBox.Checked = bool.Parse(config.get("tsIsDeletePosTime"));
+			setInitQualityRankList(config.get("qualityRank"));
 			updateTimeShiftStartTimeChkBox();
 			updateIsManualEndTimeRadioBtn();
 			this.config = config;
@@ -79,6 +80,8 @@ namespace namaichi
 				this.prepTime = prepTime; 
 			}
 			util.setFontSize(int.Parse(config.get("fontSize")), this, false);
+			openPanelBtn.Font = new Font(openPanelBtn.Font.FontFamily, 8, openPanelBtn.Font.Style);
+			Width = 357;
 		}
 		private void updateTimeShiftStartTimeChkBox() {
 			hText.Enabled = mText.Enabled = sText.Enabled =
@@ -181,7 +184,7 @@ namespace namaichi
 				openListCommand, isM3u8List, m3u8UpdateSeconds, isOpenUrlList,
 				isSetVposStartTime.Checked, startTimeMode, endTimeMode, 
 				isAfterStartTimeCommentChkBox.Checked, isBeforeEndTimeCommentChkBox.Checked,
-				isDeletePosTimeChkBox.Checked);
+				isDeletePosTimeChkBox.Checked, getQualityRank().Split(','));
 			ret.lastFileTime = lastFileTime;
 			if (startTimeMode == 2) ret.lastFileName = lastFileName;
 			
@@ -346,6 +349,128 @@ namespace namaichi
 			else lastFileInfoLabel.Text = "(前回の録画ファイルが見つかりませんでした)";
 			isRenketuLastFile.Enabled = t != null;
 			isFromLastTimeRadioBtn.Enabled = t != null;
+		}
+		string getQualityRank() {
+			var buf = getItemsToRanks(qualityListBox.Items);
+			var ret = "";
+			foreach (var r in buf) {
+				if (ret != "") ret += ",";
+				ret += r;
+			}
+			return ret;
+		}
+		List<int> getItemsToRanks(ListBox.ObjectCollection items) {
+			var itemsDic = namaichi.config.config.qualityList;
+			var ret = new List<int>();
+			for (int i = 0; i < items.Count; i++) {
+				foreach (KeyValuePair <int, string> p in itemsDic)
+					if (p.Value == items[i].ToString().Substring(3)) ret.Add(p.Key);
+			}
+			return ret;
+		}
+		void setInitQualityRankList(string qualityRank) {
+			var ranks = new List<int>();
+			foreach (var r in qualityRank.Split(','))
+				ranks.Add(int.Parse(r));
+//			ranks.AddRange(qualityRank.Split(','));
+			
+			qualityListBox.Items.Clear();
+			if (ranks.Count == 6 && false) {
+				ranks.Remove(0);
+				for (var i = 0; i < ranks.Count; i++) ranks[i] -= 1;
+			}
+			var items = getRanksToItems(ranks.ToArray(), qualityListBox);
+			qualityListBox.Items.AddRange(items);
+		}
+		public object[] getRanksToItems(int[] ranks, ListBox owner) {
+			var items = namaichi.config.config.qualityList;
+			
+			var ret = new List<object>();
+			for (int i = 0; i < ranks.Length; i++) {
+				if (ranks[i] >= items.Count) continue;
+				ret.Add((i + 1) + ". " + items[ranks[i]]);
+			}
+			foreach (var k in items.Keys)
+				if (Array.IndexOf(ranks, k) == -1)
+					ret.Add((ret.Count + 1) + ". " + items[k]);
+			return ret.ToArray();
+		}
+		void UpBtnClick(object sender, EventArgs e)
+		{
+			var selectedIndex = qualityListBox.SelectedIndex;
+			if (selectedIndex < 1) return;
+			
+			var ranks = getItemsToRanks(qualityListBox.Items);
+			var selectedVal = ranks[selectedIndex + 0];
+			ranks.RemoveAt(selectedIndex);
+			var addIndex = (selectedIndex == 0) ? 0 : (selectedIndex - 1);
+			ranks.Insert(addIndex, selectedVal);
+			
+			qualityListBox.Items.Clear();
+			qualityListBox.Items.AddRange(getRanksToItems(ranks.ToArray(), qualityListBox));
+			qualityListBox.SetSelected(addIndex, true);
+		}
+		void DownBtnClick(object sender, EventArgs e)
+		{
+			var selectedIndex = qualityListBox.SelectedIndex;
+			var itemCount = qualityListBox.Items.Count;
+			if (selectedIndex > itemCount - 2) return;
+			
+			var ranks = getItemsToRanks(qualityListBox.Items);
+			var selectedVal = ranks[selectedIndex + 0];
+			ranks.RemoveAt(selectedIndex);
+			var addIndex = (selectedIndex == itemCount) ? itemCount : (selectedIndex + 1);
+			ranks.Insert(addIndex, selectedVal);
+			
+			qualityListBox.Items.Clear();
+			qualityListBox.Items.AddRange(getRanksToItems(ranks.ToArray(), qualityListBox));
+			qualityListBox.SetSelected(addIndex, true);
+		}
+		void HighRankBtnClick(object sender, EventArgs e)
+		{
+			List<int> ranks = new List<int>() {6,0,1,2,3,4,5};
+			for (var i = ranks.Count; i < namaichi.config.config.qualityList.Count; i++)
+				ranks.Add(i);
+			qualityListBox.Items.Clear();
+			qualityListBox.Items.AddRange(getRanksToItems(ranks.ToArray(), qualityListBox));
+		}
+		void LowRankBtnClick(object sender, EventArgs e)
+		{
+			List<int> ranks = new List<int>() {5, 4, 3, 2, 1, 0, 6};
+			for (var i = ranks.Count; i < namaichi.config.config.qualityList.Count; i++)
+				ranks.Add(i);
+			qualityListBox.Items.Clear();
+			qualityListBox.Items.AddRange(getRanksToItems(ranks.ToArray(), qualityListBox));
+		}
+		
+		void openPanelBtnClick(object sender, EventArgs e)
+		{
+			if (groupBox7.Visible) {
+				openPanelBtn.BackColor = Color.White;
+				Width = 357;
+				groupBox7.Visible = false;
+			} else {
+				openPanelBtn.BackColor = Color.FromArgb(232,232,232);
+				Width = 624;
+				groupBox7.Visible = true;
+			}
+		}
+		void OpenPanelBtnMouseDown(object sender, MouseEventArgs e)
+		{
+			openPanelBtn.Padding = new Padding(1,1,0,0);
+			
+		}
+		void OpenPanelBtnLeave(object sender, EventArgs e)
+		{
+			openPanelBtn.Padding = new Padding(0);
+		}
+		void OpenPanelBtnMouseLeave(object sender, EventArgs e)
+		{
+			openPanelBtn.Padding = new Padding(0);
+		}
+		void OpenPanelBtnMouseUp(object sender, MouseEventArgs e)
+		{
+			openPanelBtn.Padding = new Padding(0);
 		}
 	}
 }

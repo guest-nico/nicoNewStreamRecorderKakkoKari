@@ -33,7 +33,7 @@ namespace namaichi.rec
 		}
 		public bool get(string _url) {
 			var lvid = util.getRegGroup(_url, "((lv|c[oh])\\d+)");
-			var url =  "https://live2.nicovideo.jp/watch/" + lvid;
+			var url =  "https://live.nicovideo.jp/watch/" + lvid;
 			var res = util.getPageSource(url, null);
 			if (res == null) return false;
 			

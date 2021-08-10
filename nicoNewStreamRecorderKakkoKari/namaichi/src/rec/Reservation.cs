@@ -187,8 +187,8 @@ namespace namaichi.rec
 			header.Add("Cookie", cc.GetCookieHeader(new Uri(useUrl)));
 			header.Add("Accept", "application/json, text/plain, */*");
 			header.Add("Content-Type", "application/x-www-form-urlencoded");
-			header.Add("Referer", "https://live2.nicovideo.jp/watch/lv" + id);
-			header.Add("Origin", "https://live2.nicovideo.jp");
+			header.Add("Referer", "https://live.nicovideo.jp/watch/lv" + id);
+			header.Add("Origin", "https://live.nicovideo.jp");
 			//header.Add("User-Agent", util.userAgent);
 			return header;
 		}

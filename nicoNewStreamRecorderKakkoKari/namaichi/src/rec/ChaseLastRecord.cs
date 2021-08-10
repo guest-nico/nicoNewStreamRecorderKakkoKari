@@ -59,7 +59,7 @@ namespace namaichi.rec
 				Thread.Sleep(5000);
 				//var timeout = i == 0 ? 3000 : 15000;
 				var timeout = 3000;
-				var _res = util.getPageSource("https://live2.nicovideo.jp/watch/" + lvid, container, null, false, timeout);
+				var _res = util.getPageSource("https://live.nicovideo.jp/watch/" + lvid, container, null, false, timeout);
 				if (_res == null) {
 					util.debugWriteLine("chaseLastRecord getres getPage null " + i);
 					continue;
@@ -130,7 +130,7 @@ namespace namaichi.rec
 				if (lastFileTime == null)
 					util.debugWriteLine("timeshift lastfiletime " + 
 					                    ((lastFileTime == null) ? "null" : string.Join(" ", lastFileTime)));
-				var tsConfig = new TimeShiftConfig(1, int.Parse(lastFileTime[0]), int.Parse(lastFileTime[1]), int.Parse(lastFileTime[2]), 0, 0, 0, true, false, "", false, 0, false, false, 2, 0, false, false, this.tsConfig.isDeletePosTime);
+				var tsConfig = new TimeShiftConfig(1, int.Parse(lastFileTime[0]), int.Parse(lastFileTime[1]), int.Parse(lastFileTime[2]), 0, 0, 0, true, false, "", false, 0, false, false, 2, 0, false, false, this.tsConfig.isDeletePosTime, this.tsConfig.qualityRank);
 				tsConfig.endTimeMode = this.tsConfig.endTimeMode;
 				tsConfig.endTimeSeconds = this.tsConfig.endTimeSeconds;
 				tsConfig.lastSegmentNo = lastSegmentNo;

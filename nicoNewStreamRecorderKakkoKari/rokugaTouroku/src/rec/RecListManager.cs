@@ -41,7 +41,7 @@ namespace rokugaTouroku.rec
 			
 			var url = "";
 			if (lvid != null) {
-				url = "https://live2.nicovideo.jp/watch/" + lvid;
+				url = "https://live.nicovideo.jp/watch/" + lvid;
 				
 				try {
 					if (bool.Parse(cfg.get("IsDuplicateConfirm"))) {

@@ -33,8 +33,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.46";
-	public static string versionDayStr = "2021/08/07";
+	public static string versionStr = "ver0.88.47";
+	public static string versionDayStr = "2021/08/10";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -769,7 +769,7 @@ class util {
 		}
 	}
 	public static bool isEndedProgram(string lvid, CookieContainer container, bool isSub) {
-		var url = "https://live2.nicovideo.jp/watch/" + lvid;
+		var url = "https://live.nicovideo.jp/watch/" + lvid;
 		
 		//var a = new System.Net.WebHeaderCollection();
 		var res = util.getPageSource(url, container);
@@ -1190,7 +1190,7 @@ public static void soundEnd(config cfg, MainForm form) {
 	public static bool getStatistics(string lvid, CookieContainer cc, out string visit, out string comment) {
 		visit = "0";
 		comment = "0";
-		var url = "https://live2.nicovideo.jp/watch/" + lvid;
+		var url = "https://live.nicovideo.jp/watch/" + lvid;
 		var res = getPageSource(url, cc);
 		if (res == null) return false;
 		var _visit = util.getRegGroup(res, "statistics&quot;:{&quot;watchCount&quot;:(\\d+),&quot;commentCount&quot;:\\d+}");

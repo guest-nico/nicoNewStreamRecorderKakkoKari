@@ -369,7 +369,7 @@ namespace namaichi.rec
 		}
 		private int getPageAfterFollow(string url, string lvid, ref JikkenRecorder jr, out CookieContainer cc) {
 			Uri TargetUrl = new Uri("https://live.nicovideo.jp");
-			Uri TargetUrl2 = new Uri("https://live2.nicovideo.jp");
+			//Uri TargetUrl2 = new Uri("https://live2.nicovideo.jp");
 			for (int i = 0; this == rm.rfu; i++) {
 				try {
 					var cg = new CookieGetter(rm.cfg);
@@ -397,7 +397,7 @@ namespace namaichi.rec
 	//				var pagetype = getPageType(url + "?ref=grel");
 	//				if (pagetype != 5) return pagetype;
 	//				if (res.IndexOf("会場のご案内") < 0) break;
-					var _url = "https://live2.nicovideo.jp/watch/" + lvid;                              
+					var _url = "https://live.nicovideo.jp/watch/" + lvid;                              
 					var req = (HttpWebRequest)WebRequest.Create(_url + "?ref=grel");
 					req.Proxy = util.httpProxy;
 					req.AllowAutoRedirect = true;

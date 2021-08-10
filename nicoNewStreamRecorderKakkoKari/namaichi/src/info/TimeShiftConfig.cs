@@ -46,7 +46,7 @@ namespace namaichi.info
 		public int lastSegmentNo = -1;
 		public string[] lastFileTime = null;
 		public string lastFileName = null;
-		
+		public string[] qualityRank = null;
 		//public string startTimeStr;
 		
 		public TimeShiftConfig(int startType, 
@@ -56,7 +56,7 @@ namespace namaichi.info
 				double m3u8UpdateSeconds, bool isOpenUrlList,
 				bool isVposStartTime, int startTimeMode, int endTimeMode,
 				bool isAfterStartTimeComment, bool isBeforeEndTimeComment,
-				bool isDeletePosTime)
+				bool isDeletePosTime, string[] qualityRank)
 		{
 			this.startType = startType;
 			this.h = h;
@@ -87,9 +87,10 @@ namespace namaichi.info
 			this.isAfterStartTimeComment = isAfterStartTimeComment;
 			this.isBeforeEndTimeComment = isBeforeEndTimeComment;
 			this.isDeletePosTime = isDeletePosTime;
+			this.qualityRank = qualityRank;
 		}
 		public TimeShiftConfig() : this(0, 0, 0, 0, 0, 0, 0, 
-				false, false, "notepad {i}", false, 5, false, false, 0, 0, false, false, true) {}
+				false, false, "notepad {i}", false, 5, false, false, 0, 0, false, false, true, null) {}
 		public TimeShiftConfig clone() {
 			return new TimeShiftConfig(startType, h, m, s,
 					endH, endM, endS, isContinueConcat,
@@ -98,7 +99,7 @@ namespace namaichi.info
 					m3u8UpdateSeconds, isOpenUrlList, isVposStartTime, 
 					startTimeMode, endTimeMode, isAfterStartTimeComment,
 					isOpenTimeBaseStartArg, isOpenTimeBaseEndArg,
-					isBeforeEndTimeComment, isDeletePosTime
+					isBeforeEndTimeComment, isDeletePosTime, qualityRank
 				);
 		}
 		public TimeShiftConfig(int startType, int h, int m, int s, 
@@ -110,7 +111,8 @@ namespace namaichi.info
 				int startTimeMode, int endTimeMode, 
 				bool isAfterStartTimeComment, 
 				bool isOpenTimeBaseStartArg, bool isOpenTimeBaseEndArg,
-				bool isBeforeEndTimeComment, bool isDeletePosTime) {
+				bool isBeforeEndTimeComment, bool isDeletePosTime,
+				string[] qualityRank) {
 			this.startType = startType;
 			this.h = h;
 			this.m = m;
@@ -135,6 +137,7 @@ namespace namaichi.info
 			this.isOpenTimeBaseEndArg = isOpenTimeBaseEndArg;
 			this.isBeforeEndTimeComment = isBeforeEndTimeComment;
 			this.isDeletePosTime = isDeletePosTime;
+			this.qualityRank = qualityRank;
 		}
 	}
 }

@@ -54,9 +54,9 @@ namespace rokugaTouroku.info
 			this.id = id;
 			var lvM = Regex.Match(url, "lv\\d+");
 			if (lvM != null && !string.IsNullOrEmpty(lvM.Value)) {
-				if (url.IndexOf("live.nicovideo.jp") != -1)
+				//if (url.IndexOf("live.nicovideo.jp") != -1)
 					this.url = "https://live.nicovideo.jp/watch/" + lvM.Value;
-				else this.url = "https://live2.nicovideo.jp/watch/" + lvM.Value;
+				//else this.url = "https://live2.nicovideo.jp/watch/" + lvM.Value;
 			} else this.url = url;
 			this.rdg = rdg;
 			this.state = "待機中";

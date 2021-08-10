@@ -655,7 +655,7 @@ namespace rokugaTouroku
 				if (url == null) continue;
 				var _url = util.getRegGroup(url, "(lv\\d+)");
 				if (_url == null) continue;
-				_url = "https://live2.nicovideo.jp/watch/" + _url;
+				_url = "https://live.nicovideo.jp/watch/" + _url;
 				t += _url + "\r\n";
 			}
 			var f = new UrlListSaveForm(t, int.Parse(config.get("fontSize")));
