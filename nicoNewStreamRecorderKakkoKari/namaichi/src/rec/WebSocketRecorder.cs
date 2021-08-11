@@ -163,7 +163,8 @@ namespace namaichi.rec
 			this.isRtmp = isRtmp;
 			this.rss = rss;
 			
-			this.qualityRank = tsConfig == null ? rm.cfg.get("qualityRank").Split(',') : tsConfig.qualityRank;
+			this.qualityRank = (tsConfig == null || tsConfig.qualityRank == null) ?
+					rm.cfg.get("qualityRank").Split(',') : tsConfig.qualityRank;
 			this.isGetComment = rm.cfg.get("IsgetComment");
 			this.isGetCommentXml = bool.Parse(rm.cfg.get("IsgetcommentXml"));
 			this.isGetCommentXmlInfo = bool.Parse(rm.cfg.get("IsgetcommentXmlInfo"));
