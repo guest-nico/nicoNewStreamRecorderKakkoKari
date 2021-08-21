@@ -338,7 +338,7 @@ namespace namaichi
 	        	    }
 	        	    communityLabel.Text = group;
 	        	    if (groupUrl != null) {
-	        	    	communityLabel.Links.Add(0, groupLabel.Text.Length, groupUrl);
+	        	    	communityLabel.Links.Add(0, communityLabel.Text.Length, groupUrl);
 	        	    }
 	        	    genteiLabel.Text = gentei;
 	        	    startTimeLabel.Text = openTime;

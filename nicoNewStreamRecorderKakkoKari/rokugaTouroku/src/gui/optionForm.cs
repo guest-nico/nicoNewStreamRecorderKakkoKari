@@ -310,8 +310,8 @@ namespace rokugaTouroku
 //				util.debugWriteLine(c.Result.Cookies["user_session"]);
 //			}
 				
-			SmartImporterFactory.blinkWithoutPathList.Clear();
-			SmartImporterFactory.geckoWithoutPathList.Clear();
+			//SmartImporterFactory.blinkWithoutPathList.Clear();
+			//SmartImporterFactory.geckoWithoutPathList.Clear();
 			var tsk = nicoSessionComboBox1.Selector.UpdateAsync(); 
 		}
 		void btnReload2_Click(object sender, EventArgs e)
@@ -326,8 +326,8 @@ namespace rokugaTouroku
 //				util.debugWriteLine(c.Result.Cookies["user_session"]);
 //			}
 				
-			SmartImporterFactory.blinkWithoutPathList.Clear();
-			SmartImporterFactory.geckoWithoutPathList.Clear();
+			//SmartImporterFactory.blinkWithoutPathList.Clear();
+			//SmartImporterFactory.geckoWithoutPathList.Clear();
 			var tsk = nicoSessionComboBox2.Selector.UpdateAsync(); 
 		}
         void btnOpenCookieFileDialog_Click(object sender, EventArgs e)

@@ -146,7 +146,7 @@ namespace namaichi.rec
 				}
 			}
 			
-			when = util.getUnixTime();//(int)openTime;
+			when = util.getUnixTime() + (int)rp.jisa.TotalSeconds + 60 * 60 * 50;//(int)openTime
 			gotMinTime = when;
 	        
 			

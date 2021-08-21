@@ -907,7 +907,8 @@ namespace rokugaTouroku
 				if (ri.state == "録画完了") 
 					e.CellStyle.BackColor = Color.FromArgb(207, 255, 117);
 				if (ri.state == "録画失敗")
-					e.CellStyle.BackColor = Color.FromArgb(255, 255, 155);
+					//e.CellStyle.BackColor = Color.FromArgb(255, 255, 155);
+					e.CellStyle.BackColor = Color.FromArgb(255, 225, 226);
 			} catch (Exception ee) {
 				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}

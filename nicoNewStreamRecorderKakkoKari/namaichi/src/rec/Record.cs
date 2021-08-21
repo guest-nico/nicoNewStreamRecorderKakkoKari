@@ -96,6 +96,7 @@ namespace namaichi.rec
 		private int baseTfdt = -1;
 		private byte[] initMp4 = null;
 		private numTaskInfo lastWriteFmp4Nti = null;
+		private double lateTime = 100;
 		
 		public Record(RecordingManager rm, bool isFFmpeg, 
 		              RecordFromUrl rfu, string hlsUrl, 
@@ -804,9 +805,10 @@ namespace namaichi.rec
 			//if (res == null || (lastSegmentNo != -1 && res.IndexOf(lastSegmentNo.ToString()) == -1)) {
 			if (res == null || (lastSegmentNo != -1 && min != -1 && min > lastSegmentNo)) {
 			//if (res == null) {
-				addDebugBuf("nuke? lastSegmentNo " + lastSegmentNo + " min " + " min " + min + " res " + res);
+				addDebugBuf("nuke? reconnect lastSegmentNo " + lastSegmentNo + " min " + " min " + min + " res " + res);
 //				rm.form.addLogText("リトライ lastSegmentNo " + lastSegmentNo + " res " + res + " min " + min);
 				((WebSocketRecorder)wr).displayDebug("ts task res " + res + " / lastsegno " + lastSegmentNo + " / min " + min + " reconnect");
+				lateTime = 100;
 				setReconnecting(true);
 //				if (!isReConnecting) 
 					reConnect();
@@ -943,13 +945,24 @@ namespace namaichi.rec
 					isEnd = _isEnd;
 				}
 				
-				var lateTime = streamDuration - lastSegmentNo / 1000;
+				lateTime = streamDuration - lastSegmentNo / 1000;
 				util.debugWriteLine("lateTime " + lateTime);
 				if (lateTime > 11 || !((WebSocketRecorder)wr).isChase) {
 					if (!isSpeedUp) setSpeed(true);
 				} else if (lateTime < 7 && false) {
 					if (isSpeedUp) {
 						setSpeed(false);
+					}
+				}
+				if (hlsMasterUrl.IndexOf("start") > -1) {
+					if (lateTime < 15) {
+						setReconnecting(true);
+						reConnect();
+					}
+				} else {
+					if (lateTime > 15) {
+						setReconnecting(true);
+						reConnect();
 					}
 				}
 				addDebugBuf(rm.form.getKeikaTime());
@@ -1251,7 +1264,8 @@ namespace namaichi.rec
 			recordingQuality = quality;
 			
 			hlsMasterUrl = url;
-			if (isTimeShift) {
+			if (isTimeShift && 
+			    	!(((WebSocketRecorder)wr).isChase && lateTime < 15)) {
 				var start = 0;
 				//var recorded = lastRecordedSeconds < lastSegmentNo / 1000 ? lastRecordedSeconds : lastSegmentNo; 
 				if (lastRecordedSeconds == -1) {
@@ -1263,7 +1277,6 @@ namespace namaichi.rec
 				}
 				
 				hlsMasterUrl = hlsMasterUrl + "&start=" + (start.ToString());
-
 				
 				wr.tsHlsRequestTime = DateTime.Now;
 				wr.tsStartTime = TimeSpan.FromSeconds((double)start);

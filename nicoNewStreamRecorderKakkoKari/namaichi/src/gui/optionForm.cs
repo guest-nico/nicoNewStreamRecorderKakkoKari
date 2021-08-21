@@ -306,8 +306,8 @@ namespace namaichi
 //			}
 				
 //			a.GetCookieImporter(new CookieSourceInfo("
-			SmartImporterFactory.blinkWithoutPathList.Clear();
-			SmartImporterFactory.geckoWithoutPathList.Clear();
+			//SmartImporterFactory.blinkWithoutPathList.Clear();
+			//SmartImporterFactory.geckoWithoutPathList.Clear();
 			var tsk = nicoSessionComboBox1.Selector.UpdateAsync();
 			
 		}
@@ -324,8 +324,8 @@ namespace namaichi
 //			}
 				
 //			a.GetCookieImporter(new CookieSourceInfo("
-			SmartImporterFactory.blinkWithoutPathList.Clear();
-			SmartImporterFactory.geckoWithoutPathList.Clear();
+			//SmartImporterFactory.blinkWithoutPathList.Clear();
+			//SmartImporterFactory.geckoWithoutPathList.Clear();
 			var tsk = nicoSessionComboBox2.Selector.UpdateAsync(); 
 		}
         void btnOpenCookieFileDialog_Click(object sender, EventArgs e)
