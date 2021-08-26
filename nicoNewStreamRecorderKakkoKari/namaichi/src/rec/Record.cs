@@ -250,7 +250,7 @@ namespace namaichi.rec
 					rm.form.addLogText("抜けセグメントの補完を試みます");
 					addDebugBuf("抜けセグメントの補完を試みます");
 					if (dsp == null) {
-						dsp = new DropSegmentProcess(lastWroteSegmentDt, lastSegmentNo, this, recFolderFileOrigin, rfu, rm, h5r, tsConfig.qualityRank);
+						dsp = new DropSegmentProcess(lastWroteSegmentDt, lastSegmentNo, this, recFolderFileOrigin, rfu, rm, h5r);
 						dsp.writeRemaining();
 						dsp = null;
 					} 
@@ -278,7 +278,7 @@ namespace namaichi.rec
 						tf.start(recFolderFile + ext, true);
 					}
 				}
-				rm.form.addLogText("録画終了処理を完了しました");
+				//rm.form.addLogText("録画終了処理を完了しました");
 			}
 				
 			
@@ -1481,7 +1481,8 @@ namespace namaichi.rec
 				} else if (segmentSaveType == 0) {
 //					if (rm.cfg.get("IsAfterRenketuFFmpeg") == "true" || 
 //				    	    int.Parse(rm.cfg.get("afterConvertMode")) > 1) {
-					if (int.Parse(rm.cfg.get("afterConvertMode")) > 0) {
+					if (int.Parse(rm.cfg.get("afterConvertMode")) > 0 && 
+					    (isEndProgram || rm.rfu != rfu)) {
 						var tf = new ThroughFFMpeg(rm);
 						tf.start(recFolderFile + ext, true);
 						
@@ -1786,7 +1787,7 @@ namespace namaichi.rec
 		}
 		private void dropSegmentProcess(numTaskInfo s, DateTime _lastWroteSegmentDt, int _lastSegmentNo) {
 			if (dsp == null) {
-				dsp = new DropSegmentProcess(_lastWroteSegmentDt, _lastSegmentNo, this, recFolderFileOrigin, rfu, rm, h5r, tsConfig.qualityRank);
+				dsp = new DropSegmentProcess(_lastWroteSegmentDt, _lastSegmentNo, this, recFolderFileOrigin, rfu, rm, h5r);
 				if (!dsp.start(s)) dsp = null;
 				//dsp = null;
 			} else dsp.updateHokanEndtime();

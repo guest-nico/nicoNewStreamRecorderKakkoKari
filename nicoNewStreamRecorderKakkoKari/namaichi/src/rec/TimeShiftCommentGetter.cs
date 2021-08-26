@@ -58,7 +58,7 @@ namespace namaichi.rec
 		bool isGetXml = true;
 		bool isGetCommentXmlInfo = false;
 		public List<GotCommentInfo> gotCommentList = new List<GotCommentInfo>();
-		List<GotCommentInfo> gotCommentListBuf = new List<GotCommentInfo>();
+		public List<GotCommentInfo> gotCommentListBuf = new List<GotCommentInfo>();
 		
 		//private StreamWriter commentSW;
 		private string fileName;
@@ -78,6 +78,7 @@ namespace namaichi.rec
 		private int[] quePosTimeList;
 		private RtmpRecorder rr;
 		private bool isConvertSpace;
+		private string commentConvertStr = null;
 		private TimeShiftConfig tsConfig = null;
 		private bool isStore;
 		private bool isNormalizeComment;
@@ -119,6 +120,7 @@ namespace namaichi.rec
 			this.isRtmp = isRtmp;
 			this.rr = rr;
 			isConvertSpace = bool.Parse(rm.cfg.get("IsCommentConvertSpace"));
+			commentConvertStr = rm.cfg.get("commentConvertStr");
 			isNormalizeComment = bool.Parse(rm.cfg.get("IsNormalizeComment"));
 			this.roomName = roomName;
 			this.tsConfig = tsConfig;
@@ -215,7 +217,7 @@ namespace namaichi.rec
 			}
 		}
 		private void onWscOpen(object sender, EventArgs e) {
-			util.debugWriteLine("ms open a");
+			util.debugWriteLine("ms open tscg a");
 			try {
 				_gotMinTime = gotMinTime;
 				_gotMinXml = new String[]{gotMinXml[0], gotMinXml[1]};
@@ -248,7 +250,7 @@ namespace namaichi.rec
 //					rm.form.addLogText("コメントの保存を完了しました");
 					return;
 				}
-				if (rm.rfu == rfu && isRetry && !isEnd) {
+				if ((rm.rfu == rfu && lastRealTimeComment == null) && isRetry && !isEnd) {
 					while (true) {
 						try {
 							if (!connect()) {
@@ -271,7 +273,7 @@ namespace namaichi.rec
 		}
 
 		private void onWscError(object sender, SuperSocket.ClientEngine.ErrorEventArgs e) {
-			util.debugWriteLine("ms onerror " + e.Exception.Message + e.Exception.Source + e.Exception.StackTrace + e.Exception.TargetSite);
+			util.debugWriteLine("ms tscg onerror " + e.Exception.Message + e.Exception.Source + e.Exception.StackTrace + e.Exception.TargetSite);
 			/*
 			gotCommentList = new List<TimeShiftCommentGetter.GotCommentInfo>();
 			gotCommentListBuf = new List<TimeShiftCommentGetter.GotCommentInfo>();
@@ -286,10 +288,10 @@ namespace namaichi.rec
 		
 		
 		private void onWscMessageReceive(object sender, MessageReceivedEventArgs e) {
-			var eMessage = isConvertSpace ? util.getOkSJisOut(e.Message, rm.cfg.get("commentConvertStr")) : e.Message;
+			var eMessage = isConvertSpace ? util.getOkSJisOut(e.Message, commentConvertStr) : e.Message;
 			if (isNormalizeComment) eMessage = eMessage.Replace("\"premium\":24", "\"premium\":0");
 			try {
-				if (rm.rfu != rfu || !isRetry) {
+				if ((rm.rfu != rfu && lastRealTimeComment == null) || !isRetry) {
 					try {
 						if (wsc != null) wsc.Close();
 					} catch (Exception ee) {
@@ -462,6 +464,7 @@ namespace namaichi.rec
 			isRetry = b;
 		}
 		private void endProcess() {
+			util.debugWriteLine("tscg end process");
 			if (isStore) return;
 			try {
 			

@@ -77,7 +77,7 @@ namespace namaichi.rec
 		private DateTime lastEndProgramCheckTime = DateTime.Now;
 		private DateTime lastWebsocketConnectTime = DateTime.MinValue;
 		
-		private TimeSpan jisa;
+		public TimeSpan jisa;
 		//private DateTime beginTime = null;
 		//private DateTime endTime = null;
 		private TimeSpan programTime = TimeSpan.Zero;
@@ -312,6 +312,8 @@ namespace namaichi.rec
 			
 			isLogEnd = true;
 			if (rec != null) Record.isWriteCancel = false;
+			if (userId != null)
+				rm.form.addLogText("録画終了処理を完了しました");
 			return isNoPermission;
 		}
 		
@@ -1837,8 +1839,9 @@ namespace namaichi.rec
 				var t = DateTime.Now;
 				while (!tscg.isEnd) {
 					Thread.Sleep(1000);
-					if (DateTime.Now - t > TimeSpan.FromMinutes(1) && 
-					    	tscg.gotCommentList.Count == 0) return;
+					if (DateTime.Now - t > TimeSpan.FromSeconds(30) && 
+					    	tscg.gotCommentList.Count == 0 &&
+					    	tscg.gotCommentListBuf.Count == 0) return;
 					//if (rm.rfu != rfu || !isRetry) return;
 				}
 				var ind = Array.IndexOf(gotTsCommentList, lastSaveComments[lastSaveComments.Count - 1]);

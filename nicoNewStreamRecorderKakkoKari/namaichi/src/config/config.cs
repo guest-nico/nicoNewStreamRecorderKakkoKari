@@ -262,7 +262,7 @@ public class config
 			{"recBackColor","-1"},
 			{"recForeColor","-16777216"},
 			{"recLinkColor","-16776961"},
-			{"tourokuBackColor","-1"},
+			{"tourokuBackColor","-986896"},
 			{"tourokuForeColor","-16777216"},
 		};
 		try {

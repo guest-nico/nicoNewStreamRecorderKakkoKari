@@ -346,7 +346,8 @@ namespace namaichi
 	        	    typeLabel.Text = (isJikken) ? "実験放送" : "ニコニコ生放送";
 	        	    endTimeLabel.Text = endTime;
 	        	    notifyIcon.Text = title.Substring(0, title.Length > 48 ? 48 : title.Length) + "-" + "ニコ生新配信録画ツール（仮";
-	        	    reservationBox.Visible = isReservation;  
+	        	    reservationBox.Visible = isReservation;
+	        	    setToolTip();
 		       	} catch (Exception e) {
 		       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 		       	}
@@ -862,7 +863,8 @@ namespace namaichi
 				genteiLabel.Visible = !isMini;
 				keikaTimeLabel.Height = isMini ? 13 : 25;
 				titleLabel.Location = isMini ? new Point(6, 16) : new Point(78,label5.Location.Y);
-				titleLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 10, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
+				//titleLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 10, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
+				titleLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 107, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
 				communityLabel.Location = isMini? new Point(6, 33) : new Point(78,label1.Location.Y);
 				hostLabel.Location = isMini ? new Point(6, 50) : new Point(78,label2.Location.Y);
 				genteiLabel.Location = isMini ? label3.Location : new Point(78,label3.Location.Y);
@@ -872,8 +874,10 @@ namespace namaichi
 				//groupBox5.Location = isMini ? new Point(160, 76) : new Point(179, 76);
 				recordGroupBox.Location = isMini ? new Point(6, 143) : new Point(6, 217);
 				
-				communityLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 10, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
-				hostLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 10, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
+				//communityLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 10, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
+				communityLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 107, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
+				//hostLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 10, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
+				hostLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 107, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
 				samuneBox.Size = isMini ? new Size(87, 76) : new Size(141, 150);
 				
 				var urlTextX = isMini ? 19 : 69;
@@ -900,6 +904,7 @@ namespace namaichi
 				//communityLabel.Anchor = isMini ? (AnchorStyles.Right) : (AnchorStyles.Top | AnchorStyles.Left);
 				//hostLabel.Anchor = isMini ? (AnchorStyles.Right) : (AnchorStyles.Top | AnchorStyles.Left);
 				reservationBox.Location = isMini ? new Point(titleLabel.Location.X + 135, 13) : new Point(streamInfoGroupBox.Width - 21, 23);
+				setToolTip();
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
@@ -1094,6 +1099,26 @@ namespace namaichi
 				qualityCfg = config.defaultConfig["qualityList"];
 			namaichi.config.config.qualityList = 
 					JsonConvert.DeserializeObject<Dictionary<int, string>>(qualityCfg);
+		}
+		void setToolTip() {
+			try {
+				var g = Graphics.FromHwnd(this.Handle);
+				var tt = new ToolTip();
+				if (streamInfoGroupBox.Tag != null) 
+					((ToolTip)streamInfoGroupBox.Tag).RemoveAll();
+				streamInfoGroupBox.Tag = tt;
+				
+				tt.SetToolTip(titleLabel, titleLabel.Text);
+				tt.SetToolTip(communityLabel, communityLabel.Text);
+				tt.SetToolTip(hostLabel, hostLabel.Text);
+				tt.Popup += delegate(object _sender, PopupEventArgs ee) {
+					var _s = g.MeasureString(ee.AssociatedControl.Text, titleLabel.Font);
+					if (_s.Width < ee.AssociatedControl.Width - 7) ee.Cancel = true;
+					
+				};
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+			}
 		}
 	}
 }
