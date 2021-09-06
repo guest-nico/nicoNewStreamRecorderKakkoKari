@@ -1938,7 +1938,7 @@ namespace namaichi.rec
 				var isBreak = false;
 				rm.form.formAction(() => {
 					try {
-						var r = MessageBox.Show(rm.form, m, "", MessageBoxButtons.RetryCancel);
+						var r = util.showMessageBoxCenterForm(rm.form, m, "", MessageBoxButtons.RetryCancel);
 						if (r == DialogResult.Cancel) {
 							rm.stopRecording(false);
 							

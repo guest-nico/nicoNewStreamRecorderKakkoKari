@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading.Tasks;
@@ -33,6 +34,7 @@ namespace rokugaTouroku
 		public TimeShiftConfig setTsConfig = new TimeShiftConfig();
 		public string qualityRank;
 		public RecInfo displayingRi = null;
+		public CookieContainer container = null;
 		
 		private Thread madeThread;
 		
@@ -192,7 +194,7 @@ namespace rokugaTouroku
 		bool kakuninClose() {
 			
 			if (rec.rdg != null) {
-				DialogResult res = MessageBox.Show("録画中ですが終了しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				DialogResult res = util.showMessageBoxCenterForm(this, "録画中ですが終了しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 				if (res == DialogResult.No) return false;
 				if (rec.rdg != null) rec.rdg.stopRecording();
 			}
@@ -302,7 +304,7 @@ namespace rokugaTouroku
 				if (ri.state == "録画中") isRec = true;
 			}
 			if (isRec) {
-				DialogResult res = MessageBox.Show("録画中ですが中断しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				DialogResult res = util.showMessageBoxCenterForm(this, "録画中ですが中断しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 				if (res == DialogResult.No) return;
 				if (rec.rdg != null) rec.rdg.stopRecording();
 			}
@@ -493,9 +495,9 @@ namespace rokugaTouroku
 			var selectedCell = recList.SelectedCells[0];
 			var ri = (RecInfo)recListDataSource[selectedCell.RowIndex];
 			if (ri.state == "録画中") {
-				MessageBox.Show("録画中は再登録できません", "", MessageBoxButtons.OK, MessageBoxIcon.None);
+				util.showMessageBoxCenterForm(this, "録画中は再登録できません", "", MessageBoxButtons.OK, MessageBoxIcon.None);
 				/*
-				DialogResult res = MessageBox.Show("録画中ですが中断しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				DialogResult res = util.showMessageBoxCenterForm(this, "録画中ですが中断しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 				if (res == DialogResult.No) return;
 				try {
 					ri.process.Kill();
@@ -518,9 +520,9 @@ namespace rokugaTouroku
 			var selectedCell = recList.SelectedCells[0];
 			var ri = (RecInfo)recListDataSource[selectedCell.RowIndex];
 			if (ri.state == "録画中") {
-				MessageBox.Show("録画中は再登録できません", "", MessageBoxButtons.OK, MessageBoxIcon.None);
+				util.showMessageBoxCenterForm(this, "録画中は再登録できません", "", MessageBoxButtons.OK, MessageBoxIcon.None);
 				/*
-				DialogResult res = MessageBox.Show("録画中ですが中断しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				DialogResult res = util.showMessageBoxCenterForm(this, "録画中ですが中断しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 				if (res == DialogResult.No) return;
 				try {
 					ri.process.Kill();
@@ -546,9 +548,9 @@ namespace rokugaTouroku
 		}
 		public bool deleteRow(RecInfo ri) {
 			if (ri.state == "録画中") {
-				//MessageBox.Show("録画中は登録できません", "", MessageBoxButtons.OK, MessageBoxIcon.None);
+				//util.showMessageBoxCenterForm(this, "録画中は登録できません", "", MessageBoxButtons.OK, MessageBoxIcon.None);
 				
-				DialogResult res = MessageBox.Show("録画中ですが中断しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				DialogResult res = util.showMessageBoxCenterForm(this, "録画中ですが中断しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 				if (res == DialogResult.No) return false;
 				try {
 					ri.process.Kill();
@@ -568,6 +570,18 @@ namespace rokugaTouroku
 			
 			if (config.brokenCopyFile != null)
 				addLogText("設定ファイルを読み込めませんでした。設定ファイルをバックアップしました。" + config.brokenCopyFile);
+			
+			Task.Run(() =>  {
+				try {
+					var cg = new CookieGetter(config);
+					var cgret = cg.getHtml5RecordCookie("https://live.nicovideo.jp/my", false);
+					if (cgret != null && cgret.Result != null
+					    	&& cgret.Result[0] != null)
+						container = cgret.Result[0];
+				} catch (Exception ee) {
+					util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace);
+				}
+			});
 		}
 		
 		void recList_DataError(object sender, DataGridViewDataErrorEventArgs e)
@@ -959,7 +973,7 @@ namespace rokugaTouroku
 			string path = jarpath[0] + "/readme.html";
 			try {
 				if (!File.Exists(path)) {
-					MessageBox.Show("readme.htmlが見つかりませんでした");
+					util.showMessageBoxCenterForm(this, "readme.htmlが見つかりませんでした");
 					return;
 				}
 				System.Diagnostics.Process.Start(path);
@@ -974,7 +988,7 @@ namespace rokugaTouroku
 			string path = jarpath[0] + "/ニコ生新配信録画ツール（仮.exe";
 			try {
 				if (!File.Exists(path)) {
-					MessageBox.Show("ニコ生新配信録画ツール（仮.exeが見つかりませんでした");
+					util.showMessageBoxCenterForm(this, "ニコ生新配信録画ツール（仮.exeが見つかりませんでした");
 					return;
 				}
 				System.Diagnostics.Process.Start(path);

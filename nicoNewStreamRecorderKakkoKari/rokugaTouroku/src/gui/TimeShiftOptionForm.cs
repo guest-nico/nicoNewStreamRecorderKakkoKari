@@ -116,7 +116,7 @@ namespace rokugaTouroku
 			if (!int.TryParse(_h, out h) ||
 			   	!int.TryParse(_m, out m) ||
 			   	!int.TryParse(_s, out s)) {
-				MessageBox.Show("開始時間に数字以外が指定されています");
+				util.showMessageBoxCenterForm(this, "開始時間に数字以外が指定されています");
 				return;
 			}
 			
@@ -129,7 +129,7 @@ namespace rokugaTouroku
 			if (!int.TryParse(_endH, out endH) ||
 			   	!int.TryParse(_endM, out endM) ||
 			   	!int.TryParse(_endS, out endS)) {
-				MessageBox.Show("終了時間に数字以外が指定されています");
+				util.showMessageBoxCenterForm(this, "終了時間に数字以外が指定されています");
 				return;
 			}
 			
@@ -138,17 +138,17 @@ namespace rokugaTouroku
 			if (endTimeMode == 0) endTimeSeconds = 0;
 			if (endTimeMode == 1 && (endH != 0 || endM != 0 || endS != 0) && 
 			    	endTimeSeconds < timeSeconds) {
-				MessageBox.Show("終了時間が開始時間より前に設定されています");
+				util.showMessageBoxCenterForm(this, "終了時間が開始時間より前に設定されています");
 				return;
 			}
 			/*
 			double updateSecond;
 			if (!double.TryParse(updateListSecondText.Text, out updateSecond)) {
-				MessageBox.Show("M3U8の更新間隔に数字以外が指定されています");
+				util.showMessageBoxCenterForm(this, "M3U8の更新間隔に数字以外が指定されています");
 				return;
 			}
 			if (updateSecond <= 0.5) {
-				MessageBox.Show("M3U8の更新間隔に0.5以下を指定することはできません");
+				util.showMessageBoxCenterForm(this, "M3U8の更新間隔に0.5以下を指定することはできません");
 				return;
 			}
 			*/

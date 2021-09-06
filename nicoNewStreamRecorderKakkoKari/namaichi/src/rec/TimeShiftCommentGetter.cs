@@ -289,7 +289,7 @@ namespace namaichi.rec
 		
 		private void onWscMessageReceive(object sender, MessageReceivedEventArgs e) {
 			var eMessage = isConvertSpace ? util.getOkSJisOut(e.Message, commentConvertStr) : e.Message;
-			if (isNormalizeComment) eMessage = eMessage.Replace("\"premium\":24", "\"premium\":0");
+			//if (isNormalizeComment) eMessage = eMessage.Replace("\"premium\":24", "\"premium\":0");
 			try {
 				if ((rm.rfu != rfu && lastRealTimeComment == null) || !isRetry) {
 					try {
@@ -418,6 +418,7 @@ namespace namaichi.rec
 								
 							var isComSave = isMeetStartTimeSave && isMeetEndTimeSave;
 	    					if (isComSave) {
+								s = util.getReplacedComment(s, rp.commentReplaceList);
 								gotCommentListBuf.Add(new GotCommentInfo(s, chatinfo.no, chatinfo.date, chatinfo.vpos));
 								gotCount++;
 				            	

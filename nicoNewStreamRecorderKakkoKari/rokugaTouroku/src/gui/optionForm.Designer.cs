@@ -59,7 +59,9 @@ namespace rokugaTouroku
 			this.isMessageBoxChkBox = new System.Windows.Forms.CheckBox();
 			this.isRetryChkBox = new System.Windows.Forms.CheckBox();
 			this.tabPage9 = new System.Windows.Forms.TabPage();
+			this.commentReplaceText = new System.Windows.Forms.TextBox();
 			this.groupBox18 = new System.Windows.Forms.GroupBox();
+			this.label19 = new System.Windows.Forms.Label();
 			this.commentConvertStrText = new System.Windows.Forms.TextBox();
 			this.isNormalizeCommentChkBox = new System.Windows.Forms.CheckBox();
 			this.isSaveCommentOnlyRetryingRecChkBox = new System.Windows.Forms.CheckBox();
@@ -495,6 +497,7 @@ namespace rokugaTouroku
 			// 
 			// tabPage9
 			// 
+			this.tabPage9.Controls.Add(this.commentReplaceText);
 			this.tabPage9.Controls.Add(this.groupBox18);
 			this.tabPage9.Controls.Add(this.displayGroup);
 			this.tabPage9.Controls.Add(this.groupBox5);
@@ -507,8 +510,23 @@ namespace rokugaTouroku
 			this.tabPage9.Text = "一般2";
 			this.tabPage9.UseVisualStyleBackColor = true;
 			// 
+			// commentReplaceText
+			// 
+			this.commentReplaceText.AcceptsTab = true;
+			this.commentReplaceText.Location = new System.Drawing.Point(122, 210);
+			this.commentReplaceText.Name = "commentReplaceText";
+			this.commentReplaceText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.commentReplaceText.Size = new System.Drawing.Size(239, 19);
+			this.commentReplaceText.TabIndex = 14;
+			this.commentReplaceText.Click += new System.EventHandler(this.CommentReplaceTextClick);
+			this.commentReplaceText.TextChanged += new System.EventHandler(this.CommentReplaceTextTextChanged);
+			this.commentReplaceText.Enter += new System.EventHandler(this.commentReplaceTextEnter);
+			this.commentReplaceText.Leave += new System.EventHandler(this.commentReplaceTextLeave);
+			this.commentReplaceText.MouseDown += new System.Windows.Forms.MouseEventHandler(this.commentReplaceTextMouseDown);
+			// 
 			// groupBox18
 			// 
+			this.groupBox18.Controls.Add(this.label19);
 			this.groupBox18.Controls.Add(this.commentConvertStrText);
 			this.groupBox18.Controls.Add(this.isNormalizeCommentChkBox);
 			this.groupBox18.Controls.Add(this.isSaveCommentOnlyRetryingRecChkBox);
@@ -525,6 +543,15 @@ namespace rokugaTouroku
 			this.groupBox18.TabStop = false;
 			this.groupBox18.Text = "コメント";
 			// 
+			// label19
+			// 
+			this.label19.Location = new System.Drawing.Point(19, 130);
+			this.label19.Name = "label19";
+			this.label19.Size = new System.Drawing.Size(92, 18);
+			this.label19.TabIndex = 15;
+			this.label19.Text = "コメント置換リスト：";
+			this.label19.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
 			// commentConvertStrText
 			// 
 			this.commentConvertStrText.Enabled = false;
@@ -535,12 +562,13 @@ namespace rokugaTouroku
 			// 
 			// isNormalizeCommentChkBox
 			// 
-			this.isNormalizeCommentChkBox.Location = new System.Drawing.Point(19, 127);
+			this.isNormalizeCommentChkBox.Location = new System.Drawing.Point(225, 102);
 			this.isNormalizeCommentChkBox.Name = "isNormalizeCommentChkBox";
 			this.isNormalizeCommentChkBox.Size = new System.Drawing.Size(322, 19);
 			this.isNormalizeCommentChkBox.TabIndex = 8;
 			this.isNormalizeCommentChkBox.Text = "流量調整により薄くなったコメントを通常コメントとして保存する";
 			this.isNormalizeCommentChkBox.UseVisualStyleBackColor = true;
+			this.isNormalizeCommentChkBox.Visible = false;
 			// 
 			// isSaveCommentOnlyRetryingRecChkBox
 			// 
@@ -2252,11 +2280,13 @@ namespace rokugaTouroku
 			this.Name = "optionForm";
 			this.Text = "オプション";
 			this.Load += new System.EventHandler(this.OptionFormLoad);
+			this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OptionFormMouseDown);
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.groupBox17.ResumeLayout(false);
 			this.groupBox6.ResumeLayout(false);
 			this.tabPage9.ResumeLayout(false);
+			this.tabPage9.PerformLayout();
 			this.groupBox18.ResumeLayout(false);
 			this.groupBox18.PerformLayout();
 			this.displayGroup.ResumeLayout(false);
@@ -2299,6 +2329,8 @@ namespace rokugaTouroku
 			((System.ComponentModel.ISupportInitialize)(this.maxRecordingNum)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.TextBox commentReplaceText;
+		private System.Windows.Forms.Label label19;
 		private System.Windows.Forms.TextBox commentConvertStrText;
 		private System.Windows.Forms.CheckBox IsTrayChkBox;
 		private System.Windows.Forms.Label label18;

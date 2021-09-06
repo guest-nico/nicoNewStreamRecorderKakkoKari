@@ -240,7 +240,7 @@ namespace namaichi.rec
 					
 				if (di.AvailableFreeSpace < new FileInfo(path).Length * 1.5) {
 					DialogResult adr = DialogResult.None;
-					rm.form.formAction(() => adr = MessageBox.Show("空き容量が少なくなっています。変換しますか？", "", MessageBoxButtons.YesNo), false);
+					rm.form.formAction(() => adr = util.showMessageBoxCenterForm(rm.form, "空き容量が少なくなっています。変換しますか？", "", MessageBoxButtons.YesNo), false);
 					return adr == DialogResult.Yes; 
 				}
 				return true;

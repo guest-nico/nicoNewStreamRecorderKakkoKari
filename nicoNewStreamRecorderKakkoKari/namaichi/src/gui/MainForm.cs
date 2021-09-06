@@ -405,8 +405,10 @@ namespace namaichi
 		public void setStatistics(string visit, string comment) {
        		formAction(() => {
 				try {
-	       			visitLabel.Text = visit;
-	       			commentLabel.Text = comment;
+       	           	if (visit != null)
+	       				visitLabel.Text = visit;
+       	           	if (comment != null)
+	       				commentLabel.Text = comment;
 	       			miniStreamStateLabel.Text = util.getAboutNumStr(visit) + "人/" + util.getAboutNumStr(comment) + "ｺﾒ";
 				} catch (Exception e) {
 					util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
@@ -526,7 +528,7 @@ namespace namaichi
 		bool kakuninClose() {
 			if (rec.rfu != null && bool.Parse(config.get("IsConfirmCloseMsgBox"))) {
 				var _m = (rec.rfu.isPlayOnlyMode) ? "視聴" : "録画";
-				DialogResult res = MessageBox.Show(_m + "中ですが終了しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				DialogResult res = util.showMessageBoxCenterForm(this, _m + "中ですが終了しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 				if (res == DialogResult.No) return false;
 			}
 			try{
@@ -554,7 +556,7 @@ namespace namaichi
 						config.set("Y", RestoreBounds.Y.ToString());
 					}
 				}
-				//MessageBox.Show("o " + originalSize + " " + this.WindowState + " l " + Location + " " + Width + " " + Height + " r " + RestoreBounds.X + " " + RestoreBounds.Y + " " + RestoreBounds.Width + " " + RestoreBounds.Height + " c " + config.get("X") + " " + config.get("Y"));
+				//util.showMessageBoxCenterForm(this, "o " + originalSize + " " + this.WindowState + " l " + Location + " " + Width + " " + Height + " r " + RestoreBounds.X + " " + RestoreBounds.Y + " " + RestoreBounds.Width + " " + RestoreBounds.Height + " c " + config.get("X") + " " + config.get("Y"));
 
 			} catch(Exception e) {
 				util.debugWriteLine(e.Message + " " + e.StackTrace);
@@ -657,7 +659,7 @@ namespace namaichi
 				var desc = System.Diagnostics.FileVersionInfo.GetVersionInfo(util.getJarPath()[0] + "/websocket4net.dll");
 				if (desc.FileDescription != "WebSocket4Net for .NET 4.5 gettable data bytes") {
 					formAction(() => {
-						System.Windows.Forms.MessageBox.Show("「WebSocket4Net.dll」をver0.86.9以降に同梱されているものと置き換えてください");
+						util.showMessageBoxCenterForm(this, "「WebSocket4Net.dll」をver0.86.9以降に同梱されているものと置き換えてください");
 					});
 				}
 				
@@ -674,7 +676,7 @@ namespace namaichi
 					    //Invoke((MethodInvoker)delegate() {
 							//var b = new DotNetMessageBox(ver);
 							//b.Show(this); 
-							System.Windows.Forms.MessageBox.Show("動作には.NET 4.5.2以上が推奨です。");
+							util.showMessageBoxCenterForm(this, "動作には.NET 4.5.2以上が推奨です。");
 						//});
 					//});
 				} else {
@@ -1014,12 +1016,15 @@ namespace namaichi
 			string path = jarpath[0] + "/readme.html";
 			try {
 				if (!File.Exists(path)) {
-					MessageBox.Show("readme.htmlが見つかりませんでした");
+					addLogText("readme.htmlが見つかりませんでした " + path);
+					util.showMessageBoxCenterForm(this, "readme.htmlが見つかりませんでした");
 					return;
 				}
 				System.Diagnostics.Process.Start(path);
 			} catch (Exception ee) {
 				util.debugWriteLine(ee.Message + " " + ee.StackTrace);
+				//debug
+				addLogText("ファイルの表示に失敗しました " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
 		}
 		
@@ -1029,7 +1034,7 @@ namespace namaichi
 			string path = jarpath[0] + "/録画登録ツール（仮.exe";
 			try {
 				if (!File.Exists(path)) {
-					MessageBox.Show("録画登録ツール（仮.exeが見つかりませんでした");
+					util.showMessageBoxCenterForm(this, "録画登録ツール（仮.exeが見つかりませんでした");
 					return;
 				}
 				System.Diagnostics.Process.Start(path);

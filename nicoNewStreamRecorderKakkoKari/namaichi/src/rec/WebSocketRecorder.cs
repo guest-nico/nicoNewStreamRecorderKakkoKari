@@ -123,6 +123,7 @@ namespace namaichi.rec
 		private List<string> lastSaveComments = new List<string>();
 		private DateTime lastOpenCommentSwDt = DateTime.MinValue;
 		private bool isConvertSpace;
+		public List<string[]> commentReplaceList = null;
 		private bool isSaveCommentOnlyRetryingRec;
 		private bool isNormalizeComment;
 		public long sync = 0;
@@ -176,6 +177,11 @@ namespace namaichi.rec
 			this.isSaveComment = isSaveComment;
 			if (isChase && !isSaveComment) isHokan = true;
 			isConvertSpace = bool.Parse(rm.cfg.get("IsCommentConvertSpace"));
+			try {
+				commentReplaceList = JsonConvert.DeserializeObject<List<string[]>>(rm.cfg.get("CommentReplaceText"));
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
 			isSaveCommentOnlyRetryingRec = bool.Parse(rm.cfg.get("IsSaveCommentOnlyRetryingRec"));
 			isNormalizeComment = bool.Parse(rm.cfg.get("IsNormalizeComment"));
 			this.vposBaseTime = vposBaseTime;
@@ -1061,7 +1067,7 @@ namespace namaichi.rec
 			isFirstCommentAfterOpenWsc = false;
 			
 			var eMessage = isConvertSpace ? util.getOkSJisOut(e.Message, rm.cfg.get("commentConvertStr")) : e.Message;
-			if (isNormalizeComment) eMessage = eMessage.Replace("\"premium\":24", "\"premium\":0");
+			//if (isNormalizeComment) eMessage = eMessage.Replace("\"premium\":24", "\"premium\":0");
 			
 			if (isTimeShift && eMessage.StartsWith("{\"ping\":{\"content\":\"rf:") && !isChase && sender == wsc[0]) {
 				closeWscProcess();
@@ -1181,6 +1187,7 @@ namespace namaichi.rec
 							(Regex.Replace(eMessage, 
 				            	"\"vpos\"\\:(\\d+)", 
 				            	"\"vpos\":" + chatinfo.vpos + ""));
+						writeStr = util.getReplacedComment(writeStr, commentReplaceList);
 						//writeStr = util.getOkSJisOut(writeStr, " ");
 						
 						if (isChase && !isRealtimeChase && chaseCommentBuf != null) {
@@ -1213,7 +1220,7 @@ namespace namaichi.rec
 			} catch (Exception ee) {addDebugBuf("comment write exception " + ee.Message + " " + ee.StackTrace);}
 			
 			
-			//if (!isTimeShift)
+			chatinfo.contents = util.getReplacedComment(chatinfo.contents, commentReplaceList);
 			if (chatinfo.vpos != 0)
 				addDisplayComment(chatinfo);
 
@@ -1842,6 +1849,7 @@ namespace namaichi.rec
 					if (DateTime.Now - t > TimeSpan.FromSeconds(30) && 
 					    	tscg.gotCommentList.Count == 0 &&
 					    	tscg.gotCommentListBuf.Count == 0) return;
+					if (DateTime.Now - t > TimeSpan.FromMinutes(5)) break;
 					//if (rm.rfu != rfu || !isRetry) return;
 				}
 				var ind = Array.IndexOf(gotTsCommentList, lastSaveComments[lastSaveComments.Count - 1]);
@@ -1852,7 +1860,6 @@ namespace namaichi.rec
 					commentSW.Flush();
 					lastSaveComments.Add(gotTsCommentList[i]);
 				}
-					
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			} finally {tscg = null;}

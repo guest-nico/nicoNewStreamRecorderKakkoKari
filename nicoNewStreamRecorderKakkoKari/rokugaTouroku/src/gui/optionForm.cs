@@ -18,6 +18,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 using rokugaTouroku.config;
 using SunokoLibrary.Application;
 using SunokoLibrary.Application.Browsers;
@@ -142,6 +143,7 @@ namespace rokugaTouroku
 				{"IsSaveCommentOnlyRetryingRec",isSaveCommentOnlyRetryingRecChkBox.Checked.ToString().ToLower()},
 				{"IsDisplayComment",isDisplayCommentChkbox.Checked.ToString().ToLower()},
 				{"IsNormalizeComment",isNormalizeCommentChkBox.Checked.ToString().ToLower()},
+				{"CommentReplaceText",getCommentReplaceText()},
 				{"IstitlebarSamune",isTitleBarSamune.Checked.ToString().ToLower()},
 				{"IsautoFollowComgen",isAutoFollowComGen.Checked.ToString().ToLower()},
 				{"qualityRank",getQualityRank()},
@@ -396,6 +398,7 @@ namespace rokugaTouroku
         	isSaveCommentOnlyRetryingRecChkBox.Checked = bool.Parse(cfg.get("IsSaveCommentOnlyRetryingRec"));
         	isDisplayCommentChkbox.Checked = bool.Parse(cfg.get("IsDisplayComment"));
         	isNormalizeCommentChkBox.Checked = bool.Parse(cfg.get("IsNormalizeComment"));
+        	setCommentReplaceTextForm(cfg.get("CommentReplaceText"));
         	isTitleBarSamune.Checked = bool.Parse(cfg.get("IstitlebarSamune"));
         	isAutoFollowComGen.Checked = bool.Parse(cfg.get("IsautoFollowComgen"));
         	setInitQualityRankList(cfg.get("qualityRank"));
@@ -581,15 +584,15 @@ namespace rokugaTouroku
 			var cg = new rec.CookieGetter(cfg);
 			var cc = await cg.getAccountCookie(mailText.Text, passText.Text);
 			if (cc == null) {
-				MessageBox.Show("login error", "", MessageBoxButtons.OK);
+				util.showMessageBoxCenterForm(this, "login error", "", MessageBoxButtons.OK);
 				return;
 			}
 			if (cc.GetCookies(TargetUrl)["user_session"] == null &&
 				                   cc.GetCookies(TargetUrl)["user_session_secure"] == null)
-				MessageBox.Show("no login", "", MessageBoxButtons.OK);
-			else MessageBox.Show("login ok", "", MessageBoxButtons.OK);
+				util.showMessageBoxCenterForm(this, "no login", "", MessageBoxButtons.OK);
+			else util.showMessageBoxCenterForm(this, "login ok", "", MessageBoxButtons.OK);
 			
-			//MessageBox.Show("aa");
+			//util.showMessageBoxCenterForm(this, "aa");
 		}
 		async void loginBtn2_Click(object sender, EventArgs e)
 		{
@@ -597,15 +600,15 @@ namespace rokugaTouroku
 			var cg = new rec.CookieGetter(cfg);
 			var cc = await cg.getAccountCookie(mailText2.Text, passText2.Text);
 			if (cc == null) {
-				MessageBox.Show("login error", "", MessageBoxButtons.OK);
+				util.showMessageBoxCenterForm(this, "login error", "", MessageBoxButtons.OK);
 				return;
 			}
 			if (cc.GetCookies(TargetUrl)["user_session"] == null &&
 				                   cc.GetCookies(TargetUrl)["user_session_secure"] == null)
-				MessageBox.Show("no login", "", MessageBoxButtons.OK);
-			else MessageBox.Show("login ok", "", MessageBoxButtons.OK);
+				util.showMessageBoxCenterForm(this, "no login", "", MessageBoxButtons.OK);
+			else util.showMessageBoxCenterForm(this, "login ok", "", MessageBoxButtons.OK);
 			
-			//MessageBox.Show("aa");
+			//util.showMessageBoxCenterForm(this, "aa");
 		}
 		
 		void isDefaultBrowserPathChkBox_CheckedChanged(object sender, EventArgs e)
@@ -1096,6 +1099,69 @@ namespace rokugaTouroku
 		void IsCommentConvertSpaceChkboxCheckedChanged(object sender, EventArgs e)
 		{
 			commentConvertStrText.Enabled = isCommentConvertSpaceChkbox.Checked;
+		}
+		void commentReplaceTextEnter(object sender, EventArgs e)
+		{
+			commentReplaceText.Multiline = true;
+		}
+		void commentReplaceTextLeave(object sender, EventArgs e)
+		{
+			commentReplaceText.Multiline = false;
+		}
+		void commentReplaceTextMouseDown(object sender, MouseEventArgs e)
+		{
+			commentReplaceText.Multiline = true;
+		}
+		void OptionFormMouseDown(object sender, MouseEventArgs e)
+		{
+			
+		}
+		void CommentReplaceTextClick(object sender, System.EventArgs e)
+		{
+			commentReplaceText.Multiline = false;
+		}
+		void CommentReplaceTextTextChanged(object sender, EventArgs e)
+		{
+			var s = TextRenderer.MeasureText(commentReplaceText.Text, commentReplaceText.Font);
+			commentReplaceText.Height = s.Height + 35;
+		}
+		string getCommentReplaceText() {
+			//var r = new List<KeyValuePair<string, string>>();
+			var r = new List<string[]>();
+			try {
+				foreach (var t in commentReplaceText.Lines) {
+					var _t = t.Split('\t');
+					if (_t.Length != 2 || _t[0] == "") continue;
+					if (_t[0] == "例）AAA") continue;
+					//r.Add(new KeyValuePair<string, string>(_t[0], _t[1]));
+					r.Add(new string[]{_t[0], _t[1]});
+				}
+				var rr = JsonConvert.SerializeObject(r);
+				//var rr = JObject.FromObject(r);
+				return rr.ToString();
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				return "[]";
+			}
+		}
+		void setCommentReplaceTextForm(string t) {
+			//var o = (List<KeyValuePair<string, string>>)JsonConvert.DeserializeObject("@" + t);
+			var o = JsonConvert.DeserializeObject<List<string[]>>(t);
+			var def = "設定方法：置換前の文字と置換後の文字をタブで区切ります。複数設定する場合は改行して入力。正規表現可。$nでグループ。\r\n例）premium=\"24\"	premium=\"0\"(薄くなっているコメントを通常コメントとして保存)";
+			try {
+				if (o.Count == 0) {
+					commentReplaceText.Text = def;
+					return;
+				}
+				//var o = JObject.Parse(t);
+				for (var i = 0; i < o.Count; i++) {
+					//commentReplaceText.Text += o[i].Key + "\t" + o[i].Value + "\n";
+					commentReplaceText.Text += o[i][0] + "\t" + o[i][1] + "\r\n";
+				}
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				commentReplaceText.Text = def;
+			}
 		}
 	}
 }

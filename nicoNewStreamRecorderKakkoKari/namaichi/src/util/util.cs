@@ -33,8 +33,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.49";
-	public static string versionDayStr = "2021/08/26";
+	public static string versionStr = "ver0.88.50";
+	public static string versionDayStr = "2021/09/06";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -959,7 +959,7 @@ class util {
 		#if DEBUG
 			if (isMessageBox && isLogFile) {
 				if (frameCount > 150) {
-					MessageBox.Show("framecount stack", frameCount.ToString() + " " + namaichi.Program.arg + " " + DateTime.Now.ToString());
+					util.showMessageBoxCenterForm(null, "framecount stack", frameCount.ToString() + " " + namaichi.Program.arg + " " + DateTime.Now.ToString());
 					return;
 				}
 			}
@@ -994,7 +994,7 @@ class util {
 		
 		#if DEBUG
 			if (isMessageBox && isLogFile)
-				MessageBox.Show("error " + eo.Message, "error " + namaichi.Program.arg);
+				util.showMessageBoxCenterForm(null, "error " + eo.Message, "error " + namaichi.Program.arg);
 		#else
 			
 		#endif
@@ -1185,7 +1185,7 @@ public static void soundEnd(config cfg, MainForm form) {
 				msg += (msg == "" ? "" : ",") + n;
 		}
 		if (msg == "") return;
-		form.formAction(() => MessageBox.Show(path + "内に" + msg + "が見つかりませんでした"));
+		form.formAction(() => util.showMessageBoxCenterForm(form, path + "内に" + msg + "が見つかりませんでした"));
 	}
 	public static bool getStatistics(string lvid, CookieContainer cc, out string visit, out string comment) {
 		visit = "0";
@@ -1304,7 +1304,7 @@ public static void soundEnd(config cfg, MainForm form) {
 			
 			if (size > max) {
 				size = max;
-				System.Windows.Forms.MessageBox.Show("画面上に表示できなくなる可能性があるため、" + size + "に設定されます");
+				util.showMessageBoxCenterForm(form, "画面上に表示できなくなる可能性があるため、" + size + "に設定されます");
 			}
 			
 			form.Font = new Font(form.Font.FontFamily, size);
@@ -1334,7 +1334,7 @@ public static void soundEnd(config cfg, MainForm form) {
     		util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
     	}
 	}
-	public static void shutdown(string recEndProcess) {
+	public static void shutdown(string recEndProcess, Form form) {
 		try {
 			var p = new Process();
 			p.StartInfo.FileName = "shutdown.exe";
@@ -1348,7 +1348,7 @@ public static void soundEnd(config cfg, MainForm form) {
 			p.Start();
 			
 			if (recEndProcess == "OSをシャットダウンする") {
-				var r = MessageBox.Show("1分後にシャットアウトしてよろしいですか？", "確認", MessageBoxButtons.YesNo);
+				var r = util.showMessageBoxCenterForm(form, "1分後にシャットアウトしてよろしいですか？", "確認", MessageBoxButtons.YesNo);
 				if (r == DialogResult.No) {
 					var _p = new Process();
 					_p.StartInfo.FileName = "shutdown.exe";
@@ -1361,9 +1361,73 @@ public static void soundEnd(config cfg, MainForm form) {
 		}
 	}
 	public static string getAboutNumStr(string s) {
+		if (s == null) return " ";
 		if (s.Length >= 9) return s.Substring(0, s.Length - 8) + "億";
 		else if (s.Length >= 8) return s.Substring(0, s.Length - 7) + "千万";
 		else if (s.Length >= 5) return s.Substring(0, s.Length - 4) + "万";
 		return s;
+	}
+	public static string getReplacedComment(string t, List<string[]> commentReplaceList) {
+		try {
+			foreach (var s in commentReplaceList) {
+				t = new Regex(s[0]).Replace(t, s[1]);
+			}
+			return t;
+		} catch (Exception e) {
+			util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+			return t;
+		}
+	}
+	[DllImport("user32.dll")]
+	static extern IntPtr GetWindowLong(IntPtr hWnd, int nIndex);
+	[DllImport("kernel32.dll")]
+	public static extern IntPtr GetCurrentThreadId();
+	public delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
+	[DllImport("user32.dll")]
+	public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+	[DllImport("user32.dll")]
+	static extern bool SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int y, int cx, int cy, uint uFlags);
+	[DllImport("user32.dll")]
+	static extern IntPtr SetWindowsHookEx(int idHook, HookProc lpfn, IntPtr hInstance, IntPtr threadId);
+	[DllImport("user32.dll")]
+	public static extern bool UnhookWindowsHookEx(IntPtr hHook);
+	[DllImport("user32.dll")]
+	public static extern IntPtr CallNextHookEx(IntPtr hHook, int nCode, IntPtr wParam, IntPtr lParam);
+	public struct RECT {
+		public int left;
+		public int top;
+		public int right;
+		public int bottom;
+	}
+	private static Form messageBoxOwnerForm = null;
+	private static IntPtr mBHook;
+	private static IntPtr CBTProc(int nCode, IntPtr wParam, IntPtr lParam) {
+		var HCBT_ACTIVATE = 5;
+		if (nCode == HCBT_ACTIVATE) {
+			RECT rectF, rectM; 
+			GetWindowRect(messageBoxOwnerForm.Handle, out rectF);
+			GetWindowRect(wParam, out rectM);
+			var x = rectF.left + ((rectF.right - rectF.left) - (rectM.right - rectM.left)) / 2;
+			var y = rectF.top + ((rectF.bottom - rectF.top) - (rectM.bottom - rectM.top)) / 2;
+			
+			uint SWP_NOSIZE = 1;
+			uint SWP_NOZORDER = 4;
+			uint SWP_NOACTIVATE = 16;
+			SetWindowPos(wParam, 0, x, y, 0, 0, 
+					SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+			UnhookWindowsHookEx(mBHook);
+		}
+		return CallNextHookEx(mBHook, nCode, wParam, lParam);
+	}
+	public static DialogResult showMessageBoxCenterForm(Form form, string text, string caption = "", MessageBoxButtons btn = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None) {
+		if (form != null) {
+			var GWL_HINSTANCE = -6;
+			var hInstance = GetWindowLong(form.Handle, GWL_HINSTANCE);
+		    var threadId = GetCurrentThreadId();
+		    var whCbt = 5;
+		    messageBoxOwnerForm = form;
+		    mBHook = SetWindowsHookEx(whCbt, new HookProc(CBTProc), hInstance, threadId);
+		}
+		return MessageBox.Show(text, caption, btn, icon);
 	}
 }

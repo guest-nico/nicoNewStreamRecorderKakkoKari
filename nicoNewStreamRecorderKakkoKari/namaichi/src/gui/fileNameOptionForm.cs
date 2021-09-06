@@ -38,7 +38,7 @@ namespace namaichi
 		void fileNameTypeOkBtn_Click(object sender, EventArgs e)
 		{
 			if (fileNameTypeText.Text.IndexOf("{0}") < 0) {
-				MessageBox.Show("{0}は必ず入れてください", "注意", MessageBoxButtons.OK, MessageBoxIcon.None);
+				util.showMessageBoxCenterForm(this, "{0}は必ず入れてください", "注意", MessageBoxButtons.OK, MessageBoxIcon.None);
 				return;
 			}
 			DialogResult = DialogResult.OK;

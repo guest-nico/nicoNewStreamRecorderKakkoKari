@@ -160,7 +160,7 @@ namespace namaichi.rec
 			/*
 			try {var a = new WebSocket4Net.MessageReceivedEventArgs(null, null).Data;}
 			catch (Exception e) {
-				System.Windows.Forms.MessageBox.Show("websocket", "aa");
+				System.Windows.Forms.util.showMessageBoxCenterForm(this, "websocket", "aa");
 			}
 			*/
 			/*

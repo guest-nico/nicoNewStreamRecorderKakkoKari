@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.IO;
@@ -22,8 +23,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.10.56";
-	public static string versionDayStr = "2021/08/21";
+	public static string versionStr = "ver0.1.3.10.57";
+	public static string versionDayStr = "2021/09/06";
 	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);
@@ -708,7 +709,7 @@ class util {
 		#if DEBUG
 			if (isMessageBox && isLogFile) {
 				if (frameCount > 50) {
-					MessageBox.Show("framecount stack", frameCount.ToString());
+					util.showMessageBoxCenterForm(null, "framecount stack", frameCount.ToString());
 					return;
 				}
 			}
@@ -744,7 +745,7 @@ class util {
 		
 		#if DEBUG
 			if (isMessageBox && isLogFile)
-				MessageBox.Show("error", "error");
+				util.showMessageBoxCenterForm(null, "error", "error");
 		#else
 			
 		#endif
@@ -903,7 +904,7 @@ class util {
 			
 			if (size > max) {
 				size = max;
-				System.Windows.Forms.MessageBox.Show("画面上に表示できなくなる可能性があるため、" + size + "に設定されます");
+				util.showMessageBoxCenterForm(form, "画面上に表示できなくなる可能性があるため、" + size + "に設定されます");
 			}
 			
 			form.Font = new Font(form.Font.FontFamily, size);
@@ -932,5 +933,57 @@ class util {
     	} catch (Exception e) {
     		util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
     	}
+	}
+	[DllImport("user32.dll")]
+	static extern IntPtr GetWindowLong(IntPtr hWnd, int nIndex);
+	[DllImport("kernel32.dll")]
+	public static extern IntPtr GetCurrentThreadId();
+	public delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
+	[DllImport("user32.dll")]
+	public static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
+	[DllImport("user32.dll")]
+	static extern bool SetWindowPos(IntPtr hWnd, int hWndInsertAfter, int x, int y, int cx, int cy, uint uFlags);
+	[DllImport("user32.dll")]
+	static extern IntPtr SetWindowsHookEx(int idHook, HookProc lpfn, IntPtr hInstance, IntPtr threadId);
+	[DllImport("user32.dll")]
+	public static extern bool UnhookWindowsHookEx(IntPtr hHook);
+	[DllImport("user32.dll")]
+	public static extern IntPtr CallNextHookEx(IntPtr hHook, int nCode, IntPtr wParam, IntPtr lParam);
+	public struct RECT {
+		public int left;
+		public int top;
+		public int right;
+		public int bottom;
+	}
+	private static Form messageBoxOwnerForm = null;
+	private static IntPtr mBHook;
+	private static IntPtr CBTProc(int nCode, IntPtr wParam, IntPtr lParam) {
+		var HCBT_ACTIVATE = 5;
+		if (nCode == HCBT_ACTIVATE) {
+			RECT rectF, rectM; 
+			GetWindowRect(messageBoxOwnerForm.Handle, out rectF);
+			GetWindowRect(wParam, out rectM);
+			var x = rectF.left + ((rectF.right - rectF.left) - (rectM.right - rectM.left)) / 2;
+			var y = rectF.top + ((rectF.bottom - rectF.top) - (rectM.bottom - rectM.top)) / 2;
+			
+			uint SWP_NOSIZE = 1;
+			uint SWP_NOZORDER = 4;
+			uint SWP_NOACTIVATE = 16;
+			SetWindowPos(wParam, 0, x, y, 0, 0, 
+					SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+			UnhookWindowsHookEx(mBHook);
+		}
+		return CallNextHookEx(mBHook, nCode, wParam, lParam);
+	}
+	public static DialogResult showMessageBoxCenterForm(Form form, string text, string caption = "", MessageBoxButtons btn = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None) {
+		if (form != null) {
+			var GWL_HINSTANCE = -6;
+			var hInstance = GetWindowLong(form.Handle, GWL_HINSTANCE);
+		    var threadId = GetCurrentThreadId();
+		    var whCbt = 5;
+		    messageBoxOwnerForm = form;
+		    mBHook = SetWindowsHookEx(whCbt, new HookProc(CBTProc), hInstance, threadId);
+		}
+		return MessageBox.Show(text, caption, btn, icon);
 	}
 }

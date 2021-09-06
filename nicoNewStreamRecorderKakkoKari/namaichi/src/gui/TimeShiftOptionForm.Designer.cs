@@ -37,11 +37,11 @@ namespace namaichi
 		private void InitializeComponent()
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.openLastFileBtn = new System.Windows.Forms.Button();
 			this.isAfterStartTimeCommentChkBox = new System.Windows.Forms.CheckBox();
 			this.isOpenTimeBaseStartChkBox = new System.Windows.Forms.CheckBox();
 			this.isMostStartTimeRadioBtn = new System.Windows.Forms.RadioButton();
 			this.isSetVposStartTime = new System.Windows.Forms.CheckBox();
-			this.openLastFileBtn = new System.Windows.Forms.Button();
 			this.isRenketuLastFile = new System.Windows.Forms.CheckBox();
 			this.lastFileInfoLabel = new System.Windows.Forms.Label();
 			this.sLabel = new System.Windows.Forms.Label();
@@ -98,11 +98,11 @@ namespace namaichi
 			// groupBox1
 			// 
 			this.groupBox1.BackColor = System.Drawing.SystemColors.Window;
+			this.groupBox1.Controls.Add(this.openLastFileBtn);
 			this.groupBox1.Controls.Add(this.isAfterStartTimeCommentChkBox);
 			this.groupBox1.Controls.Add(this.isOpenTimeBaseStartChkBox);
 			this.groupBox1.Controls.Add(this.isMostStartTimeRadioBtn);
 			this.groupBox1.Controls.Add(this.isSetVposStartTime);
-			this.groupBox1.Controls.Add(this.openLastFileBtn);
 			this.groupBox1.Controls.Add(this.isRenketuLastFile);
 			this.groupBox1.Controls.Add(this.lastFileInfoLabel);
 			this.groupBox1.Controls.Add(this.sLabel);
@@ -120,6 +120,16 @@ namespace namaichi
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "録画開始時間";
 			// 
+			// openLastFileBtn
+			// 
+			this.openLastFileBtn.Location = new System.Drawing.Point(235, 116);
+			this.openLastFileBtn.Name = "openLastFileBtn";
+			this.openLastFileBtn.Size = new System.Drawing.Size(88, 20);
+			this.openLastFileBtn.TabIndex = 15;
+			this.openLastFileBtn.Text = "ファイルを選択";
+			this.openLastFileBtn.UseVisualStyleBackColor = true;
+			this.openLastFileBtn.Click += new System.EventHandler(this.OpenLastFileBtnClick);
+			// 
 			// isAfterStartTimeCommentChkBox
 			// 
 			this.isAfterStartTimeCommentChkBox.Location = new System.Drawing.Point(6, 181);
@@ -133,7 +143,7 @@ namespace namaichi
 			// 
 			this.isOpenTimeBaseStartChkBox.Location = new System.Drawing.Point(189, 45);
 			this.isOpenTimeBaseStartChkBox.Name = "isOpenTimeBaseStartChkBox";
-			this.isOpenTimeBaseStartChkBox.Size = new System.Drawing.Size(135, 15);
+			this.isOpenTimeBaseStartChkBox.Size = new System.Drawing.Size(135, 18);
 			this.isOpenTimeBaseStartChkBox.TabIndex = 7;
 			this.isOpenTimeBaseStartChkBox.Text = "開演時間を基準にする";
 			this.isOpenTimeBaseStartChkBox.UseVisualStyleBackColor = true;
@@ -161,16 +171,6 @@ namespace namaichi
 			this.isSetVposStartTime.Text = "コメントのvposは録画開始時間を起点にする";
 			this.isSetVposStartTime.UseVisualStyleBackColor = true;
 			// 
-			// openLastFileBtn
-			// 
-			this.openLastFileBtn.Location = new System.Drawing.Point(235, 116);
-			this.openLastFileBtn.Name = "openLastFileBtn";
-			this.openLastFileBtn.Size = new System.Drawing.Size(88, 20);
-			this.openLastFileBtn.TabIndex = 15;
-			this.openLastFileBtn.Text = "ファイルを選択";
-			this.openLastFileBtn.UseVisualStyleBackColor = true;
-			this.openLastFileBtn.Click += new System.EventHandler(this.OpenLastFileBtnClick);
-			// 
 			// isRenketuLastFile
 			// 
 			this.isRenketuLastFile.Location = new System.Drawing.Point(26, 137);
@@ -192,7 +192,7 @@ namespace namaichi
 			// 
 			this.sLabel.Location = new System.Drawing.Point(188, 68);
 			this.sLabel.Name = "sLabel";
-			this.sLabel.Size = new System.Drawing.Size(69, 12);
+			this.sLabel.Size = new System.Drawing.Size(69, 18);
 			this.sLabel.TabIndex = 2;
 			this.sLabel.Text = "秒時点から";
 			// 
@@ -209,7 +209,7 @@ namespace namaichi
 			// 
 			this.mLabel.Location = new System.Drawing.Point(130, 68);
 			this.mLabel.Name = "mLabel";
-			this.mLabel.Size = new System.Drawing.Size(39, 12);
+			this.mLabel.Size = new System.Drawing.Size(39, 18);
 			this.mLabel.TabIndex = 2;
 			this.mLabel.Text = "分";
 			// 
@@ -226,7 +226,7 @@ namespace namaichi
 			// 
 			this.hLabel.Location = new System.Drawing.Point(60, 68);
 			this.hLabel.Name = "hLabel";
-			this.hLabel.Size = new System.Drawing.Size(39, 12);
+			this.hLabel.Size = new System.Drawing.Size(39, 18);
 			this.hLabel.TabIndex = 2;
 			this.hLabel.Text = "時間";
 			// 
@@ -453,7 +453,7 @@ namespace namaichi
 			// 
 			this.label1.Location = new System.Drawing.Point(60, 89);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(234, 16);
+			this.label1.Size = new System.Drawing.Size(234, 12);
 			this.label1.TabIndex = 9;
 			this.label1.Text = "0時間0分0秒を指定すると最後まで録画します";
 			// 
@@ -461,7 +461,7 @@ namespace namaichi
 			// 
 			this.label6.Location = new System.Drawing.Point(188, 67);
 			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(69, 12);
+			this.label6.Size = new System.Drawing.Size(69, 18);
 			this.label6.TabIndex = 2;
 			this.label6.Text = "秒時点まで";
 			// 
@@ -478,7 +478,7 @@ namespace namaichi
 			// 
 			this.label7.Location = new System.Drawing.Point(130, 67);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(39, 12);
+			this.label7.Size = new System.Drawing.Size(39, 18);
 			this.label7.TabIndex = 2;
 			this.label7.Text = "分";
 			// 
@@ -495,7 +495,7 @@ namespace namaichi
 			// 
 			this.label8.Location = new System.Drawing.Point(60, 67);
 			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(39, 12);
+			this.label8.Size = new System.Drawing.Size(39, 18);
 			this.label8.TabIndex = 2;
 			this.label8.Text = "時間";
 			// 
@@ -598,7 +598,7 @@ namespace namaichi
 									"7. 6Mbps(6Mbps1080p30fps)"});
 			this.qualityListBox.Location = new System.Drawing.Point(26, 27);
 			this.qualityListBox.Name = "qualityListBox";
-			this.qualityListBox.Size = new System.Drawing.Size(177, 112);
+			this.qualityListBox.Size = new System.Drawing.Size(177, 100);
 			this.qualityListBox.TabIndex = 3;
 			// 
 			// lowRankBtn
@@ -640,8 +640,8 @@ namespace namaichi
 			// 
 			// TimeShiftOptionForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.BackColor = System.Drawing.SystemColors.Window;
 			this.ClientSize = new System.Drawing.Size(618, 428);
 			this.Controls.Add(this.openPanelBtn);
@@ -653,7 +653,7 @@ namespace namaichi
 			this.Controls.Add(this.okBtn);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox1);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+			this.Font = new System.Drawing.Font("MS UI Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
 			this.Name = "TimeShiftOptionForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "タイムシフト録画設定";

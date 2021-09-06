@@ -128,6 +128,7 @@ public class config
 			{"IsSaveCommentOnlyRetryingRec","false"},
 			{"IsDisplayComment","true"},
 			{"IsNormalizeComment","false"},
+			{"CommentReplaceText",""},
 			
 			{"IstitlebarSamune","true"},
 			{"IsautoFollowComgen","false"},

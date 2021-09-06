@@ -43,7 +43,12 @@ namespace namaichi
 		
 		void communityLinkLabel_Click(object sender, LinkLabelLinkClickedEventArgs e)
 		{
-			System.Diagnostics.Process.Start("https://com.nicovideo.jp/community/co2414037");
+			try {
+				System.Diagnostics.Process.Start("https://com.nicovideo.jp/community/co2414037");
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + " " + ee.StackTrace);
+				form.addLogText("ページの表示に失敗しました " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+			}
 		}
 		
 		void VersionFormLoad(object sender, EventArgs e)

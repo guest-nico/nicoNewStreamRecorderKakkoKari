@@ -81,7 +81,7 @@ namespace namaichi
 			}
 			util.setFontSize(int.Parse(config.get("fontSize")), this, false);
 			openPanelBtn.Font = new Font(openPanelBtn.Font.FontFamily, 8, openPanelBtn.Font.Style);
-			Width = 357;
+			Width = (int)(new Form().CreateGraphics().DpiX / 96 * 357) + 5;
 		}
 		private void updateTimeShiftStartTimeChkBox() {
 			hText.Enabled = mText.Enabled = sText.Enabled =
@@ -447,11 +447,11 @@ namespace namaichi
 		{
 			if (groupBox7.Visible) {
 				openPanelBtn.BackColor = Color.White;
-				Width = 357;
+				Width = (int)(new Form().CreateGraphics().DpiX / 96 * 357) + 5;
 				groupBox7.Visible = false;
 			} else {
 				openPanelBtn.BackColor = Color.FromArgb(232,232,232);
-				Width = 624;
+				Width = (int)(new Form().CreateGraphics().DpiX / 96 * 624) + 5;
 				groupBox7.Visible = true;
 			}
 		}

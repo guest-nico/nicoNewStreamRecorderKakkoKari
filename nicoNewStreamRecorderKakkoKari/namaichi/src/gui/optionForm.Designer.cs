@@ -64,7 +64,9 @@ namespace namaichi
 			this.label64 = new System.Windows.Forms.Label();
 			this.applyBtn = new System.Windows.Forms.Button();
 			this.IsTrayChkBox = new System.Windows.Forms.CheckBox();
+			this.commentReplaceText = new System.Windows.Forms.TextBox();
 			this.groupBox17 = new System.Windows.Forms.GroupBox();
+			this.label18 = new System.Windows.Forms.Label();
 			this.commentConvertStrText = new System.Windows.Forms.TextBox();
 			this.isNormalizeCommentChkBox = new System.Windows.Forms.CheckBox();
 			this.isCommentXmlInfo = new System.Windows.Forms.RadioButton();
@@ -487,6 +489,7 @@ namespace namaichi
 			// tabPage8
 			// 
 			this.tabPage8.Controls.Add(this.displayGroup);
+			this.tabPage8.Controls.Add(this.commentReplaceText);
 			this.tabPage8.Controls.Add(this.groupBox17);
 			this.tabPage8.Controls.Add(this.groupBox5);
 			this.tabPage8.Controls.Add(this.groupBox9);
@@ -559,8 +562,23 @@ namespace namaichi
 			this.IsTrayChkBox.Text = "最小化時に通知領域に収納する";
 			this.IsTrayChkBox.UseVisualStyleBackColor = true;
 			// 
+			// commentReplaceText
+			// 
+			this.commentReplaceText.AcceptsTab = true;
+			this.commentReplaceText.Location = new System.Drawing.Point(122, 210);
+			this.commentReplaceText.Name = "commentReplaceText";
+			this.commentReplaceText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+			this.commentReplaceText.Size = new System.Drawing.Size(239, 19);
+			this.commentReplaceText.TabIndex = 10;
+			this.commentReplaceText.Click += new System.EventHandler(this.CommentReplaceTextClick);
+			this.commentReplaceText.TextChanged += new System.EventHandler(this.CommentReplaceTextTextChanged);
+			this.commentReplaceText.Enter += new System.EventHandler(this.commentReplaceTextEnter);
+			this.commentReplaceText.Leave += new System.EventHandler(this.commentReplaceTextLeave);
+			this.commentReplaceText.MouseDown += new System.Windows.Forms.MouseEventHandler(this.commentReplaceTextMouseDown);
+			// 
 			// groupBox17
 			// 
+			this.groupBox17.Controls.Add(this.label18);
 			this.groupBox17.Controls.Add(this.commentConvertStrText);
 			this.groupBox17.Controls.Add(this.isNormalizeCommentChkBox);
 			this.groupBox17.Controls.Add(this.isCommentXmlInfo);
@@ -577,6 +595,15 @@ namespace namaichi
 			this.groupBox17.TabStop = false;
 			this.groupBox17.Text = "コメント";
 			// 
+			// label18
+			// 
+			this.label18.Location = new System.Drawing.Point(19, 130);
+			this.label18.Name = "label18";
+			this.label18.Size = new System.Drawing.Size(92, 18);
+			this.label18.TabIndex = 14;
+			this.label18.Text = "コメント置換リスト：";
+			this.label18.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
 			// commentConvertStrText
 			// 
 			this.commentConvertStrText.Enabled = false;
@@ -587,12 +614,13 @@ namespace namaichi
 			// 
 			// isNormalizeCommentChkBox
 			// 
-			this.isNormalizeCommentChkBox.Location = new System.Drawing.Point(19, 127);
+			this.isNormalizeCommentChkBox.Location = new System.Drawing.Point(253, 108);
 			this.isNormalizeCommentChkBox.Name = "isNormalizeCommentChkBox";
 			this.isNormalizeCommentChkBox.Size = new System.Drawing.Size(322, 19);
 			this.isNormalizeCommentChkBox.TabIndex = 8;
 			this.isNormalizeCommentChkBox.Text = "流量調整により薄くなったコメントを通常コメントとして保存する";
 			this.isNormalizeCommentChkBox.UseVisualStyleBackColor = true;
+			this.isNormalizeCommentChkBox.Visible = false;
 			// 
 			// isCommentXmlInfo
 			// 
@@ -2184,11 +2212,13 @@ namespace namaichi
 			this.Name = "optionForm";
 			this.Text = "オプション";
 			this.Load += new System.EventHandler(this.OptionFormLoad);
+			this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OptionFormMouseDown);
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.groupBox16.ResumeLayout(false);
 			this.groupBox6.ResumeLayout(false);
 			this.tabPage8.ResumeLayout(false);
+			this.tabPage8.PerformLayout();
 			this.displayGroup.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.fontList)).EndInit();
 			this.groupBox17.ResumeLayout(false);
@@ -2228,6 +2258,8 @@ namespace namaichi
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label label18;
+		private System.Windows.Forms.TextBox commentReplaceText;
 		private System.Windows.Forms.TextBox commentConvertStrText;
 		private System.Windows.Forms.CheckBox IsTrayChkBox;
 		private System.Windows.Forms.GroupBox groupBox14;
@@ -2412,9 +2444,5 @@ namespace namaichi
 		private System.Windows.Forms.TabPage tabPage2;
 		private System.Windows.Forms.TabPage tabPage1;
 		private System.Windows.Forms.TabControl tabControl1;
-		
-
-		
-
 	}
 }

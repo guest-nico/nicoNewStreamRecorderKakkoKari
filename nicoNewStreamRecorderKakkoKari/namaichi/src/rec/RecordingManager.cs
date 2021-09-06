@@ -76,7 +76,7 @@ namespace namaichi.rec
 	        			
             		} else {
 						if (lv == null) {
-							form.formAction(() => MessageBox.Show("not found lvid"), false);
+							form.formAction(() => util.showMessageBoxCenterForm(form, "not found lvid"), false);
 							return;
 						}
 						startRecording(lv, isPlayOnlyMode);
@@ -133,7 +133,7 @@ namespace namaichi.rec
 				
 				if (form.recEndProcess != null && endCode == 3) {
 					form.formAction(() => 
-							util.shutdown(form.recEndProcess));
+							util.shutdown(form.recEndProcess, form));
 				}
 				
 				util.debugWriteLine("end rec " + rfu);

@@ -434,7 +434,7 @@ namespace namaichi.rec
 					if (rm.form.IsDisposed) return 2;
 					try {
 						rm.form.formAction(() => {
-			       			MessageBox.Show("コミュニティに入る必要があります：\nrequire_community_member/" + lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None);
+			       			util.showMessageBoxCenterForm(rm.form, "コミュニティに入る必要があります：\nrequire_community_member/" + lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None);
 						}, false);
 					} catch (Exception e) {
 			       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);

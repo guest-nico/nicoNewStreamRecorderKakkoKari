@@ -7,11 +7,15 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Data;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-
+using System.Xml;
+using System.Xml.Linq;
+using Newtonsoft.Json;
 using rokugaTouroku;
 using rokugaTouroku.info;
 
@@ -37,20 +41,55 @@ namespace rokugaTouroku.rec
 			util.debugWriteLine("rlm add");
             
             var lvid = util.getRegGroup(t, "(lv\\d+(,\\d+)*)");
+            var userId = util.getRegGroup(t, "user/(\\d+)");
+            var chId = util.getRegGroup(t, "(ch\\d+)");
+            var coId = util.getRegGroup(t, "(co\\d+)");
 			//util.setLog(cfg, lv);
 			
+			var lvList = new List<string>();
 			var url = "";
 			if (lvid != null) {
-				url = "https://live.nicovideo.jp/watch/" + lvid;
-				
+				lvList.Add(lvid);
+			} else if (userId != null) {
+				lvList = getUserChannelStreamList(userId, "user");
+				if (lvList == null) {
+					util.showMessageBoxCenterForm(form, "ユーザーID" + userId + "の放送の取得に失敗しました");
+					return false;
+				}
+				var r = util.showMessageBoxCenterForm(form, "ユーザーID" + userId + "のタイムシフトを登録しますか？ " + lvList.Count + "件", "", MessageBoxButtons.YesNo);
+				if (r == DialogResult.No) return false;
+			} else if (chId != null) {
+				lvList = getUserChannelStreamList(chId, "channel");
+				if (lvList == null) {
+					util.showMessageBoxCenterForm(form, "チャンネルID" + chId + "の放送の取得に失敗しました");
+					return false;
+				}
+				var r = util.showMessageBoxCenterForm(form, "チャンネルID" + chId + "のタイムシフトを登録しますか？ " + lvList.Count + "件", "", MessageBoxButtons.YesNo);
+				if (r == DialogResult.No) return false;
+			} else if (coId != null) {
+				lvList = getCommunityStreamList(coId);
+				if (lvList == null) {
+					util.showMessageBoxCenterForm(form, "コミュニティID" + coId + "の放送の取得に失敗しました");
+					return false;
+				}
+				var r = util.showMessageBoxCenterForm(form, "コミュニティID" + coId + "のタイムシフトを登録しますか？ " + lvList.Count + "件", "", MessageBoxButtons.YesNo);
+				if (r == DialogResult.No) return false;
+			} else {
+				util.showMessageBoxCenterForm(form, "not found ID");
+				return false;
+			}
+			//if (lvid != null) form.urlText.Text = "https://cas.nicovideo.jp/user/77252622/lv313508832";
+			
+			foreach (var _lv in lvList) {
+				url = "https://live.nicovideo.jp/watch/" + _lv;
 				try {
 					if (bool.Parse(cfg.get("IsDuplicateConfirm"))) {
 						var delList = new List<RecInfo>();
 						foreach (RecInfo d in recListData)
-							if (d.id == lvid) delList.Add(d);
+							if (d.id == _lv) delList.Add(d);
 						
 						foreach (var _ri in delList) 
-							if (MessageBox.Show(_ri.id + "はリスト内に含まれています。既にある行を削除しますか？\n[" + _ri.quality + "] [" + _ri.timeShift + "]", "確認", MessageBoxButtons.YesNo) == DialogResult.Yes) {
+							if (util.showMessageBoxCenterForm(form, _ri.id + "はリスト内に含まれています。既にある行を削除しますか？\n[" + _ri.quality + "] [" + _ri.timeShift + "]", "確認", MessageBoxButtons.YesNo) == DialogResult.Yes) {
 								form.deleteRow(_ri);
 						}
 						
@@ -58,17 +97,13 @@ namespace rokugaTouroku.rec
 				} catch (Exception e){
 					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
-			} else {
-				MessageBox.Show("not found lvID");
-				return false;
-			}
-			//if (lvid != null) form.urlText.Text = "https://cas.nicovideo.jp/user/77252622/lv313508832";
 				
-			var rdg = new RecDataGetter(this);
-			var ri = new RecInfo(lvid, t, rdg, form.afterConvertModeList.Text, form.setTsConfig, form.setTimeshiftBtn.Text, form.qualityBtn.Text, form.qualityRank, form.recCommmentList.Text, form.isChaseChkBox.Checked);
-			Task.Run(() => ri.setHosoInfo(form));
-			
-			form.addList(ri);
+				var rdg = new RecDataGetter(this);
+				var ri = new RecInfo(_lv, url, rdg, form.afterConvertModeList.Text, form.setTsConfig, form.setTimeshiftBtn.Text, form.qualityBtn.Text, form.qualityRank, form.recCommmentList.Text, form.isChaseChkBox.Checked);
+				Task.Run(() => ri.setHosoInfo(form));
+				
+				form.addList(ri);
+			}
 			
 			return true;
 				
@@ -101,6 +136,135 @@ namespace rokugaTouroku.rec
 			}
 			
 		}
-		
+		private List<string> getUserChannelStreamList(string id, string type) {
+			try {
+				var ret = new List<string>();
+				for (var i = 0; i < (type == "user" ? 2 : 10); i++) {
+					string url = null;
+					Dictionary<string, string> h = new Dictionary<string, string>();
+					if (i == 0) {
+						url = "https://api.cas.nicovideo.jp/v2/tanzakus/" + type + "/" + id;
+						h.Add("Content-Type", "application/json; charset=utf-8");
+						h.Add("X-XSS-Protection", "1; mode=block");
+						h.Add("Connection", "keep-alive");
+					} else {
+						url = "https://api.cas.nicovideo.jp/v2/tanzakus/" + type + "/" + id + "/content-groups/live/items?_offset=" + (10 + (i - 1) * 15) + "&_limit=15&sort=liveRecent_asc";
+						h.Add("User-Agent", "nicocas-Android/3.24.0");
+						var us = form.container.GetCookies(new Uri(url))["user_session"].Value;
+						h.Add("Cookie", "user_session=" + us);
+						h.Add("X-Frontend-Id", "90");
+						h.Add("X-Frontend-Version", "3.24.0");
+						h.Add("X-Os-Version", "22");
+						h.Add("X-Model-Name", "greatlte");
+						h.Add("X-Connection-Environment", "wifi");
+					}
+					var r = util.sendRequest(url, h, null, "GET", null);
+					if (r == null) {
+						util.showMessageBoxCenterForm(form, (type == "user" ? "ユーザー" : "チャンネル") + id + "の放送情報が取得できませんでした");
+						return null;
+					}
+					using (var rs = r.GetResponseStream())
+					using (var sr = new StreamReader(rs)) {
+						var res = sr.ReadToEnd();
+						var l = getTanzakuStreamLvList(res);
+						if (l == null) break;
+						foreach (var _l in l) {
+							if (_l != null) ret.Add(_l);
+						}
+						if (l.IndexOf(null) > -1) break;
+					}
+				}
+				return ret;
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				return null;
+			}
+		}
+		private List<string> getTanzakuStreamLvList(string res) {
+			try {
+				if (res.IndexOf("BAD_REQUEST") > -1) return null;
+				var xml = JsonConvert.DeserializeXmlNode(res, "root");
+				//xml.LoadXml(res);
+				var items = xml.GetElementsByTagName("items");
+				if (items == null || items.Count == 0) return null;
+				var ret = new List<string>();
+				foreach (XmlElement _i in items) {
+					var _ts = _i.GetElementsByTagName("timeshift");
+					if (_ts.Count == 0) continue;
+					
+					//foreach (XmlNode i in _i.ChildNodes) {
+						var ts = _i.SelectSingleNode("timeshift");
+						if (ts == null) continue;
+						//var ts = i.Element("timeshift");
+						if (ts.FirstChild.InnerText == "true" &&
+						   	ts.LastChild.InnerText == "released")
+							ret.Add(_i.SelectSingleNode("id").InnerText);
+						if (ts.LastChild.InnerText == "expired")
+							ret.Add(null);
+					//}
+				}
+				return ret;
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				return null;
+			}
+		}
+		private List<string> getCommunityStreamList(string id) {
+			try {
+				var _id = id.Substring(2);
+				var ret = new List<string>();
+				var total = -1;
+				for (var i = 0; i < 10; i++) {
+					string url = "https://com.nicovideo.jp/api/v1/communities/" + _id + "/lives.json?limit=30&offset=" + (i * 30);
+					var res = util.getPageSource(url, form.container);
+					if (res == null) {
+						util.showMessageBoxCenterForm(form, "コミュニティID" + id + "の放送情報が取得できませんでした");
+						return null;
+					}
+					if (total == -1) {
+						var _total = util.getRegGroup(res, "\"total\":(\\d+)");
+						if (_total == null) return null;
+						total = int.Parse(_total);
+					}
+					var l = getCommunityJsonStreamLvList(res);
+					if (l == null) break;
+					foreach (var _l in l) {
+						if (_l != null) ret.Add(_l);
+					}
+					if (l.IndexOf(null) > -1 || i * 30 + 30 > total) break;
+				}
+				return ret;
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				return null;
+			}
+		}
+		private List<string> getCommunityJsonStreamLvList(string res) {
+			try {
+				var xml = JsonConvert.DeserializeXmlNode(res, "root");
+				var id = xml.GetElementsByTagName("id");
+				var status = xml.GetElementsByTagName("status");
+				var canView = xml.GetElementsByTagName("can_view");
+				var finishedAt = xml.GetElementsByTagName("finished_at");
+				if (id.Count != status.Count - 1 || id.Count != canView.Count || id.Count != finishedAt.Count / 2) return null;
+				var ret = new List<string>();
+				for (var i = 0; i < id.Count; i++) {
+					if (status[i + 1].InnerText == "ENDED" && canView[i].InnerText == "true")
+						ret.Add(id[i].InnerText);
+					var t = finishedAt[i * 2].InnerText;
+					var _t = DateTime.Parse(t);
+					if (DateTime.Parse(finishedAt[i * 2].InnerText) < DateTime.Now) {
+						ret.Add(null);
+						break;
+					}
+				}
+				if (ret.Count > 1)
+					util.debugWriteLine("ret count " + ret.Count);
+				return ret;
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				return null;
+			}
+		}
 	}
 }
