@@ -33,8 +33,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.50";
-	public static string versionDayStr = "2021/09/06";
+	public static string versionStr = "ver0.88.51";
+	public static string versionDayStr = "2021/09/19";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -1413,8 +1413,9 @@ public static void soundEnd(config cfg, MainForm form) {
 			uint SWP_NOSIZE = 1;
 			uint SWP_NOZORDER = 4;
 			uint SWP_NOACTIVATE = 16;
-			SetWindowPos(wParam, 0, x, y, 0, 0, 
-					SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+			if (x >= 0 && y >= 0)
+				SetWindowPos(wParam, 0, x, y, 0, 0, 
+						SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
 			UnhookWindowsHookEx(mBHook);
 		}
 		return CallNextHookEx(mBHook, nCode, wParam, lParam);

@@ -62,6 +62,7 @@ namespace rokugaTouroku
 			this.openRecFolderMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.reAddRowMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.reAddNewConfigRowMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.deleteRowMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -138,7 +139,6 @@ namespace rokugaTouroku
 			this.label3 = new System.Windows.Forms.Label();
 			this.samuneBox = new System.Windows.Forms.PictureBox();
 			this.logText = new System.Windows.Forms.TextBox();
-			this.reAddNewConfigRowMenu = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.recList)).BeginInit();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -168,7 +168,7 @@ namespace rokugaTouroku
 									"wma(音声)",
 									"aac(音声)",
 									"ogg(音声)"});
-			this.afterConvertModeList.Location = new System.Drawing.Point(641, 39);
+			this.afterConvertModeList.Location = new System.Drawing.Point(661, 39);
 			this.afterConvertModeList.Name = "afterConvertModeList";
 			this.afterConvertModeList.Size = new System.Drawing.Size(149, 20);
 			this.afterConvertModeList.TabIndex = 5;
@@ -326,7 +326,7 @@ namespace rokugaTouroku
 									this.toolStripSeparator4,
 									this.deleteRowMenu});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(257, 220);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(257, 198);
 			// 
 			// openWatchUrlMenu
 			// 
@@ -379,6 +379,13 @@ namespace rokugaTouroku
 			this.reAddRowMenu.Size = new System.Drawing.Size(256, 22);
 			this.reAddRowMenu.Text = "この行を再登録する";
 			this.reAddRowMenu.Click += new System.EventHandler(this.reAddRowMenu_Click);
+			// 
+			// reAddNewConfigRowMenu
+			// 
+			this.reAddNewConfigRowMenu.Name = "reAddNewConfigRowMenu";
+			this.reAddNewConfigRowMenu.Size = new System.Drawing.Size(256, 22);
+			this.reAddNewConfigRowMenu.Text = "この行を新しい設定で再登録する";
+			this.reAddNewConfigRowMenu.Click += new System.EventHandler(this.ReAddNewConfigRowMenuClick);
 			// 
 			// toolStripSeparator4
 			// 
@@ -690,7 +697,7 @@ namespace rokugaTouroku
 			// 
 			// isChaseChkBox
 			// 
-			this.isChaseChkBox.Location = new System.Drawing.Point(1003, 37);
+			this.isChaseChkBox.Location = new System.Drawing.Point(1023, 37);
 			this.isChaseChkBox.Name = "isChaseChkBox";
 			this.isChaseChkBox.Size = new System.Drawing.Size(104, 24);
 			this.isChaseChkBox.TabIndex = 14;
@@ -699,7 +706,7 @@ namespace rokugaTouroku
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(813, 40);
+			this.label2.Location = new System.Drawing.Point(833, 40);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(75, 17);
 			this.label2.TabIndex = 13;
@@ -714,14 +721,14 @@ namespace rokugaTouroku
 									"映像＋コメント",
 									"映像のみ",
 									"コメントのみ"});
-			this.recCommmentList.Location = new System.Drawing.Point(895, 39);
+			this.recCommmentList.Location = new System.Drawing.Point(915, 39);
 			this.recCommmentList.Name = "recCommmentList";
 			this.recCommmentList.Size = new System.Drawing.Size(92, 20);
 			this.recCommmentList.TabIndex = 12;
 			// 
 			// label18
 			// 
-			this.label18.Location = new System.Drawing.Point(596, 40);
+			this.label18.Location = new System.Drawing.Point(616, 40);
 			this.label18.Name = "label18";
 			this.label18.Size = new System.Drawing.Size(38, 17);
 			this.label18.TabIndex = 11;
@@ -758,11 +765,12 @@ namespace rokugaTouroku
 			// 
 			// qualityBtn
 			// 
+			this.qualityBtn.AutoSize = true;
 			this.qualityBtn.Location = new System.Drawing.Point(437, 37);
 			this.qualityBtn.Name = "qualityBtn";
-			this.qualityBtn.Size = new System.Drawing.Size(139, 23);
+			this.qualityBtn.Size = new System.Drawing.Size(172, 23);
 			this.qualityBtn.TabIndex = 4;
-			this.qualityBtn.Text = "超高,高,中,低,超低,音,6M";
+			this.qualityBtn.Text = "超高,高,中,低,超低,音,6M,8M,4M";
 			this.qualityBtn.UseVisualStyleBackColor = true;
 			this.qualityBtn.Click += new System.EventHandler(this.qualityBtn_Click);
 			// 
@@ -1087,13 +1095,6 @@ namespace rokugaTouroku
 			this.logText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.logText.Size = new System.Drawing.Size(187, 154);
 			this.logText.TabIndex = 8;
-			// 
-			// reAddNewConfigRowMenu
-			// 
-			this.reAddNewConfigRowMenu.Name = "reAddNewConfigRowMenu";
-			this.reAddNewConfigRowMenu.Size = new System.Drawing.Size(256, 22);
-			this.reAddNewConfigRowMenu.Text = "この行を新しい設定で再登録する";
-			this.reAddNewConfigRowMenu.Click += new System.EventHandler(this.ReAddNewConfigRowMenuClick);
 			// 
 			// MainForm
 			// 

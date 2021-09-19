@@ -23,8 +23,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.10.57";
-	public static string versionDayStr = "2021/09/06";
+	public static string versionStr = "ver0.1.3.10.58";
+	public static string versionDayStr = "2021/09/19";
 	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);
@@ -969,8 +969,9 @@ class util {
 			uint SWP_NOSIZE = 1;
 			uint SWP_NOZORDER = 4;
 			uint SWP_NOACTIVATE = 16;
-			SetWindowPos(wParam, 0, x, y, 0, 0, 
-					SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+			if (x >= 0 && y >= 0)
+				SetWindowPos(wParam, 0, x, y, 0, 0, 
+						SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
 			UnhookWindowsHookEx(mBHook);
 		}
 		return CallNextHookEx(mBHook, nCode, wParam, lParam);

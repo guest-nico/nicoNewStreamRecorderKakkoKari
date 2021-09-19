@@ -222,6 +222,7 @@ namespace namaichi
 	        	optionForm o = new optionForm(config);
 	        	var size = config.get("fontSize");
 	        	if (o.ShowDialog() == DialogResult.OK) {
+	        		config.argConfig = new Dictionary<string, string>(); 
 	        		changeRecBtnClickEvent(bool.Parse(config.get("IsRecBtnOnlyMouse")));
 	        		
 	        		var newSize = config.get("fontSize");
@@ -1099,11 +1100,19 @@ namespace namaichi
 			}
 			config.set("qualityRank", string.Join(",", qr.ToArray()));
 			
-			var qualityCfg = config.get("qualityList");
-			if (string.IsNullOrEmpty(qualityCfg)) 
-				qualityCfg = config.defaultConfig["qualityList"];
+			
+			var _qualityCfg = config.get("qualityList");
+			var _qualityCfgD = config.defaultConfig["qualityList"];
+			if (string.IsNullOrEmpty(_qualityCfg)) 
+				_qualityCfg = _qualityCfgD;
+			var qualityCfg = JsonConvert.DeserializeObject<Dictionary<int, string>>(_qualityCfg);
+			var qualityCfgD = JsonConvert.DeserializeObject<Dictionary<int, string>>(_qualityCfgD);
+			if (qualityCfg.Count != qualityCfgD.Count) {
+				foreach (var q in qualityCfgD) 
+					if (!qualityCfg.ContainsValue(q.Value)) qualityCfg.Add(qualityCfg.Count, q.Value);
+			}
 			namaichi.config.config.qualityList = 
-					JsonConvert.DeserializeObject<Dictionary<int, string>>(qualityCfg);
+					qualityCfg;
 		}
 		void setToolTip() {
 			try {

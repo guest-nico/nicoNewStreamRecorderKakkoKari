@@ -133,7 +133,7 @@ public class config
 			{"IstitlebarSamune","true"},
 			{"IsautoFollowComgen","false"},
 			{"qualityRank","0,1,2,3,4,5,6"},
-			{"qualityList","{\"0\":\"3Mbps(super_high)\",\"1\":\"2Mbps(high)\",\"2\":\"1Mbps(normal)\",\"3\":\"384kbps(low)\",\"4\":\"192kbps(super_low)\",\"5\":\"音声のみ(audio_high)\",\"6\":\"6Mbps(6Mbps1080p30fps)\"}"},
+			{"qualityList","{\"0\":\"3Mbps(super_high)\",\"1\":\"2Mbps(high)\",\"2\":\"1Mbps(normal)\",\"3\":\"384kbps(low)\",\"4\":\"192kbps(super_low)\",\"5\":\"音声のみ(audio_high)\",\"6\":\"6Mbps(6Mbps1080p30fps)\",\"7\":\"8Mbps(8Mbps1080p60fps)\",\"8\":\"4Mbps(4Mbps720p60fps)\"}"},
 			{"IsMiniStart","false"},
 			{"IsConfirmCloseMsgBox","true"},
 			{"IsRecBtnOnlyMouse","false"},
@@ -310,7 +310,8 @@ public class config
 			{0, "3Mbps(super_high)"},
 			{1, "2Mbps(high)"}, {2, "1Mbps(normal)"},
 			{3, "384kbps(low)"}, {4, "192kbps(super_low)"},
-			{5, "音声のみ(audio_high)"}, {6, "6Mbps(6Mbps1080p30fps)"}
+			{5, "音声のみ(audio_high)"}, {6, "6Mbps(6Mbps1080p30fps)"},
+			{7, "8Mbps(8Mbps1080p60fps)"}, {8, "4Mbps(4Mbps720p60fps)"}
 		};
 	}
 }

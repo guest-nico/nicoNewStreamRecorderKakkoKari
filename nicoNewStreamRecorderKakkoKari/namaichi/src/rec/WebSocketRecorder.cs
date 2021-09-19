@@ -1311,7 +1311,7 @@ namespace namaichi.rec
 				if (q == "abr") continue;
 				config.config.qualityList.Add(config.config.qualityList.Count, q);
 				rm.cfg.set("qualityList", JsonConvert.SerializeObject(namaichi.config.config.qualityList));
-				rm.form.addLogText("未知の画質の" + q + "が見つかりました。画質設定に追加します。");
+				rm.form.addLogText("未知の画質の" + q + "が見つかりました。「オプション」の「画質」タブのリストに追加します。");
 			}
 			
 			return bestGettableQuality;

@@ -107,11 +107,7 @@ namespace rokugaTouroku
 			
 			changeRecBtnClickEvent(bool.Parse(config.get("IsRecBtnOnlyMouse")));
 			
-			var qualityCfg = config.get("qualityList");
-			if (string.IsNullOrEmpty(qualityCfg)) 
-				qualityCfg = config.defaultConfig["qualityList"];
-			rokugaTouroku.config.config.qualityList = 
-					JsonConvert.DeserializeObject<Dictionary<int, string>>(qualityCfg);
+			setQualitySetting();
 		}
 		private void formInitSetting() {
 			recList.DataSource = recListDataSource;
@@ -373,7 +369,8 @@ namespace rokugaTouroku
 				.Replace("0", "超高").Replace("1", "高")
 				.Replace("2", "中").Replace("3", "低")
 				.Replace("4", "超低").Replace("5", "音")
-				.Replace("6", "6M");
+				.Replace("6", "6M").Replace("8", "4M")
+				.Replace("7", "8M");
 		}
 		public void displayRiInfo(RecInfo ri, string ctrl = null, string val = null) {
 			var isChange = displayingRi != ri;
@@ -1004,6 +1001,29 @@ namespace rokugaTouroku
 			} else {
 				recBtn.Click += new EventHandler(recBtn_Click);
 			}
+		}
+		private void setQualitySetting() {
+			var qr = config.get("qualityRank").Split(',').ToList();
+			var qrD = config.defaultConfig["qualityRank"].Split(',');
+			if (qr.Count != qrD.Length) {
+				foreach (var q in qrD) 
+					if (qr.IndexOf(q) == -1) qr.Add(q);
+			}
+			config.set("qualityRank", string.Join(",", qr.ToArray()));
+			
+			
+			var _qualityCfg = config.get("qualityList");
+			var _qualityCfgD = config.defaultConfig["qualityList"];
+			if (string.IsNullOrEmpty(_qualityCfg)) 
+				_qualityCfg = _qualityCfgD;
+			var qualityCfg = JsonConvert.DeserializeObject<Dictionary<int, string>>(_qualityCfg);
+			var qualityCfgD = JsonConvert.DeserializeObject<Dictionary<int, string>>(_qualityCfgD);
+			if (qualityCfg.Count != qualityCfgD.Count) {
+				foreach (var q in qualityCfgD) 
+					if (!qualityCfg.ContainsValue(q.Value)) qualityCfg.Add(qualityCfg.Count, q.Value);
+			}
+			rokugaTouroku.config.config.qualityList = 
+					qualityCfg;
 		}
 	}
 }

@@ -152,7 +152,9 @@ namespace namaichi.rec
 			if (res == null) return "チケットを予約するための接続に失敗しました";
 			var res2 = "";
 			
-			if (res.IndexOf("TICKET_NOT_FOUND") > -1) {
+			if (res.IndexOf("status\":200") > -1) {
+				return "ok";
+			} else if (res.IndexOf("TICKET_NOT_FOUND") > -1) {
 				
 				var reserveData = Encoding.ASCII.GetBytes("vid=" + id + "&overwrite=0");
 				res2 = util.postResStr(reservationsUrl, header, reserveData);

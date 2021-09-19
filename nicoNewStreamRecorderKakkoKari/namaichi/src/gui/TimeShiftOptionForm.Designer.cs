@@ -595,10 +595,12 @@ namespace namaichi
 									"4. 384kbps(low)",
 									"5. 192kbps(super_low)",
 									"6. 音声のみ(audio_high)",
-									"7. 6Mbps(6Mbps1080p30fps)"});
+									"7. 6Mbps(6Mbps1080p30fps)",
+									"8. 8Mbps(8Mbps1080p60fps)",
+									"9. 4Mbps(4Mbps720p60fps)"});
 			this.qualityListBox.Location = new System.Drawing.Point(26, 27);
 			this.qualityListBox.Name = "qualityListBox";
-			this.qualityListBox.Size = new System.Drawing.Size(177, 100);
+			this.qualityListBox.Size = new System.Drawing.Size(177, 112);
 			this.qualityListBox.TabIndex = 3;
 			// 
 			// lowRankBtn

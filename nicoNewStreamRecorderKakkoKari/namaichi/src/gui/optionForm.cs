@@ -638,7 +638,7 @@ namespace namaichi
 		
 		void highRankBtn_Click(object sender, EventArgs e)
 		{
-			List<int> ranks = new List<int>() {6,0,1,2,3,4,5};
+			List<int> ranks = new List<int>() {7,6,8,0,1,2,3,4,5};
 			for (var i = ranks.Count; i < config.config.qualityList.Count; i++)
 				ranks.Add(i);
 			qualityListBox.Items.Clear();
@@ -646,7 +646,7 @@ namespace namaichi
 		}
 		void lowRankBtn_Click(object sender, EventArgs e)
 		{
-			List<int> ranks = new List<int>() {5, 4, 3, 2, 1, 0, 6};
+			List<int> ranks = new List<int>() {5, 4, 3, 2, 1, 0, 8, 6, 7};
 			for (var i = ranks.Count; i < config.config.qualityList.Count; i++)
 				ranks.Add(i);
 			qualityListBox.Items.Clear();
