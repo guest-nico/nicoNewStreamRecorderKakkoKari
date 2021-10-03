@@ -99,7 +99,7 @@ namespace rokugaTouroku.rec
 				}
 				
 				var rdg = new RecDataGetter(this);
-				var ri = new RecInfo(_lv, url, rdg, form.afterConvertModeList.Text, form.setTsConfig, form.setTimeshiftBtn.Text, form.qualityBtn.Text, form.qualityRank, form.recCommmentList.Text, form.isChaseChkBox.Checked);
+				var ri = new RecInfo(_lv, url, rdg, form.afterConvertModeList.Text, form.setTsConfig, form.setTimeshiftBtn.Text, form.qualityBtn.Text, form.qualityRank, form.recCommmentList.Text, form.isChaseChkBox.Checked, (AccountInfo)form.accountBtn.Tag);
 				Task.Run(() => ri.setHosoInfo(form));
 				
 				form.addList(ri);

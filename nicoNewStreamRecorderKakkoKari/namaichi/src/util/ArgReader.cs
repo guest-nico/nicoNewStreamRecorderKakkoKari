@@ -32,6 +32,7 @@ namespace namaichi.utility
 		public config.config config;
 		public TimeShiftConfig tsConfig;
 		public bool isPlayMode = false;
+		public AccountInfo ai = null;
 		
 		public ArgReader(string[] args, config.config config, MainForm form)
 		{
@@ -73,7 +74,7 @@ namespace namaichi.utility
 			var keys = config.defaultConfig.Keys.ToList();
 			lowKeys.AddRange(new string[] {"ts-start", "ts-end",
 			                 		//"ts-list", "ts-list-update", "ts-list-command", "ts-list-open", "ts-list-m3u8", 
-			                 		"ts-vpos-starttime", "ts-starttime-comment", "ts-endtime-comment", "ts-starttime-open", "ts-endtime-open", "ts-endtime-delete-pos"});
+			                 		"ts-vpos-starttime", "ts-starttime-comment", "ts-endtime-comment", "ts-starttime-open", "ts-endtime-open", "ts-endtime-delete-pos", "accountsetting"});
 			foreach (var a in args) {
 				if (a.StartsWith("-")) {
 					var name = util.getRegGroup(a, "-(.*)=");
@@ -401,6 +402,18 @@ namespace namaichi.utility
 				   	} else {
 						form.addLogText(name + "の値が設定できませんでした(true or false) " + val, false);
 						return false;;
+					}
+				}
+				
+				if (lowKeys[i] == "accountsetting") {
+					if (val.IndexOf("xml versio") > -1) val = util.getRegGroup(val, "(<AccountSe.+)");
+					var ai = AccountInfo.fromJsonArg(val);
+					if (ai == null) {
+						form.addLogText(name + "の値が設定できませんでした " + val, false);
+						return false;
+					} else {
+						this.ai = ai;
+						return false;
 					}
 				}
 				setName = keys[i];

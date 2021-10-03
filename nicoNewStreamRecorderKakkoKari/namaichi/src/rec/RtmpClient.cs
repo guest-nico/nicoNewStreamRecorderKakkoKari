@@ -73,7 +73,7 @@ namespace namaichi.rec
         protected override void Debug(string str)
         {
             base.Debug(str);
-            Console.WriteLine(str);
+            util.consoleWrite(str);
             System.Diagnostics.Debug.WriteLine(str);
         }
 
@@ -123,7 +123,7 @@ namespace namaichi.rec
 			if (r == null)
 				 r = new Regex(reg);
 			var m = r.Match(target);
-	//		Console.WriteLine(m.Groups.Count +""+ m.Groups[0]);
+	//		util.consoleWrite(m.Groups.Count +""+ m.Groups[0]);
 			if (m.Groups.Count>group) {
 				return m.Groups[group].ToString();
 			} else return null;

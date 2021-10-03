@@ -11,6 +11,7 @@ using System.Configuration;
 using System.Collections.Generic;
 using System.Threading;
 using System.IO;
+using System.Windows.Forms;
 
 namespace rokugaTouroku.config {
 /// <summary>

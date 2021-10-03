@@ -22,19 +22,19 @@ class app {
 	public static namaichi.MainForm form;
 	public static void Mains(string[] args) {
 		string a = util.getRegGroup("as32df5gh", "\\d([^0-9]).(.)", 1);
-		Console.WriteLine(a);
-		Console.WriteLine(util.getPath());
-		Console.WriteLine(util.getTime());
-		Console.WriteLine(util.getJarPath());
-		Console.WriteLine(util.getOkFileName(".a\\\"aa|a", false, false));
-		//Console.WriteLine(util.getRecFolderFilePath("host", "group", "title", "lvid", "comnum")[0]);
-		//Console.WriteLine(util.getRecFolderFilePath("host", "group", "title", "lvid", "comnum")[1]);
+		util.consoleWrite(a);
+		util.consoleWrite(util.getPath());
+		util.consoleWrite(util.getTime());
+		util.consoleWrite(util.getJarPath());
+		util.consoleWrite(util.getOkFileName(".a\\\"aa|a", false, false));
+		//util.consoleWrite(util.getRecFolderFilePath("host", "group", "title", "lvid", "comnum")[0]);
+		//util.consoleWrite(util.getRecFolderFilePath("host", "group", "title", "lvid", "comnum")[1]);
 	}
 }
 */
 class util {
-	public static string versionStr = "ver0.88.51";
-	public static string versionDayStr = "2021/09/19";
+	public static string versionStr = "ver0.88.52";
+	public static string versionDayStr = "2021/10/03";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -45,7 +45,7 @@ class util {
 		if (r == null)
 			 r = new Regex(reg);
 		var m = r.Match(target);
-//		Console.WriteLine(m.Groups.Count +""+ m.Groups[0]);
+//		util.consoleWrite(m.Groups.Count +""+ m.Groups[0]);
 		if (m.Groups.Count>group) {
 			return m.Groups[group].ToString();
 		} else return null;
@@ -54,7 +54,7 @@ class util {
 		string p  = System.IO.Path.GetDirectoryName(
 			System.IO.Path.GetFullPath(
 			System.Reflection.Assembly.GetExecutingAssembly().Location));
-//		Console.WriteLine(p);
+//		util.consoleWrite(p);
 		return p;
 	}
 	public static string getTime() {
@@ -1035,10 +1035,10 @@ class util {
 		{
 			if (ndpKey != null && ndpKey.GetValue("Release") != null) {
 				return CheckFor45PlusVersion((int) ndpKey.GetValue("Release"));
-//			Console.WriteLine(".NET Framework Version: " + CheckFor45PlusVersion((int) ndpKey.GetValue("Release")));
+//			util.consoleWrite(".NET Framework Version: " + CheckFor45PlusVersion((int) ndpKey.GetValue("Release")));
 			}
 			else {
-	//			Console.WriteLine(".NET Framework Version 4.5 or later is not detected.");
+	//			util.consoleWrite(".NET Framework Version 4.5 or later is not detected.");
 			} 
 		}
 		return -1;
@@ -1368,6 +1368,7 @@ public static void soundEnd(config cfg, MainForm form) {
 		return s;
 	}
 	public static string getReplacedComment(string t, List<string[]> commentReplaceList) {
+		if (commentReplaceList == null) return t;
 		try {
 			foreach (var s in commentReplaceList) {
 				t = new Regex(s[0]).Replace(t, s[1]);
@@ -1430,5 +1431,12 @@ public static void soundEnd(config cfg, MainForm form) {
 		    mBHook = SetWindowsHookEx(whCbt, new HookProc(CBTProc), hInstance, threadId);
 		}
 		return MessageBox.Show(text, caption, btn, icon);
+	}
+	public static void consoleWrite(string o) {
+		try {
+			Console.WriteLine(o);
+		} catch (Exception e) {
+			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+		}
 	}
 }

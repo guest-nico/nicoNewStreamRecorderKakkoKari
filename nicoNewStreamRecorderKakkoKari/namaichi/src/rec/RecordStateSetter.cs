@@ -192,19 +192,19 @@ namespace namaichi.rec
 			
 		}
 		private void writeStdIOInfo() {
-			Console.WriteLine("info.title:" + title);
-			Console.WriteLine("info.host:" + host);
-			Console.WriteLine("info.communityName:" + group);
-			Console.WriteLine("info.url:" + url);
-			Console.WriteLine("info.communityUrl:" + groupUrl);
-			Console.WriteLine("info.description:" + description);
-			Console.WriteLine("info.startTime:" + openTime);
-			Console.WriteLine("info.endTime:" + endTime);
+			util.consoleWrite("info.title:" + title);
+			util.consoleWrite("info.host:" + host);
+			util.consoleWrite("info.communityName:" + group);
+			util.consoleWrite("info.url:" + url);
+			util.consoleWrite("info.communityUrl:" + groupUrl);
+			util.consoleWrite("info.description:" + description);
+			util.consoleWrite("info.startTime:" + openTime);
+			util.consoleWrite("info.endTime:" + endTime);
 			var ts = (endTimeDt - openTimeDt);
-			Console.WriteLine("info.programTime:" + ts.ToString("h'時間'mm'分'ss'秒'"));
+			util.consoleWrite("info.programTime:" + ts.ToString("h'時間'mm'分'ss'秒'"));
 //			var a = "info.programTime:" + ts.ToString("h'時間'mm'分'ss'秒'");
 //			util.debugWriteLine(a);
-			Console.WriteLine("info.samuneUrl:" + samuneUrl);
+			util.consoleWrite("info.samuneUrl:" + samuneUrl);
 		}
 		private string getTag(string data) {
 			var _t = util.getRegGroup(data, "\"tag\":\\{.*?\"list\":\\[{(\"text.+?)\\]");

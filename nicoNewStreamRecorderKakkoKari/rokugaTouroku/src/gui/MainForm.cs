@@ -16,10 +16,12 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Xml.Serialization;
+using rokugaTouroku.gui;
 using rokugaTouroku.info;
 using rokugaTouroku.rec;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using SunokoLibrary.Application;
 
 namespace rokugaTouroku
 {
@@ -132,6 +134,7 @@ namespace rokugaTouroku
 		　　　　　　System.Reflection.BindingFlags.NonPublic);
 			dinfo.SetValue(recList, true);
 			tinfo.SetValue(logText, true);
+			setCookieForm();
 			
 			setFormState();
 			applyMenuSetting();
@@ -190,7 +193,7 @@ namespace rokugaTouroku
 		bool kakuninClose() {
 			
 			if (rec.rdg != null) {
-				DialogResult res = util.showMessageBoxCenterForm(this, "録画中ですが終了しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+				DialogResult res = util.showMessageBoxCenterForm(this, "録画中ですが録画を終了しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 				if (res == DialogResult.No) return false;
 				if (rec.rdg != null) rec.rdg.stopRecording();
 			}
@@ -378,28 +381,32 @@ namespace rokugaTouroku
 			//util.debugWriteLine("display c " + recList.RowCount + " " + recListDataSource.Count);
 			
 			this.Invoke((MethodInvoker)delegate() {
-				if (ctrl == "startTime" || ctrl == null) startTimeLabel.Text = ri.startTime;
-				if (ctrl == "endTime" || ctrl == null) endTimeLabel.Text = ri.endTime;
-				if (ctrl == "programTime" || ctrl == null) programTimeLabel.Text = ri.programTime;
-				
-				if (ctrl == "keikaTime" || ctrl == null) {
-					if (isChange) {
-						Task.Run(() => displayKeikaTime(ri));
-//						Task.Run(() => util.debugWriteLine("aa"));
+				try {
+					if (ctrl == "startTime" || ctrl == null) startTimeLabel.Text = ri.startTime;
+					if (ctrl == "endTime" || ctrl == null) endTimeLabel.Text = ri.endTime;
+					if (ctrl == "programTime" || ctrl == null) programTimeLabel.Text = ri.programTime;
+					
+					if (ctrl == "keikaTime" || ctrl == null) {
+						if (isChange) {
+							Task.Run(() => displayKeikaTime(ri));
+	//						Task.Run(() => util.debugWriteLine("aa"));
+						}
 					}
-				}
-				
-				if (ctrl == "title" || ctrl == null) titleLabel.Text = ri.title;
-				if (ctrl == "host" || ctrl == null) hostLabel.Text = ri.host;
-				if (ctrl == "communityName" || ctrl == null) communityLabel.Text = ri.communityName;
-				if (ctrl == "url" || ctrl == null) urlLabel.Text = ri.url;
-				if (ctrl == "communityUrl" || ctrl == null) communityUrlLabel.Text = ri.communityUrl;
-				if (ctrl == "description" || ctrl == null) descriptLabel.Text = ri.description;
-//				if (ctrl == "quality" || ctrl == null) qualityLabel.Text = ri.quality;
-//				if (ctrl == "timeshift" || ctrl == null) timeshiftLabel.Text = ri.timeShift;
-//				if (ctrl == "afterConvertMode" || ctrl == null) afterConvertModeLabel.Text = ri.afterConvertType;
-				if ((ctrl == "samuneUrl" || ctrl == null) && ri.samune != null) samuneBox.Image = ri.samune;
-				if (ctrl == "log" || ctrl == null) setLogText(ri.log);
+					
+					if (ctrl == "title" || ctrl == null) titleLabel.Text = ri.title;
+					if (ctrl == "host" || ctrl == null) hostLabel.Text = ri.host;
+					if (ctrl == "communityName" || ctrl == null) communityLabel.Text = ri.communityName;
+					if (ctrl == "url" || ctrl == null) urlLabel.Text = ri.url;
+					if (ctrl == "communityUrl" || ctrl == null) communityUrlLabel.Text = ri.communityUrl;
+					if (ctrl == "description" || ctrl == null) descriptLabel.Text = ri.description;
+	//				if (ctrl == "quality" || ctrl == null) qualityLabel.Text = ri.quality;
+	//				if (ctrl == "timeshift" || ctrl == null) timeshiftLabel.Text = ri.timeShift;
+	//				if (ctrl == "afterConvertMode" || ctrl == null) afterConvertModeLabel.Text = ri.afterConvertType;
+					if ((ctrl == "samuneUrl" || ctrl == null) && ri.samune != null) samuneBox.Image = ri.samune;
+					if (ctrl == "log" || ctrl == null) setLogText(ri.log);
+	        	} catch (Exception e) {
+	        		util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+	        	}
 			});
 		}
 		public void clearRiInfo(RecInfo ri) {
@@ -441,30 +448,45 @@ namespace rokugaTouroku
 		}
 		void recListCell_MouseDown(object sender, System.Windows.Forms.DataGridViewCellMouseEventArgs e)
 		{
+			/*
 //			util.debugWriteLine(e);
 			if (e.Button == System.Windows.Forms.MouseButtons.Right &&
 			   e.ColumnIndex > -1 && e.RowIndex > -1) {
 				recList.CurrentCell = recList[e.ColumnIndex, e.RowIndex];
 			}
+			*/
 		}
 		void openWatchUrlMenu_Click(object sender, System.EventArgs e)
 		{
-			if (recList.SelectedCells.Count == 0) return;
-			var selectedCell = recList.SelectedCells[0];
-			var ri = (RecInfo)recListDataSource[selectedCell.RowIndex];
-			System.Diagnostics.Process.Start(ri.url);
+			var dataSource = recListDataSource;
+			var selectedRowIndexList = new List<int>();
+			foreach (DataGridViewCell c in recList.SelectedCells) {
+				try {
+					if (selectedRowIndexList.IndexOf(c.RowIndex) > -1) continue;
+					selectedRowIndexList.Add(c.RowIndex);
+					var ri = (RecInfo)dataSource[c.RowIndex];
+					if (ri.url == null || ri.url == "") continue;
+					util.openUrlBrowser(ri.url, config);
+				} catch (Exception ee) {
+					util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+				}
+			}
 		}
 		void openCommunityUrlMenu_Click(object sender, EventArgs e)
 		{
-			if (recList.SelectedCells.Count == 0) return;
-			var selectedCell = recList.SelectedCells[0];
-			var ri = (RecInfo)recListDataSource[selectedCell.RowIndex];
-			if (ri.communityUrl == null) {
-				if (ri.communityName == "official") 
-					System.Diagnostics.Process.Start("https://live.nicovideo.jp/");
-				return;
+			var dataSource = recListDataSource;
+			var selectedRowIndexList = new List<int>();
+			foreach (DataGridViewCell c in recList.SelectedCells) {
+				try {
+					if (selectedRowIndexList.IndexOf(c.RowIndex) > -1) continue;
+					selectedRowIndexList.Add(c.RowIndex);
+					var ri = (RecInfo)dataSource[c.RowIndex];
+					if (ri.communityUrl == null || ri.communityUrl == "") continue;
+					util.openUrlBrowser(ri.communityUrl, config);
+				} catch (Exception ee) {
+					util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+				}
 			}
-			System.Diagnostics.Process.Start(ri.communityUrl);
 		}
 		void copyWatchUrlMenu_Click(object sender, EventArgs e)
 		{
@@ -488,60 +510,67 @@ namespace rokugaTouroku
 		
 		void reAddRowMenu_Click(object sender, EventArgs e)
 		{
-			if (recList.SelectedCells.Count == 0) return;
-			var selectedCell = recList.SelectedCells[0];
-			var ri = (RecInfo)recListDataSource[selectedCell.RowIndex];
-			if (ri.state == "録画中") {
-				util.showMessageBoxCenterForm(this, "録画中は再登録できません", "", MessageBoxButtons.OK, MessageBoxIcon.None);
-				/*
-				DialogResult res = util.showMessageBoxCenterForm(this, "録画中ですが中断しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-				if (res == DialogResult.No) return;
+			var dataSource = recListDataSource;
+			var selectedRowIndexList = new List<int>();
+			foreach (DataGridViewCell c in recList.SelectedCells) {
 				try {
-					ri.process.Kill();
+					if (selectedRowIndexList.IndexOf(c.RowIndex) > -1) continue;
+					selectedRowIndexList.Add(c.RowIndex);
+					var ri = (RecInfo)dataSource[c.RowIndex];
+					if (ri.state == "録画中") {
+						util.showMessageBoxCenterForm(this, "録画中は再登録できません", "", MessageBoxButtons.OK, MessageBoxIcon.None);
+						return;
+					}
+					var _ri = new RecInfo(ri.id, ri.url, ri.rdg, ri.afterConvertType, ri.tsConfig, ri.timeShift, ri.quality, ri.qualityRank, ri.recComment, ri.isChase, ri.ai);
+					Task.Run(() => _ri.setHosoInfo(this));
+					
+					recListDataSource[c.RowIndex] = _ri;
+					resetBindingList(c.RowIndex);
+					displayRiInfo(_ri);
 				} catch (Exception ee) {
-					util.debugWriteLine("reAdd kill exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+					util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 				}
-				*/
-				return;
 			}
-			var _ri = new RecInfo(ri.id, ri.url, ri.rdg, ri.afterConvertType, ri.tsConfig, ri.timeShift, ri.quality, ri.qualityRank, ri.recComment, ri.isChase);
-			Task.Run(() => _ri.setHosoInfo(this));
-			
-			recListDataSource[selectedCell.RowIndex] = _ri;
-			resetBindingList(selectedCell.RowIndex);
-			displayRiInfo(_ri);
 		}
 		void ReAddNewConfigRowMenuClick(object sender, EventArgs e)
 		{
-			if (recList.SelectedCells.Count == 0) return;
-			var selectedCell = recList.SelectedCells[0];
-			var ri = (RecInfo)recListDataSource[selectedCell.RowIndex];
-			if (ri.state == "録画中") {
-				util.showMessageBoxCenterForm(this, "録画中は再登録できません", "", MessageBoxButtons.OK, MessageBoxIcon.None);
-				/*
-				DialogResult res = util.showMessageBoxCenterForm(this, "録画中ですが中断しますか？", "確認", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-				if (res == DialogResult.No) return;
+			var dataSource = recListDataSource;
+			var selectedRowIndexList = new List<int>();
+			foreach (DataGridViewCell c in recList.SelectedCells) {
 				try {
-					ri.process.Kill();
+					if (selectedRowIndexList.IndexOf(c.RowIndex) > -1) continue;
+					selectedRowIndexList.Add(c.RowIndex);
+					var ri = (RecInfo)dataSource[c.RowIndex];
+					if (ri.state == "録画中") {
+						util.showMessageBoxCenterForm(this, "録画中は再登録できません", "", MessageBoxButtons.OK, MessageBoxIcon.None);
+						return;
+					}
+					var _ri = new RecInfo(ri.id, ri.url, ri.rdg, afterConvertModeList.Text, setTsConfig, setTimeshiftBtn.Text, qualityBtn.Text, qualityRank, recCommmentList.Text, isChaseChkBox.Checked, (AccountInfo)accountBtn.Tag);
+					Task.Run(() => _ri.setHosoInfo(this));
+					
+					recListDataSource[c.RowIndex] = _ri;
+					resetBindingList(c.RowIndex);
+					displayRiInfo(_ri);
 				} catch (Exception ee) {
-					util.debugWriteLine("reAdd kill exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+					util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 				}
-				*/
-				return;
 			}
-			var _ri = new RecInfo(ri.id, ri.url, ri.rdg, afterConvertModeList.Text, setTsConfig, setTimeshiftBtn.Text, qualityBtn.Text, qualityRank, recCommmentList.Text, isChaseChkBox.Checked);
-			Task.Run(() => _ri.setHosoInfo(this));
-			
-			recListDataSource[selectedCell.RowIndex] = _ri;
-			resetBindingList(selectedCell.RowIndex);
-			displayRiInfo(_ri);
 		}
 		void deleteRowMenu_Click(object sender, EventArgs e)
 		{
 			if (recList.SelectedCells.Count == 0) return;
-			var selectedCell = recList.SelectedCells[0];
-			var ri = (RecInfo)recListDataSource[selectedCell.RowIndex];
-			deleteRow(ri);
+			var selectedRIList = new List<RecInfo>();
+			foreach (DataGridViewCell c in recList.SelectedCells) {
+				try {
+					var ri = (RecInfo)recListDataSource[c.RowIndex];
+					if (selectedRIList.IndexOf(ri) > -1) continue;
+					else selectedRIList.Add(ri);
+				} catch (Exception ee) {
+					util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+				}
+			}
+			foreach (var ri in selectedRIList)
+				recListDataSource.Remove(ri);
 		}
 		public bool deleteRow(RecInfo ri) {
 			if (ri.state == "録画中") {
@@ -562,8 +591,9 @@ namespace rokugaTouroku
 		}
 		void form_Load(object sender, EventArgs e)
 		{
-			loadList();
+			//loadList();
 			formInitSetting();
+			loadList();
 			
 			if (config.brokenCopyFile != null)
 				addLogText("設定ファイルを読み込めませんでした。設定ファイルをバックアップしました。" + config.brokenCopyFile);
@@ -735,7 +765,8 @@ namespace rokugaTouroku
 				foreach (var l in list) {
 					if (l.state == "録画中") l.state = "録画失敗";
 					if (l.samuneUrl != null) l.samune = util.getSamune(l.samuneUrl);
-					//if (l.sa
+					if (l.ai == null && accountBtn.Tag != null) l.ai = (AccountInfo)accountBtn.Tag;
+					
 					addList(l);
 				}
 				//Task.Run(() => {
@@ -749,7 +780,7 @@ namespace rokugaTouroku
 			try {
 				var list = new List<RecInfo>();
 				foreach (RecInfo ri in recListDataSource) {
-					var _ri = new RecInfo(ri.id, ri.url, ri.rdg, ri.afterConvertType, ri.tsConfig, ri.timeShift, ri.quality, ri.qualityRank, ri.recComment, ri.isChase);
+					var _ri = new RecInfo(ri.id, ri.url, ri.rdg, ri.afterConvertType, ri.tsConfig, ri.timeShift, ri.quality, ri.qualityRank, ri.recComment, ri.isChase, ri.ai);
 					_ri.samune = null;
 					_ri.process = null;
 					_ri.rdg = null;
@@ -886,6 +917,7 @@ namespace rokugaTouroku
 		void applyMenuSetting() {
 			var showRecListColumns = config.get("ShowRecColumns");
 			for(var i = 0; i < recList.Columns.Count; i++) {
+				if (i >= showRecListColumns.Length) continue;
 				recList.Columns[i].Visible = showRecListColumns[i] == '1';
 				var menu = (ToolStripMenuItem)displayRecListMenu.DropDownItems[i];
 				menu.Checked = recList.Columns[i].Visible;
@@ -1024,6 +1056,43 @@ namespace rokugaTouroku
 			}
 			rokugaTouroku.config.config.qualityList = 
 					qualityCfg;
+		}
+		void RecListKeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.KeyData == Keys.Delete) {
+				deleteRowMenu_Click(null, null);
+			}
+		}
+		void setCookieForm() {
+			try {
+				var isBrowser = config.get("BrowserNum") == "2";
+				CookieSourceInfo si = null;
+				string id = null, pass = null;
+				if (isBrowser) {
+					si = SourceInfoSerialize.load(false);
+					if (si == null) accountBtn.Text = "デフォルト"; 
+					else accountBtn.Text = si.BrowserName + " " + si.ProfileName;
+				} else {
+					accountBtn.Text = "アカウントログイン";
+					id = config.get("accountId");
+					pass = config.get("accountPass");
+				}
+				accountBtn.Tag = new AccountInfo(si, id, pass, isBrowser);
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
+		}
+		void AccountBtnClick(object sender, EventArgs e)
+		{
+			var f = new accountForm(config);
+			//util.showMessageBoxCenterForm(f
+			f.ShowDialog(this);
+			if (f.DialogResult != DialogResult.OK) return;
+			accountBtn.Tag = f.ai;
+			//f.Tag = f.ai.getArg();
+//			/util.debugWriteLine(f.Tag);
+			accountBtn.Text = f.si != null ? 
+					(f.si.BrowserName + " " + f.si.ProfileName) : "アカウントログイン";
 		}
 	}
 }

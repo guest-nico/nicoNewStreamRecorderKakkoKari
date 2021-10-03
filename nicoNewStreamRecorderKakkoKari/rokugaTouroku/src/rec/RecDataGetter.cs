@@ -57,6 +57,7 @@ namespace rokugaTouroku.rec
 						if (getRecordingNum(_count, rlm.recListData) < maxRecordingNum &&
 						    isListTop(i)) {
 							ri.state = "録画中";
+							ri.rdg = this;
 							Task.Run(() => {recProcess(ri);});
 						}
 						Thread.Sleep(2000);
@@ -83,16 +84,8 @@ namespace rokugaTouroku.rec
 			if (row == -1) return;
 			rlm.form.resetBindingList(row, "状態", "録画中");
 			startRecProcess(ri);
-			var r = ri.process.StandardOutput;
-			var w = ri.process.StandardInput;
 			try {
-				while (!ri.process.HasExited && rlm.rdg == this) {
-					var res = r.ReadLine();
-					if (res == null) break;
-					util.debugWriteLine("res " + res);
-					
-					readResProcess(res, w, ri);
-				}
+				ri.process.BeginOutputReadLine();
 				util.debugWriteLine("recProcess loop end wait mae " + ri.id + " " + ri.state);
 				ri.process.WaitForExit();
 				ri.state = (ri.process.ExitCode == 5) ? "録画完了" : "録画失敗";
@@ -114,7 +107,6 @@ namespace rokugaTouroku.rec
 				ri.process = new Process();
 				var si = new ProcessStartInfo();
 				si.FileName = "ニコ生新配信録画ツール（仮.exe";
-				//si.FileName = "nicoNewStreamRecorderKakkoKari.exe";
 				var isGetComment = (ri.recComment == "映像＋コメント" || ri.recComment == "コメントのみ") ? " -IsgetComment=true" : " -IsgetComment=false";
 				var isGetRec = (ri.recComment == "映像＋コメント" || ri.recComment == "映像のみ") ? 
 					((rlm.cfg.get("EngineMode") == "3") ? " -EngineMode=0" : "") :
@@ -139,6 +131,7 @@ namespace rokugaTouroku.rec
 				si.Arguments += " -qualityRank=" + ri.qualityRank;
 				si.Arguments += " -std-read ";
 				si.Arguments += isGetComment + isGetRec;
+				if (ri.ai != null) si.Arguments += " -accountSetting=" + ri.ai.getArg();
 				if (ri.isChase) si.Arguments += " -chase ";
 				
 				util.debugWriteLine(si.Arguments);
@@ -149,6 +142,7 @@ namespace rokugaTouroku.rec
 				si.RedirectStandardOutput = true;
 				si.RedirectStandardError = true;
 				ri.process.StartInfo = si;
+				ri.process.OutputDataReceived += ri.readHandler;
 				ri.process.Start();
 			} catch (Exception e) {
 				rlm.form.addLogText("ニコ生新配信録画ツール（仮.exeを呼び出せませんでした");
@@ -166,7 +160,7 @@ namespace rokugaTouroku.rec
 			
 			
 		}
-		private void setInfo(string res, RecInfo ri) {
+		public void setInfo(string res, RecInfo ri) {
 			if (res.StartsWith("info.title:")) 
 				ri.title = util.getRegGroup(res, ":(.*)");
 			if (res.StartsWith("info.host:")) 

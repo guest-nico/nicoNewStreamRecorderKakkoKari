@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
@@ -23,8 +24,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.10.58";
-	public static string versionDayStr = "2021/09/19";
+	public static string versionStr = "ver0.1.3.10.59";
+	public static string versionDayStr = "2021/10/03";
 	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);
@@ -986,5 +987,19 @@ class util {
 		    mBHook = SetWindowsHookEx(whCbt, new HookProc(CBTProc), hInstance, threadId);
 		}
 		return MessageBox.Show(text, caption, btn, icon);
+	}
+	public static void openUrlBrowser(string url, config config) {
+		try {
+			if (config.get("IsdefaultBrowserPath") == "true")
+				Process.Start(url);
+			else {
+				var path = config.get("browserPath");
+				if (path == null || path == "")
+					Process.Start(url);
+				else Process.Start(path, url);
+			}
+		} catch (Exception e) {
+			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+		}
 	}
 }

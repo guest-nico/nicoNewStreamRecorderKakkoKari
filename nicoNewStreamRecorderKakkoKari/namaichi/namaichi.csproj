@@ -110,7 +110,6 @@
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Runtime.Serialization.Json" />
-    <Reference Include="System.Runtime.Serialization.Json" />
     <Reference Include="System.Threading.Tasks">
       <HintPath>..\packages\Microsoft.Bcl.1.1.9\lib\net40\System.Threading.Tasks.dll</HintPath>
     </Reference>
@@ -179,6 +178,7 @@
     <Compile Include="src\gui\VersionForm.Designer.cs">
       <DependentUpon>VersionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\info\AccountInfo.cs" />
     <Compile Include="src\info\ChatInfo.cs" />
     <Compile Include="src\info\numTaskInfo.cs" />
     <Compile Include="src\info\RedistInfo.cs" />

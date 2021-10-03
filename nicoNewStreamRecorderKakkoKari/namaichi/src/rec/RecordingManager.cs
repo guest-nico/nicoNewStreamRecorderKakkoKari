@@ -132,6 +132,7 @@ namespace namaichi.rec
 				setRecModeForm(false);
 				
 				if (form.recEndProcess != null && endCode == 3) {
+					Environment.ExitCode = 5;
 					form.formAction(() => 
 							util.shutdown(form.recEndProcess, form));
 				}
@@ -152,6 +153,7 @@ namespace namaichi.rec
         		form.close();
         	}
 			if (util.isStdIO) {// && (endCode == 0 || endCode == 1 || endCode == 2 || endCode == 3)) {
+				if (endCode == 3) Environment.ExitCode = 5;
         		form.close();
         	}
 		}

@@ -59,8 +59,11 @@ namespace rokugaTouroku
 			this.isMessageBoxChkBox = new System.Windows.Forms.CheckBox();
 			this.isRetryChkBox = new System.Windows.Forms.CheckBox();
 			this.tabPage9 = new System.Windows.Forms.TabPage();
-			this.commentReplaceText = new System.Windows.Forms.TextBox();
+			this.commentReplaceList = new System.Windows.Forms.DataGridView();
+			this.変換前 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.変換後 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.groupBox18 = new System.Windows.Forms.GroupBox();
+			this.commentReplaceEditBtn = new System.Windows.Forms.Button();
 			this.label19 = new System.Windows.Forms.Label();
 			this.commentConvertStrText = new System.Windows.Forms.TextBox();
 			this.isNormalizeCommentChkBox = new System.Windows.Forms.CheckBox();
@@ -227,6 +230,7 @@ namespace rokugaTouroku
 			this.groupBox17.SuspendLayout();
 			this.groupBox6.SuspendLayout();
 			this.tabPage9.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.commentReplaceList)).BeginInit();
 			this.groupBox18.SuspendLayout();
 			this.displayGroup.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.fontList)).BeginInit();
@@ -497,7 +501,7 @@ namespace rokugaTouroku
 			// 
 			// tabPage9
 			// 
-			this.tabPage9.Controls.Add(this.commentReplaceText);
+			this.tabPage9.Controls.Add(this.commentReplaceList);
 			this.tabPage9.Controls.Add(this.groupBox18);
 			this.tabPage9.Controls.Add(this.displayGroup);
 			this.tabPage9.Controls.Add(this.groupBox5);
@@ -510,22 +514,38 @@ namespace rokugaTouroku
 			this.tabPage9.Text = "一般2";
 			this.tabPage9.UseVisualStyleBackColor = true;
 			// 
-			// commentReplaceText
+			// commentReplaceList
 			// 
-			this.commentReplaceText.AcceptsTab = true;
-			this.commentReplaceText.Location = new System.Drawing.Point(122, 210);
-			this.commentReplaceText.Name = "commentReplaceText";
-			this.commentReplaceText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.commentReplaceText.Size = new System.Drawing.Size(239, 19);
-			this.commentReplaceText.TabIndex = 14;
-			this.commentReplaceText.Click += new System.EventHandler(this.CommentReplaceTextClick);
-			this.commentReplaceText.TextChanged += new System.EventHandler(this.CommentReplaceTextTextChanged);
-			this.commentReplaceText.Enter += new System.EventHandler(this.commentReplaceTextEnter);
-			this.commentReplaceText.Leave += new System.EventHandler(this.commentReplaceTextLeave);
-			this.commentReplaceText.MouseDown += new System.Windows.Forms.MouseEventHandler(this.commentReplaceTextMouseDown);
+			this.commentReplaceList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.commentReplaceList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+									this.変換前,
+									this.変換後});
+			this.commentReplaceList.Location = new System.Drawing.Point(123, 210);
+			this.commentReplaceList.Name = "commentReplaceList";
+			this.commentReplaceList.RowHeadersVisible = false;
+			this.commentReplaceList.RowTemplate.Height = 21;
+			this.commentReplaceList.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
+			this.commentReplaceList.Size = new System.Drawing.Size(200, 19);
+			this.commentReplaceList.TabIndex = 18;
+			this.commentReplaceList.Enter += new System.EventHandler(this.commentReplaceTextEnter);
+			this.commentReplaceList.Leave += new System.EventHandler(this.commentReplaceTextLeave);
+			this.commentReplaceList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.commentReplaceTextMouseDown);
+			// 
+			// 変換前
+			// 
+			this.変換前.HeaderText = "変換前";
+			this.変換前.Name = "変換前";
+			this.変換前.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+			// 
+			// 変換後
+			// 
+			this.変換後.HeaderText = "変換後";
+			this.変換後.Name = "変換後";
+			this.変換後.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			// 
 			// groupBox18
 			// 
+			this.groupBox18.Controls.Add(this.commentReplaceEditBtn);
 			this.groupBox18.Controls.Add(this.label19);
 			this.groupBox18.Controls.Add(this.commentConvertStrText);
 			this.groupBox18.Controls.Add(this.isNormalizeCommentChkBox);
@@ -543,12 +563,22 @@ namespace rokugaTouroku
 			this.groupBox18.TabStop = false;
 			this.groupBox18.Text = "コメント";
 			// 
+			// commentReplaceEditBtn
+			// 
+			this.commentReplaceEditBtn.Location = new System.Drawing.Point(324, 125);
+			this.commentReplaceEditBtn.Name = "commentReplaceEditBtn";
+			this.commentReplaceEditBtn.Size = new System.Drawing.Size(40, 23);
+			this.commentReplaceEditBtn.TabIndex = 16;
+			this.commentReplaceEditBtn.Text = "編集";
+			this.commentReplaceEditBtn.UseVisualStyleBackColor = true;
+			this.commentReplaceEditBtn.Click += new System.EventHandler(this.commentReplaceEditBtnClick);
+			// 
 			// label19
 			// 
 			this.label19.Location = new System.Drawing.Point(19, 130);
 			this.label19.Name = "label19";
 			this.label19.Size = new System.Drawing.Size(92, 18);
-			this.label19.TabIndex = 15;
+			this.label19.TabIndex = 17;
 			this.label19.Text = "コメント置換リスト：";
 			this.label19.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
@@ -2286,7 +2316,7 @@ namespace rokugaTouroku
 			this.groupBox17.ResumeLayout(false);
 			this.groupBox6.ResumeLayout(false);
 			this.tabPage9.ResumeLayout(false);
-			this.tabPage9.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.commentReplaceList)).EndInit();
 			this.groupBox18.ResumeLayout(false);
 			this.groupBox18.PerformLayout();
 			this.displayGroup.ResumeLayout(false);
@@ -2329,7 +2359,10 @@ namespace rokugaTouroku
 			((System.ComponentModel.ISupportInitialize)(this.maxRecordingNum)).EndInit();
 			this.ResumeLayout(false);
 		}
-		private System.Windows.Forms.TextBox commentReplaceText;
+		private System.Windows.Forms.DataGridViewTextBoxColumn 変換後;
+		private System.Windows.Forms.DataGridViewTextBoxColumn 変換前;
+		private System.Windows.Forms.DataGridView commentReplaceList;
+		private System.Windows.Forms.Button commentReplaceEditBtn;
 		private System.Windows.Forms.Label label19;
 		private System.Windows.Forms.TextBox commentConvertStrText;
 		private System.Windows.Forms.CheckBox IsTrayChkBox;

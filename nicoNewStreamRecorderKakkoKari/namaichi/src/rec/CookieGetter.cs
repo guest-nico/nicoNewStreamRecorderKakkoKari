@@ -56,11 +56,9 @@ namespace namaichi.rec
 				var age_auth = cc.GetCookies(TargetUrl)["age_auth"];
 				
 				var l = new List<KeyValuePair<string, string>>();
-				if (c != null)
-//						cfg.set("user_session", c.Value);
+				if (c != null && cfg.argAi == null)
 					l.Add(new KeyValuePair<string, string>("user_session" + num, c.Value));
-				if (secureC != null)
-//						cfg.set("user_session_secure", secureC.Value);
+				if (secureC != null && cfg.argAi == null)
 					l.Add(new KeyValuePair<string, string>("user_session_secure" + num, secureC.Value));
 				if (age_auth != null)
 					l.Add(new KeyValuePair<string, string>("age_auth", age_auth.Value));
@@ -76,6 +74,33 @@ namespace namaichi.rec
 				string accountPass, string userSession, string userSessionSecure,
 				bool isSub, string url) {
 			
+			if (cfg.argAi != null) {
+				if (cfg.argAi.isBrowser && cfg.argAi.si != null) {
+					reason = null;
+					CookieContainer cc = await getBrowserCookie(isSub, cfg.argAi.si).ConfigureAwait(false);
+					log += (cc == null) ? "引数で指定されたブラウザからユーザーセッションを取得できませんでした。ログインに使うブラウザの設定をご確認ください。他のブラウザやアカウントログインを試したり、ブラウザ上で一度ログインし直した後にもう一度ツール側で設定すると上手くいくかもしれません。" : "ブラウザからユーザーセッションを取得しました。";
+					if (cc != null) {
+						util.debugWriteLine("browser ishtml5login");
+						if (isHtml5Login(cc, url)) {
+							util.debugWriteLine("browser login ok");
+							return cc;
+						}
+					}
+				} else {
+					reason = null;
+					var mail = cfg.argAi.accountId;
+					var pass = cfg.argAi.accountPass;
+					var accCC = await getAccountCookie(mail, pass).ConfigureAwait(false);
+					log += (accCC == null) ? "引数で指定されたアカウントログインからユーザーセッションを取得できませんでした。" : "アカウントログインからユーザーセッションを取得しました。";
+					if (accCC != null) {
+						util.debugWriteLine("account ishtml5login");
+						if (isHtml5Login(accCC, url)) {
+							util.debugWriteLine("account login ok");
+							return accCC;
+						}
+					}
+				}
+			}
 			var userSessionCC = getUserSessionCC(userSession, userSessionSecure);
 			log += (userSessionCC == null) ? "前回のユーザーセッションが見つかりませんでした。" : "前回のユーザーセッションが見つかりました。";
 			if (userSessionCC != null && true) {
@@ -142,8 +167,8 @@ namespace namaichi.rec
 //			cc.Add(TargetUrl, c);
 			return cc;
 		}
-		async private Task<CookieContainer> getBrowserCookie(bool isSub) {
-			var si = SourceInfoSerialize.load(isSub);
+		async private Task<CookieContainer> getBrowserCookie(bool isSub, CookieSourceInfo si = null) {
+			if (si == null) si = SourceInfoSerialize.load(isSub);
 			
 //			var importer = await SunokoLibrary.Application.CookieGetters.Default.GetInstanceAsync(si, false);
 			ICookieImporter importer = await SunokoLibrary.Application.CookieGetters.Default.GetInstanceAsync(si, false).ConfigureAwait(false);

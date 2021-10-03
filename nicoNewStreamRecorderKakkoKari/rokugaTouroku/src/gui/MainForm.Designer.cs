@@ -47,6 +47,7 @@ namespace rokugaTouroku
 			this.chaseColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.状態 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.recComment = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.accountColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.タイトル = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.放送者 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.コミュニティ名 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -105,8 +106,10 @@ namespace rokugaTouroku
 			this.label2 = new System.Windows.Forms.Label();
 			this.recCommmentList = new System.Windows.Forms.ComboBox();
 			this.label18 = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
 			this.label16 = new System.Windows.Forms.Label();
 			this.label14 = new System.Windows.Forms.Label();
+			this.accountBtn = new System.Windows.Forms.Button();
 			this.setTimeshiftBtn = new System.Windows.Forms.Button();
 			this.qualityBtn = new System.Windows.Forms.Button();
 			this.addListBtn = new System.Windows.Forms.Button();
@@ -139,6 +142,7 @@ namespace rokugaTouroku
 			this.label3 = new System.Windows.Forms.Label();
 			this.samuneBox = new System.Windows.Forms.PictureBox();
 			this.logText = new System.Windows.Forms.TextBox();
+			this.isDisplayRecAccountMenu = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.recList)).BeginInit();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -191,6 +195,7 @@ namespace rokugaTouroku
 									this.chaseColumn,
 									this.状態,
 									this.recComment,
+									this.accountColumn,
 									this.タイトル,
 									this.放送者,
 									this.コミュニティ名,
@@ -198,12 +203,12 @@ namespace rokugaTouroku
 									this.終了時刻,
 									this.ログ});
 			this.recList.ContextMenuStrip = this.contextMenuStrip1;
-			this.recList.Location = new System.Drawing.Point(14, 68);
+			this.recList.Location = new System.Drawing.Point(14, 93);
 			this.recList.Name = "recList";
 			this.recList.ReadOnly = true;
 			this.recList.RowHeadersVisible = false;
 			this.recList.RowTemplate.Height = 21;
-			this.recList.Size = new System.Drawing.Size(1076, 187);
+			this.recList.Size = new System.Drawing.Size(1076, 162);
 			this.recList.TabIndex = 6;
 			this.recList.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.RecListCellFormatting);
 			this.recList.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.recListCell_MouseDown);
@@ -211,6 +216,7 @@ namespace rokugaTouroku
 			this.recList.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.RecListRowsRemoved);
 			this.recList.DragDrop += new System.Windows.Forms.DragEventHandler(this.RecListDragDrop);
 			this.recList.DragEnter += new System.Windows.Forms.DragEventHandler(this.RecListDragEnter);
+			this.recList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.RecListKeyDown);
 			// 
 			// 放送ID
 			// 
@@ -267,6 +273,13 @@ namespace rokugaTouroku
 			this.recComment.ReadOnly = true;
 			this.recComment.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
 			this.recComment.Width = 85;
+			// 
+			// accountColumn
+			// 
+			this.accountColumn.DataPropertyName = "account";
+			this.accountColumn.HeaderText = "アカウント";
+			this.accountColumn.Name = "accountColumn";
+			this.accountColumn.ReadOnly = true;
 			// 
 			// タイトル
 			// 
@@ -525,6 +538,7 @@ namespace rokugaTouroku
 									this.isDisplayRecChaseMenu,
 									this.isDisplayRecCommentMenu,
 									this.isDisplayRecStateMenu,
+									this.isDisplayRecAccountMenu,
 									this.isDisplayRecTitleMenu,
 									this.isDisplayRecHostNameMenu,
 									this.isDisplayRecCommunityNameMenu,
@@ -677,8 +691,10 @@ namespace rokugaTouroku
 			this.panel1.Controls.Add(this.label2);
 			this.panel1.Controls.Add(this.recCommmentList);
 			this.panel1.Controls.Add(this.label18);
+			this.panel1.Controls.Add(this.label5);
 			this.panel1.Controls.Add(this.label16);
 			this.panel1.Controls.Add(this.label14);
+			this.panel1.Controls.Add(this.accountBtn);
 			this.panel1.Controls.Add(this.setTimeshiftBtn);
 			this.panel1.Controls.Add(this.afterConvertModeList);
 			this.panel1.Controls.Add(this.qualityBtn);
@@ -735,6 +751,15 @@ namespace rokugaTouroku
 			this.label18.Text = "形式：";
 			this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
+			// label5
+			// 
+			this.label5.Location = new System.Drawing.Point(12, 65);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(82, 17);
+			this.label5.TabIndex = 11;
+			this.label5.Text = "アカウント設定：";
+			this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			// 
 			// label16
 			// 
 			this.label16.Location = new System.Drawing.Point(12, 40);
@@ -752,6 +777,16 @@ namespace rokugaTouroku
 			this.label14.TabIndex = 9;
 			this.label14.Text = "画質：";
 			this.label14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// accountBtn
+			// 
+			this.accountBtn.Location = new System.Drawing.Point(100, 62);
+			this.accountBtn.Name = "accountBtn";
+			this.accountBtn.Size = new System.Drawing.Size(166, 23);
+			this.accountBtn.TabIndex = 3;
+			this.accountBtn.Text = "デフォルト";
+			this.accountBtn.UseVisualStyleBackColor = true;
+			this.accountBtn.Click += new System.EventHandler(this.AccountBtnClick);
 			// 
 			// setTimeshiftBtn
 			// 
@@ -1096,6 +1131,12 @@ namespace rokugaTouroku
 			this.logText.Size = new System.Drawing.Size(187, 154);
 			this.logText.TabIndex = 8;
 			// 
+			// isDisplayRecAccountMenu
+			// 
+			this.isDisplayRecAccountMenu.Name = "isDisplayRecAccountMenu";
+			this.isDisplayRecAccountMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecAccountMenu.Text = "アカウント";
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -1122,6 +1163,10 @@ namespace rokugaTouroku
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripMenuItem isDisplayRecAccountMenu;
+		private System.Windows.Forms.DataGridViewTextBoxColumn accountColumn;
+		public System.Windows.Forms.Button accountBtn;
+		private System.Windows.Forms.Label label5;
 		private System.Windows.Forms.ToolStripMenuItem reAddNewConfigRowMenu;
 		private System.Windows.Forms.DataGridViewTextBoxColumn chaseColumn;
 		private System.Windows.Forms.ToolStripMenuItem isDisplayRecChaseMenu;

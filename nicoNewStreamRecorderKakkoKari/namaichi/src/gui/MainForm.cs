@@ -59,6 +59,8 @@ namespace namaichi
 				if (lv != null) break;
 			}
 			util.setLog(config, lv);
+			foreach (var arg in args)
+				util.debugWriteLine("arg " + arg);
 			
 			madeThread = Thread.CurrentThread;
 			
@@ -73,7 +75,7 @@ namespace namaichi
 			defIcon = Icon;
 
 			this.args = args;
-			
+
 			rec = new rec.RecordingManager(this, config);
 			player = new Player(this, config);
 			
@@ -113,7 +115,6 @@ namespace namaichi
 			changeRecBtnClickEvent(bool.Parse(config.get("IsRecBtnOnlyMouse")));
 			
 			setQualitySetting();
-			
 		}
 		private void formInitSetting() {
 			setBackColor(Color.FromArgb(int.Parse(config.get("recBackColor"))));
@@ -134,6 +135,7 @@ namespace namaichi
 					rec.argTsConfig = ar.tsConfig;
 					rec.isRecording = true;
 //					rec.setArgConfig(args);
+					config.argAi = ar.ai;
 					if (ar.isPlayMode) player.play();
 					else rec.rec(false);
 				}
@@ -257,7 +259,7 @@ namespace namaichi
         }
         */
         public void addLogText(string t, bool isInvoke = true) {
-       		if (util.isStdIO) Console.WriteLine("info.log:" + t);
+       		if (util.isStdIO) util.consoleWrite("info.log:" + t);
        		
        		formAction(() => {
 				string _t = "";
@@ -400,8 +402,7 @@ namespace namaichi
 			});
        		//if (!util.isShowWindow) return;
        		if (util.isStdIO && keikaTimeStart != DateTime.MinValue)
-       			//Console.WriteLine("info.keikaTime:" + stdIoStr);
-       			Console.WriteLine("info.keikaTime:" + keikaTimeStart);
+       			util.consoleWrite("info.keikaTime:" + keikaTimeStart);
        }
 		public void setStatistics(string visit, string comment) {
        		formAction(() => {
@@ -713,6 +714,7 @@ namespace namaichi
 						}
 	         		} catch (Exception e) {
 	         			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+	         			Thread.Sleep(1000);
 	         		}
 				}
 			});

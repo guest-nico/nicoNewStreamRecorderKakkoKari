@@ -11,6 +11,7 @@ using System.Configuration;
 using System.Collections.Generic;
 using System.Threading;
 using System.IO;
+using namaichi.info;
 
 namespace namaichi.config {
 /// <summary>
@@ -22,6 +23,7 @@ public class config
 	public Dictionary<string, string> defaultConfig;
 	public Dictionary<string, string> argConfig = new Dictionary<string, string>();
 	public string brokenCopyFile = null;
+	public AccountInfo argAi = null;
 	
 	public config()
 	{

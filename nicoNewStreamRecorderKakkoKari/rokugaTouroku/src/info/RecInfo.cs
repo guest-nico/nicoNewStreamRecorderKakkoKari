@@ -46,11 +46,12 @@ namespace rokugaTouroku.info
 		public RecDataGetter rdg;
 		public DateTime keikaTimeStart;
 		public string samuneUrl = null;
+		public AccountInfo ai = null;
 		
 		public RecInfo() {
 			
 		}
-		public RecInfo(string id, string url, RecDataGetter rdg, string afterConvertType, info.TimeShiftConfig tsConfig, string tsStr, string qualityRankStr, string qualityRank, string recComment, bool isChase) {
+		public RecInfo(string id, string url, RecDataGetter rdg, string afterConvertType, info.TimeShiftConfig tsConfig, string tsStr, string qualityRankStr, string qualityRank, string recComment, bool isChase, AccountInfo ai) {
 			this.id = id;
 			var lvM = Regex.Match(url, "lv\\d+");
 			if (lvM != null && !string.IsNullOrEmpty(lvM.Value)) {
@@ -71,6 +72,7 @@ namespace rokugaTouroku.info
 			this.qualityRank = qualityRank;
 			this.recComment = recComment;
 			this.isChase = isChase;
+			this.ai = ai;
 		}
 		public RecInfo(string id, string title, 
 				string host, string communityName,
@@ -78,7 +80,8 @@ namespace rokugaTouroku.info
 				string programTime, string url, 
 				string communityUrl, string description,
 				string qualityRank, TimeShiftConfig tsConfig, 
-				RecDataGetter rdg, string recComment, bool isChase) {
+				RecDataGetter rdg, string recComment, bool isChase,
+				AccountInfo ai) {
 			this.id = id;
 			this.title = title;
 			this.host = host;
@@ -94,6 +97,7 @@ namespace rokugaTouroku.info
 			this.rdg = rdg;
 			this.recComment = recComment;
 			this.isChase = isChase;
+			this.ai = ai;
 		}
 		public void setHosoInfo(MainForm form) {
          	var hig = new namaichi.rec.HosoInfoGetter();
@@ -173,6 +177,10 @@ namespace rokugaTouroku.info
             get { return state; }
             set { this.state = value; }
         }
+       public string Account  {
+       		get { return ai == null ? "デフォルト" : (ai.si != null ? ai.si.BrowserName + " " + ai.si.ProfileName : "アカウント");}
+       		set { }
+        }
 		public string Title
         {
             get { return title; }
@@ -227,6 +235,15 @@ namespace rokugaTouroku.info
 			if (t == "aac(音声)") return "13";
 			if (t == "ogg(音声)") return "14";
 			return "0";
-        }      
+        }
+		public void readHandler(object o, DataReceivedEventArgs e) {
+       		try {
+       			util.debugWriteLine("read " + e.Data);
+       			if (e.Data == null) return;
+       			rdg.setInfo(e.Data, this);
+       		} catch (Exception ee) {
+       			util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace);
+       		}
+		}
 	}
 }

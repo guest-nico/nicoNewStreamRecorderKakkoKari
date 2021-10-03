@@ -679,9 +679,9 @@ namespace namaichi.rec
 				//if (!isTimeShift)
 //					displaySchedule();
 				if (util.isStdIO) {
-					Console.WriteLine("info.startTime:" + beginTime.ToString("MM/dd(ddd) HH:mm:ss"));
-					Console.WriteLine("info.endTime:" + endTime.ToString("MM/dd(ddd) HH:mm:ss"));
-					Console.WriteLine("info.programTime:" + programTime.ToString("h'時間'mm'分'ss'秒'"));
+					util.consoleWrite("info.startTime:" + beginTime.ToString("MM/dd(ddd) HH:mm:ss"));
+					util.consoleWrite("info.endTime:" + endTime.ToString("MM/dd(ddd) HH:mm:ss"));
+					util.consoleWrite("info.programTime:" + programTime.ToString("h'時間'mm'分'ss'秒'"));
 				}
 			}
 			if (e.Message.IndexOf("\"NO_STREAM_AVAILABLE\"") >= 0) {
