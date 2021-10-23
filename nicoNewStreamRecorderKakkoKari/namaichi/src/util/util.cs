@@ -33,8 +33,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.52";
-	public static string versionDayStr = "2021/10/03";
+	public static string versionStr = "ver0.88.53";
+	public static string versionDayStr = "2021/10/23";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -536,6 +536,10 @@ class util {
 	public static string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36";
 	public static string getPageSource(string _url, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 0, string userAgent = null, bool isGetErrorPage = false) {
 		util.debugWriteLine("access__ getpage " + _url);
+		if (_url == null) {
+			util.debugWriteLine("getPageSource url null");
+			return null;
+		}
 		//if (timeoutMs == 0) timeoutMs = 5000;
 		timeoutMs = 5000;
 		

@@ -182,6 +182,7 @@
     <Compile Include="src\info\ChatInfo.cs" />
     <Compile Include="src\info\numTaskInfo.cs" />
     <Compile Include="src\info\RedistInfo.cs" />
+    <Compile Include="src\info\StreamInfo.cs" />
     <Compile Include="src\info\TimeShiftConfig.cs" />
     <Compile Include="src\info\WatchingInfo.cs" />
     <Compile Include="src\Logger\TraceListener.cs" />

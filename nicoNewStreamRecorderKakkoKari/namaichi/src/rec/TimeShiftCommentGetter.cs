@@ -154,7 +154,7 @@ namespace namaichi.rec
 			
 			Task.Run(() => {
 			    while (true) {
-			        if (rp.isRtmp || rp.firstSegmentSecond != -1 || !rp.IsRetry) break;
+			        if (rp.ri.isRtmp || rp.firstSegmentSecond != -1 || !rp.IsRetry) break;
 					Thread.Sleep(500);
 				}
 	         	if (!rp.IsRetry) {
@@ -472,7 +472,7 @@ namespace namaichi.rec
 				if (uriStore != null)
 					saveStore();
 				
-				var isWrite = (!rfu.isPlayOnlyMode && !rp.isChase && lastRealTimeComment == null);
+				var isWrite = (!rfu.isPlayOnlyMode && !rp.ri.isChase && lastRealTimeComment == null);
 				if (isWrite && isLog)
 					form.addLogText("コメントの後処理を開始します");
 				
@@ -500,7 +500,7 @@ namespace namaichi.rec
 				
 				util.debugWriteLine("end proccess d");
 				
-				if (rp.isChase && lastRealTimeComment == null && rp.chaseCommentBuf != null) {
+				if (rp.ri.isChase && lastRealTimeComment == null && rp.chaseCommentBuf != null) {
 					while (rp.chaseCommentBuf.Count == 0 
 					       && rm.rfu == rfu) Thread.Sleep(1000);
 					rp.chaseCommentSum();

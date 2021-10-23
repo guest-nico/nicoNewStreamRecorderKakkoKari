@@ -526,7 +526,7 @@ namespace namaichi.play
 		private string getExArgs() {
 			var args = config.get("playerArgs");
 			try {
-				var f = ((WebSocketRecorder)form.rec.wsr).recFolderFile[1];
+				var f = ((WebSocketRecorder)form.rec.wsr).ri.recFolderFile[1];
 				if (string.IsNullOrEmpty(f)) args = args.Replace("{f}", "{t}");
 				f = util.getRegGroup(f.Replace("\\", "/"), ".+/(.+)");
 				args = args.Replace("{f}", "\"" + f + "\"");

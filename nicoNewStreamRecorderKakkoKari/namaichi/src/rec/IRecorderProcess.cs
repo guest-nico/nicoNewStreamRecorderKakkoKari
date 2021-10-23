@@ -8,6 +8,7 @@
  */
 using System;
 using System.Collections.Generic;
+using namaichi.info;
 
 namespace namaichi.rec
 {
@@ -18,17 +19,18 @@ namespace namaichi.rec
 	{
 		public DateTime tsHlsRequestTime = DateTime.MinValue;
 		public TimeSpan tsStartTime;
-		public bool isTimeShift = false;
+		//public bool isTimeShift = false;
 		public string msUri;
 		public string[] msReq;
 		public string msStoreUri;
 		public string[] msStoreReq;
-		public long openTime;
+		//public long openTime;
 		public bool isJikken;
 		public string[] gotTsCommentList;
 		public double firstSegmentSecond = -1;
 		
 		public DateTime endTime = DateTime.MinValue;
+		public RecordInfo ri;
 		
 		public IRecorderProcess()
 		{

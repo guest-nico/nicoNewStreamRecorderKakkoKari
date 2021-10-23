@@ -29,21 +29,21 @@ namespace namaichi.rec
 	public class Record
 	{
 		private RecordingManager rm;
-		private bool isFFmpeg;
+		//private bool isFFmpeg;
 		private RecordFromUrl rfu;
 		//private System.Diagnostics.Process process;
 		private DateTime lastReadTime = DateTime.UtcNow;
 		public string hlsMasterUrl;
 		public string recFolderFile;
-		private string lvid;
-		private long _openTime;
+		//private string lvid;
+		//private long _openTime;
 		public int lastSegmentNo = -1;
 		public DateTime lastWroteSegmentDt = DateTime.MinValue;
 		//private int lastAccessingSegmentNo;
 		private CookieContainer container;
 		private int segmentSaveType = 0;
-		private bool isTimeShift = false;
-		public TimeShiftConfig tsConfig = null;
+		//private bool isTimeShift = false;
+		//public TimeShiftConfig tsConfig = null;
 		private List<numTaskInfo> newGetTsTaskList = new List<numTaskInfo>();
 		private List<string> recordedNo = new List<string>();
 		private string baseUrl;
@@ -76,7 +76,7 @@ namespace namaichi.rec
 		
 		private string recordingQuality = null;
 		private WebSocket ws;
-		private string recFolderFileOrigin;
+		//private string recFolderFileOrigin;
 		//private bool isSub;
 		private int baseNo = 0;
 		
@@ -86,7 +86,7 @@ namespace namaichi.rec
 		private DateTime lastAccessPlaylistTime = DateTime.Now;
 		
 //		private RealTimeFFmpeg realtimeFFmpeg = null;
-		private bool isRealtimeChase = false;
+		//private bool isRealtimeChase = false;
 		public DropSegmentProcess dsp = null;
 		private bool isSpeedUp = false;
 		private string ua = null;//"Lavf/56.36.100";
@@ -97,7 +97,8 @@ namespace namaichi.rec
 		private byte[] initMp4 = null;
 		private numTaskInfo lastWriteFmp4Nti = null;
 		private double lateTime = 100;
-		
+		public RecordInfo ri = null;
+		/*
 		public Record(RecordingManager rm, bool isFFmpeg, 
 		              RecordFromUrl rfu, string hlsUrl, 
 		              string recFolderFile, //int lastSegmentNo, 
@@ -107,11 +108,9 @@ namespace namaichi.rec
 		              WebSocket ws, string recFolderFileOrigin,
 		              bool isRealtimeChase, Html5Recorder h5r) {
 			this.rm = rm;
-			this.isFFmpeg = isFFmpeg;
 			this.rfu = rfu;
 			this.hlsMasterUrl = hlsUrl;
 			this.recFolderFile = recFolderFile;
-			//if (tsConfig != null) this.lastSegmentNo = tsConfig.lastSegmentNo;
 			this.container = container;
 			this.isTimeShift = isTimeShift;
 			segmentSaveType = int.Parse(rm.cfg.get("segmentSaveType"));
@@ -125,24 +124,53 @@ namespace namaichi.rec
 			
 			rm.isTitleBarInfo = bool.Parse(rm.cfg.get("IstitlebarInfo"));
 			isPlayOnlyMode = rfu.isPlayOnlyMode;
-			this._openTime = _openTime;
+			//this._openTime = _openTime;
 			this.ws = ws;
 			this.recFolderFileOrigin = recFolderFileOrigin;
-			//this.isSub = isSub;
 			this.isRealtimeChase = isRealtimeChase;
 			this.h5r = h5r;
 			this.referer = null;//rfu.url;
-			ext = h5r.isFmp4 ? ".mp4" : ".ts";
+			ext = h5r.ri.isFmp4 ? ".mp4" : ".ts";
+		}
+		*/
+		public Record(RecordingManager rm, RecordFromUrl rfu, 
+				string hlsUrl, CookieContainer container, IRecorderProcess wr, 
+				WebSocket ws, Html5Recorder h5r, RecordInfo ri) {
+			this.rm = rm;
+			this.rfu = rfu;
+			this.recFolderFile = ri.recFolderFile[1];
+			this.hlsMasterUrl = hlsUrl;
+			this.container = container;
+			//this.isTimeShift = ri.si.isTimeShift;
+			this.wr = wr;
+			//this.lvid = ri.si.lvid;
+			//this.tsConfig = ri.timeShiftConfig;
+			this.ws = ws;
+			//this.recFolderFileOrigin = ri.recFolderFile[2];
+			//this.isRealtimeChase = ri.isRealtimeChase;
+			this.h5r = h5r;
+			segmentSaveType = int.Parse(rm.cfg.get("segmentSaveType"));
+			engineMode = rm.cfg.get("EngineMode");
+			if (rfu.isPlayOnlyMode) engineMode = "0";
+			anotherEngineCommand = rm.cfg.get("anotherEngineCommand");
+			targetDuration = (ri.si.isTimeShift) ? 5 : 2;
+			
+			rm.isTitleBarInfo = bool.Parse(rm.cfg.get("IstitlebarInfo"));
+			isPlayOnlyMode = rfu.isPlayOnlyMode;
+			//this._openTime = ri.si.openTime;
+			this.referer = null;//rfu.url;
+			ext = h5r.ri.isFmp4 ? ".mp4" : ".ts";
+			this.ri = ri;
 		}
 		public void record(string quality) {
 			recordingQuality = quality;
 			tsWriterTask = Task.Run(() => {startDebugWriter();});
 			
 			var _m = (isPlayOnlyMode) ? "視聴" : "録画";
-			if (isTimeShift) {
-				var isHokan = !((WebSocketRecorder)wr).isSaveComment && ((WebSocketRecorder)wr).isChase; 
+			if (ri.si.isTimeShift) {
+				var isHokan = !((WebSocketRecorder)wr).isSaveComment && ((WebSocketRecorder)wr).ri.isChase; 
 				if (engineMode != "3" && !isHokan)
-					rm.form.addLogText((((WebSocketRecorder)wr).isChase ? "追っかけ再生" : "タイムシフト") + "の" + _m + "を開始します(画質:" + quality + ")");
+					rm.form.addLogText((((WebSocketRecorder)wr).ri.isChase ? "追っかけ再生" : "タイムシフト") + "の" + _m + "を開始します(画質:" + quality + ")");
 //				timeShiftMultiRecord();
 				timeShiftOnTimeRecord();
 			} else {
@@ -250,7 +278,7 @@ namespace namaichi.rec
 					rm.form.addLogText("抜けセグメントの補完を試みます");
 					addDebugBuf("抜けセグメントの補完を試みます");
 					if (dsp == null) {
-						dsp = new DropSegmentProcess(lastWroteSegmentDt, lastSegmentNo, this, recFolderFileOrigin, rfu, rm, h5r);
+						dsp = new DropSegmentProcess(lastWroteSegmentDt, lastSegmentNo, this, ri.recFolderFile[2], rfu, rm, h5r);
 						dsp.writeRemaining();
 						dsp = null;
 					} 
@@ -338,7 +366,7 @@ namespace namaichi.rec
 					//util.debugWriteLine(res);
 					addDebugBuf(res);
 					var isTimeShiftPlaylist = res.IndexOf("#STREAM-DURATION") > -1;
-					if (!isTimeShift && isTimeShiftPlaylist) {
+					if (!ri.si.isTimeShift && isTimeShiftPlaylist) {
 						rm.form.addLogTextDebug("record not contain stream-duration  " + res);
 						isRetry = false;
 						return;
@@ -455,9 +483,9 @@ namespace namaichi.rec
 								}
 								
 								var startTime = baseTime + secondSum - second;
-								if (isTimeShift && 
-								    	((tsConfig.timeType == 0 && startTime < tsConfig.timeSeconds) ||
-								     	(tsConfig.timeType == 1 && startTime <= tsConfig.timeSeconds))) continue;
+								if (ri.si.isTimeShift && 
+								    	((ri.timeShiftConfig.timeType == 0 && startTime < ri.timeShiftConfig.timeSeconds) ||
+								     	(ri.timeShiftConfig.timeType == 1 && startTime <= ri.timeShiftConfig.timeSeconds))) continue;
 								var startTimeStr = util.getSecondsToStr(startTime);
 								
 								if (no + baseNo > lastSegmentNo && !isInList && no + baseNo > gotTsMaxNo) {
@@ -507,7 +535,7 @@ namespace namaichi.rec
 								if (_res.url.IndexOf("init1.mp4") > -1)
 									initMp4 = _res.res;
 								else {
-									if (h5r.isFmp4) baseTfdt = getChangedTfdtMp4(_res.res, baseTfdt, out _res.res);
+									if (h5r.ri.isFmp4) baseTfdt = getChangedTfdtMp4(_res.res, baseTfdt, out _res.res);
 									gotTsList.Add(_res);
 								}
 								
@@ -572,7 +600,7 @@ namespace namaichi.rec
 							var before = DateTime.Now;
 							
 							if (isWriteCancel) return;
-							if (h5r.isFmp4 && isNuke && lastWriteFmp4Nti != null)
+							if (h5r.ri.isFmp4 && isNuke && lastWriteFmp4Nti != null)
 								writeComplementMp4File(s);
 							ret = writeFile(s);
 							addDebugBuf("write time " + (DateTime.Now - before));
@@ -606,7 +634,7 @@ namespace namaichi.rec
 							lastSegmentNo = s.no;
 							lastWroteSegmentDt = s.dt;
 							lastWroteFileSecond = s.second;
-							if (h5r.isFmp4) lastWriteFmp4Nti = s;
+							if (h5r.ri.isFmp4) lastWriteFmp4Nti = s;
 							var fName = util.getRegGroup(s.fileName, ".*(\\\\|/|^)(.+)", 2, rm.regGetter.getFName());
 	//							if (fName == 
 							lastRecordedSeconds = util.getSecondsFromStr(fName);
@@ -700,7 +728,7 @@ namespace namaichi.rec
 					w.Flush(true);
 					util.debugWriteLine("streamRenketuRecord aa");
 				}
-				if (isTimeShift) {
+				if (ri.si.isTimeShift) {
 					var newName = newTimeShiftFileName(recFolderFile, info.fileName);
 					while (true) {
 						try {
@@ -816,15 +844,15 @@ namespace namaichi.rec
 				return 3.0;
 			}
 			var isTimeShiftPlaylist = res.IndexOf("#STREAM-DURATION") > -1;
-			if (!isTimeShift && isTimeShiftPlaylist) {
+			if (!ri.si.isTimeShift && isTimeShiftPlaylist) {
 				return -1;
 			}
 			double streamDuration = -1; 
 			var _streamDuration = util.getRegGroup(res, "#STREAM-DURATION:(.+)");
 			if (_streamDuration != null) {
 				streamDuration = double.Parse(_streamDuration, NumberStyles.Float);
-				if (tsConfig.endTimeSeconds < 0)
-					tsConfig.endTimeSeconds = (int)(streamDuration + 15);
+				if (ri.timeShiftConfig.endTimeSeconds < 0)
+					ri.timeShiftConfig.endTimeSeconds = (int)(streamDuration + 15);
 			}
 			
 			var baseTime = getBaseTimeFromPlaylist(res);
@@ -864,26 +892,26 @@ namespace namaichi.rec
 							if (t.no == no) isInList = true;
 					}
 					
-					if (isEndTimeshift(streamDuration, res, second) && !((WebSocketRecorder)wr).isChase) {
+					if (isEndTimeshift(streamDuration, res, second) && !((WebSocketRecorder)wr).ri.isChase) {
 						addDebugBuf("isEndTimeshift true");
 						_isRetry = false;
 						_isEndProgram = true;
 						lastSegmentNo = no;
 					}
 					
-					util.debugWriteLine("tsconfig type time " + tsConfig.timeType + " " + tsConfig.timeSeconds);
+					util.debugWriteLine("ri.timeShiftConfig type time " + ri.timeShiftConfig.timeType + " " + ri.timeShiftConfig.timeSeconds);
 					var startTime = baseTime + secondSum - second;
 					var startTimeStr = util.getSecondsToStr(startTime);
-					if (lastSegmentNo == -1 && tsConfig.timeSeconds != 0) {
+					if (lastSegmentNo == -1 && ri.timeShiftConfig.timeSeconds != 0) {
 						if (recFolderFile.IndexOf(startTimeStr) > -1)
 							lastSegmentNo = no;
 					}
 					
-					if (isTimeShift && 
-					    	((tsConfig.timeType == 0 && startTime < tsConfig.timeSeconds) ||
-					     	(tsConfig.timeType == 1 && startTime <= tsConfig.timeSeconds))) continue;
-					if (isTimeShift && tsConfig.endTimeSeconds > 0 && startTime >= tsConfig.endTimeSeconds) {
-						addDebugBuf("timeshift tsConfig.endtime " + tsConfig.endTimeSeconds + " now starttime " + startTime + " tsConfig.timeseconds " + tsConfig.timeSeconds);
+					if (ri.si.isTimeShift && 
+					    	((ri.timeShiftConfig.timeType == 0 && startTime < ri.timeShiftConfig.timeSeconds) ||
+					     	(ri.timeShiftConfig.timeType == 1 && startTime <= ri.timeShiftConfig.timeSeconds))) continue;
+					if (ri.si.isTimeShift && ri.timeShiftConfig.endTimeSeconds > 0 && startTime >= ri.timeShiftConfig.endTimeSeconds) {
+						addDebugBuf("timeshift ri.timeShiftConfig.endtime " + ri.timeShiftConfig.endTimeSeconds + " now starttime " + startTime + " ri.timeShiftConfig.timeseconds " + ri.timeShiftConfig.timeSeconds);
 						_isRetry = false;
 						_isEndProgram = true;
 						continue;
@@ -909,7 +937,7 @@ namespace namaichi.rec
 						//getTsTask(url, startTime);
 					}
 					
-					if (((WebSocketRecorder)wr).isChase && hlsSegM3uUrl.IndexOf("hlsarchive") > -1) {
+					if (((WebSocketRecorder)wr).ri.isChase && hlsSegM3uUrl.IndexOf("hlsarchive") > -1) {
 						addDebugBuf("ischase segM3uUrl hlsarchive end");
 						_isRetry = false;
 //						isEndProgram = true;
@@ -947,7 +975,7 @@ namespace namaichi.rec
 				
 				lateTime = streamDuration - lastSegmentNo / 1000;
 				util.debugWriteLine("lateTime " + lateTime);
-				if (lateTime > 11 || !((WebSocketRecorder)wr).isChase) {
+				if (lateTime > 11 || !((WebSocketRecorder)wr).ri.isChase) {
 					if (!isSpeedUp) setSpeed(true);
 				} else if (lateTime < 7 && false) {
 					if (isSpeedUp) {
@@ -993,7 +1021,7 @@ namespace namaichi.rec
 							}
 							var a = recordedSecond;
 							newGetTsTaskList[i].res = tsBytes;
-							if (!((WebSocketRecorder)wr).isChase) {
+							if (!((WebSocketRecorder)wr).ri.isChase) {
 								recordedSecond += newGetTsTaskList[i].second; 	
 								recordedBytes += tsBytes.Length;
 							}
@@ -1014,7 +1042,7 @@ namespace namaichi.rec
 						else {
 							if (isWriteCancel) return;
 							
-							if (((WebSocketRecorder)wr).isChase) {
+							if (((WebSocketRecorder)wr).ri.isChase) {
 								lock (gotTsList) {
 									gotTsList.Add(newGetTsTaskList[i]);
 								}
@@ -1036,12 +1064,12 @@ namespace namaichi.rec
 							lastRecordedSeconds = util.getSecondsFromStr(fName);
 							lastWroteFileSecond = newGetTsTaskList[i].second;
 							
-							util.debugWriteLine("aaaaa " + tsConfig.endTimeSeconds + " " + startTime + " " +  newGetTsTaskList[i].startSecond + " " + nti.second + " a " + (startTime + nti.second) + " " + (startTime + nti.second >= tsConfig.endTimeSeconds) + " " + newGetTsTaskList.Count + " " + i);
-							if (isTimeShift && tsConfig.endTimeSeconds > 0 && newGetTsTaskList[i].startSecond + nti.second >= tsConfig.endTimeSeconds) {
-								addDebugBuf("getTsTask timeshift tsConfig.endtime " + tsConfig.endTimeSeconds + " now starttime " + startTime + " tsConfig.timeseconds " + tsConfig.timeSeconds);
+							util.debugWriteLine("aaaaa " + ri.timeShiftConfig.endTimeSeconds + " " + startTime + " " +  newGetTsTaskList[i].startSecond + " " + nti.second + " a " + (startTime + nti.second) + " " + (startTime + nti.second >= ri.timeShiftConfig.endTimeSeconds) + " " + newGetTsTaskList.Count + " " + i);
+							if (ri.si.isTimeShift && ri.timeShiftConfig.endTimeSeconds > 0 && newGetTsTaskList[i].startSecond + nti.second >= ri.timeShiftConfig.endTimeSeconds) {
+								addDebugBuf("getTsTask timeshift ri.timeShiftConfig.endtime " + ri.timeShiftConfig.endTimeSeconds + " now starttime " + startTime + " ri.timeShiftConfig.timeseconds " + ri.timeShiftConfig.timeSeconds);
 								isRetry = false;
 								isEndProgram = true;
-								if (!tsConfig.isDeletePosTime) isTsEndTimeEnd = true;
+								if (!ri.timeShiftConfig.isDeletePosTime) isTsEndTimeEnd = true;
 								isEnd = true;
 								continue;
 							}
@@ -1067,7 +1095,7 @@ namespace namaichi.rec
 					}
 					*/
 				}
-				if (!isPlayOnlyMode && !((WebSocketRecorder)wr).isChase)
+				if (!isPlayOnlyMode && !((WebSocketRecorder)wr).ri.isChase)
 					setRecordState();
 				/*
 				if (isTimeShift) {
@@ -1114,7 +1142,7 @@ namespace namaichi.rec
 			var bitrate = recordedBytes * 8 / recordedSecond / 1000;
 			ret += "bitrate= " + bitrate.ToString("0.0") + "kbits/s";
 			
-			if (isTimeShift && !((WebSocketRecorder)wr).isChase) {
+			if (ri.si.isTimeShift && !((WebSocketRecorder)wr).ri.isChase) {
 				var per = (int)(((lastSegmentNo + 5100) / 10) / allDuration);
 				if (per > 100) per = 100;
 				ret = "(" + per + "%) " + ret;
@@ -1264,12 +1292,12 @@ namespace namaichi.rec
 			recordingQuality = quality;
 			
 			hlsMasterUrl = url;
-			if (isTimeShift && 
-			    	!(((WebSocketRecorder)wr).isChase && lateTime < 15)) {
+			if (ri.si.isTimeShift && 
+			    	!(((WebSocketRecorder)wr).ri.isChase && lateTime < 15)) {
 				var start = 0;
 				//var recorded = lastRecordedSeconds < lastSegmentNo / 1000 ? lastRecordedSeconds : lastSegmentNo; 
 				if (lastRecordedSeconds == -1) {
-					start = (tsConfig.timeSeconds - 10 < 0) ? 0 : (tsConfig.timeSeconds - 10);
+					start = (ri.timeShiftConfig.timeSeconds - 10 < 0) ? 0 : (ri.timeShiftConfig.timeSeconds - 10);
 				} else {
 					if (isChaseRealing)
 						start = (int)lastRecordedSeconds + 20;
@@ -1327,7 +1355,7 @@ namespace namaichi.rec
 			FileStream w; 
 			try {
 				addDebugBuf("renketu after out fname " + outFName);			
-				if (outFName.Length > 245) outFName = recFolderFile + "/" + lvid + ext;
+				if (outFName.Length > 245) outFName = recFolderFile + "/" + ri.si.lvid + ext;
 				if (outFName.Length > 245) outFName = recFolderFile + "/out" + ext;
 				addDebugBuf("renketu after out fname shuusei go " + outFName);
 				using (w = new FileStream(outFName, FileMode.Append, FileAccess.Write)) {
@@ -1336,8 +1364,8 @@ namespace namaichi.rec
 				}
 			} catch (PathTooLongException) {
 				try {
-					addDebugBuf("renketu after out fname " + recFolderFile + "/" + lvid + ext);			
-					using (w = new FileStream(recFolderFile + "/" + lvid + ext, FileMode.Append, FileAccess.Write)) {
+					addDebugBuf("renketu after out fname " + recFolderFile + "/" + ri.si.lvid + ext);			
+					using (w = new FileStream(recFolderFile + "/" + ri.si.lvid + ext, FileMode.Append, FileAccess.Write)) {
 						_streamRenketuAfterWrite(w);
 						return w.Name;
 					}
@@ -1380,13 +1408,13 @@ namespace namaichi.rec
 			}
 		}
 		private void timeShiftOnTimeRecord() {
-			if (tsConfig.isOutputUrlList) {
+			if (ri.timeShiftConfig.isOutputUrlList) {
 				setOutputTimeShiftTsUrlListStartTime();
 			}
 			
-			var start = (tsConfig.timeSeconds - 10 < 0) ? 0 : (tsConfig.timeSeconds - 10);
+			var start = (ri.timeShiftConfig.timeSeconds - 10 < 0) ? 0 : (ri.timeShiftConfig.timeSeconds - 10);
 			var baseMasterUrl = hlsMasterUrl;
-			if (!isRealtimeChase) baseMasterUrl += "&start=" + (start.ToString());
+			if (!ri.isRealtimeChase) baseMasterUrl += "&start=" + (start.ToString());
 			
 			wr.tsHlsRequestTime = DateTime.Now;
 			wr.tsStartTime = TimeSpan.FromSeconds((double)start);
@@ -1395,7 +1423,7 @@ namespace namaichi.rec
 			rm.form.setPlayerBtnEnable(true);
 			
 			var isWriteEnd = new bool[1]{false};
-			if (engineMode == "0" && ((WebSocketRecorder)wr).isChase)
+			if (engineMode == "0" && ((WebSocketRecorder)wr).ri.isChase)
 				tsWriterTask = Task.Run(() => timeShiftWriter(isWriteEnd));
 			var isFirst = true;
 			while (rm.rfu == rfu && isRetry) {
@@ -1421,7 +1449,7 @@ namespace namaichi.rec
 						isRetry = false;
 						isEndProgram = true;
 					}
-					var intervalTime = (int)(targetDuration * (isRealtimeChase ? 500 : 1000));
+					var intervalTime = (int)(targetDuration * (ri.isRealtimeChase ? 500 : 1000));
 					var elapsedTime = (int)((TimeSpan)(DateTime.Now - lastAccessPlaylistTime)).TotalMilliseconds;
 					util.debugWriteLine("wait time " + intervalTime + " " + elapsedTime);
 					Thread.Sleep(elapsedTime > intervalTime ? 0 : intervalTime - elapsedTime);
@@ -1438,7 +1466,7 @@ namespace namaichi.rec
 					var aer = new AnotherEngineRecorder(rm, rfu, this);
 					aer.record(hlsSegM3uUrl, recFolderFile, anotherEngineCommand);
 					
-					if (isEndProgram || isAnotherEngineTimeShiftEnd(recStartTime, hlsSegM3uUrl, startPlayList) && !isRealtimeChase) {
+					if (isEndProgram || isAnotherEngineTimeShiftEnd(recStartTime, hlsSegM3uUrl, startPlayList) && !ri.isRealtimeChase) {
 						isEndProgram = true;
 						break;
 					}
@@ -1466,7 +1494,7 @@ namespace namaichi.rec
 				if (gotTsList.Count > 10) {
 					displayWriteRemainGotTsData();
 				}
-				if (((WebSocketRecorder)wr).isChase)
+				if (((WebSocketRecorder)wr).ri.isChase)
 					waitForRecording();
 			
 				if (isEndProgram && segmentSaveType == 0 && !isTsEndTimeEnd) {
@@ -1689,12 +1717,12 @@ namespace namaichi.rec
 			var _hlsSegM3uUrl = getHlsSegM3uUrl(baseMasterUrl);
 			var res = util.getPageSource(_hlsSegM3uUrl, null, referer, false, 2000, ua);
 			
-			otstul = new OutputTimeShiftTsUrlList(tsConfig, rm);
+			otstul = new OutputTimeShiftTsUrlList(ri.timeShiftConfig, rm);
 			otstul.setStartNum(res);
 		}
 		private void outputTimeShiftTsUrlList(string res) {
 			Task.Run(() => {
-				otstul.write(res, recFolderFile, baseUrl, tsConfig);
+				otstul.write(res, recFolderFile, baseUrl, ri.timeShiftConfig);
 			});
 		}
 		private void reConnect() {
@@ -1720,9 +1748,9 @@ namespace namaichi.rec
 						#endif
 						ret = true;
 					}
-					if (isTimeShift && tsConfig != null &&
-							((tsConfig.timeType == 0 && last / 1000 < tsConfig.timeSeconds) ||
-					     (tsConfig.timeType == 1 && last / 1000 <= tsConfig.timeSeconds))) {
+					if (ri.si.isTimeShift && ri.timeShiftConfig != null &&
+							((ri.timeShiftConfig.timeType == 0 && last / 1000 < ri.timeShiftConfig.timeSeconds) ||
+					     (ri.timeShiftConfig.timeType == 1 && last / 1000 <= ri.timeShiftConfig.timeSeconds))) {
 						#if DEBUG
 							rm.form.addLogText("isendTimeShift EXT-X-endlist end timeseconds last" + ret);
 						#endif
@@ -1787,7 +1815,7 @@ namespace namaichi.rec
 		}
 		private void dropSegmentProcess(numTaskInfo s, DateTime _lastWroteSegmentDt, int _lastSegmentNo) {
 			if (dsp == null) {
-				dsp = new DropSegmentProcess(_lastWroteSegmentDt, _lastSegmentNo, this, recFolderFileOrigin, rfu, rm, h5r);
+				dsp = new DropSegmentProcess(_lastWroteSegmentDt, _lastSegmentNo, this, ri.recFolderFile[2], rfu, rm, h5r);
 				if (!dsp.start(s)) dsp = null;
 				//dsp = null;
 			} else dsp.updateHokanEndtime();
@@ -1910,7 +1938,7 @@ namespace namaichi.rec
 			//return;
 			
 			util.debugWriteLine("setSpeed isup " +isUp);
-			var speed = isUp ? (((WebSocketRecorder)wr).isPremium ? "2" : "1.25") : "1";
+			var speed = isUp ? (((WebSocketRecorder)wr).ri.isPremium ? "2" : "1.25") : "1";
 			var url = hlsMasterUrl.Replace("master.m3u8", "play_control.json") + "&play_speed=" + speed;
 			util.debugWriteLine("setSpeed url " + url);
 			var res = util.getPageSource(url, null, referer, false, 2000, ua);

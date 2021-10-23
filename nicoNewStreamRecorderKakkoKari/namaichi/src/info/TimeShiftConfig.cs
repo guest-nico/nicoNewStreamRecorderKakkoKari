@@ -43,7 +43,7 @@ namespace namaichi.info
 		public bool isBeforeEndTimeComment;
 		public bool isOpenTimeBaseStartArg;
 		public bool isOpenTimeBaseEndArg;
-		public int lastSegmentNo = -1;
+		//public int lastSegmentNo = -1;
 		public string[] lastFileTime = null;
 		public string lastFileName = null;
 		public string[] qualityRank = null;

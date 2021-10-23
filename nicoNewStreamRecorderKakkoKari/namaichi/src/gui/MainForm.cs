@@ -75,8 +75,8 @@ namespace namaichi
 			defIcon = Icon;
 
 			this.args = args;
-
 			rec = new rec.RecordingManager(this, config);
+			
 			player = new Player(this, config);
 			
 			if (Array.IndexOf(args, "-stdIO") > -1) util.isStdIO = true;
@@ -122,7 +122,6 @@ namespace namaichi
 			setLinkColor(Color.FromArgb(int.Parse(config.get("recLinkColor"))));
 		}
 		private void init() {
-			
 			if (args.Length > 0) {
 				var ar = new ArgReader(args, config, this);
 				ar.read();
@@ -1136,5 +1135,10 @@ namespace namaichi
 				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
 		}
+		protected override bool ShowWithoutActivation {
+	      get {
+			return args.Length > 0 && bool.Parse(config.get("Isminimized"));
+	      }
+    	}
 	}
 }

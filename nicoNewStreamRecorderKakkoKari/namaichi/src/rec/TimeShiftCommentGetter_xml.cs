@@ -111,7 +111,7 @@ namespace namaichi.rec
 			
 //			Task.Run(() => {
 			    while (true) {
-			        if (rp.isRtmp || rp.firstSegmentSecond != -1) break;
+			        if (rp.ri.isRtmp || rp.firstSegmentSecond != -1) break;
 					Thread.Sleep(500);
 				}
 			    util.debugWriteLine("ms start");

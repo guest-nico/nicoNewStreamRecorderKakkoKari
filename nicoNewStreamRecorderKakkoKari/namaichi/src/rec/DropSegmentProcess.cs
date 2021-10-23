@@ -276,8 +276,8 @@ namespace namaichi.rec
 			rm.form.addLogText("補完中にセグメント抜けが発生しました。作成中の補完ファイルに追加します");
 			if (chaseHokan == null || chaseHokan.wr == null || 
 			    	chaseHokan.wr.rec == null || 
-			    	chaseHokan.wr.rec.tsConfig == null) return;
-			chaseHokan.wr.rec.tsConfig.endTimeSeconds = -1;//(int)newEndtime + 10;
+			    	chaseHokan.wr.rec.ri.timeShiftConfig == null) return;
+			chaseHokan.wr.rec.ri.timeShiftConfig.endTimeSeconds = -1;//(int)newEndtime + 10;
 		}
 	}
 }

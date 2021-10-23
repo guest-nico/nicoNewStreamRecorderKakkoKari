@@ -31,7 +31,7 @@ namespace namaichi.rec
 		{
 			this.rm = rm;
 			this.rfu = rfu;
-			ext = rfu.h5r.isFmp4 ? ".mp4" : ".ts";
+			ext = rfu.h5r.ri.isFmp4 ? ".mp4" : ".ts";
 			this.rec = rec;
 		}
 		public void record(string hlsSegM3uUrl, string recFolderFile, string command) {
@@ -159,7 +159,7 @@ namespace namaichi.rec
 			while (!process.HasExited) {
 				Thread.Sleep(3000);
 				
-				if (rec.tsConfig != null && isEndTime(hlsSegM3uUrl)) {
+				if (rec.ri.timeShiftConfig != null && isEndTime(hlsSegM3uUrl)) {
 					rec.isEndProgram = true;
 					stopRecording();
 				}
@@ -200,7 +200,7 @@ namespace namaichi.rec
 		private bool isEndTime(string hlsSegM3uUrl) {
 			var res = util.getPageSource(hlsSegM3uUrl, null);
 			if (res == null) return false;
-			if (rec.tsConfig.endTimeSeconds == 0) return false;
+			if (rec.ri.timeShiftConfig.endTimeSeconds == 0) return false;
 			
 			var dur = util.getRegGroup(res, "#CURRENT-POSITION:(\\d+)");
 			if (dur == null) return false;
@@ -211,7 +211,7 @@ namespace namaichi.rec
 				sum += double.Parse(_m.Groups[1].Value);
 			}
 			util.debugWriteLine(dur + " " + sum);
-			return double.Parse(dur) + sum > rec.tsConfig.endTimeSeconds + 10;
+			return double.Parse(dur) + sum > rec.ri.timeShiftConfig.endTimeSeconds + 10;
 		}
 	}
 }

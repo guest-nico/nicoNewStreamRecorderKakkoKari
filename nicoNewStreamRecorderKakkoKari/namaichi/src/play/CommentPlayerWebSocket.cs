@@ -115,12 +115,12 @@ namespace namaichi.play
 				util.debugWriteLine("player comment req exception ");
 			}
 			
-			var res_from = (wsr.isTimeShift) ? "1" : "-100";
+			var res_from = (wsr.ri.si.isTimeShift) ? "1" : "-100";
 			var msReq = Regex.Replace(wsr.msReq[0], "res_from\"\\:.+?,", "res_from\":" + res_from + ",");
 			wsc.Send(msReq);
 			if (wsr.msReq.Length == 2) {
 				wsc.Send(wsr.msReq[1]);
-				var res_from2 = (wsr.isTimeShift) ? "1" : "-10";
+				var res_from2 = (wsr.ri.si.isTimeShift) ? "1" : "-10";
 				var msReq2 = Regex.Replace(wsr.msReq[1], "res_from\"\\:.+?,", "res_from\":" + res_from2 + ",");
 			}
 
@@ -194,7 +194,7 @@ namespace namaichi.play
 				}
 				
 				XDocument chatXml;
-				chatXml = chatinfo.getFormatXml(wsr.openTime);
+				chatXml = chatinfo.getFormatXml(wsr.ri.si.openTime);
 				
 				util.debugWriteLine("player xml " + chatXml.ToString());
 				
@@ -230,7 +230,7 @@ namespace namaichi.play
 			if (chat.contents == null) return;
 //			var time = util.getUnixToDatetime(chat.vpos / 100);
 //			var unixKijunDt = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-			var __time = chat.date - wsr.openTime; //- (60 * 60 * 9);
+			var __time = chat.date - wsr.ri.si.openTime; //- (60 * 60 * 9);
 			if (__time < 0) __time = 0;
 
 //			var __timeDt = util.getUnixToDatetime(__time);

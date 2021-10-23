@@ -117,38 +117,35 @@ namespace namaichi.rec
 				var data = util.getRegGroup(res, "<script id=\"embedded-data\" data-props=\"([\\d\\D]+?)</script>");
 				if (data == null) return null;
 				data = System.Web.HttpUtility.HtmlDecode(data);
-				var type = util.getRegGroup(res, "\"content_type\":\"(.+?)\"");
-				var webSocketRecInfo = Html5Recorder.getWebSocketInfo(data, false, true, true, rm.form, h5r.isFmp4);
+				//var type = util.getRegGroup(res, "\"content_type\":\"(.+?)\"");
+				var type = h5r.ri.si.type;
+				var webSocketRecInfo = RecordInfo.getWebSocketInfo(data, false, true, true, rm.form, false);
 				if (webSocketRecInfo == null) return null;
 				
-				
-				//var a = recFolderFileInfo;
-				//var segmentSaveType = rm.cfg.get("segmentSaveType");
-				//var lastFile = util.getLastTimeshiftFileName(
-				//	recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, openTime);
-				//util.debugWriteLine("timeshift lastfile " + lastFile);
-				//string[] lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType);
-				//if (lastFileTime == null)
-				//	util.debugWriteLine("timeshift lastfiletime " + 
-				//	                    ((lastFileTime == null) ? "null" : string.Join(" ", lastFileTime)));
-				var n = nti;
+				//var n = nti;
 				var lastWroteSecondsAgo = (int)(((TimeSpan)(DateTime.Now - nti.dt)).TotalSeconds + (int)((nti.no - lastSegmentNo) * nti.second) + 25) * -1;
 				var endSecondsAgo = (int)(((TimeSpan)(DateTime.Now - nti.dt)).TotalSeconds - 15) * -1;
 				var tsConfig = new TimeShiftConfig(0, 0, 0, lastWroteSecondsAgo, 0, 0, endSecondsAgo, false, false, "", false, 0, false, false, 1, 1, false, false, false, qualityRank);
-				var recFolderFile = new string[] {h5r.recFolderFile[0], name[1], null};
-				/*
-				var	recFolderFile = util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, true, tsConfig, openTime, false);
-				if (recFolderFile == null || recFolderFile[0] == null) {
-					//パスが長すぎ
-					rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);
-					util.debugWriteLine("too long path? " + recFolderFile[1]);
-					return null;
-				}
-				*/
+				var recFolderFile = new string[] {h5r.ri.recFolderFile[0], name[1], null};
 				
 				var userId = util.getRegGroup(res, "\"user\"\\:\\{\"user_id\"\\:(.+?),");
 				var isPremium = res.IndexOf("\"member_status\":\"premium\"") > -1;
-				return new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rm.rfu, h5r, 0, true, lvid, tsConfig, userId, isPremium, TimeSpan.MaxValue, type, 0, false, false, true, false, false, null, 0);
+				
+				//test
+				var ri = h5r.ri.clone();
+				ri.si = ri.si.clone();
+				ri.webSocketRecInfo = webSocketRecInfo;
+				ri.userId = userId;
+				ri.isPremium = isPremium;
+				ri.recFolderFile = recFolderFile;
+				ri.timeShiftConfig = tsConfig;
+				ri.si.isTimeShift = true;
+				ri.isRtmp = ri.si.isRtmpOnlyPage = false;
+				ri.isChase = true;
+				ri.isRealtimeChase = false;
+				
+				//return new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rm.rfu, h5r, 0, true, lvid, tsConfig, userId, isPremium, TimeSpan.MaxValue, type, 0, false, false, true, false, false, null, 0);
+				return new WebSocketRecorder(container, rm, rm.rfu, h5r, false, null, ri);
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				return null;

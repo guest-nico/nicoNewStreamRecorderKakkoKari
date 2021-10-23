@@ -64,13 +64,15 @@ namespace namaichi.rec
 			this.isChase = isChase;
 			this.isReservation = isReservation;
 		}
-		public void set(string data, string type, string[] recFolderFileInfo) {
+		public void set(string data, string type, string[] recFolderFileInfo, string fileName) {
 			setInfo(data, form, type, recFolderFileInfo);
 //			var a = await setInfo(data, form, type, recFolderFileInfo).ConfigureAwait(false);
 			
 			Task.Run(() => setSamune(data, form));
 			
 			if (util.isStdIO) writeStdIOInfo();
+			
+			rm.form.setTitle(fileName);
 			
 			if (isTimeShift) {
 				return;
@@ -84,7 +86,6 @@ namespace namaichi.rec
 				System.Threading.Thread.Sleep(100);
 			}
 			*/
-			
 		}
 		private DateTime getUnixToDt(long startunix) {
 			return util.getUnixToDatetime(startunix);

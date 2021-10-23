@@ -79,7 +79,7 @@ namespace namaichi.rec
 			//endcode 0-その他の理由 1-stop 2-最初に終了 3-始まった後に番組終了
 			util.debugWriteLine("rtmp recorder" + util.getMainSubStr(isSub, true));
 			var _m = (rfu.isPlayOnlyMode) ? "視聴" : "録画";
-			if (wr.isTimeShift) {
+			if (wr.ri.si.isTimeShift) {
 				rm.form.addLogText("タイムシフトの" + _m + "を開始します");
 			} else {
 				if (isSub) {
@@ -281,7 +281,7 @@ namespace namaichi.rec
 					Thread.Sleep(90000);
 					continue;
 				}
-				if (!wr.isTimeShift && (pageType == 7 || pageType == 2)) {
+				if (!wr.ri.si.isTimeShift && (pageType == 7 || pageType == 2)) {
 					retryMode = 2;
 					//test
 					rm.form.addLogText(pageType + " " + res);

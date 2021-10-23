@@ -107,8 +107,8 @@ namespace namaichi.rec
 					} else {
 						var isTimeShift = pageType == 7;
 						
-						h5r = new Html5Recorder(url, cc, lvid, rm, this, isTimeShift);
-						recResult = h5r.record(res, isRtmp, pageType);
+						h5r = new Html5Recorder(cc, rm, this);
+						recResult = h5r.record(res, isRtmp, pageType, url, lvid, isTimeShift);
 					}
 
 					util.debugWriteLine("recresult " + recResult);

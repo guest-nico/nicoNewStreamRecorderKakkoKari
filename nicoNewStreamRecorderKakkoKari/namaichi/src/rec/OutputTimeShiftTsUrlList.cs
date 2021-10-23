@@ -31,7 +31,7 @@ namespace namaichi.rec
 		{
 			this.tsConfig = tsConfig;
 			this.rm = rm;
-			ext = rm.rfu.h5r.isFmp4 ? ".mp4" : ".ts";
+			ext = rm.rfu.h5r.ri.isFmp4 ? ".mp4" : ".ts";
 		}
 		public void setStartNum(string playList) {
 			startNum = int.Parse(util.getRegGroup(playList, "(\\d+)" + ext));
