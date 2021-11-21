@@ -22,11 +22,12 @@ namespace namaichi.rec
 		private DateTime openTimeDt;
 		private DateTime endTimeDt;
 		private MainForm form;
-		private RecordingManager rm;
-		private RecordFromUrl rfu;
-		private bool isTimeShift;
+		//private RecordingManager rm;
+		//private RecordFromUrl rfu;
+		private bool isEnded;
 		private bool isJikken = false;
-		private string[] recFolderFile;
+		public string[] recFolderFile;
+		//private string recFolderFile;
 		
 		public string openTime;
 		private string endTime;
@@ -46,25 +47,28 @@ namespace namaichi.rec
 		private bool isPlayOnlyMode = false;
 		private bool isDescriptionTag;
 		private bool isRtmpOnlyPage = false;
-		private bool isChase = false;
+		//private bool isChase = false;
 		private bool isReservation = false;
 			
 		public bool isWrite = false;
-		public RecordStateSetter(MainForm form, RecordingManager rm, RecordFromUrl rfu, bool isTimeShift, bool isJikken, string[] recFolderFile, bool isPlayOnlyMode, bool isRtmpOnlyPage, bool isChase, bool isReservation)
+		public RecordStateSetter(MainForm form, bool isJikken, bool isPlayOnlyMode, bool isRtmpOnlyPage, bool isReservation)
 		{
 			this.form = form;
-			this.rm = rm;
-			this.rfu = rfu;
-			this.isTimeShift = isTimeShift;
+			//this.rm = rm;
+			//this.rfu = rfu;
+			//this.isTimeShift = isTimeShift;
 			this.isJikken = isJikken;
-			this.recFolderFile = recFolderFile;
+			//this.recFolderFile = recFolderFile;
 			this.isPlayOnlyMode = isPlayOnlyMode;
-			this.isDescriptionTag = bool.Parse(rm.cfg.get("IsDescriptionTag"));
+			this.isDescriptionTag = bool.Parse(form.rec.cfg.get("IsDescriptionTag"));
 			this.isRtmpOnlyPage = isRtmpOnlyPage;
-			this.isChase = isChase;
+			//this.isChase = isChase;
 			this.isReservation = isReservation;
 		}
-		public void set(string data, string type, string[] recFolderFileInfo, string fileName) {
+		public void set(string data, string[] recFolderFileInfo, string res) {
+			isEnded = res.IndexOf("\"content_status\":\"closed\"") > -1 ||
+					res.IndexOf("\"content_status\":\"ENDED\"") > -1;
+			var type = util.getRegGroup(res, "\"content_type\":\"(.+?)\"");
 			setInfo(data, form, type, recFolderFileInfo);
 //			var a = await setInfo(data, form, type, recFolderFileInfo).ConfigureAwait(false);
 			
@@ -72,12 +76,13 @@ namespace namaichi.rec
 			
 			if (util.isStdIO) writeStdIOInfo();
 			
-			rm.form.setTitle(fileName);
+			//form.setTitle(fileName);
 			
+			/*
 			if (isTimeShift) {
 				return;
 			}
-			
+			*/
 			/*
 			while (rm.rfu == rfu) {
 				var _keikaJikanDt = (DateTime.Now - openTimeDt);
@@ -151,7 +156,8 @@ namespace namaichi.rec
 			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "thumbnail:.+?'(https*://.+?)'");
 			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "<thumb_url>(.+?)</thumb_url>");
 			tag = getTag(data);
-			var formEndTime = (isTimeShift && !isChase) ? endTime : "";
+			//var formEndTime = (isTimeShift && !isChase) ? endTime : "";
+			var formEndTime = isEnded ? endTime : "";
 			setStatistics(data);
 			form.setInfo(host, hostUrl, group, groupUrl, title, url, gentei, openTime, description, isJikken, formEndTime, isReservation);
 		}
@@ -163,9 +169,10 @@ namespace namaichi.rec
 				System.Threading.Thread.Sleep(100);
 			
 			var ext = (isDescriptionTag) ? ".html" : ".txt";
+			var fName = recFolderFile[2] + ext;
 			StreamWriter sw;
 			try {
-				using (sw = new StreamWriter(recFolderFile[2] + ext, false)) {
+				using (sw = new StreamWriter(fName, false)) {
 					var br = (isDescriptionTag) ? "<br />" : "";
 					sw.WriteLine("[放送開始時間] " + openTimeDt.ToString("yyyy/MM/dd(ddd) HH:mm:ss") + br);
 					sw.WriteLine("[タイトル] " + title + br);
@@ -180,14 +187,15 @@ namespace namaichi.rec
 					if (hostUrl != null)
 						sw.WriteLine("[放送者URL] " + hostUrl + br);
 					sw.WriteLine("[タグ] " + tag + br);
-					if (isTimeShift && !isChase) sw.WriteLine("[放送終了時間] " + endTimeDt.ToString("yyyy/MM/dd(ddd) HH:mm:ss") + br);
+					//if (isTimeShift && !isChase) sw.WriteLine("[放送終了時間] " + endTimeDt.ToString("yyyy/MM/dd(ddd) HH:mm:ss") + br);
+					if (isEnded) sw.WriteLine("[放送終了時間] " + endTimeDt.ToString("yyyy/MM/dd(ddd) HH:mm:ss") + br);
 					//sw.Close();
 					
 					isWrite = true;
 				}
 			} catch (Exception e) {
-				rm.form.addLogText("番組情報をテキストへ保存中に問題が発生しました。 " + e.Message + e.Source + e.StackTrace + e.TargetSite);
-				rm.form.addLogText(recFolderFile[2] + ext);
+				form.addLogText("番組情報をテキストへ保存中に問題が発生しました。 " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+				form.addLogText(fName);
 				return;
 			}
 			
@@ -231,17 +239,18 @@ namespace namaichi.rec
 			if (endTime == DateTime.MinValue) return;
 			
 			var ext = (isDescriptionTag) ? ".html" : ".txt";
+			var fName = recFolderFile[2] + ext;
 			//StreamWriter sw;
 			try {
-				if (!File.Exists(recFolderFile[2] + ext)) return;
-				using (var sw = new StreamWriter(recFolderFile[2] + ext, true)) {
+				if (!File.Exists(fName)) return;
+				using (var sw = new StreamWriter(fName, true)) {
 					var br = (isDescriptionTag) ? "<br />" : "";
 					sw.WriteLine("[放送終了時間] " + endTime.ToString("MM/dd(ddd) HH:mm:ss") + br);
 				}
 				//sw.Close();
 			} catch (Exception e) {
-				rm.form.addLogText("放送終了時間を番組情報テキストへ書き込みに問題が発生しました。 " + e.Message + e.Source + e.StackTrace + e.TargetSite);
-				rm.form.addLogText(recFolderFile[2] + ext);
+				form.addLogText("放送終了時間を番組情報テキストへ書き込みに問題が発生しました。 " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+				form.addLogText(fName);
 				return;
 			}
 		}
@@ -257,14 +266,15 @@ namespace namaichi.rec
 		}
 		public void renameStatistics(string watchCount, string commentCount) {
 			var ext = (isDescriptionTag) ? ".html" : ".txt";
-			var newName = (recFolderFile[2] + ext).Replace("{w}", watchCount).Replace("{c}", commentCount);
+			var fName = recFolderFile[2] + ext;
+			var newName = (fName).Replace("{w}", watchCount).Replace("{c}", commentCount);
 			try {
-				if (!File.Exists(recFolderFile[2] + ext)) return;
-				if (newName == recFolderFile[2] + ext)
+				if (!File.Exists(fName)) return;
+				if (newName == fName)
 					return;
-				if (File.Exists(newName) && File.Exists(recFolderFile[2] + ext)) 
+				if (File.Exists(newName) && File.Exists(fName)) 
 					File.Delete(newName);
-				File.Move(recFolderFile[2] + ext, newName);
+				File.Move(fName, newName);
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				

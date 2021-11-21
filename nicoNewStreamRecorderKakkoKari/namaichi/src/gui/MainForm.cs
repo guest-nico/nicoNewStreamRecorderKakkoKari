@@ -75,8 +75,8 @@ namespace namaichi
 			defIcon = Icon;
 
 			this.args = args;
-			rec = new rec.RecordingManager(this, config);
 			
+			rec = new rec.RecordingManager(this, config);
 			player = new Player(this, config);
 			
 			if (Array.IndexOf(args, "-stdIO") > -1) util.isStdIO = true;

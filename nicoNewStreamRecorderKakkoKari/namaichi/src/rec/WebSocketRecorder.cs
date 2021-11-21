@@ -300,7 +300,7 @@ namespace namaichi.rec
 				#endif
 				
 				new ChaseLastRecord(ri.si.lvid, container, rm, 
-						ri.recFolderFileInfo, ri.si.openTime, h5r, 
+						ri.si.recFolderFileInfo, ri.si.openTime, h5r, 
 						ri.timeShiftConfig, rfu, 
 						rec != null ? rec.lastSegmentNo : -1).rec(rec.recFolderFile);
 			}
@@ -483,13 +483,6 @@ namespace namaichi.rec
 				if (ri.si.isTimeShift && !ri.isRealtimeChase) {
 					if (tscg == null) {
 						if (!(ri.isChase && chaseCommentBuf == null)) {
-							util.debugWriteLine("websocketrec onMessageReceive ri.si " + ri.si);
-							util.debugWriteLine("websocketrec onMessageReceive ri.si.tsconfig " + ri.timeShiftConfig);
-							util.debugWriteLine("websocketrec onMessageReceive ri.recfolderfile " + ri.recFolderFile);
-							util.debugWriteLine("websocketrec onMessageReceive ri.recfolderfile[1] " + ri.recFolderFile[1]);
-							util.debugWriteLine("websocketrec onMessageReceive isSaveCom " + isSaveComment);
-							util.debugWriteLine("websocketrec onMessageReceive ishokan " + isHokan);
-				
 							tscg = new TimeShiftCommentGetter(msUri, msThread, msStoreUri, msStoreThread,                                  
 									ri.userId, rm, rfu, rm.form, ri.si.openTime, 
 									ri.recFolderFile[1], ri.si.lvid, container,

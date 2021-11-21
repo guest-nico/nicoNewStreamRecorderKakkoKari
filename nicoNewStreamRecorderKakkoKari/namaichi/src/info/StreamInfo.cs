@@ -33,6 +33,7 @@ namespace namaichi.info
 		
 		public long endTime, _openTime, serverTime, vposBaseTime;
 		public TimeSpan programTime;
+		public string[] recFolderFileInfo;
 		
 		public StreamInfo() {
 		}
@@ -41,7 +42,8 @@ namespace namaichi.info
 			this.lvid = lvid;
 			this.isTimeShift = isTimeShift;
 		}
-		public void set(string res, CookieContainer cc) {
+		//public void set(string res, CookieContainer cc) {
+		public void set(string res) {
 			type = util.getRegGroup(res, "\"content_type\":\"(.+?)\"");
 			data = util.getRegGroup(res, "<script id=\"embedded-data\" data-props=\"([\\d\\D]+?)</script>");
 			this.res = res; 
@@ -58,8 +60,7 @@ namespace namaichi.info
 			//openTime = endTime = _openTime = serverTime = vposBaseTime = 0;
 			programTime = util.getUnixToDatetime(endTime) - util.getUnixToDatetime(openTime);
 			
-			
-			
+			recFolderFileInfo = getHtml5RecFolderFileInfo(data, type, isRtmpOnlyPage);
 		}
 		public bool getTimeInfo() {
 			if (data == null) return false;
@@ -88,74 +89,6 @@ namespace namaichi.info
 						return false;
 			}
 			return true;
-		}
-		public StreamInfo clone() {
-			return (StreamInfo)this.MemberwiseClone();
-			/*
-			var ret = new StreamInfo();
-			ret.lvid = lvid;
-			ret.openTime = openTime;
-			ret.type = type;
-			ret.data = data;
-			ret.isRtmpOnlyPage = isRtmpOnlyPage;
-			ret.isTimeShift = isTimeShift;
-			ret.isChasable = isChasable;
-			ret.isReservation = isReservation;
-			ret.communityNum = communityNum;
-			ret.endTime = endTime;
-			ret._openTime = _openTime;
-			ret.serverTime = serverTime;
-			ret.vposBaseTime = vposBaseTime;
-			ret.programTime = programTime;
-			return ret;
-			*/
-		}
-	}
-	public class RecordInfo {
-		public string[] recFolderFileInfo;
-		public string[] recFolderFile = null;
-		public bool isRtmp = false;
-		public StreamInfo si = null;
-		public int pageType;
-		
-		public bool isChase = false;
-		public bool isRealtimeChase = false;
-		
-		public bool isFmp4;
-		public string[] webSocketRecInfo = null;
-		public TimeShiftConfig timeShiftConfig = null;
-		public string userId;
-		public bool isPremium;
-		
-		public RecordInfo (StreamInfo si, int pageType, bool isRtmp) {
-			this.si = si;
-			this.isRtmp = isRtmp;
-			if (si.isRtmpOnlyPage) isRtmp = true;
-			recFolderFileInfo = getHtml5RecFolderFileInfo(si.data, si.type, si.isRtmpOnlyPage);
-			
-			this.pageType = pageType; 
-		}
-		public void set(bool isChaseCheck, config.config cfg, MainForm form) {
-			isChase = isChaseRec(isChaseCheck, si.isChasable, si.isReservation, si.data, cfg) && !isRtmp;
-			if (isChase && !isRtmp) si.isTimeShift = true;
-			
-			util.debugWriteLine("pagetype " + pageType + " isChase" + isChase);
-			
-			isFmp4 = si.data.IndexOf("\"providerType\":\"community\"") > -1 &&
-					pageType == 0 && !si.isTimeShift && cfg.get("latency") == "0.5" && true;
-			
-			webSocketRecInfo = RecordInfo.getWebSocketInfo(si.data, isRtmp, isChase, si.isTimeShift, form, isFmp4);
-			util.debugWriteLine("websocketrecinfo " + webSocketRecInfo);
-			
-			isRealtimeChase =  isChase && !isChaseCheck && 
-					!(form.args.Length > 0 && bool.Parse(form.rec.cfg.get("IsArgChaseRecFromFirst")));
-			
-			userId = util.getRegGroup(si.res, "\"user\"\\:\\{\"user_id\"\\:(.+?),");
-			if (userId == "null") {
-				userId = "guest";
-				form.addLogText("非ログインで開始を試みます");
-			}
-			isPremium = si.res.IndexOf("\"member_status\":\"premium\"") > -1;
 		}
 		private string[] getHtml5RecFolderFileInfo(string data, string type, bool isRtmpOnlyPage) {
 			string host, group, title, communityNum, userId;
@@ -238,13 +171,82 @@ namespace namaichi.info
 				util.debugWriteLine(host + " " + group + " " + title + " " + communityNum);
 			}
 			//if (communityNum != null) communityNum = communityNum;
-			return new string[]{host, group, title, si.lvid, communityNum, userId};
+			return new string[]{host, group, title, lvid, communityNum, userId};
 
 		}
+		public StreamInfo clone() {
+			return (StreamInfo)this.MemberwiseClone();
+			/*
+			var ret = new StreamInfo();
+			ret.lvid = lvid;
+			ret.openTime = openTime;
+			ret.type = type;
+			ret.data = data;
+			ret.isRtmpOnlyPage = isRtmpOnlyPage;
+			ret.isTimeShift = isTimeShift;
+			ret.isChasable = isChasable;
+			ret.isReservation = isReservation;
+			ret.communityNum = communityNum;
+			ret.endTime = endTime;
+			ret._openTime = _openTime;
+			ret.serverTime = serverTime;
+			ret.vposBaseTime = vposBaseTime;
+			ret.programTime = programTime;
+			return ret;
+			*/
+		}
+	}
+	public class RecordInfo {
+		
+		public string[] recFolderFile = null;
+		public bool isRtmp = false;
+		public StreamInfo si = null;
+		public int pageType;
+		
+		public bool isChase = false;
+		public bool isRealtimeChase = false;
+		
+		public bool isFmp4;
+		public string[] webSocketRecInfo = null;
+		public TimeShiftConfig timeShiftConfig = null;
+		public string userId;
+		public bool isPremium;
+		
+		public RecordInfo (StreamInfo si, int pageType, bool isRtmp) {
+			this.si = si;
+			this.isRtmp = isRtmp;
+			if (si.isRtmpOnlyPage) isRtmp = true;
+			//recFolderFileInfo = getHtml5RecFolderFileInfo(si.data, si.type, si.isRtmpOnlyPage);
+			
+			this.pageType = pageType; 
+		}
+		public void set(bool isChaseCheck, config.config cfg, MainForm form) {
+			isChase = isChaseRec(isChaseCheck, si.isChasable, si.isReservation, si.data, cfg) && !isRtmp;
+			if (isChase && !isRtmp) si.isTimeShift = true;
+			
+			util.debugWriteLine("pagetype " + pageType + " isChase" + isChase);
+			
+			isFmp4 = si.data.IndexOf("\"providerType\":\"community\"") > -1 &&
+					pageType == 0 && !si.isTimeShift && cfg.get("latency") == "0.5" && true;
+			
+			webSocketRecInfo = RecordInfo.getWebSocketInfo(si.data, isRtmp, isChase, si.isTimeShift, form, isFmp4);
+			util.debugWriteLine("websocketrecinfo " + webSocketRecInfo);
+			
+			isRealtimeChase =  isChase && !isChaseCheck && 
+					!(form.args.Length > 0 && bool.Parse(form.rec.cfg.get("IsArgChaseRecFromFirst")));
+			
+			userId = util.getRegGroup(si.res, "\"user\"\\:\\{\"user_id\"\\:(.+?),");
+			if (userId == "null") {
+				userId = "guest";
+				form.addLogText("非ログインで開始を試みます");
+			}
+			isPremium = si.res.IndexOf("\"member_status\":\"premium\"") > -1;
+		}
+		
 		public string[] getRecFilePath(bool isRtmp, TimeShiftConfig timeShiftConfig, bool isFmp4, config.config cfg, MainForm form) {
-			util.debugWriteLine(si.openTime + " c " + recFolderFileInfo[0] + " timeshiftConfig " + timeShiftConfig);
+			util.debugWriteLine(si.openTime + " c " + si.recFolderFileInfo[0] + " timeshiftConfig " + timeShiftConfig);
 			try {
-				return util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], cfg, si.isTimeShift, timeShiftConfig, si.openTime, isRtmp, isFmp4);
+				return util.getRecFolderFilePath(si.recFolderFileInfo[0], si.recFolderFileInfo[1], si.recFolderFileInfo[2], si.recFolderFileInfo[3], si.recFolderFileInfo[4], si.recFolderFileInfo[5], cfg, si.isTimeShift, timeShiftConfig, si.openTime, isRtmp, isFmp4);
 			} catch (Exception e) {
 				form.addLogText("保存先パスの取得もしくはフォルダの作成に失敗しました");
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
@@ -330,9 +332,9 @@ namespace namaichi.info
 			if (((si.isTimeShift && !isChase) || isChaseCheck) && !isRtmp) {
 //						if (rm.ri != null) timeShiftConfig = rm.ri.tsConfig;
 				if (rm.argTsConfig != null) {
-					timeShiftConfig = getReadyArgTsConfig(rm.argTsConfig.clone(), recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], si.openTime, (int)(si.openTime - si._openTime), rm);
+					timeShiftConfig = getReadyArgTsConfig(rm.argTsConfig.clone(), si.recFolderFileInfo[0], si.recFolderFileInfo[1], si.recFolderFileInfo[2], si.recFolderFileInfo[3], si.recFolderFileInfo[4], si.recFolderFileInfo[5], si.openTime, (int)(si.openTime - si._openTime), rm);
 				} else {
-					timeShiftConfig = getTimeShiftConfig(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, si.openTime, isChase, si._openTime, rm);
+					timeShiftConfig = getTimeShiftConfig(si.recFolderFileInfo[0], si.recFolderFileInfo[1], si.recFolderFileInfo[2], si.recFolderFileInfo[3],si. recFolderFileInfo[4], si.recFolderFileInfo[5], rm.cfg, si.openTime, isChase, si._openTime, rm);
 					if (timeShiftConfig == null) return false;
 				}
 			}
@@ -418,11 +420,11 @@ namespace namaichi.info
 					return false;
 				}
 			} else {
-				var fName = "a/" + util.getFileName(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], rm.cfg, si.openTime);
+				var fName = "a/" + util.getFileName(si.recFolderFileInfo[0], si.recFolderFileInfo[1], si.recFolderFileInfo[2], si.recFolderFileInfo[3], si.recFolderFileInfo[4], rm.cfg, si.openTime);
 				recFolderFile = new String[]{fName, fName, fName};//new string[]{"", "", ""};
 			}
 			for (int i = 0; i < recFolderFile.Length; i++)
-					util.debugWriteLine("recd " + i + " " + recFolderFileInfo[i]);
+					util.debugWriteLine("recd " + i + " " + si.recFolderFileInfo[i]);
 			return true;
 		}
 		public RecordInfo clone() {

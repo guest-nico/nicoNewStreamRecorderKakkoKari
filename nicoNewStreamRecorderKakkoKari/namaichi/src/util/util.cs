@@ -33,8 +33,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.53";
-	public static string versionDayStr = "2021/10/23";
+	public static string versionStr = "ver0.88.54";
+	public static string versionDayStr = "2021/11/21";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -831,6 +831,8 @@ class util {
 		//if (res.IndexOf("siteId&quot;:&quot;nicolive2") > -1) {
 			var data = util.getRegGroup(res, "<script id=\"embedded-data\" data-props=\"([\\d\\D]+?)</script>");
 			var status = (data == null) ? null : util.getRegGroup(data, "&quot;status&quot;:&quot;(.+?)&quot;");
+			var opentime = data != null ? util.getRegGroup(data, "&quot;openTime&quot;:(\\d+)") : null;
+			var serverTime = data != null ? util.getRegGroup(data, "&quot;serverTime&quot;:(\\d+)") : null;
 			if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ON_AIR" && data.IndexOf("webSocketUrl&quot;:&quot;ws") > -1) return 0;
 			else if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ENDED" && data.IndexOf("webSocketUrl&quot;:&quot;ws") > -1) return 7;
 			else if (util.getRegGroup(res, "(混雑中ですが、プレミアム会員の方は優先して入場ができます)") != null ||
@@ -844,7 +846,7 @@ class util {
 			
 			else if (status == "ENDED" && res.IndexOf("rejectedReasons&quot;:[&quot;notHaveTimeshiftTicket") > -1) return 9;
 			else if (status == "ENDED" && res.IndexOf("rejectedReasons&quot;:[&quot;notUseTimeshiftTicket") > -1) return 10;
-			else if (data.IndexOf("webSocketUrl&quot;:&quot;ws") == -1 &&
+			else if (data != null && data.IndexOf("webSocketUrl&quot;:&quot;ws") == -1 &&
 			         status == "ENDED") return 2;
 			else if (res.IndexOf("rejectedReasons&quot;:[&quot;notHavePayTicket") > -1) return 11;
 			//else if (status == "ENDED" && res.IndexOf(" onclick=\"Nicolive.WatchingReservation") > -1) return 9;
@@ -856,6 +858,8 @@ class util {
 			else if (util.getRegGroup(res, "(<h3>【会場のご案内】</h3>)") != null) return 6;
 			else if (util.getRegGroup(res, "(この番組は放送者により削除されました。<br />|削除された可能性があります。<br />)") != null) return 2;
 			else if (res.IndexOf("rejectedReasons&quot;:[&quot;notActivatedBySerial&quot;]") > -1) return 8;
+			else if (res.IndexOf("content=\"https://jk.nicovideo.jp/\"") > -1) return 12;
+			else if (opentime != null && serverTime != null && long.Parse(opentime) - long.Parse(serverTime) / 1000 > 15) return 13;
 			return 5;
 		//}
 		//return 5;

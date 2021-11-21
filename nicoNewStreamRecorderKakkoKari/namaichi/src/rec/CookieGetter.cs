@@ -255,6 +255,9 @@ namespace namaichi.rec
 					reason = "age";
 					return false;
 				}
+				if (pageSource.IndexOf("content=\"https://jk.nicovideo.jp/\"") != -1) {
+				    return true;
+			    }
 				if (pageSource.IndexOf("\"login_status\"") == -1 &&
 				     	pageSource.IndexOf("login_status") == -1) {
 					var msg = "放送ページを正常に取得できませんでした。";

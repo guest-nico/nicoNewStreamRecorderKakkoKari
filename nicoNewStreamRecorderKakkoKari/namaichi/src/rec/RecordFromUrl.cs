@@ -241,6 +241,17 @@ namespace namaichi.rec
 				} else if (pageType == 11) {
 					rm.form.addLogText("この番組は有料チケットが必要です。");
 					return 2;
+				} else if (pageType == 12) {
+					rm.form.addLogText("ニコニコ実況放送でした。");
+					return 2;
+				} else if (pageType == 13) {
+					try {
+						pageType = getPageType(url, false, ref jr, out cc);
+						util.debugWriteLine("pagetype_ " + pageType);
+					} catch (Exception e) {
+						util.debugWriteLine(e.Message + " " + e.StackTrace + " ");
+					}
+					continue;
 				} else {
 					var mes = "";
 					if (pageType == 2 || pageType == 3) mes = "この放送は終了しています。";
@@ -310,18 +321,13 @@ namespace namaichi.rec
 							 		cg.pageSource.IndexOf("ただいまメンテナンス中です。") > -1) ? 300000 : 10000);
 						continue;
 					}
-				//			if (cgret == null) return true;
 					cc = cgret.Result[0];
 					util.debugWriteLine("container " + cc);
 						
 					res = cg.pageSource;
+					if (string.IsNullOrEmpty(rm.form.getTitleLabelText()))
+						setDisplay(res);
 					
-	//				Uri TargetUrl = new Uri("http://live.nicovideo.jp/");
-	//				util.debugWriteLine("1 " + container.GetCookieHeader(TargetUrl));
-	//				TargetUrl = new Uri("http://live2.nicovideo.jp/");
-	//				util.debugWriteLine("2 " + container.GetCookieHeader(TargetUrl));
-					//if (res.IndexOf("siteId&quot;:&quot;nicolive2") > -1) {
-//					if (isRtmp) return getRtmpPageType(res, isSub, out rr, cc);
 					if (isRtmpMain) {
 						//if (res.IndexOf("%3Cgetplayerstatus%20") > -1) {
 						if (res.IndexOf("player_type = null") > -1) {
@@ -345,15 +351,25 @@ namespace namaichi.rec
 							res += __res;
 							return ret; 
 						}
-					}
-					var isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
-					if (isJikken) {
-						//実験放送なくし
-						//return getJikkenPageType(res, out jr, cc);
 					} else {
-						var _pageType = util.getPageType(res);
-						util.debugWriteLine(_pageType);
-						return _pageType;
+						var isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
+						if (isJikken) {
+							//実験放送なくし
+							//return getJikkenPageType(res, out jr, cc);
+						} else {
+							var _pageType = util.getPageType(res);
+							util.debugWriteLine(_pageType);
+							
+							if (_pageType == 13) {
+								var opentime = util.getRegGroup(res, "&quot;openTime&quot;:(\\d+)");
+								var serverTime = util.getRegGroup(res, "&quot;serverTime&quot;:(\\d+)");
+								var timeLeft = long.Parse(opentime) - long.Parse(serverTime) / 1000;
+								var waitSecond = timeLeft < 60 ? 10 : (timeLeft < 600 ? 60 : 600);
+								rm.form.addLogText("放送が開始されていませんでした。待機します。");//(" + waitSecond + "秒)");
+								System.Threading.Thread.Sleep(waitSecond * 1000);
+							}
+							return _pageType;
+						}
 					}
 				} catch (Exception e) {
 					util.debugWriteLine(e.Message + " " + e.StackTrace);
@@ -442,5 +458,21 @@ namespace namaichi.rec
 			return jr.getPageType();
 		}
 		*/
+		void setDisplay(string res) {
+			try {
+				var isEnded = res.IndexOf("\"content_status\":\"closed\"") > -1 ||
+					res.IndexOf("\"content_status\":\"ENDED\"") > -1;
+				var si = new StreamInfo(url, lvid, isEnded);
+				si.set(res);
+				if (!si.getTimeInfo()) return;
+				
+				var rss = new RecordStateSetter(rm.form, false, isPlayOnlyMode, si.isRtmpOnlyPage, si.isReservation);
+				Task.Run(() => {
+				       	rss.set(si.data, si.recFolderFileInfo, res);
+				});
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
+		}
 	}
 }

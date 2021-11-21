@@ -897,6 +897,7 @@ namespace namaichi.rec
 						_isRetry = false;
 						_isEndProgram = true;
 						lastSegmentNo = no;
+						break;
 					}
 					
 					util.debugWriteLine("ri.timeShiftConfig type time " + ri.timeShiftConfig.timeType + " " + ri.timeShiftConfig.timeSeconds);
@@ -1031,7 +1032,7 @@ namespace namaichi.rec
 							
 					}
 					for (int i = 0; i < newGetTsTaskList.Count; i++) {
-						addDebugBuf("write file " + i + " url " + newGetTsTaskList[i].no);
+						addDebugBuf("write file " + i + " url " + newGetTsTaskList[i].no + " lastsegNo " + lastSegmentNo);
 						if (newGetTsTaskList[i].res == null) break;
 						
 						if (newGetTsTaskList[i].no <= lastSegmentNo) {
@@ -1051,8 +1052,8 @@ namespace namaichi.rec
 							else ret = writeFile(newGetTsTaskList[i]);
 						}
 
-						addDebugBuf("write ok " + ret + " " + newGetTsTaskList[i].no);
 						if (ret) {
+							addDebugBuf("write ok " + ret + " " + newGetTsTaskList[i].no);
 							if (wr.firstSegmentSecond == -1) 
 								wr.firstSegmentSecond = newGetTsTaskList[i].startSecond;
 							

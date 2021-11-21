@@ -57,7 +57,8 @@ namespace namaichi.rec
 			
 			while(rm.rfu == rfu) {
 				var si = new StreamInfo(url, lvid, isTimeShift);
-				si.set(res, container);
+				si.set(res);
+				if (!si.getTimeInfo()) return 3;
 				
 				if ((si.data == null && !si.isRtmpOnlyPage) || (pageType != 0 && pageType != 7)) {
 					//processType 0-ok 1-retry 2-放送終了 3-その他の理由の終了
@@ -79,15 +80,19 @@ namespace namaichi.rec
 				ri = new RecordInfo(si, pageType, isRtmp);
 				ri.set(isChaseCheck, rm.cfg, rm.form);
 				
-				if (!si.getTimeInfo()) return 3;
 				if (!si.isRtmpOnlyPage && ri.webSocketRecInfo == null) return 1;
 				if (!ri.setTimeShiftConfig(rm, isChaseCheck)) return 2;
 				if (!ri.setRecFolderFile(rm)) return 2;
 				
 				//display set
-				var rss = new RecordStateSetter(rm.form, rm, rfu, si.isTimeShift, false, ri.recFolderFile, rfu.isPlayOnlyMode, si.isRtmpOnlyPage, ri.isChase, si.isReservation);
+				var rss = new RecordStateSetter(rm.form, false, rfu.isPlayOnlyMode, si.isRtmpOnlyPage, si.isReservation);
 				Task.Run(() => {
-				       	rss.set(si.data, si.type, ri.recFolderFileInfo, ri.recFolderFile[1]);
+				       	rss.set(si.data, si.recFolderFileInfo, res);
+				});
+				
+				rss.recFolderFile = ri.recFolderFile;
+				Task.Run(() => {
+				       	rm.form.setTitle(ri.recFolderFile[1]);
 				       	
 				       	//hosoInfo
 						if (rm.cfg.get("IshosoInfo") == "true" && !rfu.isPlayOnlyMode)
@@ -95,7 +100,7 @@ namespace namaichi.rec
 					});
 				
 				util.debugWriteLine("form disposed" + rm.form.IsDisposed);
-				util.debugWriteLine("recfolderfile test " + ri.recFolderFileInfo);
+				util.debugWriteLine("recfolderfile test " + si.recFolderFileInfo);
 				
 				wsr = new WebSocketRecorder(container, rm, rfu, this, true, rss, ri);
 				rm.wsr = wsr;
