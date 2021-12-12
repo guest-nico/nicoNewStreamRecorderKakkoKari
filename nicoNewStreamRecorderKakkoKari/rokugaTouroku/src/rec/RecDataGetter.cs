@@ -149,6 +149,7 @@ namespace rokugaTouroku.rec
 				util.debugWriteLine("process start exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
 		}
+		/*
 		private void readResProcess(string res, StreamWriter w, RecInfo ri) {
 			if (res.StartsWith("info")) {
 				setInfo(res, ri);
@@ -160,6 +161,7 @@ namespace rokugaTouroku.rec
 			
 			
 		}
+		*/
 		public void setInfo(string res, RecInfo ri) {
 			if (res.StartsWith("info.title:")) 
 				ri.title = util.getRegGroup(res, ":(.*)");

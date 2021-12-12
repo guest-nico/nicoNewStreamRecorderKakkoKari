@@ -75,7 +75,6 @@ namespace namaichi
 			defIcon = Icon;
 
 			this.args = args;
-			
 			rec = new rec.RecordingManager(this, config);
 			player = new Player(this, config);
 			
@@ -701,7 +700,10 @@ namespace namaichi
 	         	while (true) {
 					try {
 						var a = Console.ReadLine();
-						if (a == null || a.Length == 0) continue;
+						if (a == null || a.Length == 0) {
+							Thread.Sleep(1000);
+							continue;
+						}
 						if (a == "stop end") {
 							if (rec.rfu != null) {
 								rec.stopRecording(rec.rfu.isPlayOnlyMode);

@@ -366,6 +366,9 @@ namespace namaichi.rec
 								var timeLeft = long.Parse(opentime) - long.Parse(serverTime) / 1000;
 								var waitSecond = timeLeft < 60 ? 10 : (timeLeft < 600 ? 60 : 600);
 								rm.form.addLogText("放送が開始されていませんでした。待機します。");//(" + waitSecond + "秒)");
+								#if DEBUG
+									rm.form.addLogText("(" + waitSecond + "秒)now" + DateTime.Now + " o" + opentime + " s" + serverTime);
+								#endif
 								System.Threading.Thread.Sleep(waitSecond * 1000);
 							}
 							return _pageType;

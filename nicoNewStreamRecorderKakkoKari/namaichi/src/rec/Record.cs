@@ -566,7 +566,7 @@ namespace namaichi.rec
 		
 		
 		private void startTsWriter() {
-			while (true) {
+			while (rfu == rm.rfu) {
 				try {
 	//				addDebugBuf("ts writer loop gotTsListCount " + gotTsList.Count);
 					var isTsGetterEnd = (tsGetterTask.IsCanceled ||
@@ -1525,7 +1525,7 @@ namespace namaichi.rec
 		}
 		private void timeShiftWriter(bool[] isWriteEnd) {
 			var lastWroteNo = -1;
-			while (true) {
+			while (rfu == rm.rfu) {
 				try {
 					//util.debugWriteLine("timeshift writer + " + gotTsList.Count);
 					if (isWriteEnd[0] && gotTsList.Count == 0) break;

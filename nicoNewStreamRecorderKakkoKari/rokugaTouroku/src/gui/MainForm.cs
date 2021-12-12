@@ -58,6 +58,9 @@ namespace rokugaTouroku
 			Text = "録画登録ツール（仮 " + util.versionStr;
 			afterConvertModeList.SelectedIndex = 0;
 			
+			//debug
+			config.form = this;
+			
 			var fontSize = config.get("fontSize");  
 			if (fontSize != "9")
 				util.setFontSize(int.Parse(fontSize), this, true, 523);
@@ -1093,6 +1096,10 @@ namespace rokugaTouroku
 //			/util.debugWriteLine(f.Tag);
 			accountBtn.Text = f.si != null ? 
 					(f.si.BrowserName + " " + f.si.ProfileName) : "アカウントログイン";
+		}
+		void RecListDataError(object sender, DataGridViewDataErrorEventArgs e)
+		{
+			addLogText("list error " + e.ColumnIndex + " " + e.RowIndex + " " + e.Exception.Message + " " + e.Exception.Source + " " + e.Exception.StackTrace + " " + e.Exception.TargetSite);
 		}
 	}
 }

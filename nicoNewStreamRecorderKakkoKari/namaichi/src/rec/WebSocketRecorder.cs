@@ -242,6 +242,7 @@ namespace namaichi.rec
 							#if DEBUG
 								rm.form.addLogText("stop ws reConnect");
 							#endif
+							isWaitNextConnection = true;
 							connectUntilOk();
 							stopWsCount = 0;
 						}
@@ -257,6 +258,7 @@ namespace namaichi.rec
 				System.Threading.Thread.Sleep(1000);
 			}
 
+			addDebugBuf("wsr end0");
 			IsRetry = false;
 			if (rr != null) rr.retryMode = (isEndProgram) ? 2 : 1;
 //			if (rm.rfu != rfu && tscg != null) tscg.setIsRetry(false);
@@ -272,7 +274,6 @@ namespace namaichi.rec
 				}
 			}
 //			tscg.setIsRetry(false);
-			
 			
 			if (rm.rfu != rfu) {
 				//if (rr != null) rr.isRetry = false;

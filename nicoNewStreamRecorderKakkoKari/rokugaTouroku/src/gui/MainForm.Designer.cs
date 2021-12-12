@@ -88,6 +88,7 @@ namespace rokugaTouroku
 			this.isDisplayRecChaseMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.isDisplayRecCommentMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.isDisplayRecStateMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.isDisplayRecAccountMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.isDisplayRecTitleMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.isDisplayRecHostNameMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.isDisplayRecCommunityNameMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -142,7 +143,6 @@ namespace rokugaTouroku
 			this.label3 = new System.Windows.Forms.Label();
 			this.samuneBox = new System.Windows.Forms.PictureBox();
 			this.logText = new System.Windows.Forms.TextBox();
-			this.isDisplayRecAccountMenu = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.recList)).BeginInit();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -212,6 +212,7 @@ namespace rokugaTouroku
 			this.recList.TabIndex = 6;
 			this.recList.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.RecListCellFormatting);
 			this.recList.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.recListCell_MouseDown);
+			this.recList.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.RecListDataError);
 			this.recList.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.recList_FocusRowEnter);
 			this.recList.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.RecListRowsRemoved);
 			this.recList.DragDrop += new System.Windows.Forms.DragEventHandler(this.RecListDragDrop);
@@ -339,76 +340,76 @@ namespace rokugaTouroku
 									this.toolStripSeparator4,
 									this.deleteRowMenu});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(257, 198);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(233, 198);
 			// 
 			// openWatchUrlMenu
 			// 
 			this.openWatchUrlMenu.Name = "openWatchUrlMenu";
-			this.openWatchUrlMenu.Size = new System.Drawing.Size(256, 22);
+			this.openWatchUrlMenu.Size = new System.Drawing.Size(232, 22);
 			this.openWatchUrlMenu.Text = "放送ページへ移動";
 			this.openWatchUrlMenu.Click += new System.EventHandler(this.openWatchUrlMenu_Click);
 			// 
 			// openCommunityUrlMenu
 			// 
 			this.openCommunityUrlMenu.Name = "openCommunityUrlMenu";
-			this.openCommunityUrlMenu.Size = new System.Drawing.Size(256, 22);
+			this.openCommunityUrlMenu.Size = new System.Drawing.Size(232, 22);
 			this.openCommunityUrlMenu.Text = "コミュニティページへ移動";
 			this.openCommunityUrlMenu.Click += new System.EventHandler(this.openCommunityUrlMenu_Click);
 			// 
 			// copyWatchUrlMenu
 			// 
 			this.copyWatchUrlMenu.Name = "copyWatchUrlMenu";
-			this.copyWatchUrlMenu.Size = new System.Drawing.Size(256, 22);
+			this.copyWatchUrlMenu.Size = new System.Drawing.Size(232, 22);
 			this.copyWatchUrlMenu.Text = "放送URLをコピー";
 			this.copyWatchUrlMenu.Click += new System.EventHandler(this.copyWatchUrlMenu_Click);
 			// 
 			// copyCommunityUrlMenu
 			// 
 			this.copyCommunityUrlMenu.Name = "copyCommunityUrlMenu";
-			this.copyCommunityUrlMenu.Size = new System.Drawing.Size(256, 22);
+			this.copyCommunityUrlMenu.Size = new System.Drawing.Size(232, 22);
 			this.copyCommunityUrlMenu.Text = "コミュニティURLをコピー";
 			this.copyCommunityUrlMenu.Click += new System.EventHandler(this.copyCommunityUrlMenu_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(253, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(229, 6);
 			// 
 			// openRecFolderMenu
 			// 
 			this.openRecFolderMenu.Name = "openRecFolderMenu";
-			this.openRecFolderMenu.Size = new System.Drawing.Size(256, 22);
+			this.openRecFolderMenu.Size = new System.Drawing.Size(232, 22);
 			this.openRecFolderMenu.Text = "録画フォルダを開く";
 			this.openRecFolderMenu.Click += new System.EventHandler(this.openRecFolderMenu_Click);
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(253, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(229, 6);
 			// 
 			// reAddRowMenu
 			// 
 			this.reAddRowMenu.Name = "reAddRowMenu";
-			this.reAddRowMenu.Size = new System.Drawing.Size(256, 22);
+			this.reAddRowMenu.Size = new System.Drawing.Size(232, 22);
 			this.reAddRowMenu.Text = "この行を再登録する";
 			this.reAddRowMenu.Click += new System.EventHandler(this.reAddRowMenu_Click);
 			// 
 			// reAddNewConfigRowMenu
 			// 
 			this.reAddNewConfigRowMenu.Name = "reAddNewConfigRowMenu";
-			this.reAddNewConfigRowMenu.Size = new System.Drawing.Size(256, 22);
+			this.reAddNewConfigRowMenu.Size = new System.Drawing.Size(232, 22);
 			this.reAddNewConfigRowMenu.Text = "この行を新しい設定で再登録する";
 			this.reAddNewConfigRowMenu.Click += new System.EventHandler(this.ReAddNewConfigRowMenuClick);
 			// 
 			// toolStripSeparator4
 			// 
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(253, 6);
+			this.toolStripSeparator4.Size = new System.Drawing.Size(229, 6);
 			// 
 			// deleteRowMenu
 			// 
 			this.deleteRowMenu.Name = "deleteRowMenu";
-			this.deleteRowMenu.Size = new System.Drawing.Size(256, 22);
+			this.deleteRowMenu.Size = new System.Drawing.Size(232, 22);
 			this.deleteRowMenu.Text = "この行を削除する";
 			this.deleteRowMenu.Click += new System.EventHandler(this.deleteRowMenu_Click);
 			// 
@@ -422,7 +423,7 @@ namespace rokugaTouroku
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
-			this.menuStrip1.Size = new System.Drawing.Size(1111, 26);
+			this.menuStrip1.Size = new System.Drawing.Size(1111, 24);
 			this.menuStrip1.TabIndex = 12;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -440,63 +441,63 @@ namespace rokugaTouroku
 									this.終了ToolStripMenuItem});
 			this.fileMenuItem.Name = "fileMenuItem";
 			this.fileMenuItem.ShowShortcutKeys = false;
-			this.fileMenuItem.Size = new System.Drawing.Size(85, 22);
+			this.fileMenuItem.Size = new System.Drawing.Size(67, 20);
 			this.fileMenuItem.Text = "ファイル(&F)";
 			// 
 			// 録画フォルダを開くToolStripMenuItem
 			// 
 			this.録画フォルダを開くToolStripMenuItem.Name = "録画フォルダを開くToolStripMenuItem";
-			this.録画フォルダを開くToolStripMenuItem.Size = new System.Drawing.Size(285, 22);
+			this.録画フォルダを開くToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
 			this.録画フォルダを開くToolStripMenuItem.Text = "録画フォルダを開く(&O)";
 			this.録画フォルダを開くToolStripMenuItem.Click += new System.EventHandler(this.openRecFolderMenu_Click);
 			// 
 			// openSettingFolderMenu
 			// 
 			this.openSettingFolderMenu.Name = "openSettingFolderMenu";
-			this.openSettingFolderMenu.Size = new System.Drawing.Size(285, 22);
+			this.openSettingFolderMenu.Size = new System.Drawing.Size(256, 22);
 			this.openSettingFolderMenu.Text = "設定ファイルフォルダーを開く(&F)";
 			this.openSettingFolderMenu.Click += new System.EventHandler(this.OpenSettingFolderMenuClick);
 			// 
 			// toolStripSeparator7
 			// 
 			this.toolStripSeparator7.Name = "toolStripSeparator7";
-			this.toolStripSeparator7.Size = new System.Drawing.Size(282, 6);
+			this.toolStripSeparator7.Size = new System.Drawing.Size(253, 6);
 			// 
 			// openRecExeMenu
 			// 
 			this.openRecExeMenu.Name = "openRecExeMenu";
-			this.openRecExeMenu.Size = new System.Drawing.Size(285, 22);
+			this.openRecExeMenu.Size = new System.Drawing.Size(256, 22);
 			this.openRecExeMenu.Text = "ニコ生新配信録画ツールを起動する(&E)";
 			this.openRecExeMenu.Click += new System.EventHandler(this.OpenRecExeMenuClick);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(282, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(253, 6);
 			// 
 			// urlBulkRegist
 			// 
 			this.urlBulkRegist.Name = "urlBulkRegist";
-			this.urlBulkRegist.Size = new System.Drawing.Size(285, 22);
+			this.urlBulkRegist.Size = new System.Drawing.Size(256, 22);
 			this.urlBulkRegist.Text = "URL一括登録(&R)";
 			this.urlBulkRegist.Click += new System.EventHandler(this.urlBulkRegistMenu_Click);
 			// 
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(285, 22);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(256, 22);
 			this.toolStripMenuItem1.Text = "URLリストの保存(&S)";
 			this.toolStripMenuItem1.Click += new System.EventHandler(this.urlListSaveMenu_Click);
 			// 
 			// toolStripSeparator5
 			// 
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(282, 6);
+			this.toolStripSeparator5.Size = new System.Drawing.Size(253, 6);
 			// 
 			// 終了ToolStripMenuItem
 			// 
 			this.終了ToolStripMenuItem.Name = "終了ToolStripMenuItem";
-			this.終了ToolStripMenuItem.Size = new System.Drawing.Size(285, 22);
+			this.終了ToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
 			this.終了ToolStripMenuItem.Text = "終了(&X)";
 			this.終了ToolStripMenuItem.Click += new System.EventHandler(this.endMenu_Click);
 			// 
@@ -506,14 +507,14 @@ namespace rokugaTouroku
 									this.optionMenuItem});
 			this.toolMenuItem.Name = "toolMenuItem";
 			this.toolMenuItem.ShowShortcutKeys = false;
-			this.toolMenuItem.Size = new System.Drawing.Size(74, 22);
+			this.toolMenuItem.Size = new System.Drawing.Size(60, 20);
 			this.toolMenuItem.Text = "ツール(&T)";
 			// 
 			// optionMenuItem
 			// 
 			this.optionMenuItem.Name = "optionMenuItem";
 			this.optionMenuItem.ShowShortcutKeys = false;
-			this.optionMenuItem.Size = new System.Drawing.Size(147, 22);
+			this.optionMenuItem.Size = new System.Drawing.Size(128, 22);
 			this.optionMenuItem.Text = "オプション(&O)";
 			this.optionMenuItem.Click += new System.EventHandler(this.optionItem_Select);
 			// 
@@ -525,7 +526,7 @@ namespace rokugaTouroku
 									this.formColorMenuItem,
 									this.characterColorMenuItem});
 			this.visualMenuItem.Name = "visualMenuItem";
-			this.visualMenuItem.Size = new System.Drawing.Size(62, 22);
+			this.visualMenuItem.Size = new System.Drawing.Size(58, 20);
 			this.visualMenuItem.Text = "表示(&V)";
 			// 
 			// displayRecListMenu
@@ -546,7 +547,7 @@ namespace rokugaTouroku
 									this.isDisplayRecEndTimMenu,
 									this.isDisplayRecLogMenu});
 			this.displayRecListMenu.Name = "displayRecListMenu";
-			this.displayRecListMenu.Size = new System.Drawing.Size(182, 22);
+			this.displayRecListMenu.Size = new System.Drawing.Size(157, 22);
 			this.displayRecListMenu.Text = "表示列(&D)";
 			this.displayRecListMenu.DropDownOpened += new System.EventHandler(this.DisplayRecListMenuDropDownOpened);
 			this.displayRecListMenu.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.DisplayRecListMenuDropDownItemClicked);
@@ -554,97 +555,103 @@ namespace rokugaTouroku
 			// isDisplayRecLvidMenu
 			// 
 			this.isDisplayRecLvidMenu.Name = "isDisplayRecLvidMenu";
-			this.isDisplayRecLvidMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecLvidMenu.Size = new System.Drawing.Size(151, 22);
 			this.isDisplayRecLvidMenu.Text = "放送ID";
 			// 
 			// isDisplayRecConvertTypeMenu
 			// 
 			this.isDisplayRecConvertTypeMenu.Name = "isDisplayRecConvertTypeMenu";
-			this.isDisplayRecConvertTypeMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecConvertTypeMenu.Size = new System.Drawing.Size(151, 22);
 			this.isDisplayRecConvertTypeMenu.Text = "形式";
 			// 
 			// isDisplayRecQualityMenu
 			// 
 			this.isDisplayRecQualityMenu.Name = "isDisplayRecQualityMenu";
-			this.isDisplayRecQualityMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecQualityMenu.Size = new System.Drawing.Size(151, 22);
 			this.isDisplayRecQualityMenu.Text = "画質";
 			// 
 			// isDisplayRecTimeShiftMenu
 			// 
 			this.isDisplayRecTimeShiftMenu.Name = "isDisplayRecTimeShiftMenu";
-			this.isDisplayRecTimeShiftMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecTimeShiftMenu.Size = new System.Drawing.Size(151, 22);
 			this.isDisplayRecTimeShiftMenu.Text = "タイムシフト設定";
 			// 
 			// isDisplayRecChaseMenu
 			// 
 			this.isDisplayRecChaseMenu.Name = "isDisplayRecChaseMenu";
-			this.isDisplayRecChaseMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecChaseMenu.Size = new System.Drawing.Size(151, 22);
 			this.isDisplayRecChaseMenu.Text = "追っかけ録画";
 			// 
 			// isDisplayRecCommentMenu
 			// 
 			this.isDisplayRecCommentMenu.Name = "isDisplayRecCommentMenu";
-			this.isDisplayRecCommentMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecCommentMenu.Size = new System.Drawing.Size(151, 22);
 			this.isDisplayRecCommentMenu.Text = "映像・コメント";
 			// 
 			// isDisplayRecStateMenu
 			// 
 			this.isDisplayRecStateMenu.Name = "isDisplayRecStateMenu";
-			this.isDisplayRecStateMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecStateMenu.Size = new System.Drawing.Size(151, 22);
 			this.isDisplayRecStateMenu.Text = "状態";
+			// 
+			// isDisplayRecAccountMenu
+			// 
+			this.isDisplayRecAccountMenu.Name = "isDisplayRecAccountMenu";
+			this.isDisplayRecAccountMenu.Size = new System.Drawing.Size(151, 22);
+			this.isDisplayRecAccountMenu.Text = "アカウント";
 			// 
 			// isDisplayRecTitleMenu
 			// 
 			this.isDisplayRecTitleMenu.Name = "isDisplayRecTitleMenu";
-			this.isDisplayRecTitleMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecTitleMenu.Size = new System.Drawing.Size(151, 22);
 			this.isDisplayRecTitleMenu.Text = "タイトル";
 			// 
 			// isDisplayRecHostNameMenu
 			// 
 			this.isDisplayRecHostNameMenu.Name = "isDisplayRecHostNameMenu";
-			this.isDisplayRecHostNameMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecHostNameMenu.Size = new System.Drawing.Size(151, 22);
 			this.isDisplayRecHostNameMenu.Text = "放送者";
 			// 
 			// isDisplayRecCommunityNameMenu
 			// 
 			this.isDisplayRecCommunityNameMenu.Name = "isDisplayRecCommunityNameMenu";
-			this.isDisplayRecCommunityNameMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecCommunityNameMenu.Size = new System.Drawing.Size(151, 22);
 			this.isDisplayRecCommunityNameMenu.Text = "コミュニティ名";
 			// 
 			// isDisplayRecStartTimeMenu
 			// 
 			this.isDisplayRecStartTimeMenu.Name = "isDisplayRecStartTimeMenu";
-			this.isDisplayRecStartTimeMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecStartTimeMenu.Size = new System.Drawing.Size(151, 22);
 			this.isDisplayRecStartTimeMenu.Text = "開始時刻";
 			// 
 			// isDisplayRecEndTimMenu
 			// 
 			this.isDisplayRecEndTimMenu.Name = "isDisplayRecEndTimMenu";
-			this.isDisplayRecEndTimMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecEndTimMenu.Size = new System.Drawing.Size(151, 22);
 			this.isDisplayRecEndTimMenu.Text = "終了時刻";
 			// 
 			// isDisplayRecLogMenu
 			// 
 			this.isDisplayRecLogMenu.Name = "isDisplayRecLogMenu";
-			this.isDisplayRecLogMenu.Size = new System.Drawing.Size(172, 22);
+			this.isDisplayRecLogMenu.Size = new System.Drawing.Size(151, 22);
 			this.isDisplayRecLogMenu.Text = "ログ";
 			// 
 			// toolStripSeparator6
 			// 
 			this.toolStripSeparator6.Name = "toolStripSeparator6";
-			this.toolStripSeparator6.Size = new System.Drawing.Size(179, 6);
+			this.toolStripSeparator6.Size = new System.Drawing.Size(154, 6);
 			// 
 			// formColorMenuItem
 			// 
 			this.formColorMenuItem.Name = "formColorMenuItem";
-			this.formColorMenuItem.Size = new System.Drawing.Size(182, 22);
+			this.formColorMenuItem.Size = new System.Drawing.Size(157, 22);
 			this.formColorMenuItem.Text = "ウィンドウの色(&W)";
 			this.formColorMenuItem.Click += new System.EventHandler(this.FormColorMenuItemClick);
 			// 
 			// characterColorMenuItem
 			// 
 			this.characterColorMenuItem.Name = "characterColorMenuItem";
-			this.characterColorMenuItem.Size = new System.Drawing.Size(182, 22);
+			this.characterColorMenuItem.Size = new System.Drawing.Size(157, 22);
 			this.characterColorMenuItem.Text = "文字の色(&S)";
 			this.characterColorMenuItem.Click += new System.EventHandler(this.CharacterColorMenuItemClick);
 			// 
@@ -656,27 +663,27 @@ namespace rokugaTouroku
 									this.バージョン情報VToolStripMenuItem});
 			this.helpMenuItem.Name = "helpMenuItem";
 			this.helpMenuItem.ShowShortcutKeys = false;
-			this.helpMenuItem.Size = new System.Drawing.Size(75, 22);
+			this.helpMenuItem.Size = new System.Drawing.Size(65, 20);
 			this.helpMenuItem.Text = "ヘルプ(&H)";
 			// 
 			// openReadmeMenu
 			// 
 			this.openReadmeMenu.Name = "openReadmeMenu";
-			this.openReadmeMenu.Size = new System.Drawing.Size(206, 22);
+			this.openReadmeMenu.Size = new System.Drawing.Size(183, 22);
 			this.openReadmeMenu.Text = "readme.htmlを開く(&V)";
 			this.openReadmeMenu.Click += new System.EventHandler(this.OpenReadmeMenuClick);
 			// 
 			// updateMenu
 			// 
 			this.updateMenu.Name = "updateMenu";
-			this.updateMenu.Size = new System.Drawing.Size(206, 22);
+			this.updateMenu.Size = new System.Drawing.Size(183, 22);
 			this.updateMenu.Text = "更新方法(&U)";
 			this.updateMenu.Click += new System.EventHandler(this.UpdateMenuClick);
 			// 
 			// バージョン情報VToolStripMenuItem
 			// 
 			this.バージョン情報VToolStripMenuItem.Name = "バージョン情報VToolStripMenuItem";
-			this.バージョン情報VToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.バージョン情報VToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.バージョン情報VToolStripMenuItem.Text = "バージョン情報(&A)";
 			this.バージョン情報VToolStripMenuItem.Click += new System.EventHandler(this.versionMenu_Click);
 			// 
@@ -1130,12 +1137,6 @@ namespace rokugaTouroku
 			this.logText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.logText.Size = new System.Drawing.Size(187, 154);
 			this.logText.TabIndex = 8;
-			// 
-			// isDisplayRecAccountMenu
-			// 
-			this.isDisplayRecAccountMenu.Name = "isDisplayRecAccountMenu";
-			this.isDisplayRecAccountMenu.Size = new System.Drawing.Size(172, 22);
-			this.isDisplayRecAccountMenu.Text = "アカウント";
 			// 
 			// MainForm
 			// 
