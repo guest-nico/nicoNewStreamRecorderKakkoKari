@@ -291,7 +291,6 @@ namespace namaichi.rec
 				if (rec != null)
 					rec.waitForEnd();
 			}
-			
 			if (commentSW != null) closeWscProcess();
 			
 			if (ri.isChase && rec != null && !rec.isEndProgram && rm.rfu == rfu) {

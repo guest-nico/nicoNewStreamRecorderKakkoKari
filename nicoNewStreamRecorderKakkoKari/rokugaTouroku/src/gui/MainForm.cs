@@ -58,9 +58,6 @@ namespace rokugaTouroku
 			Text = "録画登録ツール（仮 " + util.versionStr;
 			afterConvertModeList.SelectedIndex = 0;
 			
-			//debug
-			config.form = this;
-			
 			var fontSize = config.get("fontSize");  
 			if (fontSize != "9")
 				util.setFontSize(int.Parse(fontSize), this, true, 523);

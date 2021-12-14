@@ -42,10 +42,10 @@ namespace rokugaTouroku.rec
 					var isAllEnd = true;
 					
 					var _count = rlm.form.getRecListCount();
-					util.debugWriteLine("rlm.reclistdata.count " + _count + " reclist count " + rlm.form.recList.Rows.Count);
+					util.debugWriteLine("rlm.reclistdata.count " + _count);// + " reclist count " + rlm.form.recList.Rows.Count);
 					for (var i = 0; i < _count; i++) {
 						if (rlm.rdg == null) return;
-							
+						if (_count != rlm.form.getRecListCount()) break;
 						util.debugWriteLine("i " + i + " count " + _count);
 						RecInfo ri = (RecInfo)rlm.recListData[i];
 						util.debugWriteLine(i + " " + ri);

@@ -11,6 +11,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Net;
+using namaichi.info;
 
 namespace namaichi.rec
 {
@@ -26,7 +27,7 @@ namespace namaichi.rec
 		//private RecordFromUrl rfu;
 		private bool isEnded;
 		private bool isJikken = false;
-		public string[] recFolderFile;
+		public string outFileName;
 		//private string recFolderFile;
 		
 		public string openTime;
@@ -169,7 +170,7 @@ namespace namaichi.rec
 				System.Threading.Thread.Sleep(100);
 			
 			var ext = (isDescriptionTag) ? ".html" : ".txt";
-			var fName = recFolderFile[2] + ext;
+			var fName = outFileName + ext;
 			StreamWriter sw;
 			try {
 				using (sw = new StreamWriter(fName, false)) {
@@ -239,7 +240,7 @@ namespace namaichi.rec
 			if (endTime == DateTime.MinValue) return;
 			
 			var ext = (isDescriptionTag) ? ".html" : ".txt";
-			var fName = recFolderFile[2] + ext;
+			var fName = outFileName + ext;
 			//StreamWriter sw;
 			try {
 				if (!File.Exists(fName)) return;
@@ -266,7 +267,7 @@ namespace namaichi.rec
 		}
 		public void renameStatistics(string watchCount, string commentCount) {
 			var ext = (isDescriptionTag) ? ".html" : ".txt";
-			var fName = recFolderFile[2] + ext;
+			var fName = outFileName + ext;
 			var newName = (fName).Replace("{w}", watchCount).Replace("{c}", commentCount);
 			try {
 				if (!File.Exists(fName)) return;
@@ -278,6 +279,14 @@ namespace namaichi.rec
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				
+			}
+		}
+		public void setOutFileName(string recFolderFileOriginal, TimeShiftConfig tsConfig) {
+			if (tsConfig == null || tsConfig.lastFileName == null)
+				outFileName = recFolderFileOriginal;
+			else {
+				var r = new Regex("_ts_\\d+h\\d+m\\d+s_\\d+.ts$").Replace(tsConfig.lastFileName, "");
+				outFileName = r;
 			}
 		}
 	}

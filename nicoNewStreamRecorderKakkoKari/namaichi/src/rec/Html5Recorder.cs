@@ -90,7 +90,7 @@ namespace namaichi.rec
 				       	rss.set(si.data, si.recFolderFileInfo, res);
 				});
 				
-				rss.recFolderFile = ri.recFolderFile;
+				rss.setOutFileName(ri.recFolderFile[2], ri.timeShiftConfig);
 				Task.Run(() => {
 				       	rm.form.setTitle(ri.recFolderFile[1]);
 				       	

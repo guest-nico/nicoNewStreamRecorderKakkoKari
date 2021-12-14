@@ -33,8 +33,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.55";
-	public static string versionDayStr = "2021/12/12";
+	public static string versionStr = "ver0.88.56";
+	public static string versionDayStr = "2021/12/14";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -1402,6 +1402,25 @@ public static void soundEnd(config cfg, MainForm form) {
 	public static extern bool UnhookWindowsHookEx(IntPtr hHook);
 	[DllImport("user32.dll")]
 	public static extern IntPtr CallNextHookEx(IntPtr hHook, int nCode, IntPtr wParam, IntPtr lParam);
+	//[DllImport("user32.dll")]
+	//private static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int length);
+	[DllImport("user32.dll", CharSet = CharSet.Auto)]
+    static extern bool SetWindowText(IntPtr hWnd, string text);
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
+    static extern IntPtr FindWindow(string className, string windowName);
+    [DllImport("user32.dll")]
+	private extern static bool EnumChildWindows(IntPtr hWnd, EnumWindowsDelegate lpEnumFunc, IntPtr lparam);
+	[DllImport("User32.dll", CharSet = CharSet.Auto)]
+　　private extern static int SendMessage(IntPtr hWnd, int Msg, int wParam, [MarshalAs(UnmanagedType.LPTStr)] System.Text.StringBuilder buff);
+　　[StructLayout(LayoutKind.Sequential)]
+	struct COPYDATASTRUCT
+	{
+	    public IntPtr dwData;
+	    public int cbData;
+	    [MarshalAs(UnmanagedType.LPWStr)]
+	    public string lpData;
+	}
+    private delegate bool EnumWindowsDelegate(IntPtr hWnd, IntPtr lparam);
 	public struct RECT {
 		public int left;
 		public int top;
@@ -1425,9 +1444,27 @@ public static void soundEnd(config cfg, MainForm form) {
 			if (x >= 0 && y >= 0)
 				SetWindowPos(wParam, 0, x, y, 0, 0, 
 						SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+			
+			if (getWindowText(wParam) == "開く") {
+				SetWindowText(wParam, "選択");
+				EnumChildWindows(wParam, new EnumWindowsDelegate(enumWindowCallBack), IntPtr.Zero);
+			}
 			UnhookWindowsHookEx(mBHook);
 		}
 		return CallNextHookEx(mBHook, nCode, wParam, lParam);
+	}
+	private static bool enumWindowCallBack(IntPtr hwnd, IntPtr lParam) {
+		var s = getWindowText(hwnd);
+		if (s.ToString().StartsWith("開く")) SetWindowText(hwnd, "選択");
+		//util.debugWriteLine(hwnd + " " + s + " " + len);
+		return true;
+	}
+	private static string getWindowText(IntPtr hwnd) {
+		int WM_GETTEXT = 0xD;
+		int len = 10;
+		var s = new StringBuilder();
+		SendMessage(hwnd, WM_GETTEXT, len, s);
+		return s.ToString();
 	}
 	public static DialogResult showMessageBoxCenterForm(Form form, string text, string caption = "", MessageBoxButtons btn = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None) {
 		if (form != null) {
@@ -1446,5 +1483,15 @@ public static void soundEnd(config cfg, MainForm form) {
 		} catch (Exception e) {
 			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 		}
+	}
+	public static OpenFileDialog selectFileDialog(Form form) {
+		var GWL_HINSTANCE = -6;
+		var hInstance = GetWindowLong(form.Handle, GWL_HINSTANCE);
+	    var threadId = GetCurrentThreadId();
+	    var whCbt = 5;
+	    messageBoxOwnerForm = form;
+	    var a = form.Handle;
+	    mBHook = SetWindowsHookEx(whCbt, new HookProc(CBTProc), hInstance, threadId);
+	    return new OpenFileDialog();
 	}
 }

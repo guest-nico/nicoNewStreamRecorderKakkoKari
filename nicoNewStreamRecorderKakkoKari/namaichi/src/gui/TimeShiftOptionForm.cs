@@ -326,7 +326,8 @@ namespace namaichi
 		}
 		void OpenLastFileBtnClick(object sender, EventArgs e)
 		{
-			var dialog = new OpenFileDialog();
+			var dialog = util.selectFileDialog(this);
+			//var dialog = new OpenFileDialog();
 			dialog.Multiselect = false;
 			var result = dialog.ShowDialog();
 			if (result != DialogResult.OK) return;
