@@ -220,6 +220,7 @@ namespace rokugaTouroku
 			this.recordDirectoryText = new System.Windows.Forms.TextBox();
 			this.tabPage8 = new System.Windows.Forms.TabPage();
 			this.groupBox11 = new System.Windows.Forms.GroupBox();
+			this.isDeleteConfirmMessageRtCheckBtn = new System.Windows.Forms.CheckBox();
 			this.isDuplicateConfirmChkBox = new System.Windows.Forms.CheckBox();
 			this.maxRecordingNum = new System.Windows.Forms.NumericUpDown();
 			this.label3 = new System.Windows.Forms.Label();
@@ -524,7 +525,6 @@ namespace rokugaTouroku
 			this.commentReplaceList.Name = "commentReplaceList";
 			this.commentReplaceList.RowHeadersVisible = false;
 			this.commentReplaceList.RowTemplate.Height = 21;
-			this.commentReplaceList.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
 			this.commentReplaceList.Size = new System.Drawing.Size(200, 19);
 			this.commentReplaceList.TabIndex = 18;
 			this.commentReplaceList.Enter += new System.EventHandler(this.commentReplaceTextEnter);
@@ -2232,15 +2232,25 @@ namespace rokugaTouroku
 			// 
 			// groupBox11
 			// 
+			this.groupBox11.Controls.Add(this.isDeleteConfirmMessageRtCheckBtn);
 			this.groupBox11.Controls.Add(this.isDuplicateConfirmChkBox);
 			this.groupBox11.Controls.Add(this.maxRecordingNum);
 			this.groupBox11.Controls.Add(this.label3);
 			this.groupBox11.Location = new System.Drawing.Point(5, 10);
 			this.groupBox11.Name = "groupBox11";
-			this.groupBox11.Size = new System.Drawing.Size(405, 88);
+			this.groupBox11.Size = new System.Drawing.Size(405, 108);
 			this.groupBox11.TabIndex = 20;
 			this.groupBox11.TabStop = false;
 			this.groupBox11.Text = "録画設定";
+			// 
+			// isDeleteConfirmMessageRtCheckBtn
+			// 
+			this.isDeleteConfirmMessageRtCheckBtn.Location = new System.Drawing.Point(6, 83);
+			this.isDeleteConfirmMessageRtCheckBtn.Name = "isDeleteConfirmMessageRtCheckBtn";
+			this.isDeleteConfirmMessageRtCheckBtn.Size = new System.Drawing.Size(372, 19);
+			this.isDeleteConfirmMessageRtCheckBtn.TabIndex = 3;
+			this.isDeleteConfirmMessageRtCheckBtn.Text = "「全ての行を削除」「完了した行を削除」の際に確認メッセージを表示する";
+			this.isDeleteConfirmMessageRtCheckBtn.UseVisualStyleBackColor = true;
 			// 
 			// isDuplicateConfirmChkBox
 			// 
@@ -2359,6 +2369,7 @@ namespace rokugaTouroku
 			((System.ComponentModel.ISupportInitialize)(this.maxRecordingNum)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox isDeleteConfirmMessageRtCheckBtn;
 		private System.Windows.Forms.DataGridViewTextBoxColumn 変換後;
 		private System.Windows.Forms.DataGridViewTextBoxColumn 変換前;
 		private System.Windows.Forms.DataGridView commentReplaceList;

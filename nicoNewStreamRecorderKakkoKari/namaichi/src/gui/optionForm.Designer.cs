@@ -59,6 +59,9 @@ namespace namaichi
 			this.isMessageBoxChkBox = new System.Windows.Forms.CheckBox();
 			this.isRetryChkBox = new System.Windows.Forms.CheckBox();
 			this.tabPage8 = new System.Windows.Forms.TabPage();
+			this.commentReplaceList = new System.Windows.Forms.DataGridView();
+			this.変換前 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.変換後 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.displayGroup = new System.Windows.Forms.GroupBox();
 			this.fontList = new System.Windows.Forms.NumericUpDown();
 			this.label64 = new System.Windows.Forms.Label();
@@ -66,6 +69,8 @@ namespace namaichi
 			this.IsTrayChkBox = new System.Windows.Forms.CheckBox();
 			this.groupBox17 = new System.Windows.Forms.GroupBox();
 			this.commentReplaceText = new System.Windows.Forms.TextBox();
+			this.commentReplaceEditBtn = new System.Windows.Forms.Button();
+			this.label18 = new System.Windows.Forms.Label();
 			this.commentConvertStrText = new System.Windows.Forms.TextBox();
 			this.isNormalizeCommentChkBox = new System.Windows.Forms.CheckBox();
 			this.isCommentXmlInfo = new System.Windows.Forms.RadioButton();
@@ -216,16 +221,12 @@ namespace namaichi
 			this.recordDirectoryText = new System.Windows.Forms.TextBox();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
-			this.commentReplaceEditBtn = new System.Windows.Forms.Button();
-			this.変換後 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.変換前 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.commentReplaceList = new System.Windows.Forms.DataGridView();
-			this.label18 = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox16.SuspendLayout();
 			this.groupBox6.SuspendLayout();
 			this.tabPage8.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.commentReplaceList)).BeginInit();
 			this.displayGroup.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.fontList)).BeginInit();
 			this.groupBox17.SuspendLayout();
@@ -253,7 +254,6 @@ namespace namaichi
 			this.tabPage3.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.commentReplaceList)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// tabControl1
@@ -505,6 +505,34 @@ namespace namaichi
 			this.tabPage8.Text = "一般2";
 			this.tabPage8.UseVisualStyleBackColor = true;
 			// 
+			// commentReplaceList
+			// 
+			this.commentReplaceList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.commentReplaceList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+									this.変換前,
+									this.変換後});
+			this.commentReplaceList.Location = new System.Drawing.Point(123, 210);
+			this.commentReplaceList.Name = "commentReplaceList";
+			this.commentReplaceList.RowHeadersVisible = false;
+			this.commentReplaceList.RowTemplate.Height = 21;
+			this.commentReplaceList.Size = new System.Drawing.Size(200, 19);
+			this.commentReplaceList.TabIndex = 15;
+			this.commentReplaceList.Enter += new System.EventHandler(this.commentReplaceTextEnter);
+			this.commentReplaceList.Leave += new System.EventHandler(this.commentReplaceTextLeave);
+			this.commentReplaceList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.commentReplaceTextMouseDown);
+			// 
+			// 変換前
+			// 
+			this.変換前.HeaderText = "変換前";
+			this.変換前.Name = "変換前";
+			this.変換前.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+			// 
+			// 変換後
+			// 
+			this.変換後.HeaderText = "変換後";
+			this.変換後.Name = "変換後";
+			this.変換後.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+			// 
 			// displayGroup
 			// 
 			this.displayGroup.Controls.Add(this.fontList);
@@ -602,6 +630,25 @@ namespace namaichi
 			this.commentReplaceText.Enter += new System.EventHandler(this.commentReplaceTextEnter);
 			this.commentReplaceText.Leave += new System.EventHandler(this.commentReplaceTextLeave);
 			this.commentReplaceText.MouseDown += new System.Windows.Forms.MouseEventHandler(this.commentReplaceTextMouseDown);
+			// 
+			// commentReplaceEditBtn
+			// 
+			this.commentReplaceEditBtn.Location = new System.Drawing.Point(324, 125);
+			this.commentReplaceEditBtn.Name = "commentReplaceEditBtn";
+			this.commentReplaceEditBtn.Size = new System.Drawing.Size(40, 23);
+			this.commentReplaceEditBtn.TabIndex = 1;
+			this.commentReplaceEditBtn.Text = "編集";
+			this.commentReplaceEditBtn.UseVisualStyleBackColor = true;
+			this.commentReplaceEditBtn.Click += new System.EventHandler(this.commentReplaceEditBtnClick);
+			// 
+			// label18
+			// 
+			this.label18.Location = new System.Drawing.Point(19, 130);
+			this.label18.Name = "label18";
+			this.label18.Size = new System.Drawing.Size(92, 18);
+			this.label18.TabIndex = 14;
+			this.label18.Text = "コメント置換リスト：";
+			this.label18.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// commentConvertStrText
 			// 
@@ -2197,54 +2244,6 @@ namespace namaichi
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
 			// 
-			// commentReplaceEditBtn
-			// 
-			this.commentReplaceEditBtn.Location = new System.Drawing.Point(324, 125);
-			this.commentReplaceEditBtn.Name = "commentReplaceEditBtn";
-			this.commentReplaceEditBtn.Size = new System.Drawing.Size(40, 23);
-			this.commentReplaceEditBtn.TabIndex = 1;
-			this.commentReplaceEditBtn.Text = "編集";
-			this.commentReplaceEditBtn.UseVisualStyleBackColor = true;
-			this.commentReplaceEditBtn.Click += new System.EventHandler(this.commentReplaceEditBtnClick);
-			// 
-			// 変換後
-			// 
-			this.変換後.HeaderText = "変換後";
-			this.変換後.Name = "変換後";
-			this.変換後.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-			// 
-			// 変換前
-			// 
-			this.変換前.HeaderText = "変換前";
-			this.変換前.Name = "変換前";
-			this.変換前.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-			// 
-			// commentReplaceList
-			// 
-			this.commentReplaceList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.commentReplaceList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-									this.変換前,
-									this.変換後});
-			this.commentReplaceList.Location = new System.Drawing.Point(123, 210);
-			this.commentReplaceList.Name = "commentReplaceList";
-			this.commentReplaceList.RowHeadersVisible = false;
-			this.commentReplaceList.RowTemplate.Height = 21;
-			this.commentReplaceList.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
-			this.commentReplaceList.Size = new System.Drawing.Size(200, 19);
-			this.commentReplaceList.TabIndex = 15;
-			this.commentReplaceList.Enter += new System.EventHandler(this.commentReplaceTextEnter);
-			this.commentReplaceList.Leave += new System.EventHandler(this.commentReplaceTextLeave);
-			this.commentReplaceList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.commentReplaceTextMouseDown);
-			// 
-			// label18
-			// 
-			this.label18.Location = new System.Drawing.Point(19, 130);
-			this.label18.Name = "label18";
-			this.label18.Size = new System.Drawing.Size(92, 18);
-			this.label18.TabIndex = 14;
-			this.label18.Text = "コメント置換リスト：";
-			this.label18.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
 			// optionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -2265,6 +2264,7 @@ namespace namaichi
 			this.groupBox16.ResumeLayout(false);
 			this.groupBox6.ResumeLayout(false);
 			this.tabPage8.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.commentReplaceList)).EndInit();
 			this.displayGroup.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.fontList)).EndInit();
 			this.groupBox17.ResumeLayout(false);
@@ -2302,7 +2302,6 @@ namespace namaichi
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.commentReplaceList)).EndInit();
 			this.ResumeLayout(false);
 		}
 		private System.Windows.Forms.Button commentReplaceEditBtn;

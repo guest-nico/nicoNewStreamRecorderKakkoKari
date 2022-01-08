@@ -109,6 +109,7 @@ namespace namaichi.rec
 					
 					if (rm.cfg.get("fileNameType") == "10" && (ri.recFolderFile[1].IndexOf("{w}") > -1 || ri.recFolderFile[1].IndexOf("{c}") > -1))
 						renameStatistics(rss);
+					renameTitle();
 					
 					rm.wsr = null;
 					if (wsr.isEndProgram) {
@@ -320,6 +321,18 @@ namespace namaichi.rec
 				rss.renameStatistics(wsr.visitCount.Replace("-", ""), wsr.commentCount.Replace("-", ""));
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
+		}
+		private void renameTitle() {
+			var _si = new StreamInfo(ri.si.url, ri.si.lvid, ri.si.isTimeShift);
+			var res = util.getPageSource(ri.si.url, container);
+			if (res == null) return;
+			_si.set(res);
+			if (_si.recFolderFileInfo[2] == ri.si.recFolderFileInfo[2]) return;
+			foreach (var f in Directory.GetFiles(ri.recFolderFile[0])) {
+				if (f.IndexOf(ri.si.lvid) > -1 && f.IndexOf(ri.si.recFolderFileInfo[2]) > -1) {
+					File.Move(f, f.Replace(ri.si.recFolderFileInfo[2], _si.recFolderFileInfo[2]));
+				}
 			}
 		}
 	}

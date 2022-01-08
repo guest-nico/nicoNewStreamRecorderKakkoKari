@@ -209,6 +209,7 @@ namespace rokugaTouroku
 				
 				{"rokugaTourokuMaxRecordingNum",maxRecordingNum.Text},
 				{"IsDuplicateConfirm",isDuplicateConfirmChkBox.Checked.ToString().ToLower()},
+				{"IsDeleteConfirmMessageRt",isDeleteConfirmMessageRtCheckBtn.Checked.ToString().ToLower()},
 				
 				{"useProxy",useProxyChkBox.Checked.ToString().ToLower()},
 				{"proxyAddress",proxyAddressText.Text},
@@ -479,6 +480,7 @@ namespace rokugaTouroku
         	
         	maxRecordingNum.Text= cfg.get("rokugaTourokuMaxRecordingNum");
         	isDuplicateConfirmChkBox.Checked = bool.Parse(cfg.get("IsDuplicateConfirm"));
+        	isDeleteConfirmMessageRtCheckBtn.Checked = bool.Parse(cfg.get("IsDeleteConfirmMessageRt"));
         	
         	proxyAddressText.Text = cfg.get("proxyAddress");
         	proxyPortText.Text = cfg.get("proxyPort");

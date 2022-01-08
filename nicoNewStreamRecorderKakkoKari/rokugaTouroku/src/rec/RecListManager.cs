@@ -89,7 +89,7 @@ namespace rokugaTouroku.rec
 							if (d.id == _lv) delList.Add(d);
 						
 						foreach (var _ri in delList) 
-							if (util.showMessageBoxCenterForm(form, _ri.id + "はリスト内に含まれています。既にある行を削除しますか？\n[" + _ri.quality + "] [" + _ri.timeShift + "]", "確認", MessageBoxButtons.YesNo) == DialogResult.Yes) {
+							if (util.showMessageBoxCenterForm(form, _ri.id + "はリスト内に含まれています。既にある行を削除しますか？\n[" + (String.IsNullOrEmpty(_ri.title) ? "タイトル未取得" : _ri.title) + "][" + _ri.state + "][" + _ri.quality + "] [" + _ri.timeShift + "]", "確認", MessageBoxButtons.YesNo) == DialogResult.Yes) {
 								form.deleteRow(_ri);
 						}
 						

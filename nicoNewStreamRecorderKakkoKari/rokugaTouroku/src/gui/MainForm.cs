@@ -298,6 +298,9 @@ namespace rokugaTouroku
 		
 		void clearBtn_Click(object sender, EventArgs e)
 		{
+			if (bool.Parse(config.get("IsDeleteConfirmMessageRt")) &&
+			    	MessageBox.Show("全ての行を削除しますか？", "", MessageBoxButtons.YesNo) == DialogResult.No)
+				return;
 			var isRec = false;
 			foreach(RecInfo ri in recListDataSource) {
 				if (ri.state == "録画中") isRec = true;
@@ -967,6 +970,9 @@ namespace rokugaTouroku
 		
 		void DeleteFinishedBtnClick(object sender, EventArgs e)
 		{
+			if (bool.Parse(config.get("IsDeleteConfirmMessageRt")) &&
+			    	MessageBox.Show("完了した行を削除しますか？", "", MessageBoxButtons.YesNo) == DialogResult.No)
+				return;
 			var deleteList = new List<RecInfo>();
 			foreach(RecInfo ri in recListDataSource) {
 				if (ri.state == "録画完了") deleteList.Add(ri);
