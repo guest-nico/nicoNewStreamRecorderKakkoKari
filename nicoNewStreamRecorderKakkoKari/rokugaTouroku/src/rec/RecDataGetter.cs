@@ -229,7 +229,7 @@ namespace rokugaTouroku.rec
 			}
 		}
 		
-		private int getRecordingNum(int count, BindingSource list) {
+		private int getRecordingNum(int count, SortableBindingList<RecInfo> list) {
 			var c = 0;
 			for (var i = 0; i < count; i++) {
 				RecInfo ri = (RecInfo)rlm.recListData[i];

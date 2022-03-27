@@ -31,7 +31,7 @@ namespace rokugaTouroku
 	public partial class MainForm : Form
 	{
 		public rokugaTouroku.config.config config = new rokugaTouroku.config.config();
-		private BindingSource recListDataSource = new BindingSource();
+		private SortableBindingList<RecInfo> recListDataSource = new SortableBindingList<RecInfo>();
 		private RecListManager rec;
 		public TimeShiftConfig setTsConfig = new TimeShiftConfig();
 		public string qualityRank;
@@ -200,18 +200,20 @@ namespace rokugaTouroku
 			
 			try{
 				util.debugWriteLine("rokugaTourokuWidth " + Width.ToString() + " rokugaTourokuHeight " + Height.ToString() + " restore rokugaTourokuWidth " + RestoreBounds.Width.ToString() + " restore rokugaTourokuWidth " + RestoreBounds.Height.ToString());
+				var isMiniInfo = tableLayoutPanel1.RowStyles[1].Height != 158;
 				if (this.WindowState == FormWindowState.Normal) {
 					config.set("rokugaTourokuWidth", Width.ToString());
-					config.set("rokugaTourokuHeight", Height.ToString());
+					config.set("rokugaTourokuHeight", (isMiniInfo ? (Height + 142) : Height).ToString());
 					config.set("rokugaTourokuX", Location.X.ToString());
 					config.set("rokugaTourokuY", Location.Y.ToString());
 				} else {
 					config.set("rokugaTourokuWidth", RestoreBounds.Width.ToString());
-					config.set("rokugaTourokuHeight", RestoreBounds.Height.ToString());
+					config.set("rokugaTourokuHeight", (isMiniInfo ? (RestoreBounds.Height + 142) : RestoreBounds.Height).ToString());
 					config.set("rokugaTourokuX", RestoreBounds.X.ToString());
 					config.set("rokugaTourokuY", RestoreBounds.Y.ToString());
 				}
 				config.set("rokugaTourokuQualityRank", qualityRank);
+				config.set("rokugaTourokuMiniInfo", isMiniInfo.ToString());
 
 			} catch(Exception e) {
 				util.debugWriteLine(e.Message + " " + e.StackTrace);
@@ -311,6 +313,7 @@ namespace rokugaTouroku
 				if (rec.rdg != null) rec.rdg.stopRecording();
 			}
 			recListDataSource.Clear();
+			clearRiInfo();
 		}
 		
 		void recList_FocusRowEnter(object sender, DataGridViewCellEventArgs e)
@@ -412,7 +415,7 @@ namespace rokugaTouroku
 	        	}
 			});
 		}
-		public void clearRiInfo(RecInfo ri) {
+		public void clearRiInfo() {
 			startTimeLabel.Text = "";
 			endTimeLabel.Text = "";
 			programTimeLabel.Text = "";
@@ -596,6 +599,8 @@ namespace rokugaTouroku
 		{
 			//loadList();
 			formInitSetting();
+			if (bool.Parse(config.get("rokugaTourokuMiniInfo")))
+				FoldBtnLabelClick(null, null);
 			loadList();
 			
 			if (config.brokenCopyFile != null)
@@ -983,11 +988,13 @@ namespace rokugaTouroku
 						if (recListDataSource.IndexOf(ri) > -1)
 							recListDataSource.Remove(ri);
 					}
-					return;
+					break;
 				} catch (Exception ee) {
 					util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 				}
 			}
+			if (recList.SelectedCells.Count == 0)
+				clearRiInfo();
 		}
 		
 		void OpenSettingFolderMenuClick(object sender, EventArgs e)
@@ -1103,6 +1110,60 @@ namespace rokugaTouroku
 		void RecListDataError(object sender, DataGridViewDataErrorEventArgs e)
 		{
 			addLogText("list error " + e.ColumnIndex + " " + e.RowIndex + " " + e.Exception.Message + " " + e.Exception.Source + " " + e.Exception.StackTrace + " " + e.Exception.TargetSite);
+		}
+		void UpBtnClick(object sender, EventArgs e)
+		{
+			try {
+				if (recList.SelectedCells.Count == 0 || recListDataSource.Count == 0) return;
+				var selectedIndex = recList.SelectedCells[0].RowIndex;
+				if (selectedIndex < 1) return;
+				
+				var ri = recListDataSource[selectedIndex];
+				recListDataSource.RemoveAt(selectedIndex);
+				var addIndex = (selectedIndex == 0) ? 0 : (selectedIndex - 1);
+				recListDataSource.Insert(addIndex, ri);
+				
+				recList.ClearSelection();
+				recList.Rows[addIndex].Selected = true;
+				saveList();
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace);
+			}
+		}
+		void DownBtnClick(object sender, EventArgs e)
+		{
+			try {
+				var itemCount = recListDataSource.Count;
+				if (recList.SelectedCells.Count == 0 || itemCount == 0) return;
+				var selectedIndex = recList.SelectedCells[0].RowIndex;
+				if (selectedIndex > itemCount - 2) return;
+				
+				var ri = recListDataSource[selectedIndex];
+				recListDataSource.RemoveAt(selectedIndex);
+				var addIndex = (selectedIndex == itemCount) ? itemCount : (selectedIndex + 1);
+				recListDataSource.Insert(addIndex, ri);
+				
+				recList.ClearSelection();
+				recList.Rows[addIndex].Selected = true;
+				saveList();
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace);
+			}
+		}
+		void FoldBtnLabelClick(object sender, EventArgs e)
+		{
+			var a = tableLayoutPanel1.RowStyles;
+			if (tableLayoutPanel1.RowStyles[1].Height == 158) {
+				tableLayoutPanel1.RowStyles[1].Height = 16;
+				Height -= 142;
+				foldBtnLabel.Text = "放送情報";
+				logText.Visible = false;
+			} else {
+				tableLayoutPanel1.RowStyles[1].Height = 158;
+				Height += 142;
+				foldBtnLabel.Text = "折り畳む";
+				logText.Visible = true;
+			}
 		}
 	}
 }

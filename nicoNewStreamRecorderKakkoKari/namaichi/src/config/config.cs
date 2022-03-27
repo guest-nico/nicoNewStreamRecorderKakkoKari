@@ -261,6 +261,7 @@ public class config
 			{"rokugaTourokuMaxRecordingNum","10"},
 			{"IsDuplicateConfirm","false"},
 			{"rokugaTourokuQualityRank","0,1,2,3,4,5,6,7,8"},
+			{"IsDeleteConfirmMessageRt","false"},
 			
 			{"recBackColor","-1"},
 			{"recForeColor","-16777216"},

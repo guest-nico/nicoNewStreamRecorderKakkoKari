@@ -27,11 +27,11 @@ namespace rokugaTouroku.rec
 	public class RecListManager
 	{
 		public MainForm form;
-		public BindingSource recListData;
+		public SortableBindingList<RecInfo> recListData;
 		public config.config cfg;
 		public RecDataGetter rdg;
 		 
-		public RecListManager(MainForm form, BindingSource recListData, config.config cfg)
+		public RecListManager(MainForm form, SortableBindingList<RecInfo> recListData, config.config cfg)
 		{
 			this.form = form;
 			this.recListData = recListData;

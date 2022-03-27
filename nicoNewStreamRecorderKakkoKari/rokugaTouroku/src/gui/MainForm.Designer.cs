@@ -114,6 +114,8 @@ namespace rokugaTouroku
 			this.setTimeshiftBtn = new System.Windows.Forms.Button();
 			this.qualityBtn = new System.Windows.Forms.Button();
 			this.addListBtn = new System.Windows.Forms.Button();
+			this.downBtn = new System.Windows.Forms.Button();
+			this.upBtn = new System.Windows.Forms.Button();
 			this.deleteFinishedBtn = new System.Windows.Forms.Button();
 			this.clearBtn = new System.Windows.Forms.Button();
 			this.recBtn = new System.Windows.Forms.Button();
@@ -121,6 +123,7 @@ namespace rokugaTouroku
 			this.label1 = new System.Windows.Forms.Label();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.panel3 = new System.Windows.Forms.Panel();
+			this.foldBtnLabel = new System.Windows.Forms.Label();
 			this.keikaTimeLabel = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
 			this.descriptLabel = new System.Windows.Forms.Label();
@@ -172,7 +175,7 @@ namespace rokugaTouroku
 									"wma(音声)",
 									"aac(音声)",
 									"ogg(音声)"});
-			this.afterConvertModeList.Location = new System.Drawing.Point(661, 39);
+			this.afterConvertModeList.Location = new System.Drawing.Point(335, 64);
 			this.afterConvertModeList.Name = "afterConvertModeList";
 			this.afterConvertModeList.Size = new System.Drawing.Size(149, 20);
 			this.afterConvertModeList.TabIndex = 5;
@@ -706,6 +709,8 @@ namespace rokugaTouroku
 			this.panel1.Controls.Add(this.afterConvertModeList);
 			this.panel1.Controls.Add(this.qualityBtn);
 			this.panel1.Controls.Add(this.addListBtn);
+			this.panel1.Controls.Add(this.downBtn);
+			this.panel1.Controls.Add(this.upBtn);
 			this.panel1.Controls.Add(this.deleteFinishedBtn);
 			this.panel1.Controls.Add(this.clearBtn);
 			this.panel1.Controls.Add(this.recBtn);
@@ -720,7 +725,7 @@ namespace rokugaTouroku
 			// 
 			// isChaseChkBox
 			// 
-			this.isChaseChkBox.Location = new System.Drawing.Point(1023, 37);
+			this.isChaseChkBox.Location = new System.Drawing.Point(697, 62);
 			this.isChaseChkBox.Name = "isChaseChkBox";
 			this.isChaseChkBox.Size = new System.Drawing.Size(104, 24);
 			this.isChaseChkBox.TabIndex = 14;
@@ -729,7 +734,7 @@ namespace rokugaTouroku
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(833, 40);
+			this.label2.Location = new System.Drawing.Point(507, 65);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(75, 17);
 			this.label2.TabIndex = 13;
@@ -744,14 +749,14 @@ namespace rokugaTouroku
 									"映像＋コメント",
 									"映像のみ",
 									"コメントのみ"});
-			this.recCommmentList.Location = new System.Drawing.Point(915, 39);
+			this.recCommmentList.Location = new System.Drawing.Point(589, 64);
 			this.recCommmentList.Name = "recCommmentList";
 			this.recCommmentList.Size = new System.Drawing.Size(92, 20);
 			this.recCommmentList.TabIndex = 12;
 			// 
 			// label18
 			// 
-			this.label18.Location = new System.Drawing.Point(616, 40);
+			this.label18.Location = new System.Drawing.Point(290, 65);
 			this.label18.Name = "label18";
 			this.label18.Size = new System.Drawing.Size(38, 17);
 			this.label18.TabIndex = 11;
@@ -826,6 +831,28 @@ namespace rokugaTouroku
 			this.addListBtn.UseVisualStyleBackColor = true;
 			this.addListBtn.Click += new System.EventHandler(this.addListBtn_Click);
 			// 
+			// downBtn
+			// 
+			this.downBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.downBtn.Location = new System.Drawing.Point(334, 264);
+			this.downBtn.Name = "downBtn";
+			this.downBtn.Size = new System.Drawing.Size(42, 23);
+			this.downBtn.TabIndex = 7;
+			this.downBtn.Text = "下へ";
+			this.downBtn.UseVisualStyleBackColor = true;
+			this.downBtn.Click += new System.EventHandler(this.DownBtnClick);
+			// 
+			// upBtn
+			// 
+			this.upBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.upBtn.Location = new System.Drawing.Point(286, 264);
+			this.upBtn.Name = "upBtn";
+			this.upBtn.Size = new System.Drawing.Size(42, 23);
+			this.upBtn.TabIndex = 7;
+			this.upBtn.Text = "上へ";
+			this.upBtn.UseVisualStyleBackColor = true;
+			this.upBtn.Click += new System.EventHandler(this.UpBtnClick);
+			// 
 			// deleteFinishedBtn
 			// 
 			this.deleteFinishedBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -898,6 +925,7 @@ namespace rokugaTouroku
 			this.panel3.AutoSize = true;
 			this.panel3.BackColor = System.Drawing.Color.Transparent;
 			this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panel3.Controls.Add(this.foldBtnLabel);
 			this.panel3.Controls.Add(this.keikaTimeLabel);
 			this.panel3.Controls.Add(this.label7);
 			this.panel3.Controls.Add(this.descriptLabel);
@@ -926,6 +954,19 @@ namespace rokugaTouroku
 			this.panel3.Name = "panel3";
 			this.panel3.Size = new System.Drawing.Size(1111, 158);
 			this.panel3.TabIndex = 15;
+			// 
+			// foldBtnLabel
+			// 
+			this.foldBtnLabel.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+			this.foldBtnLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.foldBtnLabel.Font = new System.Drawing.Font("MS UI Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.foldBtnLabel.Location = new System.Drawing.Point(3, 0);
+			this.foldBtnLabel.Name = "foldBtnLabel";
+			this.foldBtnLabel.Size = new System.Drawing.Size(52, 13);
+			this.foldBtnLabel.TabIndex = 15;
+			this.foldBtnLabel.Text = "折り畳む";
+			this.foldBtnLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.foldBtnLabel.Click += new System.EventHandler(this.FoldBtnLabelClick);
 			// 
 			// keikaTimeLabel
 			// 
@@ -1164,6 +1205,9 @@ namespace rokugaTouroku
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.Label foldBtnLabel;
+		private System.Windows.Forms.Button upBtn;
+		private System.Windows.Forms.Button downBtn;
 		private System.Windows.Forms.ToolStripMenuItem isDisplayRecAccountMenu;
 		private System.Windows.Forms.DataGridViewTextBoxColumn accountColumn;
 		public System.Windows.Forms.Button accountBtn;

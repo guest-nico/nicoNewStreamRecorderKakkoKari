@@ -13,6 +13,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using System.ComponentModel;
+using Microsoft.WindowsAPICodePack.Taskbar;
 using Newtonsoft.Json;
 using SunokoLibrary.Application;
 using System.Linq;
@@ -30,7 +31,6 @@ using namaichi.config;
 using namaichi.play;
 using namaichi.utility;
 using SuperSocket.ClientEngine;
-
 
 namespace namaichi
 {
@@ -270,7 +270,7 @@ namespace namaichi
 								
 			});
 		}
-		public void setRecordState(String t, string titleT = null) {
+		public void setRecordState(String t, string titleT = null, int per = 0) {
        		//util.debugWriteLine("setRecordState form");
        		formAction(() => {
 		       	try {
@@ -278,11 +278,16 @@ namespace namaichi
 	        	    if (rec.isTitleBarInfo) {
 	        	    	Text = titleT == null ? t : titleT;
 	        	    }
+	        	    if (per < 100) {
+		        	    TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.Normal);
+		        	    TaskbarManager.Instance.SetProgressValue(per, 100);
+	        	    } else TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress);
 		       	} catch (Exception e) {
 	       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 		       	}
 			});
 		}
+       /*
        public void setRecordStateComplete() {
        		//util.debugWriteLine("setRecordState form");
        		formAction(() => {
@@ -294,11 +299,12 @@ namespace namaichi
 	        	    if (rec.isTitleBarInfo) {
 	        	    	Text += t;
 	        	    }
+	        	    TaskbarManager.Instance.SetProgressState(TaskbarProgressBarState.NoProgress);
 		       	} catch (Exception e) {
 	       			util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 		       	}
 			});
-		}
+		}*/
         private void initRec() {
         	//util.debugWriteLine(int.Parse(config.get("browserName")));
         	//util.debugWriteLine(bool.Parse(config.get("isAllBrowserMode")));

@@ -1143,15 +1143,16 @@ namespace namaichi.rec
 			var bitrate = recordedBytes * 8 / recordedSecond / 1000;
 			ret += "bitrate= " + bitrate.ToString("0.0") + "kbits/s";
 			
+			int per = 0;
 			if (ri.si.isTimeShift && !((WebSocketRecorder)wr).ri.isChase) {
-				var per = (int)(((lastSegmentNo + 5100) / 10) / allDuration);
+				per = (int)(((lastSegmentNo + 5100) / 10) / allDuration);
 				if (per > 100) per = 100;
 				ret = "(" + per + "%) " + ret;
 				//ret += "(" + (int)((lastSegmentNo / 10) / allDuration) + "%)";
 			}
 			var titleT = ret.Replace('\n', ' ');
 			//ret += "(" + percent + ")" + (lastSegmentNo / 10) + " " + allDuration;
-			rm.form.setRecordState(ret, titleT);
+			rm.form.setRecordState(ret, titleT, per);
 			
 		}
 		private bool writeFile(numTaskInfo info) {
