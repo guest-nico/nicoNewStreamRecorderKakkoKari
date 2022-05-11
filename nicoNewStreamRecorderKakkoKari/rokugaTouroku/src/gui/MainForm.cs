@@ -200,15 +200,16 @@ namespace rokugaTouroku
 			
 			try{
 				util.debugWriteLine("rokugaTourokuWidth " + Width.ToString() + " rokugaTourokuHeight " + Height.ToString() + " restore rokugaTourokuWidth " + RestoreBounds.Width.ToString() + " restore rokugaTourokuWidth " + RestoreBounds.Height.ToString());
-				var isMiniInfo = tableLayoutPanel1.RowStyles[1].Height != 158;
+				var isMiniInfo = !logText.Visible;
+				var ritu =  (startTimeLabel.Font.Size / 9);
 				if (this.WindowState == FormWindowState.Normal) {
 					config.set("rokugaTourokuWidth", Width.ToString());
-					config.set("rokugaTourokuHeight", (isMiniInfo ? (Height + 142) : Height).ToString());
+					config.set("rokugaTourokuHeight", (isMiniInfo ? (int)(Height + 142 * ritu) : Height).ToString());
 					config.set("rokugaTourokuX", Location.X.ToString());
 					config.set("rokugaTourokuY", Location.Y.ToString());
 				} else {
 					config.set("rokugaTourokuWidth", RestoreBounds.Width.ToString());
-					config.set("rokugaTourokuHeight", (isMiniInfo ? (RestoreBounds.Height + 142) : RestoreBounds.Height).ToString());
+					config.set("rokugaTourokuHeight", (isMiniInfo ? (int)(RestoreBounds.Height + 142 * ritu) : RestoreBounds.Height).ToString());
 					config.set("rokugaTourokuX", RestoreBounds.X.ToString());
 					config.set("rokugaTourokuY", RestoreBounds.Y.ToString());
 				}
@@ -854,7 +855,7 @@ namespace rokugaTouroku
 			var c = getChildControls(this);
 			foreach (var _c in c)
 				if (_c.GetType() == typeof(GroupBox) ||
-				    _c.GetType() == typeof(Label) || 
+				    (_c.GetType() == typeof(Label) && _c.Name != "foldBtnLabel") ||
 				    _c.GetType() == typeof(CheckBox)) _c.ForeColor = color;
 		}
 		private List<Control> getChildControls(Control c) {
@@ -1152,15 +1153,17 @@ namespace rokugaTouroku
 		}
 		void FoldBtnLabelClick(object sender, EventArgs e)
 		{
+			var ritu =  (startTimeLabel.Font.Size / 9);
 			var a = tableLayoutPanel1.RowStyles;
-			if (tableLayoutPanel1.RowStyles[1].Height == 158) {
-				tableLayoutPanel1.RowStyles[1].Height = 16;
-				Height -= 142;
+			if (logText.Visible) {
+				tableLayoutPanel1.RowStyles[1].Height = 16 * ritu;
+				Height -= (int)(142 * ritu);
 				foldBtnLabel.Text = "放送情報";
 				logText.Visible = false;
+				
 			} else {
-				tableLayoutPanel1.RowStyles[1].Height = 158;
-				Height += 142;
+				tableLayoutPanel1.RowStyles[1].Height = 158 * ritu;
+				Height += (int)(142 * ritu);
 				foldBtnLabel.Text = "折り畳む";
 				logText.Visible = true;
 			}
