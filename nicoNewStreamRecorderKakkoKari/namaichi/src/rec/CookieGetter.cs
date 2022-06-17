@@ -49,7 +49,7 @@ namespace namaichi.rec
 					cfg.get("issecondlogin" + num), cfg.get("accountId" + num), 
 					cfg.get("accountPass" + num), cfg.get("user_session" + num),
 					cfg.get("user_session_secure" + num), isSub, 
-					url);
+					url).ConfigureAwait(false);
 			if (cc != null) {
 				var c = cc.GetCookies(TargetUrl)["user_session"];
 				var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
@@ -327,8 +327,8 @@ namespace namaichi.rec
 				var http = new System.Net.Http.HttpClient(handler);
 				var content = new System.Net.Http.FormUrlEncodedContent(param);
 				
-				var _res = await http.PostAsync(loginUrl, content);
-				var res = await _res.Content.ReadAsStringAsync();
+				var _res = await http.PostAsync(loginUrl, content).ConfigureAwait(false);
+				var res = await _res.Content.ReadAsStringAsync().ConfigureAwait(false);
 
 				var cc = handler.CookieContainer;
 				var cookies = cc.GetCookies(TargetUrl);

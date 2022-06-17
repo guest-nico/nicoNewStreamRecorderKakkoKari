@@ -28,7 +28,7 @@ namespace namaichi.rec
 	/// <summary>
 	/// Description of TimeShiftCommentGetter.
 	/// </summary>
-	public class TimeShiftCommentGetter
+	public class TimeShiftCommentGetter : ITimeShiftCommentGetter
 	{
 		string uri;
 		string thread;
@@ -38,65 +38,66 @@ namespace namaichi.rec
 		MainForm form;
 		RecordingManager rm;
 		RecordFromUrl rfu;
-		long openTime = 0;
-		long _openTime = 0;
-		string recFolderFile;
+		//long openTime = 0;
+		//long _openTime = 0;
+		//string recFolderFile;
 		string lvid;
-		string programType;
+		//string programType;
 		string roomName = "";
-		int startSecond;
+		//int startSecond;
 		CookieContainer container;
 		string ticket;
 		string waybackKey;
-		int gotMinTime;
-		string[] gotMinXml = new string[2];
-		int _gotMinTime;
-		string[] _gotMinXml = new string[2];
+		//int gotMinTime;
+		//string[] gotMinXml = new string[2];
+		//int _gotMinTime;
+		//string[] _gotMinXml = new string[2];
 		int when = 0;
 		int lastLastRes = int.MaxValue;
 		string threadLine;
 		bool isGetXml = true;
 		bool isGetCommentXmlInfo = false;
-		public List<GotCommentInfo> gotCommentList = new List<GotCommentInfo>();
-		public List<GotCommentInfo> gotCommentListBuf = new List<GotCommentInfo>();
+		//public List<GotCommentInfo> gotCommentList = new List<GotCommentInfo>();
+		//public List<GotCommentInfo> gotCommentListBuf = new List<GotCommentInfo>();
 		
 		//private StreamWriter commentSW;
-		private string fileName;
+		//private string fileName;
 		WebSocket wsc = null;
 		bool isSave = true;
-		bool isRetry = true;
-		public bool isEnd = false;
-		public WebSocketRecorder rp;
-		private bool isLog = true;
+		//bool isRetry = true;
+		//public bool isEnd = false;
+		//public IRecorderProcess rp;
+		//private bool isLog = true;
 		//private RecordStateSetter rss;
 		
-		int gotCount = 0;
+		//int gotCount = 0;
 		public string[] sortedComments;
 //		public TimeShiftConfig tsConfig;
-		private bool isVposStartTime;
+		//private bool isVposStartTime;
 		private bool isRtmp;
 		private int[] quePosTimeList;
 		private RtmpRecorder rr;
 		private bool isConvertSpace;
 		private string commentConvertStr = null;
-		private TimeShiftConfig tsConfig = null;
-		private bool isStore;
+		//private TimeShiftConfig tsConfig = null;
+		//private bool isStore;
 		private bool isNormalizeComment;
-		private bool isReachStartTimeSave = false;
-		private string lastRealTimeComment = null;
+		//private bool isReachStartTimeSave = false;
+		//private string lastRealTimeComment = null;
 		
 		public TimeShiftCommentGetter(string uri, string thread,
 				string uriStore, string threadStore,        
 				string userId, RecordingManager rm, 
-				RecordFromUrl rfu, MainForm form, 
-				long openTime, string recFolderFile, 
+				RecordFromUrl rfu, MainForm form,
+				RecordInfo ri,
 				string lvid, CookieContainer container, 
-				string programType, long _openTime, 
-				WebSocketRecorder rp, int startSecond, 
-				bool isVposStartTime, bool isRtmp, 
-				RtmpRecorder rr, RecordStateSetter rss, 
+				IRecorderProcess rp, 
+				bool isRtmp,
+				RtmpRecorder rr, 
 				string roomName, TimeShiftConfig tsConfig,
-				string lastRealTimeComment = null, bool isLog = true)
+				string lastRealTimeComment = null, bool isLog = true,
+				bool isStore = false, string _uri = null, string _thread = null
+				)
 		{
 			this.uri = uri;
 			this.thread = thread;
@@ -105,18 +106,18 @@ namespace namaichi.rec
 			this.rfu = rfu;
 			this.userId = userId;
 			this.form = form;
-			this.openTime = openTime;
-			this.recFolderFile = recFolderFile;
+			//this.openTime = openTime;
+			this.recFolderFile = ri.recFolderFile[1];
 			this.lvid = lvid;
 			this.container = container;
 			this.isGetXml = bool.Parse(rm.cfg.get("IsgetcommentXml"));
 			this.isGetCommentXmlInfo = bool.Parse(rm.cfg.get("IsgetcommentXmlInfo"));
-			this.programType = programType;
-			this._openTime = _openTime;
+			//this.programType = programType;
+			//this._openTime = _openTime;
 			this.rp = rp;
-			this.startSecond = startSecond;
+			//this.startSecond = startSecond;
 			//this.tsConfig = tsConfig;
-			this.isVposStartTime = isVposStartTime;
+			this.isVposStartTime = (ri.isRtmp) ? false : tsConfig.isVposStartTime;
 			this.isRtmp = isRtmp;
 			this.rr = rr;
 			isConvertSpace = bool.Parse(rm.cfg.get("IsCommentConvertSpace"));
@@ -129,13 +130,16 @@ namespace namaichi.rec
 			this.threadStore = threadStore;
 			this.lastRealTimeComment = lastRealTimeComment;
 			this.isLog = isLog;
-		}
-		public void save(bool isStore, string _uri = null, string _thread = null) {
+			this.ri = ri;
+			
 			this.isStore = isStore;
 			if (_uri != null) {
 				uri = _uri;
 				thread = _thread;
 			}
+		}
+		override public void save() {
+			
 			if (!bool.Parse(rm.cfg.get("IsgetComment"))) {
 				isEnd = true;
 				return;
@@ -244,12 +248,16 @@ namespace namaichi.rec
 			//closeWscProcess();
 			wsc = null;
 			try {
-				if (lastLastRes < 900 || isReachStartTimeSave) {
+				if ((lastLastRes < 900 || isReachStartTimeSave) && !isEnd) {
 					endProcess();
 					isEnd = true;
 //					rm.form.addLogText("コメントの保存を完了しました");
 					return;
 				}
+				#if DEBUG
+					if (isEnd) form.addLogText("コメント処理.");
+				#endif
+				
 				if ((rm.rfu == rfu && lastRealTimeComment == null) && isRetry && !isEnd) {
 					while (true) {
 						try {
@@ -310,25 +318,25 @@ namespace namaichi.rec
 					rm.form.addLogText("error:" + eMessage);
 					return;
 				}
-				var chatinfo = new namaichi.info.ChatInfo(xml);
+				var chatinfo = new ChatInfo(xml);
 				
 				XDocument chatXml;
 				var vposStartTime = (isVposStartTime) ? (long)rp.firstSegmentSecond : 0;
 				
 				if (isRtmp) {
-					chatXml = chatinfo.getFormatXml(_openTime + vposStartTime);
+					chatXml = chatinfo.getFormatXml(ri.si._openTime + vposStartTime);
 				} else {
 					if (lastRealTimeComment == null) {
-						if (programType == "official") {
+						if (ri.si.type == "official") {
 							chatXml = chatinfo.getFormatXml(0, true, vposStartTime);
 		//					chatXml = chatinfo.getFormatXml(_openTime + vposStartTime);
 						} else {
-							chatXml = chatinfo.getFormatXml(openTime + vposStartTime);
+							chatXml = chatinfo.getFormatXml(ri.si.openTime + vposStartTime);
 		
 						}
 					} else {
-						if (programType == "official") {
-							chatXml = chatinfo.getFormatXml(0, true, rp.serverTime - _openTime);
+						if (ri.si.type == "official") {
+							chatXml = chatinfo.getFormatXml(0, true, rp.serverTime - ri.si._openTime);
 						//} else chatXml = chatinfo.getFormatXml(serverTime);
 						} else {
 							//chatXml = chatinfo.getFormatXml(0, true, serverTime - _openTime);
@@ -408,10 +416,10 @@ namespace namaichi.rec
 							}
 			            } else {
 							var isMeetStartTimeSave = !tsConfig.isAfterStartTimeComment ||
-	              					chatinfo.date > _openTime + tsConfig.timeSeconds - 10;
+	              					chatinfo.date > ri.si._openTime + tsConfig.timeSeconds - 10;
 							var isMeetEndTimeSave = !tsConfig.isBeforeEndTimeComment || 
 										tsConfig.endTimeSeconds == 0 || 
-		  								chatinfo.date < _openTime + tsConfig.endTimeSeconds + 10;
+		  								chatinfo.date < ri.si._openTime + tsConfig.endTimeSeconds + 10;
 							
 							if (!isMeetStartTimeSave || s == lastRealTimeComment)
 								isReachStartTimeSave = true;
@@ -461,9 +469,11 @@ namespace namaichi.rec
 			util.debugWriteLine("tscg " + ret);
 			return ret;
 		}
-		public void setIsRetry(bool b) {
+		/*
+		override public void setIsRetry(bool b) {
 			isRetry = b;
 		}
+		*/
 		private void endProcess() {
 			util.debugWriteLine("tscg end process");
 			if (isStore) return;
@@ -514,7 +524,7 @@ namespace namaichi.rec
 				for (int j = 0; j < fileNum; j++) {
 					if (j != 0) recFolderFile = incrementRecFolderFile(recFolderFile);
 					
-					fileName = util.getOkCommentFileName(rm.cfg, recFolderFile, lvid, true, isRtmp);
+					var fileName = util.getOkCommentFileName(rm.cfg, recFolderFile, lvid, true, isRtmp);
 					if (isRtmp) {
 						//fileName = getTsRecordIndexRecFolderFile(fileName, j + 1);
 						fileName = rr.fileNameList[j] + 
@@ -635,6 +645,7 @@ namespace namaichi.rec
 			
 			return r.Replace(recFolderFile, _new + ".xml");
 		}
+		/*
 		private int commentListCompare(GotCommentInfo x, GotCommentInfo y) {
 			if (x.no >= 0 && y.no >= 0 && x.no != y.no) {
 				return x.no - y.no;
@@ -646,6 +657,8 @@ namespace namaichi.rec
 				return x.vpos.CompareTo(y.vpos);
 			return x.comment.CompareTo(y.comment);
 		}
+		*/
+		/*
 		private void writeXmlStreamInfo(StreamWriter w) {
 			var startTime = openTime;
 			var vposStartTime = (isVposStartTime) ? (long)rp.firstSegmentSecond : 0;
@@ -658,42 +671,44 @@ namespace namaichi.rec
 			w.WriteLine("<RoomLabel>" + roomName + "</RoomLabel>");
 			w.WriteLine("<StartTime>" + startTime + "</StartTime>");
 		}
-		public class GotCommentInfo {
-			public string comment = null;
-			public int no;
-			public int date;
-			public long vpos;
-			public GotCommentInfo(string comment, int no, int date, long vpos) {
-				this.comment = comment;
-				this.no = no;
-				this.date = date;
-				this.vpos = vpos;
-			}
-			public override bool Equals(object gci) {
-				if (gci == null) return false;
-				return comment.Equals(((GotCommentInfo)gci).comment);
-			}
-			public override int GetHashCode() {
-				return comment.GetHashCode();
-			}
-		}
+		*/
 		private void saveStore() {
 			util.debugWriteLine("saveStore");
 			var tscg = new TimeShiftCommentGetter(uri, thread,
 					uriStore, threadStore,
-					userId, rm, rfu, rm.form, openTime, 
-					recFolderFile, lvid, container, 
-					programType, _openTime, rp, 
-					startSecond, 
-					isVposStartTime, 
-					isRtmp, rr, null, roomName, tsConfig);
-			tscg.save(true);
+					userId, rm, rfu, rm.form, ri, 
+					lvid, container, 
+					//programType, 
+					rp,
+					//startSecond, 
+					//isVposStartTime, 
+					isRtmp, rr, roomName, tsConfig, null, true, true, null, null);
+			tscg.save();
 				
 			while (!tscg.isEnd && rm.rfu == rfu && isRetry && rp.IsRetry) {
 				Thread.Sleep(500);
 			}
 			util.debugWriteLine("saveStore wait end " + tscg.gotCommentList.Count);
 			gotCommentList.AddRange(tscg.gotCommentList);
+		}
+	}
+	public class GotCommentInfo {
+		public string comment = null;
+		public int no;
+		public int date;
+		public long vpos;
+		public GotCommentInfo(string comment, int no, int date, long vpos) {
+			this.comment = comment;
+			this.no = no;
+			this.date = date;
+			this.vpos = vpos;
+		}
+		public override bool Equals(object gci) {
+			if (gci == null) return false;
+			return comment.Equals(((GotCommentInfo)gci).comment);
+		}
+		public override int GetHashCode() {
+			return comment.GetHashCode();
 		}
 	}
 }

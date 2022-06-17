@@ -30,21 +30,21 @@ namespace namaichi.rec
 	/// </summary>
 	public class WebSocketRecorder : IRecorderProcess
 	{
-		public CookieContainer container;
+		//public CookieContainer container;
 		
-		private RecordingManager rm;
-		private RecordFromUrl rfu;
-		public Html5Recorder h5r;
+		//private RecordingManager rm;
+		//private RecordFromUrl rfu;
+		//public Html5Recorder h5r;
 		private WebSocket ws;
 		private WebSocket[] wsc = new WebSocket[2];
 		public Record rec;
 		public RecordStateSetter rss = null;
 		public StreamWriter commentSW;
 		
-		public long serverTime;
+		//public long serverTime;
 		private string ticket;
 		private bool isRetry = true;
-		public bool IsRetry {get{return isRetry;} set{
+		new public bool IsRetry {get{return isRetry;} set{
 				//if (!value && (!isTimeShift || isChase) && rm.rfu == rfu && isGetComment == "true") {
 				if (!value && isRetry && (!ri.si.isTimeShift || ri.isChase) && isGetComment == "true") {
 					checkMissingComment();
@@ -65,16 +65,15 @@ namespace namaichi.rec
 		private DateTime lastEndProgramCheckTime = DateTime.Now;
 		private DateTime lastWebsocketConnectTime = DateTime.MinValue;
 		
-		public TimeSpan jisa;
+		//public TimeSpan jisa;
 		
 		private string roomName = "";
-		public string visitCount = "0";
-		public string commentCount = "0";
+		
 			
 		private WebSocket[] himodukeWS = new WebSocket[2];
 			
 //		private System.Threading.Thread mainThread;
-		public TimeShiftCommentGetter tscg = null;
+		//public TimeShiftCommentGetter tscg = null;
 		
 		bool isWaitNextConnection = false;
 		List<WebSocket> wsList = new List<WebSocket>();
@@ -96,17 +95,16 @@ namespace namaichi.rec
 		private XmlCommentGetter_ontime xcg = null;
 		private TimeShiftCommentGetter_xml tscgx = null;
 		
-		public List<string> chaseCommentBuf = new List<string>();
-		public bool isSaveComment = false;
-		public bool isHokan = false;
+		//public List<string> chaseCommentBuf = new List<string>();
+		
 		private bool isNotSleep = false;
 		private List<string> lastSaveComments = new List<string>();
 		private DateTime lastOpenCommentSwDt = DateTime.MinValue;
 		private bool isConvertSpace;
-		public List<string[]> commentReplaceList = null;
+		//public List<string[]> commentReplaceList = null;
 		private bool isSaveCommentOnlyRetryingRec;
 		private bool isNormalizeComment;
-		public long sync = 0;
+		
 		private object commentLock = new object();
 		private bool isLogEnd = false;
 		/*
@@ -168,12 +166,12 @@ namespace namaichi.rec
 		}
 		*/
 		public WebSocketRecorder(CookieContainer container, RecordingManager rm, 
-				RecordFromUrl rfu, Html5Recorder h5r, bool isSaveComment, 
+				RecordFromUrl rfu, bool isSaveComment, 
 				RecordStateSetter rss, RecordInfo ri) {
 			this.container = container;
 			this.rm = rm;
 			this.rfu = rfu;
-			this.h5r = h5r;
+			//this.h5r = h5r;
 			this.isSaveComment = isSaveComment;
 			this.rss = rss;
 			this.ri = ri;
@@ -218,7 +216,7 @@ namespace namaichi.rec
 			addDebugBuf("ws main " + ws + " a " + (ws == null));
 			
 			if (!ri.si.isRtmpOnlyPage && !(ri.isChase && !isSaveComment))
-				displaySchedule();
+				Task.Run(() => displaySchedule());
 			
 			WebSocket lastWebSocket = null;
 			var stopWsCount = 0;
@@ -277,7 +275,7 @@ namespace namaichi.rec
 			
 			if (rm.rfu != rfu) {
 				//if (rr != null) rr.isRetry = false;
-				stopRecording(ws, wsc);
+				stopRecording();
 //				ws.Close();
 //				wsc.Close();
 				if (rec != null) 
@@ -287,7 +285,7 @@ namespace namaichi.rec
 			}
 			if (!IsRetry) {
 				//if (rr != null) rr.isRetry = false;
-				stopRecording(ws, wsc);
+				stopRecording();
 				if (rec != null)
 					rec.waitForEnd();
 			}
@@ -300,7 +298,7 @@ namespace namaichi.rec
 				#endif
 				
 				new ChaseLastRecord(ri.si.lvid, container, rm, 
-						ri.si.recFolderFileInfo, ri.si.openTime, h5r, 
+						ri.si.recFolderFileInfo, ri.si.openTime, ri, 
 						ri.timeShiftConfig, rfu, 
 						rec != null ? rec.lastSegmentNo : -1).rec(rec.recFolderFile);
 			}
@@ -319,10 +317,13 @@ namespace namaichi.rec
 				var passTime = (ri.si.isTimeShift && !ri.isRealtimeChase) ? 10 : 2;
 				var  isPass = (TimeSpan.FromSeconds(passTime) > (DateTime.Now - lastWebsocketConnectTime));
 				lastWebsocketConnectTime = DateTime.Now;
-				if (isPass) 
+				if (isPass) {
+					addDebugBuf("connect passtime " + passTime);
 					Thread.Sleep(passTime * 1000);
+				}
 			}
 			if (isWaitNextConnection) {
+				addDebugBuf("connect WaitNextConnection");
 				Thread.Sleep(90000);
 				resetWebsocketInfo();
 				isWaitNextConnection = false;
@@ -484,13 +485,15 @@ namespace namaichi.rec
 					if (tscg == null) {
 						if (!(ri.isChase && chaseCommentBuf == null)) {
 							tscg = new TimeShiftCommentGetter(msUri, msThread, msStoreUri, msStoreThread,                                  
-									ri.userId, rm, rfu, rm.form, ri.si.openTime, 
-									ri.recFolderFile[1], ri.si.lvid, container,
-									ri.si.type, ri.si._openTime, this, 
-									(ri.isRtmp) ? 0 : ri.timeShiftConfig.timeSeconds, 
-									(ri.isRtmp) ? false : ri.timeShiftConfig.isVposStartTime, 
-									ri.isRtmp, rr, rss, roomName, ri.timeShiftConfig);
-							tscg.save(false);
+									ri.userId, rm, rfu, rm.form, ri,
+									ri.si.lvid, container,
+									//ri.si.type, 
+									this,
+									//(ri.isRtmp) ? 0 : ri.timeShiftConfig.timeSeconds, 
+									//(ri.isRtmp) ? false : ri.timeShiftConfig.isVposStartTime, 
+									ri.isRtmp, rr, roomName, ri.timeShiftConfig,
+									null, true, false, null, null);
+							tscg.save();
 						} else {
 							util.debugWriteLine("not tscg ischase commentbuf null");
 							#if DEBUG
@@ -541,7 +544,7 @@ namespace namaichi.rec
 						} else record(e.Message, currentQuality);
 					} else 
 						sendUseableStreamGetCommand(bestGettableQuolity);
-				} 
+				}
 //				Task.Run(() => {
 //				         	sendIntervalPong();
 //				         });
@@ -685,8 +688,8 @@ namespace namaichi.rec
 			}
 		}
 		public void displaySchedule() {
-			DateTime keikaTimeStart = DateTime.MinValue;
-			Task.Run(() => {
+			//Task.Run(() => {
+			    DateTime keikaTimeStart = DateTime.MinValue;
 				while (rm.rfu == rfu && IsRetry) {
 	         		if (ri.si.isTimeShift && tsHlsRequestTime == DateTime.MinValue && !ri.isChase) {
 	         			Thread.Sleep(1000);
@@ -701,9 +704,11 @@ namespace namaichi.rec
 			        if (!ri.si.isTimeShift || ri.isChase)
 						//_keikaJikanDt = (DateTime.Now - util.getUnixToDatetime(openTime) + jisa);
 			        	_keikaJikanDt = (DateTime.Now - keikaTimeStart);
-					else 
-						//_keikaJikanDt = (DateTime.Now - tsHlsRequestTime + tsStartTime + jisa);
-						_keikaJikanDt = (DateTime.Now - keikaTimeStart);
+			        else {
+			        	if (rec != null && rec.lastRecordedSeconds != -1)
+							_keikaJikanDt = TimeSpan.FromSeconds(rec.lastRecordedSeconds);
+						else _keikaJikanDt = (DateTime.Now - keikaTimeStart);
+			        }
 			        var keikaJikanH = (int)(_keikaJikanDt.TotalHours);
 					var keikaJikan = _keikaJikanDt.ToString("''mm'分'ss'秒'");
 					if (keikaJikanH != 0) keikaJikan = keikaJikanH.ToString() + "時間" + keikaJikan;
@@ -721,7 +726,7 @@ namespace namaichi.rec
 					rm.form.setKeikaJikan(keikaJikan, timeLabelKeika + "/" + programTimeStr, _keikaJikanDt.ToString("h'時間'mm'分'ss'秒'"), _keikaTimeStart);
 					System.Threading.Thread.Sleep(1000);
 				}
-			});
+			//});
 		}
 		/*
 		private void sendIntervalPong() {
@@ -753,7 +758,7 @@ namespace namaichi.rec
 				
 			if (rec == null) {
 		        //rec = new Record(rm, true, rfu, hlsUrl, ri.recFolderFile[1], container, ri.si.isTimeShift, this, ri.si.lvid, ri.timeShiftConfig, ri.si.openTime, ws, ri.recFolderFile[2], ri.isRealtimeChase, h5r);
-		        rec = new Record(rm, rfu, hlsUrl, container, this, ws, h5r, ri);
+		        rec = new Record(rm, rfu, hlsUrl, container, this, ws, ri);
 		        Task.Run(() => {
 			        rec.record(currentQuality);
 					if (rec.isEndProgram || isEndProgram) {
@@ -877,7 +882,7 @@ namespace namaichi.rec
 			isRetry = false;
 			*/
 		}
-		public void stopRecording() {
+		override public void stopRecording() {
 			stopRecording(ws, wsc);
 		}
 		/*
@@ -1092,7 +1097,7 @@ namespace namaichi.rec
 				rm.form.addLogText("error:" + eMessage);
 				return;
 			}
-			var chatinfo = new namaichi.info.ChatInfo(xml);
+			var chatinfo = new ChatInfo(xml);
 			
 			XDocument chatXml;
 			if (ri.si.isTimeShift && !ri.isChase) chatXml = chatinfo.getFormatXml(ri.si.openTime);
@@ -1315,8 +1320,9 @@ namespace namaichi.rec
 						("{\"type\":\"watch\",\"body\":{\"command\":\"getstream\",\"requirement\":{\"protocol\":\"rtmp\",\"quality\":\"" + bestGettableQuolity + "\"}}}")
 						: ("{\"type\":\"watch\",\"body\":{\"command\":\"getstream\",\"requirement\":{\"protocol\":\"hls\",\"quality\":\"" + bestGettableQuolity + "\",\"isLowLatency\":false}}}");
 			} else {
-				var latency = float.Parse(rm.cfg.get("latency")) < 1.1 ? "low" : "high";
-				req = "{\"type\":\"changeStream\",\"data\":{\"quality\":\"" + bestGettableQuolity + "\",\"protocol\":\"hls" + (h5r.ri.isFmp4 ? "+fmp4" : "") + "\",\"latency\":\"" + latency + "\",\"chasePlay\":" + ri.isChase.ToString().ToLower() + "}}";
+				var _latency = rm.cfg.get("latency");
+				var latency = (_latency == "新方式の低遅延" || _latency == "1") ? "low" : "high";
+				req = "{\"type\":\"changeStream\",\"data\":{\"quality\":\"" + bestGettableQuolity + "\",\"protocol\":\"hls" + (ri.isFmp4 ? "+fmp4" : "") + "\",\"latency\":\"" + latency + "\",\"chasePlay\":" + ri.isChase.ToString().ToLower() + "}}";
 			}
 			
 			sendMessage(ws, req);
@@ -1332,7 +1338,7 @@ namespace namaichi.rec
 			}
 //			ws.Open();
 		}
-		public void reConnect(WebSocket _ws) {
+		override public void reConnect(WebSocket _ws) {
 			displayDebug("ws reconnect");
 			addDebugBuf("reconnect " + _ws + " " + _ws.GetHashCode() + " ws " + ws.GetHashCode());
 			try {
@@ -1351,14 +1357,15 @@ namespace namaichi.rec
 				
 				var a = new System.Net.WebHeaderCollection();
 				var res = util.getPageSource(ri.si.url, container, null, false, 15000);
-				addDebugBuf("isendedprogram url " + ri.si.url + " res==null " + (res == null));
+				addDebugBuf("irasendedprogm url " + ri.si.url + " res==null " + (res == null));
 				if (res == null) {
-					res = util.getPageSource(h5r.ri.si.url, container, null, false, 15000, null, true);
+					res = util.getPageSource(ri.si.url, container, null, false, 15000, null, true);
 					if (res != null && res.IndexOf("<title>ご指定のページが見つかりませんでした") > -1)
 						return true;
 					return isEndedProgramRtmp();
 				}
 				type = util.getPageType(res);
+				addDebugBuf("isEndProgram type " + type);
 				if (type == 0) return false;
 				else if (type == 7 || type == 2 || type == 3 || type == 9) return true;
 				
@@ -1442,11 +1449,13 @@ namespace namaichi.rec
 			sendCommentBuf = null;
 		}
 		//override public string[] getRecFilePath(long openTime) {
+		/*
 		public string[] getRecFilePath(long openTime) {
 			return getRecFilePath();
 		}
+		 */
 		override public string[] getRecFilePath() {
-			return h5r.ri.getRecFilePath(ri.isRtmp, ri.timeShiftConfig, ri.isFmp4, rm.cfg, rm.form);
+			return ri.getRecFilePath(ri.isRtmp, ri.timeShiftConfig, ri.isFmp4, rm.cfg, rm.form);
 		}
 		private void startDebugWriter() {
 			#if !DEBUG
@@ -1699,7 +1708,7 @@ namespace namaichi.rec
 				
 			return ret;
 		}
-		public void chaseCommentSum() {
+		override public void chaseCommentSum() {
 			util.debugWriteLine("chaseCommentSum " + gotTsCommentList.Count() + " " + chaseCommentBuf.Count);
 			var gotComList = new List<string>();
 			gotComList.AddRange(gotTsCommentList);
@@ -1744,12 +1753,13 @@ namespace namaichi.rec
 			w.WriteLine("<packet xmlns=\"http://posite-c.jp/niconamacommentviewer/commentlog/\">");
 			w.WriteLine("<RoomLabel>" + roomName + "</RoomLabel>");
 		}
+		/*
 		public void setRealTimeStatistics() {
 			try {
 				if (!visitCount.StartsWith("-")) {
 			    	Thread.Sleep(10000);
 			    	string visit, comment;
-			    	var ret = util.getStatistics(rfu.lvid, container, out visit, out comment);
+			    	var ret = getStatistics(rfu.lvid, container, out visit, out comment);
 			    	if (ret) {
 			    		if (!visitCount.StartsWith("-")) {
 				    		visitCount = "-" + visit;
@@ -1760,6 +1770,20 @@ namespace namaichi.rec
 			} catch (Exception e) {
 				addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
+		}
+		*/
+		override internal bool getStatistics(string lvid, CookieContainer cc, out string visit, out string comment) {
+			visit = "0";
+			comment = "0";
+			var url = "https://live.nicovideo.jp/watch/" + lvid;
+			var res = util.getPageSource(url, cc);
+			if (res == null) return false;
+			var _visit = util.getRegGroup(res, "statistics&quot;:{&quot;watchCount&quot;:(\\d+),&quot;commentCount&quot;:\\d+}");
+			var _comment = util.getRegGroup(res, "statistics&quot;:{&quot;watchCount&quot;:\\d+,&quot;commentCount&quot;:(\\d+)}");
+			if (_visit == null || _comment == null) return false;
+			visit = _visit;
+			comment = _comment;
+			return true;
 		}
 		public void displayDebug(string s) {
 			#if DEBUG
@@ -1772,7 +1796,7 @@ namespace namaichi.rec
 				w.Send(s);
 			else util.debugWriteLine("sendMessage w null");
 		}
-		public void setSync(int no, double second, string m3u8Url) {
+		override public void setSync(int no, double second, string m3u8Url) {
 			try {
 				if (ri.si.isTimeShift) {
 					sync = no + ri.si._openTime * 1000;
@@ -1826,14 +1850,16 @@ namespace namaichi.rec
 				*/
 				var tsConfig = new TimeShiftConfig();
 				tscg = new TimeShiftCommentGetter(msUri, msThread, msStoreUri, msStoreThread,                                  
-						ri.userId, rm, rfu, rm.form, ri.si.openTime, 
-						ri.recFolderFile[1], ri.si.lvid, container,
-						ri.si.type, ri.si._openTime, this, 
-						(ri.isRtmp) ? 0 : tsConfig.timeSeconds, 
-						(ri.isRtmp) ? false : tsConfig.isVposStartTime, 
-						ri.isRtmp, rr, rss, roomName, tsConfig, 
-						lastSaveComments[lastSaveComments.Count - 1], false);
-				tscg.save(false);
+						ri.userId, rm, rfu, rm.form, ri, 
+						ri.si.lvid, container,
+						//ri.si.type, 
+						this,
+						//(ri.isRtmp) ? 0 : tsConfig.timeSeconds, 
+						//(ri.isRtmp) ? false : tsConfig.isVposStartTime, 
+						ri.isRtmp, rr, roomName, tsConfig, 
+						lastSaveComments[lastSaveComments.Count - 1], false,
+					false, null, null);
+				tscg.save();
 				var t = DateTime.Now;
 				while (!tscg.isEnd) {
 					Thread.Sleep(1000);

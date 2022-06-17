@@ -368,7 +368,13 @@ namespace namaichi
 			
        		System.Drawing.Icon icon =  null;
 			try {
-       			byte[] pic = cl.DownloadData(url);
+       			byte[] pic;
+       			if (url.IndexOf("nicochannel.jp") == 0)
+       				pic = cl.DownloadData(url);
+       			else {
+       				pic = new Curl().getBytes(url, Curl.getDefaultHeaders(), CurlHttpVersion.CURL_HTTP_VERSION_2TLS);
+       				if (pic == null) return;
+       			}
 				
        			using (var st = new System.IO.MemoryStream(pic)) {
 					icon = Icon.FromHandle(new System.Drawing.Bitmap(st).GetHicon());
@@ -1116,10 +1122,16 @@ namespace namaichi
 				_qualityCfg = _qualityCfgD;
 			var qualityCfg = JsonConvert.DeserializeObject<Dictionary<int, string>>(_qualityCfg);
 			var qualityCfgD = JsonConvert.DeserializeObject<Dictionary<int, string>>(_qualityCfgD);
-			if (qualityCfg.Count != qualityCfgD.Count) {
-				foreach (var q in qualityCfgD) 
-					if (!qualityCfg.ContainsValue(q.Value)) qualityCfg.Add(qualityCfg.Count, q.Value);
+			//if (qualityCfg.Count != qualityCfgD.Count) {
+			foreach (var q in qualityCfgD) {
+				if (!qualityCfg.ContainsValue(q.Value)) {
+					//qualityCfg.Add(qualityCfg.Count, q.Value);
+					config.set("qualityList", _qualityCfgD);
+					config.set("qualityRank", config.defaultConfig["qualityRank"]);
+					return;
+				}
 			}
+			//}
 			namaichi.config.config.qualityList = 
 					qualityCfg;
 		}

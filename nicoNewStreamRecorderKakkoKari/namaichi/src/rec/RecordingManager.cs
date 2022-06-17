@@ -38,7 +38,7 @@ namespace namaichi.rec
 		public string hlsUrl = null;
 		public Stream rtmpPipe = null;
 		public IRecorderProcess wsr = null;
-		static readonly Uri TargetUrl = new Uri("https://live.nicovideo.jp/");
+		//static readonly Uri TargetUrl = new Uri("https://live.nicovideo.jp/");
 		public config.config cfg;
 		public string recordingUrl;
 		public string communityNum;
@@ -65,6 +65,7 @@ namespace namaichi.rec
            
 			if (rfu == null) {
             	var lv = util.getRegGroup(form.urlText.Text, "(lv\\d+(,\\d+)*)");
+            	if (lv == null) lv = util.getRegGroup(form.urlText.Text, "https://nicochannel.jp/.+/(live|video)/([a-zA-Z0-9]+)", 2);
 				util.setLog(cfg, lv);
 				util.debugWriteLine(util.versionStr + " " + util.versionDayStr + " " + util.dotNetVer);
 				
@@ -93,7 +94,8 @@ namespace namaichi.rec
 			util.setProxy(cfg, form);
 			isRecording = true;
 			form.formAction(() => {
-			    form.urlText.Text = "https://live.nicovideo.jp/watch/" + lvid;
+			                	form.urlText.Text = lvid.StartsWith("lv") ? ("https://live.nicovideo.jp/watch/" + lvid) : 
+			                		util.getRegGroup(form.urlText.Text, "(https://nicochannel.jp/.+/(live|video)/([a-zA-Z0-9]+))");
 			    setRecModeForm(true);
 			
 				form.resetDisplay();

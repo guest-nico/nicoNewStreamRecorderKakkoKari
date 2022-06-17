@@ -28,7 +28,7 @@ namespace namaichi
 		private string[] lastFileTimeSelected = null;
 		private bool isFmp4 = false;
 		public TimeShiftOptionForm(string[] lastFileTime, 
-				string segmentSaveType, config.config config, bool isChase, int prepTime, bool isFmp4)
+				string segmentSaveType, config.config config, bool isChase, int prepTime, bool isFmp4, bool isChannelPlus)
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -82,6 +82,19 @@ namespace namaichi
 			util.setFontSize(int.Parse(config.get("fontSize")), this, false);
 			openPanelBtn.Font = new Font(openPanelBtn.Font.FontFamily, 8, openPanelBtn.Font.Style);
 			Width = (int)(new Form().CreateGraphics().DpiX / 96 * 357) + 5;
+			
+			if (isChannelPlus) {
+				//isFromLastTimeRadioBtn
+				openLastFileBtn.Enabled = false;
+				openPanelBtn.Enabled = false;
+				Text = "マニフェストファイル出力設定";
+				var c = util.getChildControls(this);
+				foreach (var _c in c)
+					_c.Text = _c.Text.Replace("録画", "出力");
+				isFromLastTimeRadioBtn.Visible = lastFileInfoLabel.Visible = 
+						isRenketuLastFile.Visible = openLastFileBtn.Visible = 
+						openPanelBtn.Visible = isDeletePosTimeChkBox.Visible = false;
+			}
 		}
 		private void updateTimeShiftStartTimeChkBox() {
 			hText.Enabled = mText.Enabled = sText.Enabled =
@@ -429,7 +442,7 @@ namespace namaichi
 		}
 		void HighRankBtnClick(object sender, EventArgs e)
 		{
-			List<int> ranks = new List<int>() {7,6,8,0,1,2,3,4,5};
+			List<int> ranks = new List<int>() {7,6,8,0,1,2,3,4,5,9};
 			for (var i = ranks.Count; i < namaichi.config.config.qualityList.Count; i++)
 				ranks.Add(i);
 			qualityListBox.Items.Clear();
@@ -437,7 +450,7 @@ namespace namaichi
 		}
 		void LowRankBtnClick(object sender, EventArgs e)
 		{
-			List<int> ranks = new List<int>() {5, 4, 3, 2, 1, 0, 8, 6, 7};
+			List<int> ranks = new List<int>() {9, 5, 4, 3, 2, 1, 0, 8, 6, 7};
 			for (var i = ranks.Count; i < namaichi.config.config.qualityList.Count; i++)
 				ranks.Add(i);
 			qualityListBox.Items.Clear();

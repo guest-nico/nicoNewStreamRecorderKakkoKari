@@ -106,6 +106,7 @@ public class config
 			{"useProxy","false"},
 			{"proxyAddress",""},
 			{"proxyPort",""},
+			{"localServerPortList","7997"},
 			
 			{"IsdefaultBrowserPath","true"},
 			{"browserPath",""},
@@ -133,8 +134,9 @@ public class config
 			
 			{"IstitlebarSamune","true"},
 			{"IsautoFollowComgen","false"},
-			{"qualityRank","0,1,2,3,4,5,6"},
-			{"qualityList","{\"0\":\"3Mbps(super_high)\",\"1\":\"2Mbps(high)\",\"2\":\"1Mbps(normal)\",\"3\":\"384kbps(low)\",\"4\":\"192kbps(super_low)\",\"5\":\"音声のみ(audio_high)\",\"6\":\"6Mbps(6Mbps1080p30fps)\",\"7\":\"8Mbps(8Mbps1080p60fps)\",\"8\":\"4Mbps(4Mbps720p60fps)\"}"},
+			{"qualityRank","0,1,2,3,4,5,6,7,8,9"},
+			{"qualityList","{\"0\":\"3Mbps(super_high)\",\"1\":\"2Mbps(high)\",\"2\":\"1Mbps(normal)\",\"3\":\"384kbps(low)\",\"4\":\"192kbps(super_low)\",\"5\":\"音声のみ(audio_high)\",\"6\":\"6Mbps(6Mbps1080p30fps)\",\"7\":\"8Mbps(8Mbps1080p60fps)\",\"8\":\"4Mbps(4Mbps720p60fps)\",\"9\":\"音声のみ(audio_only)\"}"},
+			{"chPlusQualityRank","240p(426x240),1080p(1920x1080),360p(640x360),720p(1280x720)"},
 			{"IsMiniStart","false"},
 			{"IsConfirmCloseMsgBox","true"},
 			{"IsRecBtnOnlyMouse","false"},
@@ -206,6 +208,9 @@ public class config
 			{"fontSize","9"},
 			{"IsTray","false"},
 			
+			{"chPlus_access_token",""},
+			{"chPlus_refreshCookie", ""},
+			
 			{"defaultControllerX","100"},
 			{"defaultControllerY","100"},
 			{"volume","50"},
@@ -223,7 +228,7 @@ public class config
 			{"rokugaTourokuMiniInfo","false"},
 			{"rokugaTourokuMaxRecordingNum","10"},
 			{"IsDuplicateConfirm","false"},
-			{"rokugaTourokuQualityRank","0,1,2,3,4,5,6,7,8"},
+			{"rokugaTourokuQualityRank","0,1,2,3,4,5,6,7,8,9"},
 			{"IsDeleteConfirmMessageRt","false"},
 			
 			{"recBackColor","-1"},
@@ -314,7 +319,8 @@ public class config
 			{1, "2Mbps(high)"}, {2, "1Mbps(normal)"},
 			{3, "384kbps(low)"}, {4, "192kbps(super_low)"},
 			{5, "音声のみ(audio_high)"}, {6, "6Mbps(6Mbps1080p30fps)"},
-			{7, "8Mbps(8Mbps1080p60fps)"}, {8, "4Mbps(4Mbps720p60fps)"}
+			{7, "8Mbps(8Mbps1080p60fps)"}, {8, "4Mbps(4Mbps720p60fps)"},
+			{9, "音声のみ(audio_only)"}
 		};
 	}
 }

@@ -56,7 +56,7 @@ namespace namaichi.rec
 			//this.url = url;
 			
 			while(rm.rfu == rfu) {
-				var si = new StreamInfo(url, lvid, isTimeShift);
+				var si = new StreamInfo(url, lvid, isTimeShift, false);
 				si.set(res);
 				if (!si.getTimeInfo()) return 3;
 				
@@ -102,7 +102,7 @@ namespace namaichi.rec
 				util.debugWriteLine("form disposed" + rm.form.IsDisposed);
 				util.debugWriteLine("recfolderfile test " + si.recFolderFileInfo);
 				
-				wsr = new WebSocketRecorder(container, rm, rfu, this, true, rss, ri);
+				wsr = new WebSocketRecorder(container, rm, rfu, true, rss, ri);
 				rm.wsr = wsr;
 				try {
 					wsr.start();
@@ -261,7 +261,7 @@ namespace namaichi.rec
 			
 			try {
 				var prepTime = (int)(startTime - openTime);
-				var o = new TimeShiftOptionForm(lastFileTime, segmentSaveType, rm.cfg, isChase, prepTime, ri.isFmp4);
+				var o = new TimeShiftOptionForm(lastFileTime, segmentSaveType, rm.cfg, isChase, prepTime, ri.isFmp4, ri.si.isChannelPlus);
 				
 				
 				try {
@@ -324,7 +324,7 @@ namespace namaichi.rec
 			}
 		}
 		private void renameTitle() {
-			var _si = new StreamInfo(ri.si.url, ri.si.lvid, ri.si.isTimeShift);
+			var _si = new StreamInfo(ri.si.url, ri.si.lvid, ri.si.isTimeShift, false);
 			var res = util.getPageSource(ri.si.url, container);
 			if (res == null) return;
 			_si.set(res);

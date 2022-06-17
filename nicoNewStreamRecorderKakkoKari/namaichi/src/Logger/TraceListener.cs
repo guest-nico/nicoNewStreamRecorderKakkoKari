@@ -21,7 +21,8 @@ namespace namaichi.Logger
 		}
 		public override void WriteLine(string msg) {
 			try {
-				var dt = DateTime.Now.ToLongTimeString();
+				//var dt = DateTime.Now.ToLongTimeString();
+				var dt = DateTime.Now.ToString("dd HH:mm:ss");
 				base.WriteLine(dt + " " + msg);
 			} catch (Exception) {
 //				util.debugWriteLine("trace listner exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);

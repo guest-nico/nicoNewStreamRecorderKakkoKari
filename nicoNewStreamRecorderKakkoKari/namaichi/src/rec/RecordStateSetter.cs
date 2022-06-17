@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Net;
 using namaichi.info;
+using namaichi.utility;
 
 namespace namaichi.rec
 {
@@ -50,9 +51,10 @@ namespace namaichi.rec
 		private bool isRtmpOnlyPage = false;
 		//private bool isChase = false;
 		private bool isReservation = false;
+		private bool isChannelPlus = false;
 			
 		public bool isWrite = false;
-		public RecordStateSetter(MainForm form, bool isJikken, bool isPlayOnlyMode, bool isRtmpOnlyPage, bool isReservation)
+		public RecordStateSetter(MainForm form, bool isJikken, bool isPlayOnlyMode, bool isRtmpOnlyPage, bool isReservation, bool isChannelPlus = false)
 		{
 			this.form = form;
 			//this.rm = rm;
@@ -65,10 +67,15 @@ namespace namaichi.rec
 			this.isRtmpOnlyPage = isRtmpOnlyPage;
 			//this.isChase = isChase;
 			this.isReservation = isReservation;
+			this.isChannelPlus = isChannelPlus;
 		}
 		public void set(string data, string[] recFolderFileInfo, string res) {
-			isEnded = res.IndexOf("\"content_status\":\"closed\"") > -1 ||
+			if (!isChannelPlus) {
+				isEnded = res.IndexOf("\"content_status\":\"closed\"") > -1 ||
 					res.IndexOf("\"content_status\":\"ENDED\"") > -1;
+			} else {
+				isEnded = res.IndexOf("\"live_finished_at\":null") == -1;
+			}
 			var type = util.getRegGroup(res, "\"content_type\":\"(.+?)\"");
 			setInfo(data, form, type, recFolderFileInfo);
 //			var a = await setInfo(data, form, type, recFolderFileInfo).ConfigureAwait(false);
@@ -97,18 +104,19 @@ namespace namaichi.rec
 			return util.getUnixToDatetime(startunix);
 		}
 		private void setInfo(string data, MainForm form, string type, string[] recFolderFileInfo) {
-			
 			//recfolderfileinfo host, group, title, lvid, communityNum, userId
-
+			
 			host = recFolderFileInfo[0];
 			group = recFolderFileInfo[1];
 			title = recFolderFileInfo[2];
 			url = util.getRegGroup(data, "\"watchPageUrl\":\"(.+?)\"");
 			if (url == null) url = util.getRegGroup(data, "og:url\" content=\"(.+?)\"");
-			description = util.getRegGroup(data, "\"program\".+?\"description\":\"(.+?)\",\"");
+			//description = util.getRegGroup(data, "\"program\".+?\"description\":\"(.+?)\",\"");
+			description = util.getRegGroup(data, "\"(program|video_page)\".+?\"description\":\"(.+?)\",\"", 2);
 			if (description == null) description = util.getRegGroup(data, "<description>(.+?)</description>");
+			if (description != null) description = description.Replace("\\n", " ");
 			
-			description = description.Replace("\\n", " ");
+			
 			if (!isDescriptionTag) {
 				
 				try {
@@ -121,9 +129,10 @@ namespace namaichi.rec
 				}
 			}
 //			string hostUrl, groupUrl, gentei;
-			long _openTime, _endTime;
+			long _openTime = 0, _endTime = 0;
 			
-			if (!isJikken) {
+			
+			if (!isJikken && !isChannelPlus) {
 				hostUrl = (type == "community" || type == "user") ? util.getRegGroup(data, "supplier\":{\"name\".\".+?\",\"pageUrl\":\"(.+?)\"") : null;
 				groupUrl = util.getRegGroup(data, "\"socialGroupPageUrl\":\"(.+?)\"");
 				gentei = (data.IndexOf("\"isFollowerOnly\":true") > -1) ? "限定" : "オープン";
@@ -139,6 +148,31 @@ namespace namaichi.rec
 				}
 				_openTime = long.Parse(_openTimeStr);
 				_endTime = long.Parse(_endTimeStr);
+			} else if (isChannelPlus) {
+				var _u = util.getRegGroup(url, "(https://.+/)(live|video)");
+				if (_u != null) hostUrl = groupUrl = _u;
+				gentei = (data.IndexOf("\"display_name\":\"会員限定\"") > -1) ? "限定" : "オープン";
+	//			var _openTime = long.Parse(util.getRegGroup(data, "\"openTime\":(\\d+)"));
+				var _openTimeStr = util.getRegGroup(data, "\"live_started_at\":\"(.+?)\"");
+				var _endTimeStr = util.getRegGroup(data, "\"live_finished_at\":\"(.+?)\"");
+				
+				if (_openTimeStr == null) _openTimeStr = util.getRegGroup(data, "\"live_scheduled_start_at\":(.+?)");
+				if (_endTimeStr == null) _endTimeStr = util.getRegGroup(data, "\"live_scheduled_end_at\":(.+?)");
+				if (_openTimeStr == null) {
+					_openTimeStr = "0";
+					_endTimeStr = "0";
+				}
+				DateTime dtBuf; 
+				if (DateTime.TryParse(_openTimeStr, out dtBuf))
+					_openTime = util.getUnixTime(dtBuf);
+				if (DateTime.TryParse(_endTimeStr, out dtBuf))
+					_endTime = util.getUnixTime(dtBuf);
+				if (_openTime == 0) {
+					var _releaseTime = util.getRegGroup(data, "\"released_at\":(.+?)");
+					if (DateTime.TryParse(_releaseTime, out dtBuf))
+						_openTime = util.getUnixTime(dtBuf);
+					_endTimeStr = "0";
+				}
 			} else {
 				hostUrl = (type == "community" || type == "user") ? util.getRegGroup(data, "broadcaster\":{.+?\"pageUrl\":\"(.+?)\"") : null;
 				groupUrl = "https://com.nicovideo.jp/community/" + recFolderFileInfo[4];
@@ -156,6 +190,7 @@ namespace namaichi.rec
 			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "\"small\":\"(.+?)\"");
 			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "thumbnail:.+?'(https*://.+?)'");
 			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "<thumb_url>(.+?)</thumb_url>");
+			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "\"thumbnail_url\":\"(.+?)\"");
 			tag = getTag(data);
 			//var formEndTime = (isTimeShift && !isChase) ? endTime : "";
 			var formEndTime = isEnded ? endTime : "";
@@ -217,24 +252,34 @@ namespace namaichi.rec
 			util.consoleWrite("info.samuneUrl:" + samuneUrl);
 		}
 		private string getTag(string data) {
-			var _t = util.getRegGroup(data, "\"tag\":\\{.*?\"list\":\\[{(\"text.+?)\\]");
-			MatchCollection m;
-			if (_t == null) {
-//				var __t = util.getRegGroup(data, "<ul id=\"livetags\"(.+?)</ul>");
-//				if (__t == null) return "取得できませんでした";
-				m = new Regex("keyword=(.+?)&amp").Matches(data);
-//				if (mm.Count == 0) return "取得できませんでした";
-//				foreach (Match _m in m) 
-//					util.debugWriteLine(_m.Groups[1]);
+			if (!isChannelPlus) {
+				var _t = util.getRegGroup(data, "\"tag\":\\{.*?\"list\":\\[{(\"text.+?)\\]");
+				MatchCollection m;
+				if (_t == null) {
+	//				var __t = util.getRegGroup(data, "<ul id=\"livetags\"(.+?)</ul>");
+	//				if (__t == null) return "取得できませんでした";
+					m = new Regex("keyword=(.+?)&amp").Matches(data);
+	//				if (mm.Count == 0) return "取得できませんでした";
+	//				foreach (Match _m in m) 
+	//					util.debugWriteLine(_m.Groups[1]);
+				} else {
+					m = Regex.Matches(_t, "\"text\":\"(.*?)\"");
+				}
+				var ret = "";
+				foreach (var _m in m) {
+					if (ret != "") ret += ",";
+					ret += ((Match)_m).Groups[1];
+				}
+				return ret;	
 			} else {
-				m = Regex.Matches(_t, "\"text\":\"(.*?)\"");
+				var m = new Regex("\"tag\":\"(.+?)\"}").Matches(data);
+				var ret = "";
+				foreach (Match _m in m) {
+					if (ret != "") ret += ",";
+					ret += _m.Groups[1];
+				}
+				return ret;
 			}
-			var ret = "";
-			foreach (var _m in m) {
-				if (ret != "") ret += ",";
-				ret += ((Match)_m).Groups[1];
-			}
-			return ret;	
 		}
 		public void writeEndTime(CookieContainer cc, DateTime endTime) {
 			if (endTime == DateTime.MinValue) return;
@@ -257,10 +302,18 @@ namespace namaichi.rec
 		}
 		private void setStatistics(string data) {
 			try {
-				var _watchCount = util.getRegGroup(data, "\"statistics\":\\{\"watchCount\":(\\d+),\"commentCount\":\\d*\\}");
-				var _commentCount = util.getRegGroup(data, "\"statistics\":\\{\"watchCount\":\\d*,\"commentCount\":(\\d+)\\}");
-				if (_watchCount != null) watchCount = int.Parse(_watchCount);
-				if (_commentCount != null) commentCount = int.Parse(_commentCount);
+				if (!isChannelPlus) {
+					var _watchCount = util.getRegGroup(data, "\"statistics\":\\{\"watchCount\":(\\d+),\"commentCount\":\\d*\\}");
+					var _commentCount = util.getRegGroup(data, "\"statistics\":\\{\"watchCount\":\\d*,\"commentCount\":(\\d+)\\}");
+					if (_watchCount != null) watchCount = int.Parse(_watchCount);
+					if (_commentCount != null) commentCount = int.Parse(_commentCount);
+				} else {
+					var _watchCount = util.getRegGroup(data, "\"total_views\":(\\d+)");
+					var _commentCount = util.getRegGroup(data, "\"number_of_comments\":(\\d+)");
+					if (_watchCount != null) watchCount = int.Parse(_watchCount);
+					if (_commentCount != null) commentCount = int.Parse(_commentCount);
+				}
+				form.setStatistics(watchCount.ToString(), commentCount.ToString());
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}

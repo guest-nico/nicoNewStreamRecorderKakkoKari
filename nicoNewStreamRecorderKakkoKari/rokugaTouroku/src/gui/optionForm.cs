@@ -207,6 +207,9 @@ namespace rokugaTouroku
 				{"user_session2",""},
 				{"user_session_secure2",""},
 				
+				{"chPlus_access_token",""},
+				{"chPlus_cookie", ""},
+				
 				{"rokugaTourokuMaxRecordingNum",maxRecordingNum.Text},
 				{"IsDuplicateConfirm",isDuplicateConfirmChkBox.Checked.ToString().ToLower()},
 				{"IsDeleteConfirmMessageRt",isDeleteConfirmMessageRtCheckBtn.Checked.ToString().ToLower()},
@@ -214,6 +217,7 @@ namespace rokugaTouroku
 				{"useProxy",useProxyChkBox.Checked.ToString().ToLower()},
 				{"proxyAddress",proxyAddressText.Text},
 				{"proxyPort",proxyPortText.Text},
+				{"localServerPortList", localServerPortList.Text},
 				
 				{"fontSize",fontList.Value.ToString()},
 				{"IsTray",IsTrayChkBox.Checked.ToString().ToLower()},
@@ -485,6 +489,7 @@ namespace rokugaTouroku
         	proxyAddressText.Text = cfg.get("proxyAddress");
         	proxyPortText.Text = cfg.get("proxyPort");
         	useProxyChkBox.Checked = bool.Parse(cfg.get("useProxy"));
+        	localServerPortList.Text = cfg.get("localServerPortList");
         	
         	fontList.Value = decimal.Parse(cfg.get("fontSize"));
         	IsTrayChkBox.Checked = bool.Parse(cfg.get("IsTray"));
@@ -648,7 +653,7 @@ namespace rokugaTouroku
 		
 		void highRankBtn_Click(object sender, EventArgs e)
 		{
-			List<int> ranks = new List<int>() {7,6,8,0,1,2,3,4,5};
+			List<int> ranks = new List<int>() {7,6,8,0,1,2,3,4,5,9};
 			for (var i = ranks.Count; i < config.config.qualityList.Count; i++)
 				ranks.Add(i);
 			qualityListBox.Items.Clear();
@@ -656,7 +661,7 @@ namespace rokugaTouroku
 		}
 		void lowRankBtn_Click(object sender, EventArgs e)
 		{
-			List<int> ranks = new List<int>() {5, 4, 3, 2, 1, 0, 8, 6, 7};
+			List<int> ranks = new List<int>() {9, 5, 4, 3, 2, 1, 0, 8, 6, 7};
 			for (var i = ranks.Count; i < config.config.qualityList.Count; i++)
 				ranks.Add(i);
 			qualityListBox.Items.Clear();
@@ -728,8 +733,10 @@ namespace rokugaTouroku
 			*/
 			var ret = new List<int>();
 			for (int i = 0; i < items.Count; i++) {
-				foreach (KeyValuePair <int, string> p in itemsDic)
-					if (p.Value == items[i].ToString().Substring(3)) ret.Add(p.Key);
+				foreach (KeyValuePair <int, string> p in itemsDic) {
+					var itemName = util.getRegGroup(items[i].ToString(), " (.+)");
+					if (p.Value == itemName) ret.Add(p.Key);
+				}
 			}
 			return ret;
 		}

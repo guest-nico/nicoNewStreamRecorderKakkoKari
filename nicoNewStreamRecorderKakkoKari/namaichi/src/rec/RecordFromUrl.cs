@@ -49,11 +49,11 @@ namespace namaichi.rec
 			//endcode 0-その他の理由 1-stop 2-最初に終了 3-始まった後に番組終了
 			util.debugWriteLine("RecordFromUrl rec");
 			util.debugWriteLine(url + " " + lvid);
-			this.lvid = util.getRegGroup(lvid, "(lv\\d+)");
+			this.lvid = lvid.StartsWith("lv") ? util.getRegGroup(lvid, "(lv\\d+)") : lvid;
 			this.url = util.getRegGroup(url, "([^,]+)");
 			tsRecNumArr = (this.lvid == lvid) ? null : Array.ConvertAll<string, int>(util.getRegGroup(lvid, ",(.+)").Split(','), (i) => {return int.Parse(i);});
 			
-			var mainT = Task.Run<int>(() => {return _rec(this.url);});
+			var mainT = Task.Run<int>(() => {return lvid.StartsWith("lv") ? _rec(this.url) : new ChannelPlusRecorder(url, rm.form, rm, lvid, this).run();});
 			
 			try {
 				while (true) {
@@ -138,6 +138,15 @@ namespace namaichi.rec
 					}
 					
 				} else if (pageType == 5) {
+					var reason = util.getRegGroup(res, "rejectedReasons&quot;:\\[(.*?)\\]");
+					if (reason != null) {
+						if (reason.IndexOf("notAllowedCountry") > -1) {
+							rm.form.addLogText("この国からの接続は許可されていません");
+							return 2;
+						}
+					}
+					rm.form.addLogText("reason:" + reason);
+					
 					if (bool.Parse(rm.cfg.get("Isretry"))) {
 						rm.form.addLogText("接続エラー。10秒後リトライします。");
 						System.Threading.Thread.Sleep(10000);
@@ -256,6 +265,12 @@ namespace namaichi.rec
 					var mes = "";
 					if (pageType == 2 || pageType == 3) mes = "この放送は終了しています。";
 					rm.form.addLogText(mes);
+					var reason = util.getRegGroup(res, "rejectedReasons&quot;:\\[(.*?)\\]");
+					if (reason != null) {
+						rm.form.addLogText("(reason: " + reason.Replace("&quot;", "\"") + ")");
+						if (reason.IndexOf("notAllowedCountry") > -1) 
+							rm.form.addLogText("この国からの接続は許可されていません");
+					}
 					util.debugWriteLine("pagetype " + pageType + " 終了");
 					
 					if (bool.Parse(rm.cfg.get("IsdeleteExit"))) {
@@ -465,7 +480,7 @@ namespace namaichi.rec
 			try {
 				var isEnded = res.IndexOf("\"content_status\":\"closed\"") > -1 ||
 					res.IndexOf("\"content_status\":\"ENDED\"") > -1;
-				var si = new StreamInfo(url, lvid, isEnded);
+				var si = new StreamInfo(url, lvid, isEnded, false);
 				si.set(res);
 				if (!si.getTimeInfo()) return;
 				

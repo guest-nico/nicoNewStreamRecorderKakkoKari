@@ -68,7 +68,6 @@ namespace rokugaTouroku
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 			}
-			
 			try {
 				if (bool.Parse(config.get("IsRestoreLocation"))) {
 					var x = config.get("rokugaTourokuX");
@@ -200,6 +199,7 @@ namespace rokugaTouroku
 			
 			try{
 				util.debugWriteLine("rokugaTourokuWidth " + Width.ToString() + " rokugaTourokuHeight " + Height.ToString() + " restore rokugaTourokuWidth " + RestoreBounds.Width.ToString() + " restore rokugaTourokuWidth " + RestoreBounds.Height.ToString());
+				//var isMiniInfo = tableLayoutPanel1.RowStyles[1].Height != 158;
 				var isMiniInfo = !logText.Visible;
 				var ritu =  (startTimeLabel.Font.Size / 9);
 				if (this.WindowState == FormWindowState.Normal) {
@@ -380,7 +380,7 @@ namespace rokugaTouroku
 				.Replace("2", "中").Replace("3", "低")
 				.Replace("4", "超低").Replace("5", "音")
 				.Replace("6", "6M").Replace("8", "4M")
-				.Replace("7", "8M");
+				.Replace("7", "8M").Replace("9", "音");
 		}
 		public void displayRiInfo(RecInfo ri, string ctrl = null, string val = null) {
 			var isChange = displayingRi != ri;
@@ -855,7 +855,7 @@ namespace rokugaTouroku
 			var c = getChildControls(this);
 			foreach (var _c in c)
 				if (_c.GetType() == typeof(GroupBox) ||
-				    (_c.GetType() == typeof(Label) && _c.Name != "foldBtnLabel") ||
+				    _c.GetType() == typeof(Label) || 
 				    _c.GetType() == typeof(CheckBox)) _c.ForeColor = color;
 		}
 		private List<Control> getChildControls(Control c) {
@@ -1064,10 +1064,16 @@ namespace rokugaTouroku
 				_qualityCfg = _qualityCfgD;
 			var qualityCfg = JsonConvert.DeserializeObject<Dictionary<int, string>>(_qualityCfg);
 			var qualityCfgD = JsonConvert.DeserializeObject<Dictionary<int, string>>(_qualityCfgD);
-			if (qualityCfg.Count != qualityCfgD.Count) {
-				foreach (var q in qualityCfgD) 
-					if (!qualityCfg.ContainsValue(q.Value)) qualityCfg.Add(qualityCfg.Count, q.Value);
+			//if (qualityCfg.Count != qualityCfgD.Count) {
+			foreach (var q in qualityCfgD) {
+				if (!qualityCfg.ContainsValue(q.Value)) {
+					//qualityCfg.Add(qualityCfg.Count, q.Value);
+					config.set("qualityList", _qualityCfgD);
+					config.set("qualityRank", config.defaultConfig["qualityRank"]);
+					return;
+				}
 			}
+			//}
 			rokugaTouroku.config.config.qualityList = 
 					qualityCfg;
 		}
@@ -1153,8 +1159,11 @@ namespace rokugaTouroku
 		}
 		void FoldBtnLabelClick(object sender, EventArgs e)
 		{
+			//525 698
+			//if (sender == null) return;
 			var ritu =  (startTimeLabel.Font.Size / 9);
 			var a = tableLayoutPanel1.RowStyles;
+			//if (tableLayoutPanel1.RowStyles[1].Height == 16 * ritu) {
 			if (logText.Visible) {
 				tableLayoutPanel1.RowStyles[1].Height = 16 * ritu;
 				Height -= (int)(142 * ritu);

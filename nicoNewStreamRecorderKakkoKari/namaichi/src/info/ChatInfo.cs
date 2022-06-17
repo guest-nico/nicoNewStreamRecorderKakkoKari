@@ -17,7 +17,7 @@ namespace namaichi.info
 	/// </summary>
 	public class ChatInfo
 	{
-		private XDocument xml;
+		public XDocument xml;
 		public string json;
 		public string contents = "";
 		public string premium;

@@ -30,9 +30,10 @@ namespace namaichi.rec
 		private string recFolderFileOrigin;
 		private RecordFromUrl rfu;
 		private RecordingManager rm;
-		private Html5Recorder h5r;
+		//private Html5Recorder h5r;
+		private RecordInfo ri = null;
 		private ChaseHokan chaseHokan = null;
-		public DropSegmentProcess(DateTime _lastWroteSegmentDt, int _lastSegmentNo, Record rec, string recFolderFileOrigin, RecordFromUrl rfu, RecordingManager rm, Html5Recorder h5r) {
+		public DropSegmentProcess(DateTime _lastWroteSegmentDt, int _lastSegmentNo, Record rec, string recFolderFileOrigin, RecordFromUrl rfu, RecordingManager rm, RecordInfo ri) {
 //			this.nti = s;
 			this.lastWroteSegmentDt = _lastWroteSegmentDt;
 			this.lastSegmentNo = _lastSegmentNo;
@@ -40,7 +41,8 @@ namespace namaichi.rec
 			this.recFolderFileOrigin = recFolderFileOrigin;
 			this.rfu = rfu;
 			this.rm = rm;
-			this.h5r = h5r;
+			//this.h5r = h5r;
+			this.ri = ri;
 		}
 		public bool start(numTaskInfo nti) {
 			try {
@@ -70,7 +72,7 @@ namespace namaichi.rec
 				
 				if (fName != null) {
 					rec.addDebugBuf("drop hokan chase  nti.no " + nti.no + " nti.second " + nti.second);
-					chaseHokan = new ChaseHokan(nti, lastSegmentNo, fName, rfu.lvid, rm, h5r, rm.cfg.get("qualityRank").Split(','));
+					chaseHokan = new ChaseHokan(nti, lastSegmentNo, fName, rfu.lvid, rm, ri, rm.cfg.get("qualityRank").Split(','));
 					Task.Run(() => {
 						chaseHokan.start();
 						chaseHokan = null;

@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using Microsoft.Win32;
@@ -33,8 +34,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.58";
-	public static string versionDayStr = "2022/03/27";
+	public static string versionStr = "ver0.88.59";
+	public static string versionDayStr = "2022/06/17";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -62,7 +63,10 @@ class util {
 		
 	}
 	public static int getUnixTime() {
-		return (int)(((TimeSpan)(DateTime.Now - new DateTime(1970, 1, 1))).TotalSeconds);
+		return getUnixTime(DateTime.Now);
+	}
+	public static int getUnixTime(DateTime dt) {
+		return (int)(((TimeSpan)(dt - new DateTime(1970, 1, 1))).TotalSeconds);
 	}
 	public static String[] getJarPath() {
 		bool isTestMode = false;
@@ -533,7 +537,7 @@ class util {
 		}
 		return null;
 	}
-	public static string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36";
+	public static string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.63 Safari/537.36";
 	public static string getPageSource(string _url, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 0, string userAgent = null, bool isGetErrorPage = false) {
 		util.debugWriteLine("access__ getpage " + _url);
 		if (_url == null) {
@@ -568,8 +572,7 @@ class util {
 				if (container != null) req.CookieContainer = container;
 //				util.debugWriteLine("getpage 05");
 				
-				if (userAgent != null) 
-					req.UserAgent = userAgent;
+				req.UserAgent = userAgent != null ? userAgent : util.userAgent;
 				req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
 				req.Timeout = timeoutMs;
@@ -694,17 +697,17 @@ class util {
 			//var resStream = res.GetResponseStream();
 			using (var getResStream = res.GetResponseStream())
 			using (var resStream = new System.IO.StreamReader(getResStream)) {
-				//foreach (var h in res.Headers) Debug.WriteLine("header " + h + " " + res.Headers[h.ToString()]);
+				//foreach (var h in res.Headers) debugWriteLine("header " + h + " " + res.Headers[h.ToString()]);
 				/*
 				List<byte> rb = new List<byte>();
 				for (var i = 0; i < 10; i++) {
 					var a = new byte[100000];
 					var readC = resStream.Read(a, 0, a.Length);
 					if (readC == 0) break;
-					Debug.WriteLine("read c " + readC);
+					debugWriteLine("read c " + readC);
 					for (var j = 0; j < readC; j++) rb.Add(a[j]);
 					
-					Debug.WriteLine("read " + i);
+					debugWriteLine("read " + i);
 				}
 				*/
 				var resStr = resStream.ReadToEnd();
@@ -937,12 +940,13 @@ class util {
 	public static List<string> debugWriteBuf = new List<string>();
 	//public static Task debugWriteTask = null;
 	public static void debugWriteLine(object str) {
-		var dt = DateTime.Now.ToLongTimeString();
+		//var dt = DateTime.Now.ToLongTimeString();
+		var dt = DateTime.Now.ToString("dd HH:mm:ss");
 		
 		try {
 			#if DEBUG
 				System.Diagnostics.Debug.WriteLine(str);
-	//      		System.Diagnostics.Debug.WriteLine(
+	//      		System.Diagnostics.debugWriteLine(
 			#else
 				if (isLogFile) {
 					System.Console.WriteLine(dt + " " + str);
@@ -1195,19 +1199,7 @@ public static void soundEnd(config cfg, MainForm form) {
 		if (msg == "") return;
 		form.formAction(() => util.showMessageBoxCenterForm(form, path + "内に" + msg + "が見つかりませんでした"));
 	}
-	public static bool getStatistics(string lvid, CookieContainer cc, out string visit, out string comment) {
-		visit = "0";
-		comment = "0";
-		var url = "https://live.nicovideo.jp/watch/" + lvid;
-		var res = getPageSource(url, cc);
-		if (res == null) return false;
-		var _visit = util.getRegGroup(res, "statistics&quot;:{&quot;watchCount&quot;:(\\d+),&quot;commentCount&quot;:\\d+}");
-		var _comment = util.getRegGroup(res, "statistics&quot;:{&quot;watchCount&quot;:\\d+,&quot;commentCount&quot;:(\\d+)}");
-		if (_visit == null || _comment == null) return false;
-		visit = _visit;
-		comment = _comment;
-		return true;
-	}
+	
 	public static void setProxy(config cfg, MainForm form = null) {
 		util.httpProxy = null;
 		util.wsProxy = null;
@@ -1494,4 +1486,12 @@ public static void soundEnd(config cfg, MainForm form) {
 	    mBHook = SetWindowsHookEx(whCbt, new HookProc(CBTProc), hInstance, threadId);
 	    return new OpenFileDialog();
 	}
+	public static bool isTaskEnd(Task t) {
+		return t.Status == TaskStatus.Canceled ||
+		    	t.Status == TaskStatus.Faulted ||
+		    	t.Status == TaskStatus.RanToCompletion ||
+		    	t.Status == TaskStatus.WaitingForChildrenToComplete;
+		    	
+	}
+	
 }

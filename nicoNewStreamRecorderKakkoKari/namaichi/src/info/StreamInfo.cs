@@ -10,6 +10,7 @@ using System;
 using System.Net;
 using System.Text.RegularExpressions;
 using namaichi.rec;
+using namaichi.utility;
 
 namespace namaichi.info
 {
@@ -34,59 +35,81 @@ namespace namaichi.info
 		public long endTime, _openTime, serverTime, vposBaseTime;
 		public TimeSpan programTime;
 		public string[] recFolderFileInfo;
+		public bool isChannelPlus = false;
 		
 		public StreamInfo() {
 		}
-		public StreamInfo (string url, string lvid, bool isTimeShift) {
+		public StreamInfo (string url, string lvid, bool isTimeShift, bool isChannelPlus) {
 			this.url = url;
 			this.lvid = lvid;
 			this.isTimeShift = isTimeShift;
+			this.isChannelPlus = isChannelPlus;
 		}
 		//public void set(string res, CookieContainer cc) {
 		public void set(string res) {
-			type = util.getRegGroup(res, "\"content_type\":\"(.+?)\"");
-			data = util.getRegGroup(res, "<script id=\"embedded-data\" data-props=\"([\\d\\D]+?)</script>");
-			this.res = res; 
-			isRtmpOnlyPage = res.IndexOf("%3Cgetplayerstatus%20") > -1 || res.IndexOf("<getplayerstatus ") > -1;
-			
-			isChasable = util.getRegGroup(res, "&quot;permissions&quot;:\\[[^\\]]*(CHASE_PLAY)") != null &&
-				res.IndexOf("isChasePlayEnabled&quot;:true") > -1;
-			
-			data = (isRtmpOnlyPage) ? System.Web.HttpUtility.UrlDecode(res) :
-						System.Web.HttpUtility.HtmlDecode(data);
-			isReservation = data.IndexOf("\"reservation\"") > -1;
-			
-			//long endTime, _openTime, serverTime, vposBaseTime;
-			//openTime = endTime = _openTime = serverTime = vposBaseTime = 0;
+			if (lvid.StartsWith("lv")) {
+				type = util.getRegGroup(res, "\"content_type\":\"(.+?)\"");
+				data = util.getRegGroup(res, "<script id=\"embedded-data\" data-props=\"([\\d\\D]+?)</script>");
+				this.res = res; 
+				isRtmpOnlyPage = res.IndexOf("%3Cgetplayerstatus%20") > -1 || res.IndexOf("<getplayerstatus ") > -1;
+				
+				isChasable = util.getRegGroup(res, "&quot;permissions&quot;:\\[[^\\]]*(CHASE_PLAY)") != null &&
+					res.IndexOf("isChasePlayEnabled&quot;:true") > -1;
+				
+				data = (isRtmpOnlyPage) ? System.Web.HttpUtility.UrlDecode(res) :
+							System.Web.HttpUtility.HtmlDecode(data);
+				isReservation = lvid.StartsWith("lv") ? data.IndexOf("\"reservation\"") > -1 : data.IndexOf("\"has_archived_files\":true") > -1;
+				
+				//long endTime, _openTime, serverTime, vposBaseTime;
+				//openTime = endTime = _openTime = serverTime = vposBaseTime = 0;
+		    } else {
+			    type = "chplus";
+			    data = this.res = res;
+			    isChasable = false;
+			    isReservation = false;
+		    }
 			programTime = util.getUnixToDatetime(endTime) - util.getUnixToDatetime(openTime);
-			
 			recFolderFileInfo = getHtml5RecFolderFileInfo(data, type, isRtmpOnlyPage);
 		}
 		public bool getTimeInfo() {
 			if (data == null) return false;
 			
-			if (!isRtmpOnlyPage) {
-				if (!long.TryParse(util.getRegGroup(data, "\"beginTime\":(\\d+)"), out openTime))
-						return false;
-	//				var openTime = long.Parse(util.getRegGroup(data, "\"beginTimeMs\":(\\d+)"));
-				if (!long.TryParse(util.getRegGroup(data, "\"endTime\":(\\d+)"), out endTime))
-						return false;				
-				if (!long.TryParse(util.getRegGroup(data, "\"openTime\":(\\d+)"), out _openTime))
-						return false;
-				if (!long.TryParse(util.getRegGroup(data, "\"serverTime\":(\\d+)"), out serverTime))
-						return false;
-				if (!long.TryParse(util.getRegGroup(data, "\"vposBaseTime\":(\\d+)"), out vposBaseTime))
-						return false;
+			if (lvid.StartsWith("lv")) {
+				if (!isRtmpOnlyPage) {
+					if (!long.TryParse(util.getRegGroup(data, "\"beginTime\":(\\d+)"), out openTime))
+							return false;
+		//				var openTime = long.Parse(util.getRegGroup(data, "\"beginTimeMs\":(\\d+)"));
+					if (!long.TryParse(util.getRegGroup(data, "\"endTime\":(\\d+)"), out endTime))
+							return false;				
+					if (!long.TryParse(util.getRegGroup(data, "\"openTime\":(\\d+)"), out _openTime))
+							return false;
+					if (!long.TryParse(util.getRegGroup(data, "\"serverTime\":(\\d+)"), out serverTime))
+							return false;
+					if (!long.TryParse(util.getRegGroup(data, "\"vposBaseTime\":(\\d+)"), out vposBaseTime))
+							return false;
+				} else {
+					if (!long.TryParse(util.getRegGroup(data, "<start_time>(\\d+)"), out openTime))
+							return false;
+		//				var openTime = long.Parse(util.getRegGroup(data, "\"beginTimeMs\":(\\d+)"));
+					if (!long.TryParse(util.getRegGroup(data, "<end_time>(\\d+)"), out endTime))
+							return false;				
+					if (!long.TryParse(util.getRegGroup(data, "<base_time>(\\d+)"), out _openTime))
+							return false;
+					if (!long.TryParse(util.getRegGroup(data, "status=\"ok\" time=\"(\\d+)\""), out serverTime))
+							return false;
+				}
 			} else {
-				if (!long.TryParse(util.getRegGroup(data, "<start_time>(\\d+)"), out openTime))
-						return false;
-	//				var openTime = long.Parse(util.getRegGroup(data, "\"beginTimeMs\":(\\d+)"));
-				if (!long.TryParse(util.getRegGroup(data, "<end_time>(\\d+)"), out endTime))
-						return false;				
-				if (!long.TryParse(util.getRegGroup(data, "<base_time>(\\d+)"), out _openTime))
-						return false;
-				if (!long.TryParse(util.getRegGroup(data, "status=\"ok\" time=\"(\\d+)\""), out serverTime))
-						return false;
+				string startTimeDtStr = util.getRegGroup(data, "\"live_started_at\":\"(.+?)\"");
+				if (startTimeDtStr == null) startTimeDtStr = util.getRegGroup(data, "\"live_scheduled_start_at\":\"(.+?)\"");
+				if (startTimeDtStr == null) startTimeDtStr = util.getRegGroup(data, "\"released_at\":\"(.+?)\"");
+				var endTimeDtStr = util.getRegGroup(data, "\"live_finished_at\":\"(.+?)\"");
+				if (endTimeDtStr == null) endTimeDtStr = util.getRegGroup(data, "\"live_scheduled_end_at\":\"(.+?)\"");
+				if (endTimeDtStr == null) endTimeDtStr = util.getRegGroup(data, "\"released_at\":\"(.+?)\"");
+				if (startTimeDtStr == null || endTimeDtStr == null) return false;
+				openTime = _openTime = util.getUnixTime(DateTime.Parse(startTimeDtStr) + TimeSpan.FromHours(9));
+				endTime = util.getUnixTime(DateTime.Parse(endTimeDtStr) + TimeSpan.FromHours(9));
+				
+				serverTime = vposBaseTime = util.getUnixTime();
 			}
 			return true;
 		}
@@ -94,77 +117,104 @@ namespace namaichi.info
 			string host, group, title, communityNum, userId;
 			host = group = title = communityNum = userId = null;
 			
-			if (!isRtmpOnlyPage) {
-//				host = group = title = communityNum = userId = null;
-				if (type == "official") {
-					group = util.getRegGroup(data, "\"socialGroup\".+?\"name\".\"(.+?)\"");
-					
-		//			if (host == null) host = "official";
-					host = util.getRegGroup(data, "\"supplier\"..\"name\".\"(.*?)\"");
-					if (host == null || host == "") {
-						//group = "official";
-						host = "公式生放送";
+			if (lvid.StartsWith("lv")) {
+				if (!isRtmpOnlyPage) {
+	//				host = group = title = communityNum = userId = null;
+					if (type == "official") {
+						group = util.getRegGroup(data, "\"socialGroup\".+?\"name\".\"(.+?)\"");
+						
+			//			if (host == null) host = "official";
+						host = util.getRegGroup(data, "\"supplier\"..\"name\".\"(.*?)\"");
+						if (host == null || host == "") {
+							//group = "official";
+							host = "公式生放送";
+						}
+						if (group == null || group == "") group = "official"; 
+						if (util.getRegGroup(data, "(\"socialGroup\".\\{\\},)") != null) host = "公式生放送";
+						title = util.getRegGroup(data, "\"title\"\\:\"(.+?)\",");
+		//				title = util.uniToOriginal(title);
+						communityNum = util.getRegGroup(data, "\"socialGroup\".+?\"id\".\"(.+?)\"");
+						if (communityNum == null) communityNum = "official";
+						userId = "official";
+						
+						util.debugWriteLine(host + " " + group + " " + title + " " + communityNum);
+						if (host == null || group == null || title == null || communityNum == null) return null;
+						util.debugWriteLine(host + " " + group + " " + title + " " + communityNum);
+					} else {
+						bool isAPI = false;
+						if (isAPI) {
+							//var a = new System.Net.WebHeaderCollection();
+							//var apiRes = util.getPageSource(url + "/programinfo", container);
+						
+						} else {
+							
+							var isChannel = util.getRegGroup(data, "visualProviderType\":\"(channel)\",\"title\"") != null;
+				//			host = util.getRegGroup(res, "provider......name.....(.*?)\\\\\"");
+							group = util.getRegGroup(data, "\"socialGroup\".*?\"name\".\"(.*?)\"");
+				//			group = util.uniToOriginal(group);
+				//			group = util.getRegGroup(res, "communityInfo.\".+?title.\"..\"(.+?).\"");
+							host = util.getRegGroup(data, "\"supplier\"..\"name\".\"(.*?)\"");
+							if (string.IsNullOrEmpty(host)) host = group;
+				//			System.out.println(group);
+				//			host = util.uniToOriginal(host);
+				//			title = util.getRegGroup(res, "\\\"programHeader\\\"\:\{\\\"thumbnailUrl\\\".+?\\\"title\\\"\:\\\"(.*?)\\\"");
+				//			title = util.getRegGroup(res, "\\\\\"programHeader\\\\\":\\{\\\\\"thumbnailUrl.+?\\\\\"title\\\\\":\\\\\"(.*?)\\\\\"");
+							title = util.getRegGroup(data, "visualProviderType\":\"(community|channel)\",\"title\":\"(.*?)\",", 2);
+				//			communityNum = util.getRegGroup(res, "socialGroup: \\{[\\s\\S]*registrationUrl: \"http://com.nicovideo.jp/motion/(.*?)\\?");
+							communityNum = util.getRegGroup(data, "\"socialGroup\".+?\"id\".\"(.+?)\"");
+				//			community = util.getRegGroup(res, "socialGroup\\:)");
+							userId = (isChannel) ? "channel" : (util.getRegGroup(data, "supplier\":{\"name\".+?pageUrl\":\"https*://www.nicovideo.jp/user/(\\d+?)\""));
+							util.debugWriteLine("userid " + userId);
+				
+							util.debugWriteLine("title " + title);
+							util.debugWriteLine("community " + communityNum);
+				//			community = util.getRegGroup(res, "socialGr(oup:)");
+				//			title = util.getRegGroup(res, "\\\"programHeader\\\"\\:\\{\\\"thumbnailUrl\\\".+?\\\"title\\\"\\:\\\"(.*?)\\\"");
+							//  ,\"programHeader\":{\"thumbnailUrl\":\"http:\/\/icon.nimg.jp\/community\/s\/123\/co1231728.jpg?1373210036\",\"title\":\"\u56F2\u7881\",\"provider
+				//			title = util.uniToOriginal(title);
+							util.debugWriteLine(host + " " + group + " " + title + " " + communityNum + " userid " + userId);
+							if (host == null || group == null || title == null || communityNum == null || userId == null) return null;
+						}
+						
 					}
-					if (group == null || group == "") group = "official"; 
-					if (util.getRegGroup(data, "(\"socialGroup\".\\{\\},)") != null) host = "公式生放送";
-					title = util.getRegGroup(data, "\"title\"\\:\"(.+?)\",");
+					
+				} else {
+					group = util.getRegGroup(data, "class=\"ch_name\" title=\"(.+?)\"");
+					if (group == null) group = "official";
+					
+					host = util.getRegGroup(data, "（提供:(.+?)）");
+					if (host == null) host = "公式生放送";
+					title = util.getRegGroup(data, "<title>(.+?)</title>");
 	//				title = util.uniToOriginal(title);
-					communityNum = util.getRegGroup(data, "\"socialGroup\".+?\"id\".\"(.+?)\"");
+					communityNum = util.getRegGroup(data, "channel/(ch\\d+)");
 					if (communityNum == null) communityNum = "official";
 					userId = "official";
 					
 					util.debugWriteLine(host + " " + group + " " + title + " " + communityNum);
 					if (host == null || group == null || title == null || communityNum == null) return null;
 					util.debugWriteLine(host + " " + group + " " + title + " " + communityNum);
-				} else {
-					bool isAPI = false;
-					if (isAPI) {
-						//var a = new System.Net.WebHeaderCollection();
-						//var apiRes = util.getPageSource(url + "/programinfo", container);
-					
-					} else {
-						
-						var isChannel = util.getRegGroup(data, "visualProviderType\":\"(channel)\",\"title\"") != null;
-			//			host = util.getRegGroup(res, "provider......name.....(.*?)\\\\\"");
-						group = util.getRegGroup(data, "\"socialGroup\".*?\"name\".\"(.*?)\"");
-			//			group = util.uniToOriginal(group);
-			//			group = util.getRegGroup(res, "communityInfo.\".+?title.\"..\"(.+?).\"");
-						host = util.getRegGroup(data, "\"supplier\"..\"name\".\"(.*?)\"");
-						if (string.IsNullOrEmpty(host)) host = group;
-			//			System.out.println(group);
-			//			host = util.uniToOriginal(host);
-			//			title = util.getRegGroup(res, "\\\"programHeader\\\"\:\{\\\"thumbnailUrl\\\".+?\\\"title\\\"\:\\\"(.*?)\\\"");
-			//			title = util.getRegGroup(res, "\\\\\"programHeader\\\\\":\\{\\\\\"thumbnailUrl.+?\\\\\"title\\\\\":\\\\\"(.*?)\\\\\"");
-						title = util.getRegGroup(data, "visualProviderType\":\"(community|channel)\",\"title\":\"(.*?)\",", 2);
-			//			communityNum = util.getRegGroup(res, "socialGroup: \\{[\\s\\S]*registrationUrl: \"http://com.nicovideo.jp/motion/(.*?)\\?");
-						communityNum = util.getRegGroup(data, "\"socialGroup\".+?\"id\".\"(.+?)\"");
-			//			community = util.getRegGroup(res, "socialGroup\\:)");
-						userId = (isChannel) ? "channel" : (util.getRegGroup(data, "supplier\":{\"name\".+?pageUrl\":\"https*://www.nicovideo.jp/user/(\\d+?)\""));
-						util.debugWriteLine("userid " + userId);
-			
-						util.debugWriteLine("title " + title);
-						util.debugWriteLine("community " + communityNum);
-			//			community = util.getRegGroup(res, "socialGr(oup:)");
-			//			title = util.getRegGroup(res, "\\\"programHeader\\\"\\:\\{\\\"thumbnailUrl\\\".+?\\\"title\\\"\\:\\\"(.*?)\\\"");
-						//  ,\"programHeader\":{\"thumbnailUrl\":\"http:\/\/icon.nimg.jp\/community\/s\/123\/co1231728.jpg?1373210036\",\"title\":\"\u56F2\u7881\",\"provider
-			//			title = util.uniToOriginal(title);
-						util.debugWriteLine(host + " " + group + " " + title + " " + communityNum + " userid " + userId);
-						if (host == null || group == null || title == null || communityNum == null || userId == null) return null;
-					}
-					
 				}
-				
 			} else {
-				group = util.getRegGroup(data, "class=\"ch_name\" title=\"(.+?)\"");
-				if (group == null) group = "official";
-				
-				host = util.getRegGroup(data, "（提供:(.+?)）");
-				if (host == null) host = "公式生放送";
-				title = util.getRegGroup(data, "<title>(.+?)</title>");
-//				title = util.uniToOriginal(title);
-				communityNum = util.getRegGroup(data, "channel/(ch\\d+)");
-				if (communityNum == null) communityNum = "official";
-				userId = "official";
+				communityNum = "000";
+				group = host = "ニコニコチャンネルプラス"; 
+				var _cn = util.getRegGroup(res, "\"fanclub_site\".+?\"id\":(\\d+)");
+				if (_cn != null) {
+					communityNum = _cn;
+					var c = new Curl();
+					var r = c.getStr("https://nfc-api.nicochannel.jp/fc/fanclub_sites/" + _cn + "/page_base_info", Curl.getDefaultHeaders(), CurlHttpVersion.CURL_HTTP_VERSION_2TLS);
+					if (r != null) {
+						var _group = util.getRegGroup(r, "\"fanclub_site_name\":\"(.+?)\",\"favicon");
+						if (_group != null) group = host = _group;
+						_cn = util.getRegGroup(r, "\"fanclub_code\":\"(.+?)\"");
+						if (_cn != null) communityNum = _cn;
+					}
+				}
+				title = util.getRegGroup(res, "\"title\":\"(.+?)\"");
+				userId = util.getRegGroup(url, "https://nicochannel.jp/(.+?)/");
+				if (userId == null) userId = communityNum;
+				title = title.Replace("\\", "");
+				host = host.Replace("\\", "");
+				group = group.Replace("\\", "");
 				
 				util.debugWriteLine(host + " " + group + " " + title + " " + communityNum);
 				if (host == null || group == null || title == null || communityNum == null) return null;
@@ -227,7 +277,7 @@ namespace namaichi.info
 			util.debugWriteLine("pagetype " + pageType + " isChase" + isChase);
 			
 			isFmp4 = si.data.IndexOf("\"providerType\":\"community\"") > -1 &&
-					pageType == 0 && !si.isTimeShift && cfg.get("latency") == "0.5" && true;
+					pageType == 0 && !si.isTimeShift && cfg.get("latency") == "新方式の低遅延" && true;
 			
 			webSocketRecInfo = RecordInfo.getWebSocketInfo(si.data, isRtmp, isChase, si.isTimeShift, form, isFmp4);
 			util.debugWriteLine("websocketrecinfo " + webSocketRecInfo);
@@ -246,7 +296,8 @@ namespace namaichi.info
 		public string[] getRecFilePath(bool isRtmp, TimeShiftConfig timeShiftConfig, bool isFmp4, config.config cfg, MainForm form) {
 			util.debugWriteLine(si.openTime + " c " + si.recFolderFileInfo[0] + " timeshiftConfig " + timeShiftConfig);
 			try {
-				return util.getRecFolderFilePath(si.recFolderFileInfo[0], si.recFolderFileInfo[1], si.recFolderFileInfo[2], si.recFolderFileInfo[3], si.recFolderFileInfo[4], si.recFolderFileInfo[5], cfg, si.isTimeShift, timeShiftConfig, si.openTime, isRtmp, isFmp4);
+				var id = si.isChannelPlus ? si.recFolderFileInfo[3].Substring(0, 12) : si.recFolderFileInfo[3]; 
+				return util.getRecFolderFilePath(si.recFolderFileInfo[0], si.recFolderFileInfo[1], si.recFolderFileInfo[2], id, si.recFolderFileInfo[4], si.recFolderFileInfo[5], cfg, si.isTimeShift, timeShiftConfig, si.openTime, isRtmp, isFmp4);
 			} catch (Exception e) {
 				form.addLogText("保存先パスの取得もしくはフォルダの作成に失敗しました");
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
@@ -274,8 +325,8 @@ namespace namaichi.info
 			var wsUrl = util.getRegGroup(data, "\"webSocketUrl\":\"(ws[\\d\\D]+?)\"");
 			if (wsUrl == null) return null;
 
-			var latency = float.Parse(form.rec.cfg.get("latency"));
-			wsUrl += "&frontend_id=" + (latency % 1 == 0 || isRtmp ? "90" : "12");
+			var latency = form.rec.cfg.get("latency");
+			wsUrl += "&frontend_id=" + ((latency == "1.0" || latency == "3.0" || isRtmp) ? "90" : "12");
 			util.debugWriteLine("wsurl " + wsUrl);
 			
 			var broadcastId = util.getRegGroup(data, "\"broadcastId\"\\:\"(\\d+)\"");
@@ -317,7 +368,7 @@ namespace namaichi.info
 			} else if (ver == "2") {
 				
 				request = isRtmp ? "{\"type\":\"startWatching\",\"data\":{\"stream\":{\"quality\":\"normal\",\"protocol\":\"rtmp\",\"latency\":\"high\",\"chasePlay\":false},\"room\":{\"protocol\":\"webSocket\",\"commentable\":true},\"reconnect\":false}}"
-					: "{\"type\":\"startWatching\",\"data\":{\"stream\":{\"quality\":\"normal\",\"protocol\":\"hls" + (isFmp4 ? "+fmp4" : "") + "\",\"latency\":\"" + (latency < 1.1 ? "low" : "high") + "\",\"chasePlay\":" + (isChase ? "true" : "false") + "},\"room\":{\"protocol\":\"webSocket\",\"commentable\":true},\"reconnect\":false}}";
+					: "{\"type\":\"startWatching\",\"data\":{\"stream\":{\"quality\":\"normal\",\"protocol\":\"hls" + (isFmp4 ? "+fmp4" : "") + "\",\"latency\":\"" + (latency == "新方式の低遅延" || latency == "1" ? "low" : "high") + "\",\"chasePlay\":" + (isChase ? "true" : "false") + "},\"room\":{\"protocol\":\"webSocket\",\"commentable\":true},\"reconnect\":false}}";
 			} else {
 				form.addLogText("unknown type " + ver);
 				return null;
@@ -347,8 +398,9 @@ namespace namaichi.info
 				string userId, config.config cfg, long startTime, bool isChase, 
 				long openTime, RecordingManager rm) {
 			var segmentSaveType = cfg.get("segmentSaveType");
+			var _lvid = !si.isChannelPlus ? lvId : lvId.Substring(0, 12);
 			var lastFile = util.getLastTimeshiftFileName(host,
-					group, title, lvId, communityNum, userId, cfg, startTime, isFmp4);
+					group, title, _lvid, communityNum, userId, cfg, startTime, isFmp4);
 			util.debugWriteLine("timeshift lastfile " + lastFile);
 			string[] lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType, isFmp4);
 			if (lastFileTime == null)
@@ -357,7 +409,7 @@ namespace namaichi.info
 			
 			try {
 				var prepTime = (int)(startTime - openTime);
-				var o = new TimeShiftOptionForm(lastFileTime, segmentSaveType, rm.cfg, isChase, prepTime, isFmp4);
+				var o = new TimeShiftOptionForm(lastFileTime, segmentSaveType, rm.cfg, isChase, prepTime, isFmp4, si.isChannelPlus);
 				
 				
 				try {

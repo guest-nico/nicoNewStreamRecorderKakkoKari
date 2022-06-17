@@ -64,6 +64,15 @@
     <Reference Include="Microsoft.Web.XmlTransform">
       <HintPath>..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack">
+      <HintPath>..\packages\WindowsAPICodePack-Core.1.1.2\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Shell">
+      <HintPath>..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.ShellExtensions">
+      <HintPath>..\packages\WindowsAPICodePack-ShellExtensions.1.1.1\lib\Microsoft.WindowsAPICodePack.ShellExtensions.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -194,6 +203,7 @@
     <Compile Include="Properties\Settings.Designer.cs" />
     <Compile Include="src\rec\ArgConcat.cs" />
     <Compile Include="src\rec\AnotherEngineRecorder.cs" />
+    <Compile Include="src\rec\ChannelPlusRecorder.cs" />
     <Compile Include="src\rec\ChaseHokan.cs" />
     <Compile Include="src\rec\ChaseLastRecord.cs" />
     <Compile Include="src\rec\DeflateDecoder.cs" />
@@ -204,6 +214,7 @@
     <Compile Include="src\rec\FollowCommunity.cs" />
     <Compile Include="src\rec\Html5Recorder.cs" />
     <Compile Include="src\rec\IRecorderProcess.cs" />
+    <Compile Include="src\rec\ITimeShiftCommentGetter.cs" />
     <Compile Include="src\rec\JikkenRecorder.cs" />
     <Compile Include="src\rec\JikkenRecordProcess.cs" />
     <Compile Include="src\rec\NotHtml5Recorder.cs" />
@@ -217,11 +228,14 @@
     <Compile Include="src\rec\RtmpRecorder.cs" />
     <Compile Include="src\rec\ThroughFFMpeg.cs" />
     <Compile Include="src\rec\TimeShiftCommentGetter.cs" />
+    <Compile Include="src\rec\TimeShiftCommentGetter_chPlus.cs" />
     <Compile Include="src\rec\TimeShiftCommentGetter_jikken.cs" />
     <Compile Include="src\rec\TimeShiftCommentGetter_xml.cs" />
     <Compile Include="src\rec\WebSocketRecorder.cs" />
     <Compile Include="src\rec\XmlCommentGetter_ontime.cs" />
     <Compile Include="src\util\ArgReader.cs" />
+    <Compile Include="src\util\Curl.cs" />
+    <Compile Include="src\util\RedirectLogin.cs" />
     <Compile Include="src\util\RegGetter.cs" />
     <Compile Include="src\util\SourceInfoSerialize.cs" />
     <Compile Include="src\util\util.cs" />
@@ -257,6 +271,27 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="libcrypto-81_3.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="libcurl.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="libssl-81_3.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="nghttp2.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="nghttp3.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="ngtcp2.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="ngtcp2_crypto_openssl.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings" />
   </ItemGroup>

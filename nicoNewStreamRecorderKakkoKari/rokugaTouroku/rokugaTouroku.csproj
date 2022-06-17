@@ -26,8 +26,7 @@
     <DelaySign>False</DelaySign>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>True</Prefer32Bit>
+    <PlatformTarget>x86</PlatformTarget>
     <BaseAddress>4194304</BaseAddress>
     <RegisterForComInterop>False</RegisterForComInterop>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
@@ -40,6 +39,7 @@
     <Optimize>False</Optimize>
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -88,6 +88,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\config\config.cs" />
+    <Compile Include="src\gui\accountForm.cs" />
+    <Compile Include="src\gui\accountForm.Designer.cs">
+      <DependentUpon>accountForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="src\gui\fileNameOptionForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -109,6 +113,7 @@
     <Compile Include="src\gui\QualityForm.Designer.cs">
       <DependentUpon>QualityForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\gui\sortableList.cs" />
     <Compile Include="src\gui\TimeShiftOptionForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -133,6 +138,7 @@
     <Compile Include="src\gui\VersionForm.Designer.cs">
       <DependentUpon>VersionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\info\AccountInfo.cs" />
     <Compile Include="src\info\RecInfo.cs" />
     <Compile Include="src\info\TimeShiftConfig.cs" />
     <Compile Include="src\Logger\TraceListener.cs" />
@@ -159,6 +165,9 @@
     <Folder Include="src\util" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="src\gui\accountForm.resx">
+      <DependentUpon>accountForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\gui\fileNameOptionForm.resx">
       <DependentUpon>fileNameOptionForm.cs</DependentUpon>
     </EmbeddedResource>

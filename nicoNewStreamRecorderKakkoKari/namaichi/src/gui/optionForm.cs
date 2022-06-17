@@ -150,6 +150,7 @@ namespace namaichi
 				{"IstitlebarSamune",isTitleBarSamune.Checked.ToString().ToLower()},
 				{"IsautoFollowComgen",isAutoFollowComGen.Checked.ToString().ToLower()},
 				{"qualityRank",getQualityRank()},
+				{"chPlusQualityRank",getQualityRankChPlus()},
 				{"IsMiniStart",isMiniStartChkBox.Checked.ToString().ToLower()},
 				{"IsConfirmCloseMsgBox",isConfirmCloseMsgBoxChkBox.Checked.ToString().ToLower()},
 				{"IsRecBtnOnlyMouse",isRecBtnOnlyMouseChkBox.Checked.ToString().ToLower()},
@@ -209,9 +210,13 @@ namespace namaichi
 				{"user_session2",""},
 				{"user_session_secure2",""},
 				
+				{"chPlus_access_token",""},
+				{"chPlus_refreshCookie", ""},
+				
 				{"useProxy",useProxyChkBox.Checked.ToString().ToLower()},
 				{"proxyAddress",proxyAddressText.Text},
 				{"proxyPort",proxyPortText.Text},
+				{"localServerPortList", localServerPortList.Text},
 				
 				{"fontSize",fontList.Value.ToString()},
 				{"IsTray",IsTrayChkBox.Checked.ToString().ToLower()},
@@ -402,6 +407,7 @@ namespace namaichi
         	isTitleBarSamune.Checked = bool.Parse(cfg.get("IstitlebarSamune"));
         	isAutoFollowComGen.Checked = bool.Parse(cfg.get("IsautoFollowComgen"));
         	setInitQualityRankList(cfg.get("qualityRank"));
+        	setInitQualityRankListChPlus(cfg.get("chPlusQualityRank"));
         	isMiniStartChkBox.Checked = bool.Parse(cfg.get("IsMiniStart"));
         	isConfirmCloseMsgBoxChkBox.Checked = bool.Parse(cfg.get("IsConfirmCloseMsgBox"));
         	isRecBtnOnlyMouseChkBox.Checked = bool.Parse(cfg.get("IsRecBtnOnlyMouse"));
@@ -479,6 +485,7 @@ namespace namaichi
         	proxyAddressText.Text = cfg.get("proxyAddress");
         	proxyPortText.Text = cfg.get("proxyPort");
         	useProxyChkBox.Checked = bool.Parse(cfg.get("useProxy"));
+        	localServerPortList.Text = cfg.get("localServerPortList");
         	
         	fontList.Value = decimal.Parse(cfg.get("fontSize"));
         	IsTrayChkBox.Checked = bool.Parse(cfg.get("IsTray"));
@@ -638,7 +645,7 @@ namespace namaichi
 		
 		void highRankBtn_Click(object sender, EventArgs e)
 		{
-			List<int> ranks = new List<int>() {7,6,8,0,1,2,3,4,5};
+			List<int> ranks = new List<int>() {7,6,8,0,1,2,3,4,5,9};
 			for (var i = ranks.Count; i < config.config.qualityList.Count; i++)
 				ranks.Add(i);
 			qualityListBox.Items.Clear();
@@ -646,7 +653,7 @@ namespace namaichi
 		}
 		void lowRankBtn_Click(object sender, EventArgs e)
 		{
-			List<int> ranks = new List<int>() {5, 4, 3, 2, 1, 0, 8, 6, 7};
+			List<int> ranks = new List<int>() {9, 5, 4, 3, 2, 1, 0, 8, 6, 7};
 			for (var i = ranks.Count; i < config.config.qualityList.Count; i++)
 				ranks.Add(i);
 			qualityListBox.Items.Clear();
@@ -718,8 +725,10 @@ namespace namaichi
 			*/
 			var ret = new List<int>();
 			for (int i = 0; i < items.Count; i++) {
-				foreach (KeyValuePair <int, string> p in itemsDic)
-					if (p.Value == items[i].ToString().Substring(3)) ret.Add(p.Key);
+				foreach (KeyValuePair <int, string> p in itemsDic) {
+					var itemName = util.getRegGroup(items[i].ToString(), " (.+)");
+					if (p.Value == itemName) ret.Add(p.Key);
+				}
 			}
 			return ret;
 		}
@@ -1145,6 +1154,74 @@ namespace namaichi
 				commentReplaceList.Height = 19;
 				commentReplaceEditBtn.Text = "編集";
 			}
+		}
+		void ChPlusUpBtnClick(object sender, EventArgs e)
+		{
+			var selectedIndex = chPlusQualityListBox.SelectedIndex;
+			if (selectedIndex < 1) return;
+			
+			var l = getItemsToRanksChPlus(chPlusQualityListBox.Items);
+			var selectedVal = l[selectedIndex];
+			l.RemoveAt(selectedIndex);
+			var addIndex = (selectedIndex == 0) ? 0 : (selectedIndex - 1);
+			l.Insert(addIndex, selectedVal);
+			
+			chPlusQualityListBox.Items.Clear();
+			chPlusQualityListBox.Items.AddRange(getRanksToItemsChPlus(l));
+			chPlusQualityListBox.SetSelected(addIndex, true);
+		}
+		void ChPlusDownBtnClick(object sender, EventArgs e)
+		{
+			var selectedIndex = chPlusQualityListBox.SelectedIndex;
+			var itemCount = chPlusQualityListBox.Items.Count;
+			if (selectedIndex > itemCount - 2) return;
+			
+			var l = getItemsToRanksChPlus(chPlusQualityListBox.Items);
+			var selectedVal = l[selectedIndex + 0];
+			l.RemoveAt(selectedIndex);
+			var addIndex = (selectedIndex == itemCount) ? itemCount : (selectedIndex + 1);
+			l.Insert(addIndex, selectedVal);
+			
+			chPlusQualityListBox.Items.Clear();
+			chPlusQualityListBox.Items.AddRange(getRanksToItemsChPlus(l));
+			chPlusQualityListBox.SetSelected(addIndex, true);
+		}
+		void ChPlusHighRankBtnClick(object sender, EventArgs e)
+		{
+			var l = getItemsToRanksChPlus(chPlusQualityListBox.Items);
+			var _l = l.OrderByDescending(x => int.Parse(util.getRegGroup(x, "(\\d+)"))).ToList();
+			
+			chPlusQualityListBox.Items.Clear();
+			chPlusQualityListBox.Items.AddRange(getRanksToItemsChPlus(_l));
+		}
+		void ChPlusLowRankBtnClick(object sender, EventArgs e)
+		{
+			var l = getItemsToRanksChPlus(chPlusQualityListBox.Items);
+			var _l = l.OrderBy(x => int.Parse(util.getRegGroup(x, "(\\d+)"))).ToList();
+			
+			chPlusQualityListBox.Items.Clear();
+			chPlusQualityListBox.Items.AddRange(getRanksToItemsChPlus(_l));
+		}
+		List<string> getItemsToRanksChPlus(ListBox.ObjectCollection list) {
+			var ret = new List<string>();
+			foreach(var o in list)
+				ret.Add(o.ToString().Substring(3));
+			return ret;
+		}
+		public object[] getRanksToItemsChPlus(List<string> l) {
+			var ret = new object[l.Count];
+			for (var i = 0; i < l.Count; i++)
+				ret[i] = (i + 1) + ". " + l[i];
+			return ret;
+		}
+		private string getQualityRankChPlus() {
+			var buf = getItemsToRanksChPlus(chPlusQualityListBox.Items).ToArray();
+			return string.Join(",", buf);
+		}
+		private void setInitQualityRankListChPlus(string rankCfg) {
+			var l = rankCfg.Split(',');
+			chPlusQualityListBox.Items.Clear();
+			chPlusQualityListBox.Items.AddRange(getRanksToItemsChPlus(l.ToList()));
 		}
 	}
 }

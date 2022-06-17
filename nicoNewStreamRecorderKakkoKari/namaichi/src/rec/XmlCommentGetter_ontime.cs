@@ -16,7 +16,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
-
+using namaichi.info;
 using Newtonsoft.Json;
 
 namespace namaichi.rec
@@ -115,7 +115,7 @@ namespace namaichi.rec
 			chatXml = XDocument.Parse(c);
 
 			
-			var chatinfo = new namaichi.info.ChatInfo(chatXml);
+			var chatinfo = new ChatInfo(chatXml);
 			chatinfo.getFromXml(serverTime);
 //			chatinfo.getFormatXml(serverTime);
 			

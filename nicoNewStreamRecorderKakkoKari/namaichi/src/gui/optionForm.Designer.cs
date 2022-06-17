@@ -127,6 +127,12 @@ namespace namaichi
 			this.isRealTimeRecordRadioBtn = new System.Windows.Forms.RadioButton();
 			this.isChaseRecordRadioBtn = new System.Windows.Forms.RadioButton();
 			this.tabPage5 = new System.Windows.Forms.TabPage();
+			this.groupBox18 = new System.Windows.Forms.GroupBox();
+			this.chPlusDownBtn = new System.Windows.Forms.Button();
+			this.chPlusUpBtn = new System.Windows.Forms.Button();
+			this.chPlusQualityListBox = new System.Windows.Forms.ListBox();
+			this.chPlusLowRankBtn = new System.Windows.Forms.Button();
+			this.chPlusHighRankBtn = new System.Windows.Forms.Button();
 			this.groupBox7 = new System.Windows.Forms.GroupBox();
 			this.label16 = new System.Windows.Forms.Label();
 			this.downBtn = new System.Windows.Forms.Button();
@@ -168,6 +174,9 @@ namespace namaichi
 			this.btnReload2 = new System.Windows.Forms.Button();
 			this.useSecondLoginChkBox2 = new System.Windows.Forms.CheckBox();
 			this.tabPage10 = new System.Windows.Forms.TabPage();
+			this.groupBox19 = new System.Windows.Forms.GroupBox();
+			this.localServerPortList = new System.Windows.Forms.NumericUpDown();
+			this.label19 = new System.Windows.Forms.Label();
 			this.groupBox15 = new System.Windows.Forms.GroupBox();
 			this.useProxyChkBox = new System.Windows.Forms.CheckBox();
 			this.proxyPortLabel = new System.Windows.Forms.Label();
@@ -241,12 +250,15 @@ namespace namaichi
 			this.groupBox14.SuspendLayout();
 			this.groupBox11.SuspendLayout();
 			this.tabPage5.SuspendLayout();
+			this.groupBox18.SuspendLayout();
 			this.groupBox7.SuspendLayout();
 			this.tabPage2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.tabPage4.SuspendLayout();
 			this.groupBox12.SuspendLayout();
 			this.tabPage10.SuspendLayout();
+			this.groupBox19.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.localServerPortList)).BeginInit();
 			this.groupBox15.SuspendLayout();
 			this.tabPage7.SuspendLayout();
 			this.groupBox8.SuspendLayout();
@@ -963,7 +975,7 @@ namespace namaichi
 			this.latencyList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.latencyList.FormattingEnabled = true;
 			this.latencyList.Items.AddRange(new object[] {
-									"0.5",
+									"新方式の低遅延",
 									"1.0",
 									"1.5",
 									"3.0"});
@@ -1223,6 +1235,7 @@ namespace namaichi
 			// 
 			// tabPage5
 			// 
+			this.tabPage5.Controls.Add(this.groupBox18);
 			this.tabPage5.Controls.Add(this.groupBox7);
 			this.tabPage5.Location = new System.Drawing.Point(4, 22);
 			this.tabPage5.Name = "tabPage5";
@@ -1231,6 +1244,76 @@ namespace namaichi
 			this.tabPage5.TabIndex = 4;
 			this.tabPage5.Text = "画質";
 			this.tabPage5.UseVisualStyleBackColor = true;
+			// 
+			// groupBox18
+			// 
+			this.groupBox18.Controls.Add(this.chPlusDownBtn);
+			this.groupBox18.Controls.Add(this.chPlusUpBtn);
+			this.groupBox18.Controls.Add(this.chPlusQualityListBox);
+			this.groupBox18.Controls.Add(this.chPlusLowRankBtn);
+			this.groupBox18.Controls.Add(this.chPlusHighRankBtn);
+			this.groupBox18.Location = new System.Drawing.Point(5, 223);
+			this.groupBox18.Margin = new System.Windows.Forms.Padding(2);
+			this.groupBox18.Name = "groupBox18";
+			this.groupBox18.Padding = new System.Windows.Forms.Padding(2);
+			this.groupBox18.Size = new System.Drawing.Size(394, 209);
+			this.groupBox18.TabIndex = 2;
+			this.groupBox18.TabStop = false;
+			this.groupBox18.Text = "チャンネルプラスマニフェストファイル出力画質優先順位";
+			// 
+			// chPlusDownBtn
+			// 
+			this.chPlusDownBtn.Location = new System.Drawing.Point(290, 63);
+			this.chPlusDownBtn.Name = "chPlusDownBtn";
+			this.chPlusDownBtn.Size = new System.Drawing.Size(42, 30);
+			this.chPlusDownBtn.TabIndex = 4;
+			this.chPlusDownBtn.Text = "下へ";
+			this.chPlusDownBtn.UseVisualStyleBackColor = true;
+			this.chPlusDownBtn.Click += new System.EventHandler(this.ChPlusDownBtnClick);
+			// 
+			// chPlusUpBtn
+			// 
+			this.chPlusUpBtn.Location = new System.Drawing.Point(290, 27);
+			this.chPlusUpBtn.Name = "chPlusUpBtn";
+			this.chPlusUpBtn.Size = new System.Drawing.Size(42, 30);
+			this.chPlusUpBtn.TabIndex = 4;
+			this.chPlusUpBtn.Text = "上へ";
+			this.chPlusUpBtn.UseVisualStyleBackColor = true;
+			this.chPlusUpBtn.Click += new System.EventHandler(this.ChPlusUpBtnClick);
+			// 
+			// chPlusQualityListBox
+			// 
+			this.chPlusQualityListBox.FormattingEnabled = true;
+			this.chPlusQualityListBox.ItemHeight = 12;
+			this.chPlusQualityListBox.Items.AddRange(new object[] {
+									"1. 1080p(1920x1080)",
+									"2. 720p(1280x720)",
+									"3. 360p(640x360)",
+									"4. 240p(426x240)"});
+			this.chPlusQualityListBox.Location = new System.Drawing.Point(26, 27);
+			this.chPlusQualityListBox.Name = "chPlusQualityListBox";
+			this.chPlusQualityListBox.Size = new System.Drawing.Size(247, 112);
+			this.chPlusQualityListBox.TabIndex = 3;
+			// 
+			// chPlusLowRankBtn
+			// 
+			this.chPlusLowRankBtn.Location = new System.Drawing.Point(129, 176);
+			this.chPlusLowRankBtn.Name = "chPlusLowRankBtn";
+			this.chPlusLowRankBtn.Size = new System.Drawing.Size(86, 23);
+			this.chPlusLowRankBtn.TabIndex = 1;
+			this.chPlusLowRankBtn.Text = "なるべく低画質";
+			this.chPlusLowRankBtn.UseVisualStyleBackColor = true;
+			this.chPlusLowRankBtn.Click += new System.EventHandler(this.ChPlusLowRankBtnClick);
+			// 
+			// chPlusHighRankBtn
+			// 
+			this.chPlusHighRankBtn.Location = new System.Drawing.Point(26, 176);
+			this.chPlusHighRankBtn.Name = "chPlusHighRankBtn";
+			this.chPlusHighRankBtn.Size = new System.Drawing.Size(86, 23);
+			this.chPlusHighRankBtn.TabIndex = 1;
+			this.chPlusHighRankBtn.Text = "なるべく高画質";
+			this.chPlusHighRankBtn.UseVisualStyleBackColor = true;
+			this.chPlusHighRankBtn.Click += new System.EventHandler(this.ChPlusHighRankBtnClick);
 			// 
 			// groupBox7
 			// 
@@ -1244,7 +1327,7 @@ namespace namaichi
 			this.groupBox7.Margin = new System.Windows.Forms.Padding(2);
 			this.groupBox7.Name = "groupBox7";
 			this.groupBox7.Padding = new System.Windows.Forms.Padding(2);
-			this.groupBox7.Size = new System.Drawing.Size(394, 217);
+			this.groupBox7.Size = new System.Drawing.Size(394, 209);
 			this.groupBox7.TabIndex = 2;
 			this.groupBox7.TabStop = false;
 			this.groupBox7.Text = "録画画質優先順位";
@@ -1674,6 +1757,7 @@ namespace namaichi
 			// 
 			// tabPage10
 			// 
+			this.tabPage10.Controls.Add(this.groupBox19);
 			this.tabPage10.Controls.Add(this.groupBox15);
 			this.tabPage10.Location = new System.Drawing.Point(4, 22);
 			this.tabPage10.Name = "tabPage10";
@@ -1682,6 +1766,40 @@ namespace namaichi
 			this.tabPage10.TabIndex = 10;
 			this.tabPage10.Text = "接続";
 			this.tabPage10.UseVisualStyleBackColor = true;
+			// 
+			// groupBox19
+			// 
+			this.groupBox19.Controls.Add(this.localServerPortList);
+			this.groupBox19.Controls.Add(this.label19);
+			this.groupBox19.Location = new System.Drawing.Point(5, 122);
+			this.groupBox19.Margin = new System.Windows.Forms.Padding(2);
+			this.groupBox19.Name = "groupBox19";
+			this.groupBox19.Padding = new System.Windows.Forms.Padding(2);
+			this.groupBox19.Size = new System.Drawing.Size(385, 59);
+			this.groupBox19.TabIndex = 3;
+			this.groupBox19.TabStop = false;
+			this.groupBox19.Text = "ローカルサーバー";
+			// 
+			// localServerPortList
+			// 
+			this.localServerPortList.Location = new System.Drawing.Point(59, 24);
+			this.localServerPortList.Maximum = new decimal(new int[] {
+									100000,
+									0,
+									0,
+									0});
+			this.localServerPortList.Name = "localServerPortList";
+			this.localServerPortList.Size = new System.Drawing.Size(103, 19);
+			this.localServerPortList.TabIndex = 24;
+			// 
+			// label19
+			// 
+			this.label19.Location = new System.Drawing.Point(6, 26);
+			this.label19.Name = "label19";
+			this.label19.Size = new System.Drawing.Size(47, 19);
+			this.label19.TabIndex = 23;
+			this.label19.Text = "ポート：";
+			this.label19.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// groupBox15
 			// 
@@ -2283,6 +2401,7 @@ namespace namaichi
 			this.groupBox14.ResumeLayout(false);
 			this.groupBox11.ResumeLayout(false);
 			this.tabPage5.ResumeLayout(false);
+			this.groupBox18.ResumeLayout(false);
 			this.groupBox7.ResumeLayout(false);
 			this.tabPage2.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
@@ -2291,6 +2410,8 @@ namespace namaichi
 			this.groupBox12.ResumeLayout(false);
 			this.groupBox12.PerformLayout();
 			this.tabPage10.ResumeLayout(false);
+			this.groupBox19.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.localServerPortList)).EndInit();
 			this.groupBox15.ResumeLayout(false);
 			this.groupBox15.PerformLayout();
 			this.tabPage7.ResumeLayout(false);
@@ -2304,6 +2425,15 @@ namespace namaichi
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.NumericUpDown localServerPortList;
+		private System.Windows.Forms.Label label19;
+		private System.Windows.Forms.GroupBox groupBox19;
+		private System.Windows.Forms.Button chPlusHighRankBtn;
+		private System.Windows.Forms.Button chPlusLowRankBtn;
+		private System.Windows.Forms.ListBox chPlusQualityListBox;
+		private System.Windows.Forms.Button chPlusUpBtn;
+		private System.Windows.Forms.Button chPlusDownBtn;
+		private System.Windows.Forms.GroupBox groupBox18;
 		private System.Windows.Forms.Button commentReplaceEditBtn;
 		private System.Windows.Forms.DataGridViewTextBoxColumn 変換後;
 		private System.Windows.Forms.DataGridViewTextBoxColumn 変換前;

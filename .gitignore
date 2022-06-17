@@ -342,3 +342,8 @@ ASALocalRun/
 !nicoNewStreamRecorderKakkoKari/packages/RtmpSharp2.dll
 !nicoNewStreamRecorderKakkoKari/packages/SnkLib.App.CookieGetter.2.4.0.0/**/x86
 !nicoNewStreamRecorderKakkoKari/packages/NAudio.1.8.5
+!nicoNewStreamRecorderKakkoKari/packages/libcurl_http23
+!nicoNewStreamRecorderKakkoKari/packages/WindowsAPICodePack-Core.1.1.2
+!nicoNewStreamRecorderKakkoKari/packages/WindowsAPICodePack-Shell.1.1.1
+!nicoNewStreamRecorderKakkoKari/packages/WindowsAPICodePack-ShellExtensions.1.1.1
+!nicoNewStreamRecorderKakkoKari/packages/BouncyCastle.1.8.1
