@@ -58,6 +58,36 @@ Copyright (c) 2000 - 2020 The Legion of the Bouncy Castle Inc.
 MIT license  
 <http://www.bouncycastle.org/licence.html>  
   
+curl  
+<https://github.com/curl/curl>  
+Copyright (c) 1996 - 2022, Daniel Stenberg, <daniel@haxx.se>, and many  
+contributors, see the THANKS file.  
+Curl and libcurl are licensed under the license below, which is inspired by MIT/X, but not identical.  
+<https://github.com/curl/curl/blob/master/COPYING>  
+  
+
+openssl  
+<https://github.com/openssl/openssl>  
+<https://github.com/quictls/openssl>  
+Copyright (c) 1998-2022 The OpenSSL Project  
+Copyright (c) 1995-1998 Eric A. Young, Tim J. Hudson  
+Copyright (c) Akamai and Microsoft  
+Apache License 2.0  
+<https://github.com/openssl/openssl/blob/master/LICENSE.txt>  
+<https://github.com/quictls/openssl/blob/openssl-3.0.3%2Bquic/LICENSE.txt>  
+  
+nghttp3  
+<https://github.com/ngtcp2/nghttp3>  
+Copyright (c) 2019 nghttp3 contributors  
+The MIT License  
+<https://github.com/ngtcp2/nghttp3/blob/main/COPYING>  
+  
+ngtcp2  
+<https://github.com/ngtcp2/ngtcp2>  
+Copyright (c) 2016 ngtcp2 contributors  
+The MIT License  
+<https://github.com/ngtcp2/ngtcp2/blob/main/COPYING>  
+  
 <https://github.com/guest-nico/WebSocket4Net_deflate>  
 <https://github.com/guest-nico/settableVolumeUsingNamedPipeFFplay>  
   
