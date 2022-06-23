@@ -23,12 +23,19 @@ namespace namaichi.utility
 		private IntPtr curlM = IntPtr.Zero;
 		public Curl()
 		{
-			curlM = curl_multi_init();
+			try {
+				curlM = curl_multi_init();
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+			}
 			if (curlM == IntPtr.Zero) {
 				Debug.WriteLine("curl_multi_init zero");
 				return;
 			}
 			curl_multi_setopt(curlM, CURLMoption.CURLMOPT_PIPELINING, (int)CURLpipe.CURLPIPE_MULTIPLEX);
+		}
+		public bool isInitialized() {
+			return curlM != IntPtr.Zero;
 		}
 		public byte[] getBytes(string url, Dictionary<string, string> headers, CurlHttpVersion httpVer, string method = "GET", string postData = "", bool isAddHeader = false) {
 			try {

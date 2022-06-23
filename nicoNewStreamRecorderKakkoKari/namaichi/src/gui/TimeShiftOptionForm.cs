@@ -94,6 +94,9 @@ namespace namaichi
 				isFromLastTimeRadioBtn.Visible = lastFileInfoLabel.Visible = 
 						isRenketuLastFile.Visible = openLastFileBtn.Visible = 
 						openPanelBtn.Visible = isDeletePosTimeChkBox.Visible = false;
+				portText.Text = config.get("localServerPortList");
+			} else {
+				portLabel.Visible = portText.Visible = false;
 			}
 		}
 		private void updateTimeShiftStartTimeChkBox() {
@@ -216,6 +219,7 @@ namespace namaichi
 			l.Add(new KeyValuePair<string, string>("IsAfterStartTimeComment", isAfterStartTimeCommentChkBox.Checked.ToString().ToLower()));
 			l.Add(new KeyValuePair<string, string>("IsBeforeEndTimeComment", isBeforeEndTimeCommentChkBox.Checked.ToString().ToLower()));
 			config.set(l);
+			if (portText.Visible) config.set("localServerPortList", portText.Text);
 			/*
 			config.set("IsUrlList", isUrlList.ToString().ToLower());
 			config.set("IsM3u8List", isM3u8List.ToString().ToLower());

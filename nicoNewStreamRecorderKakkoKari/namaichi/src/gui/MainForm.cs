@@ -369,7 +369,7 @@ namespace namaichi
        		System.Drawing.Icon icon =  null;
 			try {
        			byte[] pic;
-       			if (url.IndexOf("nicochannel.jp") == 0)
+       			if (url.IndexOf("nicochannel.jp") == -1)
        				pic = cl.DownloadData(url);
        			else {
        				pic = new Curl().getBytes(url, Curl.getDefaultHeaders(), CurlHttpVersion.CURL_HTTP_VERSION_2TLS);

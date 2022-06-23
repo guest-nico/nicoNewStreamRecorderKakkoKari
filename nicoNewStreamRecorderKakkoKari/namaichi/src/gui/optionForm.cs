@@ -216,7 +216,6 @@ namespace namaichi
 				{"useProxy",useProxyChkBox.Checked.ToString().ToLower()},
 				{"proxyAddress",proxyAddressText.Text},
 				{"proxyPort",proxyPortText.Text},
-				{"localServerPortList", localServerPortList.Text},
 				
 				{"fontSize",fontList.Value.ToString()},
 				{"IsTray",IsTrayChkBox.Checked.ToString().ToLower()},
@@ -485,7 +484,6 @@ namespace namaichi
         	proxyAddressText.Text = cfg.get("proxyAddress");
         	proxyPortText.Text = cfg.get("proxyPort");
         	useProxyChkBox.Checked = bool.Parse(cfg.get("useProxy"));
-        	localServerPortList.Text = cfg.get("localServerPortList");
         	
         	fontList.Value = decimal.Parse(cfg.get("fontSize"));
         	IsTrayChkBox.Checked = bool.Parse(cfg.get("IsTray"));

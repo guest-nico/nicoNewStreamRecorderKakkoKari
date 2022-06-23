@@ -238,7 +238,7 @@ namespace namaichi.rec
 					return;
 				}			
 			} catch (Exception ee) {
-				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+				util.debugWriteLine("onwscopen " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
 
 		}
@@ -265,6 +265,7 @@ namespace namaichi.rec
 								#if DEBUG
 									form.addLogText("tscg　再試行");
 								#endif
+								Thread.Sleep(1000);
 								continue;
 							}
 							break;

@@ -174,9 +174,6 @@ namespace namaichi
 			this.btnReload2 = new System.Windows.Forms.Button();
 			this.useSecondLoginChkBox2 = new System.Windows.Forms.CheckBox();
 			this.tabPage10 = new System.Windows.Forms.TabPage();
-			this.groupBox19 = new System.Windows.Forms.GroupBox();
-			this.localServerPortList = new System.Windows.Forms.NumericUpDown();
-			this.label19 = new System.Windows.Forms.Label();
 			this.groupBox15 = new System.Windows.Forms.GroupBox();
 			this.useProxyChkBox = new System.Windows.Forms.CheckBox();
 			this.proxyPortLabel = new System.Windows.Forms.Label();
@@ -257,8 +254,6 @@ namespace namaichi
 			this.tabPage4.SuspendLayout();
 			this.groupBox12.SuspendLayout();
 			this.tabPage10.SuspendLayout();
-			this.groupBox19.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.localServerPortList)).BeginInit();
 			this.groupBox15.SuspendLayout();
 			this.tabPage7.SuspendLayout();
 			this.groupBox8.SuspendLayout();
@@ -1757,7 +1752,6 @@ namespace namaichi
 			// 
 			// tabPage10
 			// 
-			this.tabPage10.Controls.Add(this.groupBox19);
 			this.tabPage10.Controls.Add(this.groupBox15);
 			this.tabPage10.Location = new System.Drawing.Point(4, 22);
 			this.tabPage10.Name = "tabPage10";
@@ -1766,40 +1760,6 @@ namespace namaichi
 			this.tabPage10.TabIndex = 10;
 			this.tabPage10.Text = "接続";
 			this.tabPage10.UseVisualStyleBackColor = true;
-			// 
-			// groupBox19
-			// 
-			this.groupBox19.Controls.Add(this.localServerPortList);
-			this.groupBox19.Controls.Add(this.label19);
-			this.groupBox19.Location = new System.Drawing.Point(5, 122);
-			this.groupBox19.Margin = new System.Windows.Forms.Padding(2);
-			this.groupBox19.Name = "groupBox19";
-			this.groupBox19.Padding = new System.Windows.Forms.Padding(2);
-			this.groupBox19.Size = new System.Drawing.Size(385, 59);
-			this.groupBox19.TabIndex = 3;
-			this.groupBox19.TabStop = false;
-			this.groupBox19.Text = "ローカルサーバー";
-			// 
-			// localServerPortList
-			// 
-			this.localServerPortList.Location = new System.Drawing.Point(59, 24);
-			this.localServerPortList.Maximum = new decimal(new int[] {
-									100000,
-									0,
-									0,
-									0});
-			this.localServerPortList.Name = "localServerPortList";
-			this.localServerPortList.Size = new System.Drawing.Size(103, 19);
-			this.localServerPortList.TabIndex = 24;
-			// 
-			// label19
-			// 
-			this.label19.Location = new System.Drawing.Point(6, 26);
-			this.label19.Name = "label19";
-			this.label19.Size = new System.Drawing.Size(47, 19);
-			this.label19.TabIndex = 23;
-			this.label19.Text = "ポート：";
-			this.label19.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// groupBox15
 			// 
@@ -2410,8 +2370,6 @@ namespace namaichi
 			this.groupBox12.ResumeLayout(false);
 			this.groupBox12.PerformLayout();
 			this.tabPage10.ResumeLayout(false);
-			this.groupBox19.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.localServerPortList)).EndInit();
 			this.groupBox15.ResumeLayout(false);
 			this.groupBox15.PerformLayout();
 			this.tabPage7.ResumeLayout(false);
@@ -2425,9 +2383,6 @@ namespace namaichi
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 		}
-		private System.Windows.Forms.NumericUpDown localServerPortList;
-		private System.Windows.Forms.Label label19;
-		private System.Windows.Forms.GroupBox groupBox19;
 		private System.Windows.Forms.Button chPlusHighRankBtn;
 		private System.Windows.Forms.Button chPlusLowRankBtn;
 		private System.Windows.Forms.ListBox chPlusQualityListBox;

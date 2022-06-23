@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 using System.Text;
+using namaichi.info;
 
 namespace namaichi.rec
 {
@@ -333,7 +334,7 @@ namespace namaichi.rec
 			chatXml = XDocument.Parse(c);
 
 			
-			var chatinfo = new namaichi.info.ChatInfo(chatXml);
+			var chatinfo = new ChatInfo(chatXml);
 			
 			
 			var vposStartTime = (isVposStartTime) ? (long)rp.firstSegmentSecond : 0;

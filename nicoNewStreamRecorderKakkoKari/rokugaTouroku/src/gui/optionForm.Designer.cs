@@ -226,9 +226,6 @@ namespace rokugaTouroku
 			this.label3 = new System.Windows.Forms.Label();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
-			this.groupBox19 = new System.Windows.Forms.GroupBox();
-			this.localServerPortList = new System.Windows.Forms.NumericUpDown();
-			this.label20 = new System.Windows.Forms.Label();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox17.SuspendLayout();
@@ -265,8 +262,6 @@ namespace rokugaTouroku
 			this.tabPage8.SuspendLayout();
 			this.groupBox11.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.maxRecordingNum)).BeginInit();
-			this.groupBox19.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.localServerPortList)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// tabControl1
@@ -1675,7 +1670,6 @@ namespace rokugaTouroku
 			// 
 			// tabPage11
 			// 
-			this.tabPage11.Controls.Add(this.groupBox19);
 			this.tabPage11.Controls.Add(this.groupBox16);
 			this.tabPage11.Location = new System.Drawing.Point(4, 40);
 			this.tabPage11.Name = "tabPage11";
@@ -2312,40 +2306,6 @@ namespace rokugaTouroku
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
 			// 
-			// groupBox19
-			// 
-			this.groupBox19.Controls.Add(this.localServerPortList);
-			this.groupBox19.Controls.Add(this.label20);
-			this.groupBox19.Location = new System.Drawing.Point(5, 122);
-			this.groupBox19.Margin = new System.Windows.Forms.Padding(2);
-			this.groupBox19.Name = "groupBox19";
-			this.groupBox19.Padding = new System.Windows.Forms.Padding(2);
-			this.groupBox19.Size = new System.Drawing.Size(385, 59);
-			this.groupBox19.TabIndex = 5;
-			this.groupBox19.TabStop = false;
-			this.groupBox19.Text = "ローカルサーバー";
-			// 
-			// localServerPortList
-			// 
-			this.localServerPortList.Location = new System.Drawing.Point(59, 24);
-			this.localServerPortList.Maximum = new decimal(new int[] {
-									100000,
-									0,
-									0,
-									0});
-			this.localServerPortList.Name = "localServerPortList";
-			this.localServerPortList.Size = new System.Drawing.Size(103, 19);
-			this.localServerPortList.TabIndex = 24;
-			// 
-			// label20
-			// 
-			this.label20.Location = new System.Drawing.Point(6, 26);
-			this.label20.Name = "label20";
-			this.label20.Size = new System.Drawing.Size(47, 19);
-			this.label20.TabIndex = 23;
-			this.label20.Text = "ポート：";
-			this.label20.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
 			// optionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -2407,13 +2367,8 @@ namespace rokugaTouroku
 			this.tabPage8.ResumeLayout(false);
 			this.groupBox11.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.maxRecordingNum)).EndInit();
-			this.groupBox19.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.localServerPortList)).EndInit();
 			this.ResumeLayout(false);
 		}
-		private System.Windows.Forms.Label label20;
-		private System.Windows.Forms.NumericUpDown localServerPortList;
-		private System.Windows.Forms.GroupBox groupBox19;
 		private System.Windows.Forms.CheckBox isDeleteConfirmMessageRtCheckBtn;
 		private System.Windows.Forms.DataGridViewTextBoxColumn 変換後;
 		private System.Windows.Forms.DataGridViewTextBoxColumn 変換前;

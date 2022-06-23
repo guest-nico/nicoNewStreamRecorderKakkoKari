@@ -56,10 +56,11 @@ namespace namaichi.rec
 		private DateTime lastEndProgramCheckTime = DateTime.Now;
 		//TimeShiftCommentGetter_chPlus tscg = null;
 		public RedirectLogin rl = null;
-		private int port = 7997;
 		
 		public ChannelPlusRecorder(string url, MainForm form, RecordingManager rm, string id, RecordFromUrl rfu)
 		{
+			videoPageCurl = new Curl();
+			
 			this.url = url;
 			//id = util.getRegGroup(url, "(live|video)*/(sm[^\\?]+)", 2);
 			this.id = id;
@@ -73,11 +74,15 @@ namespace namaichi.rec
 			}
 			
 			container = new CookieContainer();
-			var p = 7997;
-			if (int.TryParse(rm.cfg.get("localServerPortList"), out p))
-				port = p;
+			
 		}
 		public int run() {
+			if (!videoPageCurl.isInitialized()) {
+				rm.form.addLogText("DLLファイルの読み込みに失敗しました。Visual Studio2015のVisual C++再頒布可能パッケージをインストールすると読み込めるようになるかもしれません。");
+				rm.form.addLogText("https://www.microsoft.com/ja-jp/download/details.aspx?id=48145");
+				return 2;
+			}
+			
 			if (rm.cfg.get("EngineMode") == "1" || rm.cfg.get("EngineMode") == "2") {
 				rm.form.addLogText("ニコニコチャンネルプラスは標準のHLS録画エンジンのみ使用できます。");
 				return 2;
@@ -280,6 +285,8 @@ namespace namaichi.rec
 		}
 		void record() {
 			try {
+				var port = int.Parse(rm.cfg.get("localServerPortList"));
+				
 				writer = new M3u8Writer(rm, rfu, ri);
 				writer.run(hlsUrl.Value.Value, hlsUrl.Value.Key, port);
 				IsRetry = false;

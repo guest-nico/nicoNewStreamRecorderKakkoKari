@@ -37,6 +37,7 @@ namespace namaichi
 		private void InitializeComponent()
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.portLabel = new System.Windows.Forms.Label();
 			this.openLastFileBtn = new System.Windows.Forms.Button();
 			this.isAfterStartTimeCommentChkBox = new System.Windows.Forms.CheckBox();
 			this.isOpenTimeBaseStartChkBox = new System.Windows.Forms.CheckBox();
@@ -88,16 +89,20 @@ namespace namaichi
 			this.lowRankBtn = new System.Windows.Forms.Button();
 			this.highRankBtn = new System.Windows.Forms.Button();
 			this.openPanelBtn = new System.Windows.Forms.Label();
+			this.portText = new System.Windows.Forms.NumericUpDown();
 			this.groupBox1.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.panel2.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox7.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.portText)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// groupBox1
 			// 
 			this.groupBox1.BackColor = System.Drawing.SystemColors.Window;
+			this.groupBox1.Controls.Add(this.portText);
+			this.groupBox1.Controls.Add(this.portLabel);
 			this.groupBox1.Controls.Add(this.openLastFileBtn);
 			this.groupBox1.Controls.Add(this.isAfterStartTimeCommentChkBox);
 			this.groupBox1.Controls.Add(this.isOpenTimeBaseStartChkBox);
@@ -119,6 +124,14 @@ namespace namaichi
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "録画開始時間";
+			// 
+			// portLabel
+			// 
+			this.portLabel.Location = new System.Drawing.Point(199, 102);
+			this.portLabel.Name = "portLabel";
+			this.portLabel.Size = new System.Drawing.Size(60, 18);
+			this.portLabel.TabIndex = 16;
+			this.portLabel.Text = "ポート番号:";
 			// 
 			// openLastFileBtn
 			// 
@@ -640,6 +653,23 @@ namespace namaichi
 			this.openPanelBtn.MouseLeave += new System.EventHandler(this.OpenPanelBtnMouseLeave);
 			this.openPanelBtn.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OpenPanelBtnMouseUp);
 			// 
+			// portText
+			// 
+			this.portText.Location = new System.Drawing.Point(267, 100);
+			this.portText.Maximum = new decimal(new int[] {
+									100000,
+									0,
+									0,
+									0});
+			this.portText.Name = "portText";
+			this.portText.Size = new System.Drawing.Size(56, 19);
+			this.portText.TabIndex = 25;
+			this.portText.Value = new decimal(new int[] {
+									7997,
+									0,
+									0,
+									0});
+			// 
 			// TimeShiftOptionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -668,8 +698,11 @@ namespace namaichi
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
 			this.groupBox7.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.portText)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.NumericUpDown portText;
+		private System.Windows.Forms.Label portLabel;
 		private System.Windows.Forms.Label openPanelBtn;
 		private System.Windows.Forms.Button highRankBtn;
 		private System.Windows.Forms.Button lowRankBtn;
