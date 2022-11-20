@@ -197,7 +197,7 @@ namespace namaichi
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
 			this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 2, 0, 2);
-			this.menuStrip1.Size = new System.Drawing.Size(719, 26);
+			this.menuStrip1.Size = new System.Drawing.Size(719, 24);
 			this.menuStrip1.TabIndex = 11;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -212,44 +212,44 @@ namespace namaichi
 									this.終了ToolStripMenuItem});
 			this.fileMenuItem.Name = "fileMenuItem";
 			this.fileMenuItem.ShowShortcutKeys = false;
-			this.fileMenuItem.Size = new System.Drawing.Size(85, 22);
+			this.fileMenuItem.Size = new System.Drawing.Size(67, 20);
 			this.fileMenuItem.Text = "ファイル(&F)";
 			// 
 			// 録画フォルダを開くToolStripMenuItem
 			// 
 			this.録画フォルダを開くToolStripMenuItem.Name = "録画フォルダを開くToolStripMenuItem";
-			this.録画フォルダを開くToolStripMenuItem.Size = new System.Drawing.Size(261, 22);
+			this.録画フォルダを開くToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.録画フォルダを開くToolStripMenuItem.Text = "録画フォルダを開く(&O)";
 			this.録画フォルダを開くToolStripMenuItem.Click += new System.EventHandler(this.openRecFolderMenu_Click);
 			// 
 			// openSettingFolderMenu
 			// 
 			this.openSettingFolderMenu.Name = "openSettingFolderMenu";
-			this.openSettingFolderMenu.Size = new System.Drawing.Size(261, 22);
+			this.openSettingFolderMenu.Size = new System.Drawing.Size(217, 22);
 			this.openSettingFolderMenu.Text = "設定ファイルフォルダーを開く(&F)";
 			this.openSettingFolderMenu.Click += new System.EventHandler(this.OpenSettingFolderMenuClick);
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(258, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(214, 6);
 			// 
 			// openTourokuExeMenu
 			// 
 			this.openTourokuExeMenu.Name = "openTourokuExeMenu";
-			this.openTourokuExeMenu.Size = new System.Drawing.Size(261, 22);
+			this.openTourokuExeMenu.Size = new System.Drawing.Size(217, 22);
 			this.openTourokuExeMenu.Text = "録画登録ツールを起動する(&E)";
 			this.openTourokuExeMenu.Click += new System.EventHandler(this.OpenTourokuExeMenuClick);
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(258, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(214, 6);
 			// 
 			// 終了ToolStripMenuItem
 			// 
 			this.終了ToolStripMenuItem.Name = "終了ToolStripMenuItem";
-			this.終了ToolStripMenuItem.Size = new System.Drawing.Size(261, 22);
+			this.終了ToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
 			this.終了ToolStripMenuItem.Text = "終了(&X)";
 			this.終了ToolStripMenuItem.Click += new System.EventHandler(this.endMenu_Click);
 			// 
@@ -261,21 +261,21 @@ namespace namaichi
 									this.recEndMenuItem});
 			this.toolMenuItem.Name = "toolMenuItem";
 			this.toolMenuItem.ShowShortcutKeys = false;
-			this.toolMenuItem.Size = new System.Drawing.Size(74, 22);
+			this.toolMenuItem.Size = new System.Drawing.Size(60, 20);
 			this.toolMenuItem.Text = "ツール(&T)";
 			// 
 			// optionMenuItem
 			// 
 			this.optionMenuItem.Name = "optionMenuItem";
 			this.optionMenuItem.ShowShortcutKeys = false;
-			this.optionMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.optionMenuItem.Size = new System.Drawing.Size(168, 22);
 			this.optionMenuItem.Text = "オプション(&O)";
 			this.optionMenuItem.Click += new System.EventHandler(this.optionItem_Select);
 			// 
 			// toolStripSeparator4
 			// 
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(169, 6);
+			this.toolStripSeparator4.Size = new System.Drawing.Size(165, 6);
 			// 
 			// recEndMenuItem
 			// 
@@ -285,7 +285,7 @@ namespace namaichi
 									this.recEndLogOffMenuItem,
 									this.recEndSuspendMenuItem});
 			this.recEndMenuItem.Name = "recEndMenuItem";
-			this.recEndMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.recEndMenuItem.Size = new System.Drawing.Size(168, 22);
 			this.recEndMenuItem.Text = "録画終了時の動作";
 			this.recEndMenuItem.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.RecEndMenuItemDropDownItemClicked);
 			// 
@@ -294,25 +294,25 @@ namespace namaichi
 			this.recEndNothingMenuItem.Checked = true;
 			this.recEndNothingMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.recEndNothingMenuItem.Name = "recEndNothingMenuItem";
-			this.recEndNothingMenuItem.Size = new System.Drawing.Size(213, 22);
+			this.recEndNothingMenuItem.Size = new System.Drawing.Size(178, 22);
 			this.recEndNothingMenuItem.Text = "何もしない";
 			// 
 			// recEndShutdownMenuItem
 			// 
 			this.recEndShutdownMenuItem.Name = "recEndShutdownMenuItem";
-			this.recEndShutdownMenuItem.Size = new System.Drawing.Size(213, 22);
+			this.recEndShutdownMenuItem.Size = new System.Drawing.Size(178, 22);
 			this.recEndShutdownMenuItem.Text = "OSをシャットダウンする";
 			// 
 			// recEndLogOffMenuItem
 			// 
 			this.recEndLogOffMenuItem.Name = "recEndLogOffMenuItem";
-			this.recEndLogOffMenuItem.Size = new System.Drawing.Size(213, 22);
+			this.recEndLogOffMenuItem.Size = new System.Drawing.Size(178, 22);
 			this.recEndLogOffMenuItem.Text = "OSをログオフする";
 			// 
 			// recEndSuspendMenuItem
 			// 
 			this.recEndSuspendMenuItem.Name = "recEndSuspendMenuItem";
-			this.recEndSuspendMenuItem.Size = new System.Drawing.Size(213, 22);
+			this.recEndSuspendMenuItem.Size = new System.Drawing.Size(178, 22);
 			this.recEndSuspendMenuItem.Text = "OSを休止状態にする";
 			// 
 			// visualMenuItem
@@ -322,27 +322,27 @@ namespace namaichi
 									this.characterColorMenuItem,
 									this.linkColorMenuItem});
 			this.visualMenuItem.Name = "visualMenuItem";
-			this.visualMenuItem.Size = new System.Drawing.Size(62, 22);
+			this.visualMenuItem.Size = new System.Drawing.Size(58, 20);
 			this.visualMenuItem.Text = "表示(&V)";
 			// 
 			// formColorMenuItem
 			// 
 			this.formColorMenuItem.Name = "formColorMenuItem";
-			this.formColorMenuItem.Size = new System.Drawing.Size(182, 22);
+			this.formColorMenuItem.Size = new System.Drawing.Size(160, 22);
 			this.formColorMenuItem.Text = "ウィンドウの色(&W)";
 			this.formColorMenuItem.Click += new System.EventHandler(this.ColorMenuItemClick);
 			// 
 			// characterColorMenuItem
 			// 
 			this.characterColorMenuItem.Name = "characterColorMenuItem";
-			this.characterColorMenuItem.Size = new System.Drawing.Size(182, 22);
+			this.characterColorMenuItem.Size = new System.Drawing.Size(160, 22);
 			this.characterColorMenuItem.Text = "文字の色(&S)";
 			this.characterColorMenuItem.Click += new System.EventHandler(this.CharacterColorMenuItemClick);
 			// 
 			// linkColorMenuItem
 			// 
 			this.linkColorMenuItem.Name = "linkColorMenuItem";
-			this.linkColorMenuItem.Size = new System.Drawing.Size(182, 22);
+			this.linkColorMenuItem.Size = new System.Drawing.Size(160, 22);
 			this.linkColorMenuItem.Text = "リンク文字の色(&L)";
 			this.linkColorMenuItem.Click += new System.EventHandler(this.LinkColorMenuItemClick);
 			// 
@@ -354,27 +354,27 @@ namespace namaichi
 									this.バージョン情報VToolStripMenuItem});
 			this.helpMenuItem.Name = "helpMenuItem";
 			this.helpMenuItem.ShowShortcutKeys = false;
-			this.helpMenuItem.Size = new System.Drawing.Size(75, 22);
+			this.helpMenuItem.Size = new System.Drawing.Size(65, 20);
 			this.helpMenuItem.Text = "ヘルプ(&H)";
 			// 
 			// openReadmeMenu
 			// 
 			this.openReadmeMenu.Name = "openReadmeMenu";
-			this.openReadmeMenu.Size = new System.Drawing.Size(206, 22);
+			this.openReadmeMenu.Size = new System.Drawing.Size(183, 22);
 			this.openReadmeMenu.Text = "readme.htmlを開く(&V)";
 			this.openReadmeMenu.Click += new System.EventHandler(this.OpenReadmeMenuClick);
 			// 
 			// 更新方法VToolStripMenuItem
 			// 
 			this.更新方法VToolStripMenuItem.Name = "更新方法VToolStripMenuItem";
-			this.更新方法VToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.更新方法VToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.更新方法VToolStripMenuItem.Text = "更新方法(&U)";
 			this.更新方法VToolStripMenuItem.Click += new System.EventHandler(this.updateMenu_Click);
 			// 
 			// バージョン情報VToolStripMenuItem
 			// 
 			this.バージョン情報VToolStripMenuItem.Name = "バージョン情報VToolStripMenuItem";
-			this.バージョン情報VToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+			this.バージョン情報VToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
 			this.バージョン情報VToolStripMenuItem.Text = "バージョン情報(&A)";
 			this.バージョン情報VToolStripMenuItem.Click += new System.EventHandler(this.versionMenu_Click);
 			// 
@@ -585,38 +585,38 @@ namespace namaichi
 									this.toolStripSeparator2,
 									this.toolStripMenuItem4});
 			this.mainWindowRightClickMenu.Name = "contextMenuStrip1";
-			this.mainWindowRightClickMenu.Size = new System.Drawing.Size(221, 98);
+			this.mainWindowRightClickMenu.Size = new System.Drawing.Size(199, 98);
 			// 
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(220, 22);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(198, 22);
 			this.toolStripMenuItem1.Text = "放送URLをコピー";
 			this.toolStripMenuItem1.Click += new System.EventHandler(this.copyUrlMenu_Clicked);
 			// 
 			// toolStripMenuItem2
 			// 
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-			this.toolStripMenuItem2.Size = new System.Drawing.Size(220, 22);
+			this.toolStripMenuItem2.Size = new System.Drawing.Size(198, 22);
 			this.toolStripMenuItem2.Text = "コミュニティURLをコピー";
 			this.toolStripMenuItem2.Click += new System.EventHandler(this.copyCommunityUrlMenu_Clicked);
 			// 
 			// toolStripMenuItem3
 			// 
 			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-			this.toolStripMenuItem3.Size = new System.Drawing.Size(220, 22);
+			this.toolStripMenuItem3.Size = new System.Drawing.Size(198, 22);
 			this.toolStripMenuItem3.Text = "放送者と放送URLをコピー";
 			this.toolStripMenuItem3.Click += new System.EventHandler(this.copyHost_UrlMenu_Clicked);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(217, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(195, 6);
 			// 
 			// toolStripMenuItem4
 			// 
 			this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-			this.toolStripMenuItem4.Size = new System.Drawing.Size(220, 22);
+			this.toolStripMenuItem4.Size = new System.Drawing.Size(198, 22);
 			this.toolStripMenuItem4.Text = "録画フォルダを開く";
 			this.toolStripMenuItem4.Click += new System.EventHandler(this.openRecFolderMenu_Click);
 			// 
@@ -760,30 +760,30 @@ namespace namaichi
 									this.toolStripSeparator5,
 									this.closeNotifyIconMenu});
 			this.notifyIconMenuStrip.Name = "notifyIconMenuStrip";
-			this.notifyIconMenuStrip.Size = new System.Drawing.Size(101, 60);
+			this.notifyIconMenuStrip.Size = new System.Drawing.Size(99, 60);
 			// 
 			// notifyIconRecentSeparator
 			// 
 			this.notifyIconRecentSeparator.Name = "notifyIconRecentSeparator";
-			this.notifyIconRecentSeparator.Size = new System.Drawing.Size(97, 6);
+			this.notifyIconRecentSeparator.Size = new System.Drawing.Size(95, 6);
 			this.notifyIconRecentSeparator.Visible = false;
 			// 
 			// openNotifyIconMenu
 			// 
 			this.openNotifyIconMenu.Name = "openNotifyIconMenu";
-			this.openNotifyIconMenu.Size = new System.Drawing.Size(100, 22);
+			this.openNotifyIconMenu.Size = new System.Drawing.Size(98, 22);
 			this.openNotifyIconMenu.Text = "開く";
 			this.openNotifyIconMenu.Click += new System.EventHandler(this.OpenNotifyIconMenuClick);
 			// 
 			// toolStripSeparator5
 			// 
 			this.toolStripSeparator5.Name = "toolStripSeparator5";
-			this.toolStripSeparator5.Size = new System.Drawing.Size(97, 6);
+			this.toolStripSeparator5.Size = new System.Drawing.Size(95, 6);
 			// 
 			// closeNotifyIconMenu
 			// 
 			this.closeNotifyIconMenu.Name = "closeNotifyIconMenu";
-			this.closeNotifyIconMenu.Size = new System.Drawing.Size(100, 22);
+			this.closeNotifyIconMenu.Size = new System.Drawing.Size(98, 22);
 			this.closeNotifyIconMenu.Text = "終了";
 			this.closeNotifyIconMenu.Click += new System.EventHandler(this.CloseNotifyIconMenuClick);
 			// 

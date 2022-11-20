@@ -107,6 +107,8 @@ namespace namaichi
 				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 				StartPosition = FormStartPosition.WindowsDefaultLocation;
 			}
+			if (args.Length > 0 && bool.Parse(config.get("Isminimized")))
+				this.WindowState = FormWindowState.Minimized;
 			
 			if (bool.Parse(config.get("IsMiniStart")))
 				changeSize(true);
@@ -136,9 +138,6 @@ namespace namaichi
 					config.argAi = ar.ai;
 					if (ar.isPlayMode) player.play();
 					else rec.rec(false);
-				}
-				if (bool.Parse(config.get("Isminimized"))) {
-					this.WindowState = FormWindowState.Minimized;
 				}
             }
 		}

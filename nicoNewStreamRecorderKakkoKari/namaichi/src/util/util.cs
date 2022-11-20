@@ -34,8 +34,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.60";
-	public static string versionDayStr = "2022/06/23";
+	public static string versionStr = "ver0.88.61";
+	public static string versionDayStr = "2022/11/20";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -1493,5 +1493,4 @@ public static void soundEnd(config cfg, MainForm form) {
 		    	t.Status == TaskStatus.WaitingForChildrenToComplete;
 		    	
 	}
-	
 }
