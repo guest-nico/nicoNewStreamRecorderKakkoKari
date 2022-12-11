@@ -188,7 +188,7 @@ namespace namaichi.rec
 				
 				//wsc = new WebSocket(msUri,  "", null, header, "", "", WebSocketVersion.Rfc6455);
 				//wsc = new WebSocket(uri, "", null, header, util.userAgent, "", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
-				wsc = new WebSocket(uri, "", null, header, util.userAgent, "", WebSocketVersion.Rfc6455, null, SslProtocols.None);
+				wsc = new WebSocket(uri, "", null, header, util.userAgent, "", WebSocketVersion.Rfc6455, null,  SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls);
 				wsc.Opened += onWscOpen;
 				wsc.Closed += onWscClose;
 				wsc.MessageReceived += onWscMessageReceive;

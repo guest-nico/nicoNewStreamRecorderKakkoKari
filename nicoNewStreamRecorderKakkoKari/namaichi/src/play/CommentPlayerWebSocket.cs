@@ -78,7 +78,7 @@ namespace namaichi.play
 					header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Extensions", "permessage-deflate"));
 					header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Version", "13"));
 				}
-				wsc = new WebSocket(msUri,  "", null, header, util.userAgent, "", WebSocketVersion.Rfc6455, null, SslProtocols.None);
+				wsc = new WebSocket(msUri,  "", null, header, util.userAgent, "", WebSocketVersion.Rfc6455, null,  SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls);
 				//wsc = new WebSocket(msUri,  "", null, header, util.userAgent, "", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
 				wsc.Opened += onWscOpen;
 				wsc.Closed += onWscClose;

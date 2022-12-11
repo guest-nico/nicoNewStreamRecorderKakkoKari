@@ -27,10 +27,6 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
-    <BaseAddress>4194304</BaseAddress>
-    <RegisterForComInterop>False</RegisterForComInterop>
-    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
-    <FileAlignment>4096</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -56,13 +52,13 @@
       <HintPath>..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="SnkLib.App.CookieGetter">
-      <HintPath>..\packages\SnkLib.App.CookieGetter.2.4.0.0\lib\net45\SnkLib.App.CookieGetter.dll</HintPath>
+      <HintPath>..\packages\SnkLib.App.CookieGetter.2.4.2.0\lib\net45\SnkLib.App.CookieGetter.dll</HintPath>
     </Reference>
     <Reference Include="SnkLib.App.CookieGetter.Forms">
-      <HintPath>..\packages\SnkLib.App.CookieGetter.Forms.1.4.1.0\lib\net45\SnkLib.App.CookieGetter.Forms.dll</HintPath>
+      <HintPath>..\packages\SnkLib.App.CookieGetter.Forms.1.4.3.0\lib\net45\SnkLib.App.CookieGetter.Forms.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />

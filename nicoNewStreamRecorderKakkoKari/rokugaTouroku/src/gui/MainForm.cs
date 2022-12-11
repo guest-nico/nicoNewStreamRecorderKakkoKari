@@ -1085,34 +1085,49 @@ namespace rokugaTouroku
 		}
 		void setCookieForm() {
 			try {
-				var isBrowser = config.get("BrowserNum") == "2";
+				accountBtn.Text = "録画ツールの設定を使用";
+				accountBtn.Tag = null;
+				return;
+				/*
+				//1-account 2-browser 3-useRecConfig
+				var cfg = config.get("BrowserNum");
+				var isBrowser = cfg == "2";
+				
 				CookieSourceInfo si = null;
 				string id = null, pass = null;
-				if (isBrowser) {
+				
+				if (cfg == "2") {
+					//browser
 					si = SourceInfoSerialize.load(false);
 					if (si == null) accountBtn.Text = "デフォルト"; 
 					else accountBtn.Text = si.BrowserName + " " + si.ProfileName;
 				} else {
-					accountBtn.Text = "アカウントログイン";
+					accountBtn.Text = "録画ツールの設定を使用";
 					id = config.get("accountId");
 					pass = config.get("accountPass");
 				}
-				accountBtn.Tag = new AccountInfo(si, id, pass, isBrowser);
+				//accountBtn.Tag = new AccountInfo(si, id, pass, isBrowser);
+				accountBtn.Tag = null;
+				*/
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
 		}
 		void AccountBtnClick(object sender, EventArgs e)
 		{
-			var f = new accountForm(config);
+			var f = new accountForm(config, (AccountInfo)accountBtn.Tag);
 			//util.showMessageBoxCenterForm(f
 			f.ShowDialog(this);
 			if (f.DialogResult != DialogResult.OK) return;
 			accountBtn.Tag = f.ai;
 			//f.Tag = f.ai.getArg();
 //			/util.debugWriteLine(f.Tag);
-			accountBtn.Text = f.si != null ? 
-					(f.si.BrowserName + " " + f.si.ProfileName) : "アカウントログイン";
+			if (f.ai == null || f.ai.isRecSetting) accountBtn.Text = "録画ツールの設定を使用";
+			else {
+				
+				accountBtn.Text = (f.ai.isBrowser) ?
+						(f.si.BrowserName + " " + f.si.ProfileName) : "アカウントログイン";
+			}
 		}
 		void RecListDataError(object sender, DataGridViewDataErrorEventArgs e)
 		{

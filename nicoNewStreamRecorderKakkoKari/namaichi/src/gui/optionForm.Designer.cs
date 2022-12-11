@@ -976,7 +976,7 @@ namespace namaichi
 									"3.0"});
 			this.latencyList.Location = new System.Drawing.Point(138, 345);
 			this.latencyList.Name = "latencyList";
-			this.latencyList.Size = new System.Drawing.Size(44, 20);
+			this.latencyList.Size = new System.Drawing.Size(107, 20);
 			this.latencyList.TabIndex = 33;
 			// 
 			// label14

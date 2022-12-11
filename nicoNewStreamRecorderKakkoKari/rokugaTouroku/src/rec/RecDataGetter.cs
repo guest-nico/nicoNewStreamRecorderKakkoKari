@@ -131,7 +131,10 @@ namespace rokugaTouroku.rec
 				si.Arguments += " -qualityRank=" + ri.qualityRank;
 				si.Arguments += " -std-read ";
 				si.Arguments += isGetComment + isGetRec;
-				if (ri.ai != null) si.Arguments += " -accountSetting=" + ri.ai.getArg();
+				if (ri.ai != null) {
+					var arg = ri.ai.getArg();
+					if (arg != null) si.Arguments += " -accountSetting=" + arg;
+				}
 				if (ri.isChase) si.Arguments += " -chase ";
 				
 				util.debugWriteLine(si.Arguments);

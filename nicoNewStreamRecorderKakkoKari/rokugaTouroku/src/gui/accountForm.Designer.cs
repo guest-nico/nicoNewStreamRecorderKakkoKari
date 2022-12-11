@@ -53,12 +53,13 @@ namespace rokugaTouroku.gui
 			this.cookieFileSanshouBtn = new System.Windows.Forms.Button();
 			this.btnReload = new System.Windows.Forms.Button();
 			this.useSecondLoginChkBox = new System.Windows.Forms.CheckBox();
+			this.useRecorderSettingRadioBtn = new System.Windows.Forms.RadioButton();
 			this.groupBox3.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// cancelBtn
 			// 
-			this.cancelBtn.Location = new System.Drawing.Point(310, 308);
+			this.cancelBtn.Location = new System.Drawing.Point(310, 338);
 			this.cancelBtn.Name = "cancelBtn";
 			this.cancelBtn.Size = new System.Drawing.Size(74, 23);
 			this.cancelBtn.TabIndex = 8;
@@ -68,7 +69,7 @@ namespace rokugaTouroku.gui
 			// 
 			// okBtn
 			// 
-			this.okBtn.Location = new System.Drawing.Point(230, 308);
+			this.okBtn.Location = new System.Drawing.Point(230, 338);
 			this.okBtn.Name = "okBtn";
 			this.okBtn.Size = new System.Drawing.Size(74, 23);
 			this.okBtn.TabIndex = 7;
@@ -82,6 +83,7 @@ namespace rokugaTouroku.gui
 			this.groupBox3.Controls.Add(this.label1);
 			this.groupBox3.Controls.Add(this.cookieFileText);
 			this.groupBox3.Controls.Add(this.useAccountLoginRadioBtn);
+			this.groupBox3.Controls.Add(this.useRecorderSettingRadioBtn);
 			this.groupBox3.Controls.Add(this.useCookieRadioBtn);
 			this.groupBox3.Controls.Add(this.passText);
 			this.groupBox3.Controls.Add(this.mailText);
@@ -94,14 +96,14 @@ namespace rokugaTouroku.gui
 			this.groupBox3.Controls.Add(this.useSecondLoginChkBox);
 			this.groupBox3.Location = new System.Drawing.Point(5, 10);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(394, 275);
+			this.groupBox3.Size = new System.Drawing.Size(394, 305);
 			this.groupBox3.TabIndex = 19;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "ニコニコ動画アカウントの共有　(普段ニコニコ生放送を見ているブラウザ)";
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(6, 232);
+			this.label2.Location = new System.Drawing.Point(6, 262);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(80, 19);
 			this.label2.TabIndex = 20;
@@ -110,7 +112,7 @@ namespace rokugaTouroku.gui
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(6, 204);
+			this.label1.Location = new System.Drawing.Point(6, 234);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(80, 19);
 			this.label1.TabIndex = 20;
@@ -119,7 +121,7 @@ namespace rokugaTouroku.gui
 			// 
 			// cookieFileText
 			// 
-			this.cookieFileText.Location = new System.Drawing.Point(20, 115);
+			this.cookieFileText.Location = new System.Drawing.Point(20, 145);
 			this.cookieFileText.Name = "cookieFileText";
 			this.cookieFileText.Size = new System.Drawing.Size(297, 19);
 			this.cookieFileText.TabIndex = 19;
@@ -127,7 +129,7 @@ namespace rokugaTouroku.gui
 			// useAccountLoginRadioBtn
 			// 
 			this.useAccountLoginRadioBtn.Checked = true;
-			this.useAccountLoginRadioBtn.Location = new System.Drawing.Point(6, 183);
+			this.useAccountLoginRadioBtn.Location = new System.Drawing.Point(6, 213);
 			this.useAccountLoginRadioBtn.Name = "useAccountLoginRadioBtn";
 			this.useAccountLoginRadioBtn.Size = new System.Drawing.Size(311, 18);
 			this.useAccountLoginRadioBtn.TabIndex = 18;
@@ -138,7 +140,7 @@ namespace rokugaTouroku.gui
 			// useCookieRadioBtn
 			// 
 			this.useCookieRadioBtn.Checked = true;
-			this.useCookieRadioBtn.Location = new System.Drawing.Point(6, 18);
+			this.useCookieRadioBtn.Location = new System.Drawing.Point(6, 48);
 			this.useCookieRadioBtn.Name = "useCookieRadioBtn";
 			this.useCookieRadioBtn.Size = new System.Drawing.Size(189, 18);
 			this.useCookieRadioBtn.TabIndex = 18;
@@ -148,7 +150,7 @@ namespace rokugaTouroku.gui
 			// 
 			// passText
 			// 
-			this.passText.Location = new System.Drawing.Point(95, 232);
+			this.passText.Location = new System.Drawing.Point(95, 262);
 			this.passText.Margin = new System.Windows.Forms.Padding(2);
 			this.passText.Name = "passText";
 			this.passText.Size = new System.Drawing.Size(193, 19);
@@ -156,7 +158,7 @@ namespace rokugaTouroku.gui
 			// 
 			// mailText
 			// 
-			this.mailText.Location = new System.Drawing.Point(95, 203);
+			this.mailText.Location = new System.Drawing.Point(95, 233);
 			this.mailText.Margin = new System.Windows.Forms.Padding(2);
 			this.mailText.Name = "mailText";
 			this.mailText.Size = new System.Drawing.Size(193, 19);
@@ -165,7 +167,7 @@ namespace rokugaTouroku.gui
 			// nicoSessionComboBox1
 			// 
 			this.nicoSessionComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.nicoSessionComboBox1.Location = new System.Drawing.Point(20, 61);
+			this.nicoSessionComboBox1.Location = new System.Drawing.Point(20, 91);
 			this.nicoSessionComboBox1.Margin = new System.Windows.Forms.Padding(2);
 			this.nicoSessionComboBox1.Name = "nicoSessionComboBox1";
 			this.nicoSessionComboBox1.Size = new System.Drawing.Size(297, 20);
@@ -174,7 +176,7 @@ namespace rokugaTouroku.gui
 			// isCookieFileSiteiChkBox
 			// 
 			this.isCookieFileSiteiChkBox.AutoSize = true;
-			this.isCookieFileSiteiChkBox.Location = new System.Drawing.Point(20, 94);
+			this.isCookieFileSiteiChkBox.Location = new System.Drawing.Point(20, 124);
 			this.isCookieFileSiteiChkBox.Margin = new System.Windows.Forms.Padding(2);
 			this.isCookieFileSiteiChkBox.Name = "isCookieFileSiteiChkBox";
 			this.isCookieFileSiteiChkBox.Size = new System.Drawing.Size(194, 16);
@@ -185,7 +187,7 @@ namespace rokugaTouroku.gui
 			// checkBoxShowAll
 			// 
 			this.checkBoxShowAll.AutoSize = true;
-			this.checkBoxShowAll.Location = new System.Drawing.Point(20, 41);
+			this.checkBoxShowAll.Location = new System.Drawing.Point(20, 71);
 			this.checkBoxShowAll.Margin = new System.Windows.Forms.Padding(2);
 			this.checkBoxShowAll.Name = "checkBoxShowAll";
 			this.checkBoxShowAll.Size = new System.Drawing.Size(151, 16);
@@ -195,7 +197,7 @@ namespace rokugaTouroku.gui
 			// 
 			// loginBtn
 			// 
-			this.loginBtn.Location = new System.Drawing.Point(302, 230);
+			this.loginBtn.Location = new System.Drawing.Point(302, 260);
 			this.loginBtn.Margin = new System.Windows.Forms.Padding(2);
 			this.loginBtn.Name = "loginBtn";
 			this.loginBtn.Size = new System.Drawing.Size(69, 23);
@@ -206,7 +208,7 @@ namespace rokugaTouroku.gui
 			// 
 			// cookieFileSanshouBtn
 			// 
-			this.cookieFileSanshouBtn.Location = new System.Drawing.Point(322, 113);
+			this.cookieFileSanshouBtn.Location = new System.Drawing.Point(322, 143);
 			this.cookieFileSanshouBtn.Margin = new System.Windows.Forms.Padding(2);
 			this.cookieFileSanshouBtn.Name = "cookieFileSanshouBtn";
 			this.cookieFileSanshouBtn.Size = new System.Drawing.Size(40, 23);
@@ -216,7 +218,7 @@ namespace rokugaTouroku.gui
 			// 
 			// btnReload
 			// 
-			this.btnReload.Location = new System.Drawing.Point(322, 59);
+			this.btnReload.Location = new System.Drawing.Point(322, 89);
 			this.btnReload.Margin = new System.Windows.Forms.Padding(2);
 			this.btnReload.Name = "btnReload";
 			this.btnReload.Size = new System.Drawing.Size(40, 23);
@@ -226,7 +228,7 @@ namespace rokugaTouroku.gui
 			// 
 			// useSecondLoginChkBox
 			// 
-			this.useSecondLoginChkBox.Location = new System.Drawing.Point(20, 139);
+			this.useSecondLoginChkBox.Location = new System.Drawing.Point(20, 169);
 			this.useSecondLoginChkBox.Margin = new System.Windows.Forms.Padding(2);
 			this.useSecondLoginChkBox.Name = "useSecondLoginChkBox";
 			this.useSecondLoginChkBox.Size = new System.Drawing.Size(368, 36);
@@ -234,12 +236,23 @@ namespace rokugaTouroku.gui
 			this.useSecondLoginChkBox.Text = "ブラウザからクッキーが取得できなかった場合、次のアカウントでログインする";
 			this.useSecondLoginChkBox.UseVisualStyleBackColor = true;
 			// 
+			// useRecorderSettingRadioBtn
+			// 
+			this.useRecorderSettingRadioBtn.Checked = true;
+			this.useRecorderSettingRadioBtn.Location = new System.Drawing.Point(6, 18);
+			this.useRecorderSettingRadioBtn.Name = "useRecorderSettingRadioBtn";
+			this.useRecorderSettingRadioBtn.Size = new System.Drawing.Size(189, 18);
+			this.useRecorderSettingRadioBtn.TabIndex = 18;
+			this.useRecorderSettingRadioBtn.TabStop = true;
+			this.useRecorderSettingRadioBtn.Text = "録画ツールの設定を使用する";
+			this.useRecorderSettingRadioBtn.UseVisualStyleBackColor = true;
+			// 
 			// accountForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.White;
-			this.ClientSize = new System.Drawing.Size(404, 340);
+			this.ClientSize = new System.Drawing.Size(404, 370);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.cancelBtn);
 			this.Controls.Add(this.okBtn);
@@ -251,6 +264,7 @@ namespace rokugaTouroku.gui
 			this.groupBox3.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.RadioButton useRecorderSettingRadioBtn;
 		private System.Windows.Forms.CheckBox useSecondLoginChkBox;
 		private System.Windows.Forms.Button btnReload;
 		private System.Windows.Forms.Button cookieFileSanshouBtn;

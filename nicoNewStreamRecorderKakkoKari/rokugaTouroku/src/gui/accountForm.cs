@@ -26,7 +26,7 @@ namespace rokugaTouroku.gui
 		public CookieSourceInfo si = null;
 		public AccountInfo ai = null;
 		private config.config cfg;
-		public accountForm(config.config config)
+		public accountForm(config.config config, AccountInfo ai)
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -36,33 +36,55 @@ namespace rokugaTouroku.gui
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
-			mailText.Text = config.get("accountId");
-        	passText.Text = config.get("accountPass");
+			this.ai = ai;
         	
         	checkBoxShowAll.Checked = bool.Parse(config.get("IsBrowserShowAll"));
-        	if (config.get("browserNum") == "1") useAccountLoginRadioBtn.Checked = true;
-        	else useCookieRadioBtn.Checked = true;
-        	useSecondLoginChkBox.Checked = bool.Parse(config.get("issecondlogin"));
-        	isCookieFileSiteiChkBox.Checked = bool.Parse(config.get("iscookie"));
-        	cookieFileText.Text = config.get("cookieFile");
+        	
+        	try {
+	        	if (ai == null) {
+	        		useRecorderSettingRadioBtn.Checked = true;
+	        		//var bn = config.get("browserNum");
+	        		//if (bn == "1") useAccountLoginRadioBtn.Checked = true;
+	        		//if (bn == "2") useCookieRadioBtn.Checked = true;
+	        		useSecondLoginChkBox.Checked = bool.Parse(config.get("issecondlogin"));
+		        	isCookieFileSiteiChkBox.Checked = bool.Parse(config.get("iscookie"));
+		        	cookieFileText.Text = config.get("cookieFile");
+		        	
+		        	mailText.Text = config.get("accountId");
+	        		passText.Text = config.get("accountPass");
+	        		return;
+	        	} else if (ai.isRecSetting) useRecorderSettingRadioBtn.Checked = true;
+	        	else if (ai.isBrowser) useCookieRadioBtn.Checked = true;
+	        	else useAccountLoginRadioBtn.Checked = true;
+	        	
+	        	mailText.Text = ai.accountId;
+	        	passText.Text = ai.accountPass;
+	        	useSecondLoginChkBox.Checked = ai.useSecondLogin;
+	        	
+        	} catch (Exception e) {
+        		util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+        	}
         	
         	this.cfg = config;
 		}
 		void okBtnClick(object sender, EventArgs e)
 		{
 			try {
-				if (useCookieRadioBtn.Checked) {
-					var importer = nicoSessionComboBox1.Selector.SelectedImporter;
-					if (importer != null && importer.SourceInfo != null) {
-						si = importer.SourceInfo;
-						if (isCookieFileSiteiChkBox.Checked)
-							si = si.GenerateCopy(si.BrowserName, si.ProfileName, cookieFileText.Text);
-					}
-					
-					ai = new AccountInfo(si, null, null, true);
-				} else {
-					ai = new AccountInfo(null, mailText.Text, passText.Text, false);
+				ai = null;
+				
+	        	var importer = nicoSessionComboBox1.Selector.SelectedImporter;
+				if (importer != null && importer.SourceInfo != null) {
+					si = importer.SourceInfo;
+					if (isCookieFileSiteiChkBox.Checked)
+						si = si.GenerateCopy(si.BrowserName, si.ProfileName, cookieFileText.Text);
 				}
+	        	
+	        	ai = new AccountInfo(si, mailText.Text,
+						passText.Text, useCookieRadioBtn.Checked, 
+						useSecondLoginChkBox.Checked, 
+						useRecorderSettingRadioBtn.Checked, 
+						cookieFileText.Text);
+	        	
 				DialogResult = DialogResult.OK;
 			} catch (Exception ee) {
 				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
@@ -75,8 +97,17 @@ namespace rokugaTouroku.gui
 		void AccountFormLoad(object sender, EventArgs e)
 		{
 			try {
-				var si = SourceInfoSerialize.load(false);
-	        	nicoSessionComboBox1.Selector.SetInfoAsync(si);
+				if (ai == null || ai.si == null) {
+					var si = SourceInfoSerialize.load(false);
+		        	nicoSessionComboBox1.Selector.SetInfoAsync(si);
+		        	isCookieFileSiteiChkBox.Checked = bool.Parse(cfg.get("iscookie"));
+		        	cookieFileText.Text = cfg.get("cookieFile");
+				} else {
+	        		isCookieFileSiteiChkBox.Checked = ai.si.IsCustomized;
+	        		cookieFileText.Text = ai.cookieFile;
+	        		nicoSessionComboBox1.Selector.SetInfoAsync(ai.si);
+	        	}
+	        	
 			} catch (Exception ee) {
 				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}

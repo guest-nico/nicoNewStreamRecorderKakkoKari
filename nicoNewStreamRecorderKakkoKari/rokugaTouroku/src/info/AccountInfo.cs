@@ -24,19 +24,29 @@ namespace rokugaTouroku.info
 	/// </summary>
 	public class AccountInfo
 	{
+		public bool isRecSetting = true;
 		public CookieSourceInfo si;
 		public string accountId;
 		public string accountPass;
 		public bool isBrowser = false;
-		public AccountInfo(CookieSourceInfo si, string accountId, string accountPass, bool isBrowser)
+		
+		public bool useSecondLogin = false;
+		public string cookieFile;
+	        	
+		public AccountInfo(CookieSourceInfo si, string accountId, string accountPass, bool isBrowser, bool isSecondLogin, bool isRecSetting, string cookieFile)
 		{
 			this.si = si;
 			this.accountId = accountId;
 			this.accountPass = accountPass;
 			this.isBrowser = isBrowser;
+			this.useSecondLogin = isSecondLogin;
+			this.isRecSetting = isRecSetting;
+			this.cookieFile = cookieFile;
 		}
 		public string getArg() {
 			try {
+				if (isRecSetting) return null;
+				
 				XmlSerializer serializer = new XmlSerializer(typeof(AccountSetting));
 				using (var ms = new MemoryStream()) {
 					var _ai = new AccountSetting();

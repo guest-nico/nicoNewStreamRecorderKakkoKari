@@ -34,8 +34,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.61";
-	public static string versionDayStr = "2022/11/20";
+	public static string versionStr = "ver0.88.62";
+	public static string versionDayStr = "2022/12/11";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -1181,23 +1181,35 @@ public static void soundEnd(config cfg, MainForm form) {
 		}
 	}
 	public static void dllCheck(namaichi.MainForm form) {
-		var path = getJarPath()[0];
-		var dlls = new string[]{"websocket4net.dll", 
-				//"NAudio.dll",
-				//"RtmpSharp2.dll", 
-				"SnkLib.App.CookieGetter.Forms.dll",
-				"SnkLib.App.CookieGetter.dll", "SuperSocket.ClientEngine.dll",
-				"Microsoft.Web.XmlTransform.dll", "Newtonsoft.Json.dll",
-				"System.Data.SQLite.dll", "x64/SQLite.Interop.dll",
-				"x86/SQLite.Interop.dll", "x86/SnkLib.App.CookieGetter.x86Proxy.exe"};
-		var isOk = new string[dlls.Length];
-		var msg = "";
-		foreach (var n in dlls) {
-			if (!File.Exists(path + "/" + n)) 
-				msg += (msg == "" ? "" : ",") + n;
+		try {
+			var path = getJarPath()[0];
+			var dlls = new string[]{"websocket4net.dll", 
+					//"NAudio.dll",
+					//"RtmpSharp2.dll", 
+					"SnkLib.App.CookieGetter.Forms.dll",
+					"SnkLib.App.CookieGetter.dll", "SuperSocket.ClientEngine.dll",
+					"Microsoft.Web.XmlTransform.dll", "Newtonsoft.Json.dll",
+					"System.Data.SQLite.dll", "x64/SQLite.Interop.dll",
+					"x86/SQLite.Interop.dll", "x86/SnkLib.App.CookieGetter.x86Proxy.exe"};
+			var isOk = new string[dlls.Length];
+			var msg = "";
+			foreach (var n in dlls) {
+				if (!File.Exists(path + "/" + n)) 
+					msg += (msg == "" ? "" : ",") + n;
+			}
+		if (msg != "")
+			form.formAction(() => util.showMessageBoxCenterForm(form, path + "内に" + msg + "が見つかりませんでした"));
+		} catch (Exception e) {
+			util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+			form.addLogText(e.Message + e.Source + e.Source + e.StackTrace);
 		}
-		if (msg == "") return;
-		form.formAction(() => util.showMessageBoxCenterForm(form, path + "内に" + msg + "が見つかりませんでした"));
+		
+		try {
+			new Action(() => {util.debugWriteLine(WebSocket4Net.WebSocketVersion.Rfc6455);}).Invoke();
+		} catch (Exception e) {
+			util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+			form.addLogText(e.Message + e.StackTrace + e.Source);
+		}
 	}
 	
 	public static void setProxy(config cfg, MainForm form = null) {

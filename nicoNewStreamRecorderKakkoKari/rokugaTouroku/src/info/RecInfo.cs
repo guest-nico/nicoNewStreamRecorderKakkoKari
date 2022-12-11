@@ -178,7 +178,12 @@ namespace rokugaTouroku.info
             set { this.state = value; }
         }
        public string Account  {
-       		get { return ai == null ? "デフォルト" : (ai.si != null ? ai.si.BrowserName + " " + ai.si.ProfileName : "アカウント");}
+       	get {
+       		if (ai == null || ai.isRecSetting) return "録画ツールの設定を使用";
+       		else if (ai.isBrowser) {
+       			return ai.si != null ? (ai.si.BrowserName + " " + ai.si.ProfileName) : "録画ツールの設定を使用";
+       		} else return "アカウント";
+       	}
        		set { }
         }
 		public string Title

@@ -796,7 +796,7 @@ namespace rokugaTouroku
 			this.accountBtn.Name = "accountBtn";
 			this.accountBtn.Size = new System.Drawing.Size(166, 23);
 			this.accountBtn.TabIndex = 3;
-			this.accountBtn.Text = "デフォルト";
+			this.accountBtn.Text = "録画ツールの設定を使用";
 			this.accountBtn.UseVisualStyleBackColor = true;
 			this.accountBtn.Click += new System.EventHandler(this.AccountBtnClick);
 			// 
