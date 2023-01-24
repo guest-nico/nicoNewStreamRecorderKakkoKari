@@ -39,8 +39,6 @@ namespace namaichi
 	/// </summary>
 	public partial class MainForm : Form
 	{
-		
-		
 		public rec.RecordingManager rec;
 		//private bool isInitRun = true;
 		private namaichi.config.config config = new namaichi.config.config();
@@ -107,8 +105,14 @@ namespace namaichi
 				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 				StartPosition = FormStartPosition.WindowsDefaultLocation;
 			}
-			if (args.Length > 0 && bool.Parse(config.get("Isminimized")))
+			if (args.Length > 0 && bool.Parse(config.get("Isminimized"))) {
 				this.WindowState = FormWindowState.Minimized;
+				if (bool.Parse(config.get("IsTray"))) {
+					Visible = false;
+					ShowInTaskbar = false;
+					notifyIcon.Visible = true;
+				}
+			}
 			
 			if (bool.Parse(config.get("IsMiniStart")))
 				changeSize(true);
@@ -1076,15 +1080,16 @@ namespace namaichi
 		void MainFormSizeChanged(object sender, EventArgs e)
 		{
 			if (WindowState == FormWindowState.Minimized
-			    	&& bool.Parse(config.get("IsTray"))) {
+			    	&& bool.Parse(config.get("IsTray")) && Visible) {
 				Visible = false;
-				ShowInTaskbar = false;
 				notifyIcon.Visible = true;
+				ShowInTaskbar = false;
 			}
 		}
 		void activateForm() {
-			Visible = true;
+			Visible = false;
 			ShowInTaskbar = true;
+			Visible = true;
 			if (WindowState == FormWindowState.Minimized) {
 				WindowState = FormWindowState.Normal;
 			}

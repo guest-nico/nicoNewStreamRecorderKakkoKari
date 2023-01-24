@@ -97,6 +97,8 @@ namespace namaichi
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.afterConvertModeList = new System.Windows.Forms.ComboBox();
+			this.afterConvertModeCmdText = new System.Windows.Forms.TextBox();
+			this.afterConvertModeCmdDefaultBtn = new System.Windows.Forms.Button();
 			this.groupBox10 = new System.Windows.Forms.GroupBox();
 			this.label15 = new System.Windows.Forms.Label();
 			this.latencyList = new System.Windows.Forms.ComboBox();
@@ -888,6 +890,8 @@ namespace namaichi
 			// 
 			this.groupBox4.Controls.Add(this.label4);
 			this.groupBox4.Controls.Add(this.afterConvertModeList);
+			this.groupBox4.Controls.Add(this.afterConvertModeCmdText);
+			this.groupBox4.Controls.Add(this.afterConvertModeCmdDefaultBtn);
 			this.groupBox4.Location = new System.Drawing.Point(5, 404);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(408, 99);
@@ -929,6 +933,24 @@ namespace namaichi
 			this.afterConvertModeList.Name = "afterConvertModeList";
 			this.afterConvertModeList.Size = new System.Drawing.Size(149, 20);
 			this.afterConvertModeList.TabIndex = 6;
+			this.afterConvertModeList.SelectedIndexChanged += new System.EventHandler(this.AfterConvertModeListSelectedIndexChanged);
+			// 
+			// afterConvertModeCmdText
+			// 
+			this.afterConvertModeCmdText.Location = new System.Drawing.Point(177, 18);
+			this.afterConvertModeCmdText.Name = "afterConvertModeCmdText";
+			this.afterConvertModeCmdText.Size = new System.Drawing.Size(161, 19);
+			this.afterConvertModeCmdText.TabIndex = 28;
+			// 
+			// afterConvertModeCmdDefaultBtn
+			// 
+			this.afterConvertModeCmdDefaultBtn.Location = new System.Drawing.Point(344, 16);
+			this.afterConvertModeCmdDefaultBtn.Name = "afterConvertModeCmdDefaultBtn";
+			this.afterConvertModeCmdDefaultBtn.Size = new System.Drawing.Size(58, 23);
+			this.afterConvertModeCmdDefaultBtn.TabIndex = 30;
+			this.afterConvertModeCmdDefaultBtn.Text = "デフォルト";
+			this.afterConvertModeCmdDefaultBtn.UseVisualStyleBackColor = true;
+			this.afterConvertModeCmdDefaultBtn.Click += new System.EventHandler(this.AfterConvertModeCmdDefaultBtnClick);
 			// 
 			// groupBox10
 			// 
@@ -995,6 +1017,7 @@ namespace namaichi
 			this.rtmpPathSanshouBtn.TabIndex = 30;
 			this.rtmpPathSanshouBtn.Text = "参照";
 			this.rtmpPathSanshouBtn.UseVisualStyleBackColor = true;
+			this.rtmpPathSanshouBtn.Visible = false;
 			this.rtmpPathSanshouBtn.Click += new System.EventHandler(this.RtmpPathSanshouBtnClick);
 			// 
 			// isDefaultRtmpChkBox
@@ -1005,6 +1028,7 @@ namespace namaichi
 			this.isDefaultRtmpChkBox.TabIndex = 29;
 			this.isDefaultRtmpChkBox.Text = "デフォルトのrtmpdumpを使う";
 			this.isDefaultRtmpChkBox.UseVisualStyleBackColor = true;
+			this.isDefaultRtmpChkBox.Visible = false;
 			this.isDefaultRtmpChkBox.CheckedChanged += new System.EventHandler(this.isDefaultEngineChkBox_CheckedChanged);
 			// 
 			// rtmpPathText
@@ -1013,6 +1037,7 @@ namespace namaichi
 			this.rtmpPathText.Name = "rtmpPathText";
 			this.rtmpPathText.Size = new System.Drawing.Size(265, 19);
 			this.rtmpPathText.TabIndex = 28;
+			this.rtmpPathText.Visible = false;
 			// 
 			// isNoEngine
 			// 
@@ -1032,6 +1057,7 @@ namespace namaichi
 			this.isRtmpEngine.TabIndex = 27;
 			this.isRtmpEngine.Text = "RTMP録画エンジンを使う(旧配信のタイムシフト及び公式のリアルタイム配信のみ)";
 			this.isRtmpEngine.UseVisualStyleBackColor = true;
+			this.isRtmpEngine.Visible = false;
 			this.isRtmpEngine.CheckedChanged += new System.EventHandler(this.isDefaultEngineChkBox_CheckedChanged);
 			// 
 			// label8
@@ -2354,6 +2380,7 @@ namespace namaichi
 			((System.ComponentModel.ISupportInitialize)(this.volumeBar)).EndInit();
 			this.tabPage6.ResumeLayout(false);
 			this.groupBox4.ResumeLayout(false);
+			this.groupBox4.PerformLayout();
 			this.groupBox10.ResumeLayout(false);
 			this.groupBox10.PerformLayout();
 			this.segmentRadioBtnPanel.ResumeLayout(false);
@@ -2383,6 +2410,8 @@ namespace namaichi
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Button afterConvertModeCmdDefaultBtn;
+		private System.Windows.Forms.TextBox afterConvertModeCmdText;
 		private System.Windows.Forms.Button chPlusHighRankBtn;
 		private System.Windows.Forms.Button chPlusLowRankBtn;
 		private System.Windows.Forms.ListBox chPlusQualityListBox;

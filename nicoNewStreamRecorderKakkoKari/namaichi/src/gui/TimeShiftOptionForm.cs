@@ -57,10 +57,13 @@ namespace namaichi
 			updateIsOpenListCommandChkBoxCheckedChanged();
 			updateUrlListChkBoxCheckedChanged();
 			*/
+			/*
 			isSetVposStartTime.Checked = bool.Parse(config.get("IsVposStartTime"));
 			isAfterStartTimeCommentChkBox.Checked = bool.Parse(config.get("IsAfterStartTimeComment"));
 			isBeforeEndTimeCommentChkBox.Checked = bool.Parse(config.get("IsBeforeEndTimeComment"));
 			isDeletePosTimeChkBox.Checked = bool.Parse(config.get("tsIsDeletePosTime"));
+			*/
+			
 			setInitQualityRankList(config.get("qualityRank"));
 			updateTimeShiftStartTimeChkBox();
 			updateIsManualEndTimeRadioBtn();
@@ -98,6 +101,7 @@ namespace namaichi
 			} else {
 				portLabel.Visible = portText.Visible = false;
 			}
+			setFormFromConfig();
 		}
 		private void updateTimeShiftStartTimeChkBox() {
 			hText.Enabled = mText.Enabled = sText.Enabled =

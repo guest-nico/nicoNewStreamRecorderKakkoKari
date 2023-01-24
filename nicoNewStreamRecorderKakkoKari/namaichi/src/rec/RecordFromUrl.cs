@@ -343,7 +343,7 @@ namespace namaichi.rec
 					if (string.IsNullOrEmpty(rm.form.getTitleLabelText()))
 						setDisplay(res);
 					
-					if (isRtmpMain) {
+					if (isRtmpMain && false) {
 						//if (res.IndexOf("%3Cgetplayerstatus%20") > -1) {
 						if (res.IndexOf("player_type = null") > -1) {
 							if (res.IndexOf("\"timeshift_reservation") > -1) return 9;

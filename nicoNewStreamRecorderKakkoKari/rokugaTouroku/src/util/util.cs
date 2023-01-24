@@ -24,8 +24,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.10.67";
-	public static string versionDayStr = "2022/12/11";
+	public static string versionStr = "ver0.1.3.10.68";
+	public static string versionDayStr = "2023/01/25";
 	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);
@@ -1001,5 +1001,38 @@ class util {
 		} catch (Exception e) {
 			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 		}
+	}
+	public static string getFFmpegDefaultArg(int afterConvertMode) {
+		var _command = "";
+		string path = "{path}";
+		string tmp = "{tmp}";
+		//8-vob 11-wav 15-mp4(再エンコード)
+		if (afterConvertMode == 8 || 
+		    	afterConvertMode == 11 || afterConvertMode == 15)
+			_command = ("-i \"" + path + "\" -max_muxing_queue_size 1024 \"" + tmp + "\"");
+		//10-mp3
+		else if (afterConvertMode == 10)
+			_command = ("-i \"" + path + "\" -b:a 128k \"" + tmp + "\"");
+		//13-aac
+		else if (afterConvertMode == 13)
+			_command = ("-i \"" + path + "\" -f mp4 -vn -c copy \"" + tmp + "\"");
+		//12-wma
+		else if (afterConvertMode == 12)
+			_command =  ("-i \"" + path + "\" -vn -c copy \"" + tmp + "\"");
+		//14-ogg
+		else if (afterConvertMode == 14)
+			_command =  ("-i \"" + path + "\" -vn -max_muxing_queue_size 1024 \"" + tmp + "\"");
+		//5-flv
+		else if (afterConvertMode == 5)
+			_command = ("-i \"" + path + "\" -c:v copy -c:a aac -bsf:a aac_adtstoasc \"" + tmp + "\"");
+		else _command = ("-i \"" + path + "\" -c copy \"" + tmp + "\"");
+		
+		//flv
+		if (path.EndsWith("flv")) {
+			//avi 3
+			if (afterConvertMode == 3)
+				_command = ("-i \"" + path + "\" \"" + tmp + "\""); 
+		}
+		return _command;
 	}
 }

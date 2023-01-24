@@ -28,6 +28,8 @@ public class config
 		cfg = getConfig();
 		defaultMergeFile();
         
+		if (get("EngineMode") == "2")
+			set("EngineMode", "0");
  	}
 	public Configuration getConfig() {
 		for (var i = 0; i < 5; i++) {
@@ -187,6 +189,7 @@ public class config
 			{"openUrlListCommand","notepad {i}"},
 			*/
 			{"afterConvertMode","0"},
+			{"afterConvertModeCmd",""},
 			{"IsSoundEnd","false"},
 			{"soundPath",""},
 			{"IsSoundDefault","true"},

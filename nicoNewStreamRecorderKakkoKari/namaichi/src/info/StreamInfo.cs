@@ -333,8 +333,7 @@ namespace namaichi.info
 			
 			util.debugWriteLine("broadcastid " + broadcastId);
 			
-			
-			if (isRtmp) {
+			if (isRtmp && false) {
 				wsUrl = wsUrl.Replace("v2", "v1");
 				broadcastId = util.getRegGroup(wsUrl, "watch/.*?(\\d+)");
 			}

@@ -219,9 +219,10 @@ namespace namaichi.rec
 				try {
 					var url = "https://nfc-api.nicochannel.jp/fc/video_pages/" + id + "/session_ids";
 					var h = Curl.getDefaultHeaders("https://nicochannel.jp");
+					h["Content-Type"] = "application/json";
 					var _auth = rl.getAuth();
 					if (_auth != null) h.Add("Authorization", "Bearer " + _auth);
-					var res = videoPageCurl.getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "POST");
+					var res = videoPageCurl.getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "POST", "{}");
 					return util.getRegGroup(res, "\"session_id\":\"(.+?)\"");
 				} catch (Exception e) {
 					util.debugWriteLine(e.Message + e.Source + e.StackTrace);

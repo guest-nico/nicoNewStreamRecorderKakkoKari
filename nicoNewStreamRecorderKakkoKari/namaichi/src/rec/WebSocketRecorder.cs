@@ -1610,31 +1610,35 @@ namespace namaichi.rec
 			}
 		}
 		private void rtmpRecord(string websocketMsg, string quality) {
-			string url = null;
-			if (websocketMsg != null) {
-				var _msg = util.getRegGroup(websocketMsg,  "\"currentStream\":{(.+?)}");
-				if (_msg == null) {
-					util.debugWriteLine("rtmpRecord _msg null");
-					return;
-				}
-				url = util.getRegGroup(_msg, "\"uri\":\"(.+?)\"") + "/" + util.getRegGroup(_msg, "\"name\":\"(.+?)\"");
-				util.debugWriteLine("rtmp url " + url);
-			}
-			
-			rfu.subGotNumTaskInfo = new List<numTaskInfo>();
-			if (rr != null) rr.resetRtmpUrl(url);
-			else {
-				rr = new RtmpRecorder(ri.si.lvid, container, rm, rfu, !ri.isRtmp, ri.recFolderFile, this, ri.si.openTime);
-				Task.Run(() => {
-					rr.record(url, quality);
-					rm.hlsUrl = "end";
-					if (rr.isEndProgram) {
-						isEndProgram = true;
-						if (endTime == DateTime.MinValue)
-							endTime = DateTime.Now;
+			try {
+				string url = null;
+				if (websocketMsg != null) {
+					var _msg = util.getRegGroup(websocketMsg,  "\"currentStream\":{(.+?)}");
+					if (_msg == null && false) {
+						util.debugWriteLine("rtmpRecord _msg null");
+						return;
 					}
-					IsRetry = false;
-				});
+					url = util.getRegGroup(websocketMsg, "\"uri\":\"(.+?)\"") + "/" + util.getRegGroup(websocketMsg, "\"name\":\"(.+?)\"");
+					util.debugWriteLine("rtmp url " + url);
+				}
+				
+				rfu.subGotNumTaskInfo = new List<numTaskInfo>();
+				if (rr != null) rr.resetRtmpUrl(url);
+				else {
+					rr = new RtmpRecorder(ri.si.lvid, container, rm, rfu, !ri.isRtmp, ri.recFolderFile, this, ri.si.openTime);
+					Task.Run(() => {
+						rr.record(url, quality);
+						rm.hlsUrl = "end";
+						if (rr.isEndProgram) {
+							isEndProgram = true;
+							if (endTime == DateTime.MinValue)
+								endTime = DateTime.Now;
+						}
+						IsRetry = false;
+					});
+				}
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
 			}
 			
 			/*

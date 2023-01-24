@@ -178,6 +178,7 @@ namespace rokugaTouroku
 				{"anotherPlayerPath",anotherPlayerPathText.Text},
 				{"anotherCommentViewerPath",anotherCommentViewerPathText.Text},
 				{"afterConvertMode",getAfterConvertType()},
+				{"afterConvertModeCmd",afterConvertModeCmdText.Text},
 				{"IsSoundEnd",isSoundEndChkBox.Checked.ToString().ToLower()},
 				{"soundPath",soundPathText.Text},
 				{"IsSoundDefault",isDefaultSoundChkBtn.Checked.ToString().ToLower()},
@@ -444,6 +445,7 @@ namespace rokugaTouroku
 			isUseCommentViewerChkBox_UpdateAction();
 			
 			setConvertList(int.Parse(cfg.get("afterConvertMode")));
+			afterConvertModeCmdText.Text = cfg.get("afterConvertModeCmd");
 			isSoundEndChkBox.Checked = bool.Parse(cfg.get("IsSoundEnd"));
 			soundPathText.Text = cfg.get("soundPath");
 			isDefaultSoundChkBtn.Checked = bool.Parse(cfg.get("IsSoundDefault"));
@@ -1163,6 +1165,18 @@ namespace rokugaTouroku
 				commentReplaceList.Height = 19;
 				commentReplaceEditBtn.Text = "編集";
 			}
+		}
+		void AfterConvertModeCmdDefaultBtnClick(object sender, EventArgs e)
+		{
+			setDefaultFFmpegCmd();
+		}
+		private void setDefaultFFmpegCmd() {
+			var type = getAfterConvertType();
+			afterConvertModeCmdText.Text = util.getFFmpegDefaultArg(int.Parse(type));
+		}
+		void AfterConvertModeListSelectedIndexChanged(object sender, EventArgs e)
+		{
+			setDefaultFFmpegCmd();
 		}
 	}
 }
