@@ -73,7 +73,7 @@ namespace namaichi.rec
 					util.debugWriteLine(_f);
 					var fName = util.getRegGroup(_f, "(.+\\\\)*(.+)", 2);
 //					util.debugWriteLine(fName);
-					var num = util.getRegGroup(fName, "(\\d+)");
+					var num = util.getRegGroup(fName, ".+_(\\d+)");
 //					util.debugWriteLine(num);
 					if (num == null) continue;
 					keys.Add(int.Parse(num));
@@ -87,7 +87,7 @@ namespace namaichi.rec
 							util.debugWriteLine(ff);
 							var fName = util.getRegGroup(ff, "(.+\\\\)*(.+)", 2);
 //							util.debugWriteLine(fName);
-							var num = util.getRegGroup(fName, "(\\d+)");
+							var num = util.getRegGroup(fName, ".+_(\\d+)");
 //							util.debugWriteLine(num);
 							if (num == null) continue;
 							keys.Add(int.Parse(num));

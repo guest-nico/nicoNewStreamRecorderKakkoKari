@@ -72,10 +72,10 @@ namespace namaichi
 			
 			if (isChase) {
 				Text = "追っかけ録画設定";
-				isFromLastTimeRadioBtn.Visible = false;
-				lastFileInfoLabel.Visible = false;
-				isRenketuLastFile.Visible = false;
-				openLastFileBtn.Visible = false;
+				//isFromLastTimeRadioBtn.Visible = false;
+				//lastFileInfoLabel.Visible = false;
+				//isRenketuLastFile.Visible = false;
+				//openLastFileBtn.Visible = false;
 			}
 			if (prepTime > 0) {
 				isOpenTimeBaseStartChkBox.Visible = 
@@ -318,6 +318,7 @@ namespace namaichi
 				isOpenTimeBaseStartChkBox.Checked = bool.Parse(config.get("tsBaseOpenTimeStart"));
 				isOpenTimeBaseEndChkBox.Checked = bool.Parse(config.get("tsBaseOpenTimeStart"));
 			}
+			if (!isFromLastTimeRadioBtn.Enabled) isMostStartTimeRadioBtn.Checked = true;
 		}
 		
 		void ResetBtnClick(object sender, EventArgs e)
