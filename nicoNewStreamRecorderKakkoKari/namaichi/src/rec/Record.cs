@@ -1313,6 +1313,13 @@ namespace namaichi.rec
 			r.recordCommand(args.Split(' '), m3u8, pipeName);
 		}
 		private string streamRenketuAfter() {
+			try {
+				return new ArgConcat(rm, new string[]{recFolderFile}).concat();
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+				return null;
+			}
+			/*
 			var fName = util.getRegGroup(recFolderFile, ".+/(.+)");
 			var outFName = recFolderFile + "/" + fName + ext;
 			
@@ -1350,6 +1357,7 @@ namespace namaichi.rec
 
 			//w.Close();
 			//return w.Name;
+			*/
 		}
 		private void _streamRenketuAfterWrite(FileStream w) {
 			foreach (var s in recordedNo) {

@@ -27,18 +27,18 @@ namespace namaichi.rec
 			this.rm = rm;
 			this.arr = arr;
 		}
-		public void concat() {
+		public string concat() {
 			Thread.Sleep(500);
 			rm.form.addLogText("結合モードに入ります");
 			var files = getFiles();
 			if (files.Count == 0) {
 				rm.form.addLogText(".tsファイルが見つかりませんでした");
-				return;
+				return null;
 			}
 			if (files.Count == 1) {
 				convertFile(files[0]);
 				rm.form.addLogText("変換を終了します");
-				return;
+				return null;
 			}
 			
 			foreach (var a in files)
@@ -55,6 +55,7 @@ namespace namaichi.rec
 			
 			rm.form.addLogText("結合を完了しました");
 			rm.form.addLogText(outPath);
+			return outPath;
 		}
 		private List<string> getFiles() {
 			var ret = new List<string>();
@@ -68,30 +69,30 @@ namespace namaichi.rec
 				if (File.Exists(_f) &&
 				    util.getRegGroup(_f, "(.+\\.ts$)") != null) {
 				    
-					ret.Add(_f);
-					
 					util.debugWriteLine(_f);
 					var fName = util.getRegGroup(_f, "(.+\\\\)*(.+)", 2);
 //					util.debugWriteLine(fName);
-					var num = util.getRegGroup(fName, ".+_(\\d+)");
+					var num = util.getRegGroup(fName, ".+_(\\d+).ts");
+					if (num == null) num = util.getRegGroup(fName, "(\\d+)");
 //					util.debugWriteLine(num);
 					if (num == null) continue;
 					keys.Add(int.Parse(num));
+					ret.Add(_f);
 				}
 				if (Directory.Exists(_f)) {
 					var files = Directory.GetFiles(_f);
 					foreach (var ff in files) {
 						if (util.getRegGroup(ff, "(.+\\.ts$)") != null) {
-							ret.Add(ff);
 							
 							util.debugWriteLine(ff);
 							var fName = util.getRegGroup(ff, "(.+\\\\)*(.+)", 2);
 //							util.debugWriteLine(fName);
-							var num = util.getRegGroup(fName, ".+_(\\d+)");
+							var num = util.getRegGroup(fName, ".+_(\\d+).ts");
+							if (num == null) num = util.getRegGroup(fName, "(\\d+)");
 //							util.debugWriteLine(num);
 							if (num == null) continue;
 							keys.Add(int.Parse(num));
-					
+							ret.Add(ff);
 						}
 					}
 				}
