@@ -87,7 +87,8 @@ namespace namaichi.info
 			
 			if (root == "chat" || root == "control") {
 				if (!isOriginalVposBase) {
-					vposOriginal = vpos = (date - serverTime) * 100;
+					var _dateUseC = ((double)date_usec / (Math.Pow(10, date_usec.ToString().Length)));
+					vposOriginal = vpos = (long)((date + _dateUseC - serverTime) * 100);
 				} else {
 					vposOriginal = vpos = vpos - vposStartTime * 100;
 				}
