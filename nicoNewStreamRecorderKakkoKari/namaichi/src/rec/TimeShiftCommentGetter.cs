@@ -316,8 +316,16 @@ namespace namaichi.rec
 					xml = JsonConvert.DeserializeXNode(eMessage);
 				} catch (Exception ee) {
 					util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite + eMessage);
-					rm.form.addLogText("error:" + eMessage);
-					return;
+					try {
+						var content = util.getRegGroup(eMessage, "\"content\":\"(.+?)\"}");
+						if (content.IndexOf("\\") > -1)
+							eMessage = eMessage.Replace("\"content\":\"" + content + "\"}", "\"content\":\"" + content.Replace("\\", "\\\\") + "\"}");
+						xml = JsonConvert.DeserializeXNode(eMessage);
+					} catch (Exception eee) {
+						util.debugWriteLine(eee.Message + eee.Source + eee.StackTrace);
+						rm.form.addLogText("error:" + eMessage + " " + eee.Message + eee.Source + " " + ee.Message + ee.Source);
+						return;
+					}
 				}
 				var chatinfo = new ChatInfo(xml);
 				

@@ -74,6 +74,7 @@ namespace namaichi.rec
 		private List<string> debugWriteBuf = new List<string>();
 		private bool isPlayOnlyMode;
 		//private OutputTimeShiftTsUrlList otstul;
+		private FileStream renketuRealTimeFS = null;
 		
 		private string recordingQuality = null;
 		private WebSocket ws;
@@ -106,6 +107,9 @@ namespace namaichi.rec
 		
 		//debug
 		private int lastGetPlayListMaxNo = 0;
+		
+		private bool IsSecondRecordDir = false;
+		private string secondRecordDir = "";
 		/*
 		public Record(RecordingManager rm, bool isFFmpeg, 
 		              RecordFromUrl rfu, string hlsUrl, 
@@ -162,6 +166,8 @@ namespace namaichi.rec
 			if (rfu.isPlayOnlyMode) engineMode = "0";
 			anotherEngineCommand = rm.cfg.get("anotherEngineCommand");
 			targetDuration = (ri.si.isTimeShift) ? 5 : 2;
+			IsSecondRecordDir = bool.Parse(rm.cfg.get("IsSecondRecordDir"));
+			secondRecordDir = rm.cfg.get("secondRecordDir");
 			
 			rm.isTitleBarInfo = bool.Parse(rm.cfg.get("IstitlebarInfo"));
 			isPlayOnlyMode = rfu.isPlayOnlyMode;
@@ -184,6 +190,8 @@ namespace namaichi.rec
 			//if (rfu.isPlayOnlyMode) engineMode = "0";
 			anotherEngineCommand = rm.cfg.get("anotherEngineCommand");
 			targetDuration = (ri.si.isTimeShift) ? 10 : 2;
+			IsSecondRecordDir = bool.Parse(rm.cfg.get("IsSecondRecordDir"));
+			secondRecordDir = rm.cfg.get("secondRecordDir");
 			
 			rm.isTitleBarInfo = bool.Parse(rm.cfg.get("IstitlebarInfo"));
 			isPlayOnlyMode = false;//rfu.isPlayOnlyMode;
@@ -298,6 +306,13 @@ namespace namaichi.rec
 					
 				}
 				waitForRecording();
+				if (renketuRealTimeFS != null) {
+					try {
+						renketuRealTimeFS.Close();
+					} catch (Exception e) {
+						util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+					}
+				}
 				
 				if (rfu.subGotNumTaskInfo != null)
 					addDebugBuf("rfu.subGotNumTaskInfo.count " + rfu.subGotNumTaskInfo.Count);
@@ -313,6 +328,8 @@ namespace namaichi.rec
 						dsp = null;
 					} 
 				}
+				segM3u8List.Clear();
+				gotTsList.Clear();
 				
 				if (isEndProgram) {
 					rm.form.addLogText("録画を完了しました");
@@ -338,8 +355,6 @@ namespace namaichi.rec
 				}
 				//rm.form.addLogText("録画終了処理を完了しました");
 			}
-				
-			
 			isEnd = true;
 		}
 		private void startM3u8Getter() {
@@ -549,9 +564,8 @@ namespace namaichi.rec
 	//										setReconnecting(true);
 	//										reConnect();
 	//									}
-	//								segM3u8List.Clear();
+									segM3u8List.Clear();
 									
-									segM3u8List.RemoveRange(0, segM3u8List.Count - 1);
 									isBreak = true;
 
 									continue;
@@ -591,10 +605,6 @@ namespace namaichi.rec
 			
 			addDebugBuf("ts getter end gotTsList len " + gotTsList.Count);
 		}
-		
-		
-		
-		
 		private void startTsWriter() {
 			while (rfu == rm.rfu) {
 				try {
@@ -608,48 +618,70 @@ namespace namaichi.rec
 					}
 					
 					var count = gotTsList.Count;
+					numTaskInfo firstNukeFmp4WriteNti = null;
 					foreach (var s in new List<numTaskInfo>(gotTsList)) {
 						addDebugBuf("s " + s + " s == null " + (s == null) + " gotTsListCount " + gotTsList.Count);
 						if (s == null) {
-							gotTsList.RemoveAt(0);
+							gotTsList.Remove(s);
 							#if DEBUG
 								rm.form.addLogText("ts writer s null");
 							#endif
 							continue;
 						}
+						
 						addDebugBuf("s.no " + s.no.ToString() + " s.originNo " + s.originNo + " lastsegmentno " + lastSegmentNo.ToString() + " " + baseNo);
 						if (s.no <= lastSegmentNo) {
 							gotTsList.Remove(s);
 							continue;
 						}
 						
-						var isNuke = lastSegmentNo != -1 && s.no - lastSegmentNo > 1;
-						bool ret;
-						if (isPlayOnlyMode) ret = true;
-						else {
-							var before = DateTime.Now;
+						if (s.res == null) {
+							gotTsList.Remove(s);
+							gotTsMaxNo = lastSegmentNo;
+							continue;
+						}
+						
+						if (!isPlayOnlyMode) {
+							var isNuke = lastSegmentNo != -1 && s.no - lastSegmentNo > 1;
 							
 							if (isWriteCancel) return;
-							if (ri.isFmp4 && isNuke && lastWriteFmp4Nti != null)
-								writeComplementMp4File(s);
+							if (ri.isFmp4 && isNuke && lastWriteFmp4Nti != null) {
+								//writeComplementMp4File(s);
+								firstNukeFmp4WriteNti = s;
+							}
+						}
+					}
+					if (firstNukeFmp4WriteNti != null) writeComplementMp4File(firstNukeFmp4WriteNti);
+					
+					var isRenketuRecord = segmentSaveType == 0;
+					if (isRenketuRecord) {
+						tsListRenketuWrite();
+						if (count > 0 && !isPlayOnlyMode) setRecordState();
+						Thread.Sleep(gotTsList.Count < 10 ? 5000 : 1000);
+						continue;
+					}
+					count = gotTsList.Count;
+					foreach (var s in new List<numTaskInfo>(gotTsList)) {
+						var isNuke = lastSegmentNo != -1 && s.no - lastSegmentNo > 1;
+						
+						bool ret;
+						if (isPlayOnlyMode) ret = true; 
+						else {
+							var before = DateTime.Now;
 							ret = writeFile(s);
 							addDebugBuf("write time " + (DateTime.Now - before));
 							if (DateTime.Now - before > TimeSpan.FromSeconds(2))
 								Thread.Sleep(2000);
 						}
-						//util.debugWriteLine("write ok " + s.no);
 						
 						if (ret) {
 							if (wr != null && wr.firstSegmentSecond == -1) 
 								wr.firstSegmentSecond = s.startSecond;
 							
 							addDebugBuf("write ok " + s.no + " origin " + s.originNo);
-							//recordedNo.Add(newGetTsTaskList[i].no.ToString());
 							if (rfu.subGotNumTaskInfo != null)
 								addDebugBuf("subGotTs count " + rfu.subGotNumTaskInfo.Count);
 							
-	//						var isDropTest = (lastSegmentNo % 20 == 0);
-	//						isDropTest = false;
 							
 							if (isNuke) {
 	//						if (s.no - lastSegmentNo > 1) {
@@ -678,6 +710,7 @@ namespace namaichi.rec
 						gotTsList.Remove(s);
 						Thread.Sleep(100);
 					}
+					if (renketuRealTimeFS != null) renketuRealTimeFS.Flush();
 					if (count > 0 && !isPlayOnlyMode) setRecordState();
 	//				gotTsList.Clear();
 					
@@ -688,6 +721,88 @@ namespace namaichi.rec
 				}
 			}
 			addDebugBuf("ts writer end gotTsList len " + gotTsList.Count);
+		}
+		void tsListRenketuWrite() {
+			var writeNti = new List<numTaskInfo>();
+			
+			numTaskInfo nukeS = null;
+			var count = gotTsList.Count;
+			for (var i = 0; i < count; i++) {
+				var s = gotTsList[i];
+				var isNuke = lastSegmentNo != -1 && 
+					(writeNti.Count == 0 ? 
+					 	(s.no - lastSegmentNo > 1) :
+					 	(s.no - writeNti[writeNti.Count - 1].no > 1));
+				
+				if (!isPlayOnlyMode) {
+					if (writeNti.Count >= 10) break;
+					writeNti.Add(s);
+					
+					if (isNuke) {
+						nukeS = s;
+						break;
+					}
+				}
+				
+			}
+			if (writeNti.Count == 0) return;
+			
+			var writeBList = new List<byte>();
+			for (var i = 0; i < writeNti.Count; i++) {
+				var nti = writeNti[i];
+				try {
+					writeBList.AddRange(nti.res);
+				} catch (Exception e) {
+					rm.form.addLogText(e.Message + e.Source + e.Source);
+					writeNti.RemoveRange(i, writeNti.Count - i);
+					break;
+				}
+			}
+			var _writeNti = new numTaskInfo(0, "", 0, "", 0, 0);
+			_writeNti.res = writeBList.ToArray();
+			
+			var before = DateTime.Now;
+			var ret = writeFile(_writeNti);
+			addDebugBuf("write time " + (DateTime.Now - before));
+			
+			if (ret) {
+				//var s = writeNti[writeNti.Count - 1];
+				if (wr != null && wr.firstSegmentSecond == -1) 
+					wr.firstSegmentSecond = writeNti[0].startSecond;
+				
+				if (rfu.subGotNumTaskInfo != null)
+					addDebugBuf("subGotTs count " + rfu.subGotNumTaskInfo.Count);
+				
+				if (nukeS != null) {
+					addDebugBuf("nuke ari s.no " + nukeS.no + " lastsegmentno " + lastSegmentNo + " s.originNo " + nukeS.originNo);
+					var _lastWroteSegmentDt = lastWroteSegmentDt;
+					var _lastSegmentNo = lastSegmentNo;
+					//Task.Run(() => dropSegmentProcess(s, _lastWroteSegmentDt, _lastSegmentNo));
+					dropSegmentProcess(nukeS, _lastWroteSegmentDt, _lastSegmentNo);
+				}
+				
+				foreach (var nti in writeNti) {
+					addDebugBuf("renketu write ok " + nti.no + " origin " + nti.originNo);
+					recordedNo.Add(nti.fileName);
+					lastSegmentNo = nti.no;
+					lastWroteSegmentDt = nti.dt;
+					lastWroteFileSecond = nti.second;
+					if (ri.isFmp4) lastWriteFmp4Nti = nti;
+					var fName = util.getRegGroup(nti.fileName, ".*(\\\\|/|^)(.+)", 2, rm.regGetter.getFName());
+					lastRecordedSeconds = util.getSecondsFromStr(fName);
+				}
+				
+				if (rfu.subGotNumTaskInfo != null)
+					deleteOldSubTs();
+			} else {
+				Thread.Sleep(1000);
+				return;
+			}
+			foreach (var nti in writeNti)
+				gotTsList.Remove(nti);
+			//if (renketuRealTimeFS != null)
+			//	renketuRealTimeFS.Flush();
+			Thread.Sleep(100);
 		}
 		/*
 		private void syncCheck() {
@@ -738,25 +853,35 @@ namespace namaichi.rec
 				addDebugBuf(info.no + " " + info.url);
 				addDebugBuf("record file path " + recFolderFile + ext);
 				
-				//file lock check
-				if (File.Exists(recFolderFile + ext)) {
-					//File.Move(recFolderFile + ext, recFolderFile + ext);
-					using (var checkIO = new FileStream(recFolderFile + ext, FileMode.Append, FileAccess.Write)) {
-					}
-				}
 				addDebugBuf("test record file path " + recFolderFile + ext);
 				
 				var isWriteInitMp4 = !File.Exists(recFolderFile + ext) && initMp4 != null;
-				using (var w = new FileStream(recFolderFile + ext, FileMode.Append, FileAccess.Write)) {
-					w.Seek(0, SeekOrigin.End);
-					if (isWriteInitMp4) w.Write(initMp4, 0, initMp4.Length);
+				var isRealTimeOpenOnce = true && !ri.si.isTimeShift;
+				if (isRealTimeOpenOnce) {
+					addDebugBuf("isRalTimeOpenOnce write " + info.no);
+					if (renketuRealTimeFS == null) 
+						renketuRealTimeFS = new FileStream(recFolderFile + ext, FileMode.Append, FileAccess.Write);
+					if (isWriteInitMp4) renketuRealTimeFS.Write(initMp4, 0, initMp4.Length);
+					renketuRealTimeFS.Write(info.res, 0, info.res.Length);
+				} else {
+					//file lock check
+					if (File.Exists(recFolderFile + ext)) {
+						using (var checkIO = new FileStream(recFolderFile + ext, FileMode.Append, FileAccess.Write)) {
+						}
+					}
 					
-					util.debugWriteLine("streamRenketuRecord cc　" + info.res.Length);
-					w.Write(info.res, 0, info.res.Length);
-					//w.Close();
-					util.debugWriteLine("streamRenketuRecord bb");
-					w.Flush(true);
-					util.debugWriteLine("streamRenketuRecord aa");
+					//var isWriteInitMp4 = !File.Exists(recFolderFile + ext) && initMp4 != null;
+					using (var w = new FileStream(recFolderFile + ext, FileMode.Append, FileAccess.Write)) {
+						w.Seek(0, SeekOrigin.End);
+						if (isWriteInitMp4) w.Write(initMp4, 0, initMp4.Length);
+						
+						util.debugWriteLine("streamRenketuRecord cc　" + info.res.Length);
+						w.Write(info.res, 0, info.res.Length);
+						//w.Close();
+						util.debugWriteLine("streamRenketuRecord bb");
+						w.Flush(true);
+						util.debugWriteLine("streamRenketuRecord aa");
+					}
 				}
 				if (ri.si.isTimeShift) {
 					var newName = newTimeShiftFileName(recFolderFile, info.fileName);
@@ -852,7 +977,7 @@ namespace namaichi.rec
 			var res = !ri.si.isChannelPlus ? 
 					util.getPageSource(hlsSegM3uUrl, null, referer, false, 2000, ua) :
 					getM3u8Curl.getStr(hlsSegM3uUrl, Curl.getDefaultHeaders(), CurlHttpVersion.CURL_HTTP_VERSION_3);
-			addDebugBuf("addNewTsTaskList segm3u get len 1000 " + (res == null ? "" : (res.Substring(0, res.Length > 1000 ? 1000 : res.Length))));
+			addDebugBuf("addNewTsTaskList segm3u get len 1000 " + (res == null ? "" : (res.Substring(0, res.Length > 2000 ? 2000 : res.Length))));
 //			util.debugWriteLine("m3u8 " + res);
 			
 			 
@@ -1022,15 +1147,17 @@ namespace namaichi.rec
 							setSpeed(false);
 						}
 					}
-					if (hlsSegM3uUrl.IndexOf("start=") > -1) {
-						if (lateTime < 15) {
-							setReconnecting(true);
-							reConnect();
-						}
-					} else {
-						if (lateTime > 15) {
-							setReconnecting(true);
-							reConnect();
+					if (ri.isChase) {
+						if (hlsSegM3uUrl.IndexOf("start=") > -1) {
+							if (lateTime < 15) {
+								setReconnecting(true);
+								reConnect();
+							}
+						} else {
+							if (lateTime > 15) {
+								setReconnecting(true);
+								reConnect();
+							}
 						}
 					}
 				}
@@ -1048,7 +1175,7 @@ namespace namaichi.rec
 				lock (newGetTsTaskList) {
 					for (int i = 0; i < newGetTsTaskList.Count; i++) {
 						if (newGetTsTaskList[i].url == url) {
-							if (tsBytes == null || (!ri.si.isChannelPlus && lastSegmentNo > 10000 && newGetTsTaskList[i].no - lastSegmentNo > 5500)) {
+							if (tsBytes == null || (!ri.si.isChannelPlus && lastSegmentNo > 10000 && newGetTsTaskList[0].no - lastSegmentNo > 5500)) {
 								newGetTsTaskList.Clear();
 								if (!isReConnecting) {
 									addDebugBuf("getTsTask !isReconnecting reconnect");
@@ -1061,14 +1188,7 @@ namespace namaichi.rec
 								setReconnecting(true);
 								break;
 							}
-							var a = recordedSecond;
-							newGetTsTaskList[i].res = tsBytes;
-							if (!ri.isChase) {
-								recordedSecond += newGetTsTaskList[i].second; 	
-								recordedBytes += tsBytes.Length;
-							}
-							var b = recordedSecond;
-							addDebugBuf("aads " + a + " " + b + " no " + newGetTsTaskList[i].no);
+							
 						}
 							
 					}
@@ -1100,6 +1220,14 @@ namespace namaichi.rec
 							addDebugBuf("write ok " + ret + " " + newGetTsTaskList[i].no);
 							if (wr.firstSegmentSecond == -1) 
 								wr.firstSegmentSecond = newGetTsTaskList[i].startSecond;
+							
+							var a = recordedSecond;
+							if (!ri.isChase) {
+								recordedSecond += newGetTsTaskList[i].second; 	
+								recordedBytes += newGetTsTaskList[i].res.Length;
+							}
+							var b = recordedSecond;
+							addDebugBuf("aads " + a + " " + b + " no " + newGetTsTaskList[i].no);
 							
 							//recordedNo.Add(newGetTsTaskList[i].no.ToString());
 							recordedNo.Add(newGetTsTaskList[i].fileName);
@@ -1815,12 +1943,13 @@ namespace namaichi.rec
 		private void displayWriteRemainGotTsData() {
 			if (isWriteCancel) return;
 //			Task.Run(() => {
-				while (gotTsList.Count > 0) {
+				while (gotTsList.Count > 0 && !util.isTaskEnd(tsWriterTask)) {
 					rm.form.addLogText("未書き込みのデータを書き込んでいます...(" + gotTsList.Count + "件)");
 					addDebugBuf("mi kakikomi write write " + gotTsList.Count);
 					Thread.Sleep(10000);
 				}
 //			});
+			gotTsList.Clear();
 		}
 		private void renameWithoutTime(string name) {
 			var time = util.getRegGroup(name, "(\\d+h\\d+m\\d+s)", 1, rm.regGetter.getRenameWithoutTime_time());
@@ -1906,11 +2035,30 @@ namespace namaichi.rec
 			
 			var d = Directory.GetDirectoryRoot(recFolderFile);
 			if (d == null) return true;
-			if (util.getRegGroup(d[0].ToString(), "([a-zA-Z])") == null) return true;
-
+			
 			var di = new DriveInfo(d);
 			
-			while (rm.rfu == rfu && di.AvailableFreeSpace < nti.res.Length) {
+			var isEnoughSpace = di.AvailableFreeSpace > 10000000 && di.AvailableFreeSpace > nti.res.Length;
+			if (rm.rfu == rfu && !isEnoughSpace
+					&& IsSecondRecordDir && Directory.Exists(secondRecordDir)) {
+				var newRecDir = util.getRecFolderFilePath(ri.si.recFolderFileInfo[0], ri.si.recFolderFileInfo[1], ri.si.recFolderFileInfo[2], ri.si.lvid, ri.si.recFolderFileInfo[4], ri.si.recFolderFileInfo[5], rm.cfg, ri.si.isTimeShift, ri.timeShiftConfig, ri.si.openTime, ri.isRtmp, ri.isFmp4, true, rm.form);
+				if (newRecDir[1] != recFolderFile) {
+					recFolderFile = newRecDir[1];
+					ri.recFolderFile = newRecDir;
+					((WebSocketRecorder)wr).clearCommentFileName();
+					wr.resetCommentFile();
+					if (renketuRealTimeFS != null) {
+						try {
+							renketuRealTimeFS.Close();
+						} catch (Exception e) {
+							util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+						}
+						renketuRealTimeFS = null;
+					}
+					di = new DriveInfo(recFolderFile);
+				}
+			}
+			while (rm.rfu == rfu && !isEnoughSpace) {
 				var m = di.Name + "の空き容量が" + (di.AvailableFreeSpace / 1000) + "KBです。";
 				
 				util.debugWriteLine(m);

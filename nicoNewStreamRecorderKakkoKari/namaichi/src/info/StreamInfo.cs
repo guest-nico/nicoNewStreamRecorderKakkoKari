@@ -296,8 +296,8 @@ namespace namaichi.info
 		public string[] getRecFilePath(bool isRtmp, TimeShiftConfig timeShiftConfig, bool isFmp4, config.config cfg, MainForm form) {
 			util.debugWriteLine(si.openTime + " c " + si.recFolderFileInfo[0] + " timeshiftConfig " + timeShiftConfig);
 			try {
-				var id = si.isChannelPlus ? si.recFolderFileInfo[3].Substring(0, 12) : si.recFolderFileInfo[3]; 
-				return util.getRecFolderFilePath(si.recFolderFileInfo[0], si.recFolderFileInfo[1], si.recFolderFileInfo[2], id, si.recFolderFileInfo[4], si.recFolderFileInfo[5], cfg, si.isTimeShift, timeShiftConfig, si.openTime, isRtmp, isFmp4);
+				var id = si.isChannelPlus ? si.recFolderFileInfo[3].Substring(0, 12) : si.recFolderFileInfo[3];
+				return util.getRecFolderFilePath(si.recFolderFileInfo[0], si.recFolderFileInfo[1], si.recFolderFileInfo[2], id, si.recFolderFileInfo[4], si.recFolderFileInfo[5], cfg, si.isTimeShift, timeShiftConfig, si.openTime, isRtmp, isFmp4, false, form);
 			} catch (Exception e) {
 				form.addLogText("保存先パスの取得もしくはフォルダの作成に失敗しました");
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);

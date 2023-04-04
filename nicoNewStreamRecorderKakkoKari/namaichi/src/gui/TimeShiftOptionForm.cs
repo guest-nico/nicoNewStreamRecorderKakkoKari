@@ -318,7 +318,8 @@ namespace namaichi
 				isOpenTimeBaseStartChkBox.Checked = bool.Parse(config.get("tsBaseOpenTimeStart"));
 				isOpenTimeBaseEndChkBox.Checked = bool.Parse(config.get("tsBaseOpenTimeStart"));
 			}
-			if (!isFromLastTimeRadioBtn.Enabled) isMostStartTimeRadioBtn.Checked = true;
+			if (!isFromLastTimeRadioBtn.Enabled &&
+					isFromLastTimeRadioBtn.Checked) isMostStartTimeRadioBtn.Checked = true;
 		}
 		
 		void ResetBtnClick(object sender, EventArgs e)

@@ -11,6 +11,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Text;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -190,6 +191,8 @@ namespace rokugaTouroku
 				{"IsBrowserShowAll",checkBoxShowAll.Checked.ToString().ToLower()},
 				{"recordDir",recordDirectoryText.Text},
 				{"IsdefaultRecordDir",useDefaultRecFolderChk.Checked.ToString().ToLower()},
+				{"IsSecondRecordDir",useSecondRecFolderChk.Checked.ToString().ToLower()},
+				{"secondRecordDir",secondRecFolderText.Text},
 				{"IscreateSubfolder",useSubFolderChk.Checked.ToString().ToLower()},
 				{"subFolderNameType",getSubFolderNameType() + ""},
 				{"fileNameType",getFileNameType() + ""},
@@ -458,6 +461,9 @@ namespace rokugaTouroku
         	recordDirectoryText.Text = cfg.get("recordDir");
         	useDefaultRecFolderChk.Checked = bool.Parse(cfg.get("IsdefaultRecordDir"));
         	useDefaultRecFolderChkBox_UpdateAction();
+        	useSecondRecFolderChk.Checked = bool.Parse(cfg.get("IsSecondRecordDir"));
+        	secondRecFolderText.Text = cfg.get("secondRecordDir");
+        	UseSecondRecFolderChkBox_UpdateAction();
         	useSubFolderChk.Checked = bool.Parse(cfg.get("IscreateSubfolder"));
         	useSubFolderChk_UpdateAction();
         	setSubFolderNameType(int.Parse(cfg.get("subFolderNameType")));
@@ -1177,6 +1183,26 @@ namespace rokugaTouroku
 		void AfterConvertModeListSelectedIndexChanged(object sender, EventArgs e)
 		{
 			setDefaultFFmpegCmd();
+		}
+		void UseSecondRecFolderChkCheckedChanged(object sender, EventArgs e)
+		{
+			UseSecondRecFolderChkBox_UpdateAction();
+		}
+		void UseSecondRecFolderChkBox_UpdateAction() {
+			secondRecFolderText.Enabled = 
+				secondRecFolderSanshouBtn.Enabled = 
+					useSecondRecFolderChk.Checked;
+		}
+		void SecondRecFolderSanshouBtnClick(object sender, EventArgs e)
+		{
+			var f = new FolderBrowserDialog();
+			if (Directory.Exists(secondRecFolderText.Text))
+				f.SelectedPath = secondRecFolderText.Text;
+			DialogResult r = f.ShowDialog();
+			
+			util.debugWriteLine(f.SelectedPath);
+			if (r == DialogResult.OK)
+				secondRecFolderText.Text = f.SelectedPath;
 		}
 	}
 }

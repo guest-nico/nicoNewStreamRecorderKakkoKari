@@ -330,8 +330,18 @@ namespace namaichi.rec
 			_si.set(res);
 			if (_si.recFolderFileInfo[2] == ri.si.recFolderFileInfo[2]) return;
 			foreach (var f in Directory.GetFiles(ri.recFolderFile[0])) {
-				if (f.IndexOf(ri.si.lvid) > -1 && f.IndexOf(ri.si.recFolderFileInfo[2]) > -1) {
-					File.Move(f, f.Replace(ri.si.recFolderFileInfo[2], _si.recFolderFileInfo[2]));
+				var newF = f.Replace(ri.si.recFolderFileInfo[2], _si.recFolderFileInfo[2]);
+				try {
+					if (f.IndexOf(ri.si.lvid) > -1 && f.IndexOf(ri.si.recFolderFileInfo[2]) > -1) {
+						if (!File.Exists(newF)) {
+							File.Move(f, newF);
+							continue;
+						}
+						rm.form.addLogText("ファイル名を" + f + "から" + newF + "へ変更できませんでした");
+					}
+				} catch (Exception e) {
+					rm.form.addLogText("ファイル名を" + f + "から" + newF + "へ変更できませんでした");
+					rm.form.addLogText(e.Message + e.Source + e.StackTrace);
 				}
 			}
 		}

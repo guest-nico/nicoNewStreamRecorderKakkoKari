@@ -34,8 +34,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.66";
-	public static string versionDayStr = "2023/02/23";
+	public static string versionStr = "ver0.88.67";
+	public static string versionDayStr = "2023/04/05";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -94,7 +94,7 @@ class util {
 			string group, string title, string lvId, 
 			string communityNum, string userId, config cfg, 
 			bool isTimeShift, TimeShiftConfig tsConfig, 
-			long _openTime, bool isRtmp, bool isFmp4) {
+			long _openTime, bool isRtmp, bool isFmp4, bool isSecondDir = false, MainForm form = null) {
 		string name = null, dirPath = null;
 		bool _isTimeShift = isTimeShift;
 		var segmentSaveType = cfg.get("segmentSaveType");
@@ -111,8 +111,22 @@ class util {
 			string[] jarpath = getJarPath();
 	//		util.debugWriteLine(jarpath);
 			//string dirPath = jarpath[0] + "\\rec\\" + host;
-			string _dirPath = (cfg.get("IsdefaultRecordDir") == "true") ?
-				(jarpath[0] + "\\rec") : cfg.get("recordDir");
+			var _dirPath = (cfg.get("IsdefaultRecordDir") == "true") ?
+					(jarpath[0] + "\\rec") : cfg.get("recordDir");
+			var di = new DriveInfo(Directory.GetDirectoryRoot(_dirPath));
+			if ((bool.Parse(cfg.get("IsSecondRecordDir")) && di.AvailableFreeSpace < 10000000) || isSecondDir) {
+				var secondDir = cfg.get("secondRecordDir");
+				form.addLogText("保存先フォルダを" + _dirPath + "から" + secondDir + "へ変更します。(空き容量:" + di.AvailableFreeSpace + "B)");
+				if (!Directory.Exists(secondDir)) {
+					try {
+						Directory.CreateDirectory(secondDir);
+						if (Directory.Exists(secondDir))
+							_dirPath = secondDir;
+					} catch (Exception e) {
+						util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+					}
+				} else _dirPath = secondDir;
+			}
 			dirPath = _dirPath;
 			
 			string sfn = null;

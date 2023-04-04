@@ -241,6 +241,8 @@ public class config
 			{"iscookie","false"},
 			{"IsBrowserShowAll","false"},
 			{"recordDir",""},
+			{"IsSecondRecordDir","false"},
+			{"secondRecordDir",""},
 			{"IsdefaultRecordDir","true"},
 			{"IscreateSubfolder","true"},
 			{"subFolderNameType","1"},

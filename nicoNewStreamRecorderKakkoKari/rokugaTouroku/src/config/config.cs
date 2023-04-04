@@ -198,6 +198,8 @@ public class config
 			{"cookieFile",""},
 			{"iscookie","false"},
 			{"recordDir",""},
+			{"IsSecondRecordDir","false"},
+			{"secondRecordDir",""},
 			{"IsdefaultRecordDir","true"},
 			{"IscreateSubfolder","true"},
 			{"subFolderNameType","1"},
