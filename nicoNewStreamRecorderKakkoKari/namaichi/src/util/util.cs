@@ -34,8 +34,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.67";
-	public static string versionDayStr = "2023/04/05";
+	public static string versionStr = "ver0.88.68";
+	public static string versionDayStr = "2023/04/24";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -1184,10 +1184,7 @@ public static void soundEnd(config cfg, MainForm form) {
 	extern static int SetThreadExecutionState(uint esFlags);
 	public static void setThreadExecutionState() {
 		try {
-			
-			var r = SetThreadExecutionState((uint)1);
-			//var r2 = SetThreadExecutionState((uint)2);
-			//var r2 = SetThreadExecutionState(0x80000000);
+			var r = SetThreadExecutionState(1 | 0x80000000);
 			util.debugWriteLine("setThreadExecutionState " + r);
 			
 		} catch (Exception e) {

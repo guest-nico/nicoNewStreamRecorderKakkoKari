@@ -294,9 +294,6 @@ namespace namaichi.rec
 			rm.hlsUrl = "end";
 //			rm.form.setPlayerBtnEnable(false);
 			
-			if (rm.cfg.get("fileNameType") == "10" && (recFolderFile.IndexOf("{w}") > -1 || recFolderFile.IndexOf("{c}") > -1))
-				renameStatistics();
-			
 			if (engineMode == "0" && !isPlayOnlyMode) {
 				addDebugBuf("rec end shori gottslist count " + gotTsList.Count);
 				if (rfu.subGotNumTaskInfo != null)
@@ -313,6 +310,8 @@ namespace namaichi.rec
 						util.debugWriteLine(e.Message + e.Source + e.StackTrace);
 					}
 				}
+				if (rm.cfg.get("fileNameType") == "10" && (recFolderFile.IndexOf("{w}") > -1 || recFolderFile.IndexOf("{c}") > -1))
+					renameStatistics();
 				
 				if (rfu.subGotNumTaskInfo != null)
 					addDebugBuf("rfu.subGotNumTaskInfo.count " + rfu.subGotNumTaskInfo.Count);
@@ -1075,9 +1074,14 @@ namespace namaichi.rec
 							lastSegmentNo = no;
 					}
 					
-					if (ri.si.isTimeShift && 
+					var isBeforeTsConfigStartT = ri.si.isTimeShift && 
 					    	((ri.timeShiftConfig.timeType == 0 && startTime < ri.timeShiftConfig.timeSeconds) ||
-					     	(ri.timeShiftConfig.timeType == 1 && startTime <= ri.timeShiftConfig.timeSeconds))) continue;
+					     	(ri.timeShiftConfig.timeType == 1 && startTime <= ri.timeShiftConfig.timeSeconds));
+					if (isBeforeTsConfigStartT && 
+							(ri.timeShiftConfig.endTimeSeconds > 0 && startTime + second >= ri.timeShiftConfig.endTimeSeconds)) {
+						isBeforeTsConfigStartT = false;
+					}
+					if (isBeforeTsConfigStartT) continue;
 					if (ri.si.isTimeShift && ri.timeShiftConfig.endTimeSeconds > 0 && startTime >= ri.timeShiftConfig.endTimeSeconds) {
 						addDebugBuf("timeshift ri.timeShiftConfig.endtime " + ri.timeShiftConfig.endTimeSeconds + " now starttime " + startTime + " ri.timeShiftConfig.timeseconds " + ri.timeShiftConfig.timeSeconds);
 						_isRetry = false;
@@ -1958,7 +1962,7 @@ namespace namaichi.rec
 			try {
 				for (int i = int.Parse(num); i < 1000; i++) {
 					var newName = name.Replace("_" + time + "_" + num, i.ToString());
-					if (File.Exists(newName + ext)) continue;
+					if (File.Exists(newName + ext) || !File.Exists(recFolderFile + ext)) continue;
 					File.Move(recFolderFile + ext, newName + ext);
 					recFolderFile = newName;
 					return;

@@ -320,6 +320,7 @@ namespace namaichi.rec
 				
 				rss.renameStatistics(wsr.visitCount.Replace("-", ""), wsr.commentCount.Replace("-", ""));
 			} catch (Exception e) {
+				rm.form.addLogText("ファイル名の変更中に問題が発生しました。" + e.Message + e.Source + e.StackTrace);
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
 		}

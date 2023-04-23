@@ -158,10 +158,10 @@ namespace namaichi.rec
 			
 			Task.Run(() => {
 			    while (true) {
-			        if (rp.ri.isRtmp || rp.firstSegmentSecond != -1 || !rp.IsRetry) break;
+			         		if (rp.ri.isRtmp || rp.firstSegmentSecond != -1 || !((WebSocketRecorder)rp).IsRetry) break;
 					Thread.Sleep(500);
 				}
-	         	if (!rp.IsRetry) {
+	         	if (!((WebSocketRecorder)rp).IsRetry) {
 	         		isEnd = true;
 	         		util.debugWriteLine("tscg end rp.IsrRtry");
 	         		#if DEBUG

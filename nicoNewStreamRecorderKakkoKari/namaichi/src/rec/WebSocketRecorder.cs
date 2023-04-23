@@ -97,7 +97,6 @@ namespace namaichi.rec
 		
 		//public List<string> chaseCommentBuf = new List<string>();
 		
-		private bool isNotSleep = false;
 		private List<string> lastSaveComments = new List<string>();
 		private DateTime lastOpenCommentSwDt = DateTime.MinValue;
 		private bool isConvertSpace;
@@ -148,7 +147,6 @@ namespace namaichi.rec
 			this.isGetCommentXml = bool.Parse(rm.cfg.get("IsgetcommentXml"));
 			this.isGetCommentXmlInfo = bool.Parse(rm.cfg.get("IsgetcommentXmlInfo"));
 			this.engineMode = rm.cfg.get("EngineMode");
-			this.isNotSleep = bool.Parse(rm.cfg.get("IsNotSleep"));
 			this.isRtmpOnlyPage = isRtmpOnlyPage;
 			this.isChase = isChase;
 			this.isRealtimeChase = isRealtimeChase;
@@ -183,7 +181,8 @@ namespace namaichi.rec
 			this.isGetCommentXml = bool.Parse(rm.cfg.get("IsgetcommentXml"));
 			this.isGetCommentXmlInfo = bool.Parse(rm.cfg.get("IsgetcommentXmlInfo"));
 			this.engineMode = rm.cfg.get("EngineMode");
-			this.isNotSleep = bool.Parse(rm.cfg.get("IsNotSleep"));
+			if (bool.Parse(rm.cfg.get("IsNotSleep")))
+				util.setThreadExecutionState();
 			
 			if (ri.isChase && !isSaveComment) isHokan = true;
 			isConvertSpace = bool.Parse(rm.cfg.get("IsCommentConvertSpace"));
@@ -247,12 +246,6 @@ namespace namaichi.rec
 					} else stopWsCount = 0;
 					lastWebSocket = ws;
 				}
-				
-				if (isNotSleep && DateTime.Now - lastSendRequired > TimeSpan.FromSeconds(45)) {
-					util.setThreadExecutionState();
-					lastSendRequired = DateTime.Now;
-				}
-				
 				System.Threading.Thread.Sleep(1000);
 			}
 

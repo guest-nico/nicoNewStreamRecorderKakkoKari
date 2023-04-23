@@ -330,6 +330,7 @@ namespace namaichi.rec
 					File.Delete(newName);
 				File.Move(fName, newName);
 			} catch (Exception e) {
+				form.addLogText("ファイル名の変更中に問題が発生しました。" + e.Message + e.Source + e.StackTrace);
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				
 			}
