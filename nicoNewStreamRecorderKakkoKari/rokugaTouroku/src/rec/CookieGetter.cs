@@ -7,9 +7,12 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using rokugaTouroku.gui;
 using SunokoLibrary.Application;
 using System.Net.Http;
 using System.Collections.Generic;
@@ -83,16 +86,6 @@ namespace rokugaTouroku.rec
 //				util.debugWriteLine(userSessionCC.GetCookieHeader(TargetUrl));
 				util.debugWriteLine("usersessioncc ishtml5login");
 				if (isHtml5Login(userSessionCC, url)) {
-					/*
-					var c = userSessionCC.GetCookies(TargetUrl)["user_session"];
-					var secureC = userSessionCC.GetCookies(TargetUrl)["user_session_secure"];
-					if (c != null)
-						//cfg.set("user_session", c.Value);
-						us = c.Value;
-					if (secureC != null)
-						//cfg.set("user_session_secure", secureC.Value);
-						uss = secureC.Value;
-					*/
 					return userSessionCC;
 				}
 			}
@@ -103,19 +96,7 @@ namespace rokugaTouroku.rec
 				if (cc != null) {
 					util.debugWriteLine("browser ishtml5login");
 					if (isHtml5Login(cc, url)) {
-//						util.debugWriteLine("browser 1 " + cc.GetCookieHeader(TargetUrl));
-//						util.debugWriteLine("browser 2 " + cc.GetCookieHeader(new Uri("https://live2.nicovideo.jp")));
 						util.debugWriteLine("browser login ok");
-						/*
-						var c = cc.GetCookies(TargetUrl)["user_session"];
-						var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
-						if (c != null)
-							//cfg.set("user_session", c.Value);
-							us = c.Value;
-						if (secureC != null)
-							//cfg.set("user_session_secure", secureC.Value);
-							uss = secureC.Value;
-						*/
 						return cc;
 					}
 					
@@ -126,7 +107,7 @@ namespace rokugaTouroku.rec
 			    isSecondLogin == "true") {
 				var mail = accountId;
 				var pass = accountPass;
-				var accCC = await getAccountCookie(mail, pass).ConfigureAwait(false);
+				var accCC = getAccountCookie(mail, pass);
 				log += (accCC == null) ? "アカウントログインからユーザーセッションを取得できませんでした。" : "アカウントログインからユーザーセッションを取得しました。";
 				if (accCC != null) {
 					util.debugWriteLine("account ishtml5login");
@@ -159,15 +140,6 @@ namespace rokugaTouroku.rec
 			var secureC = new Cookie("user_session_secure", uss, "/", ".nicovideo.jp");
 			cc = setUserSession(cc, c, secureC);
  			cc.Add(new Cookie("player_version", "leo", "/", ".nicovideo.jp"));
-			
-			//test
-//			cc.Add(TargetUrl, new Cookie("nicosid", "1527623077.1259703149"));
-//			cc.Add(TargetUrl, new Cookie("_td", "9278c72a-9d4e-4b77-ac40-73f972913d26"));
-//			cc.Add(TargetUrl, new Cookie("_gid", "GA1.2.266519775.1527623073"));
-//			cc.Add(TargetUrl, new Cookie("_ga", "GA1.2.1892636543.1527623073"));
-//			cc.SetCookies(TargetUrl,"optimizelyBuckets=%7B%7D; optimizelySegments=%7B%223152721399%22%3A%22search%22%2C%223155720808%22%3A%22gc%22%2C%223199620088%22%3A%22false%22%2C%223214930722%22%3A%22false%22%2C%223218750517%22%3A%22referral%22%2C%223219110468%22%3A%22none%22%2C%223233940089%22%3A%22gc%22%2C%223235780522%22%3A%22none%22%2C%225140350011%22%3A%22%25E3%2583%25AD%25E3%2582%25B0%25E3%2582%25A4%25E3%2583%25B3%25E6%25B8%2588%22%2C%225130920861%22%3A%22%25E4%25B8%2580%25E8%2588%25AC%25E4%25BC%259A%25E5%2593%25A1%22%2C%225137970544%22%3A%22216pt%25E6%259C%25AA%25E6%25BA%2580%22%2C%229019961413%22%3A%22%25E9%259D%259E%25E5%25AF%25BE%25E8%25B1%25A1%22%7D; nicorepo_filter=all;  optimizelyEndUserId=oeu1527671506390r0.4517391591303288; " +
-//			cc.Add(c);
-//			cc.Add(TargetUrl, c);
 			return cc;
 		}
 		async private Task<CookieContainer> getBrowserCookie(bool isSub) {
@@ -184,12 +156,7 @@ namespace rokugaTouroku.rec
 
 			CookieImportResult result = await importer.GetCookiesAsync(TargetUrl).ConfigureAwait(false);
 			if (result.Status != CookieImportState.Success) return null;
-			
-			//if (result.Cookies["user_session"] == null) return null;
-			//var cookie = result.Cookies["user_session"].Value;
 
-			//util.debugWriteLine("usersession " + cookie);
-			
 			var cc = new CookieContainer();
 			cc.PerDomainCapacity = 200;
 			foreach(Cookie _c in result.Cookies) {
@@ -201,21 +168,14 @@ namespace rokugaTouroku.rec
 					util.debugWriteLine("cookie add browser " + _c.ToString() + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
 			}
-//			result.AddTo(cc);
 			
 			var c = cc.GetCookies(TargetUrl)["user_session"];
 			var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
-			//cc = setUserSession(cc, c, secureC);
-			
-			
 			return cc;
-			
 		}
 		private bool isHtml5Login(CookieContainer cc, string url) {
-			//var headers = new WebHeaderCollection();
 			try {
 				util.debugWriteLine("ishtml5login getpage " + url);
-				//pageSource = util.getPageSource(url + "", ref headers, cc);
 				pageSource = util.getPageSource(url + "",cc);
 				util.debugWriteLine("ishtml5login getpage ok");
 			} catch (Exception e) {
@@ -224,7 +184,7 @@ namespace rokugaTouroku.rec
 				log += "ページの取得中にエラーが発生しました。" + e.Message + e.Source + e.TargetSite + e.StackTrace;
 				return false;
 			}
-//			isHtml5 = (headers.Get("Location") == null) ? false : true;
+			
 			if (pageSource == null) {
 				log += "ページが取得できませんでした。";
 				return false;
@@ -240,7 +200,7 @@ namespace rokugaTouroku.rec
 			}
 			return isLogin;
 		}
-		async public Task<CookieContainer> getAccountCookie(string mail, string pass) {
+		public CookieContainer getAccountCookie(string mail, string pass) {
 			
 			if (mail == null || pass == null) return null;
 			
@@ -249,7 +209,7 @@ namespace rokugaTouroku.rec
 			string loginUrl;
 			Dictionary<string, string> param;
 			if (isNew) {
-				loginUrl = "https://account.nicovideo.jp/login/redirector";
+				loginUrl = "https://account.nicovideo.jp/login/redirector?show_button_twitter=1&site=niconico&show_button_facebook=1&sec=header_pc&next_url=/";
 				param = new Dictionary<string, string> {
 					{"mail_tel", mail}, {"password", pass}, {"auth_id", "15263781"}//dummy
 				};
@@ -261,33 +221,80 @@ namespace rokugaTouroku.rec
 			}
 			
 			try {
-				var handler = new System.Net.Http.HttpClientHandler();
-				handler.UseCookies = true;
-				var http = new System.Net.Http.HttpClient(handler);
-				var content = new System.Net.Http.FormUrlEncodedContent(param);
+				var h = new Dictionary<string, string>();
+				h.Add("Referer", "https://account.nicovideo.jp/login?site=niconico&next_url=%2F&sec=header_pc&cmnhd_ref=device%3Dpc%26site%3Dniconico%26pos%3Dheader_login%26page%3Dtop");
+				h.Add("Content-Type", "application/x-www-form-urlencoded");
+				h.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8");
+				h.Add("User-Agent", util.userAgent);
 				
-				var _res = await http.PostAsync(loginUrl, content);
-				var res = await _res.Content.ReadAsStringAsync();
-	//			var a = _res.Headers;
+				var _d = "mail_tel=" + WebUtility.UrlEncode(param["mail_tel"]) + "&password=" + WebUtility.UrlEncode(param["password"]) + "&auth_id=" + param["auth_id"];
+				var d = Encoding.ASCII.GetBytes(_d);
+				var cc = new CookieContainer();
 				
-	//			if (res.IndexOf("login_status = 'login'") < 0) return null;
-				
-				var cc = handler.CookieContainer;
-				var c = cc.GetCookies(TargetUrl)["user_session"];
-				var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
-				//cc = copyUserSession(cc, c, secureC);
-				log += (c == null) ? "ユーザーセッションが見つかりませんでした。" : "ユーザーセッションが見つかりました。";
-				log += (secureC == null) ? "secureユーザーセッションが見つかりませんでした。" : "secureユーザーセッションが見つかりました。";
-				if (c == null && secureC == null) return null;
-				
-				return cc;
+				var r = util.sendRequest(loginUrl, h, d, "POST", cc);
+				util.debugWriteLine(cc.GetCookieHeader(new Uri(loginUrl)));
+				if (r == null) {
+					log += "ログインページに接続できませんでした";
+					return null;
+				}
+				var _cc = cc.GetCookies(new Uri(loginUrl));
+				if (_cc["user_session"] != null) {
+					//cc.Add(r.Cookies["user_session"]);
+					return cc;
+				}
+				if (r.ResponseUri == null || !r.ResponseUri.AbsolutePath.StartsWith("/mfa")) {
+					log += "ログインに失敗しました。";
+					return null;
+				}
+				using (var sr = new StreamReader(r.GetResponseStream())) {
+					var res = sr.ReadToEnd();
+					util.debugWriteLine(res);
+					
+					var browName = util.getRegGroup(res, "id=\"deviceNameInput\".+?value=\"(.+?)\"");
+	                if (browName == null) browName = "Google Chrome (Windows)";
+	                var mfaUrl = util.getRegGroup(res, "<form action=\"(.+?)\"");
+	                if (mfaUrl == null) {
+	                	log += "2段階認証のURLを取得できませんでした。";
+						return null;
+	                }
+	                mfaUrl = "https://account.nicovideo.jp" + mfaUrl;
+	                var sendTo = util.getRegGroup(res, "class=\"userAccount\">(.+?)</span>");
+	                if (sendTo == null && util.getRegGroup(res, "(スマートフォンのアプリを使って)") != null) {
+	                	sendTo = "app";
+	                }
+	                var f = new MfaInputForm(sendTo);
+	                
+	                var dr = f.ShowDialog();
+	                if (f.code == null) {
+	                	log += "二段階認証のコードが入力されていませんでした";
+	                	return null;
+	                }
+	                util.debugWriteLine(mfaUrl);
+	                h["Referer"] = r.ResponseUri.OriginalString;
+	                h["Origin"] = "https://account.nicovideo.jp";
+	                _d = "otp=" + f.code + "&loginBtn=%E3%83%AD%E3%82%B0%E3%82%A4%E3%83%B3&device_name=Google+Chrome+%28Windows%29";
+	                d = Encoding.ASCII.GetBytes(_d);
+	                var _r = util.sendRequest(mfaUrl, h, d, "POST", cc);
+	                if (_r == null) {
+	                	log += "二段階認証のコードを正常に送信できませんでした";
+	                	return null;
+	                }
+	                using (var _sr = new StreamReader(_r.GetResponseStream())) {
+	                	res = _sr.ReadToEnd();
+	                	util.debugWriteLine(res);
+	                }
+	                _cc = cc.GetCookies(new Uri(loginUrl));
+					if (_cc["user_session"] != null) {
+						return cc;
+	                } else {
+	                	log += "2段階認証のログインに失敗しました";
+	                	return null;
+	                }
+				}
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message+e.StackTrace);
 				return null;
 			}
-			
-			
-				
 		}
 		private CookieContainer setUserSession(CookieContainer cc, 
 				Cookie c, Cookie secureC) {

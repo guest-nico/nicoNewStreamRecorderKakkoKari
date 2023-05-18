@@ -65,8 +65,8 @@ namespace namaichi.rec
            
 			if (rfu == null) {
             	var lv = util.getRegGroup(form.urlText.Text, "(lv\\d+(,\\d+)*)");
-            	if (lv == null) lv = util.getRegGroup(form.urlText.Text, "https://nicochannel.jp/.+/(live|video)/([a-zA-Z0-9]+)", 2);
-				util.setLog(cfg, lv);
+            	if (lv == null) lv = util.getRegGroup(form.urlText.Text, "https://nicochannel.jp/(.+/(live|video)/[a-zA-Z0-9]+)", 1);
+            	util.setLog(cfg, util.getRegGroup(lv, "(.*/)*(.+)", 2));
 				util.debugWriteLine(util.versionStr + " " + util.versionDayStr + " " + util.dotNetVer);
 				
 				var arr = form.urlText.Text.Split('|');

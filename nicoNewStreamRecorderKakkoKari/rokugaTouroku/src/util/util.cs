@@ -24,8 +24,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.10.69";
-	public static string versionDayStr = "2023/04/05";
+	public static string versionStr = "ver0.1.3.10.70";
+	public static string versionDayStr = "2023/05/19";
 	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);
@@ -453,6 +453,7 @@ class util {
 		return null;
 	}
 	*/
+	public static string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36";
 	public static string getPageSource(string _url, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 5000) {
 		timeoutMs = 5000;
 		/*

@@ -42,6 +42,8 @@ namespace namaichi.rec
 		bool isPlayOnlyMode = false;
 		//RecordFromUrl rfu = null;
 		
+		string videoId = null;
+		string fcId = null;
 		//string audienceToken = null;
 		string sessionId = null;
 		//string auth = null;
@@ -87,9 +89,21 @@ namespace namaichi.rec
 				rm.form.addLogText("ニコニコチャンネルプラスは標準のHLS録画エンジンのみ使用できます。");
 				return 2;
 			}
+			
+			var h = Curl.getDefaultHeaders("https://nicochannel.jp");
+			var fcName = util.getRegGroup(id, "(.+?)/");
+			var channelsPageUrl = "https://nfc-api.nicochannel.jp/fc/content_providers/channels";
+			var channelsRes = videoPageCurl.getStr(channelsPageUrl, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS);
+			fcId = util.getRegGroup(channelsRes, fcName + "\",.+?\"id\":(\\d+)");
+			if (fcId == null) {
+				form.addLogText("チャンネルIDが取得できませんでした " + fcName + " " + channelsRes);
+				return 2;
+			}
 			while (rm.rfu == rfu) {
-				var videoPageUrl = "https://nfc-api.nicochannel.jp/fc/video_pages/" + id;
-				var h = Curl.getDefaultHeaders("https://nicochannel.jp");
+				videoId = util.getRegGroup(id, ".+/(.+)");
+				var videoPageUrl = "https://nfc-api.nicochannel.jp/fc/video_pages/" + videoId;
+				h.Add("fc_site_id", fcId);
+				h.Add("fc_use_device", "null");
 				var vpRes = videoPageCurl.getStr(videoPageUrl, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS);
 				util.debugWriteLine(vpRes);
 				if (vpRes == null) {
@@ -100,7 +114,7 @@ namespace namaichi.rec
 				
 				var pageType = getPageType(vpRes);
 				var isEnded = vpRes.IndexOf("\"live_finished_at\":null") == -1 || vpRes.IndexOf("\"live_scheduled_start_at\":null") > -1;
-				var _si = new StreamInfo(url, id, isEnded, true);
+				var _si = new StreamInfo(url, videoId, isEnded, true);
 				_si.set(vpRes);
 				_si.getTimeInfo();
 				
@@ -217,9 +231,12 @@ namespace namaichi.rec
 		string getSessionId() {
 			for (var i = 0; i < 10; i++) {
 				try {
-					var url = "https://nfc-api.nicochannel.jp/fc/video_pages/" + id + "/session_ids";
+					var url = "https://nfc-api.nicochannel.jp/fc/video_pages/" + videoId + "/session_ids";
 					var h = Curl.getDefaultHeaders("https://nicochannel.jp");
 					h["Content-Type"] = "application/json";
+					h["Accept"] = "application/json, text/plain, */*";
+					h.Add("fc_site_id", fcId);
+					h.Add("fc_use_device", "null");
 					var _auth = rl.getAuth();
 					if (_auth != null) h.Add("Authorization", "Bearer " + _auth);
 					var res = videoPageCurl.getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "POST", "{}");
@@ -302,7 +319,7 @@ namespace namaichi.rec
 			try {
 				if (ri.si.isTimeShift) {
 					if (tscg == null) 
-						tscg = new TimeShiftCommentGetter_chPlus(form, rm, rfu, ri, id, group_id, vpRes, true, ri.timeShiftConfig, this, rl);
+						tscg = new TimeShiftCommentGetter_chPlus(form, rm, rfu, ri, videoId, group_id, vpRes, true, ri.timeShiftConfig, this, rl);
 					tscg.save();
 				}
 			} catch (Exception e) {
@@ -330,7 +347,7 @@ namespace namaichi.rec
 		override internal bool getStatistics(string lvid, CookieContainer cc, out string visit, out string comment) {
 			visit = "0";
 			comment = "0";
-			var videoPageUrl = "https://nfc-api.nicochannel.jp/fc/video_pages/" + id;
+			var videoPageUrl = "https://nfc-api.nicochannel.jp/fc/video_pages/" + videoId;
 			var h = Curl.getDefaultHeaders("https://nicochannel.jp");
 			var _auth = rl.getAuth();
 			if (_auth != null) h.Add("Authorization", "Bearer " + _auth);
@@ -585,7 +602,6 @@ namespace namaichi.rec
 				var timeList = lines.Where(x => x.StartsWith("#EXTINF:"))
 						.Select(x => util.getRegGroup(x, "#EXTINF:(([^,])+)")).ToArray();
 				var tsList = lines.Where(x => x.StartsWith("http")).ToArray();
-				tsUrlList = tsList.ToArray();
 				
 				util.debugWriteLine(timeList.Length + " " + tsList.Length);
 				if (timeList.Length != tsList.Length) return lines;
@@ -607,6 +623,7 @@ namespace namaichi.rec
 					ret.Add(t.Value);
 				}
 				ret.Add("#EXT-X-ENDLIST");
+				tsUrlList = wList.Select(x => x.Value).ToArray();
 				return ret.ToArray();
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
@@ -627,7 +644,9 @@ namespace namaichi.rec
 			         	for (i = 0; i < tsUrlList.Length; i++) {
 							Thread.Sleep(i == 0 || i == tsUrlList.Length - 1 ? 25000 : 5000);
 							if (rm.rfu != rfu) break;
+							util.debugWriteLine("sleep i " + i + " tsUrlList.Len " + tsUrlList.Length);
 			         	}
+					    util.debugWriteLine("m3u8 loop end");
 						stop();
 						i = -1;
 					});

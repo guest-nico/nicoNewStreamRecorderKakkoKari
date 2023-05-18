@@ -261,7 +261,7 @@ namespace namaichi.utility
 			
 			try {
 				var cg = new CookieGetter(cpr.rm.cfg);
-				for (var i = 0; i < 5; i++) {
+				for (var i = 0; i < 2; i++) {
 					try {
 						var cgret = cg.getHtml5RecordCookie("https://live.nicovideo.jp/", false).Result;
 						//cgret.Wait();

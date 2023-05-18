@@ -592,11 +592,11 @@ namespace rokugaTouroku
 			*/
 		}
 		
-		async void loginBtn_Click(object sender, EventArgs e)
+		void loginBtn_Click(object sender, EventArgs e)
 		{
 			
 			var cg = new rec.CookieGetter(cfg);
-			var cc = await cg.getAccountCookie(mailText.Text, passText.Text);
+			var cc = cg.getAccountCookie(mailText.Text, passText.Text);
 			if (cc == null) {
 				util.showMessageBoxCenterForm(this, "login error", "", MessageBoxButtons.OK);
 				return;
@@ -608,11 +608,11 @@ namespace rokugaTouroku
 			
 			//util.showMessageBoxCenterForm(this, "aa");
 		}
-		async void loginBtn2_Click(object sender, EventArgs e)
+		void loginBtn2_Click(object sender, EventArgs e)
 		{
 			
 			var cg = new rec.CookieGetter(cfg);
-			var cc = await cg.getAccountCookie(mailText2.Text, passText2.Text);
+			var cc = cg.getAccountCookie(mailText2.Text, passText2.Text);
 			if (cc == null) {
 				util.showMessageBoxCenterForm(this, "login error", "", MessageBoxButtons.OK);
 				return;

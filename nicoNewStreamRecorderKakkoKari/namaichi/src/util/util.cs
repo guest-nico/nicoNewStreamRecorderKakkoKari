@@ -34,8 +34,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.68";
-	public static string versionDayStr = "2023/04/24";
+	public static string versionStr = "ver0.88.69";
+	public static string versionDayStr = "2023/05/19";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -551,7 +551,7 @@ class util {
 		}
 		return null;
 	}
-	public static string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.63 Safari/537.36";
+	public static string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36";
 	public static string getPageSource(string _url, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 0, string userAgent = null, bool isGetErrorPage = false) {
 		util.debugWriteLine("access__ getpage " + _url);
 		if (_url == null) {
@@ -1184,6 +1184,7 @@ public static void soundEnd(config cfg, MainForm form) {
 	extern static int SetThreadExecutionState(uint esFlags);
 	public static void setThreadExecutionState() {
 		try {
+			//var r = SetThreadExecutionState(1 | 2 | 0x80000000);
 			var r = SetThreadExecutionState(1 | 0x80000000);
 			util.debugWriteLine("setThreadExecutionState " + r);
 			

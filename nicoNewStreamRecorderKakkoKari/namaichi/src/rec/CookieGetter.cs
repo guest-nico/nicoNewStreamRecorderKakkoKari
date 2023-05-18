@@ -7,9 +7,12 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using namaichi.gui;
 using SunokoLibrary.Application;
 using System.Net.Http;
 using System.Collections.Generic;
@@ -90,7 +93,7 @@ namespace namaichi.rec
 					reason = null;
 					var mail = cfg.argAi.accountId;
 					var pass = cfg.argAi.accountPass;
-					var accCC = await getAccountCookie(mail, pass).ConfigureAwait(false);
+					var accCC = getAccountCookie(mail, pass);
 					log += (accCC == null) ? "引数で指定されたアカウントログインからユーザーセッションを取得できませんでした。" : "アカウントログインからユーザーセッションを取得しました。";
 					if (accCC != null) {
 						util.debugWriteLine("account ishtml5login");
@@ -129,7 +132,7 @@ namespace namaichi.rec
 				reason = null;
 				var mail = accountId;
 				var pass = accountPass;
-				var accCC = await getAccountCookie(mail, pass).ConfigureAwait(false);
+				var accCC = getAccountCookie(mail, pass);
 				log += (accCC == null) ? "アカウントログインからユーザーセッションを取得できませんでした。" : "アカウントログインからユーザーセッションを取得しました。";
 				if (accCC != null) {
 					util.debugWriteLine("account ishtml5login");
@@ -144,10 +147,6 @@ namespace namaichi.rec
 			return null;
 		}
 		private CookieContainer getUserSessionCC(string us, string uss) {
-			//var us = cfg.get("user_session");
-			//var uss = cfg.get("user_session_secure");
-			//if ((us == null || us.Length == 0) &&
-			//    (uss == null || uss.Length == 0)) return null;
 			if (us == null || us.Length == 0) return null;
 			var cc = new CookieContainer();
 			
@@ -156,21 +155,11 @@ namespace namaichi.rec
 			var age_auth = new Cookie("age_auth", cfg.get("age_auth"));
 			cc = setUserSession(cc, c, secureC, age_auth);
  			cc.Add(TargetUrl, new Cookie("player_version", "leo", "/", ".nicovideo.jp"));
-			
-			//test
-//			cc.Add(TargetUrl, new Cookie("nicosid", "1527623077.1259703149"));
-//			cc.Add(TargetUrl, new Cookie("_td", "9278c72a-9d4e-4b77-ac40-73f972913d26"));
-//			cc.Add(TargetUrl, new Cookie("_gid", "GA1.2.266519775.1527623073"));
-//			cc.Add(TargetUrl, new Cookie("_ga", "GA1.2.1892636543.1527623073"));
-//			cc.SetCookies(TargetUrl,"optimizelyBuckets=%7B%7D; optimizelySegments=%7B%223152721399%22%3A%22search%22%2C%223155720808%22%3A%22gc%22%2C%223199620088%22%3A%22false%22%2C%223214930722%22%3A%22false%22%2C%223218750517%22%3A%22referral%22%2C%223219110468%22%3A%22none%22%2C%223233940089%22%3A%22gc%22%2C%223235780522%22%3A%22none%22%2C%225140350011%22%3A%22%25E3%2583%25AD%25E3%2582%25B0%25E3%2582%25A4%25E3%2583%25B3%25E6%25B8%2588%22%2C%225130920861%22%3A%22%25E4%25B8%2580%25E8%2588%25AC%25E4%25BC%259A%25E5%2593%25A1%22%2C%225137970544%22%3A%22216pt%25E6%259C%25AA%25E6%25BA%2580%22%2C%229019961413%22%3A%22%25E9%259D%259E%25E5%25AF%25BE%25E8%25B1%25A1%22%7D; nicorepo_filter=all;  optimizelyEndUserId=oeu1527671506390r0.4517391591303288; " +
-//			cc.Add(c);
-//			cc.Add(TargetUrl, c);
 			return cc;
 		}
 		async private Task<CookieContainer> getBrowserCookie(bool isSub, CookieSourceInfo si = null) {
 			if (si == null) si = SourceInfoSerialize.load(isSub);
 			
-//			var importer = await SunokoLibrary.Application.CookieGetters.Default.GetInstanceAsync(si, false);
 			ICookieImporter importer = await SunokoLibrary.Application.CookieGetters.Default.GetInstanceAsync(si, false).ConfigureAwait(false);
 //			var importers = new SunokoLibrary.Application.CookieGetters(true, null);
 //			var importera = (await SunokoLibrary.Application.CookieGetters.Browsers.IEProtected.GetCookiesAsync(TargetUrl));
@@ -182,17 +171,11 @@ namespace namaichi.rec
 			CookieImportResult result = await importer.GetCookiesAsync(TargetUrl).ConfigureAwait(false);
 			if (result.Status != CookieImportState.Success) return null;
 			
-			//if (result.Cookies["user_session"] == null) return null;
-			//var cookie = result.Cookies["user_session"].Value;
-
-			//util.debugWriteLine("usersession " + cookie);
-			
 			var requireCookies = new List<Cookie>();
 			var cc = new CookieContainer();
 			cc.PerDomainCapacity = 200;
 			foreach(Cookie _c in result.Cookies) {
 				try {
-					//cc.Add(_c);
 					if (_c.Name == "age_auth" || _c.Name.IndexOf("user_session") > -1) {
 						requireCookies.Add(new Cookie(_c.Name, _c.Value, "/", ".nicovideo.jp"));
 					}
@@ -200,7 +183,6 @@ namespace namaichi.rec
 					util.debugWriteLine("cookie add browser " + _c.ToString() + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
 			}
-//			result.AddTo(cc);
 			foreach (var _c in requireCookies) cc.Add(_c);
 						
 			var c = cc.GetCookies(TargetUrl)["user_session"];
@@ -210,18 +192,12 @@ namespace namaichi.rec
 				log += "ブラウザでログインし直すか、別のブラウザを試すか、アカウントログインを試すと上手くいくかもしれません。";
 				return null;
 			}
-			
-			//cc = copyUserSession(cc, c, secureC);
 			return cc;
 			
 		}
 		private bool isHtml5Login(CookieContainer cc, string url) {
-			//cc.Add(new Uri(url), new Cookie("age_auth", "0"));
-			//cc = new CookieContainer();
-			//cc.SetCookies(new Uri(url), "nicosid=1546686738.281900968; _ga=GA1.2.1892466675.1546686717; nicorepo_filter=myself; _a1_sync=!rld|1554233235889; __gads=ID=bbe8b59a1a1b56cf:T=1561492336:S=ALNI_Ma4kmS8DGEBaEGXwCi23MfjLj42XA; __utma=8292653.1892466675.1546686717.1591843710.1591846656.472; __utmz=8292653.1591846656.472.472.utmcsr=com.nicovideo.jp|utmccn=(referral)|utmcmd=referral|utmcct=/bbs/co13528; _ga_8W314HNSE8=GS1.1.1591655100.48.1.1591655101.0; nicolivehistory=%5B326227658%2C326227874%2C326232036%2C325096106%2C326370706%2C326365094%2C326371606%2C326371601%2C326367676%2C326360477%2C326367014%2C326320571%2C326344349%2C326221118%2C326344412%2C326271502%2C326250313%2C326360917%2C326271409%2C326359986%2C326371303%2C325885062%2C326368355%2C326391017%2C326341505%2C326334584%2C326392793%2C326409873%2C326423760%2C326162806%5D; cto_bundle=0DSTLl9DZTkzY01sQnlXSExUWTRqNnJtaGU4SkNPaU9LNk54czQ2RlBWbEs5SzlpVnBPQTdhZVZ5ODY4UkJJZmI1azBKN3pNbEclMkJOWHh2eGxDQVZyM0w0d1dpekxPcFlia3BoZmpSZyUyRkRwYzRwcUt6eiUyRkZhWUZlc1ZScVpVQ21KVHJ1amMwQ3lDeDdyekNHVEVVUjdhbyUyRjA3d2N3aHhZWnRzSGhpJTJGWjR1MDZEbXVKem9TSERaTFh1czJtRDN4VDBXOSUyRm4; optimizelyEndUserId=oeu1586031666784r0.061993650074855355; optimizelySegments=%7B%223176911475%22%3A%22referral%22%2C%223188621092%22%3A%22ff%22%2C%223192211201%22%3A%22false%22%2C%223217420529%22%3A%22none%22%7D; optimizelyBuckets=%7B%7D; _gid=GA1.2.1042875258.1590148254; user_session=user_session_94891892_a185c5a223715a06175322b8fbba9e7da493ed42b41eead10c10087711e4cc6a; user_session_secure=OTQ4OTE4OTI6TGNjQ2JOU1dxWWNhRDZ4TElrTFNmcXlNbm8tU2pWd2pPbDExSnpqUHNPbg; _td=f8e7235a-76a7-4e6f-8191-e75ca65aaff5; __utmc=8292653; pt_s_4ef1ca6b=1591584731613; pt_s_57cf6e43=1591761797274; _dd_l=1; _dd=4c25775e-2e9e-498c-becc-cf1020e55e26; _gali=root".Replace(";", ","));
 			var ccc = cc.GetCookieHeader(new Uri(url));
 			for (var i = 0; i < 3; i++) {
-				//var headers = new WebHeaderCollection();
 				try {
 					util.debugWriteLine("ishtml5login getpage " + url);
 					var _url = (isRtmp) ? ("https://live.nicovideo.jp/api/getplayerstatus/" + util.getRegGroup(url, "(lv\\d+)")) : url;
@@ -297,7 +273,7 @@ namespace namaichi.rec
 				util.loginCheck(cc, url, log);
 			return false;
 		}
-		async public Task<CookieContainer> getAccountCookie(string mail, string pass) {
+		public CookieContainer getAccountCookie(string mail, string pass) {
 			
 			if (mail == null || pass == null) return null;
 			
@@ -306,7 +282,7 @@ namespace namaichi.rec
 			string loginUrl;
 			Dictionary<string, string> param;
 			if (isNew) {
-				loginUrl = "https://account.nicovideo.jp/login/redirector";
+				loginUrl = "https://account.nicovideo.jp/login/redirector?show_button_twitter=1&site=niconico&show_button_facebook=1&sec=header_pc&next_url=/";
 				param = new Dictionary<string, string> {
 					{"mail_tel", mail}, {"password", pass}, {"auth_id", "15263781"}//dummy
 				};
@@ -318,29 +294,76 @@ namespace namaichi.rec
 			}
 			
 			try {
-				var handler = new System.Net.Http.HttpClientHandler();
-				if (util.httpProxy != null) {
-					handler.UseProxy = true;
-					handler.Proxy = util.httpProxy;
+				var h = new Dictionary<string, string>();
+				h.Add("Referer", "https://account.nicovideo.jp/login?site=niconico&next_url=%2F&sec=header_pc&cmnhd_ref=device%3Dpc%26site%3Dniconico%26pos%3Dheader_login%26page%3Dtop");
+				h.Add("Content-Type", "application/x-www-form-urlencoded");
+				h.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8");
+				h.Add("User-Agent", util.userAgent);
+				
+				var _d = "mail_tel=" + WebUtility.UrlEncode(param["mail_tel"]) + "&password=" + WebUtility.UrlEncode(param["password"]) + "&auth_id=" + param["auth_id"];
+				var d = Encoding.ASCII.GetBytes(_d);
+				var cc = new CookieContainer();
+				
+				var r = util.sendRequest(loginUrl, h, d, "POST", cc);
+				util.debugWriteLine(cc.GetCookieHeader(new Uri(loginUrl)));
+				if (r == null) {
+					log += "ログインページに接続できませんでした";
+					return null;
 				}
-				handler.UseCookies = true;
-				var http = new System.Net.Http.HttpClient(handler);
-				var content = new System.Net.Http.FormUrlEncodedContent(param);
-				
-				var _res = await http.PostAsync(loginUrl, content).ConfigureAwait(false);
-				var res = await _res.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-				var cc = handler.CookieContainer;
-				var cookies = cc.GetCookies(TargetUrl);
-				var c = cookies["user_session"];
-				var secureC = cookies["user_session_secure"];
-				//cc = copyUserSession(cc, c, secureC);
-				log += (c == null) ? "ユーザーセッションが見つかりませんでした。" : "ユーザーセッションが見つかりました。";
-				log += (secureC == null) ? "secureユーザーセッションが見つかりませんでした。" : "secureユーザーセッションが見つかりました。";
-				if (c == null && secureC == null) return null;
-				
-				return cc;
-			
+				var _cc = cc.GetCookies(new Uri(loginUrl));
+				if (_cc["user_session"] != null) {
+					//cc.Add(r.Cookies["user_session"]);
+					return cc;
+				}
+				if (r.ResponseUri == null || !r.ResponseUri.AbsolutePath.StartsWith("/mfa")) {
+					log += "ログインに失敗しました。";
+					return null;
+				}
+				using (var sr = new StreamReader(r.GetResponseStream())) {
+					var res = sr.ReadToEnd();
+					util.debugWriteLine(res);
+					
+					var browName = util.getRegGroup(res, "id=\"deviceNameInput\".+?value=\"(.+?)\"");
+	                if (browName == null) browName = "Google Chrome (Windows)";
+	                var mfaUrl = util.getRegGroup(res, "<form action=\"(.+?)\"");
+	                if (mfaUrl == null) {
+	                	log += "2段階認証のURLを取得できませんでした。";
+						return null;
+	                }
+	                mfaUrl = "https://account.nicovideo.jp" + mfaUrl;
+	                var sendTo = util.getRegGroup(res, "class=\"userAccount\">(.+?)</span>");
+	                if (sendTo == null && util.getRegGroup(res, "(スマートフォンのアプリを使って)") != null) {
+	                	sendTo = "app";
+	                }
+	                var f = new MfaInputForm(sendTo);
+	                
+	                var dr = f.ShowDialog();
+	                if (f.code == null) {
+	                	log += "二段階認証のコードが入力されていませんでした";
+	                	return null;
+	                }
+	                util.debugWriteLine(mfaUrl);
+	                h["Referer"] = r.ResponseUri.OriginalString;
+	                h["Origin"] = "https://account.nicovideo.jp";
+	                _d = "otp=" + f.code + "&loginBtn=%E3%83%AD%E3%82%B0%E3%82%A4%E3%83%B3&device_name=Google+Chrome+%28Windows%29";
+	                d = Encoding.ASCII.GetBytes(_d);
+	                var _r = util.sendRequest(mfaUrl, h, d, "POST", cc);
+	                if (_r == null) {
+	                	log += "二段階認証のコードを正常に送信できませんでした";
+	                	return null;
+	                }
+	                using (var _sr = new StreamReader(_r.GetResponseStream())) {
+	                	res = _sr.ReadToEnd();
+	                	util.debugWriteLine(res);
+	                }
+	                _cc = cc.GetCookies(new Uri(loginUrl));
+					if (_cc["user_session"] != null) {
+						return cc;
+	                } else {
+	                	log += "2段階認証のログインに失敗しました";
+	                	return null;
+	                }
+				}
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message+e.StackTrace);
 				return null;

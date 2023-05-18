@@ -1133,7 +1133,7 @@ namespace namaichi.rec
 			
 			if (chatinfo.root == "thread" && lastSaveComments.Count == 0) {
 				ticket = chatinfo.ticket;
-				for (var i = 0; i < 30 && sync == 0 && rm.rfu == rfu; i++) 
+				for (var i = 0; i < 60 && sync == 0 && rm.rfu == rfu; i++) 
 					Thread.Sleep(1000);
 				if (sync != 0) {
 					util.debugWriteLine("sync set " + sync + " servertime " + chatinfo.serverTime);

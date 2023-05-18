@@ -112,11 +112,11 @@ namespace rokugaTouroku.gui
 				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
 		}
-		async void LoginBtnClick(object sender, EventArgs e)
+		void LoginBtnClick(object sender, EventArgs e)
 		{
 			var TargetUrl = new Uri("https://live.nicovideo.jp/");
 			var cg = new rec.CookieGetter(cfg);
-			var cc = await cg.getAccountCookie(mailText.Text, passText.Text);
+			var cc = cg.getAccountCookie(mailText.Text, passText.Text);
 			if (cc == null) {
 				util.showMessageBoxCenterForm(this, "login error", "", MessageBoxButtons.OK);
 				return;

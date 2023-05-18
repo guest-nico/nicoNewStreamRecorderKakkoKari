@@ -230,10 +230,10 @@ namespace namaichi.rec
 			rm.form.setPlayerBtnEnable(true);
 			
 			if (engineMode == "0") {
-				m3u8GetterTask = Task.Run(() => {startM3u8Getter();});
-				tsGetterTask = Task.Run(() => {startTsGetter();});
+				m3u8GetterTask = Task.Factory.StartNew(() => {startM3u8Getter();}, TaskCreationOptions.LongRunning);
+				tsGetterTask = Task.Factory.StartNew(() => {startTsGetter();}, TaskCreationOptions.LongRunning);
 				//if (!isSub)
-					tsWriterTask = Task.Run(() => {startTsWriter();});
+					tsWriterTask = Task.Factory.StartNew(() => {startTsWriter();}, TaskCreationOptions.LongRunning);
 				
 			}
 //			Task.Run(() => {syncCheck();});
@@ -735,6 +735,7 @@ namespace namaichi.rec
 				
 				if (!isPlayOnlyMode) {
 					if (writeNti.Count >= 10) break;
+					if (wr.sync == 0 && writeNti.Count > 0) break;
 					writeNti.Add(s);
 					
 					if (isNuke) {
@@ -757,7 +758,7 @@ namespace namaichi.rec
 					break;
 				}
 			}
-			var _writeNti = new numTaskInfo(0, "", 0, "", 0, 0);
+			var _writeNti = new numTaskInfo(writeNti[0].no, "", writeNti[0].second, "", writeNti[0].startSecond, writeNti[0].originNo);
 			_writeNti.res = writeBList.ToArray();
 			
 			var before = DateTime.Now;
@@ -1192,7 +1193,6 @@ namespace namaichi.rec
 								setReconnecting(true);
 								break;
 							}
-							
 						}
 							
 					}
@@ -1974,19 +1974,26 @@ namespace namaichi.rec
 		private void renameStatistics() {
 			try {
 				wr.setRealTimeStatistics();
+				var visit = wr.visitCount.Replace("-", "");
+				var comment = wr.commentCount.Replace("-", "");
+				try {
+					var nF = ri.recFolderFile[2] + "n.txt";
+					if (File.Exists(nF))
+						File.Move(nF, nF.Replace("{w}", visit).Replace("{c}", comment));
+				} catch (Exception e) {
+					util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+				}
 				
 				if (File.Exists(recFolderFile + ext)) {
-					var newName = recFolderFile.Replace("{w}", wr.visitCount.Replace("-", "")).Replace("{c}", wr.commentCount.Replace("-", ""));
+					var newName = recFolderFile.Replace("{w}", visit).Replace("{c}", comment);
 					File.Move(recFolderFile + ext, newName + ext);
 					recFolderFile = newName;
 				}
 				
 				try {
 					if (Directory.Exists(recFolderFile)) {
-						//Thread.Sleep(5000);
 						wr.IsRetry = false;
 						wr.stopRecording();
-						//Thread.Sleep(2000);
 						var newName = recFolderFile.Replace("{w}", wr.visitCount.Replace("-", "")).Replace("{c}", wr.commentCount.Replace("-", ""));
 						Directory.Move(recFolderFile, newName);
 						recFolderFile = newName;
@@ -2082,6 +2089,7 @@ namespace namaichi.rec
 					}
 				}, false);
 				if (isBreak) return false;
+				isEnoughSpace = di.AvailableFreeSpace > 10000000 && di.AvailableFreeSpace > nti.res.Length;
 			}
 			util.debugWriteLine("free space " + di.AvailableFreeSpace);
 			return true;

@@ -587,11 +587,11 @@ namespace namaichi
 			*/
 		}
 		
-		async void loginBtn_Click(object sender, EventArgs e)
+		void loginBtn_Click(object sender, EventArgs e)
 		{
 			
 			var cg = new rec.CookieGetter(cfg);
-			var cc = await cg.getAccountCookie(mailText.Text, passText.Text);
+			var cc = cg.getAccountCookie(mailText.Text, passText.Text);
 			if (cc == null) {
 				util.showMessageBoxCenterForm(this, "login error", "", MessageBoxButtons.OK);
 				return;
@@ -601,11 +601,11 @@ namespace namaichi
 				util.showMessageBoxCenterForm(this, "no login", "", MessageBoxButtons.OK);
 			else util.showMessageBoxCenterForm(this, "login ok", "", MessageBoxButtons.OK);
 		}
-		async void loginBtn2_Click(object sender, EventArgs e)
+		void loginBtn2_Click(object sender, EventArgs e)
 		{
 			
 			var cg = new rec.CookieGetter(cfg);
-			var cc = await cg.getAccountCookie(mailText2.Text, passText2.Text);
+			var cc = cg.getAccountCookie(mailText2.Text, passText2.Text);
 			if (cc == null) {
 				util.showMessageBoxCenterForm(this, "login error", "", MessageBoxButtons.OK);
 				return;
