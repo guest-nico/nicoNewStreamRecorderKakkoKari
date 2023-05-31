@@ -49,7 +49,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto">
-      <HintPath>..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
+      <HintPath>..\packages\BouncyCastle.1.8.9\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -97,6 +97,10 @@
     <Compile Include="src\gui\MainForm.cs" />
     <Compile Include="src\gui\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\gui\MfaInputForm.cs" />
+    <Compile Include="src\gui\MfaInputForm.Designer.cs">
+      <DependentUpon>MfaInputForm.cs</DependentUpon>
     </Compile>
     <Compile Include="src\gui\NicoSessionComboBox2.cs" />
     <Compile Include="src\gui\optionForm.cs">

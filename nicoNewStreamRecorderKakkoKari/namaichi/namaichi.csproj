@@ -59,7 +59,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto">
-      <HintPath>..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
+      <HintPath>..\packages\BouncyCastle.1.8.9\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.XmlTransform">
       <HintPath>..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
@@ -156,6 +156,10 @@
     </Compile>
     <Compile Include="src\gui\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\gui\MfaInputForm.cs" />
+    <Compile Include="src\gui\MfaInputForm.Designer.cs">
+      <DependentUpon>MfaInputForm.cs</DependentUpon>
     </Compile>
     <Compile Include="src\gui\NicoSessionComboBox2.cs" />
     <Compile Include="src\gui\optionForm.cs">
@@ -254,6 +258,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\gui\MainForm.resx">
       <DependentUpon>MainForm.Designer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\gui\MfaInputForm.resx">
+      <DependentUpon>MfaInputForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\gui\optionForm.resx">
       <DependentUpon>optionForm.cs</DependentUpon>
