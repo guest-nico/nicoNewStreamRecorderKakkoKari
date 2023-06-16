@@ -47,14 +47,14 @@ namespace rokugaTouroku.rec
 						if (rlm.rdg == null) return;
 						if (_count != rlm.form.getRecListCount()) break;
 						util.debugWriteLine("i " + i + " count " + _count);
-						RecInfo ri = (RecInfo)rlm.recListData[i];
+						RecInfo ri = (RecInfo)rlm.form.getRecListData(i);
 						util.debugWriteLine(i + " " + ri);
 						
 						if (ri == null) continue;
 						if (ri.state == "待機中" || ri.state == "録画中") isAllEnd = false;
 						if (ri.state != "待機中") continue;
 						
-						if (getRecordingNum(_count, rlm.recListData) < maxRecordingNum &&
+						if (getRecordingNum(_count) < maxRecordingNum &&
 						    isListTop(i)) {
 							ri.state = "録画中";
 							ri.rdg = this;
@@ -232,10 +232,10 @@ namespace rokugaTouroku.rec
 			}
 		}
 		
-		private int getRecordingNum(int count, SortableBindingList<RecInfo> list) {
+		private int getRecordingNum(int count) {
 			var c = 0;
 			for (var i = 0; i < count; i++) {
-				RecInfo ri = (RecInfo)rlm.recListData[i];
+				RecInfo ri = (RecInfo)rlm.form.getRecListData(i);
 				if (ri.state == "録画中") c++;
 			}
 			return c;

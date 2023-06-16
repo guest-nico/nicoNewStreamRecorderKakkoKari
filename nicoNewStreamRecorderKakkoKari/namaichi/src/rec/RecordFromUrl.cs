@@ -220,7 +220,7 @@ namespace namaichi.rec
 					
 					var r = new Reservation(cc, lvid);
 					//var reserveRet = r.reserve();
-					var reserveRet = r.live2Reserve();
+					var reserveRet = r.live2Reserve2();
 					if (reserveRet == "ok") {
 						rm.form.addLogText("予約しました");
 						pageType = getPageType(url, false, ref jr, out cc);
@@ -239,7 +239,7 @@ namespace namaichi.rec
 						return 2;
 					}
 				} else if (pageType == 10) {
-					var r = new Reservation(cc, lvid).useLive2Reserve();
+					var r = new Reservation(cc, lvid).useLive2Reserve2();
 					if (!r) {
 						rm.form.addLogText("この番組のチケットを正常に使用できませんでした。");
 						return 2;

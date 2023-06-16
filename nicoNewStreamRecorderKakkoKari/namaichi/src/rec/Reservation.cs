@@ -7,6 +7,7 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.IO;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -174,6 +175,25 @@ namespace namaichi.rec
 			return "チケットの予約接続中に予期せぬ問題が発生しました" + res + "/" + res2;
 			
 		}
+		public string live2Reserve2() {
+			var id = util.getRegGroup(lv, "(\\d+)");
+			var url = "https://live2.nicovideo.jp/api/v2/programs/lv" + id + "/timeshift/reservation";
+			var header = getReserveAPI2Header(url, false);
+			
+			var res = util.postResStr(url, header, null);
+			if (res == null) return "チケットを予約するための接続に失敗しました";
+			
+			if (res.IndexOf("status\":200") > -1) {
+				return "ok";
+			} else if (res.IndexOf("\"USED\"") > -1)
+				return "チケットを既に取得しています";
+			else if (res.IndexOf("EXPIRED_GENERAL") > -1)
+				return "申込み期限切れです";
+			else if (res.IndexOf("OVER_USE") > -1)
+				return "予約数が上限に達しました";
+			
+			else return "チケットの予約中に予期せぬ問題が発生しました" + res;
+		}
 		public bool useLive2Reserve() {
 			var id = util.getRegGroup(lv, "(\\d+)");
 			
@@ -182,6 +202,23 @@ namespace namaichi.rec
 			var res = util.postResStr(useUrl, header, useData);
 			if (res == null) return false;
 			return res.IndexOf("status\":200") > -1;
+		}
+		public bool useLive2Reserve2() {
+			var id = util.getRegGroup(lv, "(\\d+)");
+			var url = "https://live2.nicovideo.jp/api/v2/programs/lv" + id + "/timeshift/reservation";
+			try {
+				var h = getReserveAPI2Header(url, true);
+				var r = util.sendRequest(url, h, null, "PATCH", cc);
+				//var r = util.sendRequest(url, h, null, "POST", cc);
+				if (r == null) return false;
+				using (var sr = new StreamReader(r.GetResponseStream())) {
+					var _r = sr.ReadToEnd();
+					return _r.IndexOf("status\":200") > -1;
+				}
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				return false;
+			}
 		}
 		private Dictionary<string, string> getLive2ReserveHeader(string id) {
 			if (id.StartsWith("lv")) id = util.getRegGroup(lv, "(\\d+)");
@@ -192,6 +229,15 @@ namespace namaichi.rec
 			header.Add("Referer", "https://live.nicovideo.jp/watch/lv" + id);
 			header.Add("Origin", "https://live.nicovideo.jp");
 			//header.Add("User-Agent", util.userAgent);
+			return header;
+		}
+		private Dictionary<string, string> getReserveAPI2Header(string url, bool isUse) {
+			var header = new Dictionary<string, string>();
+			header.Add("Cookie", cc.GetCookieHeader(new Uri(url)));
+			header.Add("Accept", "application/json");
+			header.Add("Referer", "https://live.nicovideo.jp/");
+			header.Add("Origin", "https://live.nicovideo.jp");
+			if (!isUse) header.Add("X-Frontend-Id", "9");
 			return header;
 		}
 	}

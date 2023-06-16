@@ -131,8 +131,8 @@ namespace rokugaTouroku
 		　　　　　　t.GetProperty(
 		　　　　　　"DoubleBuffered", System.Reflection.BindingFlags.Instance |
 		　　　　　　System.Reflection.BindingFlags.NonPublic);
-			dinfo.SetValue(recList, true);
-			tinfo.SetValue(logText, true);
+			dinfo.SetValue(recList, true, null);
+			tinfo.SetValue(logText, true, null);
 			setCookieForm();
 			
 			setFormState();
@@ -319,7 +319,8 @@ namespace rokugaTouroku
 		
 		void recList_FocusRowEnter(object sender, DataGridViewCellEventArgs e)
 		{
-			//return;
+			if (recList.SelectedRows.Count > 1) return;
+			
 			util.debugWriteLine("focus row enter " + recListDataSource.Count + " erowi " + e.RowIndex);
 			var ri = (RecInfo)recListDataSource[e.RowIndex];
 			
@@ -385,6 +386,8 @@ namespace rokugaTouroku
 		public void displayRiInfo(RecInfo ri, string ctrl = null, string val = null) {
 			var isChange = displayingRi != ri;
 			displayingRi = ri;
+			if (!isChange) 
+				return;
 			//util.debugWriteLine("display c " + recList.RowCount + " " + recListDataSource.Count);
 			
 			this.Invoke((MethodInvoker)delegate() {
@@ -578,6 +581,7 @@ namespace rokugaTouroku
 			}
 			foreach (var ri in selectedRIList)
 				recListDataSource.Remove(ri);
+			saveList();
 		}
 		public bool deleteRow(RecInfo ri) {
 			if (ri.state == "録画中") {
@@ -594,6 +598,7 @@ namespace rokugaTouroku
 			recListDataSource.Remove(ri);
 			//recList.Rows.RemoveAt(selectedCell.RowIndex);
 			//resetBindingList(selectedCell.RowIndex);
+			saveList();
 			return true;
 		}
 		void form_Load(object sender, EventArgs e)
@@ -602,13 +607,14 @@ namespace rokugaTouroku
 			formInitSetting();
 			if (bool.Parse(config.get("rokugaTourokuMiniInfo")))
 				FoldBtnLabelClick(null, null);
-			loadList();
-			
-			if (config.brokenCopyFile != null)
-				addLogText("設定ファイルを読み込めませんでした。設定ファイルをバックアップしました。" + config.brokenCopyFile);
 			
 			Task.Run(() =>  {
 				try {
+			        loadList();
+			
+					if (config.brokenCopyFile != null)
+						addLogText("設定ファイルを読み込めませんでした。設定ファイルをバックアップしました。" + config.brokenCopyFile);
+			
 					var cg = new CookieGetter(config);
 					var cgret = cg.getHtml5RecordCookie("https://live.nicovideo.jp/my", false);
 					if (cgret != null && cgret.Result != null
@@ -771,16 +777,17 @@ namespace rokugaTouroku
 				var s = sr.ReadToEnd();
 				sr.Close();
 				var list = JsonConvert.DeserializeObject<List<RecInfo>>(s);
+				var ds = new SortableBindingList<RecInfo>();
 				foreach (var l in list) {
 					if (l.state == "録画中") l.state = "録画失敗";
 					if (l.samuneUrl != null) l.samune = util.getSamune(l.samuneUrl);
 					if (l.ai == null && accountBtn.Tag != null) l.ai = (AccountInfo)accountBtn.Tag;
 					
-					addList(l);
+					//addList(l);
+					ds.Add(l);
 				}
-				//Task.Run(() => {
-		        // 	foreach (var l in list) l.setHosoInfo(this);
-		        // });
+				recListDataSource = rec.recListData = new SortableBindingList<RecInfo>(ds);
+				formAction(() => recList.DataSource = recListDataSource);
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
@@ -872,7 +879,8 @@ namespace rokugaTouroku
 		}
 		void RecListRowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
 		{
-			saveList();
+			recListNumLabel.Text = "登録数：" + recList.RowCount + "件";
+			//saveList();
 		}
 		private void loadControlLayout() {
 			try {
@@ -996,6 +1004,7 @@ namespace rokugaTouroku
 			}
 			if (recList.SelectedCells.Count == 0)
 				clearRiInfo();
+			saveList();
 		}
 		
 		void OpenSettingFolderMenuClick(object sender, EventArgs e)
@@ -1191,6 +1200,13 @@ namespace rokugaTouroku
 				foldBtnLabel.Text = "折り畳む";
 				logText.Visible = true;
 			}
+		}
+		void RecListRowsAdded(object sender, DataGridViewRowsAddedEventArgs e)
+		{
+			recListNumLabel.Text = "登録数：" + recList.RowCount + "件";
+		}
+		public RecInfo getRecListData(int i) {
+			return recListDataSource[i];
 		}
 	}
 }

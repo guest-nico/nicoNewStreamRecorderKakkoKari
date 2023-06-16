@@ -103,6 +103,7 @@ namespace rokugaTouroku
 			this.updateMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.バージョン情報VToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.recListNumLabel = new System.Windows.Forms.Label();
 			this.isChaseChkBox = new System.Windows.Forms.CheckBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.recCommmentList = new System.Windows.Forms.ComboBox();
@@ -217,6 +218,7 @@ namespace rokugaTouroku
 			this.recList.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.recListCell_MouseDown);
 			this.recList.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.RecListDataError);
 			this.recList.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.recList_FocusRowEnter);
+			this.recList.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.RecListRowsAdded);
 			this.recList.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.RecListRowsRemoved);
 			this.recList.DragDrop += new System.Windows.Forms.DragEventHandler(this.RecListDragDrop);
 			this.recList.DragEnter += new System.Windows.Forms.DragEventHandler(this.RecListDragEnter);
@@ -697,6 +699,7 @@ namespace rokugaTouroku
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.panel1.AutoSize = true;
 			this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.panel1.Controls.Add(this.recListNumLabel);
 			this.panel1.Controls.Add(this.isChaseChkBox);
 			this.panel1.Controls.Add(this.label2);
 			this.panel1.Controls.Add(this.recCommmentList);
@@ -722,6 +725,17 @@ namespace rokugaTouroku
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(1111, 301);
 			this.panel1.TabIndex = 13;
+			// 
+			// recListNumLabel
+			// 
+			this.recListNumLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.recListNumLabel.BackColor = System.Drawing.SystemColors.Control;
+			this.recListNumLabel.Location = new System.Drawing.Point(984, 59);
+			this.recListNumLabel.Name = "recListNumLabel";
+			this.recListNumLabel.Size = new System.Drawing.Size(106, 23);
+			this.recListNumLabel.TabIndex = 29;
+			this.recListNumLabel.Text = "登録数：0件";
+			this.recListNumLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// isChaseChkBox
 			// 
@@ -1205,6 +1219,7 @@ namespace rokugaTouroku
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.Label recListNumLabel;
 		private System.Windows.Forms.Label foldBtnLabel;
 		private System.Windows.Forms.Button upBtn;
 		private System.Windows.Forms.Button downBtn;

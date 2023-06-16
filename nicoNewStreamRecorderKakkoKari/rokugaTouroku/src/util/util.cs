@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Drawing;
@@ -24,8 +25,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.10.70";
-	public static string versionDayStr = "2023/05/19";
+	public static string versionStr = "ver0.1.3.10.71";
+	public static string versionDayStr = "2023/06/17";
 	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);
