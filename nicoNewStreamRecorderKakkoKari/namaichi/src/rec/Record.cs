@@ -677,7 +677,7 @@ namespace namaichi.rec
 							if (wr != null && wr.firstSegmentSecond == -1) 
 								wr.firstSegmentSecond = s.startSecond;
 							
-							addDebugBuf("write ok " + s.no + " origin " + s.originNo);
+							addDebugBuf("write ok " + s.no + " origin " + s.originNo + " " + s.fileName);
 							if (rfu.subGotNumTaskInfo != null)
 								addDebugBuf("subGotTs count " + rfu.subGotNumTaskInfo.Count);
 							
@@ -891,7 +891,7 @@ namespace namaichi.rec
 							break;
 						} catch (Exception e) {
 							util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
-							rm.form.addLogText("ファイルの書き込み後の処理に失敗しました。リトライします。");
+							rm.form.addLogText("ファイルの書き込み後の処理に失敗しました。リトライします。" + recFolderFile + ext + " " + newName + ext);
 							Thread.Sleep(1000);
 						}
 					}
@@ -1800,6 +1800,7 @@ namespace namaichi.rec
 					ins += maxLine.Replace(maxNo.ToString() + ext, i.ToString() + ext) + "\n";
 				}
 				res = res.Insert(res.IndexOf("EXTINF:") - 1, ins);
+				res = new Regex("#EXT-X-MEDIA-SEQUENCE:(\\d+)").Replace(res, "#EXT-X-MEDIA-SEQUENCE:" + startNo);
 				addDebugBuf("added list " + res);
 			}
 			lastGetPlayListMaxNo = maxNo + baseNo;

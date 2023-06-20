@@ -62,7 +62,13 @@ public class config
 				cfg.AppSettings.Settings.Add(key, value);
 			else cfg.AppSettings.Settings[key].Value = value;
 			try {
-				cfg.Save();
+				//cfg.Save();
+				var o = cfg.FilePath.TrimEnd(new char[]{'_'});
+				cfg.SaveAs(o + "_", ConfigurationSaveMode.Modified, true);
+				var exeFileMap = new System.Configuration. ExeConfigurationFileMap { ExeConfigFilename = o + "_" };
+		        var cfg2 = ConfigurationManager.OpenMappedExeConfiguration(exeFileMap, ConfigurationUserLevel.None);
+				File.Copy(o + "_", o, true);
+				File.Delete(o + "_");
 				return;
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + " " + e.StackTrace);

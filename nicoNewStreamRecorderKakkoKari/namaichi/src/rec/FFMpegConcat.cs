@@ -89,10 +89,22 @@ namespace namaichi.rec
 				process.StartInfo.Arguments = arg;
 			
 				process.Start();
-				process.StandardInput.Write(input);
+				//process.StandardInput.Write(input);
+				
+				var t = Task.Run(() => displayRecordStatus());
+				var b = new byte[10000000];
+				foreach (var fName in files) {
+					using (var fs = new FileStream(fName, FileMode.Open)) {
+						var c = fs.Read(b, 0, b.Length);
+						//for (int i = 0; i < 10000000; i++)
+						process.StandardInput.BaseStream.Write(b, 0, c);
+						process.StandardInput.BaseStream.Flush();
+					}
+				}
+				
 				process.StandardInput.Close();
 				
-				displayRecordStatus();
+				//displayRecordStatus();
 				Application.ApplicationExit -= e;
 				
 			} catch (Exception ee) {
@@ -221,7 +233,6 @@ namespace namaichi.rec
 //				if (rm.rfu != rfu) stopRecording();
 			}
 			try {
-				
 				es.Close();
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.StackTrace);

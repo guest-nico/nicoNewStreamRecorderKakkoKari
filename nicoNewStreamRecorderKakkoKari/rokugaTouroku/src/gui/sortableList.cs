@@ -175,6 +175,5 @@ namespace rokugaTouroku
             //not comparable, compare ToString
             return lhsValue.ToString().CompareTo(rhsValue.ToString());
         }
-        
     }
 }

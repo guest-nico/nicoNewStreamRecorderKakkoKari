@@ -1141,6 +1141,7 @@ namespace rokugaTouroku
 		void RecListDataError(object sender, DataGridViewDataErrorEventArgs e)
 		{
 			addLogText("list error " + e.ColumnIndex + " " + e.RowIndex + " " + e.Exception.Message + " " + e.Exception.Source + " " + e.Exception.StackTrace + " " + e.Exception.TargetSite);
+			util.debugWriteLine("list error " + e.ColumnIndex + " " + e.RowIndex + " " + e.Exception.Message + " " + e.Exception.Source + " " + e.Exception.StackTrace + " " + e.Exception.TargetSite);
 		}
 		void UpBtnClick(object sender, EventArgs e)
 		{

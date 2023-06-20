@@ -165,22 +165,30 @@ namespace namaichi.rec
 				}
 				var f = dir + "/" + dirName + "_" + i + ".ts";
 				var lvid = util.getRegGroup(dirName, "(lv\\d+)");
+				if (f.Length > 250) {
+					f = dir + "/" + (lvid != null ? lvid : "lv") + ".ts";
+					if (f.Length > 250) {
+						f = dir + "/out.ts";
+						if (f.Length > 250)
+							throw new Exception("出力のパスが長すぎます " + f);
+					}
+				}
 				if (File.Exists(f) || Directory.Exists(f)) continue;
 				
 				try {
 					util.debugWriteLine("renketu out fname " + f);			
 					//return f;
 //					var w = new FileStream(f, FileMode.Append, FileAccess.Write);
-					if (f.Length > 250) throw new Exception();
 					return f;
 					//return w;
 				} catch (Exception e) {
 					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+					rm.form.addLogText(e.Message + e.Source + e.StackTrace);
 					try {
 						if (lvid != null) f = dir + "/" + lvid + "_" + i + ".ts";
 						if (File.Exists(f) || Directory.Exists(f)) continue;
 						util.debugWriteLine("renketu out fname " + f);	
-						if (f.Length > 250) throw new Exception();
+						if (f.Length > 250) throw new Exception("出力のパスが長すぎます " + f);
 						return f;
 						//var w = new FileStream(f, FileMode.Append, FileAccess.Write);
 						//return w;
@@ -190,7 +198,7 @@ namespace namaichi.rec
 							f = dir + "/out_" + i + ".ts";
 							if (File.Exists(f) || Directory.Exists(f)) continue;
 							util.debugWriteLine("renketu out fname " + f);	
-							if (f.Length > 250) throw new Exception();
+							if (f.Length > 250) throw new Exception("出力のパスが長すぎます " + f);
 							return f;
 							//var w = new FileStream(f, FileMode.Append, FileAccess.Write);
 							//return w;
