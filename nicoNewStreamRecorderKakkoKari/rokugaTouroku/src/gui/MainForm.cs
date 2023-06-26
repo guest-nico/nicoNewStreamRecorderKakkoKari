@@ -786,7 +786,7 @@ namespace rokugaTouroku
 					//addList(l);
 					ds.Add(l);
 				}
-				recListDataSource = rec.recListData = new SortableBindingList<RecInfo>(ds);
+				recListDataSource = rec.recListData = ds;
 				formAction(() => recList.DataSource = recListDataSource);
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
