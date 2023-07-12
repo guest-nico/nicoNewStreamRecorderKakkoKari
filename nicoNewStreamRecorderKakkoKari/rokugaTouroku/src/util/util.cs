@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using rokugaTouroku.config;
 using rokugaTouroku.info;
+using rokugaTouroku.utility;
 
 class app {
 	public static void Mains(string[] args) {
@@ -25,8 +26,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.10.73";
-	public static string versionDayStr = "2023/06/27";
+	public static string versionStr = "ver0.1.3.10.74";
+	public static string versionDayStr = "2023/07/12";
 	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);
@@ -1036,5 +1037,21 @@ class util {
 				_command = ("-i \"" + path + "\" \"" + tmp + "\""); 
 		}
 		return _command;
+	}
+	public static Dictionary<string, string> getHeader(CookieContainer cc, string referer, string url) {
+		var ret = new Dictionary<string, string>() {
+			{"Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"},
+			{"Accept-Language", "ja,en-US;q=0.7,en;q=0.3"},
+			{"Cache-Control", "no-cache"},
+			{"User-Agent", userAgent}
+		};
+		if (cc != null) ret["Cookie"] = cc.GetCookieHeader(new Uri(url));
+		if (referer != null) ret["Referer"] = referer;
+		return ret;
+	}
+	public static string getPageSourceCurl(string url, CookieContainer cc, string referer) {
+		var h = getHeader(cc, referer, url);
+		var res = new Curl().getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
+		return res;
 	}
 }

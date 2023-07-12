@@ -34,7 +34,8 @@ namespace namaichi.rec
 		public bool get(string _url) {
 			var lvid = util.getRegGroup(_url, "((lv|c[oh])\\d+)");
 			var url =  "https://live.nicovideo.jp/watch/" + lvid;
-			var res = util.getPageSource(url, null);
+			//var res = util.getPageSource(url, null);
+			var res = util.getPageSourceCurl(url, null, null);
 			if (res == null) return false;
 			
 			title = util.getRegGroup(res, "<meta property=\"og:title\" content=\"(.*?)\"");

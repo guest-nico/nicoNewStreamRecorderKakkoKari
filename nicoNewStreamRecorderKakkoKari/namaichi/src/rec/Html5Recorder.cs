@@ -15,6 +15,7 @@ using System.Windows.Forms;
 using namaichi.config;
 using namaichi.info;
 using namaichi;
+using namaichi.utility;
 
 namespace namaichi.rec
 {
@@ -326,7 +327,9 @@ namespace namaichi.rec
 		}
 		private void renameTitle() {
 			var _si = new StreamInfo(ri.si.url, ri.si.lvid, ri.si.isTimeShift, false);
-			var res = util.getPageSource(ri.si.url, container);
+			//var res = util.getPageSource(ri.si.url, container);
+			var h = util.getHeader(container, null, ri.si.url);
+			var res = new Curl().getStr(ri.si.url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
 			if (res == null) return;
 			_si.set(res);
 			if (_si.recFolderFileInfo[2] == ri.si.recFolderFileInfo[2]) return;

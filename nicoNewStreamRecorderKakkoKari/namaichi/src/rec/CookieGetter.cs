@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using namaichi.gui;
+using namaichi.utility;
 using SunokoLibrary.Application;
 using System.Net.Http;
 using System.Collections.Generic;
@@ -201,7 +202,9 @@ namespace namaichi.rec
 				try {
 					util.debugWriteLine("ishtml5login getpage " + url);
 					var _url = (isRtmp) ? ("https://live.nicovideo.jp/api/getplayerstatus/" + util.getRegGroup(url, "(lv\\d+)")) : url;
-					pageSource = util.getPageSource(_url, cc);
+					//pageSource = util.getPageSource(_url, cc);
+					var h = util.getHeader(cc, null, _url);
+					pageSource = new Curl().getStr(_url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
 					
 					util.debugWriteLine("ishtml5login getpage ok");
 
@@ -217,7 +220,9 @@ namespace namaichi.rec
 				if (pageSource == null) {
 					util.debugWriteLine("not get page");
 					Thread.Sleep(3000);
-					pageSource = util.getPageSource(url, cc, null, false, 5, null, true);
+					//pageSource = util.getPageSource(url, cc, null, false, 5, null, true);
+					var h = util.getHeader(cc, null, url);
+					pageSource = new Curl().getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
 					
 					var msg = "ページが取得できませんでした。" + url;
 					msg += util.getRegGroup(pageSource, "<title>(.+?)</title>");
@@ -387,7 +392,9 @@ namespace namaichi.rec
 		private bool isPlayable(string url) {
 			try {
 				util.debugWriteLine("isPlayable " + url);
-				var res = util.getPageSource(url);
+				//var res = util.getPageSource(url);
+				var h = util.getHeader(null, null, null);
+				var res = new Curl().getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
 				if (res != null && res.IndexOf("wss://a.") > -1) {
 					id = "0";
 					pageSource = res;

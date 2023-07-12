@@ -163,7 +163,7 @@ namespace namaichi.rec
 			ri = new RedistInfo(args);
 		}
 		public void stopRecording(bool isPlayOnlyMode) {
-			setRecModeForm(false);
+			setRecModeForm(false, true);
 			var _m = (isPlayOnlyMode) ? "視聴" : "録画";
 			form.addLogText(_m + "を中断しました");
 			
@@ -173,7 +173,7 @@ namespace namaichi.rec
 			
         	recordingUrl = null;
 		}
-		private void setRecModeForm(bool isRec) {
+		private void setRecModeForm(bool isRec, bool isAsync = false) {
 			form.formAction(() => {
             	try {
 			        form.recBtn.Text = isRec ? "中断" : "録画開始";
@@ -183,7 +183,7 @@ namespace namaichi.rec
 				} catch (Exception e) {
        				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
        			}
-            }, false);
+            }, isAsync);
 		}
 	}
 }

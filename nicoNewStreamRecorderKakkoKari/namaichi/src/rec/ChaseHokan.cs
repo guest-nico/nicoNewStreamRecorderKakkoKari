@@ -10,6 +10,7 @@ using System;
 using System.Threading;
 using System.Net;
 using namaichi.info;
+using namaichi.utility;
 
 namespace namaichi.rec
 {
@@ -98,7 +99,10 @@ namespace namaichi.rec
 		string getRes() {
 			for (var i = 0; i < 3; i++) {
 				try {
-					var _res = util.getPageSource("https://live.nicovideo.jp/watch/" + lvid, container);
+					//var _res = util.getPageSource("https://live.nicovideo.jp/watch/" + lvid, container);
+					var url = "https://live.nicovideo.jp/watch/" + lvid;
+					var h = util.getHeader(container, null, url);
+					var _res = new Curl().getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
 					if (_res == null) continue;
 					
 					var pageType = util.getPageType(_res); 

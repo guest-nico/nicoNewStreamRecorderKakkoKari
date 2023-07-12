@@ -128,7 +128,7 @@ public class config
 			return null;
 		}
 		try {
-			if (argConfig.ContainsKey(key)) 
+			if (argConfig != null && argConfig.ContainsKey(key)) 
 				return argConfig[key];
 			return cfg.AppSettings.Settings[key].Value;
 		} catch (Exception) {

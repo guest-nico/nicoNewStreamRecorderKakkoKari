@@ -10,6 +10,7 @@ using System;
 using System.Net;
 using System.Threading;
 using namaichi.info;
+using namaichi.utility;
 
 namespace namaichi.rec
 {
@@ -69,8 +70,11 @@ namespace namaichi.rec
 			for (var i = 0; i < 12 && rm.rfu == rfu; i++) {
 				Thread.Sleep(5000);
 				//var timeout = i == 0 ? 3000 : 15000;
-				var timeout = 3000;
-				var _res = util.getPageSource("https://live.nicovideo.jp/watch/" + lvid, container, null, false, timeout);
+				//var timeout = 3000;
+				//var _res = util.getPageSource("https://live.nicovideo.jp/watch/" + lvid, container, null, false, timeout);
+				var url = "https://live.nicovideo.jp/watch/" + lvid;
+				var h = util.getHeader(container, null, url);
+				var _res = new Curl().getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
 				if (_res == null) {
 					util.debugWriteLine("chaseLastRecord getres getPage null " + i);
 					continue;
@@ -107,7 +111,7 @@ namespace namaichi.rec
 					*/
 					#if DEBUG
 						rm.form.addLogText("pagetype " + pageType);
-						var url = "http://live.nicovideo.jp/api/getplayerstatus?v=" + lvid;
+						url = "http://live.nicovideo.jp/api/getplayerstatus?v=" + lvid;
 						util.debugWriteLine(util.getPageSource(url, container));
 					#endif
 					

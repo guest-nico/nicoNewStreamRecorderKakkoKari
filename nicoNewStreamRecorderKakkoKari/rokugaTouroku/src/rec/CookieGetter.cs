@@ -176,7 +176,8 @@ namespace rokugaTouroku.rec
 		private bool isHtml5Login(CookieContainer cc, string url) {
 			try {
 				util.debugWriteLine("ishtml5login getpage " + url);
-				pageSource = util.getPageSource(url + "",cc);
+				//pageSource = util.getPageSource(url + "",cc);
+				pageSource = util.getPageSourceCurl(url, cc, null);
 				util.debugWriteLine("ishtml5login getpage ok");
 			} catch (Exception e) {
 				util.debugWriteLine("cookiegetter ishtml5login " + e.Message+e.StackTrace);

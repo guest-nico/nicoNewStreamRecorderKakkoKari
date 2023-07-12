@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Collections.Generic;
 using namaichi.info;
+using namaichi.utility;
 
 namespace namaichi.rec
 {
@@ -120,7 +121,9 @@ namespace namaichi.rec
 						
 						while(this == rm.rfu) {
 							try {
-								res = util.getPageSource(url, cc);
+								//res = util.getPageSource(url, cc);
+								var h = util.getHeader(cc, null, url);
+								res = new Curl().getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
 								isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
 								//var _pageType = (isJikken) ? getJikkenPageType(res, out jr, cc) : util.getPageType(res);
 								var _pageType = (isJikken) ? 0 : util.getPageType(res);

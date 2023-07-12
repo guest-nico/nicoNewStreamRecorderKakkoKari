@@ -576,8 +576,8 @@ namespace namaichi
 			} catch(Exception e) {
 				util.debugWriteLine(e.Message + " " + e.StackTrace);
 			}
-			player.stopPlaying(true, true);
 			try  {
+				player.stopPlaying(true, true);
 				if (rec != null && rec.rfu != null && rec.rfu.h5r != null && rec.rfu.h5r.wsr != null) {
 					var _r = rec.rfu.h5r.wsr;
 					rec.stopRecording(rec.rfu.isPlayOnlyMode);

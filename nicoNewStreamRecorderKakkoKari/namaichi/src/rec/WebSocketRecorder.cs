@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Drawing;
+using namaichi.utility;
 using WebSocket4Net;
 using Newtonsoft.Json;
 using SuperSocket.ClientEngine.Proxy;
@@ -1355,10 +1356,13 @@ namespace namaichi.rec
 				lastEndProgramCheckTime = DateTime.Now;
 				
 				var a = new System.Net.WebHeaderCollection();
-				var res = util.getPageSource(ri.si.url, container, null, false, 15000);
+				//var res = util.getPageSource(ri.si.url, container, null, false, 15000);
+				var h = util.getHeader(container, null, ri.si.url);
+				var res = new Curl().getStr(ri.si.url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
 				addDebugBuf("irasendedprogm url " + ri.si.url + " res==null " + (res == null));
 				if (res == null) {
-					res = util.getPageSource(ri.si.url, container, null, false, 15000, null, true);
+					//res = util.getPageSource(ri.si.url, container, null, false, 15000, null, true);
+					res = new Curl().getStr(ri.si.url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, true);
 					if (res != null && res.IndexOf("<title>ご指定のページが見つかりませんでした") > -1)
 						return true;
 					return isEndedProgramRtmp();
@@ -1374,7 +1378,8 @@ namespace namaichi.rec
 					var cgTask = cg.getHtml5RecordCookie(ri.si.url);
 					cgTask.Wait();
 					container = cgTask.Result[0];
-					res = util.getPageSource(ri.si.url, container, null, false, 5000);
+					//res = util.getPageSource(ri.si.url, container, null, false, 5000);
+					res = new Curl().getStr(ri.si.url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
 					if (res == null) return isEndedProgramRtmp();
 					res = System.Web.HttpUtility.HtmlDecode(res);
 					var _webSocketInfo = RecordInfo.getWebSocketInfo(res, ri.isRtmp, ri.isChase, ri.si.isTimeShift, rm.form, ri.isFmp4);
@@ -1495,7 +1500,9 @@ namespace namaichi.rec
 				var cgTask = cg.getHtml5RecordCookie(ri.si.url);
 				cgTask.Wait();
 				container = cgTask.Result[0];
-				var res = util.getPageSource(ri.si.url, container, null, false, 5000);
+				//var res = util.getPageSource(ri.si.url, container, null, false, 5000);
+				var h = util.getHeader(container, null, ri.si.url);
+				var res = new Curl().getStr(ri.si.url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
 				if (res == null) {
 					util.debugWriteLine("resetWebsocketInfo get page null");
 					return;
@@ -1679,7 +1686,9 @@ namespace namaichi.rec
 			var url = util.getRegGroup(msg, "(http.+?)\"");
 			if (url == null) return false;
 			
-			var res = util.getPageSource(url, container);
+			//var res = util.getPageSource(url, container);
+			var h = util.getHeader(container, null, url);
+			var res = new Curl().getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
 			if (res == null) {
 				return false;
 			}
@@ -1717,7 +1726,9 @@ namespace namaichi.rec
 			gotComList.AddRange(gotTsCommentList);
 			while (true) {
 				try {
-					foreach (var c in chaseCommentBuf) {
+					//foreach (var c in chaseCommentBuf) {
+					for (var i = 0; i < chaseCommentBuf.Count; i++) {
+						var c = chaseCommentBuf[i];
 						if (gotComList.IndexOf(c) > -1) {
 							gotComList.Remove(c);
 							util.debugWriteLine("remove gotcomlist " + c);
@@ -1779,7 +1790,9 @@ namespace namaichi.rec
 			visit = "0";
 			comment = "0";
 			var url = "https://live.nicovideo.jp/watch/" + lvid;
-			var res = util.getPageSource(url, cc);
+			//var res = util.getPageSource(url, cc);
+			var h = util.getHeader(cc, null, url);
+			var res = new Curl().getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
 			if (res == null) return false;
 			var _visit = util.getRegGroup(res, "statistics&quot;:{&quot;watchCount&quot;:(\\d+),&quot;commentCount&quot;:\\d+}");
 			var _comment = util.getRegGroup(res, "statistics&quot;:{&quot;watchCount&quot;:\\d+,&quot;commentCount&quot;:(\\d+)}");

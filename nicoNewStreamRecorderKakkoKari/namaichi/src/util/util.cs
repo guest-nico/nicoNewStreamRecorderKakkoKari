@@ -16,6 +16,7 @@ using System.Drawing;
 using namaichi;
 using namaichi.config;
 using namaichi.info;
+using namaichi.utility;
 using SuperSocket.ClientEngine.Proxy;
 
 /*
@@ -34,8 +35,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.71";
-	public static string versionDayStr = "2023/06/21";
+	public static string versionStr = "ver0.88.72";
+	public static string versionDayStr = "2023/07/12";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -793,7 +794,9 @@ class util {
 		var url = "https://live.nicovideo.jp/watch/" + lvid;
 		
 		//var a = new System.Net.WebHeaderCollection();
-		var res = util.getPageSource(url, container);
+		//var res = util.getPageSource(url, container);
+		var h = util.getHeader(container, null, url);
+		var res = new Curl().getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
 		util.debugWriteLine("isendedprogram url " + url + " res==null " + (res == null) + util.getMainSubStr(isSub, true));
 //			util.debugWriteLine("isendedprogram res " + res + util.getMainSubStr(isSub, true));
 		if (res == null) return false;
@@ -1549,5 +1552,16 @@ public static void soundEnd(config cfg, MainForm form) {
 				_command = ("-i \"" + path + "\" \"" + tmp + "\""); 
 		}
 		return _command;
+	}
+	public static Dictionary<string, string> getHeader(CookieContainer cc, string referer, string url) {
+		var ret = new Dictionary<string, string>() {
+			{"Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"},
+			{"Accept-Language", "ja,en-US;q=0.7,en;q=0.3"},
+			{"Cache-Control", "no-cache"},
+			{"User-Agent", userAgent}
+		};
+		if (cc != null) ret["Cookie"] = cc.GetCookieHeader(new Uri(url));
+		if (referer != null) ret["Referer"] = referer;
+		return ret;
 	}
 }

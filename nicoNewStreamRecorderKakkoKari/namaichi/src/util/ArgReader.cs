@@ -41,18 +41,25 @@ namespace namaichi.utility
 			this.form = form;
 		}
 		public void read() {
-			if (isAllPath()) {
-				isConcatMode = true;
-				return;
-			}
-			setArgConfig();
-			util.debugWriteLine("args " + args.Length + " " + string.Join(" ", args));
-			foreach(var a in argConfig) util.debugWriteLine(a.Key + " " + a.Value);
-			
-			foreach (var arg in args) {
-				var _a = arg.ToLower();
-				if (_a == "-play") isPlayMode = true;
-				if (_a == "-chase") form.isChaseChkBtn.Checked = true;
+			try {
+				if (isAllPath()) {
+					isConcatMode = true;
+					return;
+				}
+				setArgConfig();
+				util.debugWriteLine("args " + args.Length + " " + string.Join(" ", args));
+				foreach(var a in argConfig) util.debugWriteLine(a.Key + " " + a.Value);
+				
+				foreach (var arg in args) {
+					var _a = arg.ToLower();
+					if (_a == "-play") isPlayMode = true;
+					if (_a == "-chase") form.isChaseChkBtn.Checked = true;
+				}
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+				form.addLogText("引数の読み込みに失敗しました");
+				form.addLogText("引数:" + string.Join(" ", args));
+				form.addLogText(e.Message + e.Source + e.StackTrace);
 			}
 		}
 		private bool isAllPath() {
@@ -77,15 +84,20 @@ namespace namaichi.utility
 			                 		"ts-vpos-starttime", "ts-starttime-comment", "ts-endtime-comment", "ts-starttime-open", "ts-endtime-open", "ts-endtime-delete-pos", "accountsetting"});
 			foreach (var a in args) {
 				if (a.StartsWith("-")) {
-					var name = util.getRegGroup(a, "-(.*)=");
-					var val = util.getRegGroup(a, "=(.*)");
-					if (name == null) continue;
-					
-					string setVal = null;
-					string setName = null;
-					if (!isValidConf(name, val, lowKeys, values, out setVal, out setName, keys)) continue;
-					//argConfig.Add(setName, setVal);
-					argConfig[setName] = setVal;
+					try {
+						var name = util.getRegGroup(a, "-(.*)=");
+						var val = util.getRegGroup(a, "=(.*)");
+						if (name == null) continue;
+						
+						string setVal = null;
+						string setName = null;
+						if (!isValidConf(name, val, lowKeys, values, out setVal, out setName, keys)) continue;
+						//argConfig.Add(setName, setVal);
+						argConfig[setName] = setVal;
+					} catch (Exception e) {
+						util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+						form.addLogText("引数の読み取りに失敗しました " + a + " " + e.Message + e.Source + e.StackTrace);
+					}
 				} else {
 					if (lvid == null) lvid = util.getRegGroup(a, "(lv\\d+(,\\d+)*)");
 				}
