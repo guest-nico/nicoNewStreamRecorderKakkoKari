@@ -52,7 +52,10 @@ namespace namaichi.utility
 				var urlList = new List<string>(){url};
 				var r = get(urlList, headers, httpVer, method, postData, isAddHeader);
 				if (r.Count == 0) return null;
-				return r[0].Value == null ? null : Encoding.UTF8.GetString(r[0].Value);
+				if (r[0].Value == null) return null;
+				var ret = Encoding.UTF8.GetString(r[0].Value);
+				if (ret.Length == 0) return null;;
+				return ret;
 			} catch (Exception e) {
 				Debug.WriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				return null;

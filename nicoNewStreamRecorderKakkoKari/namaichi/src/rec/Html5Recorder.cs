@@ -10,6 +10,7 @@ using System;
 using System.Net;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using namaichi.config;
@@ -330,7 +331,14 @@ namespace namaichi.rec
 			//var res = util.getPageSource(ri.si.url, container);
 			var h = util.getHeader(container, null, ri.si.url);
 			var res = new Curl().getStr(ri.si.url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
-			if (res == null) return;
+			for (var i = 0; i < 10; i++) {
+				if (res != null) break;
+				Thread.Sleep(1000);
+				new Curl().getStr(ri.si.url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
+			}
+			if (res == null || res.IndexOf("<script id=\"embedded-data\"") == -1) {
+				rm.form.addLogText("終了処理後に放送タイトルの変更をチェックできませんでした:" + res);
+			}
 			_si.set(res);
 			if (_si.recFolderFileInfo[2] == ri.si.recFolderFileInfo[2]) return;
 			foreach (var f in Directory.GetFiles(ri.recFolderFile[0])) {
