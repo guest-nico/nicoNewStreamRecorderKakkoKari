@@ -338,6 +338,7 @@ namespace namaichi.rec
 			}
 			if (res == null || res.IndexOf("<script id=\"embedded-data\"") == -1) {
 				rm.form.addLogText("終了処理後に放送タイトルの変更をチェックできませんでした:" + res);
+				return;
 			}
 			_si.set(res);
 			if (_si.recFolderFileInfo[2] == ri.si.recFolderFileInfo[2]) return;
