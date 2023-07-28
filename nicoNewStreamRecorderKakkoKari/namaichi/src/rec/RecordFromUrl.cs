@@ -418,44 +418,14 @@ namespace namaichi.rec
 						continue;
 					}
 					cc = cgret.Result[0];
-					/*
-					var wc = new WebHeaderCollection();
-					var referer =  "http://live.nicovideo.jp/gate/" + lvid;
-					container.Add(TargetUrl, new Cookie("_gali", "jsFollowingAdMain"));
-					container.Add(TargetUrl2, new Cookie("_gali", "jsFollowingAdMain"));
-	//				container.Add(TargetUrl, new Cookie("_gali", "all"));
-	//				container.Add(TargetUrl2, new Cookie("_gali", "all"));
-					
-					res = util.getPageSource(url + "?ref=grel", ref wc, container, "");
-					
-					var pagetype = util.getPageType(res);
-					*/
 					
 	//				var pagetype = getPageType(url + "?ref=grel");
 	//				if (pagetype != 5) return pagetype;
 	//				if (res.IndexOf("会場のご案内") < 0) break;
-					var _url = "https://live.nicovideo.jp/watch/" + lvid;                              
-					var req = (HttpWebRequest)WebRequest.Create(_url + "?ref=grel");
-					req.Proxy = util.httpProxy;
-					req.AllowAutoRedirect = true;
-		//			req.Headers = getheaders;
-					req.Referer = "https://live.nicovideo.jp/gate/" + lvid;
-					req.Headers.Add("Accept-Encoding", "gzip,deflate");
-					req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-					//var ccInd = (isSub) ? 1 : 0;
-					//var ccInd = 0;
-					cc.Add(TargetUrl, new Cookie("_gali", "box" + lvid));
-					if (cc != null) req.CookieContainer = cc;
-					using (var _res = (HttpWebResponse)req.GetResponse())
 					
-					using (var dataStream = _res.GetResponseStream())
-					using (var reader = new StreamReader(dataStream)) {
-						res = reader.ReadToEnd();
 					
-						var getheaders = _res.Headers;
-						var resCookie = _res.Cookies;
-					}
-					
+					var _url = "https://live.nicovideo.jp/watch/" + lvid;
+					res = util.getPageSource(_url, cc, _url);
 					isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
 					int pagetype;
 //					if (isRtmp) pagetype = getRtmpPageType(res, isSub, out rr, cc);

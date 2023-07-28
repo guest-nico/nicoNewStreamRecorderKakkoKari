@@ -158,7 +158,7 @@ namespace namaichi.rec
 				//{"token":"eyaaaaa","group_id":"aaaaaaaa-0000-0000-0000-000000000000"}
 				var data = "{\"token\":\"" + token + "\",\"group_id\":\"" + groupId + "\"}";
 				//data = "aaa";
-				var h = Curl.getDefaultHeaders();
+				var h = util.getHeader();
 				h.Add("Content-Type", "application/json");
 				var _auth = rl.getAuth();
 				//if (_auth != null) h.Add("Authorization", "Bearer " + _auth);
@@ -185,7 +185,7 @@ namespace namaichi.rec
 		}
 		string getToken() {
 			var url = "https://nfc-api.nicochannel.jp/fc/video_pages/" + id + "/comments_user_token";
-			var h = Curl.getDefaultHeaders();
+			var h = util.getHeader();
 			var _auth = rl.getAuth();
 			if (_auth != null) h.Add("Authorization", "Bearer " + _auth);
 			var token = new Curl().getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS);

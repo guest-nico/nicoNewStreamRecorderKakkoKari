@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Linq;
+using namaichi.utility;
 using Newtonsoft.Json;
 using rokugaTouroku;
 using rokugaTouroku.info;
@@ -158,21 +159,13 @@ namespace rokugaTouroku.rec
 						h.Add("X-Model-Name", "greatlte");
 						h.Add("X-Connection-Environment", "wifi");
 					}
-					var r = util.sendRequest(url, h, null, "GET", null);
-					if (r == null) {
-						util.showMessageBoxCenterForm(form, (type == "user" ? "ユーザー" : "チャンネル") + id + "の放送情報が取得できませんでした");
-						return null;
+					var res = new Curl().getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_1_1, "GET", null, false, false);
+					var l = getTanzakuStreamLvList(res);
+					if (l == null) break;
+					foreach (var _l in l) {
+						if (_l != null) ret.Add(_l);
 					}
-					using (var rs = r.GetResponseStream())
-					using (var sr = new StreamReader(rs)) {
-						var res = sr.ReadToEnd();
-						var l = getTanzakuStreamLvList(res);
-						if (l == null) break;
-						foreach (var _l in l) {
-							if (_l != null) ret.Add(_l);
-						}
-						if (l.IndexOf(null) > -1) break;
-					}
+					if (l.IndexOf(null) > -1) break;
 				}
 				return ret;
 			} catch (Exception e) {

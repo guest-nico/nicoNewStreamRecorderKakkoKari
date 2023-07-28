@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 using System.ComponentModel;
@@ -120,6 +121,14 @@ namespace namaichi
 			changeRecBtnClickEvent(bool.Parse(config.get("IsRecBtnOnlyMouse")));
 			
 			setQualitySetting();
+			
+			if (util.isCurl) {
+				try {
+					Curl.curl_global_init((1<<0) | (1<<1));//CURL_GLOBAL_SSL|CURL_GLOBAL_WIN32
+				} catch (Exception e) {
+					util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+				}
+			}
 		}
 		private void formInitSetting() {
 			setBackColor(Color.FromArgb(int.Parse(config.get("recBackColor"))));
@@ -375,7 +384,8 @@ namespace namaichi
        			if (url.IndexOf("nicochannel.jp") == -1)
        				pic = cl.DownloadData(url);
        			else {
-       				pic = new Curl().getBytes(url, Curl.getDefaultHeaders(), CurlHttpVersion.CURL_HTTP_VERSION_2TLS);
+       				string d = null;
+       				pic = new Curl().getBytes(url, util.getHeader(), CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", d, false);
        				if (pic == null) return;
        			}
 				
@@ -746,12 +756,16 @@ namespace namaichi
 		}
 		void MainFormDragEnter(object sender, DragEventArgs e)
 		{
-			if (e.Data.GetDataPresent("UniformResourceLocator") ||
-			    e.Data.GetDataPresent("UniformResourceLocatorW") ||
-			    e.Data.GetDataPresent(DataFormats.Text)) {
-				util.debugWriteLine(e.Effect);
-				e.Effect = DragDropEffects.Copy;
-				
+			try {
+				if (e.Data.GetDataPresent("UniformResourceLocator") ||
+				    e.Data.GetDataPresent("UniformResourceLocatorW") ||
+				    e.Data.GetDataPresent(DataFormats.Text)) {
+					util.debugWriteLine(e.Effect);
+					e.Effect = DragDropEffects.Copy;
+				}
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace);
+				addLogText("ドラッグ中に問題が発生しました " + ee.Message + ee.Source + ee.StackTrace);
 			}
 		}
 		bool isFullAccessDirectory() {

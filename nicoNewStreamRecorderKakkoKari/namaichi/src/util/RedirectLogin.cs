@@ -80,7 +80,7 @@ namespace namaichi.utility
 			var channelName = si.recFolderFileInfo[5];
 			try {
 				var authUrl = "https://auth.sheeta.com/auth/realms/FCS00001/protocol/openid-connect/auth?client_id=" + channelNum + "&response_type=code&scope=openid&kc_idp_hint=niconico&redirect_uri=https://nicochannel.jp/" + channelName + "/login";
-				var r = curl.getStr(authUrl, Curl.getDefaultHeaders(), CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", "", true);
+				var r = curl.getStr(authUrl, util.getHeader(), CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", "", true);
 				util.debugWriteLine("RedirectLogin auth r0 " + r);
 				if (r == null) return null;
 				setHeaderToCookie(".sheeta.com", r, cc);
@@ -95,7 +95,7 @@ namespace namaichi.utility
 				*/
 				
 				//https://auth.sheeta.com/auth/realms/FCS00001/broker/niconico/login?session_code=OU4UwAJieZ22xEmvdlY0qurLuBtChfs8cpLVu7gtbJg&client_id=FCS00124&tab_id=a6eges1Vz3Y
-				var h = Curl.getDefaultHeaders();
+				var h = util.getHeader();
 				h.Add("Cookie", cc.GetCookieHeader(new Uri(location)));
 				r = curl.getStr(location, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", "", true);
 				util.debugWriteLine("RedirectLogin auth r1 " + r);
@@ -106,7 +106,7 @@ namespace namaichi.utility
 				util.debugWriteLine("RedirectLgin authUrl location1 " + location);
 				//location: https://oauth.nicovideo.jp/oauth2/authorize?scope=openid+email+profile&state=aaa&response_type=code&client_id=aaa&redirect_uri=https%3A%2F%2Fauth.sheeta.com%2Fauth%2Frealms%2FFCS00001%2Fbroker%2Fniconico%2Fendpoint&nonce=aaa
 				
-				h = Curl.getDefaultHeaders();
+				h = util.getHeader();
 				var nicoC = cc.GetCookieHeader(new Uri(location));
 				h.Add("Cookie", nicoC);
 				h.Remove("Accept-Encoding");
@@ -149,7 +149,7 @@ namespace namaichi.utility
 				//X-Niconico-Id: 000
 				
 				
-				h = Curl.getDefaultHeaders();
+				h = util.getHeader();
 				h.Add("Cookie", cc.GetCookieHeader(new Uri(location)));
 				r = curl.getStr(location, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", "", true);
 				util.debugWriteLine("RedirectLogin auth r3 " + r);
@@ -171,7 +171,7 @@ namespace namaichi.utility
 				set-cookie: KEYCLOAK_REMEMBER_ME=xxx;
 				*/
 				
-				h = Curl.getDefaultHeaders();
+				h = util.getHeader();
 				h.Add("Cookie", cc.GetCookieHeader(new Uri(location)));
 				r = curl.getStr(location, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", "", true);
 				util.debugWriteLine("RedirectLogin auth r4 " + r);
@@ -182,7 +182,7 @@ namespace namaichi.utility
 				//{"key_cloak_user":{"code":"b6bd7ee2-22f7-4307-b67d-79c2c7648923.823f0639-4afe-4fc8-8d04-fe297131b0bf.67ff777c-4599-43be-ba64-437ebfb1f261","redirect_uri":"https://nicochannel.jp/fairy_teatime/login"},"fanclub_site":{"id":34}}
 				var data = "{\"key_cloak_user\":{\"code\":\"" + code + "\",\"redirect_uri\":\"https://nicochannel.jp/" + channelName + "/login\"},\"fanclub_site\":{\"id\":" + int.Parse(channelNum.Substring(3)).ToString() + "}}";
 				util.debugWriteLine("redirect login code data " + data);
-				h = Curl.getDefaultHeaders();
+				h = util.getHeader();
 				h.Add("Cookie", cc.GetCookieHeader(new Uri(url)));
 				h.Add("Content-Type", "application/json");
 				r = curl.getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "POST", data, true);
@@ -217,7 +217,7 @@ namespace namaichi.utility
 			if (at == "") return false;
 			
 			var fNum = int.Parse(channelNum.Substring(3)).ToString();
-			var h = Curl.getDefaultHeaders();
+			var h = util.getHeader();
 			h.Add("Content-Type", "application/json");
 			h.Add("Authorization", "Bearer " + at);
 			var r = curl.getStr("https://nfc-api.nicochannel.jp/fc/fanclub_sites/" + fNum + "/user_info", h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "POST", "null", true);
@@ -235,7 +235,7 @@ namespace namaichi.utility
 				//FCS00000
 				var cn = int.Parse(_cn.Substring(3).ToString());
 				var url = "https://nfc-api.nicochannel.jp/fc/fanclub_sites/" + cn + "/user_info";
-				var h = Curl.getDefaultHeaders();
+				var h = util.getHeader();
 				h.Add("Authorization", "Bearer " + chAt);
 				var r = curl.getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "POST", "null", true);
 				if (r == null) return null;
@@ -301,7 +301,7 @@ namespace namaichi.utility
 			
 			try {
 				var url = "https://nfc-api.nicochannel.jp/fc/fanclub_groups/1/auth/refresh";
-				var h = Curl.getDefaultHeaders();
+				var h = util.getHeader();
 				h.Add("Authorization", "Bearer " + auth);
 				h.Add("Cookie", c);
 				var r = curl.getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "POST", "", true);

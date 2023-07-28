@@ -3,15 +3,16 @@ using System.Diagnostics;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Drawing;
+using namaichi.utility;
 using rokugaTouroku.config;
 using rokugaTouroku.info;
-using rokugaTouroku.utility;
 
 class app {
 	public static void Mains(string[] args) {
@@ -26,8 +27,9 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.10.75";
-	public static string versionDayStr = "2023/07/15";
+	public static string versionStr = "ver0.1.3.10.76";
+	public static string versionDayStr = "2023/07/28";
+	public static bool isCurl = true;
 	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);
@@ -410,106 +412,67 @@ class util {
 		var ret = new string[]{h, m, s};
 		return ret;
 	}
-	/*
-	public static string getPageSource(string _url, ref WebHeaderCollection getheaders, CookieContainer container = null, string referer = null, bool isFirstLog = true) {
-		string a;
+	public static string postResStr(string url, Dictionary<string, string> headers, byte[] content, string method = "POST") {
 		try {
-			a = container.GetCookieHeader(new Uri(_url));
-		} catch (Exception e) {
-			util.debugWriteLine("getpage get cookie header error " + _url + e.Message+e.StackTrace);
+			if (isCurl) {
+				var d = content == null ? null : Encoding.UTF8.GetString(content);
+				var r = new Curl().getStr(url, headers, CurlHttpVersion.CURL_HTTP_VERSION_1_1, method, d, false);
+				return r;
+			} else {
+				var res = sendRequest(url, headers, content, method);
+				if (res == null) {
+					debugWriteLine("postResStr res null");
+					return null;
+				}
+				
+				debugWriteLine(res.StatusCode + " " + res.StatusDescription);
+				
+				//var resStream = res.GetResponseStream();
+				using (var getResStream = res.GetResponseStream())
+				using (var resStream = new System.IO.StreamReader(getResStream)) {
+					var resStr = resStream.ReadToEnd();
+					return resStr;
+				}
+			}
+		} catch (Exception ee) {
+			debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			return null;
 		}
-		if (isFirstLog)
-			util.debugWriteLine("getpagesource " + _url + " " + a);
-			
-		for (int i = 0; i < 1; i++) {
-			try {
-				var req = (HttpWebRequest)WebRequest.Create(_url);
-				req.Proxy = null;
-				req.AllowAutoRedirect = true;
-	//			req.Headers = getheaders;
-				req.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
-				if (referer != null) req.Referer = referer;
-				if (container != null) req.CookieContainer = container;
-				req.Headers.Add("Accept-Encoding", "gzip,deflate");
-				req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-
-				req.Timeout = 5000;
-				var res = (HttpWebResponse)req.GetResponse();
-				var dataStream = res.GetResponseStream();
-				var reader = new StreamReader(dataStream);
-				
-				
-				var resStr = reader.ReadToEnd();
-				
-				getheaders = res.Headers;
-				return resStr;
-	
-			} catch (Exception e) {
-				util.debugWriteLine("getpage error " + _url + e.Message+e.StackTrace);
-	//				System.Threading.Thread.Sleep(3000);
-				continue;
-			}
-		}
-			
-		return null;
 	}
-	*/
 	public static string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36";
 	public static string getPageSource(string _url, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 5000) {
 		timeoutMs = 5000;
-		/*
-		string a = "";
 		try {
-//			a = container.GetCookieHeader(new Uri(_url));
-		} catch (Exception e) {
-			util.debugWriteLine("getpage get cookie header error " + _url + e.Message+e.StackTrace);
-			return null;
-		}
-		if (isFirstLog)
-			util.debugWriteLine("getpagesource " + _url + " " + a);
-		*/	
-//		util.debugWriteLine("getpage 02");
-		for (int i = 0; i < 1; i++) {
-			try {
-//				util.debugWriteLine("getpage 00");
-				var req = (HttpWebRequest)WebRequest.Create(_url);
-				req.Proxy = null;
-				req.AllowAutoRedirect = true;
-	//			req.Headers = getheaders;
-				if (referer != null) req.Referer = referer;
-				if (container != null) req.CookieContainer = container;
-				req.Headers.Add("Accept-Encoding", "gzip,deflate");
-				req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-				req.Timeout = timeoutMs;
-				
-				var res = (HttpWebResponse)req.GetResponse();
-				var dataStream = res.GetResponseStream();
-				var reader = new StreamReader(dataStream);
-				
-				/*
-				var resStrTask = reader.ReadToEndAsync();
-				if (!resStrTask.Wait(5000)) return null;
-				string resStr = resStrTask.Result;
-				*/
-//				util.debugWriteLine("getpage 3");
-				var resStr = reader.ReadToEnd();
-//				util.debugWriteLine("getpage 4");
-				
-//				getheaders = res.Headers;
-				return resStr;
-	
-			} catch (Exception e) {
-				System.Threading.Tasks.Task.Run(() => {
-					util.debugWriteLine("getpage error " + _url + e.Message+e.StackTrace);
-				});
-	//				System.Threading.Thread.Sleep(3000);
-				continue;
+			if (isCurl) {
+				var h = getHeader(container, referer, _url);
+				if (userAgent != null) h["User-Agent"] = userAgent;
+				var r = new Curl().getStr(_url, h, CurlHttpVersion.CURL_HTTP_VERSION_1_1, "GET", null, false);
+				return r;
 			}
-		}
+			var req = (HttpWebRequest)WebRequest.Create(_url);
+			req.Proxy = null;
+			req.AllowAutoRedirect = true;
+			if (referer != null) req.Referer = referer;
+			if (container != null) req.CookieContainer = container;
+			req.Headers.Add("Accept-Encoding", "gzip,deflate");
+			req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+			req.Timeout = timeoutMs;
 			
+			var res = (HttpWebResponse)req.GetResponse();
+			var dataStream = res.GetResponseStream();
+			var reader = new StreamReader(dataStream);
+			
+			var resStr = reader.ReadToEnd();
+			return resStr;
+
+		} catch (Exception e) {
+			//System.Threading.Tasks.Task.Run(() => {
+				util.debugWriteLine("getpage error " + _url + e.Message+e.StackTrace);
+			//});
+		}
 		return null;
 	}
+	/*
 	public static byte[] getFileBytes(string url, CookieContainer container) {
 //		var a = container.GetCookieHeader(new Uri(_url));
 		util.debugWriteLine("getfilebyte " + url);
@@ -544,6 +507,7 @@ class util {
 		}
 		return null;
 	}
+	*/
 	public static string existFile(string[] files, string reg, string startWith) {
 //		var files = Directory.GetFiles(dirPath);
 		foreach (var f in files) {
@@ -812,14 +776,9 @@ class util {
 					{"Connection", "keep-alive"},
 					{"Upgrade-Insecure-Requests", "1"},
 				};
-			var r = sendRequest(url, _h, null, "GET");
-			if (r == null) return null;
-			using (var st = r.GetResponseStream())
-			using (var sr = new StreamReader(st)) {
-				var res = sr.ReadToEnd();
-				var n = util.getRegGroup(res, "\"nickname\":\"(.+?)\"");
-				return n;
-			}
+			var res = postResStr(url, _h, null, "GET");
+			var n = util.getRegGroup(res, "\"nickname\":\"(.+?)\"");
+			return n;
 		} catch (Exception e) {
 			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 		}
@@ -1040,7 +999,7 @@ class util {
 	}
 	public static Dictionary<string, string> getHeader(CookieContainer cc, string referer, string url) {
 		var ret = new Dictionary<string, string>() {
-			{"Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"},
+			//{"Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"},
 			{"Accept-Language", "ja,en-US;q=0.7,en;q=0.3"},
 			{"Cache-Control", "no-cache"},
 			{"User-Agent", userAgent}

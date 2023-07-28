@@ -201,7 +201,7 @@ namespace namaichi.info
 				if (_cn != null) {
 					communityNum = _cn;
 					var c = new Curl();
-					var r = c.getStr("https://nfc-api.nicochannel.jp/fc/fanclub_sites/" + _cn + "/page_base_info", Curl.getDefaultHeaders(), CurlHttpVersion.CURL_HTTP_VERSION_2TLS);
+					var r = c.getStr("https://nfc-api.nicochannel.jp/fc/fanclub_sites/" + _cn + "/page_base_info", util.getHeader(), CurlHttpVersion.CURL_HTTP_VERSION_2TLS);
 					if (r != null) {
 						var _group = util.getRegGroup(r, "\"fanclub_site_name\":\"(.+?)\",\"favicon");
 						if (_group != null) group = host = _group;

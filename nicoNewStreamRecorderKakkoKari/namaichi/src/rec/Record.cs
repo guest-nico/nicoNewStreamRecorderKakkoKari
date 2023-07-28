@@ -976,7 +976,7 @@ namespace namaichi.rec
 			
 			var res = !ri.si.isChannelPlus ? 
 					util.getPageSource(hlsSegM3uUrl, null, referer, false, 2000, ua) :
-					getM3u8Curl.getStr(hlsSegM3uUrl, Curl.getDefaultHeaders(), CurlHttpVersion.CURL_HTTP_VERSION_3);
+					getM3u8Curl.getStr(hlsSegM3uUrl, util.getHeader(), CurlHttpVersion.CURL_HTTP_VERSION_3);
 			addDebugBuf("addNewTsTaskList segm3u get len 1000 " + (res == null ? "" : (res.Substring(0, res.Length > 2000 ? 2000 : res.Length))));
 //			util.debugWriteLine("m3u8 " + res);
 			
@@ -1568,7 +1568,7 @@ namespace namaichi.rec
 					var recStartTime = DateTime.Now;
 					var startPlayList = !ri.si.isChannelPlus ? 
 							util.getPageSource(hlsSegM3uUrl, null, referer, false, 2000, ua) :
-							getM3u8Curl.getStr(hlsSegM3uUrl, Curl.getDefaultHeaders(), CurlHttpVersion.CURL_HTTP_VERSION_3);
+							getM3u8Curl.getStr(hlsSegM3uUrl, util.getHeader(), CurlHttpVersion.CURL_HTTP_VERSION_3);
 					
 					var _currentPos = util.getRegGroup(startPlayList, "#CURRENT-POSITION:(\\d+)");
 					wr.firstSegmentSecond = (_currentPos == null) ? 0 : double.Parse(_currentPos, NumberStyles.Float);
@@ -2181,7 +2181,8 @@ namespace namaichi.rec
 		void saveKey(string file) {
 			try {
 				var curl = new Curl();
-				var b = curl.getBytes(file, Curl.getDefaultHeaders(), CurlHttpVersion.CURL_HTTP_VERSION_3);
+				string d = null;
+				var b = curl.getBytes(file, util.getHeader(), CurlHttpVersion.CURL_HTTP_VERSION_3, "GET", d, false);
 				if (b == null) return;
 				//var f = util.getRegGroup(ri.recFolderFile[1], "(_\\d+h\\d+m\\d+s)_");
 				var f = new Regex("(_\\d+h\\d+m\\d+s)_").Replace(ri.recFolderFile[1], "");
@@ -2205,11 +2206,16 @@ namespace namaichi.rec
 				foreach (var t in getByteThread) t.Wait();
 			} else {
 				var urls = newGetTsTaskList.Select(x => x.url).ToList();
-				var rList = getTsCurl.get(urls, Curl.getDefaultHeaders(), CurlHttpVersion.CURL_HTTP_VERSION_2TLS);
-				if (rList == null || rList.Count != newGetTsTaskList.Count) 
+				var rList = new List<byte[]>();
+				for (var i = 0; i < newGetTsTaskList.Count; i++) {
+					rList.Add(new Curl().getBytes(urls[i], util.getHeader(), CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", "", false));
+				}
+				//var rList = new Curl().getBytes(urls, util.getHeader(), CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false, true);
+				//if (rList == null || rList.Count != newGetTsTaskList.Count)
+				if (rList.Count != newGetTsTaskList.Count)
 					throw new Exception("error curl get ts");
 				for (var i = 0; i < newGetTsTaskList.Count; i++)
-					newGetTsTaskList[i].res = rList[i].Value;
+					newGetTsTaskList[i].res = rList[i];
 				util.debugWriteLine("test");
 			}
 		}
@@ -2232,7 +2238,10 @@ namespace namaichi.rec
 		public numTaskInfo get(CookieContainer cc) {
 			if (!ri.si.isChannelPlus)
 				nti.res = util.getFileBytes(nti.url, null, true, 0);
-			else nti.res = curl.getBytes(nti.url, Curl.getDefaultHeaders(), CurlHttpVersion.CURL_HTTP_VERSION_2TLS);
+			else {
+				string d = null;
+				nti.res = curl.getBytes(nti.url, util.getHeader(), CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", d, false);
+			}
 			return nti;
 		}
 	}

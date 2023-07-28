@@ -53,25 +53,18 @@ namespace namaichi.rec
 			headers.Add("Accept-Language", "ja,en-US;q=0.7,en;q=0.3");
 			headers.Add("Referer", "https://com.nicovideo.jp/motion/" + comId);
 			headers.Add("User-Agent", util.userAgent);
-			//headers.Add("Cookie", cc.GetCookieHeader(new Uri(comApiUrl)));
+			headers.Add("Cookie", cc.GetCookieHeader(new Uri(comApiUrl)));
 			try {
-				var res = util.sendRequest(comApiUrl, headers, null, "GET", cc);
+				var res = util.postResStr(comApiUrl, headers, null, "GET");
+				//var res = util.sendRequest(comApiUrl, headers, null, "GET", cc);
 				if (res == null) {
 					form.addLogText("コミュニティ情報の取得に失敗しました");
 					return false;
 				}
-				using (var rs = res.GetResponseStream())
-				using (var sr = new StreamReader(rs)) {
-					var r = sr.ReadToEnd();
-					if (r == null) {
-						form.addLogText("コミュニティ情報の取得に失敗しました");
-						return false;
-					}
-					var isJidouShounin = r.IndexOf("\"community_auto_accept_entry\":1") > -1; 
-					var msg = (isJidouShounin ? "フォローを試みます。" : "自動承認ではありませんでした。");
-					form.addLogText(msg);
-					if (!isJidouShounin) return false;
-				}
+				var isJidouShounin = res.IndexOf("\"community_auto_accept_entry\":1") > -1; 
+				var msg = (isJidouShounin ? "フォローを試みます。" : "自動承認ではありませんでした。");
+				form.addLogText(msg);
+				if (!isJidouShounin) return false;
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				form.addLogText("何らかの問題によりフォローに失敗しました " + e.Message + e.StackTrace);
@@ -84,26 +77,19 @@ namespace namaichi.rec
 				headers.Add("Origin", "https://com.nicovideo.jp");
 				headers.Add("X-Requested-By", "https://com.nicovideo.jp/motion/" + comId);
 				foreach (var h in headers) util.debugWriteLine(h.Key + " " + h.Value);
-				var res = util.sendRequest(joinUrl, headers, null, "POST", cc);
-				if (res == null) {
-					form.addLogText("フォローへのアクセスに失敗しました");
-					return false;
-				}
-				using (var rs = res.GetResponseStream())
-				using (var sr = new StreamReader(rs)) {
-					var r = sr.ReadToEnd();
-					
-					var isSuccess = r.IndexOf("\"status\":200") > -1; 
-					var _m = (isPlayOnlyMode) ? "視聴" : "録画";
-					form.addLogText((isSuccess ?
-							"フォローしました。" + _m + "開始までしばらくお待ちください。" : "フォローに失敗しました。"));
-					return isSuccess;
-				}
+				
+				var res = util.postResStr(joinUrl, headers, null, "POST");
+				var isSuccess = res.IndexOf("\"status\":200") > -1; 
+				var _m = (isPlayOnlyMode) ? "視聴" : "録画";
+				form.addLogText((isSuccess ?
+						"フォローしました。" + _m + "開始までしばらくお待ちください。" : "フォローに失敗しました。"));
+				return isSuccess;
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				return false;
 			}
 		}
+		/*
 		private bool join(string comId, CookieContainer cc, MainForm form, config.config cfg, bool isPlayOnlyMode) {
 			for (int i = 0; i < 5; i++) {
 				//var myPageUrl = "https://www.nicovideo.jp/my";
@@ -224,5 +210,6 @@ namespace namaichi.rec
 			util.debugWriteLine("フォロー失敗");
 			return false;
 		}
+		*/
 	}
 }

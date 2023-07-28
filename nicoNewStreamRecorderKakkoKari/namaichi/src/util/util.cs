@@ -35,13 +35,14 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.74";
-	public static string versionDayStr = "2023/07/15";
+	public static string versionStr = "ver0.88.75";
+	public static string versionDayStr = "2023/07/28";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
 	public static WebProxy httpProxy = null;
 	public static HttpConnectProxy wsProxy = null;
+	public static bool isCurl = true;
 	
 	public static string getRegGroup(string target, string reg, int group = 1, Regex r = null) {
 		if (r == null)
@@ -552,7 +553,7 @@ class util {
 		}
 		return null;
 	}
-	public static string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36";
+	public static string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36";
 	public static string getPageSource(string _url, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 0, string userAgent = null, bool isGetErrorPage = false) {
 		util.debugWriteLine("access__ getpage " + _url);
 		if (_url == null) {
@@ -562,30 +563,19 @@ class util {
 		//if (timeoutMs == 0) timeoutMs = 5000;
 		timeoutMs = 5000;
 		
-		/*
-		string a = "";
-		try {
-//			a = container.GetCookieHeader(new Uri(_url));
-		} catch (Exception e) {
-			util.debugWriteLine("getpage get cookie header error " + _url + e.Message+e.StackTrace);
-			return null;
+		if (isCurl) {
+			var h = getHeader(container, referer, _url);
+			if (userAgent != null) h["User-Agent"] = userAgent;
+			var r = new Curl().getStr(_url, h, CurlHttpVersion.CURL_HTTP_VERSION_1_1, "GET", null, false);
+			return r;
 		}
-		if (isFirstLog)
-			util.debugWriteLine("getpagesource " + _url + " " + a);
-		*/	
-//		util.debugWriteLine("getpage 02");
 		for (int i = 0; i < 1; i++) {
 			try {
-//				util.debugWriteLine("getpage 00");
 				var req = (HttpWebRequest)WebRequest.Create(_url);
 				req.Proxy = httpProxy;
 				req.AllowAutoRedirect = true;
-	//			req.Headers = getheaders;
-//				util.debugWriteLine("getpage 03");
 				if (referer != null) req.Referer = referer;
-//				util.debugWriteLine("getpage 04");
 				if (container != null) req.CookieContainer = container;
-//				util.debugWriteLine("getpage 05");
 				
 				req.UserAgent = userAgent != null ? userAgent : util.userAgent;
 				req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
@@ -635,6 +625,13 @@ class util {
 	}
 	public static byte[] getFileBytes(string url, CookieContainer container, bool isRedirect = true, int mode = 0) {
 		util.debugWriteLine("access__ getFilebytes " + url);
+		
+		if (isCurl) {
+			var h = getHeader(container, null, url);
+			string d = null;
+			var r = new Curl().getBytes(url, h, CurlHttpVersion.CURL_HTTP_VERSION_1_1, "GET", d, false);
+			return r;
+		}
 //		var a = container.GetCookieHeader(new Uri(_url));
 		//util.debugWriteLine("getfilebyte " + url);
 		for (int i = 0; i < 1; i++) {
@@ -699,36 +696,27 @@ class util {
 		}
 		return null;
 	}
-	public static string postResStr(string url, Dictionary<string, string> headers, byte[] content) {
+	public static string postResStr(string url, Dictionary<string, string> headers, byte[] content, string method = "POST") {
 		try {
-			var res = sendRequest(url, headers, content, "POST");
-			if (res == null) {
-				debugWriteLine("postResStr res null");
-				return null;
-			}
-			
-			debugWriteLine(res.StatusCode + " " + res.StatusDescription);
-			
-			//var resStream = res.GetResponseStream();
-			using (var getResStream = res.GetResponseStream())
-			using (var resStream = new System.IO.StreamReader(getResStream)) {
-				//foreach (var h in res.Headers) debugWriteLine("header " + h + " " + res.Headers[h.ToString()]);
-				/*
-				List<byte> rb = new List<byte>();
-				for (var i = 0; i < 10; i++) {
-					var a = new byte[100000];
-					var readC = resStream.Read(a, 0, a.Length);
-					if (readC == 0) break;
-					debugWriteLine("read c " + readC);
-					for (var j = 0; j < readC; j++) rb.Add(a[j]);
-					
-					debugWriteLine("read " + i);
+			if (isCurl) {
+				var d = content == null ? null : Encoding.UTF8.GetString(content);
+				var r = new Curl().getStr(url, headers, CurlHttpVersion.CURL_HTTP_VERSION_1_1, method, d, false);
+				return r;
+			} else {
+				var res = sendRequest(url, headers, content, method);
+				if (res == null) {
+					debugWriteLine("postResStr res null");
+					return null;
 				}
-				*/
-				var resStr = resStream.ReadToEnd();
-				//return getRegGroup(resStr,
 				
-				return resStr;
+				debugWriteLine(res.StatusCode + " " + res.StatusDescription);
+				
+				//var resStream = res.GetResponseStream();
+				using (var getResStream = res.GetResponseStream())
+				using (var resStream = new System.IO.StreamReader(getResStream)) {
+					var resStr = resStream.ReadToEnd();
+					return resStr;
+				}
 			}
 		} catch (Exception ee) {
 			debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
@@ -1289,15 +1277,9 @@ public static void soundEnd(config cfg, MainForm form) {
 					{"Connection", "keep-alive"},
 					{"Upgrade-Insecure-Requests", "1"},
 				};
-			var r = sendRequest(url, _h, null, "GET");
-				
-			if (r == null) return null;
-			using (var st = r.GetResponseStream())
-			using (var sr = new StreamReader(st)) {
-				var res = sr.ReadToEnd();
-				var n = util.getRegGroup(res, "\"nickname\":\"(.+?)\"");
-				return n;
-			}
+			var res = postResStr(url, _h, null, "GET");
+			var n = util.getRegGroup(res, "\"nickname\":\"(.+?)\"");
+			return n;
 		} catch (Exception e) {
 			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 		}
@@ -1553,11 +1535,11 @@ public static void soundEnd(config cfg, MainForm form) {
 		}
 		return _command;
 	}
-	public static Dictionary<string, string> getHeader(CookieContainer cc, string referer, string url) {
+	public static Dictionary<string, string> getHeader(CookieContainer cc = null, string referer = null, string url = null) {
 		var ret = new Dictionary<string, string>() {
-			{"Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"},
-			{"Accept-Language", "ja,en-US;q=0.7,en;q=0.3"},
-			{"Cache-Control", "no-cache"},
+			//{"Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"},
+			//{"Accept-Language", "ja,en-US;q=0.7,en;q=0.3"},
+			//{"Cache-Control", "no-cache"},
 			{"User-Agent", userAgent}
 		};
 		if (cc != null) ret["Cookie"] = cc.GetCookieHeader(new Uri(url));

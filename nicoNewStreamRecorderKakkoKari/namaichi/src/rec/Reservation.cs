@@ -25,7 +25,7 @@ namespace namaichi.rec
 		string lv;
 		
 		string useUrl = "https://live.nicovideo.jp/api/timeshift.ticket.use";
-		string reservationsUrl = "https://live.nicovideo.jp/api/timeshift.reservations";
+		//string reservationsUrl = "https://live.nicovideo.jp/api/timeshift.reservations";
 		
 		public Reservation(CookieContainer cc, string lv)
 		{
@@ -144,37 +144,6 @@ namespace namaichi.rec
 				return null;
 			}
 		}
-		public string live2Reserve() {
-			var id = util.getRegGroup(lv, "(\\d+)");
-			var useUrl = "https://live.nicovideo.jp/api/timeshift.ticket.use";
-			var useData = Encoding.ASCII.GetBytes("vid=" + id);
-			var header = getLive2ReserveHeader(id);
-			var res = util.postResStr(useUrl, header, useData);
-			if (res == null) return "チケットを予約するための接続に失敗しました";
-			var res2 = "";
-			
-			if (res.IndexOf("status\":200") > -1) {
-				return "ok";
-			} else if (res.IndexOf("TICKET_NOT_FOUND") > -1) {
-				
-				var reserveData = Encoding.ASCII.GetBytes("vid=" + id + "&overwrite=0");
-				res2 = util.postResStr(reservationsUrl, header, reserveData);
-				if (res2 == null) return "チケットを取得するための接続に失敗しました" + res;
-				if (res2.IndexOf("Timeshift_reservation can overwrite") > -1)
-					return "予約リストが一杯です。";
-				if (res2.IndexOf("Timeshift_reservation was used") > -1)
-					return "すでに視聴済みです。";
-				else if (res2.IndexOf("status\":200") > -1) {
-					return "ok";
-				} else if (res2.IndexOf("Timeshift_reservation was expired") > -1) {
-					return "予約の期限切れでした。"; 
-				} else {
-					return "チケットの予約中に予期せぬ問題が発生しました" + res + "/" + res2;
-				}
-			}
-			return "チケットの予約接続中に予期せぬ問題が発生しました" + res + "/" + res2;
-			
-		}
 		public string live2Reserve2() {
 			var id = util.getRegGroup(lv, "(\\d+)");
 			var url = "https://live2.nicovideo.jp/api/v2/programs/lv" + id + "/timeshift/reservation";
@@ -208,13 +177,10 @@ namespace namaichi.rec
 			var url = "https://live2.nicovideo.jp/api/v2/programs/lv" + id + "/timeshift/reservation";
 			try {
 				var h = getReserveAPI2Header(url, true);
-				var r = util.sendRequest(url, h, null, "PATCH", cc);
-				//var r = util.sendRequest(url, h, null, "POST", cc);
-				if (r == null) return false;
-				using (var sr = new StreamReader(r.GetResponseStream())) {
-					var _r = sr.ReadToEnd();
-					return _r.IndexOf("status\":200") > -1;
-				}
+				
+				var _r = util.postResStr(url, h, null, "PATCH");
+				if (_r == null) return false;
+				return _r.IndexOf("status\":200") > -1;
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				return false;

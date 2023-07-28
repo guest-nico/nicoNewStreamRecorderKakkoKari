@@ -179,7 +179,7 @@ namespace namaichi.rec
 			util.debugWriteLine("connect tscg ms");
 			isSave = true;
 			try {
-				waybackKey = getWaybackKey();
+				waybackKey = ""; //getWaybackKey();
 				
 				var header =  new List<KeyValuePair<string, string>>();
 				header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Protocol", "msg.nicovideo.jp#json"));

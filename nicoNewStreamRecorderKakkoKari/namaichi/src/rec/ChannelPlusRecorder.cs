@@ -90,7 +90,7 @@ namespace namaichi.rec
 				return 2;
 			}
 			
-			var h = Curl.getDefaultHeaders("https://nicochannel.jp");
+			var h = util.getHeader(null, "https://nicochannel.jp", null);
 			var fcName = util.getRegGroup(id, "(.+?)/");
 			var channelsPageUrl = "https://nfc-api.nicochannel.jp/fc/content_providers/channels";
 			var channelsRes = videoPageCurl.getStr(channelsPageUrl, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS);
@@ -232,7 +232,7 @@ namespace namaichi.rec
 			for (var i = 0; i < 10; i++) {
 				try {
 					var url = "https://nfc-api.nicochannel.jp/fc/video_pages/" + videoId + "/session_ids";
-					var h = Curl.getDefaultHeaders("https://nicochannel.jp");
+					var h = util.getHeader(null, "https://nicochannel.jp", null);
 					h["Content-Type"] = "application/json";
 					h["Accept"] = "application/json, text/plain, */*";
 					h.Add("fc_site_id", fcId);
@@ -256,7 +256,7 @@ namespace namaichi.rec
 					return null;
 				}
 				_m3u8Url = _m3u8Url.Replace("{session_id}", sessionId);
-				var h = Curl.getDefaultHeaders("https://nicochannel.jp");
+				var h = util.getHeader(null, "https://nicochannel.jp", null);
 				var m3u8Res = videoPageCurl.getStr(_m3u8Url, h, CurlHttpVersion.CURL_HTTP_VERSION_3);
 				Debug.WriteLine("m3u8 res " + m3u8Res);
 				var names = new Regex("RESOLUTION=([^,]+)").Matches(m3u8Res);
@@ -348,7 +348,7 @@ namespace namaichi.rec
 			visit = "0";
 			comment = "0";
 			var videoPageUrl = "https://nfc-api.nicochannel.jp/fc/video_pages/" + videoId;
-			var h = Curl.getDefaultHeaders("https://nicochannel.jp");
+			var h = util.getHeader(null, "https://nicochannel.jp");
 			var _auth = rl.getAuth();
 			if (_auth != null) h.Add("Authorization", "Bearer " + _auth);
 			var vpRes = videoPageCurl.getStr(videoPageUrl, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS);
@@ -451,7 +451,7 @@ namespace namaichi.rec
 		public void run(string segUrl, string quality, int port) {
 			util.debugWriteLine("m3u8writer " + segUrl);
 			try {
-				var res = curl.getStr(segUrl, Curl.getDefaultHeaders(), CurlHttpVersion.CURL_HTTP_VERSION_3);
+				var res = curl.getStr(segUrl, util.getHeader(), CurlHttpVersion.CURL_HTTP_VERSION_3);
 				if (res == null) return;
 				res = res.Replace("\r", "");
 				
@@ -672,7 +672,8 @@ namespace namaichi.rec
 											util.debugWriteLine("url " + url);
 											
 											var ver = url.IndexOf("key?") > -1 ? CurlHttpVersion.CURL_HTTP_VERSION_3 : CurlHttpVersion.CURL_HTTP_VERSION_2TLS;
-											var b = curl.getBytes(url, Curl.getDefaultHeaders(), ver, "GET", null, true);
+											string d = null; 
+											var b = curl.getBytes(url, util.getHeader(), ver, "GET", d, true);
 											client.GetStream().Write(b, 0, b.Length);
 										}
 									} else {

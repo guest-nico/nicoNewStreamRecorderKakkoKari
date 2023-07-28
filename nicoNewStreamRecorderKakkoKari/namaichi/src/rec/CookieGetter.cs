@@ -8,8 +8,10 @@
  */
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using namaichi.gui;
@@ -309,8 +311,108 @@ namespace namaichi.rec
 				var d = Encoding.ASCII.GetBytes(_d);
 				var cc = new CookieContainer();
 				
-				var r = util.sendRequest(loginUrl, h, d, "POST", cc);
 				util.debugWriteLine(cc.GetCookieHeader(new Uri(loginUrl)));
+				
+				if (util.isCurl) {
+					var curlR = new Curl().getStr(loginUrl, h, CurlHttpVersion.CURL_HTTP_VERSION_1_1, "POST", _d, true, true, false);
+					if (curlR == null) {
+						log += "ログインページに接続できませんでした";
+						return null;
+					}
+					var m = new Regex("Set-Cookie: (.+?)=(.+?);").Matches(curlR);
+					if (m.Count == 0) return null;
+					Cookie us = null, secureC = null;  
+					foreach (Match _m in m) {
+						if (_m.Groups[1].Value == "user_session") us = new Cookie(_m.Groups[1].Value, _m.Groups[2].Value);
+						if (_m.Groups[1].Value == "user_session_secure") secureC = new Cookie(_m.Groups[1].Value, _m.Groups[2].Value);
+					}
+					if (us != null) {
+						setUserSession(cc, us, secureC, null);
+						return cc;
+					}
+					
+					var locationM = new Regex("Location: (.+)").Matches(curlR);
+					if (locationM.Count == 0) {
+						log += "ログイン接続の転送先が見つかりませんでした";
+						return null;
+					}
+					var location = locationM[locationM.Count - 1].Groups[1].Value;
+					location = util.getRegGroup(curlR, "Location: (.+)\r");
+					if (location == null) return null;
+					//location = WebUtility.UrlDecode(location);
+					
+					var setCookie = new Dictionary<string, string>();
+					var setCookieM = new Regex("Set-Cookie: (.+?)=(.*?);").Matches(curlR);
+					foreach (Match _m in setCookieM) {
+						var key = _m.Groups[1].Value;
+						if (setCookie.ContainsKey(key)) {
+						    	if (_m.Groups[2].Value == "") setCookie.Remove(key);
+						    	else if (_m.Groups[2].Value != "") setCookie[key] = _m.Groups[2].Value;
+						    }
+						else if (_m.Groups[2].Value != "") setCookie.Add(key, _m.Groups[2].Value);
+					}
+					h["Cookie"] = string.Join("; ", setCookie.Select(x => x.Key + "=" + x.Value).ToArray());
+					h.Remove("Content-Type");
+					var curlR2 = new Curl().getStr(location, h, CurlHttpVersion.CURL_HTTP_VERSION_1_1, "GET", null, true, true, false);
+					
+					var browName = util.getRegGroup(curlR2, "id=\"deviceNameInput\".+?value=\"(.+?)\"");
+	                if (browName == null) browName = "Google Chrome (Windows)";
+	                var mfaUrl = util.getRegGroup(curlR2, "<form action=\"(.+?)\"");
+	                if (mfaUrl == null || mfaUrl.IndexOf("/mfa") == -1) {
+	                	log += "2段階認証のURLを取得できませんでした。";
+						return null;
+	                }
+	                mfaUrl = "https://account.nicovideo.jp" + mfaUrl;
+	                //mfaUrl = WebUtility.UrlDecode(mfaUrl);
+	                var sendTo = util.getRegGroup(curlR2, "class=\"userAccount\">(.+?)</span>");
+	                if (sendTo == null && util.getRegGroup(curlR2, "(スマートフォンのアプリを使って)") != null) {
+	                	sendTo = "app";
+	                }
+	                var f = new MfaInputForm(sendTo);
+	                
+	                var dr = f.ShowDialog();
+	                if (f.code == null) {
+	                	log += "二段階認証のコードが入力されていませんでした";
+	                	return null;
+	                }
+	                util.debugWriteLine(mfaUrl);
+	                h["Referer"] = location;
+	                h["Origin"] = "https://account.nicovideo.jp";
+	                h["Content-Type"] = "application/x-www-form-urlencoded";
+	                _d = "otp=" + f.code + "&loginBtn=%E3%83%AD%E3%82%B0%E3%82%A4%E3%83%B3&device_name=Google+Chrome+%28Windows%29";
+	                var curlR3 = new Curl().getStr(mfaUrl, h, CurlHttpVersion.CURL_HTTP_VERSION_1_1, "POST", _d, true, true, false);
+	                if (curlR3 == null) {
+	                	log += "二段階認証のコードを正常に送信できませんでした";
+	                	return null;
+	                }
+	                setCookieM = new Regex("Set-Cookie: (.+?)=(.*?);").Matches(curlR3);
+					foreach (Match _m in setCookieM) {
+						var key = _m.Groups[1].Value;
+						if (setCookie.ContainsKey(key)) {
+						    	if (_m.Groups[2].Value == "") setCookie.Remove(key);
+						    	else setCookie[key] = _m.Groups[2].Value;
+						    }
+						else setCookie.Add(key, _m.Groups[2].Value);
+					}
+	                h["Cookie"] = string.Join("; ", setCookie.Select(x => x.Key + "=" + x.Value).ToArray());
+	                var location2 = util.getRegGroup(curlR3, "Location: (.+)\r");
+	                
+	                var curlR4 = new Curl().getStr(location2, h, CurlHttpVersion.CURL_HTTP_VERSION_1_1, "GET", null, true, true, false);
+	                m = new Regex("Set-Cookie: (.+?)=(.+?);").Matches(curlR4);
+					if (m.Count == 0) return null;
+					foreach (Match _m in m) {
+						if (_m.Groups[1].Value == "user_session") us = new Cookie(_m.Groups[1].Value, _m.Groups[2].Value);
+						if (_m.Groups[1].Value == "user_session_secure") secureC = new Cookie(_m.Groups[1].Value, _m.Groups[2].Value);
+					}
+					if (us != null) {
+						setUserSession(cc, us, secureC, null);
+						return cc;
+					}
+					return null; 
+				}
+				
+				//"https://account.nicovideo.jp/login/redirector?show_button_twitter=1&site=niconico&show_button_facebook=1&sec=header_pc&next_url=/"
+				var r = util.sendRequest(loginUrl, h, d, "POST", cc);
 				if (r == null) {
 					log += "ログインページに接続できませんでした";
 					return null;

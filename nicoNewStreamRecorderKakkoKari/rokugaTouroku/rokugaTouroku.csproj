@@ -84,7 +84,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\config\config.cs" />
-    <Compile Include="src\gui\accountForm.cs" />
+    <Compile Include="src\gui\accountForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="src\gui\accountForm.Designer.cs">
       <DependentUpon>accountForm.cs</DependentUpon>
     </Compile>
@@ -94,22 +96,30 @@
     <Compile Include="src\gui\fileNameOptionForm.Designer.cs">
       <DependentUpon>fileNameOptionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\gui\MainForm.cs" />
+    <Compile Include="src\gui\MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="src\gui\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\gui\MfaInputForm.cs" />
+    <Compile Include="src\gui\MfaInputForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="src\gui\MfaInputForm.Designer.cs">
       <DependentUpon>MfaInputForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\gui\NicoSessionComboBox2.cs" />
+    <Compile Include="src\gui\NicoSessionComboBox2.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="src\gui\optionForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\gui\optionForm.Designer.cs">
       <DependentUpon>optionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\gui\QualityForm.cs" />
+    <Compile Include="src\gui\QualityForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="src\gui\QualityForm.Designer.cs">
       <DependentUpon>QualityForm.cs</DependentUpon>
     </Compile>
@@ -120,21 +130,28 @@
     <Compile Include="src\gui\TimeShiftOptionForm.Designer.cs">
       <DependentUpon>TimeShiftOptionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\gui\UpdateForm.cs" />
+    <Compile Include="src\gui\UpdateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="src\gui\UpdateForm.Designer.cs">
       <DependentUpon>UpdateForm.cs</DependentUpon>
     </Compile>
     <Compile Include="src\gui\UrlBulkRegistForm.cs">
       <DependentUpon>VersionForm.cs</DependentUpon>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="src\gui\UrlBulkRegistForm.Designer.cs">
       <DependentUpon>UrlBulkRegistForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\gui\UrlListSaveForm.cs" />
+    <Compile Include="src\gui\UrlListSaveForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="src\gui\UrlListSaveForm.Designer.cs">
       <DependentUpon>UrlListSaveForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\gui\VersionForm.cs" />
+    <Compile Include="src\gui\VersionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="src\gui\VersionForm.Designer.cs">
       <DependentUpon>VersionForm.cs</DependentUpon>
     </Compile>
@@ -148,22 +165,21 @@
     <Compile Include="src\rec\HosoInfoGetter.cs" />
     <Compile Include="src\rec\RecDataGetter.cs" />
     <Compile Include="src\rec\RecListManager.cs" />
+    <Compile Include="src\util\Curl.cs" />
     <Compile Include="src\util\SourceInfoSerialize.cs" />
     <Compile Include="src\util\util.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="curl_wrap.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="libcurl.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="src\config" />
-    <Folder Include="src\info" />
-    <Folder Include="src\Logger" />
-    <Folder Include="src\gui" />
-    <Folder Include="src" />
-    <Folder Include="src\rec" />
-    <Folder Include="src\util" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="src\gui\accountForm.resx">
       <DependentUpon>accountForm.cs</DependentUpon>
