@@ -35,11 +35,13 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.75";
-	public static string versionDayStr = "2023/07/28";
+	public static string versionStr = "ver0.88.76";
+	public static string versionDayStr = "2023/08/15";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
+	public static string osName = null;
+	public static bool isWebRequestOk = false;
 	public static WebProxy httpProxy = null;
 	public static HttpConnectProxy wsProxy = null;
 	public static bool isCurl = true;
@@ -757,18 +759,12 @@ class util {
 			       	}
 				}
 			}
-//					stream.Close();
-
 			return (HttpWebResponse)req.GetResponse();
 			
 		} catch (WebException ee) {
 			util.debugWriteLine(ee.Data + ee.Message + ee.Source + ee.StackTrace + ee.Status);
 			try {
 				return (HttpWebResponse)ee.Response;
-				//using (var _rs = ee.Response.GetResponseStream())
-				//using (var rs = new StreamReader(_rs)) {
-				//	return rs.ReadToEnd();
-				//}
 			} catch (Exception eee) {
 				util.debugWriteLine(eee.Message + eee.Source + eee.StackTrace);
 				return null;
@@ -1214,7 +1210,70 @@ public static void soundEnd(config cfg, MainForm form) {
 			form.addLogText(e.Message + e.StackTrace + e.Source);
 		}
 	}
-	
+	public static string CheckOSName()
+        {
+            string result = "";
+
+            System.Management.ManagementClass mc =
+                new System.Management.ManagementClass("Win32_OperatingSystem");
+            System.Management.ManagementObjectCollection moc = mc.GetInstances();
+
+            try
+            {
+                foreach (System.Management.ManagementObject mo in moc)
+                {
+                    result = mo["Caption"].ToString();
+                    if (mo["CSDVersion"] != null)
+                        result += " " + mo["CSDVersion"].ToString();
+                    result += " (" + mo["Version"].ToString() + ")";
+                }
+                osName = result;
+            }
+            catch (Exception e)
+            {
+                util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+                return result;
+            }
+
+            return result;
+        }
+        public static string CheckOSType()
+        {
+            string result = "";
+
+            System.Management.ManagementClass mc =
+                new System.Management.ManagementClass("Win32_OperatingSystem");
+            System.Management.ManagementObjectCollection moc = mc.GetInstances();
+
+            try
+            {
+                foreach (System.Management.ManagementObject mo in moc)
+                {
+                    if (mo["Version"].ToString().StartsWith("5.1"))
+                        result = "XP";
+                    else if (mo["Version"].ToString().StartsWith("6.0"))
+                        result = "Vista";
+                    else if (mo["Version"].ToString().StartsWith("6.1"))
+                        result = "7";
+                    else if (mo["Version"].ToString().StartsWith("6.2"))
+                        result = "8";
+                    else if (mo["Version"].ToString().StartsWith("6.3"))
+                        result = "8.1";
+                    else if (mo["Version"].ToString().StartsWith("10.0"))
+                        result = "10";
+                    else if (mo["Version"].ToString().StartsWith("11.0"))
+                        result = "11";
+                    else
+                        result = "other";
+                }
+            }
+            catch (Exception e)
+            {
+                util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+                return result;
+            }
+            return result;
+        }
 	public static void setProxy(config cfg, MainForm form = null) {
 		util.httpProxy = null;
 		util.wsProxy = null;
@@ -1546,4 +1605,43 @@ public static void soundEnd(config cfg, MainForm form) {
 		if (referer != null) ret["Referer"] = referer;
 		return ret;
 	}
+	public static bool isUseCurl(CurlHttpVersion httpVer) {
+		//return true;
+		
+		if (httpVer != CurlHttpVersion.CURL_HTTP_VERSION_1_1) return true;
+		if ((util.osName != null && 
+		     (util.osName.IndexOf("Windows 1") > -1)) || util.isWebRequestOk)
+			return false;
+		return util.isCurl;
+	}
+	public static void saveBackupConfig(string path, string f) {
+    	try {
+    		var p = path + "\\config_backup";
+    		if (File.Exists(path + f + ".config")) {
+    			if (!Directory.Exists(p))
+    				Directory.CreateDirectory(p);
+    			if (!Directory.Exists(p)) return;
+    			
+    			var dt = DateTime.Now.ToString("yyyyMMdd");
+    			File.Copy(path + f + ".config", p + "\\" + f + dt + "backup.config", true);
+    		}
+    		var _fList = new List<string>(Directory.GetFiles(p, "*" + f + "*"));
+    		var fList = new List<string>();
+    		var dtL = new List<int>();
+    		foreach (var _f in _fList) {
+    			var d = util.getRegGroup(_f, f + "(\\d+)backup.config");
+    			if (d == null) continue;
+    			fList.Add(_f);
+    			dtL.Add(int.Parse(d));
+    		}
+    		if (fList.Count <= 5) return;
+    		var vals = fList.ToArray();
+    		Array.Sort(dtL.ToArray(), vals);
+    		for (var i = 0; i < vals.Length - 5; i++)
+    			File.Delete(vals[i]);
+    		
+		} catch (Exception e) {
+			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+		}
+    }
 }

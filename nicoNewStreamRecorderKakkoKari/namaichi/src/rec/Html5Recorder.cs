@@ -81,6 +81,7 @@ namespace namaichi.rec
 				
 				ri = new RecordInfo(si, pageType, isRtmp);
 				ri.set(isChaseCheck, rm.cfg, rm.form);
+				RecordLogInfo.recType = ri.si.isTimeShift ? (ri.isChase ? "chase" : "timeshift") : "realtime";
 				
 				if (!si.isRtmpOnlyPage && ri.webSocketRecInfo == null) return 1;
 				if (!ri.setTimeShiftConfig(rm, isChaseCheck)) return 2;

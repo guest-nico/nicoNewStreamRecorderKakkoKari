@@ -27,9 +27,11 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.10.76";
-	public static string versionDayStr = "2023/07/28";
+	public static string versionStr = "ver0.1.3.10.77";
+	public static string versionDayStr = "2023/08/15";
+	public static string osName = null;
 	public static bool isCurl = true;
+	public static bool isWebRequestOk = false;
 	
 	public static string getRegGroup(string target, string reg, int group = 1) {
 		Regex r = new Regex(reg);
@@ -1013,4 +1015,107 @@ class util {
 		var res = new Curl().getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
 		return res;
 	}
+	public static string CheckOSName()
+        {
+            string result = "";
+
+            System.Management.ManagementClass mc =
+                new System.Management.ManagementClass("Win32_OperatingSystem");
+            System.Management.ManagementObjectCollection moc = mc.GetInstances();
+
+            try
+            {
+                foreach (System.Management.ManagementObject mo in moc)
+                {
+                    result = mo["Caption"].ToString();
+                    if (mo["CSDVersion"] != null)
+                        result += " " + mo["CSDVersion"].ToString();
+                    result += " (" + mo["Version"].ToString() + ")";
+                }
+                osName = result;
+            }
+            catch (Exception e)
+            {
+                util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+                return result;
+            }
+
+            return result;
+        }
+        public static string CheckOSType()
+        {
+            string result = "";
+
+            System.Management.ManagementClass mc =
+                new System.Management.ManagementClass("Win32_OperatingSystem");
+            System.Management.ManagementObjectCollection moc = mc.GetInstances();
+
+            try
+            {
+                foreach (System.Management.ManagementObject mo in moc)
+                {
+                    if (mo["Version"].ToString().StartsWith("5.1"))
+                        result = "XP";
+                    else if (mo["Version"].ToString().StartsWith("6.0"))
+                        result = "Vista";
+                    else if (mo["Version"].ToString().StartsWith("6.1"))
+                        result = "7";
+                    else if (mo["Version"].ToString().StartsWith("6.2"))
+                        result = "8";
+                    else if (mo["Version"].ToString().StartsWith("6.3"))
+                        result = "8.1";
+                    else if (mo["Version"].ToString().StartsWith("10.0"))
+                        result = "10";
+                    else if (mo["Version"].ToString().StartsWith("11.0"))
+                        result = "11";
+                    else
+                        result = "other";
+                }
+            }
+            catch (Exception e)
+            {
+                util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+                return result;
+            }
+            return result;
+        }
+    public static bool isUseCurl(CurlHttpVersion httpVer) {
+		//return true;
+		
+		if (httpVer != CurlHttpVersion.CURL_HTTP_VERSION_1_1) return true;
+		if ((util.osName != null && 
+		     (util.osName.IndexOf("Windows 1") > -1)) || util.isWebRequestOk)
+			return false;
+		return util.isCurl;
+	}
+    public static void saveBackupConfig(string path, string f) {
+		try {
+    		var p = path + "\\config_backup";
+    		if (File.Exists(path + f + ".config")) {
+    			if (!Directory.Exists(p))
+    				Directory.CreateDirectory(p);
+    			if (!Directory.Exists(p)) return;
+    			
+    			var dt = DateTime.Now.ToString("yyyyMMdd");
+    			File.Copy(path + f + ".config", p + "\\" + f + dt + "backup.config", true);
+    		}
+    		var _fList = new List<string>(Directory.GetFiles(p, "*" + f + "*"));
+    		var fList = new List<string>();
+    		var dtL = new List<int>();
+    		foreach (var _f in _fList) {
+    			var d = util.getRegGroup(_f, f + "(\\d+)backup.config");
+    			if (d == null) continue;
+    			fList.Add(_f);
+    			dtL.Add(int.Parse(d));
+    		}
+    		if (fList.Count <= 5) return;
+    		var vals = fList.ToArray();
+    		Array.Sort(dtL.ToArray(), vals);
+    		for (var i = 0; i < vals.Length - 5; i++)
+    			File.Delete(vals[i]);
+    		
+		} catch (Exception e) {
+			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+		}
+    }
 }

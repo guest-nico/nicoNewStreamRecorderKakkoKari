@@ -39,21 +39,29 @@ namespace namaichi.utility
 		}
 		public byte[] getBytes(string url, Dictionary<string, string> headers, CurlHttpVersion httpVer, string method = "GET", byte[] postData = null, bool isAddHeader = false) {
 			try {
-				var isCurl = util.isCurl;
-				if (isCurl) {
+				if (util.isUseCurl(httpVer)) {
 					util.debugWriteLine("curl get str " + url);
 					int httpCode;
 					var r2 = get2(url, headers, httpVer, out httpCode, method, postData, isAddHeader);
-					if (r2 == null) return null;
+					if (r2 == null) {
+						util.debugWriteLine("curl error null " + url);
+						return null;
+					}
 					var a = Encoding.UTF8.GetString(r2);
 					if (r2.Length == 0) return null;
-					if (httpCode >= 400) {
+					if (httpCode >= 400 ||  httpCode == 0) {
 						util.debugWriteLine("curl error " + url + " " + httpCode + " " + a);
 						return null;
 					}
 					return r2;
 				} else {
-					return util.getFileBytes(url, null);
+					var r22 = util.sendRequest(url, headers, postData, method, null);
+					using (var r2 = r22.GetResponseStream()) {
+						var ms = new MemoryStream();
+						r2.CopyTo(ms);
+						var a = ms.ToArray();
+						return a;
+					}
 				}
 			} catch (Exception e) {
 				Debug.WriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
@@ -62,18 +70,20 @@ namespace namaichi.utility
 		}
 		public string getStr(string url, Dictionary<string, string> headers, CurlHttpVersion httpVer, string method = "GET", string postData = "", bool isAddHeader = false, bool isGetErrorMessage = false, bool isFollowLocation = true) {
 			try {
-				var isCurl = util.isCurl;
-				if (isCurl) {
+				if (util.isUseCurl(httpVer)) {
 					util.debugWriteLine("curl get str " + url);
 					int httpCode;
-					var d = postData == null ? null : Encoding.ASCII.GetBytes(postData);
+					var d = postData == null ? null : Encoding.UTF8.GetBytes(postData);
 					var r2 = get2(url, headers, httpVer, out httpCode, method, d, isAddHeader, isFollowLocation);
+					if (r2 == null) {
+						util.debugWriteLine("curl error null " + url);
+						return null;
+					}
 					var ret = Encoding.UTF8.GetString(r2);
-					var asciiret = Encoding.ASCII.GetString(r2);
 					util.debugWriteLine("curl ret " + url + " " + httpCode);
 					if (ret.Length == 0) 
 						return null;
-					if (httpCode >= 400 && !isGetErrorMessage) {
+					if ((httpCode >= 400 ||  httpCode == 0) && !isGetErrorMessage) {
 						util.debugWriteLine("curl error ret " + ret);
 						return null;
 					}
@@ -112,11 +122,23 @@ namespace namaichi.utility
 				var a = postData == null ? 0 : postData.Length;
 				var postLen = postData == null ? 0 : postData.Length;
 				retPtr = curl_get(url, method, postData, postLen, httpVer, out num, out headerNum, isFollowLocation, addH[0], addH[1], addH[2], addH[3], addH[4], addH[5], addH[6], addH[7], addH[8], addH[9], addH[10], addH[11]);
-				
+				if (num == 0) {
+					//CURLE_OK以外の場合、numに0、headerNumにcurlcode
+					//通信自体ができなかった場合もCURLE_OKが返ることがあるが取得データは0なのでエラーとして処理
+					//通信途中で問題が起こった場合にもCURLE_OKが返ることがあるのであれば成否判定は課題
+					util.debugWriteLine("curl get error " + headerNum + url);
+					return null;
+				}
+				    
 				Array.Resize(ref ret, num);
 				Marshal.Copy(retPtr, ret, 0, num);
 				
 				var headerStr = Encoding.UTF8.GetString(ret, 0, headerNum);
+				if (headerStr == null) {
+					util.debugWriteLine("header null " + url + " " + num + " " + headerNum);
+					return new byte[]{};
+				}
+				
 				util.debugWriteLine("curl head " + url + " " + new Regex("user_session.+?;").Replace(headerStr, "user_session_num"));
 				var codeMatch = new Regex("(^|\n)HTTP.+ (\\d+)").Matches(headerStr);
 				foreach (Match m in codeMatch)
@@ -211,7 +233,8 @@ namespace namaichi.utility
 		CURLOPT_HTTP_VERSION = 84,
 		CURLOPT_TIMEOUT = 13,
 		CURLOPT_POSTFIELDS = 10015,
-		CURLOPT_POSTFIELDSIZE = 60
+		CURLOPT_POSTFIELDSIZE = 60,
+		CURLOPT_CONNECT_ONLY = 141
 	}
 	public enum CURLMoption {
 		CURLMOPT_PIPELINING = 3
@@ -399,5 +422,20 @@ namespace namaichi.utility
 	public struct curlMsgData {
 		public IntPtr whatever;    /* message-specific data */
 		public CURLcode result;   /* return code for transfer */
+	}
+	[Flags]
+	public enum curlWsFlags {
+		CURLWS_TEXT = (1<<0),
+		CURLWS_BINARY = (1<<1),
+		CURLWS_CONT = (1<<2),
+		CURLWS_CLOSE = (1<<3),
+		CURLWS_PING = (1<<4),
+		CURLWS_OFFSET = (1<<5)
+	}
+	public struct curl_ws_frame {
+		int age;              /* zero */
+		int flags;            /* See the CURLWS_* defines */
+		int offset;    /* the offset of this data into the frame */
+		int bytesleft; /* number of pending bytes left of the payload */
 	}
 }

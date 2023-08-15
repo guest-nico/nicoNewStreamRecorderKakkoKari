@@ -35,7 +35,7 @@ public class config
 		//set("EngineMode", "2");
  	}
 	public Configuration getConfig() {
-		for (var i = 0; i < 5; i++) {
+		for (var i = 0; i < 3; i++) {
 			try {
 				var jarPath = util.getJarPath();
 				var configFile = jarPath[0] + "\\" + jarPath[1] + ".config";
@@ -60,7 +60,7 @@ public class config
 				key.IndexOf("account") == -1)
 			util.debugWriteLine("config set " + key + " " + value);
 		else util.debugWriteLine("config set " + key);
-		for (var i = 0; i < 100; i++) {
+		for (var i = 0; i < 3; i++) {
 			cfg = getConfig();
 			
 			
@@ -69,13 +69,10 @@ public class config
 				cfg.AppSettings.Settings.Add(key, value);
 			else cfg.AppSettings.Settings[key].Value = value;
 			try {
-				//cfg.Save();
-				var o = cfg.FilePath.TrimEnd(new char[]{'_'});
-				cfg.SaveAs(o + "_", ConfigurationSaveMode.Modified, true);
-				var exeFileMap = new System.Configuration. ExeConfigurationFileMap { ExeConfigFilename = o + "_" };
-		        var cfg2 = ConfigurationManager.OpenMappedExeConfiguration(exeFileMap, ConfigurationUserLevel.None);
-				File.Copy(o + "_", o, true);
-				File.Delete(o + "_");
+				cfg.Save();
+				var path = util.getJarPath()[0] + "\\";
+				var f = Path.GetFileName(cfg.FilePath);
+				util.saveBackupConfig(path, f.Substring(0, f.Length - 7));
 				return;
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + " " + e.StackTrace);
@@ -91,7 +88,7 @@ public class config
 				util.debugWriteLine("config set " + _l.Key + " " + _l.Value);
 			else util.debugWriteLine("config set " + _l.Key);
 		}
-		for (var i = 0; i < 100; i++) {
+		for (var i = 0; i < 3; i++) {
 			cfg = getConfig();
 			
 			var keys = cfg.AppSettings.Settings.AllKeys;
@@ -342,7 +339,7 @@ public class config
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				try {
-					for (var i = 0; i < 10000; i++) {
+					for (var i = 0; i < 3; i++) {
 						fn = configFile + i.ToString();
 						if (File.Exists(fn)) continue;
 						File.Copy(configFile, fn);

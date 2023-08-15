@@ -238,7 +238,7 @@ namespace rokugaTouroku.rec
 				
 				util.debugWriteLine(cc.GetCookieHeader(new Uri(loginUrl)));
 				
-				if (util.isCurl) {
+				if (util.isUseCurl(CurlHttpVersion.CURL_HTTP_VERSION_1_1)) {
 					var curlR = new Curl().getStr(loginUrl, h, CurlHttpVersion.CURL_HTTP_VERSION_1_1, "POST", _d, true, true, false);
 					if (curlR == null) {
 						log += "ログインページに接続できませんでした";

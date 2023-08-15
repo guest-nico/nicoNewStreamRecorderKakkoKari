@@ -15,6 +15,9 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using System.ComponentModel;
 using Microsoft.WindowsAPICodePack.Taskbar;
+using namaichi.gui;
+using namaichi.info;
+using namaichi.utility;
 using Newtonsoft.Json;
 using SunokoLibrary.Application;
 using System.Linq;
@@ -30,7 +33,6 @@ using System.Security.AccessControl;
 using namaichi.rec;
 using namaichi.config;
 using namaichi.play;
-using namaichi.utility;
 using SuperSocket.ClientEngine;
 
 namespace namaichi
@@ -710,8 +712,29 @@ namespace namaichi
 						util.dllCheck(this);            
 			        });
 				}
+				util.osName = util.CheckOSName();
+				var osType = util.CheckOSType();
+				util.debugWriteLine("OS: " + util.osName);
+				util.debugWriteLine("OSType: " + osType);
 			} catch (Exception ee) {
 				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+			}
+			try {
+				var r = util.sendRequest("https://live.nicovideo.jp/", util.getHeader(), null, "GET", null);
+				if (r == null) throw new Exception("webrequest null");
+				using (var s = r.GetResponseStream())
+				using (var sr = new StreamReader(s)) {
+					var srr = sr.ReadToEnd();
+					util.isWebRequestOk = true;
+					#if DEBUG
+						addLogText("debug: webrequestを有効にします");
+					#endif
+				}
+			} catch (Exception eee) {
+				util.debugWriteLine(eee.Message + eee.Source);
+				#if DEBUG
+					addLogText("debug: curlを使用します");
+				#endif
 			}
 		}
 		
@@ -1178,5 +1201,13 @@ namespace namaichi
 			return args.Length > 0 && bool.Parse(config.get("Isminimized"));
 	      }
     	}
+		void openRecordLogToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			try {
+				new RecordLogForm().Show();
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace);
+			}
+		}
 	}
 }

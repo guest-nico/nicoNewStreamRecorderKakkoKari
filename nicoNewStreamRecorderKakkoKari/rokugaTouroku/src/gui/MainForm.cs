@@ -109,6 +109,9 @@ namespace rokugaTouroku
 			changeRecBtnClickEvent(bool.Parse(config.get("IsRecBtnOnlyMouse")));
 			
 			setQualitySetting();
+			
+			util.debugWriteLine("OS: " + util.CheckOSName());
+			util.debugWriteLine("OSType: " + util.CheckOSType());
 		}
 		private void formInitSetting() {
 			recList.DataSource = recListDataSource;

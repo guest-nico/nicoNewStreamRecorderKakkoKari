@@ -80,8 +80,11 @@ namespace namaichi.rec
 				string accountPass, string userSession, string userSessionSecure,
 				bool isSub, string url) {
 			
+			RecordLogInfo.loginType = browserNum == "2" ? "ブラウザログイン" : "アカウントログイン"; 
 			if (cfg.argAi != null) {
+				RecordLogInfo.loginLog += "ログイン引数が見つかりました。";
 				if (cfg.argAi.isBrowser && cfg.argAi.si != null) {
+					RecordLogInfo.loginLog += "引数によりブラウザログインを試行します。";
 					reason = null;
 					CookieContainer cc = await getBrowserCookie(isSub, cfg.argAi.si).ConfigureAwait(false);
 					log += (cc == null) ? "引数で指定されたブラウザからユーザーセッションを取得できませんでした。ログインに使うブラウザの設定をご確認ください。他のブラウザやアカウントログインを試したり、ブラウザ上で一度ログインし直した後にもう一度ツール側で設定すると上手くいくかもしれません。" : "ブラウザからユーザーセッションを取得しました。";
@@ -89,10 +92,12 @@ namespace namaichi.rec
 						util.debugWriteLine("browser ishtml5login");
 						if (isHtml5Login(cc, url)) {
 							util.debugWriteLine("browser login ok");
+							RecordLogInfo.loginLog += "ブラウザログイン引数からログインを確認しました。";
 							return cc;
-						}
+						} else RecordLogInfo.loginLog += "ブラウザログイン引数からログインを確認できませんでした。";
 					}
 				} else {
+					RecordLogInfo.loginLog += "引数によりアカウントログインを試行します。";
 					reason = null;
 					var mail = cfg.argAi.accountId;
 					var pass = cfg.argAi.accountPass;
@@ -102,36 +107,44 @@ namespace namaichi.rec
 						util.debugWriteLine("account ishtml5login");
 						if (isHtml5Login(accCC, url)) {
 							util.debugWriteLine("account login ok");
+							RecordLogInfo.loginLog += "アカウントログイン引数からログインを確認しました。";
 							return accCC;
-						}
+						} else RecordLogInfo.loginLog += "アカウントログイン引数からログインを確認できませんでした。";
 					}
 				}
 			}
 			var userSessionCC = getUserSessionCC(userSession, userSessionSecure);
 			log += (userSessionCC == null) ? "前回のユーザーセッションが見つかりませんでした。" : "前回のユーザーセッションが見つかりました。";
 			if (userSessionCC != null && true) {
+				RecordLogInfo.loginLog += "前回のユーザーセッションからログインを試行します。";
+				RecordLogInfo.foundLastUs = "yes";
 //				util.debugWriteLine(userSessionCC.GetCookieHeader(TargetUrl));
 				util.debugWriteLine("usersessioncc ishtml5login");
 				if (isHtml5Login(userSessionCC, url)) {
+					RecordLogInfo.loginLog += "前回のユーザーセッションからログインを確認しました。";
 					return userSessionCC;
-				}
-			}
+				}　else RecordLogInfo.loginLog += "前回のユーザーセッションからログインを確認できませんでした。";
+			} else RecordLogInfo.foundLastUs = "no";
 			
 			if (browserNum == "2") {
+				RecordLogInfo.loginLog += "ブラウザからログインを試行します。";
 				reason = null;
 				CookieContainer cc = await getBrowserCookie(isSub).ConfigureAwait(false);
 				log += (cc == null) ? "ブラウザからユーザーセッションを取得できませんでした。ログインに使うブラウザの設定をご確認ください。他のブラウザやアカウントログインを試したり、ブラウザ上で一度ログインし直した後にもう一度ツール側で設定すると上手くいくかもしれません。" : "ブラウザからユーザーセッションを取得しました。";
 				if (cc != null) {
+					RecordLogInfo.loginLog += "ブラウザからクッキーを取得しました。";
 					util.debugWriteLine("browser ishtml5login");
 					if (isHtml5Login(cc, url)) {
+						RecordLogInfo.loginLog += "ブラウザからログインを確認しました。";
 						util.debugWriteLine("browser login ok");
 						return cc;
-					}
-				}
+					} else RecordLogInfo.loginLog += "ブラウザからログインを確認できませんでした。";
+				} else RecordLogInfo.loginLog += "ブラウザからクッキーを取得できませんでした。";
 			}
 			
 			if (browserNum == "1" || 
 			    	isSecondLogin == "true") {
+				RecordLogInfo.loginLog += "アカウントログインからログインを試行します。";
 				reason = null;
 				var mail = accountId;
 				var pass = accountPass;
@@ -139,11 +152,13 @@ namespace namaichi.rec
 				log += (accCC == null) ? "アカウントログインからユーザーセッションを取得できませんでした。" : "アカウントログインからユーザーセッションを取得しました。";
 				if (accCC != null) {
 					util.debugWriteLine("account ishtml5login");
+					RecordLogInfo.loginLog += "アカウントログインからクッキーを取得しました。";
 					if (isHtml5Login(accCC, url)) {
 						util.debugWriteLine("account login ok");
+						RecordLogInfo.loginLog += "アカウントログインからログインを確認しました。";
 						return accCC;
-					}
-				}
+					} else RecordLogInfo.loginLog += "アカウントログインからログインを確認できませんでした。";
+				} else RecordLogInfo.loginLog += "アカウントログインからクッキーを取得できませんでした。";
 			}
 			
 			if (isPlayable(url)) return new CookieContainer();
@@ -313,14 +328,17 @@ namespace namaichi.rec
 				
 				util.debugWriteLine(cc.GetCookieHeader(new Uri(loginUrl)));
 				
-				if (util.isCurl) {
+				if (util.isUseCurl(CurlHttpVersion.CURL_HTTP_VERSION_1_1)) {
 					var curlR = new Curl().getStr(loginUrl, h, CurlHttpVersion.CURL_HTTP_VERSION_1_1, "POST", _d, true, true, false);
 					if (curlR == null) {
 						log += "ログインページに接続できませんでした";
 						return null;
 					}
 					var m = new Regex("Set-Cookie: (.+?)=(.+?);").Matches(curlR);
-					if (m.Count == 0) return null;
+					if (m.Count == 0) {
+						log += "保存するクッキーがありませんでした";
+						return null;
+					}
 					Cookie us = null, secureC = null;  
 					foreach (Match _m in m) {
 						if (_m.Groups[1].Value == "user_session") us = new Cookie(_m.Groups[1].Value, _m.Groups[2].Value);
@@ -359,7 +377,9 @@ namespace namaichi.rec
 	                if (browName == null) browName = "Google Chrome (Windows)";
 	                var mfaUrl = util.getRegGroup(curlR2, "<form action=\"(.+?)\"");
 	                if (mfaUrl == null || mfaUrl.IndexOf("/mfa") == -1) {
-	                	log += "2段階認証のURLを取得できませんでした。";
+	                	var notice = util.getRegGroup(curlR2, "\"notice__text\">(.+?)</p>");
+						if (notice != null) log += " " + notice;
+	                	else log += "2段階認証のURLを取得できませんでした。";
 						return null;
 	                }
 	                mfaUrl = "https://account.nicovideo.jp" + mfaUrl;
@@ -424,6 +444,15 @@ namespace namaichi.rec
 				}
 				if (r.ResponseUri == null || !r.ResponseUri.AbsolutePath.StartsWith("/mfa")) {
 					log += "ログインに失敗しました。";
+					try {
+						using (var sr = new StreamReader(r.GetResponseStream())) {
+							var res = sr.ReadToEnd();
+							var notice = util.getRegGroup(res, "\"notice__text\">(.+?)</p>");
+							if (notice != null) log += " " + notice;
+						}
+					} catch (Exception e) {
+						util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+					}
 					return null;
 				}
 				using (var sr = new StreamReader(r.GetResponseStream())) {

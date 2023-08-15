@@ -62,10 +62,14 @@ namespace namaichi.rec
 		
 		public void rec(bool isPlayOnlyMode) {
             util.debugWriteLine("rm");
-           
+            
 			if (rfu == null) {
+            	RecordLogInfo.clear();
+            	RecordLogInfo.startTime = DateTime.Now;
+            	
             	var lv = util.getRegGroup(form.urlText.Text, "(lv\\d+(,\\d+)*)");
             	if (lv == null) lv = util.getRegGroup(form.urlText.Text, "https://nicochannel.jp/(.+/(live|video)/[a-zA-Z0-9]+)", 1);
+            	RecordLogInfo.lvid = lv;
             	util.setLog(cfg, lv == null ? "_" : util.getRegGroup(lv, "(.*/)*(.+)", 2));
 				util.debugWriteLine(util.versionStr + " " + util.versionDayStr + " " + util.dotNetVer);
 				
@@ -125,6 +129,8 @@ namespace namaichi.rec
 			});
 		}
 		private void endProcess(int endCode, bool isSameRfu) {
+			RecordLogInfo.endTime = DateTime.Now;
+			
 			if (endCode == 3 && bool.Parse(cfg.get("IsSoundEnd")))
 				util.soundEnd(cfg, form);
         	

@@ -115,6 +115,7 @@ namespace namaichi
 			this.openNotifyIconMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.closeNotifyIconMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.直近の動作の記録を確認するVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.samuneBox)).BeginInit();
 			this.menuStrip1.SuspendLayout();
 			this.streamInfoGroupBox.SuspendLayout();
@@ -350,6 +351,7 @@ namespace namaichi
 			// 
 			this.helpMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
 									this.openReadmeMenu,
+									this.直近の動作の記録を確認するVToolStripMenuItem,
 									this.更新方法VToolStripMenuItem,
 									this.バージョン情報VToolStripMenuItem});
 			this.helpMenuItem.Name = "helpMenuItem";
@@ -360,21 +362,21 @@ namespace namaichi
 			// openReadmeMenu
 			// 
 			this.openReadmeMenu.Name = "openReadmeMenu";
-			this.openReadmeMenu.Size = new System.Drawing.Size(183, 22);
+			this.openReadmeMenu.Size = new System.Drawing.Size(223, 22);
 			this.openReadmeMenu.Text = "readme.htmlを開く(&V)";
 			this.openReadmeMenu.Click += new System.EventHandler(this.OpenReadmeMenuClick);
 			// 
 			// 更新方法VToolStripMenuItem
 			// 
 			this.更新方法VToolStripMenuItem.Name = "更新方法VToolStripMenuItem";
-			this.更新方法VToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.更新方法VToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
 			this.更新方法VToolStripMenuItem.Text = "更新方法(&U)";
 			this.更新方法VToolStripMenuItem.Click += new System.EventHandler(this.updateMenu_Click);
 			// 
 			// バージョン情報VToolStripMenuItem
 			// 
 			this.バージョン情報VToolStripMenuItem.Name = "バージョン情報VToolStripMenuItem";
-			this.バージョン情報VToolStripMenuItem.Size = new System.Drawing.Size(183, 22);
+			this.バージョン情報VToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
 			this.バージョン情報VToolStripMenuItem.Text = "バージョン情報(&A)";
 			this.バージョン情報VToolStripMenuItem.Click += new System.EventHandler(this.versionMenu_Click);
 			// 
@@ -787,6 +789,13 @@ namespace namaichi
 			this.closeNotifyIconMenu.Text = "終了";
 			this.closeNotifyIconMenu.Click += new System.EventHandler(this.CloseNotifyIconMenuClick);
 			// 
+			// 直近の動作の記録を確認するVToolStripMenuItem
+			// 
+			this.直近の動作の記録を確認するVToolStripMenuItem.Name = "直近の動作の記録を確認するVToolStripMenuItem";
+			this.直近の動作の記録を確認するVToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+			this.直近の動作の記録を確認するVToolStripMenuItem.Text = "直近の動作記録を確認する(&R)";
+			this.直近の動作の記録を確認するVToolStripMenuItem.Click += new System.EventHandler(this.openRecordLogToolStripMenuItemClick);
+			// 
 			// MainForm
 			// 
 			this.AllowDrop = true;
@@ -831,6 +840,7 @@ namespace namaichi
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripMenuItem 直近の動作の記録を確認するVToolStripMenuItem;
 		private System.Windows.Forms.PictureBox reservationBox;
 		public System.Windows.Forms.Label miniStreamStateLabel;
 		private System.Windows.Forms.ToolStripMenuItem closeNotifyIconMenu;

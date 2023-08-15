@@ -104,6 +104,7 @@
     <Reference Include="System.IO">
       <HintPath>..\packages\Microsoft.Bcl.1.1.9\lib\net40\System.IO.dll</HintPath>
     </Reference>
+    <Reference Include="System.Management" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http">
       <HintPath>..\packages\Microsoft.Net.Http.2.2.28\lib\net40\System.Net.Http.dll</HintPath>
@@ -190,6 +191,12 @@
     <Compile Include="src\gui\placeTextBox5.Designer.cs">
       <DependentUpon>placeTextBox5.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\gui\RecordLogForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="src\gui\RecordLogForm.Designer.cs">
+      <DependentUpon>RecordLogForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="src\gui\TimeShiftOptionForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -211,6 +218,7 @@
     <Compile Include="src\info\AccountInfo.cs" />
     <Compile Include="src\info\ChatInfo.cs" />
     <Compile Include="src\info\numTaskInfo.cs" />
+    <Compile Include="src\info\RecordLogInfo.cs" />
     <Compile Include="src\info\RedistInfo.cs" />
     <Compile Include="src\info\StreamInfo.cs" />
     <Compile Include="src\info\TimeShiftConfig.cs" />
@@ -282,6 +290,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\gui\optionForm.resx">
       <DependentUpon>optionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\gui\RecordLogForm.resx">
+      <DependentUpon>RecordLogForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\gui\TimeShiftOptionForm.resx">
       <DependentUpon>TimeShiftOptionForm.cs</DependentUpon>

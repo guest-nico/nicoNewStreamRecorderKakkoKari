@@ -104,6 +104,7 @@ namespace namaichi.rec
 		Curl getTsCurl = null;
 		bool isSavedKey = false;
 		int channelPlusTimeShiftTotalTime = -1;
+		bool isWebRequest = util.isWebRequestOk;
 		
 		//debug
 		private int lastGetPlayListMaxNo = 0;
@@ -398,7 +399,8 @@ namespace namaichi.rec
 					}
 					//util.debugWriteLine("getpage m3u8 mae");
 					addDebugBuf("getpage m3u8 mae");
-					var res = util.getPageSource(hlsSegM3uUrl, null, referer, false, 2000, ua);
+					//var res = util.getPageSource(hlsSegM3uUrl, null, referer, false, 2000, ua);
+					var res = getPageSourceRec(hlsSegM3uUrl);
 					if (res == null) {
 						addDebugBuf("m3u8 getter segM3u8List res null reconnect");
 						setReconnecting(true);
@@ -758,7 +760,8 @@ namespace namaichi.rec
 					break;
 				}
 			}
-			var _writeNti = new numTaskInfo(writeNti[0].no, "", writeNti[0].second, "", writeNti[0].startSecond, writeNti[0].originNo);
+			var allSecond = writeNti.Select(x => x.second).Sum();
+			var _writeNti = new numTaskInfo(writeNti[0].no, "", allSecond, "", writeNti[0].startSecond, writeNti[0].originNo);
 			_writeNti.res = writeBList.ToArray();
 			
 			var before = DateTime.Now;
@@ -946,6 +949,7 @@ namespace namaichi.rec
 		private string getHlsSegM3uUrl(string masterUrl) {
 			addDebugBuf("master m3u8 " + masterUrl);
 			//var wc = new WebHeaderCollection();
+			testWebRequest(masterUrl);
 			var res = util.getPageSource(masterUrl, null, referer, false, 2000, ua);
 			if (res == null) {
 				addDebugBuf("getHlsSegM3uUrl res null reconnect " + masterUrl);
@@ -975,7 +979,8 @@ namespace namaichi.rec
 			addDebugBuf("getpage mae");
 			
 			var res = !ri.si.isChannelPlus ? 
-					util.getPageSource(hlsSegM3uUrl, null, referer, false, 2000, ua) :
+					//util.getPageSource(hlsSegM3uUrl, null, referer, false, 2000, ua) :
+					getPageSourceRec(hlsSegM3uUrl) :
 					getM3u8Curl.getStr(hlsSegM3uUrl, util.getHeader(), CurlHttpVersion.CURL_HTTP_VERSION_3);
 			addDebugBuf("addNewTsTaskList segm3u get len 1000 " + (res == null ? "" : (res.Substring(0, res.Length > 2000 ? 2000 : res.Length))));
 //			util.debugWriteLine("m3u8 " + res);
@@ -1341,11 +1346,12 @@ namespace namaichi.rec
 			var titleT = ret.Replace('\n', ' ');
 			//ret += "(" + percent + ")" + (lastSegmentNo / 10) + " " + allDuration;
 			rm.form.setRecordState(ret, titleT, per);
-			
+			RecordLogInfo.recordedStatus = ret;
 		}
 		private bool writeFile(numTaskInfo info) {
 			var ret = false;
 			if (!checkFreeSpace(info)) return false;
+			RecordLogInfo.addrecBytesData(info);
 			if (segmentSaveType == 0) {
 				ret = streamRenketuRecord(info);
 			} else {
@@ -1938,13 +1944,54 @@ namespace namaichi.rec
 		private Task<numTaskInfo> getFileBytesNti(numTaskInfo nti) {
 			//byte[] tsBytes;
 			addDebugBuf("getfilebyte " + nti.url);
-			return new Task<numTaskInfo>(() => {
-				nti.res = util.getFileBytes(nti.url, null);
-				return nti;
-			});
-			//return ret;
+			try {
+				return new Task<numTaskInfo>(() => {
+					nti.res = getFileBytesRec(nti.url);
+                 	return nti;
+                 });
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+				return null;
+			}
 		}
-		
+		public byte[] getFileBytesRec(string url) {
+			try  {
+				var h = util.getHeader();
+				h.Add("Accept", "*/*");
+				h.Add("Accept-Language", "ja,en-US;q=0.7,en;q=0.3");
+				h.Add("Origin", "https://live.nicovideo.jp");
+				h.Add("Referer", "https://live.nicovideo.jp/");
+				if (isWebRequest) {
+					var r = util.sendRequest(url, h, null, "GET", null);
+					if (r == null) return null;
+					
+					using (var _r = r.GetResponseStream()) {
+						var ms = new MemoryStream();
+						_r.CopyTo(ms);
+						var res = ms.ToArray();
+						return res;
+					}
+				} else {
+					string d = null;
+					var res = new Curl().getBytes(url, h, CurlHttpVersion.CURL_HTTP_VERSION_1_1, "GET", d, false);
+					return res;
+				}
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+				return null;
+			}
+		}
+		string getPageSourceRec(string url) {
+			try  {
+				var r = getFileBytesRec(url);
+				if (r == null) return null;
+				var _r = Encoding.UTF8.GetString(r);
+				return _r;
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+				return null;
+			}
+		}
 		private void displayWriteRemainGotTsData() {
 			if (isWriteCancel) return;
 //			Task.Run(() => {
@@ -2200,7 +2247,7 @@ namespace namaichi.rec
 				var getByteThread = new Task[newGetTsTaskList.Count];
 				for (var i = 0; i < newGetTsTaskList.Count; i++) {
 					var ng = new NtiGetter(newGetTsTaskList[i], getTsCurl, ri);
-					getByteThread[i] = Task.Run(() => ng.get(container));
+					getByteThread[i] = Task.Run(() => ng.get(container, this));
 					//if (ri.si.isChannelPlus) Thread.Sleep(2000);
 				}
 				foreach (var t in getByteThread) t.Wait();
@@ -2225,6 +2272,30 @@ namespace namaichi.rec
 			foreach (Match _m in m) sum += int.Parse(_m.Groups[1].Value);
 			return sum == 0 ? -1 : sum;
 		}
+		void testWebRequest(string url) {
+			try {
+				var h = util.getHeader();
+				h.Add("Accept", "*/*");
+				h.Add("Accept-Language", "ja,en-US;q=0.7,en;q=0.3");
+				h.Add("Origin", "https://live.nicovideo.jp");
+				h.Add("Referer", "https://live.nicovideo.jp/");
+				var r = util.sendRequest(url, h, null, "GET", null);
+				if (r != null) {
+					using (var _r = r.GetResponseStream())
+					using (var sr = new StreamReader(_r)) {
+						var buf = sr.ReadToEnd();
+						if (buf.IndexOf(".m3u8") > -1) {
+							isWebRequest = true;
+							#if DEBUG
+								rm.form.addLogText("新ライブラリを使わずに接続を試みます");
+							#endif
+						}
+					}
+				}
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+			}
+		}
 	}
 	class NtiGetter {
 		private numTaskInfo nti;
@@ -2235,12 +2306,30 @@ namespace namaichi.rec
 			this.curl = curl;
 			this.ri = ri;
 		}
-		public numTaskInfo get(CookieContainer cc) {
+		public numTaskInfo get(CookieContainer cc, Record rec) {
 			if (!ri.si.isChannelPlus)
-				nti.res = util.getFileBytes(nti.url, null, true, 0);
+				try {
+                    nti.res = rec.getFileBytesRec(nti.url);
+                }
+                catch (Exception e) {
+                    util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+                    return null;
+                }
+				//nti.res = util.getFileBytes(nti.url, null, true, 0);
 			else {
-				string d = null;
-				nti.res = curl.getBytes(nti.url, util.getHeader(), CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", d, false);
+				var h = util.getHeader();
+				h.Add("Accept", @"*/*");
+				h.Add("Accept-Language", "ja,en-US;q=0.7,en;q=0.3");
+				h.Add("Origin", "https://live.nicovideo.jp");
+				h.Add("Referer", "https://live.nicovideo.jp/");
+                try {
+                    nti.res = rec.getFileBytesRec(nti.url);
+                }
+                catch (Exception e) {
+                    util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+                    return null;
+                }
+                //nti.res = curl.getBytes(nti.url, util.getHeader(), CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", d, false);
 			}
 			return nti;
 		}
