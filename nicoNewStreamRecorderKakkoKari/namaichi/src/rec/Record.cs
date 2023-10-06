@@ -990,7 +990,13 @@ namespace namaichi.rec
 			
 			
 			//shuusei? 
-			int min = (res == null) ? -1 : int.Parse(util.getRegGroup(res, "(\\d+)" + ext, 1, rm.regGetter.getTs()));
+			var n = res == null ? null : util.getRegGroup(res, "(\\d+)" + ext, 1, rm.regGetter.getTs());
+			if (n == null) {
+				setReconnecting(true); 
+				reConnect();
+				return 3;	
+			}
+			int min = (res == null) ? -1 : int.Parse(n);
 			//if (res == null || (lastSegmentNo != -1 && res.IndexOf(lastSegmentNo.ToString()) == -1)) {
 			if (res == null || (lastSegmentNo != -1 && min != -1 && min > lastSegmentNo)) {
 			//if (res == null) {
@@ -1308,8 +1314,8 @@ namespace namaichi.rec
 			//	_kb = " " + _kb;
 			//ret += "size=" + _kb + "kB\n";
 			var size = bytes > 1000000 ? 
-					((bytes / 1000000.0).ToString("n3") + "mB") :
-					(((int)(bytes / 1000)).ToString() + "kB");
+					((bytes / 1000000.0).ToString("n3") + "MB") :
+					(((int)(bytes / 1000)).ToString() + "KB");
 			ret += "size=   " + size + "\n";
 			
 			
@@ -1964,6 +1970,8 @@ namespace namaichi.rec
 				if (isWebRequest) {
 					var r = util.sendRequest(url, h, null, "GET", null);
 					if (r == null) return null;
+					if (r.StatusCode != HttpStatusCode.OK)
+						return null;
 					
 					using (var _r = r.GetResponseStream()) {
 						var ms = new MemoryStream();
@@ -2291,6 +2299,10 @@ namespace namaichi.rec
 							#endif
 						}
 					}
+				} else {
+					#if DEBUG
+						rm.form.addLogText("新ライブラリを使って接続を試みます");
+					#endif
 				}
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace);

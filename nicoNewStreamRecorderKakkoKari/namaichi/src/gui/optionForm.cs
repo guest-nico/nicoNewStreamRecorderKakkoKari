@@ -110,12 +110,6 @@ namespace namaichi
 					SourceInfoSerialize.save(si2.GenerateCopy(si2.BrowserName, si2.ProfileName, cookieFileText2.Text), true);
 				else SourceInfoSerialize.save(si2, true);
 			}
-			
-			if (nicoSessionComboBox1.Text.IndexOf("Chrome") > -1 &&
-			    	useCookieRadioBtn.Checked &&
-			    	(util.osName == null || util.osName.IndexOf("Windows 1") > -1))
-				MessageBox.Show("2023年7月現在、Google Chromeはブラウザの実行中にクッキーを取得できないことがあるようです。こちらでクッキーを取得できない場合、別のブラウザを選択していただくか、「ブラウザとクッキーを共有せず、次のアカウントでログインする」を選択していただくとログインが可能になるかもしれません。");
-			
 			DialogResult = DialogResult.OK;
 		}
 
