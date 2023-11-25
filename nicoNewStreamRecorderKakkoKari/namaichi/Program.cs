@@ -7,9 +7,9 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using System.Net;
-
 
 namespace namaichi
 {
@@ -39,13 +39,19 @@ namespace namaichi
 				
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls |SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+			try {
+				ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+			} catch (Exception e) {
+				Debug.WriteLine(e.Message + e.Source + e.StackTrace);
+				util.isCurl = true;
+			}
+			util.isCurl = true;
 			
 //			args = new string[]{"-nowindo", "lv316266831", "-stdIO"};
 //			args = new String[]{"lv316036760", "-ts-start=5m0s", "-ts-end=5m10s", "-afterConvertMode=4"};
-			if (Array.IndexOf(args, "-nowindow") == -1) 
+			if (Array.IndexOf(args, "-nowindow") == -1) {
 				Application.Run(new MainForm(args));
-			else {
+			} else {
 				util.isShowWindow = false;
 				var a = new MainForm(args);
 				while(a.rec.isRecording) System.Threading.Thread.Sleep(1000);
@@ -99,7 +105,6 @@ namespace namaichi
 			util.debugWriteLine("firstchance exception");
 			var eo = (Exception)e.Exception;
 			util.showException(eo, false);
-		
 		}
 	}
 	

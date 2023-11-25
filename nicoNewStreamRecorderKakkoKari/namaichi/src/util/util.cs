@@ -35,8 +35,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.77";
-	public static string versionDayStr = "2023/10/06";
+	public static string versionStr = "ver0.88.78";
+	public static string versionDayStr = "2023/11/25";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -117,10 +117,11 @@ class util {
 			//string dirPath = jarpath[0] + "\\rec\\" + host;
 			var _dirPath = (cfg.get("IsdefaultRecordDir") == "true") ?
 					(jarpath[0] + "\\rec") : cfg.get("recordDir");
-			var di = new DriveInfo(Directory.GetDirectoryRoot(_dirPath));
-			if ((bool.Parse(cfg.get("IsSecondRecordDir")) && di.AvailableFreeSpace < 10000000) || isSecondDir) {
+			var availableFreeSpace = _dirPath.StartsWith("\\\\") ? long.MaxValue : 
+					new DriveInfo(Directory.GetDirectoryRoot(_dirPath)).AvailableFreeSpace;
+			if ((bool.Parse(cfg.get("IsSecondRecordDir")) && availableFreeSpace < 10000000) || isSecondDir) {
 				var secondDir = cfg.get("secondRecordDir");
-				form.addLogText("保存先フォルダを" + _dirPath + "から" + secondDir + "へ変更します。(空き容量:" + di.AvailableFreeSpace + "B)");
+				form.addLogText("保存先フォルダを" + _dirPath + "から" + secondDir + "へ変更します。(空き容量:" + availableFreeSpace + "B)");
 				if (!Directory.Exists(secondDir)) {
 					try {
 						Directory.CreateDirectory(secondDir);
@@ -860,7 +861,7 @@ class util {
 			else if (util.getRegGroup(res, "(<archive>1</archive>)") != null) return 3;
 			//else if (util.getRegGroup(res, "(チャンネル会員限定番組です。<br>)") != null) return 4;
 			else if (util.getRegGroup(res, "(<h3>【会場のご案内】</h3>)") != null) return 6;
-			else if (util.getRegGroup(res, "(この番組は放送者により削除されました。<br />|削除された可能性があります。<br />)") != null) return 2;
+			else if (util.getRegGroup(res, "(この番組は放送者により削除されました。<br />|削除された可能性があります。<br />|\">お探しのページは削除されたか)") != null) return 2;
 			else if (res.IndexOf("rejectedReasons&quot;:[&quot;notActivatedBySerial&quot;]") > -1) return 8;
 			else if (res.IndexOf("content=\"https://jk.nicovideo.jp/\"") > -1) return 12;
 			else if (opentime != null && serverTime != null && long.Parse(opentime) - long.Parse(serverTime) / 1000 > 15) return 13;
@@ -1644,4 +1645,13 @@ public static void soundEnd(config cfg, MainForm form) {
 			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 		}
     }
+	public static void openUrl(string url, 
+			bool IsdefaultBrowserPath, string browserPath) {
+		if (IsdefaultBrowserPath) {
+			System.Diagnostics.Process.Start(url);
+		} else {
+			var p = browserPath;
+			System.Diagnostics.Process.Start(p, url);
+		}
+	}
 }

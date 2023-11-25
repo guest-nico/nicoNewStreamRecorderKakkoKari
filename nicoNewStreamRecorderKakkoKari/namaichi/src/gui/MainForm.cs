@@ -484,18 +484,8 @@ namespace namaichi
 			if (e.Button == MouseButtons.Left) {
 				if (sender.Links.Count > 0 && sender.Links[0].Length != 0) {
 					string url = (string)sender.Links[0].LinkData;
-					if (bool.Parse(config.get("IsdefaultBrowserPath"))) {
-						System.Diagnostics.Process.Start(url);
-					} else {
-						var p = config.get("browserPath");
-						System.Diagnostics.Process.Start(p, url);
-					}
+					util.openUrl(url, bool.Parse(config.get("IsdefaultBrowserPath")), config.get("browserPath"));
 				}
-			} else {
-//				if (sender.Links.Count > 0 && sender.Links[0].Length != 0) {
-//					labelUrl = (string)sender.Links[0].LinkData;
-//					mainWindowRightClickMenu.Show(Cursor.Position);
-//				}
 			}
 		}
 		void copyUrlMenu_Clicked(object sender, EventArgs e)
@@ -673,7 +663,6 @@ namespace namaichi
 		void mainForm_Load(object sender, EventArgs e)
 		{
 			formInitSetting();
-			
 			init();
 			
 			if (!util.isShowWindow) return;
@@ -712,8 +701,18 @@ namespace namaichi
 						util.dllCheck(this);            
 			        });
 				}
-				util.osName = util.CheckOSName();
-				var osType = util.CheckOSType();
+				var osName = config.get("osName");
+				if (osName == "") {
+					osName = util.CheckOSName();
+					config.set("osName", osName);
+				}
+				util.osName = osName;
+				
+				var osType = config.get("osType");
+				if (osType == "") {
+					osType = util.CheckOSType();
+					config.set("osType", osType);
+				}
 				util.debugWriteLine("OS: " + util.osName);
 				util.debugWriteLine("OSType: " + osType);
 			} catch (Exception ee) {
@@ -1069,14 +1068,14 @@ namespace namaichi
 		void OpenReadmeMenuClick(object sender, EventArgs e)
 		{
 			string[] jarpath = util.getJarPath();
-			string path = jarpath[0] + "/readme.html";
+			string path = jarpath[0] + "/readme.html.url";
 			try {
 				if (!File.Exists(path)) {
 					addLogText("readme.htmlが見つかりませんでした " + path);
 					util.showMessageBoxCenterForm(this, "readme.htmlが見つかりませんでした");
 					return;
 				}
-				System.Diagnostics.Process.Start(path);
+				util.openUrl(path, bool.Parse(config.get("IsdefaultBrowserPath")), config.get("browserPath"));
 			} catch (Exception ee) {
 				util.debugWriteLine(ee.Message + " " + ee.StackTrace);
 				//debug

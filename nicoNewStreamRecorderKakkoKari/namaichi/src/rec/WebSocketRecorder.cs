@@ -107,6 +107,7 @@ namespace namaichi.rec
 		
 		private object commentLock = new object();
 		private bool isLogEnd = false;
+		private bool isWebReqeust = false;
 		/*
 		public WebSocketRecorder(string[] webSocketInfo, 
 				CookieContainer container, string[] recFolderFile, 
@@ -157,7 +158,7 @@ namespace namaichi.rec
 			try {
 				commentReplaceList = JsonConvert.DeserializeObject<List<string[]>>(rm.cfg.get("CommentReplaceText"));
 			} catch (Exception e) {
-				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
 			isSaveCommentOnlyRetryingRec = bool.Parse(rm.cfg.get("IsSaveCommentOnlyRetryingRec"));
 			isNormalizeComment = bool.Parse(rm.cfg.get("IsNormalizeComment"));
@@ -190,7 +191,7 @@ namespace namaichi.rec
 			try {
 				commentReplaceList = JsonConvert.DeserializeObject<List<string[]>>(rm.cfg.get("CommentReplaceText"));
 			} catch (Exception e) {
-				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
 			isSaveCommentOnlyRetryingRec = bool.Parse(rm.cfg.get("IsSaveCommentOnlyRetryingRec"));
 			isNormalizeComment = bool.Parse(rm.cfg.get("IsNormalizeComment"));
@@ -198,16 +199,16 @@ namespace namaichi.rec
 		public bool start() {
 			addDebugBuf("ws rec start");
 			
-			tsWriterTask = Task.Run(() => {startDebugWriter();});
+			tsWriterTask = Task.Factory.StartNew(() => {startDebugWriter();}, TaskCreationOptions.LongRunning);
 			
 			if (ri.si.isRtmpOnlyPage) {
-				Task.Run(() => {
+				Task.Factory.StartNew(() => {
 					rtmpRecord(null, null);
 					saveXmlComment();
-				});
+				}, TaskCreationOptions.LongRunning);
 			} else {
 				if (ri.isRtmp && ri.si.isTimeShift) {
-					Task.Run(() => rtmpRecord(null, null));
+					Task.Factory.StartNew(() => rtmpRecord(null, null), TaskCreationOptions.LongRunning);
 				}
 				connect();
 				addDebugBuf("rm.rfu dds1 " + rm.rfu);
@@ -216,7 +217,7 @@ namespace namaichi.rec
 			addDebugBuf("ws main " + ws + " a " + (ws == null));
 			
 			if (!ri.si.isRtmpOnlyPage && !(ri.isChase && !isSaveComment))
-				Task.Run(() => displaySchedule());
+				Task.Factory.StartNew(() => displaySchedule(), TaskCreationOptions.LongRunning);
 			
 			WebSocket lastWebSocket = null;
 			var stopWsCount = 0;
@@ -286,9 +287,10 @@ namespace namaichi.rec
 			if (commentSW != null) closeWscProcess();
 			
 			if (ri.isChase && rec != null && !rec.isEndProgram && rm.rfu == rfu) {
+				rm.form.addLogText("追っかけ録画処理開始");
 				#if DEBUG
 					//Task.Run(() => rm.form.addLogText("追っかけ録画処理開始"));
-					rm.form.addLogText("追っかけ録画処理開始");
+					//rm.form.addLogText("追っかけ録画処理開始");
 				#endif
 				
 				new ChaseLastRecord(ri.si.lvid, container, rm, 
@@ -353,14 +355,19 @@ namespace namaichi.rec
 //				var _ws = ws; 
 				Thread.Sleep(5000);
 				if (_ws != null && _ws.State == WebSocketState.Connecting) {
-					addDebugBuf("ws connect 5 seconds close");
+					addDebugBuf("ws connect 5 seconds connection");
 					try {
 						_ws.Close();
 					} catch (Exception e) {
 						addDebugBuf("connect timeout ws exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 					}
 				}
-				
+				if (_ws != null && (_ws.State == WebSocketState.Closed) || (_ws.State == WebSocketState.Closing)) {
+					addDebugBuf("ws connect 5 seconds closed");
+					Task.Run(() => {
+					    endProgramCheck();
+					});
+				}
 			} catch (Exception ee) {
 				try {
 					ws.Close();
@@ -407,7 +414,7 @@ namespace namaichi.rec
 			try {
 				addDebugBuf("wslist indexof onclose sender " + wsList.IndexOf((WebSocket)sender));
 //				wsList.Remove((WebSocket)sender);
-			} catch (Exception ee) {util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);}
+			} catch (Exception ee) {addDebugBuf(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);}
 			addDebugBuf("on close2 " + " wsList " + wsList.Count);
 			
 			Task.Run(() => {
@@ -428,7 +435,8 @@ namespace namaichi.rec
 		private void endProgramCheck() {
 			displayDebug("end check");
 			addDebugBuf("endProgramCheck");
-			if ((!ri.si.isTimeShift || ri.isChase) && isEndedProgram()) {
+			//if ((!ri.si.isTimeShift || ri.isChase) && isEndedProgram()) {
+			if (isEndedProgram()) {
 		        addDebugBuf("isEndprogram websocket");
 				IsRetry = false;
 				if (rr != null) rr.retryMode = 2;
@@ -488,7 +496,7 @@ namespace namaichi.rec
 									null, true, false, null, null);
 							tscg.save();
 						} else {
-							util.debugWriteLine("not tscg ischase commentbuf null");
+							addDebugBuf("not tscg ischase commentbuf null");
 							#if DEBUG
 								rm.form.addLogText("not tscg ischase commentbuf null");
 							#endif
@@ -521,7 +529,7 @@ namespace namaichi.rec
 						"{\"type\":\"watch\",\"body\":{\"command\":\"getstream\",\"requirement\":{\"protocol\":\"hls\",\"isChasePlay\":true}}}"
 						: "{\"type\":\"changeStream\",\"data\":{\"quality\":\"" + bestGettableQuolity + "\",\"protocol\":\"hls\",\"latency\":\"low\",\"chasePlay\":true}}";
 					sendMessage(ws, chaseReq);
-					util.debugWriteLine("chase sent " + chaseReq);
+					addDebugBuf("chase sent " + chaseReq);
 					return;
 				}
 				if (ri.isChase) {
@@ -533,7 +541,7 @@ namespace namaichi.rec
 				if (!(ri.isRtmp && ri.si.isTimeShift)) {
 					if (isFirstChoiceQuality(currentQuality, bestGettableQuolity)) {
 						if (ri.isRtmp) {
-							Task.Run(() => rtmpRecord(e.Message, currentQuality));
+							Task.Factory.StartNew(() => rtmpRecord(e.Message, currentQuality), TaskCreationOptions.LongRunning);
 						} else record(e.Message, currentQuality);
 					} else 
 						sendUseableStreamGetCommand(bestGettableQuolity);
@@ -560,7 +568,7 @@ namespace namaichi.rec
 					Thread.Sleep(3000);
 				}
 				
-				if (e.Message.IndexOf("\"END_PROGRAM\"") > 0 && !ri.si.isTimeShift) {
+				if (e.Message.IndexOf("\"END_PROGRAM\"") > 0 && (!ri.si.isTimeShift || ri.isChase)) {
 					addDebugBuf("END_PROGRAM receive");
 					isEndProgram = true;
 					if (endTime == DateTime.MinValue)
@@ -633,7 +641,7 @@ namespace namaichi.rec
 			//if (e.Message.IndexOf("{\"type\":\"error\",\"body\":{\"code\":\"CONTENT_NOT_READY\"}}") > -1) {
 			if (e.Message.IndexOf("CONTENT_NOT_READY") > -1) {
 				Thread.Sleep(3000);
-				util.debugWriteLine("sendUseableStreamGetCommand");
+				addDebugBuf("sendUseableStreamGetCommand");
 				sendUseableStreamGetCommand("normal");
 			}
 			if (type == "serverTime" || type == "servertime") {
@@ -752,7 +760,7 @@ namespace namaichi.rec
 			if (rec == null) {
 		        //rec = new Record(rm, true, rfu, hlsUrl, ri.recFolderFile[1], container, ri.si.isTimeShift, this, ri.si.lvid, ri.timeShiftConfig, ri.si.openTime, ws, ri.recFolderFile[2], ri.isRealtimeChase, h5r);
 		        rec = new Record(rm, rfu, hlsUrl, container, this, ws, ri);
-		        Task.Run(() => {
+		        Task.Factory.StartNew(() => {
 			        rec.record(currentQuality);
 					if (rec.isEndProgram || isEndProgram) {
 						addDebugBuf("stop websocket recd");
@@ -763,7 +771,7 @@ namespace namaichi.rec
 	//						if (tscg != null) tscg.setIsRetry(false);
 						isEndProgram = true;
 					}
-				});
+				}, TaskCreationOptions.LongRunning);
 			} else {
 				//Task.Run(() => {
 					rec.reSetHlsUrl(hlsUrl, currentQuality, ws, false);
@@ -926,7 +934,7 @@ namespace namaichi.rec
 						var __commentFileName = util.getOkCommentFileName(rm.cfg, commentFileName, ri.si.lvid, ri.si.isTimeShift, ri.isRtmp);
 						try {
 							File.Delete(__commentFileName);
-						} catch (Exception ee) {util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);}
+						} catch (Exception ee) {addDebugBuf(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);}
 					}
 					
 					var fName = (commentFileName == null) ? ri.recFolderFile[1] : incrementRecFolderFile(commentFileName);
@@ -1023,17 +1031,17 @@ namespace namaichi.rec
 						});
 					}
 				} catch (Exception e) {
-					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+					addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
 				if (ri.isRtmp) {
 					var baseN = util.getRegGroup(name, "(.+)\\.");
-					util.debugWriteLine("closeWscProcess rtmp comment delete " + name + " " + baseN);
+					addDebugBuf("closeWscProcess rtmp comment delete " + name + " " + baseN);
 					if (baseN != null && !File.Exists(baseN + ".flv")) {
 						try {
 							if (File.ReadAllText(name).IndexOf("chat") == -1)
 								File.Delete(name);
 						} catch (Exception e) {
-							util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+							addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
 						}
 					}
 				}
@@ -1085,14 +1093,14 @@ namespace namaichi.rec
 			try {
 				xml = JsonConvert.DeserializeXNode(eMessage);
 			} catch (Exception ee) {
-				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite + eMessage);
+				addDebugBuf(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite + eMessage);
 				try {
 					var content = util.getRegGroup(eMessage, "\"content\":\"(.+?)\"}");
 					if (content.IndexOf("\\") > -1)
 						eMessage = eMessage.Replace("\"content\":\"" + content + "\"}", "\"content\":\"" + content.Replace("\\", "\\\\") + "\"}");
 					xml = JsonConvert.DeserializeXNode(eMessage);
 				} catch (Exception eee) {
-					util.debugWriteLine(eee.Message + eee.Source + eee.StackTrace);
+					addDebugBuf(eee.Message + eee.Source + eee.StackTrace);
 					rm.form.addLogText("error:" + eMessage + " " + eee.Message + eee.Source + " " + ee.Message + ee.Source);
 					return;
 				}
@@ -1137,7 +1145,7 @@ namespace namaichi.rec
 				for (var i = 0; i < 60 && sync == 0 && rm.rfu == rfu; i++) 
 					Thread.Sleep(1000);
 				if (sync != 0) {
-					util.debugWriteLine("sync set " + sync + " servertime " + chatinfo.serverTime);
+					addDebugBuf("sync set " + sync + " servertime " + chatinfo.serverTime);
 					serverTime = sync / 1000;
 				} else {
 					serverTime = chatinfo.serverTime;
@@ -1190,7 +1198,7 @@ namespace namaichi.rec
 							if (chaseCommentBuf.IndexOf(writeStr) == -1) {
 								chaseCommentBuf.Add(writeStr);
 								
-								util.debugWriteLine("chase comment add " + writeStr);
+								addDebugBuf("chase comment add " + writeStr);
 								
 								lastSaveComments.Add(writeStr);
 								if (lastSaveComments.Count > 1110)
@@ -1297,7 +1305,7 @@ namespace namaichi.rec
 						break;
 					}
 				} catch (Exception e) {
-					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+					addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
 			}
 			var configQ = config.config.qualityList.Values.ToArray();
@@ -1370,8 +1378,12 @@ namespace namaichi.rec
 				type = util.getPageType(res);
 				addDebugBuf("isEndProgram type " + type);
 				if (type == 0) return false;
-				else if (type == 7 || type == 2 || type == 3 || type == 9) return true;
-				
+				else {
+					if (!ri.si.isTimeShift || ri.isChase) {
+						return type == 7 || type == 2 || type == 3 || type == 9;
+					} else return type == 2 || type == 3 || type == 9;
+				}
+				/*
 				if (res.IndexOf("user.login_status = 'not_login'") > -1) {
 					addDebugBuf("isendprogram not login");
 					var cg = new CookieGetter(rm.cfg);
@@ -1394,16 +1406,17 @@ namespace namaichi.rec
 				addDebugBuf("is ended program  pagetype " + type);
 				var isEnd = (type == 7 || type == 2 || type == 3 || type == 9);
 				return isEnd;
+				*/
 			} catch (Exception e) {
-				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				return isEndedProgramRtmp();
 				//return false;
 			} finally {
-				addDebugBuf("is ended program  pagetype " + type);
+				addDebugBuf("is ended program f pagetype " + type);
 			}
 		}
 		public bool isEndedProgramRtmp() {
-			util.debugWriteLine("isEndedProgramRtmp");
+			addDebugBuf("isEndedProgramRtmp");
 			return false;
 			/*
 			try {
@@ -1414,7 +1427,7 @@ namespace namaichi.rec
 				var isEnd = (type == 7 || type == 2 || type == 3 || type == 9);
 				return isEnd;
 			} catch (Exception ee) {
-				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+				addDebugBuf(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 				return false;
 			}
 			*/
@@ -1473,7 +1486,7 @@ namespace namaichi.rec
 						//var l = new List<string>(debugWriteBuf);
 						//string[] _l = debugWriteBuf.ToArray();
 						//var l = new List<string>(_l.li);
-	//					util.debugWriteLine("debugwritebuf count " + debugWriteBuf.Count);
+	//					addDebugBuf("debugwritebuf count " + debugWriteBuf.Count);
 //						var l = debugWriteBuf.ToList<string>();
 						foreach (var b in l) {
 							if (b == null) continue;
@@ -1504,7 +1517,7 @@ namespace namaichi.rec
 				var h = util.getHeader(container, null, ri.si.url);
 				var res = new Curl().getStr(ri.si.url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
 				if (res == null) {
-					util.debugWriteLine("resetWebsocketInfo get page null");
+					addDebugBuf("resetWebsocketInfo get page null");
 					return;
 				}
 				res = System.Web.HttpUtility.HtmlDecode(res);
@@ -1545,7 +1558,7 @@ namespace namaichi.rec
 					}
 					
 				} catch (Exception e) {
-					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+					addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
 				
 				try {
@@ -1556,7 +1569,7 @@ namespace namaichi.rec
 							var __commentFileName = util.getOkCommentFileName(rm.cfg, commentFileName, ri.si.lvid, ri.si.isTimeShift, ri.isRtmp);
 							try {
 								File.Delete(__commentFileName);
-							} catch (Exception e) {util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);}
+							} catch (Exception e) {addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);}
 						}
 			
 						var fName = (commentFileName == null) ? ri.recFolderFile[1] : incrementRecFolderFile(commentFileName);
@@ -1579,18 +1592,18 @@ namespace namaichi.rec
 						}
 					}
 				} catch (Exception ee) {
-					util.debugWriteLine(ee.Message + " " + ee.StackTrace);
+					addDebugBuf(ee.Message + " " + ee.StackTrace);
 				}
 				try {
 					sendMessage(wsc[0], msReq[0]);
 				} catch (Exception ee) {
-					util.debugWriteLine("on open wsc0 req send exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+					addDebugBuf("on open wsc0 req send exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 				}
 				try {
 					if (wsc[1] != null)
 						sendMessage(wsc[1], msStoreReq[0]);
 				} catch (Exception ee) {
-					util.debugWriteLine("on open wsc1 req send exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+					addDebugBuf("on open wsc1 req send exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 				}
 			}
 		}
@@ -1623,18 +1636,18 @@ namespace namaichi.rec
 				if (websocketMsg != null) {
 					var _msg = util.getRegGroup(websocketMsg,  "\"currentStream\":{(.+?)}");
 					if (_msg == null && false) {
-						util.debugWriteLine("rtmpRecord _msg null");
+						addDebugBuf("rtmpRecord _msg null");
 						return;
 					}
 					url = util.getRegGroup(websocketMsg, "\"uri\":\"(.+?)\"") + "/" + util.getRegGroup(websocketMsg, "\"name\":\"(.+?)\"");
-					util.debugWriteLine("rtmp url " + url);
+					addDebugBuf("rtmp url " + url);
 				}
 				
 				rfu.subGotNumTaskInfo = new List<numTaskInfo>();
 				if (rr != null) rr.resetRtmpUrl(url);
 				else {
 					rr = new RtmpRecorder(ri.si.lvid, container, rm, rfu, !ri.isRtmp, ri.recFolderFile, this, ri.si.openTime);
-					Task.Run(() => {
+					Task.Factory.StartNew(() => {
 						rr.record(url, quality);
 						rm.hlsUrl = "end";
 						if (rr.isEndProgram) {
@@ -1643,10 +1656,10 @@ namespace namaichi.rec
 								endTime = DateTime.Now;
 						}
 						IsRetry = false;
-					});
+					}, TaskCreationOptions.LongRunning);
 				}
 			} catch (Exception e) {
-				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+				addDebugBuf(e.Message + e.Source + e.StackTrace);
 			}
 			
 			/*
@@ -1686,9 +1699,12 @@ namespace namaichi.rec
 			var url = util.getRegGroup(msg, "(http.+?)\"");
 			if (url == null) return false;
 			
-			//var res = util.getPageSource(url, container);
-			var h = util.getHeader(container, null, url);
-			var res = new Curl().getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
+			var res = util.getPageSource(url, container);
+			if (res == null && !isWebReqeust) {
+				var h = util.getHeader(container, null, url);
+				res = new Curl().getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
+			} else isWebReqeust = true;
+			
 			if (res == null) {
 				return false;
 			}
@@ -1721,7 +1737,7 @@ namespace namaichi.rec
 			return ret;
 		}
 		override public void chaseCommentSum() {
-			util.debugWriteLine("chaseCommentSum " + gotTsCommentList.Count() + " " + chaseCommentBuf.Count);
+			addDebugBuf("chaseCommentSum " + gotTsCommentList.Count() + " " + chaseCommentBuf.Count);
 			var gotComList = new List<string>();
 			gotComList.AddRange(gotTsCommentList);
 			while (true) {
@@ -1731,17 +1747,17 @@ namespace namaichi.rec
 						var c = chaseCommentBuf[i];
 						if (gotComList.IndexOf(c) > -1) {
 							gotComList.Remove(c);
-							util.debugWriteLine("remove gotcomlist " + c);
+							addDebugBuf("remove gotcomlist " + c);
 						}
 					}
 					break;
 				} catch (Exception e) {
-					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+					addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
 			}
 			
-			util.debugWriteLine("chasecomment sum gotts " + (gotTsCommentList.Length == 0 ? "no" : gotTsCommentList[0]));
-			util.debugWriteLine("chasecomment sum chasecombuf " + (chaseCommentBuf.Count == 0 ? "no" : chaseCommentBuf[0]));
+			addDebugBuf("chasecomment sum gotts " + (gotTsCommentList.Length == 0 ? "no" : gotTsCommentList[0]));
+			addDebugBuf("chasecomment sum chasecombuf " + (chaseCommentBuf.Count == 0 ? "no" : chaseCommentBuf[0]));
 			
 			string threadLine = null; 
 			if (chaseCommentBuf.Count > 0) {
@@ -1807,30 +1823,30 @@ namespace namaichi.rec
 			#endif
 		}
 		private void sendMessage(WebSocket w, string s) {
-			util.debugWriteLine("ws send " + s);
+			addDebugBuf("ws send " + s);
 			if (w != null)
 				w.Send(s);
-			else util.debugWriteLine("sendMessage w null");
+			else addDebugBuf("sendMessage w null");
 		}
 		override public void setSync(int no, double second, string m3u8Url) {
 			try {
 				if (ri.si.isTimeShift) {
 					sync = no + ri.si._openTime * 1000;
-					util.debugWriteLine("setSync ts " + no + " " + ri.si._openTime + " " + ri.si.openTime + " " + ri.si.vposBaseTime + " " + second);
+					addDebugBuf("setSync ts " + no + " " + ri.si._openTime + " " + ri.si.openTime + " " + ri.si.vposBaseTime + " " + second);
 					
 					var _url = m3u8Url.Replace("1/ts/playlist.m3u8", "stream_sync.json");
 					var _m = new Regex("(.+\\?).*?(ht2.+)").Match(_url);
 					var _res = util.getPageSource(_m.Groups[1].Value + _m.Groups[2].Value);
-					util.debugWriteLine("setSync ts res " + _res);
+					addDebugBuf("setSync ts res " + _res);
 					
 					return;
 				}
 				
-				util.debugWriteLine("setSync " + no + " " + second + " " + m3u8Url + " " + ri.si._openTime + " " + ri.si.openTime + " " + ri.si.vposBaseTime);
+				addDebugBuf("setSync " + no + " " + second + " " + m3u8Url + " " + ri.si._openTime + " " + ri.si.openTime + " " + ri.si.vposBaseTime);
 				//var url = util.getRegGroup(mes, "\"syncUri\":\"(.+?)\"");
 				var url = m3u8Url.Replace((ri.isFmp4 ? "mp4" : "ts") + "/playlist.m3u8", "stream_sync.json");
 				var res = util.getPageSource(url);
-				util.debugWriteLine("setSync res " + res);
+				addDebugBuf("setSync res " + res);
 				if (res == null) return;
 				var m = new Regex("\"beginning_timestamp\":(\\d+),\"sequence\":(\\d+)").Match(res);
 				if (!m.Success) return;
@@ -1840,13 +1856,13 @@ namespace namaichi.rec
 				if (second != 0)
 					sync = (long)(beginTime - (long.Parse(m.Groups[2].Value) - no) * second * 1000);
 				else sync = beginTime;
-				util.debugWriteLine("sync " + sync);
+				addDebugBuf("sync " + sync);
 			} catch (Exception e) {
-				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
 		}
 		private void checkMissingComment() {
-			util.debugWriteLine("checkmissingcomment");
+			addDebugBuf("checkmissingcomment");
 			try {
 				if (tscg != null) {
 					return;
@@ -1857,7 +1873,7 @@ namespace namaichi.rec
 				var _lastCommentPos = util.getRegGroup(lastSaveComments[lastSaveComments.Count - 1], 
 						isGetCommentXml ? "date=\"(\\d+)\"" : "\"date\":(\\d+)");
 				if (_lastCommentPos != null) {
-					util.debugWriteLine("not found lastComment dt" + lastSaveComments[lastSaveComments.Count - 1]);
+					addDebugBuf("not found lastComment dt" + lastSaveComments[lastSaveComments.Count - 1]);
 					return;
 				}
 				var lastCommentPos = int.Parse(_lastCommentPos) - _openTime;
@@ -1886,7 +1902,7 @@ namespace namaichi.rec
 					//if (rm.rfu != rfu || !isRetry) return;
 				}
 				var ind = Array.IndexOf(gotTsCommentList, lastSaveComments[lastSaveComments.Count - 1]);
-				util.debugWriteLine("last comment ind " + ind + " " + gotTsCommentList.Length + " " + lastSaveComments.Count);
+				addDebugBuf("last comment ind " + ind + " " + gotTsCommentList.Length + " " + lastSaveComments.Count);
 				if (ind == -1) return;
 				for (var i = ind + 1; i < gotTsCommentList.Length; i++) {
 					commentSW.WriteLine(gotTsCommentList[i]);
@@ -1894,7 +1910,7 @@ namespace namaichi.rec
 					lastSaveComments.Add(gotTsCommentList[i]);
 				}
 			} catch (Exception e) {
-				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			} finally {tscg = null;}
 		}
 		public void clearCommentFileName() {

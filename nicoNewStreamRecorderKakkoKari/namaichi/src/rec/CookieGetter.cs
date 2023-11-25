@@ -161,7 +161,7 @@ namespace namaichi.rec
 				} else RecordLogInfo.loginLog += "アカウントログインからクッキーを取得できませんでした。";
 			}
 			
-			if (isPlayable(url)) return new CookieContainer();
+			if (isWatchPage(url)) return new CookieContainer();
 			return null;
 		}
 		private CookieContainer getUserSessionCC(string us, string uss) {
@@ -221,7 +221,7 @@ namespace namaichi.rec
 					var _url = (isRtmp) ? ("https://live.nicovideo.jp/api/getplayerstatus/" + util.getRegGroup(url, "(lv\\d+)")) : url;
 					//pageSource = util.getPageSource(_url, cc);
 					var h = util.getHeader(cc, null, _url);
-					pageSource = new Curl().getStr(_url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
+					pageSource = new Curl().getStr(_url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false, true, true);
 					
 					util.debugWriteLine("ishtml5login getpage ok");
 
@@ -239,10 +239,11 @@ namespace namaichi.rec
 					Thread.Sleep(3000);
 					//pageSource = util.getPageSource(url, cc, null, false, 5, null, true);
 					var h = util.getHeader(cc, null, url);
-					pageSource = new Curl().getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
+					pageSource = new Curl().getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false, true, true);
 					
 					var msg = "ページが取得できませんでした。" + url;
-					msg += util.getRegGroup(pageSource, "<title>(.+?)</title>");
+					if (pageSource != null)
+						msg += util.getRegGroup(pageSource, "<title>(.+?)</title>");
 					if (!log.EndsWith(msg)) log += msg;
 					
 					Thread.Sleep(3000);
@@ -520,13 +521,13 @@ namespace namaichi.rec
 			}
 			return cc;
 		}
-		private bool isPlayable(string url) {
+		private bool isWatchPage(string url) {
 			try {
 				util.debugWriteLine("isPlayable " + url);
 				//var res = util.getPageSource(url);
 				var h = util.getHeader(null, null, null);
-				var res = new Curl().getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
-				if (res != null && res.IndexOf("wss://a.") > -1) {
+				var res = new Curl().getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false, true, true);
+				if (res != null && (res.IndexOf("wss://a.") > -1 || util.getPageType(res) == 2)) {
 					id = "0";
 					pageSource = res;
 					return true;

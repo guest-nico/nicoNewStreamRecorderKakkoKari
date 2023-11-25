@@ -110,8 +110,20 @@ namespace rokugaTouroku
 			
 			setQualitySetting();
 			
-			util.debugWriteLine("OS: " + util.CheckOSName());
-			util.debugWriteLine("OSType: " + util.CheckOSType());
+			var osName = config.get("osName");
+			if (osName == "") {
+				osName = util.CheckOSName();
+				config.set("osName", osName);
+			}
+			util.osName = osName;
+			
+			var osType = config.get("osType");
+			if (osType == "") {
+				osType = util.CheckOSType();
+				config.set("osType", osType);
+			}
+			util.debugWriteLine("OS: " + util.osName);
+			util.debugWriteLine("OSType: " + osType);
 		}
 		private void formInitSetting() {
 			recList.DataSource = recListDataSource;
@@ -471,54 +483,93 @@ namespace rokugaTouroku
 		}
 		void openWatchUrlMenu_Click(object sender, System.EventArgs e)
 		{
-			var dataSource = recListDataSource;
-			var selectedRowIndexList = new List<int>();
-			foreach (DataGridViewCell c in recList.SelectedCells) {
-				try {
-					if (selectedRowIndexList.IndexOf(c.RowIndex) > -1) continue;
-					selectedRowIndexList.Add(c.RowIndex);
-					var ri = (RecInfo)dataSource[c.RowIndex];
-					if (ri.url == null || ri.url == "") continue;
-					util.openUrlBrowser(ri.url, config);
-				} catch (Exception ee) {
-					util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+			try {
+				var selectedLvList = new List<string>();
+				foreach (DataGridViewCell c in recList.SelectedCells) {
+					try {
+						var ri = (RecInfo)recListDataSource[c.RowIndex];
+						if (string.IsNullOrEmpty(ri.url)) continue;
+						
+						var url = ri.url;
+						if (selectedLvList.IndexOf(url) > -1) continue;
+						selectedLvList.Add(url);
+					} catch (Exception ee) {
+						util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+					}
 				}
+				if (selectedLvList.Count > 10 && MessageBox.Show(selectedLvList.Count + "の放送が選択されています。このまま開きますか？", "", MessageBoxButtons.YesNo) 
+				    	!= DialogResult.Yes) return;
+				foreach (var url in selectedLvList)
+					util.openUrlBrowser(url, config);
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
 		}
 		void openCommunityUrlMenu_Click(object sender, EventArgs e)
 		{
-			var dataSource = recListDataSource;
-			var selectedRowIndexList = new List<int>();
-			foreach (DataGridViewCell c in recList.SelectedCells) {
-				try {
-					if (selectedRowIndexList.IndexOf(c.RowIndex) > -1) continue;
-					selectedRowIndexList.Add(c.RowIndex);
-					var ri = (RecInfo)dataSource[c.RowIndex];
-					if (ri.communityUrl == null || ri.communityUrl == "") continue;
-					util.openUrlBrowser(ri.communityUrl, config);
-				} catch (Exception ee) {
-					util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+			try {
+				var selectedLvList = new List<string>();
+				foreach (DataGridViewCell c in recList.SelectedCells) {
+					try {
+						var ri = (RecInfo)recListDataSource[c.RowIndex];
+						if (string.IsNullOrEmpty(ri.communityUrl)) continue;
+						
+						var url = ri.communityUrl;
+						if (selectedLvList.IndexOf(url) > -1) continue;
+						selectedLvList.Add(url);
+					} catch (Exception ee) {
+						util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+					}
 				}
+				if (selectedLvList.Count > 10 && MessageBox.Show(selectedLvList.Count + "の放送が選択されています。このまま開きますか？", "", MessageBoxButtons.YesNo) 
+				    	!= DialogResult.Yes) return;
+				foreach (var url in selectedLvList)
+					util.openUrlBrowser(url, config);
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
 		}
 		void copyWatchUrlMenu_Click(object sender, EventArgs e)
 		{
-			if (recList.SelectedCells.Count == 0) return;
-			var selectedCell = recList.SelectedCells[0];
-			var ri = (RecInfo)recListDataSource[selectedCell.RowIndex];
-			Clipboard.SetText(ri.url);
+			try {
+				var selectedLvList = new List<string>();
+				foreach (DataGridViewCell c in recList.SelectedCells) {
+					try {
+						var ri = (RecInfo)recListDataSource[c.RowIndex];
+						if (string.IsNullOrEmpty(ri.url)) continue;
+						
+						var url = ri.url;
+						if (selectedLvList.IndexOf(url) > -1) continue;
+						selectedLvList.Add(url);
+					} catch (Exception ee) {
+						util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+					}
+				}
+				Clipboard.SetText(string.Join("\n", selectedLvList.ToArray()));
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+			}
 		}
 		void copyCommunityUrlMenu_Click(object sender, EventArgs e)
 		{
-			if (recList.SelectedCells.Count == 0) return;
-			var selectedCell = recList.SelectedCells[0];
-			var ri = (RecInfo)recListDataSource[selectedCell.RowIndex];
-			if (ri.communityUrl == null) {
-//				if (ri.communityName == "official") 
-//					Clipboard.SetText("https://live.nicovideo.jp/");
-				return;
+			try {
+				var selectedLvList = new List<string>();
+				foreach (DataGridViewCell c in recList.SelectedCells) {
+					try {
+						var ri = (RecInfo)recListDataSource[c.RowIndex];
+						if (string.IsNullOrEmpty(ri.communityUrl)) continue;
+						
+						var url = ri.communityUrl;
+						if (selectedLvList.IndexOf(url) > -1) continue;
+						selectedLvList.Add(url);
+					} catch (Exception ee) {
+						util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+					}
+				}
+				Clipboard.SetText(string.Join("\n", selectedLvList.ToArray()));
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
-			Clipboard.SetText(ri.communityUrl);
 		}
 		
 		void reAddRowMenu_Click(object sender, EventArgs e)
@@ -1025,13 +1076,13 @@ namespace rokugaTouroku
 		void OpenReadmeMenuClick(object sender, EventArgs e)
 		{
 			string[] jarpath = util.getJarPath();
-			string path = jarpath[0] + "/readme.html";
+			string path = jarpath[0] + "/readme.html.url";
 			try {
 				if (!File.Exists(path)) {
 					util.showMessageBoxCenterForm(this, "readme.htmlが見つかりませんでした");
 					return;
 				}
-				System.Diagnostics.Process.Start(path);
+				util.openUrlBrowser(path, config);
 			} catch (Exception ee) {
 				util.debugWriteLine(ee.Message + " " + ee.StackTrace);
 			}

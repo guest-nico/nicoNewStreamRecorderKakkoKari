@@ -79,7 +79,7 @@ namespace namaichi.rec
 			if (pageType == -1) return 2;
 			
 			util.debugWriteLine("pagetype " + pageType + " container " + cc);
-			if (cc == null || cc == null) {
+			if (cc == null) {
 				rm.form.addLogText("ログインに失敗しました。");
 				if (bool.Parse(rm.cfg.get("IsmessageBox")) && util.isShowWindow) {
 					rm.form.formAction(() => 
@@ -334,9 +334,15 @@ namespace namaichi.rec
 									util.showMessageBoxCenterForm(rm.form, "ログインに失敗しました。\n" + lvid));
 							return -1;
 						}
+						if (cg.pageSource != null && 
+						    	util.getRegGroup(cg.pageSource, "(この番組は放送者により削除されました。<br />|削除された可能性があります。<br />)|\">お探しのページは削除されたか") != null) {
+							cc = null;
+							return 2;
+						}
+						
 						System.Threading.Thread.Sleep(
-								(cg.pageSource != null && cg.pageSource.IndexOf("ご指定のページが見つかりませんでした") > -1 ||
-							 		cg.pageSource.IndexOf("ただいまメンテナンス中です。") > -1) ? 300000 : 10000);
+								(cg.pageSource != null && (cg.pageSource.IndexOf("ご指定のページが見つかりませんでした") > -1 ||
+									cg.pageSource.IndexOf("ただいまメンテナンス中です。") > -1)) ? 300000 : 10000);
 						continue;
 					}
 					cc = cgret.Result[0];

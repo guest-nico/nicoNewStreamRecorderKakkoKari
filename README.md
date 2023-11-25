@@ -65,7 +65,6 @@ contributors, see the THANKS file.
 Curl and libcurl are licensed under the license below, which is inspired by MIT/X, but not identical.  
 <https://github.com/curl/curl/blob/master/COPYING>  
   
-
 openssl  
 <https://github.com/openssl/openssl>  
 <https://github.com/quictls/openssl>  

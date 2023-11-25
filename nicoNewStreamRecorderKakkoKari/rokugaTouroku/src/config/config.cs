@@ -215,6 +215,8 @@ public class config
 			{"Y",""},
 			{"fontSize","9"},
 			{"IsTray","false"},
+			{"osName",""},
+			{"osType",""},
 			
 			{"chPlus_access_token",""},
 			{"chPlus_refreshCookie", ""},

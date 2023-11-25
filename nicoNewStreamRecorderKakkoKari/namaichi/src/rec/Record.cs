@@ -204,7 +204,7 @@ namespace namaichi.rec
 		}
 		public void record(string quality) {
 			recordingQuality = quality;
-			tsWriterTask = Task.Run(() => {startDebugWriter();});
+			tsWriterTask = Task.Factory.StartNew(() => {startDebugWriter();}, TaskCreationOptions.LongRunning);
 			
 			var _m = (isPlayOnlyMode) ? "視聴" : "録画";
 			if (ri.si.isTimeShift) {
@@ -1543,7 +1543,7 @@ namespace namaichi.rec
 			
 			var isWriteEnd = new bool[1]{false};
 			if (engineMode == "0" && ri.isChase)
-				tsWriterTask = Task.Run(() => timeShiftWriter(isWriteEnd));
+				tsWriterTask = Task.Factory.StartNew(() => timeShiftWriter(isWriteEnd), TaskCreationOptions.LongRunning);
 			var isFirst = true;
 			while (rm.rfu == rfu && isRetry) {
 				if (isReConnecting) {
@@ -2103,9 +2103,11 @@ namespace namaichi.rec
 			var d = Directory.GetDirectoryRoot(recFolderFile);
 			if (d == null) return true;
 			
-			var di = new DriveInfo(d);
+			var availableFreeSpace = d.StartsWith("\\\\") ? long.MaxValue : 
+					new DriveInfo(Directory.GetDirectoryRoot(d)).AvailableFreeSpace;
+			var driveName = d;
 			
-			var isEnoughSpace = di.AvailableFreeSpace > 10000000 && di.AvailableFreeSpace > nti.res.Length;
+			var isEnoughSpace = availableFreeSpace > 10000000 && availableFreeSpace > nti.res.Length;
 			if (rm.rfu == rfu && !isEnoughSpace
 					&& IsSecondRecordDir && Directory.Exists(secondRecordDir)) {
 				var newRecDir = util.getRecFolderFilePath(ri.si.recFolderFileInfo[0], ri.si.recFolderFileInfo[1], ri.si.recFolderFileInfo[2], ri.si.lvid, ri.si.recFolderFileInfo[4], ri.si.recFolderFileInfo[5], rm.cfg, ri.si.isTimeShift, ri.timeShiftConfig, ri.si.openTime, ri.isRtmp, ri.isFmp4, true, rm.form);
@@ -2122,11 +2124,11 @@ namespace namaichi.rec
 						}
 						renketuRealTimeFS = null;
 					}
-					di = new DriveInfo(recFolderFile);
+					availableFreeSpace = new DriveInfo(recFolderFile).AvailableFreeSpace;
 				}
 			}
 			while (rm.rfu == rfu && !isEnoughSpace) {
-				var m = di.Name + "の空き容量が" + (di.AvailableFreeSpace / 1000) + "KBです。";
+				var m = driveName + "の空き容量が" + (availableFreeSpace / 1000) + "KBです。";
 				
 				util.debugWriteLine(m);
 				rm.form.addLogText(m);
@@ -2145,9 +2147,9 @@ namespace namaichi.rec
 					}
 				}, false);
 				if (isBreak) return false;
-				isEnoughSpace = di.AvailableFreeSpace > 10000000 && di.AvailableFreeSpace > nti.res.Length;
+				isEnoughSpace = availableFreeSpace > 10000000 && availableFreeSpace > nti.res.Length;
 			}
-			util.debugWriteLine("free space " + di.AvailableFreeSpace);
+			util.debugWriteLine("free space " + availableFreeSpace);
 			return true;
 		}
 		private int getChangedTfdtMp4(byte[] b, int baseTfdt, out byte[] newTfdtB) {
@@ -2295,7 +2297,7 @@ namespace namaichi.rec
 						if (buf.IndexOf(".m3u8") > -1) {
 							isWebRequest = true;
 							#if DEBUG
-								rm.form.addLogText("新ライブラリを使わずに接続を試みます");
+								//rm.form.addLogText("新ライブラリを使わずに接続を試みます");
 							#endif
 						}
 					}
