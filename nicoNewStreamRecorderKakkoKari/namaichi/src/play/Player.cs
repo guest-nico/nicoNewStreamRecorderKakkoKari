@@ -9,17 +9,15 @@
 using System;
 using System.Drawing.Text;
 using System.Diagnostics;
+using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using System.IO;
 using System.IO.Pipes;
-
 using namaichi.rec;
 using namaichi;
-
-
 
 namespace namaichi.play
 {
@@ -279,7 +277,8 @@ namespace namaichi.play
 				Thread.Sleep(1000);
 				if (isDefaultPlayer)
 					setPipeName(process);
-			
+				
+				Task.Run(() => setWindowSize(process));
 			} catch (Exception ee) {
 				util.debugWriteLine(ee.Message + ee.StackTrace + ee.Source + ee.TargetSite);
 				
@@ -540,6 +539,24 @@ namespace namaichi.play
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
 			return args;
+		}
+		bool isBigWindow(util.RECT rect) {
+			var screenBounds = System.Windows.Forms.Screen.PrimaryScreen.Bounds;
+			var isWidthOver = rect.right - rect.left >= screenBounds.Width - 20;
+			var isHeightOver = rect.top - rect.bottom >= screenBounds.Height - 20;
+			return isWidthOver || isHeightOver;
+		}
+		void setWindowSize(Process process) {
+			while (!process.HasExited) {
+				util.RECT rect;
+				if (util.GetWindowRect(process.MainWindowHandle, out rect)) {
+					if (isBigWindow(rect)) {
+						util.MoveWindow(process.MainWindowHandle, 50, 50, 600, 350, true);
+					}
+					break;
+				}
+				Thread.Sleep(500);
+			}
 		}
 	}
 }

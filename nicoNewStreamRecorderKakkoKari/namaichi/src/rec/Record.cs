@@ -2100,57 +2100,68 @@ namespace namaichi.rec
 		private bool checkFreeSpace(numTaskInfo nti) {
 			if (isWriteCancel) return false;
 			
-			var d = Directory.GetDirectoryRoot(recFolderFile);
-			if (d == null) return true;
+			var driveName = Directory.GetDirectoryRoot(recFolderFile);
+			if (driveName == null) return true;
+			if (driveName.StartsWith("\\\\")) return true;
 			
-			var availableFreeSpace = d.StartsWith("\\\\") ? long.MaxValue : 
-					new DriveInfo(Directory.GetDirectoryRoot(d)).AvailableFreeSpace;
-			var driveName = d;
+			var availableFreeSpace = util.getAvailableFreeSpace(recFolderFile);
 			
-			var isEnoughSpace = availableFreeSpace > 10000000 && availableFreeSpace > nti.res.Length;
-			if (rm.rfu == rfu && !isEnoughSpace
+			if (rm.rfu == rfu && !isEnoughSpaceF(availableFreeSpace, nti)
 					&& IsSecondRecordDir && Directory.Exists(secondRecordDir)) {
-				var newRecDir = util.getRecFolderFilePath(ri.si.recFolderFileInfo[0], ri.si.recFolderFileInfo[1], ri.si.recFolderFileInfo[2], ri.si.lvid, ri.si.recFolderFileInfo[4], ri.si.recFolderFileInfo[5], rm.cfg, ri.si.isTimeShift, ri.timeShiftConfig, ri.si.openTime, ri.isRtmp, ri.isFmp4, true, rm.form);
-				if (newRecDir[1] != recFolderFile) {
-					recFolderFile = newRecDir[1];
-					ri.recFolderFile = newRecDir;
-					((WebSocketRecorder)wr).clearCommentFileName();
-					wr.resetCommentFile();
-					if (renketuRealTimeFS != null) {
-						try {
-							renketuRealTimeFS.Close();
-						} catch (Exception e) {
-							util.debugWriteLine(e.Message + e.Source + e.StackTrace);
-						}
-						renketuRealTimeFS = null;
-					}
-					availableFreeSpace = new DriveInfo(recFolderFile).AvailableFreeSpace;
-				}
+				changeSecondRecordDir();
+				availableFreeSpace = util.getAvailableFreeSpace(recFolderFile);
 			}
-			while (rm.rfu == rfu && !isEnoughSpace) {
-				var m = driveName + "の空き容量が" + (availableFreeSpace / 1000) + "KBです。";
+			while (rm.rfu == rfu && !isEnoughSpaceF(availableFreeSpace, nti)) {
+				var isRetryConfirm = showConfirmFreeSpaceRetryMsgBox(availableFreeSpace, driveName);
 				
-				util.debugWriteLine(m);
-				rm.form.addLogText(m);
-				var isBreak = false;
-				rm.form.formAction(() => {
-					try {
-						var r = util.showMessageBoxCenterForm(rm.form, m, "", MessageBoxButtons.RetryCancel);
-						if (r == DialogResult.Cancel) {
-							rm.stopRecording(false);
-							
-							isWriteCancel = true;
-							isBreak = true;
-						}
-					} catch (Exception e) {
-						util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
-					}
-				}, false);
-				if (isBreak) return false;
-				isEnoughSpace = availableFreeSpace > 10000000 && availableFreeSpace > nti.res.Length;
+				if (!isRetryConfirm) {
+					rm.stopRecording(false);
+					isWriteCancel = true;
+					return false;
+				}
+				availableFreeSpace = util.getAvailableFreeSpace(recFolderFile);
 			}
 			util.debugWriteLine("free space " + availableFreeSpace);
 			return true;
+		}
+		private bool showConfirmFreeSpaceRetryMsgBox(long availableFreeSpace, string driveName) {
+			var isCancel = false;
+			var m = driveName + "の空き容量が" + (availableFreeSpace / 1000) + "KBです。";
+			util.debugWriteLine(m);
+			rm.form.addLogText(m);
+			
+			rm.form.formAction(() => {
+				try {
+					var r = util.showMessageBoxCenterForm(rm.form, m, "", MessageBoxButtons.RetryCancel);
+					if (r == DialogResult.Cancel) {
+						
+						isCancel = true;
+					}
+				} catch (Exception e) {
+					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				}
+			}, false);
+			return !isCancel;
+		}
+		private bool isEnoughSpaceF(long availableFreeSpace, numTaskInfo nti) {
+			return availableFreeSpace > 10000000 && availableFreeSpace > nti.res.Length;
+		}
+		private void changeSecondRecordDir() {
+			var newRecDir = util.getRecFolderFilePath(ri.si.recFolderFileInfo[0], ri.si.recFolderFileInfo[1], ri.si.recFolderFileInfo[2], ri.si.lvid, ri.si.recFolderFileInfo[4], ri.si.recFolderFileInfo[5], rm.cfg, ri.si.isTimeShift, ri.timeShiftConfig, ri.si.openTime, ri.isRtmp, ri.isFmp4, true, rm.form);
+			if (newRecDir[1] != recFolderFile) {
+				recFolderFile = newRecDir[1];
+				ri.recFolderFile = newRecDir;
+				((WebSocketRecorder)wr).clearCommentFileName();
+				wr.resetCommentFile();
+				if (renketuRealTimeFS != null) {
+					try {
+						renketuRealTimeFS.Close();
+					} catch (Exception e) {
+						util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+					}
+					renketuRealTimeFS = null;
+				}
+			}
 		}
 		private int getChangedTfdtMp4(byte[] b, int baseTfdt, out byte[] newTfdtB) {
 			newTfdtB = null;

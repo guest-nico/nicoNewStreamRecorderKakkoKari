@@ -35,8 +35,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.78";
-	public static string versionDayStr = "2023/11/25";
+	public static string versionStr = "ver0.88.79";
+	public static string versionDayStr = "2024/01/10";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -1499,12 +1499,7 @@ public static void soundEnd(config cfg, MainForm form) {
 			var x = rectF.left + ((rectF.right - rectF.left) - (rectM.right - rectM.left)) / 2;
 			var y = rectF.top + ((rectF.bottom - rectF.top) - (rectM.bottom - rectM.top)) / 2;
 			
-			uint SWP_NOSIZE = 1;
-			uint SWP_NOZORDER = 4;
-			uint SWP_NOACTIVATE = 16;
-			if (x >= 0 && y >= 0)
-				SetWindowPos(wParam, 0, x, y, 0, 0, 
-						SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
+			moveWindow(wParam, x, y);
 			
 			if (getWindowText(wParam) == "開く") {
 				SetWindowText(wParam, "選択");
@@ -1513,6 +1508,15 @@ public static void soundEnd(config cfg, MainForm form) {
 			UnhookWindowsHookEx(mBHook);
 		}
 		return CallNextHookEx(mBHook, nCode, wParam, lParam);
+	}
+	public static void moveWindow(IntPtr handle, int x, int y) {
+		uint SWP_NOSIZE = 1;
+		uint SWP_NOZORDER = 4;
+		uint SWP_NOACTIVATE = 16;
+		
+		if (x >= 0 && y >= 0)
+			SetWindowPos(handle, 0, x, y, 0, 0, 
+					SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
 	}
 	private static bool enumWindowCallBack(IntPtr hwnd, IntPtr lParam) {
 		var s = getWindowText(hwnd);
@@ -1653,5 +1657,10 @@ public static void soundEnd(config cfg, MainForm form) {
 			var p = browserPath;
 			System.Diagnostics.Process.Start(p, url);
 		}
+	}
+	[DllImport("user32.dll")]
+	public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
+	public static long getAvailableFreeSpace(string dir) {
+		return new DriveInfo(Directory.GetDirectoryRoot(dir)).AvailableFreeSpace;
 	}
 }
