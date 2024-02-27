@@ -188,9 +188,9 @@ namespace namaichi.utility
 		[DllImport("libcurl.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
 		public static extern CURLcode curl_ws_send(IntPtr curl, string buffer, int buflen,
                       out int sent, int fragsize, curlWsFlags flags);
-		[DllImport("libcurl.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
-		public static extern CURLcode curl_ws_recv(IntPtr easy, out string buffer, int buflen,
-                      out int recv, out curl_ws_frame meta);
+		//[DllImport("libcurl.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
+		//public static extern CURLcode curl_ws_recv(IntPtr easy, out string buffer, int buflen,
+        //              out int recv, out curl_ws_frame meta);
 		
 		[DllImport("curl_wrap.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern int testInt(int i, int j);
@@ -206,6 +206,17 @@ namespace namaichi.utility
 				string addHeader9, string addHeader10, string addHeader11);
 		[DllImport("curl_wrap.dll", CallingConvention = CallingConvention.Cdecl)]
 		public static extern void memFree(IntPtr p);
+		
+		//ws
+		[DllImport("curl_wrap.dll", CallingConvention = CallingConvention.Cdecl)]
+		//public static extern CURLcode curl_ws_send_wrap(IntPtr curl, string buffer, int buflen,
+        //              out int sent, int fragsize, int flags);
+		public static extern CURLcode curl_ws_send_wrap(IntPtr curl, byte[] buffer, int buflen,
+                      out int sent, int fragsize, int flags);
+		[DllImport("curl_wrap.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern IntPtr curl_ws_recv_wrap(IntPtr curl, out CURLcode retCode, out uint recv);
+		[DllImport("curl_wrap.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern IntPtr curl_add_header(IntPtr data, string addHeader0);
 		
 		public static Dictionary<string, string> getDefaultHeaders(string origin = "https://nicochannel.jp") {
 			var h = new Dictionary<string, string>();
@@ -234,7 +245,8 @@ namespace namaichi.utility
 		CURLOPT_TIMEOUT = 13,
 		CURLOPT_POSTFIELDS = 10015,
 		CURLOPT_POSTFIELDSIZE = 60,
-		CURLOPT_CONNECT_ONLY = 141
+		CURLOPT_CONNECT_ONLY = 141,
+		CURLOPT_USERAGENT = 10018,
 	}
 	public enum CURLMoption {
 		CURLMOPT_PIPELINING = 3
@@ -432,10 +444,12 @@ namespace namaichi.utility
 		CURLWS_PING = (1<<4),
 		CURLWS_OFFSET = (1<<5)
 	}
+	/*
 	public struct curl_ws_frame {
-		int age;              /* zero */
-		int flags;            /* See the CURLWS_* defines */
-		int offset;    /* the offset of this data into the frame */
-		int bytesleft; /* number of pending bytes left of the payload */
+		int age;              /* zero *
+		int flags;            /* See the CURLWS_* defines *
+		int offset;    /* the offset of this data into the frame *
+		int bytesleft; /* number of pending bytes left of the payload *
 	}
+	*/
 }

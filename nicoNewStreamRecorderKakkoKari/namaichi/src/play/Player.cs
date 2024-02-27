@@ -56,15 +56,15 @@ namespace namaichi.play
 			isUsePlayer = bool.Parse(config.get("IsUsePlayer"));
 			isUseCommentViewer = bool.Parse(config.get("IsUseCommentViewer"));
 			
-			if (form.playerBtn.Text == "視聴") {
-				form.playerBtn.Text = "視聴停止";
+			if (!form.isPlayingBtn()) {
+				form.setPlayerBtnPlaying(true);
 				lastPlayUrl = null;
 				
 				Task.Run(() => {
 		         	if (!getHlsUrl()) {
 		         		//end();
 		         		form.Invoke((MethodInvoker)delegate() {
-		         			setPlayerBtnText("視聴");
+		         			form.setPlayerBtnPlaying(false);
 		         			form.recBtn.Enabled = true;
 						});
 		         		//form.rec.rfu.isPlayOnlyMode = false;
@@ -84,7 +84,7 @@ namespace namaichi.play
 		private void end() {
 			util.debugWriteLine("play end");
 			Task.Run(() => {
-			    setPlayerBtnText("視聴");
+			    form.setPlayerBtnPlaying(false);
 				stopPlaying(true, true);
 				if (isDefaultPlayer && isUsePlayer) ctrlFormClose();
 				if (isDefaultCommentPlayer && isUseCommentViewer) defaultCommentFormClose();
@@ -104,7 +104,7 @@ namespace namaichi.play
 			if (isStart) {
 				Task.Run(() => {
 					var isStarted = false;
-					while (form.playerBtn.Text == "視聴停止") {
+					while (form.isPlayingBtn()) {
 		         		if (form.rec.hlsUrl == "end") {
 		         			form.rec.hlsUrl = null;
 		         			Thread.Sleep(15000);
@@ -136,7 +136,7 @@ namespace namaichi.play
 								if ((form.rec.hlsUrl == "end" ||
 								     form.rec.hlsUrl == null) && 
 							        process.HasExited) break;
-								if (form.playerBtn.Text != "視聴停止") break;
+								if (!form.isPlayingBtn()) break;
 								if (form.rec.rfu == null) break;
 							    
 								Thread.Sleep(300);
@@ -165,7 +165,7 @@ namespace namaichi.play
 						break;
 					}
 				    isRecording = false;
-				    setPlayerBtnText("視聴");
+				    form.setPlayerBtnPlaying(false);
 				    
 				});
 				
@@ -384,11 +384,6 @@ namespace namaichi.play
 			} catch (Exception ee) {
 				util.debugWriteLine("stop process " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
-		}
-		private void setPlayerBtnText(string s) {
-			form.Invoke((MethodInvoker)delegate() {
-				form.playerBtn.Text = s; 
-			});
 		}
 		private void ctrlFormClose() {
 			if (ctrl == null || ctrl.IsDisposed) return;

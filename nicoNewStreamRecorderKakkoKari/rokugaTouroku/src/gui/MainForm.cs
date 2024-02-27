@@ -452,7 +452,7 @@ namespace rokugaTouroku
 			samuneBox.Image = ((System.Drawing.Image)(resources.GetObject("samuneBox.Image")));
 			logText.Text = "";
 		}
-		private void setLogText(string t) {
+		public void setLogText(string t) {
 //			util.debugWriteLine(logText.Text.Length + " " + t.Length);
 			var checkLength = (logText.Text.Length < t.Length) ? 
 					logText.Text.Length : t.Length;
@@ -1262,6 +1262,10 @@ namespace rokugaTouroku
 		}
 		public RecInfo getRecListData(int i) {
 			return recListDataSource[i];
+		}
+		public bool isDisplayingRi(RecInfo ri) {
+			var i = recListDataSource.IndexOf(ri);
+			return i > -1 && recList.CurrentRow.Index == i;
 		}
 	}
 }

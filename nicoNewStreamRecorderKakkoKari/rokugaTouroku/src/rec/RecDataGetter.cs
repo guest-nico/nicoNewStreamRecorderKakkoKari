@@ -194,6 +194,8 @@ namespace rokugaTouroku.rec
 			if (res.StartsWith("info.log:")) {
 				if (ri.log != "") ri.log += "\r\n";
 				ri.log += util.getRegGroup(res, ":(.*)");
+				if (rlm.form.isDisplayingRi(ri)) 
+					rlm.form.setLogText(ri.log);
 			}
 			var ctrl = util.getRegGroup(res, "\\.(.+?):");
 			var val = util.getRegGroup(res, ":(.+)");

@@ -1843,7 +1843,8 @@ namespace namaichi.rec
 		}
 		*/
 		private void reConnect() {
-			if (wr == null || ws == null) return;
+			var isUseCurlWs = ((WebSocketRecorder)wr).isUseCurlWs; 
+			if (!isUseCurlWs &&  (wr == null || ws == null)) return;
 			wr.reConnect(ws);
 		}
 		private bool isEndTimeshift(double streamDuration, string res, double second) {

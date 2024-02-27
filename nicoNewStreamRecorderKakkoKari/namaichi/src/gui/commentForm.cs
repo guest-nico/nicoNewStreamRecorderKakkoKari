@@ -27,7 +27,6 @@ namespace namaichi
 		private int commentListclickedRowIndex = -1;
 		private config.config config;
 		public MainForm form;
-		private CommentPlayerWebSocket2 cpws;
 		private int nowVpos;
 		
 		public commentForm(config.config config, MainForm form)
@@ -63,6 +62,7 @@ namespace namaichi
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
 			util.setFontSize(int.Parse(config.get("fontSize")), this, false);
+			postingMainFormComment();
 		}
 		private void commentPanelBorderPaint(object sender, PaintEventArgs e) {
 			var color = Color.FromArgb(229, 229, 229);
@@ -103,6 +103,9 @@ namespace namaichi
 		}
 		public void addComment(string time, string contents, string userId, string score, string color) {
 			try {
+				if (!isNewComment(time, contents))
+					return;
+				
 	       		if (!IsDisposed) {
 			        	Invoke((MethodInvoker)delegate() {
 			       	       	try {
@@ -110,11 +113,12 @@ namespace namaichi
 					       	       	    commentList.DisplayedRowCount(true) 
 					       	       	    >= commentList.Rows.Count);
 								var rows = new string[]{time, contents, color, userId, score};
-				       	       	commentList.Rows.Add(rows);
+								if (!isDuplicateRow(rows))
+				       	       		commentList.Rows.Add(rows);
 				       	       	
 				       	       	if (isScroll) commentList.FirstDisplayedScrollingRowIndex = commentList.Rows.Count - 1;
 				       	       	
-				       	       	while (commentList.Rows.Count > 20 && false) {
+				       	       	while (commentList.Rows.Count > 300 && true) {
 				       	       		commentList.Rows.RemoveAt(0);
 				       	       	}
 			       	       	} catch (Exception e) {
@@ -127,11 +131,21 @@ namespace namaichi
 	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 	       	}
 		}
+		bool isNewComment(string time, string userId) {
+			if (commentList.Rows.Count == 0) return true;
+			var lastRowCells = commentList.Rows[commentList.Rows.Count - 1].Cells;
+			var _time = TimeSpan.Parse(time);
+			var _lastRowTime = TimeSpan.Parse(lastRowCells[0].Value.ToString());
+			var ret = lastRowCells[3].Value.ToString() != userId ||
+					(TimeSpan.Parse(time) >
+			 			TimeSpan.Parse(lastRowCells[0].Value.ToString()));
+			if (!ret)
+				util.debugWriteLine("aa");
+			return ret;
+		}
 		void form_Close(object sender, FormClosingEventArgs e)
 		{
 			if (!kakuninClose()) e.Cancel = true;
-			if (cpws != null)
-				cpws.isEnd = true;
 		}
 		bool kakuninClose() {
 			try{
@@ -254,6 +268,8 @@ namespace namaichi
 			nowVpos = (h * 3600 + m * 60 + s) * 100;
 		}
 		private void connectMessageServer() {
+			return;
+			/*
 			while (form.rec.wsr == null) {
 				if (IsDisposed) return;
 				Thread.Sleep(300);
@@ -264,6 +280,7 @@ namespace namaichi
 				cpws = new CommentPlayerWebSocket2(form.rec.wsr, this);
 				cpws.start();
 			}
+			*/
 		}
 		void displayTsComment() {
 			while (form.rec.wsr != null && 
@@ -335,6 +352,30 @@ namespace namaichi
 				ret.Add(new string[]{keikaTime, id, content, score, color, vpos.ToString()});
 			}
 			return ret;
+		}
+		bool isDuplicateRow(string[] rows) {
+			try {
+				var _rows = commentList.Rows;
+				foreach (DataGridViewRow _r in _rows) {
+					var r = _r.Cells;
+					if (r[0].Value.ToString() == rows[0] && r[1].Value.ToString() == rows[1] &&
+					    	r[2].Value.ToString() == rows[2] && r[3].Value.ToString() == rows[3])
+						return true;
+				}
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+			}
+			return false;
+		}
+		void postingMainFormComment() {
+			try {
+				var r = form.getFormComment();
+				foreach (var _r in r) {
+					commentList.Rows.Add(_r[0], _r[1], _r[4], _r[2], _r[3]);
+				}
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+			}
 		}
 	}
 }

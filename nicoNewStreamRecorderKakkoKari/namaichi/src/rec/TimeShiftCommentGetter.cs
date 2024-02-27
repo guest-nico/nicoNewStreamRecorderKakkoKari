@@ -84,6 +84,8 @@ namespace namaichi.rec
 		private bool isNormalizeComment;
 		//private bool isReachStartTimeSave = false;
 		//private string lastRealTimeComment = null;
+		private WebSocketCurlWSC wsCurl = null;
+		bool isUseCurlWs = false;
 		
 		public TimeShiftCommentGetter(string uri, string thread,
 				string uriStore, string threadStore,        
@@ -137,6 +139,7 @@ namespace namaichi.rec
 				uri = _uri;
 				thread = _thread;
 			}
+			isUseCurlWs = false; //true || !util.isWin10Later();
 		}
 		override public void save() {
 			
@@ -186,55 +189,60 @@ namespace namaichi.rec
 				header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Version", "13"));
 				header.Add(new KeyValuePair<string,string>("Sec-WebSocket-Extensions", "permessage-deflate; client_max_window_bits"));
 				
-				//wsc = new WebSocket(msUri,  "", null, header, "", "", WebSocketVersion.Rfc6455);
-				//wsc = new WebSocket(uri, "", null, header, util.userAgent, "", WebSocketVersion.Rfc6455, null, SslProtocols.Tls12);
-				wsc = new WebSocket(uri, "", null, header, util.userAgent, "", WebSocketVersion.Rfc6455, null,  SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls);
-				wsc.Opened += onWscOpen;
-				wsc.Closed += onWscClose;
-				wsc.MessageReceived += onWscMessageReceive;
-				wsc.Error += onWscError;
-				
-		        util.debugWriteLine("connect tscg ms uri " + uri);
-		        
-		        wsc.Open();
-		        
-		        try {
-					Thread.Sleep(5000);
-					if (wsc != null && wsc.State == WebSocketState.Connecting) {
-						util.debugWriteLine("tscg wsc connect 5 seconds close");
-						try {
-							wsc.Close();
-						} catch (Exception e) {
-							util.debugWriteLine("tscg connect timeout ws exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
-						}
-					}
+				if (isUseCurlWs) {
+					var _wsi = new string[]{uri, null};
+		    		wsCurl = new WebSocketCurlWSCTS(rm, this, _wsi);
+		    		Task.Factory.StartNew(() => {
+		    			wsCurl.connect();
+						onWscClose(null, null);
+					}, TaskCreationOptions.LongRunning);
+				} else {
+					wsc = new WebSocket(uri, "", null, header, util.userAgent, "", WebSocketVersion.Rfc6455, null,  SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls);
+					wsc.Opened += onWscOpen;
+					wsc.Closed += onWscClose;
+					wsc.MessageReceived += onWscMessageReceive;
+					wsc.Error += onWscError;
 					
-				} catch (Exception ee) {
-					util.debugWriteLine("tscg ws connect exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
-					return false;
+			        util.debugWriteLine("connect tscg ms uri " + uri);
+			        wsc.Open();
+			        
+			        try {
+						Thread.Sleep(5000);
+						if (wsc != null && wsc.State == WebSocketState.Connecting) {
+							util.debugWriteLine("tscg wsc connect 5 seconds close");
+							try {
+								wsc.Close();
+							} catch (Exception e) {
+								util.debugWriteLine("tscg connect timeout ws exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+							}
+						}
+						
+					} catch (Exception ee) {
+						util.debugWriteLine("tscg ws connect exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+						return false;
+					}
 				}
-		        
 		        return true;
 			} catch (Exception e) {
 				util.debugWriteLine("tscg connect exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				return false;
 			}
 		}
-		private void onWscOpen(object sender, EventArgs e) {
+		public void onWscOpen(object sender, EventArgs e) {
 			util.debugWriteLine("ms open tscg a");
 			try {
 				_gotMinTime = gotMinTime;
 				_gotMinXml = new String[]{gotMinXml[0], gotMinXml[1]};
 				
-				if (wsc != null) {
-					var req = getReq("-1000");
-					wsc.Send(req);
-					util.debugWriteLine("ms open b " + req);
-				}
+				var req = getReq("-1000");
+				if (!isUseCurlWs) {
+					if (wsc != null)
+						wsc.Send(req);
+				} else if (wsCurl != null) wsCurl.wsSend(req);
+					
+				util.debugWriteLine("ms open b " + req);
 				
 				if (rm.rfu != rfu) {
-					//stopRecording();
-	//				wsc.Close();
 					return;
 				}			
 			} catch (Exception ee) {
@@ -242,8 +250,7 @@ namespace namaichi.rec
 			}
 
 		}
-		
-		private void onWscClose(object sender, EventArgs e) {
+		public void onWscClose(object sender, EventArgs e) {
 			util.debugWriteLine("ms tscg onclose " + lastLastRes + " " + gotCommentList.Count);
 			//closeWscProcess();
 			wsc = null;
@@ -296,13 +303,16 @@ namespace namaichi.rec
 		
 		
 		
-		private void onWscMessageReceive(object sender, MessageReceivedEventArgs e) {
+		public void onWscMessageReceive(object sender, MessageReceivedEventArgs e) {
 			var eMessage = isConvertSpace ? util.getOkSJisOut(e.Message, commentConvertStr) : e.Message;
 			//if (isNormalizeComment) eMessage = eMessage.Replace("\"premium\":24", "\"premium\":0");
 			try {
 				if ((rm.rfu != rfu && lastRealTimeComment == null) || !isRetry) {
 					try {
-						if (wsc != null) wsc.Close();
+						if (!isUseCurlWs)
+							if (wsc != null) wsc.Close();
+						else if (wsCurl != null) wsCurl.stop();
+						
 					} catch (Exception ee) {
 						util.debugWriteLine("wsc message receive exception " + ee.Source + " " + ee.StackTrace + " " + ee.TargetSite + " " + ee.Message);
 					}
@@ -318,12 +328,16 @@ namespace namaichi.rec
 					util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite + eMessage);
 					try {
 						var content = util.getRegGroup(eMessage, "\"content\":\"(.+?)\"}");
+						if (content == null) {
+							util.debugWriteLine("error mes " + eMessage);
+							return;
+						}
 						if (content.IndexOf("\\") > -1)
 							eMessage = eMessage.Replace("\"content\":\"" + content + "\"}", "\"content\":\"" + content.Replace("\\", "\\\\") + "\"}");
 						xml = JsonConvert.DeserializeXNode(eMessage);
 					} catch (Exception eee) {
 						util.debugWriteLine(eee.Message + eee.Source + eee.StackTrace);
-						rm.form.addLogText("error:" + eMessage + " " + eee.Message + eee.Source + " " + ee.Message + ee.Source);
+						//rm.form.addLogText("error:" + eMessage + " " + eee.Message + eee.Source + " " + ee.Message + ee.Source);
 						return;
 					}
 				}
@@ -367,7 +381,12 @@ namespace namaichi.rec
 					gotCommentListBuf = new List<GotCommentInfo>();
 					gotMinTime = _gotMinTime;
 					gotMinXml = _gotMinXml;
-					wsc.Close();
+					if (!isUseCurlWs)
+						wsc.Close();
+					else {
+						wsCurl.stop();
+						onWscClose(null, null);
+					}
 				}
 				if (chatinfo.root != "chat" && chatinfo.root != "thread") return;
 				
@@ -398,7 +417,7 @@ namespace namaichi.rec
 					gotMinXml = _gotMinXml;
 				}
 				if (!isSave) return;
-				if (chatinfo.root == "chat" && chatinfo.date < _gotMinTime) {
+				if (chatinfo.root == "chat" && chatinfo.date != 0 && chatinfo.date < _gotMinTime) {
 					_gotMinTime = chatinfo.date;
 					_gotMinXml[1] = _gotMinXml[0];
 					_gotMinXml[0] = chatXml.ToString();
@@ -451,7 +470,13 @@ namespace namaichi.rec
 				} catch (Exception ee) {util.debugWriteLine(ee.Message + " " + ee.StackTrace);}
 				
 				if (eMessage.IndexOf("rf:") > -1) {
-					((WebSocket)(sender)).Close();
+					if (!isUseCurlWs)
+						((WebSocket)(sender)).Close();
+					else {
+						wsCurl.stop();
+						onWscClose(null, null);
+					}
+					
 				}
 				//if (!isTimeShift)
 	//				addDisplayComment(chatinfo);
@@ -584,7 +609,6 @@ namespace namaichi.rec
 							w.WriteLine("]");
 						}
 						w.Flush();
-						//w.Close();
 					}
 					File.Delete(fileName);
 					File.Move(fileName + "_", fileName);

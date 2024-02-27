@@ -27,8 +27,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.10.78";
-	public static string versionDayStr = "2023/11/25";
+	public static string versionStr = "ver0.1.3.10.79";
+	public static string versionDayStr = "2024/02/27";
 	public static string osName = null;
 	public static bool isCurl = true;
 	public static bool isWebRequestOk = false;
@@ -441,7 +441,7 @@ class util {
 			return null;
 		}
 	}
-	public static string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36";
+	public static string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36";
 	public static string getPageSource(string _url, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 5000) {
 		timeoutMs = 5000;
 		try {

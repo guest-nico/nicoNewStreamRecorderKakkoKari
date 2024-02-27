@@ -113,6 +113,10 @@ namespace namaichi.rec
 				    util.debugWriteLine("rm rec 録画開始" + rfu);
 				    util.debugWriteLine(form.urlText.Text);
 				    
+				    if (rfu == null) {
+				    	setRecModeForm(false);
+				    	return;
+				    }
 				    var rfuCode = rfu.GetHashCode();
 				    recordRunningList.Add(rfuCode);
 				    //endcode 0-その他の理由 1-stop 2-最初に終了 3-始まった後に番組終了

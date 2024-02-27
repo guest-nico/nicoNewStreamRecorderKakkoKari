@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using namaichi.config;
+using namaichi.utility;
 
 namespace namaichi.rec
 {
@@ -55,13 +56,17 @@ namespace namaichi.rec
 			headers.Add("User-Agent", util.userAgent);
 			headers.Add("Cookie", cc.GetCookieHeader(new Uri(comApiUrl)));
 			try {
-				var res = util.postResStr(comApiUrl, headers, null, "GET");
-				//var res = util.sendRequest(comApiUrl, headers, null, "GET", cc);
-				if (res == null) {
+				var res = "";
+				var r = util.sendRequest(comApiUrl, headers, null, "GET", cc);
+				using (var sr = new StreamReader(r.GetResponseStream())) {
+					res = sr.ReadToEnd();
+					util.debugWriteLine(res);
+				}
+				if (res == "") {
 					form.addLogText("コミュニティ情報の取得に失敗しました");
 					return false;
 				}
-				var isJidouShounin = res.IndexOf("\"community_auto_accept_entry\":1") > -1; 
+				var isJidouShounin = res.IndexOf("\"community_auto_accept_entry\":1") > -1;
 				var msg = (isJidouShounin ? "フォローを試みます。" : "自動承認ではありませんでした。");
 				form.addLogText(msg);
 				if (!isJidouShounin) return false;
@@ -78,7 +83,13 @@ namespace namaichi.rec
 				headers.Add("X-Requested-By", "https://com.nicovideo.jp/motion/" + comId);
 				foreach (var h in headers) util.debugWriteLine(h.Key + " " + h.Value);
 				
-				var res = util.postResStr(joinUrl, headers, null, "POST");
+				//var res = util.postResStr(joinUrl, headers, null, "POST");
+				var res = "";
+				var r = util.sendRequest(joinUrl, headers, null, "POST", cc);
+				using (var sr = new StreamReader(r.GetResponseStream())) {
+					res = sr.ReadToEnd();
+					util.debugWriteLine(res);
+				}
 				var isSuccess = res.IndexOf("\"status\":200") > -1; 
 				var _m = (isPlayOnlyMode) ? "視聴" : "録画";
 				form.addLogText((isSuccess ?

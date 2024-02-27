@@ -431,7 +431,9 @@ namespace namaichi.rec
 					
 					
 					var _url = "https://live.nicovideo.jp/watch/" + lvid;
-					res = util.getPageSource(_url, cc, _url);
+					//res = util.getPageSource(_url, cc, _url);
+					var h = util.getHeader(cc, null, _url);
+					res = new Curl().getStr(_url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false, true, true);
 					isJikken = res.IndexOf("siteId&quot;:&quot;nicocas") > -1;
 					int pagetype;
 //					if (isRtmp) pagetype = getRtmpPageType(res, isSub, out rr, cc);

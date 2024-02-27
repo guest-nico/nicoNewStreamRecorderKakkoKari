@@ -46,7 +46,7 @@ namespace namaichi
 		//private bool isInitRun = true;
 		private namaichi.config.config config = new namaichi.config.config();
 		public string[] args;
-		private play.Player player;
+		public play.Player player;
 		private Thread madeThread;
 		private Size originalSize = Size.Empty;
 		private Icon defIcon;
@@ -350,12 +350,11 @@ namespace namaichi
 	       		    communityLabel.Links.Clear();
 	       		    notifyIcon.Text = "ニコ生新配信録画ツール（仮";
 	       		    
-	        	    titleLabel.Text = title;
-	        	    titleLabel.Links.Add(0, titleLabel.Text.Length, url);
+	       		    titleLabel.Text = title;
+	        	    titleLabel.Links.Add(0, 0, url);
 	        	    hostLabel.Text = host;
 	        	    if (hostUrl != null) {
 		        	    hostLabel.Links.Add(0, hostLabel.Text.Length, hostUrl);
-//				        	    hostLabel.LinkArea = new LinkArea(0, hostLabel.Text.Length);
 	        	    }
 	        	    communityLabel.Text = group;
 	        	    if (groupUrl != null) {
@@ -447,21 +446,34 @@ namespace namaichi
 	       	if (!bool.Parse(config.get("IsDisplayComment"))) return;
 	       	formAction(() => {
 		       	try {
-	       	       	var rows = new string[]{time, comment};
+   	           		var rows = new string[]{time, comment, userId};
 	       	       	commentList.Rows.Add(rows);
 	       	       	commentList.FirstDisplayedScrollingRowIndex = commentList.Rows.Count - 1;
 	       	       	while (commentList.Rows.Count > 20) {
 	       	       		commentList.Rows.RemoveAt(0);
 	       	       	}
+	       	       	
+	       	       	if (commentList.Tag == null)
+	       	       		commentList.Tag = new List<string[]>();
+	       	       	((List<string[]>)commentList.Tag).Add(new string[] {time, comment, userId, score, color});
 		       	} catch (Exception e) {
 		       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 		       	}
 			});
-       	
-//       	player.addComment(time, comment, userId, score, color);
        }
-
-		
+       bool isDuplicateComment(string time, string comment, string userId) {
+			try {
+				var _rows = commentList.Rows;
+				foreach (DataGridViewRow _r in _rows) {
+					var r = _r.Cells;
+					if (r[0].Value.ToString() == time && r[1].Value.ToString() == comment)
+						return true;
+				}
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+			}
+			return false;
+		}
 		void openRecFolderMenu_Click(object sender, EventArgs e)
 		{
 			openRecFolder();
@@ -482,7 +494,7 @@ namespace namaichi
 			util.debugWriteLine("click");
 			LinkLabel sender = (LinkLabel)_sender;
 			if (e.Button == MouseButtons.Left) {
-				if (sender.Links.Count > 0 && sender.Links[0].Length != 0) {
+				if (sender.Links.Count > 0) {
 					string url = (string)sender.Links[0].LinkData;
 					util.openUrl(url, bool.Parse(config.get("IsdefaultBrowserPath")), config.get("browserPath"));
 				}
@@ -630,6 +642,7 @@ namespace namaichi
 			descriptLabel.Text = "";
 			typeLabel.Text = "";
 			commentList.Rows.Clear();
+			commentList.Tag = null;
 			Text = "ニコ生新配信録画ツール（仮 " + util.versionStr;
 			Icon = defIcon;
 			recordStateLabel.Text = "";
@@ -895,18 +908,20 @@ namespace namaichi
 		}
 		void MiniBtnClick(object sender, EventArgs e)
 		{
-			if (originalSize == Size.Empty) {
+			if (!isMini()) {
 				changeSize(true);
 			} else {
 				changeSize(false);
 			}
+		}
+		public bool isMini() {
+			return originalSize != Size.Empty;
 		}
 		private void changeSize(bool isMini) {
 			try {
 				urlLabel.Visible = !isMini;
 				commentList.Visible = !isMini;
 				streamStateGroupBox.Visible = !isMini;
-				playerBtn.Visible = !isMini;
 				label10.Visible = !isMini;
 				descriptLabel.Visible = !isMini;
 				label5.Visible = !isMini;
@@ -939,8 +954,12 @@ namespace namaichi
 				
 				var urlTextX = isMini ? 19 : 69;
 				urlText.Location = new Point(urlTextX, urlText.Location.Y);
-				recBtn.Location = new Point(urlText.Location.X + 245, recBtn.Location.Y);
-				miniBtn.Location = new Point((isMini) ? (recBtn.Location.X + 83) : 698, miniBtn.Location.Y);
+				urlText.Width = isMini ? 219 : 241;
+				recBtn.Location = new Point(urlText.Location.X + urlText.Width + 4, recBtn.Location.Y);
+				miniBtn.Location = new Point((isMini) ? (recBtn.Location.X + 105) : 698, miniBtn.Location.Y);
+				playerBtn.Location = new Point(recBtn.Location.X + recBtn.Width + 3, playerBtn.Location.Y);
+				playerBtn.Text = isMini ? playerBtn.Text.Substring(playerBtn.Text.Length - 2, 1) : (playerBtn.Text.Substring(0, 1) == "視" ? "視聴" : "視聴停止");
+				playerBtn.Width = isMini ? miniBtn.Width : 64; 
 				var _size = Size;
 				Size = isMini ? new Size(386, 236) : originalSize;
 				streamInfoGroupBox.Location = isMini ? new Point(109, 76) : new Point(179, 76);
@@ -1207,6 +1226,25 @@ namespace namaichi
 			} catch (Exception ee) {
 				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace);
 			}
+		}
+		public List<string[]> getFormComment() {
+			try {
+				return (List<string[]>)commentList.Tag;
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+				return null;
+			}
+		}
+		public bool isPlayingBtn() {
+			return playerBtn.Text.IndexOf("停") > -1;
+		}
+		public void setPlayerBtnPlaying(bool isPlaying) {
+			var _s = !isPlaying ?	
+					(!isMini() ? "視聴" : "視") :
+					(!isMini() ? "視聴停止" : "停");
+			Invoke((MethodInvoker)delegate() {
+				playerBtn.Text = _s; 
+			});
 		}
 	}
 }

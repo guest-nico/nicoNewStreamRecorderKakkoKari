@@ -297,8 +297,10 @@ namespace namaichi.rec
 			return false;
 		}
 		public CookieContainer getAccountCookie(string mail, string pass) {
-			
-			if (mail == null || pass == null) return null;
+			if (mail == null || pass == null) {
+				log += ((mail == null) ? "not set mail." : "") + ((pass == null) ? "not set mail." : "");
+				return null;
+			}
 			
 			var isNew = true;
 			
@@ -330,7 +332,7 @@ namespace namaichi.rec
 				util.debugWriteLine(cc.GetCookieHeader(new Uri(loginUrl)));
 				
 				if (util.isUseCurl(CurlHttpVersion.CURL_HTTP_VERSION_1_1)) {
-					var curlR = new Curl().getStr(loginUrl, h, CurlHttpVersion.CURL_HTTP_VERSION_1_1, "POST", _d, true, true, false);
+					var curlR = new Curl().getStr(loginUrl, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "POST", _d, true, true, false);
 					if (curlR == null) {
 						log += "ログインページに接続できませんでした";
 						return null;
@@ -357,7 +359,10 @@ namespace namaichi.rec
 					}
 					var location = locationM[locationM.Count - 1].Groups[1].Value;
 					location = util.getRegGroup(curlR, "Location: (.+)\r");
-					if (location == null) return null;
+					if (location == null) {
+						log += "not found location." + curlR;
+						return null;
+					}
 					//location = WebUtility.UrlDecode(location);
 					
 					var setCookie = new Dictionary<string, string>();
@@ -379,7 +384,7 @@ namespace namaichi.rec
 	                var mfaUrl = util.getRegGroup(curlR2, "<form action=\"(.+?)\"");
 	                if (mfaUrl == null || mfaUrl.IndexOf("/mfa") == -1) {
 	                	var notice = util.getRegGroup(curlR2, "\"notice__text\">(.+?)</p>");
-						if (notice != null) log += " " + notice;
+						if (notice != null) log += " notice:" + notice;
 	                	else log += "2段階認証のURLを取得できませんでした。";
 						return null;
 	                }
@@ -420,7 +425,10 @@ namespace namaichi.rec
 	                
 	                var curlR4 = new Curl().getStr(location2, h, CurlHttpVersion.CURL_HTTP_VERSION_1_1, "GET", null, true, true, false);
 	                m = new Regex("Set-Cookie: (.+?)=(.+?);").Matches(curlR4);
-					if (m.Count == 0) return null;
+	                if (m.Count == 0) {
+	                	log += "not set cookie." + curlR4;
+	                	return null;
+	                }
 					foreach (Match _m in m) {
 						if (_m.Groups[1].Value == "user_session") us = new Cookie(_m.Groups[1].Value, _m.Groups[2].Value);
 						if (_m.Groups[1].Value == "user_session_secure") secureC = new Cookie(_m.Groups[1].Value, _m.Groups[2].Value);
@@ -429,10 +437,10 @@ namespace namaichi.rec
 						setUserSession(cc, us, secureC, null);
 						return cc;
 					}
+					log += "not found session";
 					return null; 
 				}
 				
-				//"https://account.nicovideo.jp/login/redirector?show_button_twitter=1&site=niconico&show_button_facebook=1&sec=header_pc&next_url=/"
 				var r = util.sendRequest(loginUrl, h, d, "POST", cc);
 				if (r == null) {
 					log += "ログインページに接続できませんでした";
@@ -503,6 +511,7 @@ namespace namaichi.rec
 				}
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message+e.StackTrace);
+				log += e.Message + e.Source + e.StackTrace;
 				return null;
 			}
 		}

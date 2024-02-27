@@ -35,8 +35,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.79";
-	public static string versionDayStr = "2024/01/10";
+	public static string versionStr = "ver0.88.80";
+	public static string versionDayStr = "2024/02/27";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -556,7 +556,7 @@ class util {
 		}
 		return null;
 	}
-	public static string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36";
+	public static string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36";
 	public static string getPageSource(string _url, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 0, string userAgent = null, bool isGetErrorPage = false) {
 		util.debugWriteLine("access__ getpage " + _url);
 		if (_url == null) {
@@ -728,6 +728,7 @@ class util {
 	}
 	public static HttpWebResponse sendRequest(string url, Dictionary<string, string> headers, byte[] content, string method, CookieContainer cc = null) {
 		try {
+			util.debugWriteLine("access__ sendRequest " + url);
 			var req = (HttpWebRequest)WebRequest.Create(url);
 			req.Method = method;
 			req.Proxy = httpProxy;
@@ -1610,7 +1611,7 @@ public static void soundEnd(config cfg, MainForm form) {
 		if (referer != null) ret["Referer"] = referer;
 		return ret;
 	}
-	public static bool isUseCurl(CurlHttpVersion httpVer) {
+	public static bool isUseCurl(CurlHttpVersion httpVer = CurlHttpVersion.CURL_HTTP_VERSION_1_1) {
 		//return true;
 		
 		if (httpVer != CurlHttpVersion.CURL_HTTP_VERSION_1_1) return true;
@@ -1618,6 +1619,10 @@ public static void soundEnd(config cfg, MainForm form) {
 		     (util.osName.IndexOf("Windows 1") > -1)) || util.isWebRequestOk)
 			return false;
 		return util.isCurl;
+	}
+	public static bool isWin10orLater() {
+		return (util.osName != null && 
+		     (util.osName.IndexOf("Windows 1") > -1)); 
 	}
 	public static void saveBackupConfig(string path, string f) {
     	try {
@@ -1663,4 +1668,38 @@ public static void soundEnd(config cfg, MainForm form) {
 	public static long getAvailableFreeSpace(string dir) {
 		return new DriveInfo(Directory.GetDirectoryRoot(dir)).AvailableFreeSpace;
 	}
+	
+	public static bool libcurlWsDllCheck(out string mes) {
+		var path = getJarPath()[0];
+		var dlls = new string[]{"libssl-3.dll",
+				"libcrypto-3.dll", "nghttp2.dll"};
+		mes = "";
+		foreach (var n in dlls) {
+			if (!File.Exists(path + "/" + n)) 
+				mes += (mes == "" ? "" : ",") + n;
+		}
+		util.debugWriteLine("libcurlWsDllCheck " + mes);
+		return mes == ""; 
+	}
+	public static bool vcr140Check(out string mes) {
+		mes = "";
+		bool isExists = false;
+		try {
+			var pp = Environment.GetEnvironmentVariable("PATH");
+			if (pp == null) return false;
+			var l = pp.Split(';');
+			foreach (var _l in l) {
+				var d = _l.Trim(new char[]{' ', '/', '\\'});
+				if (File.Exists(d + "/VCRUNTIME140.dll"))
+					isExists = true; 
+			}
+			if (!isExists) mes += "環境変数PATHの中にVCRUNTIME140.dllが見つかりませんでした";
+		} catch (Exception e) {
+			util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+			mes += e.Message + e.Source + e.StackTrace;
+		}
+		util.debugWriteLine("vcr140Check " + mes + " " + isExists);
+		return isExists;
+	}
+	
 }

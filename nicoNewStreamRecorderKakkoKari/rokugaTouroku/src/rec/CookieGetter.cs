@@ -205,8 +205,10 @@ namespace rokugaTouroku.rec
 			return isLogin;
 		}
 		public CookieContainer getAccountCookie(string mail, string pass) {
-			
-			if (mail == null || pass == null) return null;
+			if (mail == null || pass == null) {
+				log += ((mail == null) ? "not set mail." : "") + ((pass == null) ? "not set mail." : "");
+				return null;
+			}
 			
 			var isNew = true;
 			
@@ -232,7 +234,6 @@ namespace rokugaTouroku.rec
 				h.Add("User-Agent", util.userAgent);
 				
 				var _d = "mail_tel=" + WebUtility.UrlEncode(param["mail_tel"]) + "&password=" + WebUtility.UrlEncode(param["password"]) + "&auth_id=" + param["auth_id"];
-				var _d2 = "mail_tel=" + param["mail_tel"] + "&password=" + WebUtility.UrlEncode(param["password"]) + "&auth_id=" + param["auth_id"];
 				var d = Encoding.ASCII.GetBytes(_d);
 				var cc = new CookieContainer();
 				
@@ -245,7 +246,10 @@ namespace rokugaTouroku.rec
 						return null;
 					}
 					var m = new Regex("Set-Cookie: (.+?)=(.+?);").Matches(curlR);
-					if (m.Count == 0) return null;
+					if (m.Count == 0) {
+						log += "保存するクッキーがありませんでした";
+						return null;
+					}
 					Cookie us = null, secureC = null;  
 					foreach (Match _m in m) {
 						if (_m.Groups[1].Value == "user_session") us = new Cookie(_m.Groups[1].Value, _m.Groups[2].Value);
@@ -263,7 +267,10 @@ namespace rokugaTouroku.rec
 					}
 					var location = locationM[locationM.Count - 1].Groups[1].Value;
 					location = util.getRegGroup(curlR, "Location: (.+)\r");
-					if (location == null) return null;
+					if (location == null) {
+						log += "not found location." + curlR;
+						return null;
+					}
 					//location = WebUtility.UrlDecode(location);
 					
 					var setCookie = new Dictionary<string, string>();
@@ -284,7 +291,9 @@ namespace rokugaTouroku.rec
 	                if (browName == null) browName = "Google Chrome (Windows)";
 	                var mfaUrl = util.getRegGroup(curlR2, "<form action=\"(.+?)\"");
 	                if (mfaUrl == null || mfaUrl.IndexOf("/mfa") == -1) {
-	                	log += "2段階認証のURLを取得できませんでした。";
+	                	var notice = util.getRegGroup(curlR2, "\"notice__text\">(.+?)</p>");
+						if (notice != null) log += " notice:" + notice;
+	                	else log += "2段階認証のURLを取得できませんでした。";
 						return null;
 	                }
 	                mfaUrl = "https://account.nicovideo.jp" + mfaUrl;
@@ -324,7 +333,10 @@ namespace rokugaTouroku.rec
 	                
 	                var curlR4 = new Curl().getStr(location2, h, CurlHttpVersion.CURL_HTTP_VERSION_1_1, "GET", null, true, true, false);
 	                m = new Regex("Set-Cookie: (.+?)=(.+?);").Matches(curlR4);
-					if (m.Count == 0) return null;
+	                if (m.Count == 0) {
+	                	log += "not set cookie." + curlR4;
+	                	return null;
+	                }
 					foreach (Match _m in m) {
 						if (_m.Groups[1].Value == "user_session") us = new Cookie(_m.Groups[1].Value, _m.Groups[2].Value);
 						if (_m.Groups[1].Value == "user_session_secure") secureC = new Cookie(_m.Groups[1].Value, _m.Groups[2].Value);
@@ -333,14 +345,17 @@ namespace rokugaTouroku.rec
 						setUserSession(cc, us, secureC);
 						return cc;
 					}
+					log += "not found session";
 					return null; 
 				}
 				
 				var r = util.sendRequest(loginUrl, h, d, "POST", cc);
 				if (r == null) {
 					log += "ログインページに接続できませんでした";
+					log += getTestPos(loginUrl, h, d, "POST", cc);
 					return null;
 				}
+				
 				var _cc = cc.GetCookies(new Uri(loginUrl));
 				if (_cc["user_session"] != null) {
 					//cc.Add(r.Cookies["user_session"]);
@@ -348,6 +363,15 @@ namespace rokugaTouroku.rec
 				}
 				if (r.ResponseUri == null || !r.ResponseUri.AbsolutePath.StartsWith("/mfa")) {
 					log += "ログインに失敗しました。";
+					try {
+						using (var sr = new StreamReader(r.GetResponseStream())) {
+							var res = sr.ReadToEnd();
+							var notice = util.getRegGroup(res, "\"notice__text\">(.+?)</p>");
+							if (notice != null) log += " " + notice;
+						}
+					} catch (Exception e) {
+						util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+					}
 					return null;
 				}
 				using (var sr = new StreamReader(r.GetResponseStream())) {
@@ -397,6 +421,7 @@ namespace rokugaTouroku.rec
 				}
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message+e.StackTrace);
+				log += e.Message + e.Source + e.StackTrace;
 				return null;
 			}
 		}
@@ -409,6 +434,67 @@ namespace rokugaTouroku.rec
 				cc.Add(new Cookie(secureC.Name, secureC.Value, "/", ".nicovideo.jp"));
 			}
 			return cc;
+		}
+		string getTestPos(string url, Dictionary<string, string> headers, byte[] content, string method, CookieContainer cc = null) {
+			try {
+				var req = (HttpWebRequest)WebRequest.Create(url);
+				req.Method = method;
+				req.Proxy = null;
+				req.Headers.Add("Accept-Encoding", "gzip,deflate");
+				req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+				req.CookieContainer = cc;
+				
+				if (headers != null) {
+					foreach (var h in headers) {
+						if (h.Key.ToLower().Replace("-", "") == "contenttype")
+							req.ContentType = h.Value;
+						else if (h.Key.ToLower().Replace("-", "") == "useragent")
+							req.UserAgent = h.Value;
+						else if (h.Key.ToLower().Replace("-", "") == "connection")
+							req.KeepAlive = h.Value.ToLower().Replace("-", "") == "keepalive";
+						else if (h.Key.ToLower().Replace("-", "") == "accept")
+							req.Accept = h.Value;
+						else if (h.Key.ToLower().Replace("-", "") == "referer")
+							req.Referer = h.Value;
+						else req.Headers.Add(h.Key, h.Value);
+					}
+				}
+					
+				if (content != null) {
+					using (var stream = req.GetRequestStream()) {
+						try {
+							stream.Write(content, 0, content.Length);
+						} catch (Exception ee) {
+				       		util.debugWriteLine(ee.Message + " " + ee.StackTrace + " " + ee.Source + " " + ee.TargetSite);
+				       	}
+					}
+				}
+	//					stream.Close();
+				var webreq = (System.Net.HttpWebResponse)req.GetResponse();
+				using (var sr = new StreamReader(webreq.GetResponseStream())) {
+					return sr.ReadToEnd();
+				}
+				
+				
+			} catch (WebException ee) {
+				util.debugWriteLine(ee.Data + ee.Message + ee.Source + ee.StackTrace + ee.Status);
+				try {
+					var webreq = (System.Net.HttpWebResponse)ee.Response;
+					using (var sr = new StreamReader(webreq.GetResponseStream())) {
+						return sr.ReadToEnd();
+					}
+					//using (var _rs = ee.Response.GetResponseStream())
+					//using (var rs = new StreamReader(_rs)) {
+					//	return rs.ReadToEnd();
+					//}
+				} catch (Exception eee) {
+					util.debugWriteLine(eee.Message + eee.Source + eee.StackTrace);
+					return null;
+				}
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+				return null;
+			}
 		}
 	}
 	

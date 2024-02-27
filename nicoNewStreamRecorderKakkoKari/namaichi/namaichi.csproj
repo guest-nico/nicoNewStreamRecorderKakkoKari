@@ -260,6 +260,7 @@
     <Compile Include="src\rec\TimeShiftCommentGetter_chPlus.cs" />
     <Compile Include="src\rec\TimeShiftCommentGetter_jikken.cs" />
     <Compile Include="src\rec\TimeShiftCommentGetter_xml.cs" />
+    <Compile Include="src\rec\WebSocketCurl.cs" />
     <Compile Include="src\rec\WebSocketRecorder.cs" />
     <Compile Include="src\rec\XmlCommentGetter_ontime.cs" />
     <Compile Include="src\util\ArgReader.cs" />

@@ -597,7 +597,7 @@ namespace rokugaTouroku
 			var cg = new rec.CookieGetter(cfg);
 			var cc = cg.getAccountCookie(mailText.Text, passText.Text);
 			if (cc == null) {
-				util.showMessageBoxCenterForm(this, "login error", "", MessageBoxButtons.OK);
+				util.showMessageBoxCenterForm(this, "login error " + cg.log, "", MessageBoxButtons.OK);
 				return;
 			}
 			if (cc.GetCookies(TargetUrl)["user_session"] == null &&
@@ -613,7 +613,7 @@ namespace rokugaTouroku
 			var cg = new rec.CookieGetter(cfg);
 			var cc = cg.getAccountCookie(mailText2.Text, passText2.Text);
 			if (cc == null) {
-				util.showMessageBoxCenterForm(this, "login error", "", MessageBoxButtons.OK);
+				util.showMessageBoxCenterForm(this, "login error " + cg.log, "", MessageBoxButtons.OK);
 				return;
 			}
 			if (cc.GetCookies(TargetUrl)["user_session"] == null &&
