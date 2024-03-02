@@ -503,7 +503,7 @@ namespace namaichi
 		void copyUrlMenu_Clicked(object sender, EventArgs e)
 		{
 			try {
-				if (titleLabel.Links.Count > 0 && titleLabel.Links[0].Length != 0) {
+				if (titleLabel.Links.Count > 0) {
 					string url = (string)titleLabel.Links[0].LinkData;
 					Clipboard.SetText(url);
 				}
@@ -514,7 +514,7 @@ namespace namaichi
 		void copyCommunityUrlMenu_Clicked(object sender, EventArgs e)
 		{
 			try {
-				if (communityLabel.Links.Count > 0 && communityLabel.Links[0].Length != 0) {
+				if (communityLabel.Links.Count > 0) {
 					string url = (string)communityLabel.Links[0].LinkData;
 					Clipboard.SetText(url);
 				}
@@ -526,7 +526,7 @@ namespace namaichi
 		{
 			try {
 				if (hostLabel.Text.Length > 0 &&
-						titleLabel.Links.Count > 0 && titleLabel.Links[0].Length != 0) {
+						titleLabel.Links.Count > 0) {
 					var host = hostLabel.Text;
 					var url = (string)titleLabel.Links[0].LinkData;
 					Clipboard.SetText(host + " " + url);
@@ -748,6 +748,8 @@ namespace namaichi
 					addLogText("debug: curlを使用します");
 				#endif
 			}
+			if (util.osName.IndexOf("Windows 1") == -1)
+				addLogText("Windows 10以上の環境が推奨です");
 		}
 		
 		void versionMenu_Click(object sender, EventArgs e)

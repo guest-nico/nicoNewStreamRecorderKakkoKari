@@ -67,12 +67,15 @@ namespace namaichi.rec
 			
 			try {
 				var url = webSocketRecInfo[0];
-				rm.form.addLogText("connect " + webSocketRecInfo[0].Substring(0, 10));
+				#if DEBUG
+					rm.form.addLogText("connect " + webSocketRecInfo[0].Substring(0, 10));
+				#endif
+				util.debugWriteLine("connect " + webSocketRecInfo[0].Substring(0, 10));
 				
 				easy = Curl.curl_easy_init();
 				
 				if (easy == IntPtr.Zero) {
-					rm.form.addLogText("ライブラリよりWebSocketへの接続を開始できませんでした");
+					rm.form.addLogText("ライブラリよりWebSocketへの接続を開始できませんでした " + url.Substring(0, 10));
 					return false;
 				}
 				util.debugWriteLine("curl push connect  ");
@@ -89,10 +92,8 @@ namespace namaichi.rec
 				util.debugWriteLine("curl ws connect code " + code);
 				if(code != CURLcode.CURLE_OK) {
 					util.debugWriteLine("curl easy error " + code + " " + url);
-					rm.form.addLogText("WebSocketの接続に失敗しました " + code + " " + url);
+					rm.form.addLogText("WebSocketの接続に失敗しました " + code + " " + url.Substring(0, 10));
 					stop();
-					//if (easy != IntPtr.Zero)
-					//	Curl.curl_easy_cleanup(easy);
 					Thread.Sleep(5000);
 					return false;
 				} else {
@@ -165,7 +166,7 @@ namespace namaichi.rec
 					}
 			    }
 				#if DEBUG
-					if (rm != null)	rm.form.addLogText("ws curl recv end " + DateTime.Now + " " + url);
+					if (rm != null)	rm.form.addLogText("ws curl recv end " + DateTime.Now + " " + url.Substring(0, 10));
 				#endif
 				util.debugWriteLine("ws curl recv end");
 				close();
@@ -292,9 +293,6 @@ namespace namaichi.rec
 		override internal bool isErrorMes(string recvS) {
 			try {
 				return !recvS.StartsWith("{\"") || !recvS.EndsWith("}}");
-				
-				var xml = JsonConvert.DeserializeXNode(recvS);
-				return false;
 			} catch (Exception e) {
 				util.debugWriteLine("test convert curlws " + e.Message + e.Source + e.StackTrace + " " + recvS);
 				return true;
