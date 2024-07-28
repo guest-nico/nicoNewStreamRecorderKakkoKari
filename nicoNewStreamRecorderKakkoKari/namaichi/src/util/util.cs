@@ -35,8 +35,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.88.81";
-	public static string versionDayStr = "2024/03/02";
+	public static string versionStr = "ver0.88.82";
+	public static string versionDayStr = "2024/07/29";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -1174,7 +1174,8 @@ public static void soundEnd(config cfg, MainForm form) {
 	public static void setThreadExecutionState() {
 		try {
 			//var r = SetThreadExecutionState(1 | 2 | 0x80000000);
-			var r = SetThreadExecutionState(1 | 0x80000000);
+			//var r = SetThreadExecutionState(1 | 0x80000000);
+			var r = SetThreadExecutionState(1);
 			util.debugWriteLine("setThreadExecutionState " + r);
 			
 		} catch (Exception e) {
@@ -1191,7 +1192,9 @@ public static void soundEnd(config cfg, MainForm form) {
 					"SnkLib.App.CookieGetter.dll", "SuperSocket.ClientEngine.dll",
 					"Microsoft.Web.XmlTransform.dll", "Newtonsoft.Json.dll",
 					"System.Data.SQLite.dll", "x64/SQLite.Interop.dll",
-					"x86/SQLite.Interop.dll", "x86/SnkLib.App.CookieGetter.x86Proxy.exe"};
+					"x86/SQLite.Interop.dll", "x86/SnkLib.App.CookieGetter.x86Proxy.exe",
+					"curl_wrap.dll", "libcurl.dll"
+			};
 			var isOk = new string[dlls.Length];
 			var msg = "";
 			foreach (var n in dlls) {
@@ -1284,14 +1287,18 @@ public static void soundEnd(config cfg, MainForm form) {
 		var proxyAddress = cfg.get("proxyAddress");
 		var proxyPort = cfg.get("proxyPort");
 		if (proxyAddress == "" && proxyPort == "") return;
+		if (proxyAddress.IndexOf("//") > -1)
+			proxyAddress = util.getRegGroup(proxyAddress, ".*//(.*)");
+		IPAddress ip = null;
 		try {
-			var ip = IPAddress.Parse(proxyAddress);
-			var endpoint = new IPEndPoint(ip, int.Parse(proxyPort));
-			util.wsProxy = new HttpConnectProxy(endpoint);
+			util.wsProxy = new HttpConnectProxy(new DnsEndPoint(proxyAddress, int.Parse(proxyPort)));
+			var a = Dns.GetHostAddresses(proxyAddress)[0];
+			util.debugWriteLine("GetAddressTest: " + a);
 		} catch (Exception e) {
-			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+			var mes = "WebSocketのプロキシの設定に失敗しました。アドレス設定:" + proxyAddress + " 接続アドレス：" + (ip == null ? "null" : ip.ToString()) + " ポート：" + proxyPort + " " + e.Message + " " + e.Source + " " + e.StackTrace;
+			util.debugWriteLine(mes);
 			if (form != null)
-				form.addLogText("WebSocketのプロキシの設定に失敗しました。アドレス:" + proxyAddress + "ポート：" + proxyPort);
+				form.addLogText(mes);
 		}
 		try {
 			util.httpProxy = new WebProxy(proxyAddress, int.Parse(proxyPort));
@@ -1668,7 +1675,7 @@ public static void soundEnd(config cfg, MainForm form) {
 	public static long getAvailableFreeSpace(string dir) {
 		return new DriveInfo(Directory.GetDirectoryRoot(dir)).AvailableFreeSpace;
 	}
-	
+	/*
 	public static bool libcurlWsDllCheck(out string mes) {
 		var path = getJarPath()[0];
 		var dlls = new string[]{"libssl-3.dll",
@@ -1681,6 +1688,7 @@ public static void soundEnd(config cfg, MainForm form) {
 		util.debugWriteLine("libcurlWsDllCheck " + mes);
 		return mes == ""; 
 	}
+	*/
 	public static bool vcr140Check(out string mes) {
 		mes = "";
 		bool isExists = false;

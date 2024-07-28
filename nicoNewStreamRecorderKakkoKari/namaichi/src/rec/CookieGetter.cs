@@ -334,12 +334,12 @@ namespace namaichi.rec
 				if (util.isUseCurl(CurlHttpVersion.CURL_HTTP_VERSION_1_1)) {
 					var curlR = new Curl().getStr(loginUrl, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "POST", _d, true, true, false);
 					if (curlR == null) {
-						log += "ログインページに接続できませんでした";
+						log += "ログインページに接続できませんでした:Curl";
 						return null;
 					}
 					var m = new Regex("Set-Cookie: (.+?)=(.+?);").Matches(curlR);
 					if (m.Count == 0) {
-						log += "保存するクッキーがありませんでした";
+						log += "保存するクッキーがありませんでした:Curl";
 						return null;
 					}
 					Cookie us = null, secureC = null;  
@@ -354,7 +354,7 @@ namespace namaichi.rec
 					
 					var locationM = new Regex("Location: (.+)").Matches(curlR);
 					if (locationM.Count == 0) {
-						log += "ログイン接続の転送先が見つかりませんでした";
+						log += "ログイン接続の転送先が見つかりませんでした:Curl";
 						return null;
 					}
 					var location = locationM[locationM.Count - 1].Groups[1].Value;
@@ -385,7 +385,7 @@ namespace namaichi.rec
 	                if (mfaUrl == null || mfaUrl.IndexOf("/mfa") == -1) {
 	                	var notice = util.getRegGroup(curlR2, "\"notice__text\">(.+?)</p>");
 						if (notice != null) log += " notice:" + notice;
-	                	else log += "2段階認証のURLを取得できませんでした。";
+	                	else log += "2段階認証のURLを取得できませんでした。:Curl";
 						return null;
 	                }
 	                mfaUrl = "https://account.nicovideo.jp" + mfaUrl;
@@ -398,7 +398,7 @@ namespace namaichi.rec
 	                
 	                var dr = f.ShowDialog();
 	                if (f.code == null) {
-	                	log += "二段階認証のコードが入力されていませんでした";
+	                	log += "二段階認証のコードが入力されていませんでした:Curl";
 	                	return null;
 	                }
 	                util.debugWriteLine(mfaUrl);
@@ -408,7 +408,7 @@ namespace namaichi.rec
 	                _d = "otp=" + f.code + "&loginBtn=%E3%83%AD%E3%82%B0%E3%82%A4%E3%83%B3&device_name=Google+Chrome+%28Windows%29";
 	                var curlR3 = new Curl().getStr(mfaUrl, h, CurlHttpVersion.CURL_HTTP_VERSION_1_1, "POST", _d, true, true, false);
 	                if (curlR3 == null) {
-	                	log += "二段階認証のコードを正常に送信できませんでした";
+	                	log += "二段階認証のコードを正常に送信できませんでした:Curl";
 	                	return null;
 	                }
 	                setCookieM = new Regex("Set-Cookie: (.+?)=(.*?);").Matches(curlR3);
@@ -426,7 +426,7 @@ namespace namaichi.rec
 	                var curlR4 = new Curl().getStr(location2, h, CurlHttpVersion.CURL_HTTP_VERSION_1_1, "GET", null, true, true, false);
 	                m = new Regex("Set-Cookie: (.+?)=(.+?);").Matches(curlR4);
 	                if (m.Count == 0) {
-	                	log += "not set cookie." + curlR4;
+	                	log += "not set cookie." + curlR4 + ":Curl";
 	                	return null;
 	                }
 					foreach (Match _m in m) {
@@ -437,13 +437,13 @@ namespace namaichi.rec
 						setUserSession(cc, us, secureC, null);
 						return cc;
 					}
-					log += "not found session";
+					log += "not found session:Curl";
 					return null; 
 				}
 				
 				var r = util.sendRequest(loginUrl, h, d, "POST", cc);
 				if (r == null) {
-					log += "ログインページに接続できませんでした";
+					log += "ログインページに接続できませんでした:default";
 					return null;
 				}
 				var _cc = cc.GetCookies(new Uri(loginUrl));
@@ -452,7 +452,7 @@ namespace namaichi.rec
 					return cc;
 				}
 				if (r.ResponseUri == null || !r.ResponseUri.AbsolutePath.StartsWith("/mfa")) {
-					log += "ログインに失敗しました。";
+					log += "ログインに失敗しました。:default";
 					try {
 						using (var sr = new StreamReader(r.GetResponseStream())) {
 							var res = sr.ReadToEnd();
@@ -472,7 +472,7 @@ namespace namaichi.rec
 	                if (browName == null) browName = "Google Chrome (Windows)";
 	                var mfaUrl = util.getRegGroup(res, "<form action=\"(.+?)\"");
 	                if (mfaUrl == null) {
-	                	log += "2段階認証のURLを取得できませんでした。";
+	                	log += "2段階認証のURLを取得できませんでした。:default";
 						return null;
 	                }
 	                mfaUrl = "https://account.nicovideo.jp" + mfaUrl;
@@ -484,7 +484,7 @@ namespace namaichi.rec
 	                
 	                var dr = f.ShowDialog();
 	                if (f.code == null) {
-	                	log += "二段階認証のコードが入力されていませんでした";
+	                	log += "二段階認証のコードが入力されていませんでした:default";
 	                	return null;
 	                }
 	                util.debugWriteLine(mfaUrl);
@@ -494,7 +494,7 @@ namespace namaichi.rec
 	                d = Encoding.ASCII.GetBytes(_d);
 	                var _r = util.sendRequest(mfaUrl, h, d, "POST", cc);
 	                if (_r == null) {
-	                	log += "二段階認証のコードを正常に送信できませんでした";
+	                	log += "二段階認証のコードを正常に送信できませんでした:default";
 	                	return null;
 	                }
 	                using (var _sr = new StreamReader(_r.GetResponseStream())) {
@@ -505,7 +505,7 @@ namespace namaichi.rec
 					if (_cc["user_session"] != null) {
 						return cc;
 	                } else {
-	                	log += "2段階認証のログインに失敗しました";
+	                	log += "2段階認証のログインに失敗しました:default";
 	                	return null;
 	                }
 				}

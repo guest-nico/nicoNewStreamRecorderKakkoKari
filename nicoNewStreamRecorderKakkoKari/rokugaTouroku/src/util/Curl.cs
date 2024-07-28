@@ -106,7 +106,8 @@ namespace namaichi.utility
 						return a;
 					}
 				}
-				
+			} catch (DllNotFoundException e) {
+				throw e;
 			} catch (Exception e) {
 				Debug.WriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				return null;
@@ -162,6 +163,8 @@ namespace namaichi.utility
 				
 				return ret;
 				
+			} catch (DllNotFoundException ee) {
+				throw ee;
 			} catch (Exception ee) {
 				Debug.WriteLine(ee.Message + ee.Source + ee.StackTrace);
 			} finally {

@@ -444,6 +444,8 @@ namespace namaichi
 		}
        public void addComment(string time, string comment, string userId, string score, string color) {
 	       	if (!bool.Parse(config.get("IsDisplayComment"))) return;
+	       	if (isDuplicateComment(time, comment, userId))
+				return;
 	       	formAction(() => {
 		       	try {
    	           		var rows = new string[]{time, comment, userId};
@@ -1250,3 +1252,4 @@ namespace namaichi
 		}
 	}
 }
+

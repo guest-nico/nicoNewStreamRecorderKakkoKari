@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Drawing;
 using namaichi.utility;
+using rokugaTouroku;
 using rokugaTouroku.config;
 using rokugaTouroku.info;
 
@@ -27,8 +28,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.10.79";
-	public static string versionDayStr = "2024/02/27";
+	public static string versionStr = "ver0.1.3.10.80";
+	public static string versionDayStr = "2024/07/29";
 	public static string osName = null;
 	public static bool isCurl = true;
 	public static bool isWebRequestOk = false;
@@ -1014,6 +1015,32 @@ class util {
 		var h = getHeader(cc, referer, url);
 		var res = new Curl().getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false);
 		return res;
+	}
+	public static void dllCheck(MainForm form) {
+		try {
+			var path = getJarPath()[0];
+			var dlls = new string[]{"websocket4net.dll", 
+					//"NAudio.dll",
+					//"RtmpSharp2.dll", 
+					"SnkLib.App.CookieGetter.Forms.dll",
+					"SnkLib.App.CookieGetter.dll", "SuperSocket.ClientEngine.dll",
+					"Microsoft.Web.XmlTransform.dll", "Newtonsoft.Json.dll",
+					"System.Data.SQLite.dll", "x64/SQLite.Interop.dll",
+					"x86/SQLite.Interop.dll", "x86/SnkLib.App.CookieGetter.x86Proxy.exe",
+					"curl_wrap.dll", "libcurl.dll"
+			};
+			var isOk = new string[dlls.Length];
+			var msg = "";
+			foreach (var n in dlls) {
+				if (!File.Exists(path + "/" + n)) 
+					msg += (msg == "" ? "" : ",") + n;
+			}
+		if (msg != "")
+			form.formAction(() => util.showMessageBoxCenterForm(form, path + "内に" + msg + "が見つかりませんでした"));
+		} catch (Exception e) {
+			util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+			form.addLogText(e.Message + e.Source + e.Source + e.StackTrace);
+		}
 	}
 	public static string CheckOSName()
         {

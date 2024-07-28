@@ -97,6 +97,9 @@ namespace namaichi
                     if (cookieImporter.SourceInfo.BrowserName.StartsWith("IE ") && 
                         result.Status == CookieImportState.AccessError) {
                     	return "DLLエラー" + result.Status;
+                    } else if (result.Status == CookieImportState.AccessError) {
+                    	util.debugWriteLine("ﾌﾞﾗｳｻﾞが開いている為Cookie取得できません " + cookieImporter.SourceInfo.BrowserName);
+						return "ﾌﾞﾗｳｻﾞが開いている為Cookie取得できません";
                     } else if (result.Status != CookieImportState.Success) return null;
                     foreach(Cookie c in result.Cookies) {
                     	if (Regex.IsMatch(c.Name, "[^0-9a-zA-Z\\._\\-\\[\\]%#&=\":\\{\\} \\(\\)/\\?\\|]") ||

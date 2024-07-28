@@ -674,6 +674,7 @@ namespace rokugaTouroku
 					if (cgret != null && cgret.Result != null
 					    	&& cgret.Result[0] != null)
 						container = cgret.Result[0];
+					util.dllCheck(this);            
 				} catch (Exception ee) {
 					util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace);
 				}
@@ -1265,7 +1266,8 @@ namespace rokugaTouroku
 		}
 		public bool isDisplayingRi(RecInfo ri) {
 			var i = recListDataSource.IndexOf(ri);
-			return i > -1 && recList.CurrentRow.Index == i;
+			return i > -1 && recList.CurrentRow != null && 
+					recList.CurrentRow.Index == i;
 		}
 	}
 }

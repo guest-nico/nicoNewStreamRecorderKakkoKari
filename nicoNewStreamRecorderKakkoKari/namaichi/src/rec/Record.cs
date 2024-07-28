@@ -904,6 +904,7 @@ namespace namaichi.rec
 			} catch (Exception e) {
 				addDebugBuf(e.Message+e.StackTrace + e.Source + e.TargetSite);
 				rm.form.addLogText("セグメントファイルを連結して書き込み中に何らかの問題が発生しました。 " + e.Message + e.StackTrace);
+				Thread.Sleep(1000);
 				return false;
 			}
 		}

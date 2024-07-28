@@ -187,8 +187,6 @@ namespace namaichi.rec
 			this.isGetCommentXml = bool.Parse(rm.cfg.get("IsgetcommentXml"));
 			this.isGetCommentXmlInfo = bool.Parse(rm.cfg.get("IsgetcommentXmlInfo"));
 			this.engineMode = rm.cfg.get("EngineMode");
-			if (bool.Parse(rm.cfg.get("IsNotSleep")))
-				util.setThreadExecutionState();
 			
 			if (ri.isChase && !isSaveComment) isHokan = true;
 			isConvertSpace = bool.Parse(rm.cfg.get("IsCommentConvertSpace"));
@@ -226,40 +224,25 @@ namespace namaichi.rec
 			if (!ri.si.isRtmpOnlyPage && !(ri.isChase && !isSaveComment))
 				Task.Factory.StartNew(() => displaySchedule(), TaskCreationOptions.LongRunning);
 			
-			WebSocket lastWebSocket = null;
+			object lastWebSocket = null;
 			var stopWsCount = 0;
 			var lastSendRequired = DateTime.Now;
 			
 			while (rm.rfu == rfu && IsRetry) {
 				if (isUseCurlWs) {
+					reConnectCheck(ref stopWsCount, ref lastWebSocket);
 					Thread.Sleep(3000);
 				} else {
 					if (!ri.isRtmp && ws != null && ws.State == WebSocket4Net.WebSocketState.Closed) {
 						addDebugBuf("no connect loop ws close");
 	//					connect();
 					}
+					reConnectCheck(ref stopWsCount, ref lastWebSocket);
 					
-					if (ws != null) {
-						if ((ws.State != WebSocketState.Open || (rec != null && rec.isReConnecting)) 
-						    		&& ws == lastWebSocket) {
-							stopWsCount++;
-							if (stopWsCount > 10) {
-								addDebugBuf("stop ws count " + stopWsCount + " close ws / rec.isreconnecting " + (rec != null ? rec.isReConnecting.ToString() : ""));
-								
-								rm.form.addLogText("再接続中");
-								
-								#if DEBUG
-									rm.form.addLogText("stop ws reConnect");
-								#endif
-								isWaitNextConnection = true;
-								connectUntilOk();
-								stopWsCount = 0;
-							}
-						} else stopWsCount = 0;
-						lastWebSocket = ws;
-					}
 					System.Threading.Thread.Sleep(1000);
 				}
+				if (bool.Parse(rm.cfg.get("IsNotSleep")))
+					util.setThreadExecutionState();
 			}
 
 			addDebugBuf("wsr end0");
@@ -464,11 +447,7 @@ namespace namaichi.rec
 		private void onError(object sender, SuperSocket.ClientEngine.ErrorEventArgs e) {
 			displayDebug("ws error");
 			addDebugBuf("on error " + e.Exception.Message + " ws " + sender.GetHashCode());
-			
-			//stopRecording();
-//			reConnect();
-//			ws.Open();
-//			endStreamProcess();
+			rm.form.addLogText("websocket error " + e.Exception.Message);
 		}
 		private void onDataReceive(object sender, DataReceivedEventArgs e) {
 			addDebugBuf("on data " + e.Data);
@@ -1983,6 +1962,31 @@ namespace namaichi.rec
 				return false;
 			}
 			return true;
+		}
+		private void reConnectCheck(ref int stopWsCount, ref object lastWebSocket) {
+			var isExistsWs = isUseCurlWs ? (wsCurl != null) : (ws != null);
+			if (isExistsWs) {
+				var isFailureState = isUseCurlWs ? 
+					(rec != null && rec.isReConnecting) :
+					((ws.State != WebSocketState.Open || (rec != null && rec.isReConnecting)) 
+				    		&& ws == lastWebSocket);
+				
+				if (isFailureState) {
+					if (stopWsCount > 10) {
+						addDebugBuf("stop ws count " + stopWsCount + " close ws / rec.isreconnecting " + (rec != null ? rec.isReConnecting.ToString() : ""));
+						
+						rm.form.addLogText("再接続中");
+						
+						#if DEBUG
+							rm.form.addLogText("stop ws reConnect");
+						#endif
+						isWaitNextConnection = true;
+						connectUntilOk();
+						stopWsCount = 0;
+					}
+				} else stopWsCount = 0;
+				lastWebSocket = ws;
+			}
 		}
 	}
 }

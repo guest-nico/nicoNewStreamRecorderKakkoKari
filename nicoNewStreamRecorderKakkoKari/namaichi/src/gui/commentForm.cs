@@ -112,15 +112,21 @@ namespace namaichi
 				       	       	var isScroll = (commentList.FirstDisplayedScrollingRowIndex +
 					       	       	    commentList.DisplayedRowCount(true) 
 					       	       	    >= commentList.Rows.Count);
+					       		var firstDisplayedRow = commentList.FirstDisplayedScrollingRowIndex != -1 ? commentList.Rows[commentList.FirstDisplayedScrollingRowIndex] : null;
 								var rows = new string[]{time, contents, color, userId, score};
 								if (!isDuplicateRow(rows))
 				       	       		commentList.Rows.Add(rows);
 				       	       	
-				       	       	if (isScroll) commentList.FirstDisplayedScrollingRowIndex = commentList.Rows.Count - 1;
-				       	       	
 				       	       	while (commentList.Rows.Count > 300 && true) {
 				       	       		commentList.Rows.RemoveAt(0);
 				       	       	}
+								if (isScroll) {
+									commentList.FirstDisplayedScrollingRowIndex = commentList.Rows.Count - 1;
+								} else {
+									var originalFirstI = commentList.Rows.IndexOf(firstDisplayedRow);
+									if (originalFirstI != commentList.FirstDisplayedScrollingRowIndex && originalFirstI > -1)
+										commentList.FirstDisplayedScrollingRowIndex = originalFirstI;
+								}
 			       	       	} catch (Exception e) {
 			       	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 			       	       	}

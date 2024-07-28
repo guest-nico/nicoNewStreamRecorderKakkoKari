@@ -85,6 +85,8 @@ namespace namaichi.rec
 				Curl.curl_easy_setopt(easy, CURLoption.CURLOPT_SSL_VERIFYPEER, 0);
 				Curl.curl_easy_setopt(easy, CURLoption.CURLOPT_CONNECT_ONLY, 2L);
 				Curl.curl_easy_setopt(easy, CURLoption.CURLOPT_USERAGENT, util.userAgent);
+				if (util.httpProxy != null)
+					Curl.curl_easy_setopt(easy, CURLoption.CURLOPT_PROXY, util.httpProxy.Address.AbsoluteUri.TrimEnd('/'));
 				
 				easy = setHeader(easy);
 				
