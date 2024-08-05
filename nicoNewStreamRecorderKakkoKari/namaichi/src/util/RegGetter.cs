@@ -97,7 +97,7 @@ namespace namaichi.utility
 		}
 		public Regex getMaxNo() {
 			if (maxNo == null)
-				maxNo = new Regex("^(\\d+)\\.(ts|mp4)");
+				maxNo = new Regex("(\\d+)\\.(ts|mp4)");
 			return maxNo;
 		}
 		public Regex getLastTsNum() {

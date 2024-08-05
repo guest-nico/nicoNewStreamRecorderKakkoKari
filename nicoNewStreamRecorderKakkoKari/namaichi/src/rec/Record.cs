@@ -584,8 +584,8 @@ namespace namaichi.rec
 									gotTsList.Add(_res);
 								}
 								
-								recordedSecond += _res.second;
-								recordedBytes += _res.res.Length;
+								//recordedSecond += _res.second;
+								//recordedBytes += _res.res.Length;
 								lastFileSecond = _res.second;
 								if (_res.no > gotTsMaxNo) gotTsMaxNo = _res.no;
 							}
@@ -607,7 +607,7 @@ namespace namaichi.rec
 			addDebugBuf("ts getter end gotTsList len " + gotTsList.Count);
 		}
 		private void startTsWriter() {
-			while (rfu == rm.rfu) {
+			while (rfu == rm.rfu || gotTsList.Count != 0) {
 				try {
 	//				addDebugBuf("ts writer loop gotTsListCount " + gotTsList.Count);
 					var isTsGetterEnd = (tsGetterTask.IsCanceled ||
@@ -658,7 +658,7 @@ namespace namaichi.rec
 					if (isRenketuRecord) {
 						tsListRenketuWrite();
 						if (count > 0 && !isPlayOnlyMode) setRecordState();
-						Thread.Sleep(gotTsList.Count < 10 ? 5000 : 1000);
+						Thread.Sleep(gotTsList.Count < 10 ? 2000 : 1000);
 						continue;
 					}
 					count = gotTsList.Count;
@@ -672,7 +672,7 @@ namespace namaichi.rec
 							ret = writeFile(s);
 							addDebugBuf("write time " + (DateTime.Now - before));
 							if (DateTime.Now - before > TimeSpan.FromSeconds(2))
-								Thread.Sleep(2000);
+								Thread.Sleep(1000);
 						}
 						
 						if (ret) {
@@ -785,7 +785,7 @@ namespace namaichi.rec
 				}
 				
 				foreach (var nti in writeNti) {
-					addDebugBuf("renketu write ok " + nti.no + " origin " + nti.originNo);
+					addDebugBuf("renketu write ok " + nti.no + " origin " + nti.originNo + " second " + nti.second);
 					recordedNo.Add(nti.fileName);
 					lastSegmentNo = nti.no;
 					lastWroteSegmentDt = nti.dt;
@@ -793,6 +793,9 @@ namespace namaichi.rec
 					if (ri.isFmp4) lastWriteFmp4Nti = nti;
 					var fName = util.getRegGroup(nti.fileName, ".*(\\\\|/|^)(.+)", 2, rm.regGetter.getFName());
 					lastRecordedSeconds = util.getSecondsFromStr(fName);
+					
+					recordedSecond += nti.second;
+					recordedBytes += nti.res.Length;
 				}
 				
 				if (rfu.subGotNumTaskInfo != null)
@@ -1781,7 +1784,7 @@ namespace namaichi.rec
 			var minNo = 0;
 			foreach (var l in res.Split('\n')) {
 				if (l.IndexOf(ext) != -1 && !l.StartsWith("#")) {
-					maxNo = int.Parse(util.getRegGroup(l, "^(\\d+)\\" + ext, 1, rm.regGetter.getMaxNo()));
+					maxNo = int.Parse(util.getRegGroup(l, "(\\d+)\\" + ext, 1, rm.regGetter.getMaxNo()));
 					maxLine = l;
 					if (minNo == 0) minNo = maxNo; 
 				}
@@ -1844,6 +1847,7 @@ namespace namaichi.rec
 		}
 		*/
 		private void reConnect() {
+			if ((wr as WebSocketRecorder) == null) return;
 			var isUseCurlWs = ((WebSocketRecorder)wr).isUseCurlWs; 
 			if (!isUseCurlWs &&  (wr == null || ws == null)) return;
 			wr.reConnect(ws);

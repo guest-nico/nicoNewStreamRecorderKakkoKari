@@ -76,6 +76,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>..\packages\protobuf-net.2.4.4\lib\net40\protobuf-net.dll</HintPath>
+    </Reference>
     <Reference Include="SnkLib.App.CookieGetter">
       <HintPath>..\packages\SnkLib.App.CookieGetter.2.4.2.0\lib\net45\SnkLib.App.CookieGetter.dll</HintPath>
     </Reference>
@@ -246,6 +249,7 @@
     <Compile Include="src\rec\ITimeShiftCommentGetter.cs" />
     <Compile Include="src\rec\JikkenRecorder.cs" />
     <Compile Include="src\rec\JikkenRecordProcess.cs" />
+    <Compile Include="src\rec\MpnCommentGetter.cs" />
     <Compile Include="src\rec\NotHtml5Recorder.cs" />
     <Compile Include="src\rec\OutputTimeShiftTsUrlList.cs" />
     <Compile Include="src\rec\Record.cs" />
@@ -265,10 +269,12 @@
     <Compile Include="src\rec\XmlCommentGetter_ontime.cs" />
     <Compile Include="src\util\ArgReader.cs" />
     <Compile Include="src\util\Curl.cs" />
+    <Compile Include="src\util\ProtoBufCodes.cs" />
     <Compile Include="src\util\RedirectLogin.cs" />
     <Compile Include="src\util\RegGetter.cs" />
     <Compile Include="src\util\SourceInfoSerialize.cs" />
     <Compile Include="src\util\util.cs" />
+    <Compile Include="src\util\varint.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="src\gui\commentForm.resx">

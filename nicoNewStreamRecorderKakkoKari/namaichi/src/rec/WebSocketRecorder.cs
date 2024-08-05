@@ -53,9 +53,11 @@ namespace namaichi.rec
 				isRetry = value;
 			}}
 		
+		private MpnCommentGetter mcg = null;
 		private string msThread;
 		private string msStoreThread;
 		private string threadkey = null;
+		
 		private string sendCommentBuf = null;
 		private bool isSend184 = true;
 		
@@ -473,10 +475,17 @@ namespace namaichi.rec
 				sendPong();
 			}
 			//get message
-			if (type == "room" || type == "messageServerUri" || type == "currentroom") {
+			if (type == "room" || type == "messageServerUri" || 
+			    	type == "currentroom" || type == "messageServer") {
 				//if (isSub) return;
 				if (!isSaveComment) return;
 				
+				Task.Factory.StartNew(() => {
+						mcg = new MpnCommentGetter(rm, rfu, this);
+						mcg.get(message);
+					}, TaskCreationOptions.LongRunning);
+				
+				/*
 				setMsInfo(message);
 				if (ri.si.isTimeShift && !ri.isRealtimeChase) {
 					if (tscg == null) {
@@ -490,7 +499,7 @@ namespace namaichi.rec
 									//(ri.isRtmp) ? false : ri.timeShiftConfig.isVposStartTime, 
 									ri.isRtmp, rr, roomName, ri.timeShiftConfig,
 									null, true, false, null, null);
-							tscg.save();
+							 tscg.save();
 						} else {
 							addDebugBuf("not tscg ischase commentbuf null");
 							#if DEBUG
@@ -505,6 +514,7 @@ namespace namaichi.rec
 						connectMessageServer();
 					}
 				}
+				*/
 			}
 			
 			//record
@@ -933,43 +943,49 @@ namespace namaichi.rec
 				sendMessage(senderWs, sender == wsc[0] ? msReq[0] : msStoreReq[0], 
 						sender == wsc[0] ? 0 : 1);
 				isFirstCommentAfterOpenWsc = true;
-				if (bool.Parse(isGetComment) && commentSW == null && !rfu.isPlayOnlyMode && sender == wsc[0]) {
-					if (DateTime.Now < lastOpenCommentSwDt + TimeSpan.FromSeconds(3) 
-					    	&& (rec.engineMode != "0" && rec.engineMode != "3")) {
-						var __commentFileName = util.getOkCommentFileName(rm.cfg, commentFileName, ri.si.lvid, ri.si.isTimeShift, ri.isRtmp);
-						try {
-							File.Delete(__commentFileName);
-						} catch (Exception ee) {addDebugBuf(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);}
-					}
-					
-					var fName = (commentFileName == null) ? ri.recFolderFile[1] : incrementRecFolderFile(commentFileName);
-					//var fName = (commentFileName == null) ? recFolderFile[1] : incrementRecFolderFile(commentFileName);
-					commentFileName = fName;
-					var _commentFileName = util.getOkCommentFileName(rm.cfg, fName, ri.si.lvid, ri.si.isTimeShift, ri.isRtmp);
-					var isExists = File.Exists(_commentFileName);
-					commentSW = new StreamWriter(_commentFileName, false, System.Text.Encoding.UTF8);
-					lastOpenCommentSwDt = DateTime.Now;
-					
-					if (!isExists) {
-						if (isGetCommentXml) {
-							commentSW.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
-							if (!isGetCommentXmlInfo) 
-								commentSW.WriteLine("<packet>");
-							else {
-								writeXmlStreamInfo(commentSW);
-							}
-					        commentSW.Flush();
-						} else {
-							commentSW.WriteLine("[");
-						}
-					}
-					
-			       
-				}
+				
+				if (sender == wsc[0])
+					commentFileInit();
+				
 			} catch (Exception ee) {
 				addDebugBuf(ee.Message + " " + ee.StackTrace);
 			}
 			Task.Run(() => {pongWsc(senderWs);});
+		}
+		public void commentFileInit() {
+			if (bool.Parse(isGetComment) && commentSW == null && !rfu.isPlayOnlyMode) {
+				if (DateTime.Now < lastOpenCommentSwDt + TimeSpan.FromSeconds(3) 
+				    	&& (rec.engineMode != "0" && rec.engineMode != "3")) {
+					var __commentFileName = util.getOkCommentFileName(rm.cfg, commentFileName, ri.si.lvid, ri.si.isTimeShift, ri.isRtmp);
+					try {
+						File.Delete(__commentFileName);
+					} catch (Exception ee) {addDebugBuf(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);}
+				}
+				
+				var fName = (commentFileName == null) ? ri.recFolderFile[1] : incrementRecFolderFile(commentFileName);
+				//var fName = (commentFileName == null) ? recFolderFile[1] : incrementRecFolderFile(commentFileName);
+				commentFileName = fName;
+				var _commentFileName = util.getOkCommentFileName(rm.cfg, fName, ri.si.lvid, ri.si.isTimeShift, ri.isRtmp);
+				var isExists = File.Exists(_commentFileName);
+				commentSW = new StreamWriter(_commentFileName, false, System.Text.Encoding.UTF8);
+				lastOpenCommentSwDt = DateTime.Now;
+				
+				if (!isExists) {
+					if (isGetCommentXml) {
+						commentSW.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
+						if (!isGetCommentXmlInfo) 
+							commentSW.WriteLine("<packet>");
+						else {
+							writeXmlStreamInfo(commentSW);
+						}
+				        commentSW.Flush();
+					} else {
+						commentSW.WriteLine("[");
+					}
+				}
+				
+		       
+			}
 		}
 		private void pongWsc(WebSocket _wsc) {
 			while ((isUseCurlWs || _wsc.State == WebSocket4Net.WebSocketState.Open) && !isEndProgram && IsRetry) {
@@ -1064,14 +1080,18 @@ namespace namaichi.rec
 		}
 		public void onWscMessageReceive(object sender, MessageReceivedEventArgs e) {
 			addDebugBuf("on wsc message " + e.Message);
+			var eMessage = isConvertSpace ? util.getOkSJisOut(e.Message, rm.cfg.get("commentConvertStr")) : e.Message;
+			onCommentMessageReceiveCore(eMessage);
+		}
+		public void onCommentMessageReceiveCore(string eMessage) {
 			if (lastSaveComments.Count > 0 && isFirstCommentAfterOpenWsc) {
 				checkMissingComment();
 			}
 			isFirstCommentAfterOpenWsc = false;
 			
-			var eMessage = isConvertSpace ? util.getOkSJisOut(e.Message, rm.cfg.get("commentConvertStr")) : e.Message;
-			//if (isNormalizeComment) eMessage = eMessage.Replace("\"premium\":24", "\"premium\":0");
 			
+			//if (isNormalizeComment) eMessage = eMessage.Replace("\"premium\":24", "\"premium\":0");
+			object sender = null; 
 			if (ri.si.isTimeShift && eMessage.StartsWith("{\"ping\":{\"content\":\"rf:") && !ri.isChase && (sender == wsc[0] || sender == null)) {
 				closeWscProcess();
 				try {commentSW.Close();}
@@ -1098,7 +1118,9 @@ namespace namaichi.rec
 			
 			XDocument xml = null;
 			try {
-				xml = JsonConvert.DeserializeXNode(eMessage);
+				if (eMessage.StartsWith("{"))
+					xml = JsonConvert.DeserializeXNode(eMessage);
+					else xml = XDocument.Parse(eMessage);
 			} catch (Exception ee) {
 				addDebugBuf(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite + eMessage);
 				try {
@@ -1113,8 +1135,6 @@ namespace namaichi.rec
 					return;
 				}
 			}
-			var chatinfo = new ChatInfo(xml);
-			
 			XDocument chatXml;
 			if (ri.si.isTimeShift && !ri.isChase) chatXml = chatinfo.getFormatXml(ri.si.openTime);
 			else {
@@ -1516,7 +1536,7 @@ namespace namaichi.rec
 				}
 			}
 		}
-		private void addDebugBuf(string s) {
+		public void addDebugBuf(string s) {
 			#if !DEBUG
 //				return;
 			#endif

@@ -54,7 +54,10 @@ namespace namaichi.rec
 			this.url = util.getRegGroup(url, "([^,]+)");
 			tsRecNumArr = (this.lvid == lvid) ? null : Array.ConvertAll<string, int>(util.getRegGroup(lvid, ",(.+)").Split(','), (i) => {return int.Parse(i);});
 			
-			var mainT = Task.Run<int>(() => {return lvid.StartsWith("lv") ? _rec(this.url) : new ChannelPlusRecorder(url, rm.form, rm, lvid, this).run();});
+			var mainT = Task.Run<int>(() => {
+				if (lvid.StartsWith("lv")) return _rec(this.url);
+				else return new ChannelPlusRecorder(url, rm.form, rm, lvid, this).run();
+			});
 			
 			try {
 				while (true) {

@@ -62,27 +62,10 @@ namespace namaichi.info
 //			}
 			
 			foreach (XElement e in xml.Root.Elements()) {
-//				util.debugWriteLine(xml.Root);
-//				o[0] = new XAttribute(e.Name, e.Value);
-//				_xml.Root.SetAttributeValue(e.Name, e.Value);
-				if ((root == "chat" && e.Name == "content") ||
-				    (root == "control" && e.Name == "text") ||
-				    (root == "ping" && e.Name == "content")) {
-					_xml.Root.Add(e.Value);
-					contents = e.Value;
-				} else _xml.Root.SetAttributeValue(e.Name, e.Value);
-				if (e.Name == "premium") premium = e.Value;
-				if (e.Name == "server_time") 
-					this.serverTime = int.Parse(e.Value);
-				if (e.Name == "date") date = int.Parse(e.Value);
-//				_xml.Root.Add(new XAttribute(e.Name, e.Value));
-				if (e.Name == "date_usec") date_usec = int.Parse(e.Value);
-				if (e.Name == "vpos") vpos = long.Parse(e.Value);
-				if (e.Name == "user_id") userId = e.Value;
-				if (e.Name == "score") score = e.Value;
-				if (e.Name == "ticket") ticket = e.Value;
-				if (e.Name == "last_res") lastRes = e.Value;
-				if (e.Name == "no") no = int.Parse(e.Value);
+				setKeyValue(e.Name.ToString(), e.Value.ToString(), _xml);
+			}
+			foreach (XAttribute e in xml.Root.Attributes()) {
+				setKeyValue(e.Name.ToString(), e.Value.ToString(), _xml);
 			}
 			
 			if (root == "chat" || root == "control") {
@@ -158,6 +141,26 @@ namespace namaichi.info
 //			util.debugWriteLine(_xml);
 			
 			xml = _xml;
+		}
+		void setKeyValue(string name, string value, XDocument _xml) {
+			if ((root == "chat" && name == "content") ||
+			    (root == "control" && name == "text") ||
+			    (root == "ping" && name == "content")) {
+				_xml.Root.Add(value);
+				contents = value;
+			} else _xml.Root.SetAttributeValue(name, value);
+			if (name == "premium") premium = value;
+			if (name == "server_time") 
+				this.serverTime = int.Parse(value);
+			if (name == "date") date = int.Parse(value);
+//				_xml.Root.Add(new XAttribute(name, value));
+			if (name == "date_usec") date_usec = int.Parse(value);
+			if (name == "vpos") vpos = long.Parse(value);
+			if (name == "user_id") userId = value;
+			if (name == "score") score = value;
+			if (name == "ticket") ticket = value;
+			if (name == "last_res") lastRes = value;
+			if (name == "no") no = int.Parse(value);
 		}
 	}
 }

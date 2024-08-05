@@ -98,12 +98,15 @@ namespace namaichi.rec
 			util.setProxy(cfg, form);
 			isRecording = true;
 			form.formAction(() => {
-			                	form.urlText.Text = lvid.StartsWith("lv") ? ("https://live.nicovideo.jp/watch/" + lvid) : 
-			                		util.getRegGroup(form.urlText.Text, "(https://nicochannel.jp/.+/(live|video)/([a-zA-Z0-9]+))");
+            	var url = "";
+            	if (lvid.StartsWith("lv")) 
+            		url = "https://live.nicovideo.jp/watch/" + lvid;
+            	else url = util.getRegGroup(form.urlText.Text, "(https://nicochannel.jp/.+/(live|video)/([a-zA-Z0-9]+))"); 
+            	form.urlText.Text = url; 
 			    setRecModeForm(true);
 			
 				form.resetDisplay();
-				recordingUrl = form.urlText.Text;
+				recordingUrl = url;
 			}, false);
 			
 			rfu = new RecordFromUrl(this, isPlayOnlyMode);

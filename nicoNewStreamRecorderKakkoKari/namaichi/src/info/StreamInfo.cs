@@ -62,7 +62,7 @@ namespace namaichi.info
 				
 				//long endTime, _openTime, serverTime, vposBaseTime;
 				//openTime = endTime = _openTime = serverTime = vposBaseTime = 0;
-		    } else {
+			} else {
 			    type = "chplus";
 			    data = this.res = res;
 			    isChasable = false;
