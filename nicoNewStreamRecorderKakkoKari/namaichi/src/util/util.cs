@@ -35,8 +35,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.89.0";
-	public static string versionDayStr = "2024/08/06";
+	public static string versionStr = "ver0.89.1";
+	public static string versionDayStr = "2024/08/11";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -727,14 +727,20 @@ class util {
 		}
 	}
 	public static HttpWebResponse sendRequest(string url, Dictionary<string, string> headers, byte[] content, string method, CookieContainer cc = null) {
+		HttpWebRequest req = null;
+		return sendRequest(url, headers, content, method, cc, out req);
+	}
+	public static HttpWebResponse sendRequest(string url, Dictionary<string, string> headers, byte[] content, string method, CookieContainer cc, out HttpWebRequest req) {
+		req = null;
 		try {
 			util.debugWriteLine("access__ sendRequest " + url);
-			var req = (HttpWebRequest)WebRequest.Create(url);
+			req = (HttpWebRequest)WebRequest.Create(url);
 			req.Method = method;
 			req.Proxy = httpProxy;
 			req.Headers.Add("Accept-Encoding", "gzip,deflate");
 			req.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 			req.CookieContainer = cc;
+			req.Timeout = 30000;
 			
 			if (headers != null) {
 				foreach (var h in headers) {
@@ -764,7 +770,7 @@ class util {
 			return (HttpWebResponse)req.GetResponse();
 			
 		} catch (WebException ee) {
-			util.debugWriteLine(ee.Data + ee.Message + ee.Source + ee.StackTrace + ee.Status);
+			util.debugWriteLine("sendRequest error " + ee.Data + ee.Message + ee.Source + ee.StackTrace + ee.Status + " " + url);
 			try {
 				return (HttpWebResponse)ee.Response;
 			} catch (Exception eee) {
@@ -1709,5 +1715,4 @@ public static void soundEnd(config cfg, MainForm form) {
 		util.debugWriteLine("vcr140Check " + mes + " " + isExists);
 		return isExists;
 	}
-	
 }

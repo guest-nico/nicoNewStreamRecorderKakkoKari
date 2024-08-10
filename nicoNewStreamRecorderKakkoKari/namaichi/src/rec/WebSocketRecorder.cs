@@ -48,7 +48,7 @@ namespace namaichi.rec
 		new public bool IsRetry {get{return isRetry;} set{
 				//if (!value && (!isTimeShift || isChase) && rm.rfu == rfu && isGetComment == "true") {
 				if (!value && isRetry && (!ri.si.isTimeShift || ri.isChase) && isGetComment == "true") {
-					checkMissingComment();
+					//checkMissingComment();
 				}
 				isRetry = value;
 			}}
@@ -449,7 +449,7 @@ namespace namaichi.rec
 		private void onError(object sender, SuperSocket.ClientEngine.ErrorEventArgs e) {
 			displayDebug("ws error");
 			addDebugBuf("on error " + e.Exception.Message + " ws " + sender.GetHashCode());
-			rm.form.addLogText("websocket error " + e.Exception.Message);
+			//rm.form.addLogText("websocket error " + e.Exception.Message);
 		}
 		private void onDataReceive(object sender, DataReceivedEventArgs e) {
 			addDebugBuf("on data " + e.Data);
@@ -480,11 +480,12 @@ namespace namaichi.rec
 				//if (isSub) return;
 				if (!isSaveComment) return;
 				
-				Task.Factory.StartNew(() => {
-						mcg = new MpnCommentGetter(rm, rfu, this);
-						mcg.get(message);
-					}, TaskCreationOptions.LongRunning);
-				
+				if (mcg == null) {
+					Task.Factory.StartNew(() => {
+							mcg = new MpnCommentGetter(rm, rfu, this);
+							mcg.get(message);
+						}, TaskCreationOptions.LongRunning);
+				}
 				/*
 				setMsInfo(message);
 				if (ri.si.isTimeShift && !ri.isRealtimeChase) {
@@ -619,6 +620,9 @@ namespace namaichi.rec
 				isNoPermission = true;
 				//stopRecording();
 //				reConnect();
+				if (ri.si.isTimeShift && !ri.isChase) {
+					IsRetry = false;
+				}
 			}
 			//if (e.Message.IndexOf("\"command\":\"statistics\",\"params\"") >= 0
 			if (type == "statistics") {
@@ -1021,7 +1025,7 @@ namespace namaichi.rec
 			}
 			
 		}
-		private void closeWscProcess() {
+		public void closeWscProcess() {
 			addDebugBuf("close wsc process");
 			if (ri.si.isTimeShift && isTimeShiftCommentGetEnd) return;
 			
@@ -1085,7 +1089,7 @@ namespace namaichi.rec
 		}
 		public void onCommentMessageReceiveCore(string eMessage) {
 			if (lastSaveComments.Count > 0 && isFirstCommentAfterOpenWsc) {
-				checkMissingComment();
+				//checkMissingComment();
 			}
 			isFirstCommentAfterOpenWsc = false;
 			
@@ -1135,8 +1139,14 @@ namespace namaichi.rec
 					return;
 				}
 			}
+			var chatinfo = new ChatInfo(xml);
+			//chatinfo.getFromXml(serverTime);
+			//XDocument chatXml = chatinfo.xml;
+			
 			XDocument chatXml;
-			if (ri.si.isTimeShift && !ri.isChase) chatXml = chatinfo.getFormatXml(ri.si.openTime);
+			if (ri.si.isTimeShift && !ri.isChase) 
+				//chatXml = chatinfo.getFormatXml(ri.si.openTime);
+				chatXml = chatinfo.getFormatXml(ri.si.openTime, true, 0);
 			else {
 				if (!ri.si.isTimeShift || ri.isRealtimeChase) {
 					if (ri.si.type == "official") {
@@ -1159,6 +1169,7 @@ namespace namaichi.rec
 					
 				}
 			}
+			
 			if (isGetCommentXmlInfo && chatinfo.no == -1) 
 				chatXml.Root.Add(new XAttribute("no", "0"));
 			var chatXmlStr = chatXml.ToString();
@@ -1224,7 +1235,10 @@ namespace namaichi.rec
 						writeStr = util.getReplacedComment(writeStr, commentReplaceList);
 						//writeStr = util.getOkSJisOut(writeStr, " ");
 						
-						if (ri.isChase && !ri.isRealtimeChase && chaseCommentBuf != null) {
+						var isAddChaseCommentBuf = ri.isChase && !ri.isRealtimeChase && chaseCommentBuf != null;
+						//mpn
+						isAddChaseCommentBuf = false;
+						if (isAddChaseCommentBuf) {
 							if (chaseCommentBuf.IndexOf(writeStr) == -1) {
 								chaseCommentBuf.Add(writeStr);
 								
@@ -1269,7 +1283,8 @@ namespace namaichi.rec
 			if (chat.contents == null) return;
 //			var time = util.getUnixToDatetime(chat.vpos / 100);
 //			var unixKijunDt = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-			var __time = chat.date - ri.si.openTime; //- (60 * 60 * 9);
+			//var __time = chat.date - ri.si.openTime; //- (60 * 60 * 9);
+			var __time = chat.vposOriginal / 100;
 
 //			var __timeDt = util.getUnixToDatetime(__time);
 //			var openTimeDt = util.getUnixToDatetime(openTime);

@@ -161,7 +161,8 @@ namespace namaichi.rec
 				} else RecordLogInfo.loginLog += "アカウントログインからクッキーを取得できませんでした。";
 			}
 			
-			if (isWatchPage(url)) return new CookieContainer();
+			if (isWatchPage(url)) 
+				return new CookieContainer();
 			return null;
 		}
 		private CookieContainer getUserSessionCC(string us, string uss) {

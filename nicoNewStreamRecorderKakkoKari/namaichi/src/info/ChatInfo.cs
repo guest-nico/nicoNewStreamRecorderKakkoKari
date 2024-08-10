@@ -71,9 +71,9 @@ namespace namaichi.info
 			if (root == "chat" || root == "control") {
 				if (!isOriginalVposBase) {
 					var _dateUseC = ((double)date_usec / (Math.Pow(10, date_usec.ToString().Length)));
-					vposOriginal = vpos = (long)((date + _dateUseC - serverTime) * 100);
+					vpos = (long)((date + _dateUseC - serverTime) * 100);
 				} else {
-					vposOriginal = vpos = vpos - vposStartTime * 100;
+					vpos = vpos - vposStartTime * 100;
 				}
 				if (vpos < 0) vpos = 0;
 				_xml.Root.SetAttributeValue("vpos", vpos);
@@ -155,7 +155,7 @@ namespace namaichi.info
 			if (name == "date") date = int.Parse(value);
 //				_xml.Root.Add(new XAttribute(name, value));
 			if (name == "date_usec") date_usec = int.Parse(value);
-			if (name == "vpos") vpos = long.Parse(value);
+			if (name == "vpos") vpos = vposOriginal = long.Parse(value);
 			if (name == "user_id") userId = value;
 			if (name == "score") score = value;
 			if (name == "ticket") ticket = value;
