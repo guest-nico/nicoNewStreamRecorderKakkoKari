@@ -405,7 +405,7 @@ namespace namaichi.rec
 					util.debugWriteLine(e.Message + " " + e.StackTrace);
 					System.Threading.Thread.Sleep(3000);
 					if (isLogin) {	
-						rm.form.addLogText("ページの取得に失敗しました。");
+						rm.form.addLogText("ページの取得に失敗しました。" + e.Message + e.Source + e.StackTrace);
 						isLogin = false;
 					}
 				}

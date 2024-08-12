@@ -35,8 +35,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.89.1";
-	public static string versionDayStr = "2024/08/11";
+	public static string versionStr = "ver0.89.2";
+	public static string versionDayStr = "2024/08/13";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;

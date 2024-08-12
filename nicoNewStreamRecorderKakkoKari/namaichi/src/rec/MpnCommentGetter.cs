@@ -35,7 +35,9 @@ namespace namaichi.rec
 		int vposBaseTimeUnix = 0;
 		string mpnHashedUserId = null;
 		List<string> gotCommentIDList = new List<string>();
-		bool isCatchUpChase = false;
+		List<KeyValuePair<double, string>> gotPastCommentBuf = null;
+		List<KeyValuePair<double, string>> gotRealTimeCommentBuf = null;
+		bool isPastCommentMode = false;
 		
 		string at = "now";
 		bool isEnd = false;
@@ -47,10 +49,10 @@ namespace namaichi.rec
 			this.rfu = rfu;
 			this.wr = wr;
 			
-			var isSaveFromBiginning = 
-					wr.ri.si.isTimeShift && !wr.ri.isRealtimeChase;
-			at = !isSaveFromBiginning ? "now" : 
-					wr.ri.si._openTime.ToString();
+			if (wr.ri.si.isTimeShift && !wr.ri.isRealtimeChase) {
+				gotPastCommentBuf = new List<KeyValuePair<double, string>>();
+				gotRealTimeCommentBuf = new List<KeyValuePair<double, string>>();
+			}
 		}
 		public void get(string wsMsg) {
 			util.debugWriteLine("mpn comment getter get " + wsMsg);
@@ -94,7 +96,7 @@ namespace namaichi.rec
 			byte[] r = new Byte[1000000];
 			var ms = new MemoryStream();
 			
-			var isUsingStream = !wr.ri.si.isTimeShift || (wr.ri.isRealtimeChase) || isCatchUpChase;
+			var isUsingStream = uri.IndexOf("/backward/") == -1;
 			if (isUsingStream) {
 				HttpWebRequest req = null;
 				try {
@@ -150,9 +152,6 @@ namespace namaichi.rec
 				if (protoList != null && protoList.Count > 0) {
 					passToHandler(protoList);
 				}
-				if (wr.ri.isChase && afterT - beforeT > TimeSpan.FromSeconds(10)) {
-					isCatchUpChase = true;
-				}
 			}
     		
 			return true;
@@ -162,6 +161,8 @@ namespace namaichi.rec
 				onChunkedEntryReceived(protoList as List<ChunkedEntry>);
 			else if (protoList is List<ChunkedMessage>)
 				onChunkedMessageReceived(protoList as List<ChunkedMessage>);
+			else if (protoList is List<PackedSegment>)
+				onPackedSegmentReceived(protoList as List<PackedSegment>);
 		}
 		private List<T> getDataToProtoList<T>(byte[] b, Type t) {
 			var protoList = new List<T>();
@@ -174,8 +175,13 @@ namespace namaichi.rec
 				dataLen = 0;
 				len = 0;
 				try {
-					len = VarintBitConverter.ToUInt64(rList.ToArray(), out dataLen);
-					if (len == 0) break;
+					if (t == typeof(PackedSegment)) {
+						dataLen = 0;
+						len = (ulong)b.Length;
+					} else {
+						len = VarintBitConverter.ToUInt64(rList.ToArray(), out dataLen);
+						if (len == 0) break;
+					}
 					
 	    			util.debugWriteLine("view res len " + b.Length + " rlistLen " + rList.Count + " datalen " + dataLen + " len " + len);
 					
@@ -208,15 +214,6 @@ namespace namaichi.rec
 			}
 			return protoList;
 		}
-		bool des<T>(MemoryStream ms) {
-			try {
-				var cee2 = Serializer.Deserialize<T>(ms);
-					return true;
-			} catch (Exception e) {
-				util.debugWriteLine("deserialize error " + e.Message + e.Source + e.StackTrace);
-				return false;
-			}
-		}
 		void viewProtoProcess() {
 			while (rm.rfu == rfu && wr.IsRetry && !isEnd) {
 				Action<string> a = (d) => {util.debugWriteLine(d);};
@@ -239,8 +236,12 @@ namespace namaichi.rec
 				if (ce.Segment != null) {
 					messageSegmentProcess<ChunkedMessage>(ce.Segment.Uri);
 				}
-				if (ce.Previous != null) {
-					//messageSegmentProcess<ChunkedMessage>(ce.Previous.Uri);
+				if (ce.Previous != null && gotCommentIDList.Count == 0) {
+					messageSegmentProcess<ChunkedMessage>(ce.Previous.Uri);
+				}
+				if (ce.Backward != null && gotPastCommentBuf != null && !isPastCommentMode) {
+					isPastCommentMode = true;
+					messageSegmentProcess<PackedSegment>(ce.Backward.Segment.Uri);
 				}
 				if (wr.ri.si.isTimeShift && !wr.ri.isChase && 
 				    	ce.Segment != null && ce.Segment.Until.Seconds > 
@@ -262,13 +263,41 @@ namespace namaichi.rec
 						var chatXml = getMsgProtoToXML(cm);
 						var json = JsonConvert.SerializeXNode(chatXml);
 						json = json.Replace("\"#text\"", "\"content\"");
-						wr.onCommentMessageReceiveCore(json);
+						
+						if (gotRealTimeCommentBuf != null)
+							addCommentBuf(cm.meta.At, json, gotRealTimeCommentBuf);
+						else wr.onCommentMessageReceiveCore(json, true);
 						gotCommentIDList.Add(cm.meta.Id);
 						
 						var isTimeshiftRec = wr.ri.si.isTimeShift && !wr.ri.isChase; 
 						if (isTimeshiftRec && gotCommentIDList.Count % 100 == 0)
 							rm.form.addLogText(gotCommentIDList.Count + "件のコメントを取得しました");
 					}
+				}
+			}
+		}
+		void onPackedSegmentReceived(List<PackedSegment> l) {
+			foreach (var ps in l) {
+				if (ps.Messages != null) {
+					foreach (var cm in ps.Messages) {
+						if (gotCommentIDList.IndexOf(cm.meta.Id) > -1)
+						    continue;
+						
+						var chatXml = getMsgProtoToXML(cm);
+						var json = JsonConvert.SerializeXNode(chatXml);
+						json = json.Replace("\"#text\"", "\"content\"");
+						
+						addCommentBuf(cm.meta.At, json, gotPastCommentBuf);
+						gotCommentIDList.Add(cm.meta.Id);
+						
+						if (gotPastCommentBuf.Count % 100 == 0)
+							rm.form.addLogText(gotPastCommentBuf.Count + "件のコメントを取得しました");
+					}
+				}
+				if (ps.next != null) {
+					receiveFromProtoUri<PackedSegment>(ps.next.Uri);
+				} else {
+					saveCommentBuf();
 				}
 			}
 		}
@@ -326,7 +355,8 @@ namespace namaichi.rec
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
 				return null;
 			}
-			util.debugWriteLine(_xml);
+			if (!isPastCommentMode)
+				util.debugWriteLine(_xml);
 			return _xml;
 			
 		}
@@ -392,7 +422,8 @@ namespace namaichi.rec
 				if (!string.IsNullOrEmpty(s.Enquete.Question)) {
 					l.Add(s.Enquete.Question);
 					l.Add(string.Join(" ", s.Enquete.Choices.Select(x => x.Description).ToArray()));
-					util.debugWriteLine(l);
+					if (!isPastCommentMode)
+						util.debugWriteLine(l);
 				}
 				
 			}
@@ -434,6 +465,39 @@ namespace namaichi.rec
 			if (!string.IsNullOrEmpty(c.Link)) m.Add("(" + c.Link + ")");
 			if (c.Modifier != null) m.Add(getModifier(c.Modifier));
 			return string.Join(" ", m.ToArray());
+		}
+		void saveCommentBuf() {
+			util.debugWriteLine("sumPastComment " + (gotPastCommentBuf != null ? gotPastCommentBuf.Count.ToString() : "null"));
+			try {
+				gotPastCommentBuf = gotPastCommentBuf.OrderBy(x => x.Key).ToList();
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+			}
+			saveCommentBufCore(gotPastCommentBuf);
+			gotPastCommentBuf = null;
+			
+			saveCommentBufCore(gotRealTimeCommentBuf);
+			gotRealTimeCommentBuf= null;
+			isPastCommentMode = false;
+		}
+		void saveCommentBufCore(List<KeyValuePair<double, string>> l) {
+			while (l != null && 
+			       l.Count != 0) {
+				try {
+					var c = l[0];
+					wr.onCommentMessageReceiveCore(c.Value, false);
+					l.Remove(c);
+				} catch (Exception e) {
+					util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+					Thread.Sleep(1000);
+				}
+			}
+		}
+		void addCommentBuf(Timestamp at, string json, List<KeyValuePair<double, string>> l) {
+			var seconds = at.Seconds;
+			var nano = double.Parse("0." + at.Nanos);
+			l.Add(new KeyValuePair<double, string>(
+					seconds + nano, json));
 		}
 	}
 }

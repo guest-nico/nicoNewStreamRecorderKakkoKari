@@ -1087,7 +1087,7 @@ namespace namaichi.rec
 			var eMessage = isConvertSpace ? util.getOkSJisOut(e.Message, rm.cfg.get("commentConvertStr")) : e.Message;
 			onCommentMessageReceiveCore(eMessage);
 		}
-		public void onCommentMessageReceiveCore(string eMessage) {
+		public void onCommentMessageReceiveCore(string eMessage, bool isDisplay = true) {
 			if (lastSaveComments.Count > 0 && isFirstCommentAfterOpenWsc) {
 				//checkMissingComment();
 			}
@@ -1269,7 +1269,7 @@ namespace namaichi.rec
 			
 			
 			chatinfo.contents = util.getReplacedComment(chatinfo.contents, commentReplaceList);
-			if (chatinfo.vpos != 0 || true)
+			if (isDisplay)
 				addDisplayComment(chatinfo);
 
 		}
