@@ -92,11 +92,11 @@ namespace namaichi.rec
 			wr.serverTime = util.getUnixTime() - 3600 * 9;
 			return true;
 		}
-		private bool receiveFromProtoUri<T>(string uri) {
+		private bool receiveFromProtoUri<T>(string uri, bool isUsingStream) {
 			byte[] r = new Byte[1000000];
 			var ms = new MemoryStream();
 			
-			var isUsingStream = uri.IndexOf("/backward/") == -1;
+			//var isUsingStream = uri.IndexOf("/backward/") == -1;
 			if (isUsingStream) {
 				HttpWebRequest req = null;
 				try {
@@ -216,11 +216,19 @@ namespace namaichi.rec
 		}
 		void viewProtoProcess() {
 			while (rm.rfu == rfu && wr.IsRetry && !isEnd) {
-				Action<string> a = (d) => {util.debugWriteLine(d);};
-				var isOk = receiveFromProtoUri<ChunkedEntry>(mpnViewUri + "?at=" + at);
-	    		if (!isOk) {
-	    			rm.form.addLogText("コメントのView Uriから正常に情報を取得できませんでした");
+				var isOk = false;
+				for (var i = 0; i < 5; i++) {
+					isOk = receiveFromProtoUri<ChunkedEntry>(mpnViewUri + "?at=" + at, i == 0);
+					if (!isOk) {
+						Thread.Sleep(1000);
+						continue;
+					}
+					break;
+				}
+				if (!isOk) {
+					rm.form.addLogText("コメントのView Uriから正常に情報を取得できませんでした " + mpnViewUri + "?at=" + at);
 	    			Thread.Sleep(1000);
+	    			at = "now";
 	    			continue;
 	    		}
 			}
@@ -242,15 +250,9 @@ namespace namaichi.rec
 				if (ce.Backward != null && gotPastCommentBuf != null && !isPastCommentMode) {
 					isPastCommentMode = true;
 					messageSegmentProcess<PackedSegment>(ce.Backward.Segment.Uri);
+					saveCommentBuf();
 				}
-				if (wr.ri.si.isTimeShift && !wr.ri.isChase && 
-				    	ce.Segment != null && ce.Segment.Until.Seconds > 
-				    	wr.ri.si.endTime + 120 && !isEnd) {
-					isEnd = true;
-					wr.closeWscProcess();
-					rm.form.addLogText("コメントの保存を完了しました");
-					
-				}
+				
 			}
 		}
 		void onChunkedMessageReceived(List<ChunkedMessage> l) {
@@ -295,16 +297,14 @@ namespace namaichi.rec
 					}
 				}
 				if (ps.next != null) {
-					receiveFromProtoUri<PackedSegment>(ps.next.Uri);
-				} else {
-					saveCommentBuf();
+					receiveFromProtoUri<PackedSegment>(ps.next.Uri, false);
 				}
 			}
 		}
 		void messageSegmentProcess<T>(string segmentUri) {
 			var isOk = false;
 			for (var i = 0; i < 5; i++) {
-				isOk = receiveFromProtoUri<T>(segmentUri);
+				isOk = receiveFromProtoUri<T>(segmentUri, i == 0);
 				if (!isOk) {
 					Thread.Sleep(1000);
 					continue;
@@ -313,7 +313,8 @@ namespace namaichi.rec
 			}
 			util.debugWriteLine("messageSegmentProcess " + isOk);
 			if (!isOk) {
-    			rm.form.addLogText("コメントのSegment Uriから正常に情報を取得できませんでした");
+    			rm.form.addLogText("コメントのSegment Uriから正常に情報を取得できませんでした " + segmentUri);
+    			at = "now";
     			return;
     		}
 		}
@@ -377,7 +378,7 @@ namespace namaichi.rec
 			if (!string.IsNullOrEmpty(userId) && userId != "0")
 				_xml.Root.SetAttributeValue("user_id", userId);
 			if (!string.IsNullOrEmpty(modifier))
-				_xml.Root.SetAttributeValue("modifier", modifier);
+				_xml.Root.SetAttributeValue("mail", modifier.ToLower());
 			if (!string.IsNullOrEmpty(name))
 				_xml.Root.SetAttributeValue("name", name);
 			if (!string.IsNullOrEmpty(no))
@@ -479,6 +480,13 @@ namespace namaichi.rec
 			saveCommentBufCore(gotRealTimeCommentBuf);
 			gotRealTimeCommentBuf= null;
 			isPastCommentMode = false;
+			
+			if (wr.ri.si.isTimeShift && !wr.ri.isChase) {
+				isEnd = true;
+				wr.closeWscProcess();
+				rm.form.addLogText("コメントの保存を完了しました");
+				
+			}
 		}
 		void saveCommentBufCore(List<KeyValuePair<double, string>> l) {
 			while (l != null && 
