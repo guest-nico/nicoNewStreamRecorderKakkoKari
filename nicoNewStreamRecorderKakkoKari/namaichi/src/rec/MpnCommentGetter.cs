@@ -96,13 +96,14 @@ namespace namaichi.rec
 			byte[] r = new Byte[1000000];
 			var ms = new MemoryStream();
 			
-			//var isUsingStream = uri.IndexOf("/backward/") == -1;
 			if (isUsingStream) {
 				HttpWebRequest req = null;
+				Exception webReqE = null;
+				
 				try {
 					HttpWebResponse res = null;
 					for (var i = 0; i < 3; i++) {
-						res = util.sendRequest(uri, null, null, "GET", null, out req);
+						res = util.sendRequest(uri, null, null, "GET", null, out req, out webReqE);
 						if (res == null) {
 							Thread.Sleep(1000);
 							continue;
@@ -115,6 +116,10 @@ namespace namaichi.rec
 					if (res == null) {
 						util.debugWriteLine("not get after retry uri " + uri);
 		    			rm.form.addLogText("コメント情報のuriに接続できませんでした。" + uri);
+		    			if (webReqE != null) {
+		    				rm.form.addLogText("webReqE error " + webReqE.Message + " " + webReqE.Source + webReqE.StackTrace);
+		    				util.debugWriteLine("webReqE error " + webReqE.Message + " " + webReqE.Source + webReqE.StackTrace);
+		    			}
 		    			return false;
 		    		}
 					
@@ -135,7 +140,7 @@ namespace namaichi.rec
 						}
 					}
 				} catch (Exception e) {
-					util.debugWriteLine("protoUri read error " + e.Message + e.Source + e.StackTrace);
+					util.debugWriteLine("protoUri stream read error " + uri + " " + e.Message + e.Source + e.StackTrace);
 				} finally {
 					try {
 						if (req != null) req.Abort();
@@ -147,7 +152,9 @@ namespace namaichi.rec
 				var beforeT = DateTime.Now;
 				var res = util.getFileBytes(uri, null);
 				var afterT = DateTime.Now;
-				if (res == null) return false;
+				if (res == null) {
+					return false;
+				}
 				var protoList = getDataToProtoList<T>(res, typeof(T));
 				if (protoList != null && protoList.Count > 0) {
 					passToHandler(protoList);
@@ -394,7 +401,10 @@ namespace namaichi.rec
 		string getModifier(Chat.Modifier modifier) {
 			var m = new List<string>();
 			if (modifier.font.ToString() != "Defont") m.Add(modifier.font.ToString());
-			if (modifier.full_color != null) m.Add(modifier.full_color.ToString());
+			if (modifier.full_color != null) {
+				var color = modifier.full_color;
+				m.Add("R:" + color.R + " G:" + color.G + " B:" + color.B);
+			}
 			if (modifier.NamedColor.ToString() != "White") m.Add(modifier.NamedColor.ToString());
 			if (modifier.opacity.ToString() != "Normal") m.Add(modifier.opacity.ToString());
 			if (modifier.Position.ToString() != "Naka") m.Add(modifier.Position.ToString());

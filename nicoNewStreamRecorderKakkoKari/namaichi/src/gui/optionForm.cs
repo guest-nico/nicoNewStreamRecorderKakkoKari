@@ -56,8 +56,9 @@ namespace namaichi
 			setBackColor(Color.FromArgb(int.Parse(cfg.get("recBackColor"))));
 			setForeColor(Color.FromArgb(int.Parse(cfg.get("recForeColor"))));
 			util.setProxy(cfg);
-			
 			util.setFontSize(int.Parse(cfg.get("fontSize")), this, false);
+			
+			nicoSessionComboBox1.Selector.PropertyChanged += LoginRadioBtnCheckedChanged;
 		}
 		
 		void hozonFolderSanshouBtn_Click(object sender, EventArgs e)
@@ -320,7 +321,6 @@ namespace namaichi
 			//SmartImporterFactory.blinkWithoutPathList.Clear();
 			//SmartImporterFactory.geckoWithoutPathList.Clear();
 			var tsk = nicoSessionComboBox1.Selector.UpdateAsync();
-			
 		}
 		void btnReload2_Click(object sender, EventArgs e)
         { 
@@ -1261,5 +1261,21 @@ namespace namaichi
 			if (r == DialogResult.OK)
 				secondRecFolderText.Text = f.SelectedPath;
 		}
+		
+		void LoginRadioBtnCheckedChanged(object sender, EventArgs e)
+		{
+			var cookieControls = new Control[]{checkBoxShowAll,
+					nicoSessionComboBox1, btnReload, 
+					isCookieFileSiteiChkBox, cookieFileText,
+					cookieFileSanshouBtn, useSecondLoginChkBox};
+			foreach (var c in cookieControls) 
+				c.Enabled = useCookieRadioBtn.Checked;
+			
+			var accountControls = new Control[]{mailText,
+					passText, loginBtn};
+			foreach (var c in accountControls)
+				c.Enabled = !useCookieRadioBtn.Checked;
+		}
+		
 	}
 }

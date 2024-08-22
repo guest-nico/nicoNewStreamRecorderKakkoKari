@@ -80,7 +80,7 @@ namespace namaichi.rec
 				string accountPass, string userSession, string userSessionSecure,
 				bool isSub, string url) {
 			
-			RecordLogInfo.loginType = browserNum == "2" ? "ブラウザログイン" : "アカウントログイン"; 
+			RecordLogInfo.loginType = browserNum == "2" ? "ブラウザログイン" : "アカウントログイン";
 			if (cfg.argAi != null) {
 				RecordLogInfo.loginLog += "ログイン引数が見つかりました。";
 				if (cfg.argAi.isBrowser && cfg.argAi.si != null) {

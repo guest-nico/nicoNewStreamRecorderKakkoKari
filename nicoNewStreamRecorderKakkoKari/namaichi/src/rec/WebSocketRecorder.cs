@@ -1143,6 +1143,10 @@ namespace namaichi.rec
 			//chatinfo.getFromXml(serverTime);
 			//XDocument chatXml = chatinfo.xml;
 			
+			if (lastSaveComments.Count == 0) {
+				firstCommentProcess();
+			}
+			
 			XDocument chatXml;
 			if (ri.si.isTimeShift && !ri.isChase) 
 				//chatXml = chatinfo.getFormatXml(ri.si.openTime);
@@ -1178,41 +1182,6 @@ namespace namaichi.rec
 			if (chatinfo.root == "chat" && (chatinfo.contents.IndexOf("/hb ifseetno") != -1 && 
 					chatinfo.premium == "3")) return;
 			if (chatinfo.root != "chat" && chatinfo.root != "thread") return;
-			
-			if (chatinfo.root == "thread" && lastSaveComments.Count == 0) {
-				ticket = chatinfo.ticket;
-				if (!rfu.isPlayOnlyMode) {
-					for (var i = 0; i < 60 && sync == 0 && rm.rfu == rfu; i++) 
-						Thread.Sleep(1000);
-				}
-				if (sync != 0) {
-					addDebugBuf("sync set " + sync + " servertime " + chatinfo.serverTime);
-					serverTime = sync / 1000;
-				} else {
-					serverTime = chatinfo.serverTime;
-					//数秒過去の動画も取得できることを考慮
-					serverTime -= ri.isRealtimeChase ? 20 : 3;
-				}
-				
-				try {
-					if (isGetCommentXmlInfo && commentSW != null && (sender == wsc[0] || sender == null)) {
-						if (!ri.si.isTimeShift || ri.isRealtimeChase)
-							commentSW.WriteLine("<StartTime>" + serverTime + "</StartTime>");							
-						else {
-							var startTime = ri.si.openTime;
-							var vposStartTime = (ri.timeShiftConfig.isVposStartTime) ? (long)firstSegmentSecond : 0;
-							if (ri.si.type == "official") {
-								startTime = ri.si._openTime + vposStartTime;
-							} else {
-								startTime = ri.si.openTime + vposStartTime;
-							}
-							commentSW.WriteLine("<StartTime>" + startTime + "</StartTime>");
-						}
-					}
-				} catch (Exception ee) {
-					addDebugBuf(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
-				}
-			}
 			
 			addDebugBuf("wsc message " + ws);
 			
@@ -1484,7 +1453,7 @@ namespace namaichi.rec
 			*/
 		}
 		override public void sendComment(string s, bool is184) {
-			if (msThread == null) return;
+			//if (msThread == null) return;
 			sendCommentBuf = s;
 			isSend184 = is184;
 			var vpos = (int)(((TimeSpan)(DateTime.Now - util.getUnixToDatetime(ri.si.openTime))).TotalMilliseconds / 10) + 60000 + 780;
@@ -2021,6 +1990,41 @@ namespace namaichi.rec
 					}
 				} else stopWsCount = 0;
 				lastWebSocket = ws;
+			}
+		}
+		void firstCommentProcess() {
+			//ticket = chatinfo.ticket;
+			ticket = "_";
+			if (!rfu.isPlayOnlyMode) {
+				for (var i = 0; i < 60 && sync == 0 && rm.rfu == rfu; i++) 
+					Thread.Sleep(1000);
+			}
+			if (sync != 0) {
+				addDebugBuf("sync set " + sync + " servertime " + ri.si.serverTime);
+				serverTime = sync / 1000;
+			} else {
+				serverTime = ri.si.serverTime;
+				//数秒過去の動画も取得できることを考慮
+				serverTime -= ri.isRealtimeChase ? 20 : 3;
+			}
+			
+			try {
+				if (isGetCommentXmlInfo && commentSW != null) {
+					if (!ri.si.isTimeShift || ri.isRealtimeChase)
+						commentSW.WriteLine("<StartTime>" + serverTime + "</StartTime>");							
+					else {
+						var startTime = ri.si.openTime;
+						var vposStartTime = (ri.timeShiftConfig.isVposStartTime) ? (long)firstSegmentSecond : 0;
+						if (ri.si.type == "official") {
+							startTime = ri.si._openTime + vposStartTime;
+						} else {
+							startTime = ri.si.openTime + vposStartTime;
+						}
+						commentSW.WriteLine("<StartTime>" + startTime + "</StartTime>");
+					}
+				}
+			} catch (Exception ee) {
+				addDebugBuf(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
 		}
 	}

@@ -35,8 +35,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.89.3";
-	public static string versionDayStr = "2024/08/15";
+	public static string versionStr = "ver0.89.4";
+	public static string versionDayStr = "2024/08/23";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -728,10 +728,12 @@ class util {
 	}
 	public static HttpWebResponse sendRequest(string url, Dictionary<string, string> headers, byte[] content, string method, CookieContainer cc = null) {
 		HttpWebRequest req = null;
-		return sendRequest(url, headers, content, method, cc, out req);
+		Exception e;
+		return sendRequest(url, headers, content, method, cc, out req, out e);
 	}
-	public static HttpWebResponse sendRequest(string url, Dictionary<string, string> headers, byte[] content, string method, CookieContainer cc, out HttpWebRequest req) {
+	public static HttpWebResponse sendRequest(string url, Dictionary<string, string> headers, byte[] content, string method, CookieContainer cc, out HttpWebRequest req, out Exception outE) {
 		req = null;
+		outE = null;
 		try {
 			util.debugWriteLine("access__ sendRequest " + url);
 			req = (HttpWebRequest)WebRequest.Create(url);
@@ -764,6 +766,7 @@ class util {
 						stream.Write(content, 0, content.Length);
 					} catch (Exception ee) {
 			       		debugWriteLine(ee.Message + " " + ee.StackTrace + " " + ee.Source + " " + ee.TargetSite);
+			       		outE = ee;
 			       	}
 				}
 			}
@@ -771,6 +774,7 @@ class util {
 			
 		} catch (WebException ee) {
 			util.debugWriteLine("sendRequest error " + ee.Data + ee.Message + ee.Source + ee.StackTrace + ee.Status + " " + url);
+			outE = ee;
 			try {
 				return (HttpWebResponse)ee.Response;
 			} catch (Exception eee) {
@@ -779,6 +783,7 @@ class util {
 			}
 		} catch (Exception ee) {
 			debugWriteLine(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+			outE = ee;
 			return null;
 		}
 	}

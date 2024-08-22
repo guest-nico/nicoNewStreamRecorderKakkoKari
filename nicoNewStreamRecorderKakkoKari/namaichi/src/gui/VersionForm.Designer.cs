@@ -45,6 +45,7 @@ namespace namaichi
 			this.button1 = new System.Windows.Forms.Button();
 			this.panel4 = new System.Windows.Forms.Panel();
 			this.communityLinkLabel = new System.Windows.Forms.LinkLabel();
+			this.downloadPageLinkLabel = new System.Windows.Forms.LinkLabel();
 			this.panel3.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -101,7 +102,7 @@ namespace namaichi
 			// 
 			this.panel3.Controls.Add(this.button1);
 			this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
-			this.panel3.Location = new System.Drawing.Point(0, 109);
+			this.panel3.Location = new System.Drawing.Point(0, 128);
 			this.panel3.Name = "panel3";
 			this.panel3.Size = new System.Drawing.Size(318, 33);
 			this.panel3.TabIndex = 43;
@@ -120,7 +121,7 @@ namespace namaichi
 			// panel4
 			// 
 			this.panel4.Dock = System.Windows.Forms.DockStyle.Top;
-			this.panel4.Location = new System.Drawing.Point(0, 99);
+			this.panel4.Location = new System.Drawing.Point(0, 118);
 			this.panel4.Name = "panel4";
 			this.panel4.Size = new System.Drawing.Size(318, 10);
 			this.panel4.TabIndex = 42;
@@ -128,7 +129,7 @@ namespace namaichi
 			// communityLinkLabel
 			// 
 			this.communityLinkLabel.Dock = System.Windows.Forms.DockStyle.Top;
-			this.communityLinkLabel.Location = new System.Drawing.Point(0, 80);
+			this.communityLinkLabel.Location = new System.Drawing.Point(0, 99);
 			this.communityLinkLabel.Name = "communityLinkLabel";
 			this.communityLinkLabel.Size = new System.Drawing.Size(318, 19);
 			this.communityLinkLabel.TabIndex = 41;
@@ -137,14 +138,27 @@ namespace namaichi
 			this.communityLinkLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.communityLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.communityLinkLabel_Click);
 			// 
+			// downloadPageLinkLabel
+			// 
+			this.downloadPageLinkLabel.Dock = System.Windows.Forms.DockStyle.Top;
+			this.downloadPageLinkLabel.Location = new System.Drawing.Point(0, 80);
+			this.downloadPageLinkLabel.Name = "downloadPageLinkLabel";
+			this.downloadPageLinkLabel.Size = new System.Drawing.Size(318, 19);
+			this.downloadPageLinkLabel.TabIndex = 49;
+			this.downloadPageLinkLabel.TabStop = true;
+			this.downloadPageLinkLabel.Text = "https://guest-nico.github.io/pages/downloads.html";
+			this.downloadPageLinkLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.downloadPageLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.DownloadPageLinkLabelLinkClicked);
+			// 
 			// VersionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(318, 154);
+			this.ClientSize = new System.Drawing.Size(318, 173);
 			this.Controls.Add(this.panel3);
 			this.Controls.Add(this.panel4);
 			this.Controls.Add(this.communityLinkLabel);
+			this.Controls.Add(this.downloadPageLinkLabel);
 			this.Controls.Add(this.lastVersionLabel);
 			this.Controls.Add(this.panel5);
 			this.Controls.Add(this.versionLabel);
@@ -159,6 +173,7 @@ namespace namaichi
 			this.panel3.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.LinkLabel downloadPageLinkLabel;
 		private System.Windows.Forms.Panel panel4;
 		private System.Windows.Forms.Panel panel5;
 		private System.Windows.Forms.LinkLabel lastVersionLabel;

@@ -1489,6 +1489,7 @@ namespace namaichi
 			this.useAccountLoginRadioBtn.TabStop = true;
 			this.useAccountLoginRadioBtn.Text = "ブラウザとクッキーを共有せず、次のアカウントでログインする";
 			this.useAccountLoginRadioBtn.UseVisualStyleBackColor = true;
+			this.useAccountLoginRadioBtn.CheckedChanged += new System.EventHandler(this.LoginRadioBtnCheckedChanged);
 			// 
 			// useCookieRadioBtn
 			// 
@@ -1500,6 +1501,7 @@ namespace namaichi
 			this.useCookieRadioBtn.TabStop = true;
 			this.useCookieRadioBtn.Text = "次のブラウザとクッキーを共有する";
 			this.useCookieRadioBtn.UseVisualStyleBackColor = true;
+			this.useCookieRadioBtn.CheckedChanged += new System.EventHandler(this.LoginRadioBtnCheckedChanged);
 			// 
 			// passText
 			// 

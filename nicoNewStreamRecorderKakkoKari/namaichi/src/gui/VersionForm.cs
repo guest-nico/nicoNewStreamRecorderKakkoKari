@@ -56,7 +56,7 @@ namespace namaichi
 			Task.Factory.StartNew(() => checkLastVersion());
 		}
 		private void checkLastVersion() {
-			var r = util.getPageSource("https://com.nicovideo.jp/community/co2414037");
+			var r = util.getPageSource("https://github.com/guest-nico/nicoNewStreamRecorderKakkoKari/commits/master/");
 			if (r == null) {
 				form.formAction(() =>
 						lastVersionLabel.Text = "最新の利用可能なバージョンを確認できませんでした");
@@ -84,6 +84,12 @@ namespace namaichi
 		void LastVersionLabelLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			form.titleLabel_Click(sender, e);
+		}
+		
+		void DownloadPageLinkLabelLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			var url = "https://guest-nico.github.io/pages/downloads.html";
+			util.openUrl(url, bool.Parse(form.rec.cfg.get("IsdefaultBrowserPath")), form.rec.cfg.get("browserPath"));
 		}
 	}
 }
