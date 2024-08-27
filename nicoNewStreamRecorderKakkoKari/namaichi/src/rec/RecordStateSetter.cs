@@ -185,8 +185,6 @@ namespace namaichi.rec
 			endTimeDt = getUnixToDt(_endTime);
 			endTime = endTimeDt.ToString("MM/dd(ddd) HH:mm:ss");
 			
-			//samuneUrl = util.getRegGroup(data, "\"program\".+?\"thumbnail\":{\"imageUrl\":\"(.+?)\"");
-			//samuneUrl = util.getRegGroup(data, "\"thumbnailImageUrl\":\"(.+?)\"");
 			samuneUrl = util.getRegGroup(data, "uri150x150\".+?(https:.+?)\"");
 			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "\"thumbnailImageUrl\":\"(.+?)\"");
 			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "\"small\":\"(.+?)\"");

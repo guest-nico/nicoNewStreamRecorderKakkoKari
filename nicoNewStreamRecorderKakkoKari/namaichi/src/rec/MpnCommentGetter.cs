@@ -330,8 +330,10 @@ namespace namaichi.rec
 			_xml.Add(new XElement("chat"));
 			try {
 				if (msgProto.Message != null && 
-				    	msgProto.Message.Chat != null) {
-					var chat = msgProto.Message.Chat;
+				    	(msgProto.Message.Chat != null || msgProto.Message.OverflowedChat != null)) {
+					var msg = msgProto.Message;
+					var chat = msg.Chat != null ? 
+							msg.Chat : msg.OverflowedChat;
 					var content = chat.Content != null ? chat.Content : "";
 					var premium = ((int)chat.account_status).ToString();
 					var modifier = chat.modifier != null ? getModifier(chat.modifier) : "";
@@ -342,23 +344,39 @@ namespace namaichi.rec
 					        chat.No.ToString(), chat.RawUserId.ToString(), 
 					        chat.Vpos.ToString(), msgProto.meta.At.Seconds,
 					        msgProto.meta.At.Nanos);
-				} else if (msgProto.Message != null && msgProto.Message.SimpleNotification != null) {
+				} else {
 					var vpos = (msgProto.meta.At.Seconds - wr.ri.si._openTime) * 100;
-					var notification = getNotification(msgProto.Message.SimpleNotification);
-					_xml = getXDocument(notification, "3",
-							"", "", "",
-							"", "", vpos.ToString(), 
-							msgProto.meta.At.Seconds, 
-							msgProto.meta.At.Nanos);
-				} else if (msgProto.State != null) {
-					var vpos = (msgProto.meta.At.Seconds - wr.ri.si._openTime) * 100;
-					var content = getStateComment(msgProto.State);
+					var content = "undefined";
+					if (msgProto.Message != null && msgProto.Message.SimpleNotification != null) {
+						content = getNotification(msgProto.Message.SimpleNotification);
+					} if (msgProto.State != null) {
+						content = getStateComment(msgProto.State);
+					} else if (msgProto.Message != null && 
+				           msgProto.Message.Nicoad != null) {
+						content = getNicoAd(msgProto.Message.Nicoad);
+					} else if (msgProto.Message != null && 
+					           msgProto.Message.Gift != null) {
+						content = getGift(msgProto.Message.Gift);
+					} else if (msgProto.Message != null && 
+					           msgProto.Message.GameUpdate != null) {
+						content = "Game Update";
+					} else if (msgProto.Message != null &&
+					           msgProto.Message.ModeratorUpdated != null) {
+						content = getModeratorUpdated(msgProto.Message.ModeratorUpdated);
+					} else if (msgProto.Message != null &&
+					           msgProto.Message.SsngUpdated != null) {
+						content = getSSNGUpdated(msgProto.Message.SsngUpdated);
+					} else if (msgProto.Message != null &&
+					           msgProto.Message.TagUpdated != null) {
+						content = getTagUpdated(msgProto.Message.TagUpdated);
+					}
 					_xml = getXDocument(content, "3",
 							"", "", "",
 							"", "", vpos.ToString(), 
 							msgProto.meta.At.Seconds, 
 							msgProto.meta.At.Nanos);
-				}
+				} 
+				
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
 				return null;
@@ -475,6 +493,47 @@ namespace namaichi.rec
 			if (!string.IsNullOrEmpty(c.Content)) m.Add(c.Content);
 			if (!string.IsNullOrEmpty(c.Link)) m.Add("(" + c.Link + ")");
 			if (c.Modifier != null) m.Add(getModifier(c.Modifier));
+			return string.Join(" ", m.ToArray());
+		}
+		string getNicoAd(Nicoad n) {
+			var m = new List<string>();
+			if (n.v0 != null) m.Add(n.v0.latest.Message + " Total:" + n.v0.TotalPoint);
+			if (n.v1 != null) m.Add(n.v1.Message + " Total:" + n.v1.TotalAdPoint.ToString());
+			return string.Join(" ", m.ToArray());
+		}
+		string getGift(Gift n) {
+			var m = new List<string>();
+			if (n.ContributionRank != 0) m.Add("【ギフト貢献" + n.ContributionRank + "位】");
+			if (n.AdvertiserName != null) {
+				m.Add(n.AdvertiserName);
+				if (n.AdvertiserUserId != 0) m.Add("(" + n.AdvertiserUserId + ")");
+				m.Add("さんが");
+			}
+			if (n.ItemName != null) m.Add("ギフト「" + n.ItemName + " ID:" + n.ItemId + "(" + n.Point + "pt)」を贈りました");
+			return string.Join(" ", m.ToArray());
+		}
+		string getModeratorUpdated(ModeratorUpdated n) {
+			var m = new List<string>();
+			m.Add("Moderator " + n.Operation.ToString());
+			if (n.Operator != null && n.Operator.Nickname != null) m.Add(n.Operator.Nickname);
+			if (n.Operator != null && n.Operator.UserId != 0) m.Add(n.Operator.UserId.ToString());
+			return string.Join(" ", m.ToArray());
+		}
+		string getSSNGUpdated(SSNGUpdated n) {
+			var m = new List<string>();
+			m.Add("NG updated");
+			m.Add(n.Operation.ToString());
+			if (n.Operator != null) m.Add(n.Operator.Nickname + " " + n.Operator.UserId);
+			if (n.Source != null) m.Add(n.Source);
+			if (n.SsngId != 0) m.Add("NGID:" + n.SsngId);
+			m.Add(n.Type.ToString());
+			return string.Join(" ", m.ToArray());
+		}
+		string getTagUpdated(TagUpdated n) {
+			var m = new List<string>();
+			m.Add("タグが更新されました");
+			if (n.OwnerLocked) m.Add("ロック");
+			m.Add(string.Join(",", n.Tags.Select(x => x.Text).ToArray()));
 			return string.Join(" ", m.ToArray());
 		}
 		void saveCommentBuf() {
