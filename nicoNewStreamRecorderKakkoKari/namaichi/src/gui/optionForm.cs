@@ -1142,6 +1142,7 @@ namespace namaichi
 		}
 		void setCommentReplaceTextForm(string t) {
 			var o = JsonConvert.DeserializeObject<List<string[]>>(t);
+			if (o == null) return;
 			try {
 				for (var i = 0; i < o.Count; i++) {
 					commentReplaceList.Rows.Add(new string[]{o[i][0], o[i][1].Replace("\n", "\\n")});
@@ -1265,7 +1266,8 @@ namespace namaichi
 		void LoginRadioBtnCheckedChanged(object sender, EventArgs e)
 		{
 			var cookieControls = new Control[]{checkBoxShowAll,
-					nicoSessionComboBox1, btnReload, 
+					//nicoSessionComboBox1, 
+					btnReload,
 					isCookieFileSiteiChkBox, cookieFileText,
 					cookieFileSanshouBtn, useSecondLoginChkBox};
 			foreach (var c in cookieControls) 

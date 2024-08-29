@@ -270,6 +270,8 @@ namespace namaichi.rec
 						    continue;
 						
 						var chatXml = getMsgProtoToXML(cm);
+						if (chatXml == null) 
+							continue;
 						var json = JsonConvert.SerializeXNode(chatXml);
 						json = json.Replace("\"#text\"", "\"content\"");
 						
@@ -293,6 +295,8 @@ namespace namaichi.rec
 						    continue;
 						
 						var chatXml = getMsgProtoToXML(cm);
+						if (chatXml == null) 
+							continue;
 						var json = JsonConvert.SerializeXNode(chatXml);
 						json = json.Replace("\"#text\"", "\"content\"");
 						
@@ -444,8 +448,11 @@ namespace namaichi.rec
 		string getStateComment(NicoliveState s) {
 			var l = new List<string>();
 			if (s.Marquee != null) {
-				var opComment = s.Marquee.display.OperatorComment;
-				l.Add(getOperatorCommentStr(opComment));
+				if (s.Marquee.display != null && 
+				    	s.Marquee.display.OperatorComment != null) {
+					var opComment = s.Marquee.display.OperatorComment;
+					l.Add(getOperatorCommentStr(opComment));
+				}
 			}
 			if (s.Enquete != null) {
 				if (!string.IsNullOrEmpty(s.Enquete.Question)) {
