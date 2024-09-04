@@ -453,6 +453,8 @@ namespace namaichi.rec
 					var opComment = s.Marquee.display.OperatorComment;
 					l.Add(getOperatorCommentStr(opComment));
 				}
+				if (s.Marquee.display == null)
+					l.Add("Hide Marquee");
 			}
 			if (s.Enquete != null) {
 				if (!string.IsNullOrEmpty(s.Enquete.Question)) {
@@ -461,6 +463,7 @@ namespace namaichi.rec
 					if (!isPastCommentMode)
 						util.debugWriteLine(l);
 				}
+				l.Add(s.Enquete.status.ToString());
 				
 			}
 			if (s.ProgramStatus != null) {

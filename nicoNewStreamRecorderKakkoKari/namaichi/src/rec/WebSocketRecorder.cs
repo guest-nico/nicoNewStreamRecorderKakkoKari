@@ -1147,32 +1147,7 @@ namespace namaichi.rec
 				firstCommentProcess();
 			}
 			
-			XDocument chatXml;
-			if (ri.si.isTimeShift && !ri.isChase) 
-				//chatXml = chatinfo.getFormatXml(ri.si.openTime);
-				chatXml = chatinfo.getFormatXml(ri.si.openTime, true, 0);
-			else {
-				if (!ri.si.isTimeShift || ri.isRealtimeChase) {
-					if (ri.si.type == "official") {
-						chatXml = chatinfo.getFormatXml(0, true, serverTime - ri.si._openTime);
-					//} else chatXml = chatinfo.getFormatXml(serverTime);
-					} else {
-						//chatXml = chatinfo.getFormatXml(0, true, serverTime - _openTime);
-						chatXml = chatinfo.getFormatXml(serverTime);
-					}
-				} else {
-					while (firstSegmentSecond == -1 && rm.rfu == rfu) {
-						Thread.Sleep(1000);
-					}
-					var vposStartTime = (ri.timeShiftConfig.isVposStartTime) ? (long)firstSegmentSecond : 0;
-					if (ri.si.type == "official") {
-						chatXml = chatinfo.getFormatXml(0, true, ri.timeShiftConfig.timeSeconds);
-					} else {
-						chatXml = chatinfo.getFormatXml(ri.si.openTime + vposStartTime);
-					}
-					
-				}
-			}
+			XDocument chatXml = getChatXml(chatinfo);
 			
 			if (isGetCommentXmlInfo && chatinfo.no == -1) 
 				chatXml.Root.Add(new XAttribute("no", "0"));
@@ -2025,6 +2000,32 @@ namespace namaichi.rec
 				}
 			} catch (Exception ee) {
 				addDebugBuf(ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+			}
+		}
+		XDocument getChatXml(ChatInfo chatinfo) {
+			if (ri.si.isTimeShift && !ri.isChase) {
+				return getTsChatXml(chatinfo);
+			} else {
+				if (!ri.si.isTimeShift || ri.isRealtimeChase) {
+					if (ri.si.type == "official") {
+						return chatinfo.getFormatXml(0, true, serverTime - ri.si._openTime);
+					} else {
+						return chatinfo.getFormatXml(serverTime);
+					}
+				} else {
+					return getTsChatXml(chatinfo);
+				}
+			}
+		}
+		XDocument getTsChatXml(ChatInfo chatinfo) {
+			while (firstSegmentSecond == -1 && rm.rfu == rfu) {
+				Thread.Sleep(1000);
+			}
+			var vposStartTime = (ri.timeShiftConfig.isVposStartTime) ? (long)firstSegmentSecond : 0;
+			if (ri.si.type == "official") {
+				return chatinfo.getFormatXml(0, true, ri.timeShiftConfig.timeSeconds);
+			} else {
+				return chatinfo.getFormatXml(ri.si.openTime + vposStartTime);
 			}
 		}
 	}
