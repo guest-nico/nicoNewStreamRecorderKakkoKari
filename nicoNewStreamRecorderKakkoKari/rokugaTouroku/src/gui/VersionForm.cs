@@ -52,7 +52,7 @@ namespace rokugaTouroku
 			Task.Factory.StartNew(() => checkLastVersion());
 		}
 		private void checkLastVersion() {
-			var r = util.getPageSource("https://com.nicovideo.jp/community/co2414037");
+			var r = util.getPageSource("https://github.com/guest-nico/nicoNewStreamRecorderKakkoKari/commits/master/");
 			if (r == null) {
 				form.formAction(() =>
 						lastVersionLabel.Text = "最新の利用可能なバージョンを確認できませんでした");
@@ -76,7 +76,6 @@ namespace rokugaTouroku
                 });
 			}
 		}
-		
 		void LastVersionLabelLinkClicked(object _sender, LinkLabelLinkClickedEventArgs e)
 		{
 			util.debugWriteLine("click");
@@ -97,6 +96,11 @@ namespace rokugaTouroku
 //					mainWindowRightClickMenu.Show(Cursor.Position);
 //				}
 			}
+		}
+		void DownloadPageLinkLabelLinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
+		{
+			var url = "https://guest-nico.github.io/pages/downloads.html";
+			util.openUrlBrowser(url, form.config);
 		}
 	}
 }

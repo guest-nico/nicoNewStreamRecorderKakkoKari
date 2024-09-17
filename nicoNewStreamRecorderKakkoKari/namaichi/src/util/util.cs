@@ -35,8 +35,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.89.7";
-	public static string versionDayStr = "2024/09/05";
+	public static string versionStr = "ver0.89.8";
+	public static string versionDayStr = "2024/09/17";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -282,6 +282,7 @@ class util {
 		else if (n == "6") return communityNum + "_" + group + "";
 		else if (n == "7") return communityNum + "_" + host + "";
 		else if (n == "8") return host + "_" + communityNum + "";
+		else if (n == "9") return host + "_" + userId + "";
 		else return host;
 	}
 	public static string getFileName(string host, string group, string title, string lvId, string communityNum, config cfg, long _openTime) {

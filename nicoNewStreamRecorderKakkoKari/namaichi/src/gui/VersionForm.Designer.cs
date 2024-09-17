@@ -136,6 +136,7 @@ namespace namaichi
 			this.communityLinkLabel.TabStop = true;
 			this.communityLinkLabel.Text = "https://com.nicovideo.jp/community/co2414037";
 			this.communityLinkLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.communityLinkLabel.Visible = false;
 			this.communityLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.communityLinkLabel_Click);
 			// 
 			// downloadPageLinkLabel

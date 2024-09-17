@@ -40,7 +40,7 @@ namespace namaichi.rec
 		bool isPastCommentMode = false;
 		
 		string at = "now";
-		bool isEnd = false;
+		public bool isEnd = false;
 		object messageLock = new object();
 		
 		public MpnCommentGetter(RecordingManager rm, RecordFromUrl rfu, WebSocketRecorder wr)
@@ -266,7 +266,8 @@ namespace namaichi.rec
 			foreach (var cm in l) {
 				lock(messageLock) {
 					if (cm.Message != null || cm.State != null) {
-						if (gotCommentIDList.IndexOf(cm.meta.Id) > -1)
+						if (gotCommentIDList.IndexOf(cm.meta.Id) > -1 &&
+						    	!string.IsNullOrEmpty(cm.meta.Id))
 						    continue;
 						
 						var chatXml = getMsgProtoToXML(cm);
@@ -281,7 +282,7 @@ namespace namaichi.rec
 						gotCommentIDList.Add(cm.meta.Id);
 						
 						var isTimeshiftRec = wr.ri.si.isTimeShift && !wr.ri.isChase; 
-						if (isTimeshiftRec && gotCommentIDList.Count % 100 == 0)
+						if (isTimeshiftRec && gotCommentIDList.Count % 1000 == 0)
 							rm.form.addLogText(gotCommentIDList.Count + "件のコメントを取得しました");
 					}
 				}
@@ -291,11 +292,12 @@ namespace namaichi.rec
 			foreach (var ps in l) {
 				if (ps.Messages != null) {
 					foreach (var cm in ps.Messages) {
-						if (gotCommentIDList.IndexOf(cm.meta.Id) > -1)
+						if (gotCommentIDList.IndexOf(cm.meta.Id) > -1 &&
+						    	!string.IsNullOrEmpty(cm.meta.Id))
 						    continue;
 						
 						var chatXml = getMsgProtoToXML(cm);
-						if (chatXml == null) 
+						if (chatXml == null)
 							continue;
 						var json = JsonConvert.SerializeXNode(chatXml);
 						json = json.Replace("\"#text\"", "\"content\"");
@@ -303,7 +305,7 @@ namespace namaichi.rec
 						addCommentBuf(cm.meta.At, json, gotPastCommentBuf);
 						gotCommentIDList.Add(cm.meta.Id);
 						
-						if (gotPastCommentBuf.Count % 100 == 0)
+						if (gotPastCommentBuf.Count % 1000 == 0)
 							rm.form.addLogText(gotPastCommentBuf.Count + "件のコメントを取得しました");
 					}
 				}
@@ -425,7 +427,7 @@ namespace namaichi.rec
 			if (modifier.font.ToString() != "Defont") m.Add(modifier.font.ToString());
 			if (modifier.full_color != null) {
 				var color = modifier.full_color;
-				m.Add("R:" + color.R + " G:" + color.G + " B:" + color.B);
+				m.Add("#" + color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2"));
 			}
 			if (modifier.NamedColor.ToString() != "White") m.Add(modifier.NamedColor.ToString());
 			if (modifier.opacity.ToString() != "Normal") m.Add(modifier.opacity.ToString());
@@ -458,11 +460,13 @@ namespace namaichi.rec
 			}
 			if (s.Enquete != null) {
 				if (!string.IsNullOrEmpty(s.Enquete.Question)) {
-					l.Add(s.Enquete.Question);
-					l.Add(string.Join(" ", s.Enquete.Choices.Select(x => x.Description).ToArray()));
+					if (s.Enquete.status.ToString() == "Poll")
+						l.Add(s.Enquete.Question);
+					l.Add(string.Join(" ", s.Enquete.Choices.Select(x => "[" + x.Description + (s.Enquete.status.ToString() == "Result" ? (" " + (x.PerMille / 10.0) + "%") : "") + "]").ToArray()));
 					if (!isPastCommentMode)
 						util.debugWriteLine(l);
 				}
+				if(s.Enquete.status.ToString() == "Closed") l.Add("Enquete");
 				l.Add(s.Enquete.status.ToString());
 				
 			}

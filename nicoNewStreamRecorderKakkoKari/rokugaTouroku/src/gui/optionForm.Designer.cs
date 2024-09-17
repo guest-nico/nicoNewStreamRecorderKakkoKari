@@ -230,6 +230,7 @@ namespace rokugaTouroku
 			this.label3 = new System.Windows.Forms.Label();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
+			this.housoushaUserIDRadioBtn = new System.Windows.Forms.RadioButton();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox17.SuspendLayout();
@@ -2104,6 +2105,7 @@ namespace rokugaTouroku
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.housoushaUserIDRadioBtn);
 			this.groupBox1.Controls.Add(this.secondRecFolderSanshouBtn);
 			this.groupBox1.Controls.Add(this.secondRecFolderText);
 			this.groupBox1.Controls.Add(this.useSecondRecFolderChk);
@@ -2195,9 +2197,9 @@ namespace rokugaTouroku
 			// 
 			// housoushaComIDRadioBtn
 			// 
-			this.housoushaComIDRadioBtn.Location = new System.Drawing.Point(163, 164);
+			this.housoushaComIDRadioBtn.Location = new System.Drawing.Point(126, 164);
 			this.housoushaComIDRadioBtn.Name = "housoushaComIDRadioBtn";
-			this.housoushaComIDRadioBtn.Size = new System.Drawing.Size(141, 27);
+			this.housoushaComIDRadioBtn.Size = new System.Drawing.Size(118, 27);
 			this.housoushaComIDRadioBtn.TabIndex = 4;
 			this.housoushaComIDRadioBtn.Text = "放送者名＋コミュID";
 			this.housoushaComIDRadioBtn.UseVisualStyleBackColor = true;
@@ -2206,7 +2208,7 @@ namespace rokugaTouroku
 			// 
 			this.comIDHousoushaRadioBtn.Location = new System.Drawing.Point(5, 164);
 			this.comIDHousoushaRadioBtn.Name = "comIDHousoushaRadioBtn";
-			this.comIDHousoushaRadioBtn.Size = new System.Drawing.Size(141, 27);
+			this.comIDHousoushaRadioBtn.Size = new System.Drawing.Size(124, 27);
 			this.comIDHousoushaRadioBtn.TabIndex = 4;
 			this.comIDHousoushaRadioBtn.Text = "コミュID＋放送者名";
 			this.comIDHousoushaRadioBtn.UseVisualStyleBackColor = true;
@@ -2357,6 +2359,15 @@ namespace rokugaTouroku
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
 			// 
+			// housoushaUserIDRadioBtn
+			// 
+			this.housoushaUserIDRadioBtn.Location = new System.Drawing.Point(244, 164);
+			this.housoushaUserIDRadioBtn.Name = "housoushaUserIDRadioBtn";
+			this.housoushaUserIDRadioBtn.Size = new System.Drawing.Size(141, 27);
+			this.housoushaUserIDRadioBtn.TabIndex = 25;
+			this.housoushaUserIDRadioBtn.Text = "放送者名＋ユーザーID";
+			this.housoushaUserIDRadioBtn.UseVisualStyleBackColor = true;
+			// 
 			// optionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -2421,6 +2432,7 @@ namespace rokugaTouroku
 			((System.ComponentModel.ISupportInitialize)(this.maxRecordingNum)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.RadioButton housoushaUserIDRadioBtn;
 		private System.Windows.Forms.CheckBox useSecondRecFolderChk;
 		private System.Windows.Forms.TextBox secondRecFolderText;
 		private System.Windows.Forms.Button secondRecFolderSanshouBtn;

@@ -53,7 +53,7 @@ namespace namaichi.rec
 				isRetry = value;
 			}}
 		
-		private MpnCommentGetter mcg = null;
+		//public MpnCommentGetter mcg = null;
 		private string msThread;
 		private string msStoreThread;
 		private string threadkey = null;
@@ -271,8 +271,12 @@ namespace namaichi.rec
 //				wsc.Close();
 				if (rec != null) 
 					rec.waitForEnd();
-			} else if (rec != null) {
-				rec.waitForEnd();
+			} else {
+				if (rec != null) 
+					rec.waitForEnd();
+				if (ri.si.isTimeShift && !ri.isChase && mcg != null && !mcg.isEnd)
+					while(mcg != null && !mcg.isEnd) 
+						Thread.Sleep(1000);
 			}
 			if (!IsRetry) {
 				//if (rr != null) rr.isRetry = false;
@@ -974,7 +978,7 @@ namespace namaichi.rec
 				commentSW = new StreamWriter(_commentFileName, false, System.Text.Encoding.UTF8);
 				lastOpenCommentSwDt = DateTime.Now;
 				
-				if (!isExists) {
+				if (!isExists || true) {
 					if (isGetCommentXml) {
 						commentSW.WriteLine("<?xml version='1.0' encoding='UTF-8'?>");
 						if (!isGetCommentXmlInfo) 
@@ -1043,12 +1047,12 @@ namespace namaichi.rec
 					addDebugBuf(ee.Message + " " + ee.StackTrace + " " + ee.TargetSite);
 				}
 				
-				
-				var name = ((FileStream)commentSW.BaseStream).Name; 
-				commentSW.Close();
-				commentSW = null;
-				lastSaveComments.Clear();
 				try {
+					if (commentSW == null) return;
+					var name = ((FileStream)commentSW.BaseStream).Name; 
+					commentSW.Close();
+					commentSW = null;
+					lastSaveComments.Clear();
 					if (rm.cfg.get("fileNameType") == "10" && (name.IndexOf("{w}") > -1 || name.IndexOf("{c}") > -1)) {
 						Task.Run(() => {
 				         	setRealTimeStatistics();
@@ -1060,6 +1064,7 @@ namespace namaichi.rec
 				} catch (Exception e) {
 					addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
+				/*
 				if (ri.isRtmp) {
 					var baseN = util.getRegGroup(name, "(.+)\\.");
 					addDebugBuf("closeWscProcess rtmp comment delete " + name + " " + baseN);
@@ -1072,6 +1077,7 @@ namespace namaichi.rec
 						}
 					}
 				}
+				*/
 			}
 			
 			//stopRecording();
@@ -1093,9 +1099,9 @@ namespace namaichi.rec
 			}
 			isFirstCommentAfterOpenWsc = false;
 			
-			
 			//if (isNormalizeComment) eMessage = eMessage.Replace("\"premium\":24", "\"premium\":0");
-			object sender = null; 
+			/*
+			object sender = null;
 			if (ri.si.isTimeShift && eMessage.StartsWith("{\"ping\":{\"content\":\"rf:") && !ri.isChase && (sender == wsc[0] || sender == null)) {
 				closeWscProcess();
 				try {commentSW.Close();}
@@ -1103,7 +1109,6 @@ namespace namaichi.rec
 				isTimeShiftCommentGetEnd = true;
 				rm.form.addLogText("コメントの保存を完了しました");
 			}
-			
 			if (rm.rfu != rfu || ((!ri.si.isTimeShift || ri.isChase) && !IsRetry)) {
 				try {
 					if (wsc[0] != null) wsc[0].Close();
@@ -1119,7 +1124,7 @@ namespace namaichi.rec
 				addDebugBuf("tigau rfu comment" + eMessage);
 				return;
 			}
-			
+			*/
 			XDocument xml = null;
 			try {
 				if (eMessage.StartsWith("{"))
@@ -1152,13 +1157,13 @@ namespace namaichi.rec
 			if (isGetCommentXmlInfo && chatinfo.no == -1) 
 				chatXml.Root.Add(new XAttribute("no", "0"));
 			var chatXmlStr = chatXml.ToString();
-			addDebugBuf("xml " + chatXmlStr);
+			if (isDisplay) addDebugBuf("xml " + chatXmlStr);
 			
 			if (chatinfo.root == "chat" && (chatinfo.contents.IndexOf("/hb ifseetno") != -1 && 
 					chatinfo.premium == "3")) return;
 			if (chatinfo.root != "chat" && chatinfo.root != "thread") return;
 			
-			addDebugBuf("wsc message " + ws);
+			if (isDisplay) addDebugBuf("wsc message " + ws);
 			
 			try {
 				var isComSave = chatinfo.root == "thread" || ri.timeShiftConfig == null || ((!ri.timeShiftConfig.isAfterStartTimeComment ||
@@ -1186,7 +1191,7 @@ namespace namaichi.rec
 							if (chaseCommentBuf.IndexOf(writeStr) == -1) {
 								chaseCommentBuf.Add(writeStr);
 								
-								addDebugBuf("chase comment add " + writeStr);
+								if (isDisplay) addDebugBuf("chase comment add " + writeStr);
 								
 								lastSaveComments.Add(writeStr);
 								if (lastSaveComments.Count > 1110)
@@ -1204,7 +1209,7 @@ namespace namaichi.rec
 							if (lastSaveComments.Count > 1110)
 								lastSaveComments.RemoveRange(0, 100);
 						}
-						addDebugBuf("write comment " + writeStr);
+						if (isDisplay) addDebugBuf("write comment " + writeStr);
 			             
 					}
 				}
@@ -1970,7 +1975,7 @@ namespace namaichi.rec
 		void firstCommentProcess() {
 			//ticket = chatinfo.ticket;
 			ticket = "_";
-			if (!rfu.isPlayOnlyMode) {
+			if (!rfu.isPlayOnlyMode && engineMode != "3") {
 				for (var i = 0; i < 60 && sync == 0 && rm.rfu == rfu; i++) 
 					Thread.Sleep(1000);
 			}
@@ -1978,7 +1983,7 @@ namespace namaichi.rec
 				addDebugBuf("sync set " + sync + " servertime " + ri.si.serverTime);
 				serverTime = sync / 1000;
 			} else {
-				serverTime = ri.si.serverTime;
+				serverTime = ri.si.serverTime / 1000;
 				//数秒過去の動画も取得できることを考慮
 				serverTime -= ri.isRealtimeChase ? 20 : 3;
 			}

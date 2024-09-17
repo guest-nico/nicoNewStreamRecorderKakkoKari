@@ -46,6 +46,7 @@ namespace namaichi.rec
 		public string visitCount = "0";
 		public string commentCount = "0";
 		public ITimeShiftCommentGetter tscg = null;
+		public MpnCommentGetter mcg = null;
 		public List<string[]> commentReplaceList = null;
 		public List<string> chaseCommentBuf = new List<string>();
 		public TimeSpan jisa;

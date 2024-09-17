@@ -76,9 +76,9 @@ namespace namaichi.rec
 			JikkenRecorder jr = null;
 			//RtmpRecorder rr = null;
 			var isRtmp = isRtmpMain;
-			CookieContainer cc;
+			CookieContainer cc = null;
 			
-			var pageType = this.getPageType(url, true, ref jr, out cc);
+			var pageType = this.getPageType(url, true, ref jr, ref cc);
 			if (pageType == -1) return 2;
 			
 			util.debugWriteLine("pagetype " + pageType + " container " + cc);
@@ -158,7 +158,7 @@ namespace namaichi.rec
 						System.Threading.Thread.Sleep(10000);
 						
 						try {
-							pageType = getPageType(url, false, ref jr, out cc);
+							pageType = getPageType(url, false, ref jr, ref cc);
 							util.debugWriteLine("pagetype_ " + pageType);
 						} catch (Exception e) {
 							util.debugWriteLine(e.Message + " " + e.StackTrace + " ");
@@ -173,7 +173,7 @@ namespace namaichi.rec
 					util.debugWriteLine("pagetype 6 process");
 					System.Threading.Thread.Sleep(3000);
 					try {
-						pageType = getPageType(url, false, ref jr, out cc);
+						pageType = getPageType(url, false, ref jr, ref cc);
 						util.debugWriteLine("pagetype_ " + pageType);
 					} catch (Exception e) {
 						util.debugWriteLine(e.Message + " " + e.StackTrace + " ");
@@ -229,7 +229,7 @@ namespace namaichi.rec
 					var reserveRet = r.live2Reserve2();
 					if (reserveRet == "ok") {
 						rm.form.addLogText("予約しました");
-						pageType = getPageType(url, false, ref jr, out cc);
+						pageType = getPageType(url, false, ref jr, ref cc);
 						continue;
 					} else {
 						rm.form.addLogText(reserveRet);
@@ -250,7 +250,7 @@ namespace namaichi.rec
 						rm.form.addLogText("この番組のチケットを正常に使用できませんでした。");
 						return 2;
 					}
-					pageType = getPageType(url, false, ref jr, out cc);
+					pageType = getPageType(url, false, ref jr, ref cc);
 					util.debugWriteLine("pagetype 10_ " + pageType);
 					continue;
 				} else if (pageType == 11) {
@@ -261,7 +261,7 @@ namespace namaichi.rec
 					return 2;
 				} else if (pageType == 13) {
 					try {
-						pageType = getPageType(url, false, ref jr, out cc);
+						pageType = getPageType(url, false, ref jr, ref cc);
 						util.debugWriteLine("pagetype_ " + pageType);
 					} catch (Exception e) {
 						util.debugWriteLine(e.Message + " " + e.StackTrace + " ");
@@ -288,7 +288,7 @@ namespace namaichi.rec
 			}
 			return 2;
 		}
-		public int getPageType(string url, bool isLogin, ref JikkenRecorder jr, out CookieContainer cc) {
+		public int getPageType(string url, bool isLogin, ref JikkenRecorder jr, ref CookieContainer cc) {
 			var dt = DateTime.Now;
 			var isFirst = true;
 			CookieGetter.isLoginCheck = true;
@@ -302,56 +302,22 @@ namespace namaichi.rec
 					if (isRtmpMain) 
 						url = url.Replace("live2.nicovideo.jp", "live.nicovideo.jp");
 
-					var cg = new CookieGetter(rm.cfg);
-					var cgret = cg.getHtml5RecordCookie(url);
-					cgret.Wait();
-					CookieGetter.isLoginCheck = false;
-					                           
-					//if (isSub && cg.id != null)  id[1] = cg.id;
-					if (cg.id != null)  id[0] = cg.id;
-					if (id[0] != null && id[1] != null && id[0] == id[1]) {
-						rm.form.addLogText("メインアカウントとサブアカウントのIDが同じでした");
-						util.debugWriteLine("メインアカウントとサブアカウントのIDが同じでした");
-						cc = null;
-						return -2;
+					if (cc == null) {
+						string pageSource = null;
+						var resultCode = setCookie(isLogin, ref isFirst, ref cc, out pageSource);
+						if (resultCode == 100) 
+							continue;
+						else if (resultCode != 0) 
+							return resultCode;
+						res = pageSource;
+					} else　{
+						util.debugWriteLine("exists cc");
+						var h = util.getHeader(cc, null, url);
+						res = new Curl().getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false, true, true);
 					}
 					
-		//			cgret.ConfigureAwait(false);
-					if (cgret == null || cgret.Result[0] == null) {
-						util.debugWriteLine("cgret " + cgret);
-						if (isLogin && isFirst) {
-							rm.form.addLogText(cg.log);
-//							rm.form.addLogText("ログインに失敗しました。");
-							isFirst = false;
-						}
-						if (bool.Parse(rm.cfg.get("IsdeleteExit"))) {
-							cc = null;
-							rm.rfu = null;
-							rm.form.close();
-							return 2;
-						}
-						if (cg.reason != null) {
-							cc = null;
-							if (cg.reason == "not_login")
-								rm.form.formAction(() => 
-									util.showMessageBoxCenterForm(rm.form, "ログインに失敗しました。\n" + lvid));
-							return -1;
-						}
-						if (cg.pageSource != null && 
-						    	util.getRegGroup(cg.pageSource, "(この番組は放送者により削除されました。<br />|削除された可能性があります。<br />)|\">お探しのページは削除されたか") != null) {
-							cc = null;
-							return 2;
-						}
-						
-						System.Threading.Thread.Sleep(
-								(cg.pageSource != null && (cg.pageSource.IndexOf("ご指定のページが見つかりませんでした") > -1 ||
-									cg.pageSource.IndexOf("ただいまメンテナンス中です。") > -1)) ? 300000 : 10000);
-						continue;
-					}
-					cc = cgret.Result[0];
 					util.debugWriteLine("container " + cc);
-						
-					res = cg.pageSource;
+					
 					if (string.IsNullOrEmpty(rm.form.getTitleLabelText()))
 						setDisplay(res);
 					
@@ -475,6 +441,58 @@ namespace namaichi.rec
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
+		}
+		int setCookie(bool isLogin, ref bool isFirst, ref CookieContainer cc, out string pageSource) {
+			var cg = new CookieGetter(rm.cfg);
+			var cgret = cg.getHtml5RecordCookie(url);
+			pageSource = null;
+			cgret.Wait();
+			CookieGetter.isLoginCheck = false;
+			                           
+			//if (isSub && cg.id != null)  id[1] = cg.id;
+			if (cg.id != null)  id[0] = cg.id;
+			if (id[0] != null && id[1] != null && id[0] == id[1]) {
+				rm.form.addLogText("メインアカウントとサブアカウントのIDが同じでした");
+				util.debugWriteLine("メインアカウントとサブアカウントのIDが同じでした");
+				cc = null;
+				return -2;
+			}
+			
+//			cgret.ConfigureAwait(false);
+			if (cgret == null || cgret.Result[0] == null) {
+				util.debugWriteLine("cgret " + cgret);
+				if (isLogin && isFirst) {
+					rm.form.addLogText(cg.log);
+//							rm.form.addLogText("ログインに失敗しました。");
+					isFirst = false;
+				}
+				if (bool.Parse(rm.cfg.get("IsdeleteExit"))) {
+					cc = null;
+					rm.rfu = null;
+					rm.form.close();
+					return 2;
+				}
+				if (cg.reason != null) {
+					cc = null;
+					if (cg.reason == "not_login")
+						rm.form.formAction(() => 
+							util.showMessageBoxCenterForm(rm.form, "ログインに失敗しました。\n" + lvid));
+					return -1;
+				}
+				if (cg.pageSource != null && 
+				    	util.getRegGroup(cg.pageSource, "(この番組は放送者により削除されました。<br />|削除された可能性があります。<br />)|\">お探しのページは削除されたか") != null) {
+					cc = null;
+					return 2;
+				}
+				
+				System.Threading.Thread.Sleep(
+						(cg.pageSource != null && (cg.pageSource.IndexOf("ご指定のページが見つかりませんでした") > -1 ||
+							cg.pageSource.IndexOf("ただいまメンテナンス中です。") > -1)) ? 300000 : 10000);
+				return 100;
+			}
+			cc = cgret.Result[0];
+			pageSource = cg.pageSource;
+			return 0;
 		}
 	}
 }

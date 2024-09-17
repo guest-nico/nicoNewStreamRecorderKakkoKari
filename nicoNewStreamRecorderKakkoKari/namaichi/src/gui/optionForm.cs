@@ -360,6 +360,7 @@ namespace namaichi
         	if (ComIDComNameRadioBtn.Checked) return 6;
         	if (comIDHousoushaRadioBtn.Checked) return 7;
         	if (housoushaComIDRadioBtn.Checked) return 8;
+        	if (housoushaUserIDRadioBtn.Checked) return 9;
         	return 1;
         }
         int getFileNameType() {
@@ -504,6 +505,7 @@ namespace namaichi
 			else if (subFolderNameType == 6) ComIDComNameRadioBtn.Checked = true;
 			else if (subFolderNameType == 7) comIDHousoushaRadioBtn.Checked = true;
 			else if (subFolderNameType == 8) housoushaComIDRadioBtn.Checked = true;
+			else if (subFolderNameType == 9) housoushaUserIDRadioBtn.Checked = true;
 			else housoushaRadioBtn.Checked = true;
         }
         private void setFileNameType(int nameType) {

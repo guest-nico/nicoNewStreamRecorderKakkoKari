@@ -164,12 +164,12 @@ namespace namaichi.utility
 				}
 				if (lowKeys[i] == "subfoldernametype") {
 					int _s = 0;
-					if (int.TryParse(val, out _s) && _s >= 1 && _s <= 8) {
+					if (int.TryParse(val, out _s) && _s >= 1 && _s <= 9) {
 						setVal = val;
 						setName = keys[i];
 						return true;
 					} else {
-						form.addLogText(name + "の値が設定できませんでした(1から8の整数) " + val, false);
+						form.addLogText(name + "の値が設定できませんでした(1から9の整数) " + val, false);
 						return false;
 					}
 				}

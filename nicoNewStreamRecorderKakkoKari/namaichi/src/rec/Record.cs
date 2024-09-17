@@ -1567,8 +1567,8 @@ namespace namaichi.rec
 					targetDuration = addNewTsTaskList(hlsSegM3uUrl);
 
 					if (engineMode == "3" && 
-					    	wr.tscg != null && 
-					    	wr.tscg.isEnd) {
+					    	wr.mcg != null && 
+					    	wr.mcg.isEnd) {
 						isRetry = false;
 						isEndProgram = true;
 					}

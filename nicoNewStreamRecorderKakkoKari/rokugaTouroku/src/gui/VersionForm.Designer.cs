@@ -45,6 +45,7 @@ namespace rokugaTouroku
 			this.button1 = new System.Windows.Forms.Button();
 			this.panel2 = new System.Windows.Forms.Panel();
 			this.communityLinkLabel = new System.Windows.Forms.LinkLabel();
+			this.downloadPageLinkLabel = new System.Windows.Forms.LinkLabel();
 			this.panel3.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -101,7 +102,7 @@ namespace rokugaTouroku
 			// 
 			this.panel3.Controls.Add(this.button1);
 			this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
-			this.panel3.Location = new System.Drawing.Point(0, 112);
+			this.panel3.Location = new System.Drawing.Point(0, 134);
 			this.panel3.Name = "panel3";
 			this.panel3.Size = new System.Drawing.Size(318, 33);
 			this.panel3.TabIndex = 45;
@@ -120,7 +121,7 @@ namespace rokugaTouroku
 			// panel2
 			// 
 			this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
-			this.panel2.Location = new System.Drawing.Point(0, 102);
+			this.panel2.Location = new System.Drawing.Point(0, 124);
 			this.panel2.Name = "panel2";
 			this.panel2.Size = new System.Drawing.Size(318, 10);
 			this.panel2.TabIndex = 44;
@@ -128,23 +129,37 @@ namespace rokugaTouroku
 			// communityLinkLabel
 			// 
 			this.communityLinkLabel.Dock = System.Windows.Forms.DockStyle.Top;
-			this.communityLinkLabel.Location = new System.Drawing.Point(0, 80);
+			this.communityLinkLabel.Location = new System.Drawing.Point(0, 102);
 			this.communityLinkLabel.Name = "communityLinkLabel";
 			this.communityLinkLabel.Size = new System.Drawing.Size(318, 22);
 			this.communityLinkLabel.TabIndex = 43;
 			this.communityLinkLabel.TabStop = true;
 			this.communityLinkLabel.Text = "https://com.nicovideo.jp/community/co2414037";
 			this.communityLinkLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.communityLinkLabel.Visible = false;
 			this.communityLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.communityLinkLabel_Click);
+			// 
+			// downloadPageLinkLabel
+			// 
+			this.downloadPageLinkLabel.Dock = System.Windows.Forms.DockStyle.Top;
+			this.downloadPageLinkLabel.Location = new System.Drawing.Point(0, 80);
+			this.downloadPageLinkLabel.Name = "downloadPageLinkLabel";
+			this.downloadPageLinkLabel.Size = new System.Drawing.Size(318, 22);
+			this.downloadPageLinkLabel.TabIndex = 50;
+			this.downloadPageLinkLabel.TabStop = true;
+			this.downloadPageLinkLabel.Text = "https://guest-nico.github.io/pages/downloads.html";
+			this.downloadPageLinkLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.downloadPageLinkLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.DownloadPageLinkLabelLinkClicked);
 			// 
 			// VersionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(318, 154);
+			this.ClientSize = new System.Drawing.Size(318, 176);
 			this.Controls.Add(this.panel3);
 			this.Controls.Add(this.panel2);
 			this.Controls.Add(this.communityLinkLabel);
+			this.Controls.Add(this.downloadPageLinkLabel);
 			this.Controls.Add(this.lastVersionLabel);
 			this.Controls.Add(this.panel5);
 			this.Controls.Add(this.versionLabel);
@@ -159,6 +174,7 @@ namespace rokugaTouroku
 			this.panel3.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.LinkLabel downloadPageLinkLabel;
 		private System.Windows.Forms.Panel panel5;
 		private System.Windows.Forms.LinkLabel lastVersionLabel;
 		public System.Windows.Forms.Button button1;

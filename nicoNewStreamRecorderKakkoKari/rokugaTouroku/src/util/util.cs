@@ -28,8 +28,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.10.80";
-	public static string versionDayStr = "2024/07/29";
+	public static string versionStr = "ver0.1.3.11.0";
+	public static string versionDayStr = "2024/09/17";
 	public static string osName = null;
 	public static bool isCurl = true;
 	public static bool isWebRequestOk = false;
@@ -77,7 +77,7 @@ class util {
 			return new String[]{getPath(), withoutKakutyousi, kakutyousi};
 		}
 	}
-
+	/*
 	public static string[] getRecFolderFilePath(string host, 
 			string group, string title, string lvId, 
 			string communityNum, string userId, config cfg, 
@@ -189,6 +189,7 @@ class util {
 		}
 		return null;
 	}
+	*/
 	public static string getOkFileName(string name) {
 		string[] replaceCharacter = {"\\", "/", ":", "*", "?", "\"", "<", ">", "|"};
 		foreach (string s in replaceCharacter) {
@@ -196,6 +197,7 @@ class util {
 		}
 		return name;
 	}
+	/*
 	private static string getSubFolderName(string host, string group, string title, string lvId, string communityNum, string userId, config cfg) {
 		var n = cfg.get("subFolderNameType");
 		if (n == null) n = "1";
@@ -207,6 +209,7 @@ class util {
 		else if (n == "6") return communityNum + "_" + group + "";
 		else if (n == "7") return communityNum + "_" + host + "";
 		else if (n == "8") return host + "_" + communityNum + "";
+		else if (n == "9") return host + "_" + userId + "";
 		else return host;
 	}
 	private static string getFileName(string host, string group, string title, string lvId, string communityNum, config cfg) {
@@ -231,6 +234,7 @@ class util {
 		
 		
 	}
+	*/
 	public static string getDokujiSetteiFileName(string host, string group, string title, string lvId, string communityNum, string format, DateTime _openTime) {
 		var type = format;
 		if (type == null) return "";
@@ -289,6 +293,7 @@ class util {
 			return fName + "/" + name + kakutyousi;
 		}
 	}
+	/*
 	public static string getLastTimeshiftFileName(string host, 
 			string group, string title, string lvId, string communityNum, 
 			string userId, config cfg) {
@@ -364,7 +369,7 @@ class util {
 					util.debugWriteLine("get last timeshift file create dir exception " + fName + e.Message + e.StackTrace + e.Source + e.TargetSite);
 					continue;
 				}
-				*/
+				*
 				
 				return null;
 			}
@@ -382,6 +387,7 @@ class util {
 		}
 		return null;
 	}
+	*/
 	public static string[] getLastTimeShiftFileTime(string lastFile, string segmentSaveType) {
 		if (lastFile == null) return null;
 		string fname = null;

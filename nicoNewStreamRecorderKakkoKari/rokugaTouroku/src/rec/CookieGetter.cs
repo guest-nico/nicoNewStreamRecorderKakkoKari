@@ -497,5 +497,4 @@ namespace rokugaTouroku.rec
 			}
 		}
 	}
-	
 }
