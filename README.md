@@ -6,7 +6,7 @@
 リファクタリング大歓迎です。  
   
 製作中に見つけた[ニコ生新配信の仕様](siyou.md)を記してみました。  
-ツールのダウンロードは[コミュニティページ](https://com.nicovideo.jp/community/co2414037)または[こちら](https://guest-nico.github.io/pages/downloads.html)　　
+ツールのダウンロードは[こちら](https://guest-nico.github.io/pages/downloads.html)　　
 
   
 ## ライセンス  
@@ -86,6 +86,18 @@ ngtcp2
 Copyright (c) 2016 ngtcp2 contributors  
 The MIT License  
 <https://github.com/ngtcp2/ngtcp2/blob/main/COPYING>  
+  
+nicolive-comment-protobuf  
+<https://github.com/n-air-app/nicolive-comment-protobuf>  
+Copyright (c) 2024 n-air-app  
+MIT License  
+<https://github.com/n-air-app/nicolive-comment-protobuf/blob/main/LICENSE>  
+  
+VarintBitConverter  
+<https://github.com/topas/VarintBitConverter>  
+Copyright (c) 2011 Tomas Pastorek, Ixone.cz.  
+The 2-Clause BSD License  
+<https://github.com/topas/VarintBitConverter/blob/master/LICENSE>  
   
 <https://github.com/guest-nico/WebSocket4Net_deflate>  
 <https://github.com/guest-nico/settableVolumeUsingNamedPipeFFplay>  

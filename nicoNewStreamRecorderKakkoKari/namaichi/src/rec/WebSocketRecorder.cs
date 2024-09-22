@@ -2028,7 +2028,7 @@ namespace namaichi.rec
 			}
 			var vposStartTime = (ri.timeShiftConfig.isVposStartTime) ? (long)firstSegmentSecond : 0;
 			if (ri.si.type == "official") {
-				return chatinfo.getFormatXml(0, true, ri.timeShiftConfig.timeSeconds);
+				return chatinfo.getFormatXml(ri.si._openTime + vposStartTime);
 			} else {
 				return chatinfo.getFormatXml(ri.si.openTime + vposStartTime);
 			}
