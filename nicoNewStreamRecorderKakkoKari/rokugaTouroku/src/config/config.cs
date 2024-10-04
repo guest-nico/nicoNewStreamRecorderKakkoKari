@@ -91,22 +91,24 @@ public class config
 		defaultConfig = new Dictionary<string, string>(){
 			{"accountId",""},
 			{"accountPass",""},
+			{"user_session_setting",""},
 			{"user_session",""},
 			{"user_session_secure",""},
 			{"browserNum","1"},
 //			{"isAllBrowserMode","true"},
 			{"issecondlogin","false"},
+			{"age_auth","0"},
 			
 			{"IsHokan","true"},
 			{"accountId2",""},
 			{"accountPass2",""},
+			{"user_session_setting2",""},
 			{"user_session2",""},
 			{"user_session_secure2",""},
 			{"browserNum2","1"},
 			{"issecondlogin2","false"},
 			{"cookieFile2",""},
 			{"iscookie2","false"},
-			{"IsBrowserShowAll","false"},
 			
 			{"useProxy","false"},
 			{"proxyAddress",""},
@@ -184,13 +186,12 @@ public class config
 			{"IsVposStartTime","true"},
 			{"IsAfterStartTimeComment","false"},
 			{"IsBeforeEndTimeComment","false"},
-			/*
-			{"IsUrlList","false"},
-			{"IsM3u8List","false"},
-			{"M3u8UpdateSeconds","5"},
-			{"IsOpenUrlList","false"},
-			{"openUrlListCommand","notepad {i}"},
-			*/
+			
+			//{"IsUrlList","false"},
+			//{"IsM3u8List","false"},
+			//{"M3u8UpdateSeconds","5"},
+			//{"IsOpenUrlList","false"},
+			//{"openUrlListCommand","notepad {i}"},
 			{"afterConvertMode","0"},
 			{"afterConvertModeCmd",""},
 			{"IsSoundEnd","false"},
@@ -200,6 +201,7 @@ public class config
 			
 			{"cookieFile",""},
 			{"iscookie","false"},
+			{"IsBrowserShowAll","false"},
 			{"recordDir",""},
 			{"IsSecondRecordDir","false"},
 			{"secondRecordDir",""},
@@ -238,6 +240,7 @@ public class config
 			{"rokugaTourokuMiniInfo","false"},
 			{"rokugaTourokuMaxRecordingNum","10"},
 			{"IsDuplicateConfirm","false"},
+			{"IsDuplicateCancel","false"},
 			{"rokugaTourokuQualityRank","0,1,2,3,4,5,6,7,8,9"},
 			{"IsDeleteConfirmMessageRt","false"},
 			

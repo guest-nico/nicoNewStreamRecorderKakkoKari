@@ -89,7 +89,6 @@ namespace rokugaTouroku
 		{
 			var formData = getFormData();
 			cfg.saveFromForm(formData);
-			Close();
 			
 			//main cookie
 			var importer = nicoSessionComboBox1.Selector.SelectedImporter;
@@ -109,16 +108,16 @@ namespace rokugaTouroku
 				SourceInfoSerialize.save(si2.GenerateCopy(si2.BrowserName, si2.ProfileName, cookieFileText2.Text), true);
 			else SourceInfoSerialize.save(si2, true);
 			DialogResult = DialogResult.OK;
+			Close();
 		}
 
 		private Dictionary<string, string> getFormData() {
-			//var selectedImporter = nicoSessionComboBox1.Selector.SelectedImporter;
-//			var browserName = (selectedImporter != null) ? selectedImporter.SourceInfo.BrowserName : "";
-			var browserNum = (useCookieRadioBtn.Checked) ? "2" : "1";
-			var browserNum2 = (useCookieRadioBtn2.Checked) ? "2" : "1";
+			var browserNum = (useCookieRadioBtn.Checked) ? "2" : (useAccountLoginRadioBtn.Checked ? "1" : "3");
+			var browserNum2 = (useCookieRadioBtn2.Checked) ? "2" : (useAccountLoginRadioBtn2.Checked ? "1" : "3");
 			return new Dictionary<string, string>(){
 				{"accountId",mailText.Text},
 				{"accountPass",passText.Text},
+				{"user_session_setting",userSessionText.Text},
 				//{"user_session",passText.Text},
 				{"browserNum",browserNum},
 //				{"isAllBrowserMode",checkBoxShowAll.Checked.ToString().ToLower()},
@@ -203,6 +202,7 @@ namespace rokugaTouroku
 				{"IsHokan",isHokanChkBox.Checked.ToString().ToLower()},
 				{"accountId2",mailText2.Text},
 				{"accountPass2",passText2.Text},
+				{"user_session_setting2",userSessionText2.Text},
 				{"browserNum2",browserNum2},
 				{"issecondlogin2",useSecondLoginChkBox2.Checked.ToString().ToLower()},
 				{"cookieFile2",cookieFileText2.Text},
@@ -214,7 +214,8 @@ namespace rokugaTouroku
 				{"chPlus_cookie", ""},
 				
 				{"rokugaTourokuMaxRecordingNum",maxRecordingNum.Text},
-				{"IsDuplicateConfirm",isDuplicateConfirmChkBox.Checked.ToString().ToLower()},
+				{"IsDuplicateConfirm",isDuplicateConfirmRadioBtn.Checked.ToString().ToLower()},
+				{"IsDuplicateCancel",isDuplicateCancelRadioBtn.Checked.ToString().ToLower()},
 				{"IsDeleteConfirmMessageRt",isDeleteConfirmMessageRtCheckBtn.Checked.ToString().ToLower()},
 				
 				{"useProxy",useProxyChkBox.Checked.ToString().ToLower()},
@@ -380,9 +381,11 @@ namespace rokugaTouroku
         private void setFormFromConfig() {
         	mailText.Text = cfg.get("accountId");
         	passText.Text = cfg.get("accountPass");
+        	userSessionText.Text = cfg.get("user_session_setting");
         	
         	if (cfg.get("browserNum") == "1") useAccountLoginRadioBtn.Checked = true;
-        	else useCookieRadioBtn.Checked = true; 
+        	else if (cfg.get("browserNum") == "2") useCookieRadioBtn.Checked = true;
+        	else useUserSessionRadioBtn.Checked = true; 
         	useSecondLoginChkBox.Checked = bool.Parse(cfg.get("issecondlogin"));
         	isDefaultBrowserPathChkBox.Checked = bool.Parse(cfg.get("IsdefaultBrowserPath"));
         	isDefaultBrowserPathChkBox_UpdateAction();
@@ -476,8 +479,10 @@ namespace rokugaTouroku
         	isSubHokanChkBox_updateAction();
         	mailText2.Text = cfg.get("accountId2");
         	passText2.Text = cfg.get("accountPass2");
+        	userSessionText2.Text = cfg.get("user_session_setting2");
         	if (cfg.get("browserNum2") == "1") useAccountLoginRadioBtn2.Checked = true;
-        	else useCookieRadioBtn2.Checked = true; 
+        	else if (cfg.get("browserNum2") == "2") useCookieRadioBtn2.Checked = true;
+        	else useUserSessionRadioBtn2.Checked = true; 
         	useSecondLoginChkBox2.Checked = bool.Parse(cfg.get("issecondlogin2"));
         	isCookieFileSiteiChkBox2.Checked = bool.Parse(cfg.get("iscookie2"));
         	isCookieFileSiteiChkBox2_UpdateAction();
@@ -490,7 +495,8 @@ namespace rokugaTouroku
         	nicoSessionComboBox2.Selector.SetInfoAsync(si2);
         	
         	maxRecordingNum.Text= cfg.get("rokugaTourokuMaxRecordingNum");
-        	isDuplicateConfirmChkBox.Checked = bool.Parse(cfg.get("IsDuplicateConfirm"));
+        	isDuplicateConfirmRadioBtn.Checked = bool.Parse(cfg.get("IsDuplicateConfirm"));
+        	isDuplicateCancelRadioBtn.Checked = bool.Parse(cfg.get("IsDuplicateCancel"));
         	isDeleteConfirmMessageRtCheckBtn.Checked = bool.Parse(cfg.get("IsDeleteConfirmMessageRt"));
         	
         	proxyAddressText.Text = cfg.get("proxyAddress");
@@ -1205,6 +1211,28 @@ namespace rokugaTouroku
 			util.debugWriteLine(f.SelectedPath);
 			if (r == DialogResult.OK)
 				secondRecFolderText.Text = f.SelectedPath;
+		}
+		void UserSessionTestBtnClick(object sender, EventArgs e)
+		{
+			UserSessionTest(userSessionText.Text);
+		}
+		void UserSessionTestBtn2Click(object sender, EventArgs e)
+		{
+			UserSessionTest(userSessionText2.Text);
+		}
+		void UserSessionTest(string us) {
+			try {
+				var cg = new rec.CookieGetter(cfg);
+				var cc = cg.getUserSessionCookie(us);
+				if (cc == null || !cg.isHtml5Login(cc, "https://live.nicovideo.jp/")) {
+					util.showMessageBoxCenterForm(this, "login error " + cg.log, "", MessageBoxButtons.OK);
+					return;
+				}
+				else util.showMessageBoxCenterForm(this, "login ok", "", MessageBoxButtons.OK);
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+				util.showMessageBoxCenterForm(this, "login error " + e.Message + e.Source + e.StackTrace, "", MessageBoxButtons.OK);
+			}
 		}
 	}
 }

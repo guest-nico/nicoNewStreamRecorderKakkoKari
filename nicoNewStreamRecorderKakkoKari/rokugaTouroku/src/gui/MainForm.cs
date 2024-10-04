@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading.Tasks;
@@ -30,6 +31,7 @@ namespace rokugaTouroku
 	/// </summary>
 	public partial class MainForm : Form
 	{
+		string[] args = null;
 		public rokugaTouroku.config.config config = new rokugaTouroku.config.config();
 		private SortableBindingList<RecInfo> recListDataSource = new SortableBindingList<RecInfo>();
 		private RecListManager rec;
@@ -42,6 +44,7 @@ namespace rokugaTouroku
 		
 		public MainForm(string[] args)
 		{
+			this.args = args;
 			madeThread = Thread.CurrentThread;
 			//config.set("IsHokan", "false");
 			
@@ -669,18 +672,27 @@ namespace rokugaTouroku
 					if (config.brokenCopyFile != null)
 						addLogText("設定ファイルを読み込めませんでした。設定ファイルをバックアップしました。" + config.brokenCopyFile);
 			
-					var cg = new CookieGetter(config);
-					var cgret = cg.getHtml5RecordCookie("https://live.nicovideo.jp/my", false);
-					if (cgret != null && cgret.Result != null
-					    	&& cgret.Result[0] != null)
-						container = cgret.Result[0];
+					setCookie();
 					util.dllCheck(this);            
 				} catch (Exception ee) {
 					util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace);
 				}
+				argProcess();
 			});
+			
 		}
-		
+		void setCookie() {
+			try {
+				var cg = new CookieGetter(config);
+				var cgret = cg.getHtml5RecordCookie("https://live.nicovideo.jp/", false);
+				//var cgreta = cg.getHtml5RecordCookie("https://live.nicovideo.jp/", false).Result;
+				if (cgret != null && cgret.Result != null
+				    	&& cgret.Result[0] != null)
+					container = cgret.Result[0];
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+			}
+		}
 		void recList_DataError(object sender, DataGridViewDataErrorEventArgs e)
 		{
 //			util.showException(e, false);
@@ -1190,7 +1202,8 @@ namespace rokugaTouroku
 			else {
 				
 				accountBtn.Text = (f.ai.isBrowser) ?
-						(f.si.BrowserName + " " + f.si.ProfileName) : "アカウントログイン";
+					(f.si.BrowserName + " " + f.si.ProfileName) : 
+					(f.ai.isAccount ? "アカウントログイン" : "ユーザーセッションログイン");
 			}
 		}
 		void RecListDataError(object sender, DataGridViewDataErrorEventArgs e)
@@ -1268,6 +1281,54 @@ namespace rokugaTouroku
 			var i = recListDataSource.IndexOf(ri);
 			return i > -1 && recList.CurrentRow != null && 
 					recList.CurrentRow.Index == i;
+		}
+		void AddFromReserveBtnClick(object sender, EventArgs e)
+		{
+			Task.Factory.StartNew(() => addFromReserve());
+		}
+		void addFromReserve() {
+			try {
+				setCookie();
+				if (container == null) return;
+				
+				var url = "https://live.nicovideo.jp/embed/timeshift-reservations";
+				var referer = "https://www.nicovideo.jp/my/timeshift-reservations?ref=pc_mypage_watchlater";
+				var res = util.getPageSource(url, container, referer);
+				
+				var data = util.getRegGroup(res, "<script id=\"embedded-data\" data-props=\"([\\d\\D]+?)</script>");
+				data = util.getRegGroup(data, "{&quot;reservations&quot;:(.+?}])");
+				//var a = res.Substring(100000, 30000);
+				//data = System.Web.HttpUtility.HtmlDecode(data);
+				var l = Regex.Split(data, "&quot;features&");
+				foreach (var _l in l) {
+					if (_l.IndexOf("isActive&quot;:false") > -1) continue;
+					
+					var lvid = util.getRegGroup(_l, "&quot;programId&quot;:&quot;(lv\\d+)&quot;");
+					if (lvid == null) continue;
+					rec.add(lvid);
+				}
+				var m = Regex.Matches(data, "&quot;programId&quot;:&quot;(lv\\d+)&quot;");
+				foreach (Match _m in m)
+					util.debugWriteLine(_m.Groups[1].Value);
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace);
+				addLogText(ee.Message + ee.Source + ee.StackTrace);
+			}
+		}
+		void argProcess() {
+			try {
+				var isRec = false;
+				foreach (var arg in args) {
+					if (arg.ToLower() == "-addreserve")
+						addFromReserve();
+					if (arg.ToLower() == "-rec")
+						isRec = true;
+				}
+				if (isRec) formAction(() => rec.record());
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+			}
 		}
 	}
 }

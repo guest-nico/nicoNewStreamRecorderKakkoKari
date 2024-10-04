@@ -55,10 +55,12 @@ namespace rokugaTouroku.gui
 	        		return;
 	        	} else if (ai.isRecSetting) useRecorderSettingRadioBtn.Checked = true;
 	        	else if (ai.isBrowser) useCookieRadioBtn.Checked = true;
-	        	else useAccountLoginRadioBtn.Checked = true;
+	        	else if (ai.isAccount) useAccountLoginRadioBtn.Checked = true;
+	        	else useUserSessionRadioBtn.Checked = true;
 	        	
 	        	mailText.Text = ai.accountId;
 	        	passText.Text = ai.accountPass;
+	        	userSessionText.Text = ai.userSession;
 	        	useSecondLoginChkBox.Checked = ai.useSecondLogin;
 	        	
         	} catch (Exception e) {
@@ -80,7 +82,10 @@ namespace rokugaTouroku.gui
 				}
 	        	
 	        	ai = new AccountInfo(si, mailText.Text,
-						passText.Text, useCookieRadioBtn.Checked, 
+						passText.Text, userSessionText.Text,
+						useCookieRadioBtn.Checked,
+						useAccountLoginRadioBtn.Checked,
+						useUserSessionRadioBtn.Checked,
 						useSecondLoginChkBox.Checked, 
 						useRecorderSettingRadioBtn.Checked, 
 						cookieFileText.Text);
@@ -125,6 +130,24 @@ namespace rokugaTouroku.gui
 				                   cc.GetCookies(TargetUrl)["user_session_secure"] == null)
 				util.showMessageBoxCenterForm(this, "no login", "", MessageBoxButtons.OK);
 			else util.showMessageBoxCenterForm(this, "login ok", "", MessageBoxButtons.OK);
+		}
+		void UserSessionTestBtnClick(object sender, EventArgs e)
+		{
+			UserSessionTest(userSessionText.Text);
+		}
+		void UserSessionTest(string us) {
+			try {
+				var cg = new rec.CookieGetter(cfg);
+				var cc = cg.getUserSessionCookie(us);
+				if (cc == null || !cg.isHtml5Login(cc, "https://live.nicovideo.jp/")) {
+					util.showMessageBoxCenterForm(this, "login error " + cg.log, "", MessageBoxButtons.OK);
+					return;
+				}
+				else util.showMessageBoxCenterForm(this, "login ok", "", MessageBoxButtons.OK);
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+				util.showMessageBoxCenterForm(this, "login error " + e.Message + e.Source + e.StackTrace, "", MessageBoxButtons.OK);
+			}
 		}
 	}
 }

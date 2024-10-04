@@ -136,6 +136,7 @@ public class config
 		defaultConfig = new Dictionary<string, string>(){
 			{"accountId",""},
 			{"accountPass",""},
+			{"user_session_setting",""},
 			{"user_session",""},
 			{"user_session_secure",""},
 			{"browserNum","1"},
@@ -146,6 +147,7 @@ public class config
 			{"IsHokan","true"},
 			{"accountId2",""},
 			{"accountPass2",""},
+			{"user_session_setting2",""},
 			{"user_session2",""},
 			{"user_session_secure2",""},
 			{"browserNum2","1"},
@@ -276,11 +278,17 @@ public class config
 			{"defaultCommentFormY","100"},
 			{"defaultCommentFormWidth","500"},
 			{"defaultCommentFormHeight","520"},
+			{"RecListColumnWidth",""},
+			{"ShowRecColumns","1111111111111"},
 			
 			{"rokugaTourokuWidth","950"},
 			{"rokugaTourokuHeight","500"},
+			{"rokugaTourokuX",""},
+			{"rokugaTourokuY",""},
+			{"rokugaTourokuMiniInfo","false"},
 			{"rokugaTourokuMaxRecordingNum","10"},
 			{"IsDuplicateConfirm","false"},
+			{"IsDuplicateCancel","false"},
 			{"rokugaTourokuQualityRank","0,1,2,3,4,5,6,7,8,9"},
 			{"IsDeleteConfirmMessageRt","false"},
 			

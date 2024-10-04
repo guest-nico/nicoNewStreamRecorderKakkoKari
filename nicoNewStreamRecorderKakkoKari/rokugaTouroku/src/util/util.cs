@@ -28,8 +28,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.11.0";
-	public static string versionDayStr = "2024/09/17";
+	public static string versionStr = "ver0.1.3.11.1";
+	public static string versionDayStr = "2024/10/05";
 	public static string osName = null;
 	public static bool isCurl = true;
 	public static bool isWebRequestOk = false;
@@ -235,7 +235,7 @@ class util {
 		
 	}
 	*/
-	public static string getDokujiSetteiFileName(string host, string group, string title, string lvId, string communityNum, string format, DateTime _openTime) {
+	public static string getDokujiSetteiFileName(string host, string group, string title, string lvId, string communityNum, string format, DateTime _openTime, string hostId) {
 		var type = format;
 		if (type == null) return "";
 		//var dt = DateTime.Now;
@@ -266,13 +266,14 @@ class util {
 		type = type.Replace("{2}", host);
 		type = type.Replace("{3}", communityNum);
 		type = type.Replace("{4}", group);
+		type = type.Replace("{5}", hostId);
 		type = getOkFileName(type);
 		return type;
 		
 	}
 	public static string getFileNameTypeSample(string filenametype) {
 			//var format = cfg.get("filenameformat");
-			return getDokujiSetteiFileName("放送者名", "コミュ名", "タイトル", "lv12345", "co9876", filenametype, DateTime.Now).Replace("{w}", "2").Replace("{c}", "1");
+			return getDokujiSetteiFileName("放送者名", "コミュ名", "タイトル", "lv12345", "co9876", filenametype, DateTime.Now, "1000").Replace("{w}", "2").Replace("{c}", "1");
 		}
 	public static string getOkCommentFileName(config cfg, string fName, string lvid, bool isTimeShift) {
 		var kakutyousi = (cfg.get("IsgetcommentXml") == "true") ? ".xml" : ".json";

@@ -40,6 +40,20 @@ namespace rokugaTouroku
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.afterConvertModeList = new System.Windows.Forms.ComboBox();
 			this.recList = new System.Windows.Forms.DataGridView();
+			this.放送ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.形式 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.画質 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.タイムシフト設定 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.chaseColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.状態 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.recComment = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.accountColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.タイトル = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.放送者 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.コミュニティ名 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.開始時刻 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.終了時刻 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.ログ = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.openWatchUrlMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.openCommunityUrlMenu = new System.Windows.Forms.ToolStripMenuItem();
@@ -133,20 +147,7 @@ namespace rokugaTouroku
 			this.label3 = new System.Windows.Forms.Label();
 			this.samuneBox = new System.Windows.Forms.PictureBox();
 			this.logText = new System.Windows.Forms.TextBox();
-			this.放送ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.形式 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.画質 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.タイムシフト設定 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.chaseColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.状態 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.recComment = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.accountColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.タイトル = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.放送者 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.コミュニティ名 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.開始時刻 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.終了時刻 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.ログ = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.addFromReserveBtn = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.recList)).BeginInit();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -223,6 +224,110 @@ namespace rokugaTouroku
 			this.recList.DragDrop += new System.Windows.Forms.DragEventHandler(this.RecListDragDrop);
 			this.recList.DragEnter += new System.Windows.Forms.DragEventHandler(this.RecListDragEnter);
 			this.recList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.RecListKeyDown);
+			// 
+			// 放送ID
+			// 
+			this.放送ID.DataPropertyName = "id";
+			this.放送ID.HeaderText = "放送ID";
+			this.放送ID.Name = "放送ID";
+			this.放送ID.ReadOnly = true;
+			// 
+			// 形式
+			// 
+			this.形式.DataPropertyName = "afterConvertType";
+			this.形式.HeaderText = "形式";
+			this.形式.Name = "形式";
+			this.形式.ReadOnly = true;
+			this.形式.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+			// 
+			// 画質
+			// 
+			this.画質.DataPropertyName = "quality";
+			this.画質.HeaderText = "画質";
+			this.画質.Name = "画質";
+			this.画質.ReadOnly = true;
+			this.画質.Width = 120;
+			// 
+			// タイムシフト設定
+			// 
+			this.タイムシフト設定.DataPropertyName = "timeShift";
+			this.タイムシフト設定.HeaderText = "タイムシフト設定";
+			this.タイムシフト設定.Name = "タイムシフト設定";
+			this.タイムシフト設定.ReadOnly = true;
+			this.タイムシフト設定.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+			this.タイムシフト設定.Width = 195;
+			// 
+			// chaseColumn
+			// 
+			this.chaseColumn.DataPropertyName = "chase";
+			this.chaseColumn.HeaderText = "追っかけ録画";
+			this.chaseColumn.Name = "chaseColumn";
+			this.chaseColumn.ReadOnly = true;
+			// 
+			// 状態
+			// 
+			this.状態.DataPropertyName = "state";
+			this.状態.HeaderText = "状態";
+			this.状態.Name = "状態";
+			this.状態.ReadOnly = true;
+			// 
+			// recComment
+			// 
+			this.recComment.DataPropertyName = "recComment";
+			this.recComment.HeaderText = "映像・コメント";
+			this.recComment.Name = "recComment";
+			this.recComment.ReadOnly = true;
+			this.recComment.Width = 85;
+			// 
+			// accountColumn
+			// 
+			this.accountColumn.DataPropertyName = "account";
+			this.accountColumn.HeaderText = "アカウント";
+			this.accountColumn.Name = "accountColumn";
+			this.accountColumn.ReadOnly = true;
+			// 
+			// タイトル
+			// 
+			this.タイトル.DataPropertyName = "title";
+			this.タイトル.HeaderText = "タイトル";
+			this.タイトル.Name = "タイトル";
+			this.タイトル.ReadOnly = true;
+			// 
+			// 放送者
+			// 
+			this.放送者.DataPropertyName = "host";
+			this.放送者.HeaderText = "放送者";
+			this.放送者.Name = "放送者";
+			this.放送者.ReadOnly = true;
+			// 
+			// コミュニティ名
+			// 
+			this.コミュニティ名.DataPropertyName = "communityName";
+			this.コミュニティ名.HeaderText = "コミュニティ名";
+			this.コミュニティ名.Name = "コミュニティ名";
+			this.コミュニティ名.ReadOnly = true;
+			// 
+			// 開始時刻
+			// 
+			this.開始時刻.DataPropertyName = "startTime";
+			this.開始時刻.HeaderText = "開始時刻";
+			this.開始時刻.Name = "開始時刻";
+			this.開始時刻.ReadOnly = true;
+			// 
+			// 終了時刻
+			// 
+			this.終了時刻.DataPropertyName = "endTime";
+			this.終了時刻.HeaderText = "終了時刻";
+			this.終了時刻.Name = "終了時刻";
+			this.終了時刻.ReadOnly = true;
+			// 
+			// ログ
+			// 
+			this.ログ.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+			this.ログ.DataPropertyName = "log";
+			this.ログ.HeaderText = "ログ";
+			this.ログ.Name = "ログ";
+			this.ログ.ReadOnly = true;
 			// 
 			// contextMenuStrip1
 			// 
@@ -608,6 +713,7 @@ namespace rokugaTouroku
 			this.panel1.Controls.Add(this.addListBtn);
 			this.panel1.Controls.Add(this.downBtn);
 			this.panel1.Controls.Add(this.upBtn);
+			this.panel1.Controls.Add(this.addFromReserveBtn);
 			this.panel1.Controls.Add(this.deleteFinishedBtn);
 			this.panel1.Controls.Add(this.clearBtn);
 			this.panel1.Controls.Add(this.recBtn);
@@ -1087,109 +1193,16 @@ namespace rokugaTouroku
 			this.logText.Size = new System.Drawing.Size(187, 154);
 			this.logText.TabIndex = 8;
 			// 
-			// 放送ID
+			// addFromReserveBtn
 			// 
-			this.放送ID.DataPropertyName = "id";
-			this.放送ID.HeaderText = "放送ID";
-			this.放送ID.Name = "放送ID";
-			this.放送ID.ReadOnly = true;
-			// 
-			// 形式
-			// 
-			this.形式.DataPropertyName = "afterConvertType";
-			this.形式.HeaderText = "形式";
-			this.形式.Name = "形式";
-			this.形式.ReadOnly = true;
-			this.形式.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-			// 
-			// 画質
-			// 
-			this.画質.DataPropertyName = "quality";
-			this.画質.HeaderText = "画質";
-			this.画質.Name = "画質";
-			this.画質.ReadOnly = true;
-			this.画質.Width = 120;
-			// 
-			// タイムシフト設定
-			// 
-			this.タイムシフト設定.DataPropertyName = "timeShift";
-			this.タイムシフト設定.HeaderText = "タイムシフト設定";
-			this.タイムシフト設定.Name = "タイムシフト設定";
-			this.タイムシフト設定.ReadOnly = true;
-			this.タイムシフト設定.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-			this.タイムシフト設定.Width = 195;
-			// 
-			// chaseColumn
-			// 
-			this.chaseColumn.DataPropertyName = "chase";
-			this.chaseColumn.HeaderText = "追っかけ録画";
-			this.chaseColumn.Name = "chaseColumn";
-			this.chaseColumn.ReadOnly = true;
-			// 
-			// 状態
-			// 
-			this.状態.DataPropertyName = "state";
-			this.状態.HeaderText = "状態";
-			this.状態.Name = "状態";
-			this.状態.ReadOnly = true;
-			// 
-			// recComment
-			// 
-			this.recComment.DataPropertyName = "recComment";
-			this.recComment.HeaderText = "映像・コメント";
-			this.recComment.Name = "recComment";
-			this.recComment.ReadOnly = true;
-			this.recComment.Width = 85;
-			// 
-			// accountColumn
-			// 
-			this.accountColumn.DataPropertyName = "account";
-			this.accountColumn.HeaderText = "アカウント";
-			this.accountColumn.Name = "accountColumn";
-			this.accountColumn.ReadOnly = true;
-			// 
-			// タイトル
-			// 
-			this.タイトル.DataPropertyName = "title";
-			this.タイトル.HeaderText = "タイトル";
-			this.タイトル.Name = "タイトル";
-			this.タイトル.ReadOnly = true;
-			// 
-			// 放送者
-			// 
-			this.放送者.DataPropertyName = "host";
-			this.放送者.HeaderText = "放送者";
-			this.放送者.Name = "放送者";
-			this.放送者.ReadOnly = true;
-			// 
-			// コミュニティ名
-			// 
-			this.コミュニティ名.DataPropertyName = "communityName";
-			this.コミュニティ名.HeaderText = "コミュニティ名";
-			this.コミュニティ名.Name = "コミュニティ名";
-			this.コミュニティ名.ReadOnly = true;
-			// 
-			// 開始時刻
-			// 
-			this.開始時刻.DataPropertyName = "startTime";
-			this.開始時刻.HeaderText = "開始時刻";
-			this.開始時刻.Name = "開始時刻";
-			this.開始時刻.ReadOnly = true;
-			// 
-			// 終了時刻
-			// 
-			this.終了時刻.DataPropertyName = "endTime";
-			this.終了時刻.HeaderText = "終了時刻";
-			this.終了時刻.Name = "終了時刻";
-			this.終了時刻.ReadOnly = true;
-			// 
-			// ログ
-			// 
-			this.ログ.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-			this.ログ.DataPropertyName = "log";
-			this.ログ.HeaderText = "ログ";
-			this.ログ.Name = "ログ";
-			this.ログ.ReadOnly = true;
+			this.addFromReserveBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.addFromReserveBtn.Location = new System.Drawing.Point(401, 264);
+			this.addFromReserveBtn.Name = "addFromReserveBtn";
+			this.addFromReserveBtn.Size = new System.Drawing.Size(142, 23);
+			this.addFromReserveBtn.TabIndex = 7;
+			this.addFromReserveBtn.Text = "タイムシフト予約から追加";
+			this.addFromReserveBtn.UseVisualStyleBackColor = true;
+			this.addFromReserveBtn.Click += new System.EventHandler(this.AddFromReserveBtnClick);
 			// 
 			// MainForm
 			// 
@@ -1217,6 +1230,7 @@ namespace rokugaTouroku
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.Button addFromReserveBtn;
 		private System.Windows.Forms.Label recListNumLabel;
 		private System.Windows.Forms.Label foldBtnLabel;
 		private System.Windows.Forms.Button upBtn;

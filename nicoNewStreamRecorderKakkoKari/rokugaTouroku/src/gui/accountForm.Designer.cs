@@ -39,10 +39,14 @@ namespace rokugaTouroku.gui
 			this.cancelBtn = new System.Windows.Forms.Button();
 			this.okBtn = new System.Windows.Forms.Button();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.userSessionText = new System.Windows.Forms.TextBox();
+			this.useUserSessionRadioBtn = new System.Windows.Forms.RadioButton();
+			this.userSessionTestBtn = new System.Windows.Forms.Button();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.cookieFileText = new System.Windows.Forms.TextBox();
 			this.useAccountLoginRadioBtn = new System.Windows.Forms.RadioButton();
+			this.useRecorderSettingRadioBtn = new System.Windows.Forms.RadioButton();
 			this.useCookieRadioBtn = new System.Windows.Forms.RadioButton();
 			this.passText = new System.Windows.Forms.TextBox();
 			this.mailText = new System.Windows.Forms.TextBox();
@@ -53,13 +57,12 @@ namespace rokugaTouroku.gui
 			this.cookieFileSanshouBtn = new System.Windows.Forms.Button();
 			this.btnReload = new System.Windows.Forms.Button();
 			this.useSecondLoginChkBox = new System.Windows.Forms.CheckBox();
-			this.useRecorderSettingRadioBtn = new System.Windows.Forms.RadioButton();
 			this.groupBox3.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// cancelBtn
 			// 
-			this.cancelBtn.Location = new System.Drawing.Point(310, 338);
+			this.cancelBtn.Location = new System.Drawing.Point(310, 401);
 			this.cancelBtn.Name = "cancelBtn";
 			this.cancelBtn.Size = new System.Drawing.Size(74, 23);
 			this.cancelBtn.TabIndex = 8;
@@ -69,7 +72,7 @@ namespace rokugaTouroku.gui
 			// 
 			// okBtn
 			// 
-			this.okBtn.Location = new System.Drawing.Point(230, 338);
+			this.okBtn.Location = new System.Drawing.Point(230, 401);
 			this.okBtn.Name = "okBtn";
 			this.okBtn.Size = new System.Drawing.Size(74, 23);
 			this.okBtn.TabIndex = 7;
@@ -79,6 +82,9 @@ namespace rokugaTouroku.gui
 			// 
 			// groupBox3
 			// 
+			this.groupBox3.Controls.Add(this.userSessionText);
+			this.groupBox3.Controls.Add(this.useUserSessionRadioBtn);
+			this.groupBox3.Controls.Add(this.userSessionTestBtn);
 			this.groupBox3.Controls.Add(this.label2);
 			this.groupBox3.Controls.Add(this.label1);
 			this.groupBox3.Controls.Add(this.cookieFileText);
@@ -96,10 +102,39 @@ namespace rokugaTouroku.gui
 			this.groupBox3.Controls.Add(this.useSecondLoginChkBox);
 			this.groupBox3.Location = new System.Drawing.Point(5, 10);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(394, 305);
+			this.groupBox3.Size = new System.Drawing.Size(394, 368);
 			this.groupBox3.TabIndex = 19;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "ニコニコ動画アカウントの共有　(普段ニコニコ生放送を見ているブラウザ)";
+			// 
+			// userSessionText
+			// 
+			this.userSessionText.Location = new System.Drawing.Point(21, 325);
+			this.userSessionText.Name = "userSessionText";
+			this.userSessionText.Size = new System.Drawing.Size(277, 19);
+			this.userSessionText.TabIndex = 23;
+			// 
+			// useUserSessionRadioBtn
+			// 
+			this.useUserSessionRadioBtn.Checked = true;
+			this.useUserSessionRadioBtn.Location = new System.Drawing.Point(7, 301);
+			this.useUserSessionRadioBtn.Name = "useUserSessionRadioBtn";
+			this.useUserSessionRadioBtn.Size = new System.Drawing.Size(311, 18);
+			this.useUserSessionRadioBtn.TabIndex = 22;
+			this.useUserSessionRadioBtn.TabStop = true;
+			this.useUserSessionRadioBtn.Text = "ユーザーセッションを指定してログインする";
+			this.useUserSessionRadioBtn.UseVisualStyleBackColor = true;
+			// 
+			// userSessionTestBtn
+			// 
+			this.userSessionTestBtn.Location = new System.Drawing.Point(303, 323);
+			this.userSessionTestBtn.Margin = new System.Windows.Forms.Padding(2);
+			this.userSessionTestBtn.Name = "userSessionTestBtn";
+			this.userSessionTestBtn.Size = new System.Drawing.Size(69, 23);
+			this.userSessionTestBtn.TabIndex = 21;
+			this.userSessionTestBtn.Text = "テスト";
+			this.userSessionTestBtn.UseVisualStyleBackColor = true;
+			this.userSessionTestBtn.Click += new System.EventHandler(this.UserSessionTestBtnClick);
 			// 
 			// label2
 			// 
@@ -136,6 +171,17 @@ namespace rokugaTouroku.gui
 			this.useAccountLoginRadioBtn.TabStop = true;
 			this.useAccountLoginRadioBtn.Text = "ブラウザとクッキーを共有せず、次のアカウントでログインする";
 			this.useAccountLoginRadioBtn.UseVisualStyleBackColor = true;
+			// 
+			// useRecorderSettingRadioBtn
+			// 
+			this.useRecorderSettingRadioBtn.Checked = true;
+			this.useRecorderSettingRadioBtn.Location = new System.Drawing.Point(6, 18);
+			this.useRecorderSettingRadioBtn.Name = "useRecorderSettingRadioBtn";
+			this.useRecorderSettingRadioBtn.Size = new System.Drawing.Size(189, 18);
+			this.useRecorderSettingRadioBtn.TabIndex = 18;
+			this.useRecorderSettingRadioBtn.TabStop = true;
+			this.useRecorderSettingRadioBtn.Text = "録画ツールの設定を使用する";
+			this.useRecorderSettingRadioBtn.UseVisualStyleBackColor = true;
 			// 
 			// useCookieRadioBtn
 			// 
@@ -236,23 +282,12 @@ namespace rokugaTouroku.gui
 			this.useSecondLoginChkBox.Text = "ブラウザからクッキーが取得できなかった場合、次のアカウントでログインする";
 			this.useSecondLoginChkBox.UseVisualStyleBackColor = true;
 			// 
-			// useRecorderSettingRadioBtn
-			// 
-			this.useRecorderSettingRadioBtn.Checked = true;
-			this.useRecorderSettingRadioBtn.Location = new System.Drawing.Point(6, 18);
-			this.useRecorderSettingRadioBtn.Name = "useRecorderSettingRadioBtn";
-			this.useRecorderSettingRadioBtn.Size = new System.Drawing.Size(189, 18);
-			this.useRecorderSettingRadioBtn.TabIndex = 18;
-			this.useRecorderSettingRadioBtn.TabStop = true;
-			this.useRecorderSettingRadioBtn.Text = "録画ツールの設定を使用する";
-			this.useRecorderSettingRadioBtn.UseVisualStyleBackColor = true;
-			// 
 			// accountForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.White;
-			this.ClientSize = new System.Drawing.Size(404, 370);
+			this.ClientSize = new System.Drawing.Size(404, 433);
 			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.cancelBtn);
 			this.Controls.Add(this.okBtn);
@@ -264,6 +299,9 @@ namespace rokugaTouroku.gui
 			this.groupBox3.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Button userSessionTestBtn;
+		private System.Windows.Forms.RadioButton useUserSessionRadioBtn;
+		private System.Windows.Forms.TextBox userSessionText;
 		private System.Windows.Forms.RadioButton useRecorderSettingRadioBtn;
 		private System.Windows.Forms.CheckBox useSecondLoginChkBox;
 		private System.Windows.Forms.Button btnReload;

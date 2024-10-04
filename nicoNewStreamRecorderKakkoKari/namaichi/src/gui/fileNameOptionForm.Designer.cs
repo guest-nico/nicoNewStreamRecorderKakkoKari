@@ -49,6 +49,8 @@ namespace namaichi
 			this.label5 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
+			this.label15 = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
 			this.label9 = new System.Windows.Forms.Label();
 			this.label8 = new System.Windows.Forms.Label();
 			this.label14 = new System.Windows.Forms.Label();
@@ -60,8 +62,7 @@ namespace namaichi
 			this.label2 = new System.Windows.Forms.Label();
 			this.FileNameTypeCancelBtn = new System.Windows.Forms.Button();
 			this.fileNameTypeOkBtn = new System.Windows.Forms.Button();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label15 = new System.Windows.Forms.Label();
+			this.label16 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -157,6 +158,7 @@ namespace namaichi
 			this.groupBox3.Controls.Add(this.label1);
 			this.groupBox3.Controls.Add(this.label9);
 			this.groupBox3.Controls.Add(this.label8);
+			this.groupBox3.Controls.Add(this.label16);
 			this.groupBox3.Controls.Add(this.label14);
 			this.groupBox3.Controls.Add(this.label13);
 			this.groupBox3.Controls.Add(this.label12);
@@ -202,6 +204,22 @@ namespace namaichi
 			this.label3.Size = new System.Drawing.Size(92, 18);
 			this.label3.TabIndex = 0;
 			this.label3.Text = "{y} (2桁の西暦)";
+			// 
+			// label15
+			// 
+			this.label15.Location = new System.Drawing.Point(115, 98);
+			this.label15.Name = "label15";
+			this.label15.Size = new System.Drawing.Size(78, 18);
+			this.label15.TabIndex = 0;
+			this.label15.Text = "{c} コメント数";
+			// 
+			// label1
+			// 
+			this.label1.Location = new System.Drawing.Point(115, 80);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(78, 18);
+			this.label1.TabIndex = 0;
+			this.label1.Text = "{w} 来場者数";
 			// 
 			// label9
 			// 
@@ -295,21 +313,13 @@ namespace namaichi
 			this.fileNameTypeOkBtn.UseVisualStyleBackColor = true;
 			this.fileNameTypeOkBtn.Click += new System.EventHandler(this.fileNameTypeOkBtn_Click);
 			// 
-			// label1
+			// label16
 			// 
-			this.label1.Location = new System.Drawing.Point(115, 80);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(78, 18);
-			this.label1.TabIndex = 0;
-			this.label1.Text = "{w} 来場者数";
-			// 
-			// label15
-			// 
-			this.label15.Location = new System.Drawing.Point(115, 98);
-			this.label15.Name = "label15";
-			this.label15.Size = new System.Drawing.Size(78, 18);
-			this.label15.TabIndex = 0;
-			this.label15.Text = "{c} コメント数";
+			this.label16.Location = new System.Drawing.Point(199, 116);
+			this.label16.Name = "label16";
+			this.label16.Size = new System.Drawing.Size(92, 18);
+			this.label16.TabIndex = 0;
+			this.label16.Text = "{5} 配信者ID";
 			// 
 			// fileNameOptionForm
 			// 
@@ -329,6 +339,7 @@ namespace namaichi
 			this.groupBox3.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label label16;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label15;
 		private System.Windows.Forms.Button fileNameTypeOkBtn;

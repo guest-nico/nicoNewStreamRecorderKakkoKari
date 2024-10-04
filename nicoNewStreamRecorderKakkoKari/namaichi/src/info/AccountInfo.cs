@@ -25,13 +25,21 @@ namespace namaichi.info
 		public CookieSourceInfo si;
 		public string accountId;
 		public string accountPass;
+		public string userSession;
 		public bool isBrowser = false;
-		public AccountInfo(CookieSourceInfo si, string accountId, string accountPass, bool isBrowser)
+		public bool isAccount = false;
+		public bool isUserSession = false;
+		public AccountInfo(CookieSourceInfo si, string accountId, 
+				string accountPass, string userSession, bool isBrowser, bool isAccount, 
+				bool isUserSession)
 		{
 			this.si = si;
 			this.accountId = accountId;
 			this.accountPass = accountPass;
+			this.userSession = userSession;
 			this.isBrowser = isBrowser;
+			this.isAccount = isAccount;
+			this.isUserSession = isUserSession;
 		}
 		public static AccountInfo fromJsonArg(string arg) {
 			util.debugWriteLine("AccountInfo fromJsonArg " + arg);
@@ -45,9 +53,11 @@ namespace namaichi.info
 					var _ai = (AccountSetting)serializer.Deserialize(ms);
 					if (_ai.isBrowser) {
 						var si = new CookieSourceInfo(_ai.BrowserName, _ai.ProfileName, _ai.CookiePath, _ai.EngineId, _ai.IsCustomized);
-						return new AccountInfo(si, null, null, true);
+						return new AccountInfo(si, null, null, null, true, false, false);
+					} else if (_ai.isAccount) {
+						return new AccountInfo(null, _ai.mail, _ai.pass, null, false, true, false);
 					} else {
-						return new AccountInfo(null, _ai.mail, _ai.pass, false);
+						return new AccountInfo(null, null, null, _ai.userSession, false, false, true);
 					}
 				}
 			} catch (Exception e) {
@@ -63,7 +73,10 @@ namespace namaichi.info
 			public string EngineId = null;
 			public string mail = "";
 			public string pass = "";
+			public string userSession = "";
 			public bool isBrowser = false;
+			public bool isAccount = false;
+			public bool isUserSession = false;
 		}
 	}
 }

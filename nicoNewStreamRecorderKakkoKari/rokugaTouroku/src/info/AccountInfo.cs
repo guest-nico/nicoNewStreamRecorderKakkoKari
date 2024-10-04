@@ -28,17 +28,27 @@ namespace rokugaTouroku.info
 		public CookieSourceInfo si;
 		public string accountId;
 		public string accountPass;
+		public string userSession;
 		public bool isBrowser = false;
+		public bool isAccount = false;
+		public bool isUserSession = false;
 		
 		public bool useSecondLogin = false;
 		public string cookieFile;
 	        	
-		public AccountInfo(CookieSourceInfo si, string accountId, string accountPass, bool isBrowser, bool isSecondLogin, bool isRecSetting, string cookieFile)
+		public AccountInfo(CookieSourceInfo si, 
+				string accountId, string accountPass, 
+				string userSession, bool isBrowser, bool isAccount,
+				bool isUserSession, bool isSecondLogin, 
+				bool isRecSetting, string cookieFile)
 		{
 			this.si = si;
 			this.accountId = accountId;
 			this.accountPass = accountPass;
+			this.userSession = userSession;
 			this.isBrowser = isBrowser;
+			this.isAccount = isAccount;
+			this.isUserSession = isUserSession;
 			this.useSecondLogin = isSecondLogin;
 			this.isRecSetting = isRecSetting;
 			this.cookieFile = cookieFile;
@@ -57,7 +67,10 @@ namespace rokugaTouroku.info
 					_ai.EngineId = si != null ? si.EngineId : "";
 					_ai.mail = accountId == null ? "" : accountId;
 					_ai.pass = accountPass == null ? "" : accountPass;
+					_ai.userSession = userSession == null ? "" : userSession;
 					_ai.isBrowser = isBrowser;
+					_ai.isAccount = isAccount;
+					_ai.isUserSession = isUserSession;
 					
 					var ns = new XmlSerializerNamespaces();
 					ns.Add(string.Empty, string.Empty);
@@ -85,7 +98,10 @@ namespace rokugaTouroku.info
 			public string EngineId = null;
 			public string mail = "";
 			public string pass = "";
+			public string userSession = "";
 			public bool isBrowser = false;
+			public bool isAccount = false;
+			public bool isUserSession = false;
 		}
 		
 	}

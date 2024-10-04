@@ -484,7 +484,7 @@ namespace namaichi.rec
 				//if (isSub) return;
 				if (!isSaveComment) return;
 				
-				if (mcg == null) {
+				if (mcg == null && bool.Parse(isGetComment)) {
 					Task.Factory.StartNew(() => {
 							mcg = new MpnCommentGetter(rm, rfu, this);
 							mcg.get(message);
@@ -1156,7 +1156,13 @@ namespace namaichi.rec
 			
 			if (isGetCommentXmlInfo && chatinfo.no == -1) 
 				chatXml.Root.Add(new XAttribute("no", "0"));
-			var chatXmlStr = chatXml.ToString();
+			string chatXmlStr = null;
+			try {
+				chatXmlStr = chatXml.ToString();
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+				return;
+			}
 			if (isDisplay) addDebugBuf("xml " + chatXmlStr);
 			
 			if (chatinfo.root == "chat" && (chatinfo.contents.IndexOf("/hb ifseetno") != -1 && 
@@ -2028,7 +2034,7 @@ namespace namaichi.rec
 			}
 			var vposStartTime = (ri.timeShiftConfig.isVposStartTime) ? (long)firstSegmentSecond : 0;
 			if (ri.si.type == "official") {
-				return chatinfo.getFormatXml(ri.si._openTime + vposStartTime);
+				return chatinfo.getFormatXml(0, true, vposStartTime);
 			} else {
 				return chatinfo.getFormatXml(ri.si.openTime + vposStartTime);
 			}

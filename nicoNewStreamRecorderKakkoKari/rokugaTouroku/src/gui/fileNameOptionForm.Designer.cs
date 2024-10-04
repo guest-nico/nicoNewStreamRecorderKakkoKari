@@ -45,6 +45,8 @@ namespace rokugaTouroku
 			this.fileNameTypeDateBtn = new System.Windows.Forms.Button();
 			this.fileNameTypeDefaultBtn = new System.Windows.Forms.Button();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.label15 = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
@@ -60,8 +62,7 @@ namespace rokugaTouroku
 			this.label2 = new System.Windows.Forms.Label();
 			this.FileNameTypeCancelBtn = new System.Windows.Forms.Button();
 			this.fileNameTypeOkBtn = new System.Windows.Forms.Button();
-			this.label15 = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
+			this.label16 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -149,6 +150,7 @@ namespace rokugaTouroku
 			// 
 			// groupBox3
 			// 
+			this.groupBox3.Controls.Add(this.label16);
 			this.groupBox3.Controls.Add(this.label15);
 			this.groupBox3.Controls.Add(this.label1);
 			this.groupBox3.Controls.Add(this.label6);
@@ -170,6 +172,22 @@ namespace rokugaTouroku
 			this.groupBox3.TabIndex = 2;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "変換記号";
+			// 
+			// label15
+			// 
+			this.label15.Location = new System.Drawing.Point(115, 98);
+			this.label15.Name = "label15";
+			this.label15.Size = new System.Drawing.Size(78, 18);
+			this.label15.TabIndex = 2;
+			this.label15.Text = "{c} コメント数";
+			// 
+			// label1
+			// 
+			this.label1.Location = new System.Drawing.Point(115, 80);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(78, 18);
+			this.label1.TabIndex = 1;
+			this.label1.Text = "{w} 来場者数";
 			// 
 			// label6
 			// 
@@ -295,21 +313,13 @@ namespace rokugaTouroku
 			this.fileNameTypeOkBtn.UseVisualStyleBackColor = true;
 			this.fileNameTypeOkBtn.Click += new System.EventHandler(this.fileNameTypeOkBtn_Click);
 			// 
-			// label15
+			// label16
 			// 
-			this.label15.Location = new System.Drawing.Point(115, 98);
-			this.label15.Name = "label15";
-			this.label15.Size = new System.Drawing.Size(78, 18);
-			this.label15.TabIndex = 2;
-			this.label15.Text = "{c} コメント数";
-			// 
-			// label1
-			// 
-			this.label1.Location = new System.Drawing.Point(115, 80);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(78, 18);
-			this.label1.TabIndex = 1;
-			this.label1.Text = "{w} 来場者数";
+			this.label16.Location = new System.Drawing.Point(199, 116);
+			this.label16.Name = "label16";
+			this.label16.Size = new System.Drawing.Size(92, 18);
+			this.label16.TabIndex = 3;
+			this.label16.Text = "{5} 配信者ID";
 			// 
 			// fileNameOptionForm
 			// 
@@ -329,6 +339,7 @@ namespace rokugaTouroku
 			this.groupBox3.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label label16;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label15;
 		private System.Windows.Forms.Button fileNameTypeOkBtn;

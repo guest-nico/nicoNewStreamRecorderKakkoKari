@@ -84,26 +84,40 @@ namespace rokugaTouroku.rec
 			foreach (var _lv in lvList) {
 				url = "https://live.nicovideo.jp/watch/" + _lv;
 				try {
-					if (bool.Parse(cfg.get("IsDuplicateConfirm"))) {
+					var isDupliConfirm = bool.Parse(cfg.get("IsDuplicateConfirm"));
+					var isDupliCancel = bool.Parse(cfg.get("IsDuplicateCancel"));
+					
+					if (isDupliConfirm || isDupliCancel) {
 						var delList = new List<RecInfo>();
-						foreach (RecInfo d in recListData)
-							if (d.id == _lv) delList.Add(d);
-						
-						foreach (var _ri in delList) 
-							if (util.showMessageBoxCenterForm(form, _ri.id + "はリスト内に含まれています。既にある行を削除しますか？\n[" + (String.IsNullOrEmpty(_ri.title) ? "タイトル未取得" : _ri.title) + "][" + _ri.state + "][" + _ri.quality + "] [" + _ri.timeShift + "]", "確認", MessageBoxButtons.YesNo) == DialogResult.Yes) {
-								form.deleteRow(_ri);
+						foreach (RecInfo d in recListData) {
+							if (d.id == _lv) {
+								if (isDupliCancel) {
+									form.addLogText(_lv + "は重複しています");
+									return false;
+								}
+								delList.Add(d);
+							}
 						}
 						
+						foreach (var _ri in delList) {
+							form.formAction(() => {
+								if (util.showMessageBoxCenterForm(form, _ri.id + "はリスト内に含まれています。既にある行を削除しますか？\n[" + (String.IsNullOrEmpty(_ri.title) ? "タイトル未取得" : _ri.title) + "][" + _ri.state + "][" + _ri.quality + "] [" + _ri.timeShift + "]", "確認", MessageBoxButtons.YesNo) == DialogResult.Yes) {
+									form.deleteRow(_ri);
+								}
+							});
+						}
 					}
 				} catch (Exception e){
 					util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
 				
-				var rdg = new RecDataGetter(this);
-				var ri = new RecInfo(_lv, url, rdg, form.afterConvertModeList.Text, form.setTsConfig, form.setTimeshiftBtn.Text, form.qualityBtn.Text, form.qualityRank, form.recCommmentList.Text, form.isChaseChkBox.Checked, (AccountInfo)form.accountBtn.Tag);
-				Task.Run(() => ri.setHosoInfo(form));
-				
-				form.addList(ri);
+				form.formAction(() => {
+					var rdg = new RecDataGetter(this);
+					var ri = new RecInfo(_lv, url, rdg, form.afterConvertModeList.Text, form.setTsConfig, form.setTimeshiftBtn.Text, form.qualityBtn.Text, form.qualityRank, form.recCommmentList.Text, form.isChaseChkBox.Checked, (AccountInfo)form.accountBtn.Tag);
+					Task.Run(() => ri.setHosoInfo(form));
+					form.addList(ri);
+				});
+
 			}
 			
 			return true;

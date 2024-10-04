@@ -12,6 +12,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using namaichi.utility;
@@ -47,9 +48,9 @@ namespace rokugaTouroku.rec
 			if (!isSub) {
 				cc = await getCookieContainer(cfg.get("BrowserNum"),
 						cfg.get("issecondlogin"), cfg.get("accountId"), 
-						cfg.get("accountPass"), cfg.get("user_session"),
-						cfg.get("user_session_secure"), false, 
-						url);
+						cfg.get("accountPass"), cfg.get("user_session_setting"), 
+						cfg.get("user_session"), cfg.get("user_session_secure"), 
+						false, url);
 				if (cc != null) {
 					var c = cc.GetCookies(TargetUrl)["user_session"];
 					var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
@@ -62,9 +63,9 @@ namespace rokugaTouroku.rec
 			} else {
 				cc = await getCookieContainer(cfg.get("BrowserNum2"),
 						cfg.get("issecondlogin2"), cfg.get("accountId2"), 
-						cfg.get("accountPass2"), cfg.get("user_session2"),
-						cfg.get("user_session_secure2"), false, 
-						url);
+						cfg.get("accountPass2"), cfg.get("user_session_setting2"),
+						cfg.get("user_session2"), cfg.get("user_session_secure2"), 
+						false, url);
 				if (cc != null) {
 					var c = cc.GetCookies(TargetUrl)["user_session2"];
 					var secureC = cc.GetCookies(TargetUrl)["user_session_secure2"];
@@ -80,7 +81,8 @@ namespace rokugaTouroku.rec
 		}
 		async private Task<CookieContainer> getCookieContainer(
 				string browserNum, string isSecondLogin, string accountId,
-				string accountPass, string userSession, string userSessionSecure,
+				string accountPass, string userSessionSetting,
+				string userSession, string userSessionSecure,
 				bool isSub, string url) {
 			
 			var userSessionCC = getUserSessionCC(userSession, userSessionSecure);
@@ -126,6 +128,18 @@ namespace rokugaTouroku.rec
 							//cfg.set("user_session_secure", secureC.Value);
 							uss = secureC.Value;
 						*/
+						return accCC;
+					}
+				}
+			}
+			if (browserNum == "3" || 
+			    	isSecondLogin == "true") {
+				var accCC = getUserSessionCookie(userSessionSetting);
+				log += (accCC == null) ? "ユーザーセッションログインからユーザーセッションを取得できませんでした。" : "アカウントログインからユーザーセッションを取得しました。";
+				if (accCC != null) {
+					util.debugWriteLine("userSession setting ishtml5login");
+					if (isHtml5Login(accCC, url)) {
+						util.debugWriteLine("userSession setting login ok");
 						return accCC;
 					}
 				}
@@ -176,33 +190,88 @@ namespace rokugaTouroku.rec
 			var secureC = cc.GetCookies(TargetUrl)["user_session_secure"];
 			return cc;
 		}
-		private bool isHtml5Login(CookieContainer cc, string url) {
-			try {
-				util.debugWriteLine("ishtml5login getpage " + url);
-				//pageSource = util.getPageSource(url + "",cc);
-				pageSource = util.getPageSourceCurl(url, cc, null);
-				util.debugWriteLine("ishtml5login getpage ok");
-			} catch (Exception e) {
-				util.debugWriteLine("cookiegetter ishtml5login " + e.Message+e.StackTrace);
-				pageSource = "";
-				log += "ページの取得中にエラーが発生しました。" + e.Message + e.Source + e.TargetSite + e.StackTrace;
-				return false;
+		public bool isHtml5Login(CookieContainer cc, string url) {
+			var ccc = cc.GetCookieHeader(new Uri(url));
+			for (var i = 0; i < 3; i++) {
+				try {
+					util.debugWriteLine("ishtml5login getpage " + url);
+					var _url = url;
+					//pageSource = util.getPageSource(_url, cc);
+					var h = util.getHeader(cc, null, _url);
+					pageSource = new Curl().getStr(_url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false, true, true);
+					
+					util.debugWriteLine("ishtml5login getpage ok");
+
+				} catch (Exception e) {
+					util.debugWriteLine("cookiegetter ishtml5login " + e.Message+e.StackTrace);
+					pageSource = "";
+					var msg = "ページの取得中にエラーが発生しました。" + e.Message + e.Source + e.TargetSite + e.StackTrace;
+					if (!log.EndsWith(msg)) log += msg;
+					Thread.Sleep(3000);
+					continue;
+				}
+	//			isHtml5 = (headers.Get("Location") == null) ? false : true;
+				if (pageSource == null) {
+					util.debugWriteLine("not get page");
+					Thread.Sleep(3000);
+					//pageSource = util.getPageSource(url, cc, null, false, 5, null, true);
+					var h = util.getHeader(cc, null, url);
+					pageSource = new Curl().getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "GET", null, false, true, true);
+					
+					var msg = "ページが取得できませんでした。" + url;
+					if (pageSource != null)
+						msg += util.getRegGroup(pageSource, "<title>(.+?)</title>");
+					if (!log.EndsWith(msg)) log += msg;
+					
+					Thread.Sleep(3000);
+					continue;
+				}
+				if (pageSource.IndexOf("<p class=\"textTitle\">年齢認証</p>") > -1) {
+					log += "この放送は年齢認証が必要です。ブラウザで年齢認証をしてください。";
+					//reason = "age";
+					return false;
+				}
+				if (pageSource.IndexOf("content=\"https://jk.nicovideo.jp/\"") != -1) {
+				    return true;
+			    }
+				if (pageSource.IndexOf("\"login_status\"") == -1 &&
+				     	pageSource.IndexOf("login_status") == -1) {
+					var msg = "放送ページを正常に取得できませんでした。";
+					if (!log.EndsWith(msg)) log += msg;
+					util.debugWriteLine(pageSource);
+				    Thread.Sleep(5000);
+				    continue;
+			    }
+	
+				//"login_status":"not_login"
+				if (pageSource.IndexOf("\"login_status\":\"not_login\"") != -1 ||
+				    	pageSource.IndexOf("login_status = 'not_login'") != -1) {
+					log += "ログインしていませんでした。";
+					//reason = "not_login";
+					return false;
+				}
+				
+				var isLogin = !(pageSource.IndexOf("\"login_status\":\"login\"") < 0 &&
+				   	pageSource.IndexOf("login_status = 'login'") < 0 &&
+				   	pageSource.IndexOf("&quot;login_status&quot;:&quot;login&quot;") < 0);
+				util.debugWriteLine("islogin " + isLogin);
+				log += (isLogin) ? "ログインに成功しました。" : "ログインが確認できませんでした。";
+	//			if (!isLogin) log += pageSource;
+				if (isLogin) {
+	//				id = (isRtmp) ? util.getRegGroup(pageSource, "<user_id>(\\d+)</user_id>")
+	//					: util.getRegGroup(pageSource, "\"user_id\":(\\d+)");
+					id = util.getRegGroup(pageSource, "\"user_id\":(\\d+)");
+					if (id == null) id = util.getRegGroup(pageSource, "user_id = (\\d+)");
+					util.debugWriteLine("id " + id);
+				} else {
+					util.debugWriteLine("not login " + pageSource.Substring(0, 1000));
+					util.debugWriteLine(cc.GetCookieHeader(new Uri(url)));
+				}
+				return isLogin;
 			}
-			
-			if (pageSource == null) {
-				log += "ページが取得できませんでした。";
-				return false;
-			}
-			var isLogin = !(pageSource.IndexOf("\"login_status\":\"login\"") < 0 &&
-			   	pageSource.IndexOf("login_status = 'login'") < 0); 
-			util.debugWriteLine("islogin " + isLogin);
-			log += (isLogin) ? "ログインに成功しました。" : "ログインに失敗しました";
-			if (!isLogin) log += pageSource;
-			if (isLogin) {
-				id = util.getRegGroup(pageSource, "\"user_id\":(\\d+)");
-				if (id == null) id = util.getRegGroup(pageSource, "user_id = (\\d+)");
-			}
-			return isLogin;
+			//if (isLoginCheck)
+			//	util.loginCheck(cc, url, log);
+			return false;
 		}
 		public CookieContainer getAccountCookie(string mail, string pass) {
 			if (mail == null || pass == null) {
@@ -419,6 +488,21 @@ namespace rokugaTouroku.rec
 	                	return null;
 	                }
 				}
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message+e.StackTrace);
+				log += e.Message + e.Source + e.StackTrace;
+				return null;
+			}
+		}
+		public CookieContainer getUserSessionCookie(string us) {
+			try {
+				if (string.IsNullOrEmpty(us)) {
+					log += "UserSessionが設定されていませんでした " + (us == null ? "null" : "空欄");
+					return null;
+				}
+				var cc = new CookieContainer();
+				setUserSession(cc, new Cookie("user_session", us), null);
+				return cc;
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message+e.StackTrace);
 				log += e.Message + e.Source + e.StackTrace;

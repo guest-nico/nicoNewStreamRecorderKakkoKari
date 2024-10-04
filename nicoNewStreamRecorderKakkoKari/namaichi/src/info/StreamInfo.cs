@@ -471,7 +471,7 @@ namespace namaichi.info
 					return false;
 				}
 			} else {
-				var fName = "a/" + util.getFileName(si.recFolderFileInfo[0], si.recFolderFileInfo[1], si.recFolderFileInfo[2], si.recFolderFileInfo[3], si.recFolderFileInfo[4], rm.cfg, si.openTime);
+				var fName = "a/" + util.getFileName(si.recFolderFileInfo[0], si.recFolderFileInfo[1], si.recFolderFileInfo[2], si.recFolderFileInfo[3], si.recFolderFileInfo[4], rm.cfg, si.openTime, si.recFolderFileInfo[5]);
 				recFolderFile = new String[]{fName, fName, fName};//new string[]{"", "", ""};
 			}
 			for (int i = 0; i < recFolderFile.Length; i++)

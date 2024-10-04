@@ -146,7 +146,9 @@ namespace namaichi
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
+			this.userSessionText = new System.Windows.Forms.TextBox();
 			this.cookieFileText = new System.Windows.Forms.TextBox();
+			this.useUserSessionRadioBtn = new System.Windows.Forms.RadioButton();
 			this.useAccountLoginRadioBtn = new System.Windows.Forms.RadioButton();
 			this.useCookieRadioBtn = new System.Windows.Forms.RadioButton();
 			this.passText = new System.Windows.Forms.TextBox();
@@ -154,6 +156,7 @@ namespace namaichi
 			this.nicoSessionComboBox1 = new namaichi.NicoSessionComboBox2();
 			this.isCookieFileSiteiChkBox = new System.Windows.Forms.CheckBox();
 			this.checkBoxShowAll = new System.Windows.Forms.CheckBox();
+			this.userSessionTestBtn = new System.Windows.Forms.Button();
 			this.loginBtn = new System.Windows.Forms.Button();
 			this.cookieFileSanshouBtn = new System.Windows.Forms.Button();
 			this.btnReload = new System.Windows.Forms.Button();
@@ -215,6 +218,7 @@ namespace namaichi
 			this.fileNameTypeRadioBtn0 = new System.Windows.Forms.RadioButton();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.secondRecFolderSanshouBtn = new System.Windows.Forms.Button();
+			this.housoushaUserIDRadioBtn = new System.Windows.Forms.RadioButton();
 			this.userIDHousoushaRadioBtn = new System.Windows.Forms.RadioButton();
 			this.useDefaultRecFolderChk = new System.Windows.Forms.CheckBox();
 			this.userIDRadioBtn = new System.Windows.Forms.RadioButton();
@@ -231,7 +235,9 @@ namespace namaichi
 			this.recordDirectoryText = new System.Windows.Forms.TextBox();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
-			this.housoushaUserIDRadioBtn = new System.Windows.Forms.RadioButton();
+			this.userSessionText2 = new System.Windows.Forms.TextBox();
+			this.useUserSessionRadioBtn2 = new System.Windows.Forms.RadioButton();
+			this.userSessionTestBtn2 = new System.Windows.Forms.Button();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox16.SuspendLayout();
@@ -1436,7 +1442,9 @@ namespace namaichi
 			// 
 			this.groupBox3.Controls.Add(this.label2);
 			this.groupBox3.Controls.Add(this.label1);
+			this.groupBox3.Controls.Add(this.userSessionText);
 			this.groupBox3.Controls.Add(this.cookieFileText);
+			this.groupBox3.Controls.Add(this.useUserSessionRadioBtn);
 			this.groupBox3.Controls.Add(this.useAccountLoginRadioBtn);
 			this.groupBox3.Controls.Add(this.useCookieRadioBtn);
 			this.groupBox3.Controls.Add(this.passText);
@@ -1444,13 +1452,14 @@ namespace namaichi
 			this.groupBox3.Controls.Add(this.nicoSessionComboBox1);
 			this.groupBox3.Controls.Add(this.isCookieFileSiteiChkBox);
 			this.groupBox3.Controls.Add(this.checkBoxShowAll);
+			this.groupBox3.Controls.Add(this.userSessionTestBtn);
 			this.groupBox3.Controls.Add(this.loginBtn);
 			this.groupBox3.Controls.Add(this.cookieFileSanshouBtn);
 			this.groupBox3.Controls.Add(this.btnReload);
 			this.groupBox3.Controls.Add(this.useSecondLoginChkBox);
 			this.groupBox3.Location = new System.Drawing.Point(5, 10);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(414, 275);
+			this.groupBox3.Size = new System.Drawing.Size(414, 336);
 			this.groupBox3.TabIndex = 18;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "ニコニコ動画アカウントの共有　(普段ニコニコ生放送を見ているブラウザ)";
@@ -1473,12 +1482,31 @@ namespace namaichi
 			this.label1.Text = "メールアドレス：";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
+			// userSessionText
+			// 
+			this.userSessionText.Location = new System.Drawing.Point(20, 295);
+			this.userSessionText.Name = "userSessionText";
+			this.userSessionText.Size = new System.Drawing.Size(277, 19);
+			this.userSessionText.TabIndex = 19;
+			// 
 			// cookieFileText
 			// 
 			this.cookieFileText.Location = new System.Drawing.Point(20, 115);
 			this.cookieFileText.Name = "cookieFileText";
 			this.cookieFileText.Size = new System.Drawing.Size(297, 19);
 			this.cookieFileText.TabIndex = 19;
+			// 
+			// useUserSessionRadioBtn
+			// 
+			this.useUserSessionRadioBtn.Checked = true;
+			this.useUserSessionRadioBtn.Location = new System.Drawing.Point(6, 271);
+			this.useUserSessionRadioBtn.Name = "useUserSessionRadioBtn";
+			this.useUserSessionRadioBtn.Size = new System.Drawing.Size(311, 18);
+			this.useUserSessionRadioBtn.TabIndex = 18;
+			this.useUserSessionRadioBtn.TabStop = true;
+			this.useUserSessionRadioBtn.Text = "ユーザーセッションを指定してログインする";
+			this.useUserSessionRadioBtn.UseVisualStyleBackColor = true;
+			this.useUserSessionRadioBtn.CheckedChanged += new System.EventHandler(this.LoginRadioBtnCheckedChanged);
 			// 
 			// useAccountLoginRadioBtn
 			// 
@@ -1553,6 +1581,17 @@ namespace namaichi
 			this.checkBoxShowAll.UseVisualStyleBackColor = true;
 			this.checkBoxShowAll.CheckedChanged += new System.EventHandler(this.checkBoxShowAll_CheckedChanged);
 			// 
+			// userSessionTestBtn
+			// 
+			this.userSessionTestBtn.Location = new System.Drawing.Point(302, 293);
+			this.userSessionTestBtn.Margin = new System.Windows.Forms.Padding(2);
+			this.userSessionTestBtn.Name = "userSessionTestBtn";
+			this.userSessionTestBtn.Size = new System.Drawing.Size(69, 23);
+			this.userSessionTestBtn.TabIndex = 17;
+			this.userSessionTestBtn.Text = "テスト";
+			this.userSessionTestBtn.UseVisualStyleBackColor = true;
+			this.userSessionTestBtn.Click += new System.EventHandler(this.UserSessionTestBtnClick);
+			// 
 			// loginBtn
 			// 
 			this.loginBtn.Location = new System.Drawing.Point(302, 230);
@@ -1609,6 +1648,9 @@ namespace namaichi
 			// 
 			// groupBox12
 			// 
+			this.groupBox12.Controls.Add(this.userSessionText2);
+			this.groupBox12.Controls.Add(this.useUserSessionRadioBtn2);
+			this.groupBox12.Controls.Add(this.userSessionTestBtn2);
 			this.groupBox12.Controls.Add(this.isHokanChkBox);
 			this.groupBox12.Controls.Add(this.subPassLabel2);
 			this.groupBox12.Controls.Add(this.subMailLabel2);
@@ -1626,7 +1668,7 @@ namespace namaichi
 			this.groupBox12.Controls.Add(this.useSecondLoginChkBox2);
 			this.groupBox12.Location = new System.Drawing.Point(5, 10);
 			this.groupBox12.Name = "groupBox12";
-			this.groupBox12.Size = new System.Drawing.Size(385, 323);
+			this.groupBox12.Size = new System.Drawing.Size(385, 391);
 			this.groupBox12.TabIndex = 19;
 			this.groupBox12.TabStop = false;
 			this.groupBox12.Text = "補完設定";
@@ -2226,6 +2268,15 @@ namespace namaichi
 			this.secondRecFolderSanshouBtn.UseVisualStyleBackColor = true;
 			this.secondRecFolderSanshouBtn.Click += new System.EventHandler(this.SecondRecFolderSanshouBtnClick);
 			// 
+			// housoushaUserIDRadioBtn
+			// 
+			this.housoushaUserIDRadioBtn.Location = new System.Drawing.Point(244, 164);
+			this.housoushaUserIDRadioBtn.Name = "housoushaUserIDRadioBtn";
+			this.housoushaUserIDRadioBtn.Size = new System.Drawing.Size(141, 27);
+			this.housoushaUserIDRadioBtn.TabIndex = 4;
+			this.housoushaUserIDRadioBtn.Text = "放送者名＋ユーザーID";
+			this.housoushaUserIDRadioBtn.UseVisualStyleBackColor = true;
+			// 
 			// userIDHousoushaRadioBtn
 			// 
 			this.userIDHousoushaRadioBtn.Location = new System.Drawing.Point(206, 121);
@@ -2377,14 +2428,34 @@ namespace namaichi
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
 			// 
-			// housoushaUserIDRadioBtn
+			// userSessionText2
 			// 
-			this.housoushaUserIDRadioBtn.Location = new System.Drawing.Point(244, 164);
-			this.housoushaUserIDRadioBtn.Name = "housoushaUserIDRadioBtn";
-			this.housoushaUserIDRadioBtn.Size = new System.Drawing.Size(141, 27);
-			this.housoushaUserIDRadioBtn.TabIndex = 4;
-			this.housoushaUserIDRadioBtn.Text = "放送者名＋ユーザーID";
-			this.housoushaUserIDRadioBtn.UseVisualStyleBackColor = true;
+			this.userSessionText2.Location = new System.Drawing.Point(20, 350);
+			this.userSessionText2.Name = "userSessionText2";
+			this.userSessionText2.Size = new System.Drawing.Size(277, 19);
+			this.userSessionText2.TabIndex = 24;
+			// 
+			// useUserSessionRadioBtn2
+			// 
+			this.useUserSessionRadioBtn2.Checked = true;
+			this.useUserSessionRadioBtn2.Location = new System.Drawing.Point(6, 326);
+			this.useUserSessionRadioBtn2.Name = "useUserSessionRadioBtn2";
+			this.useUserSessionRadioBtn2.Size = new System.Drawing.Size(311, 18);
+			this.useUserSessionRadioBtn2.TabIndex = 23;
+			this.useUserSessionRadioBtn2.TabStop = true;
+			this.useUserSessionRadioBtn2.Text = "ユーザーセッションを指定してログインする";
+			this.useUserSessionRadioBtn2.UseVisualStyleBackColor = true;
+			// 
+			// userSessionTestBtn2
+			// 
+			this.userSessionTestBtn2.Location = new System.Drawing.Point(302, 348);
+			this.userSessionTestBtn2.Margin = new System.Windows.Forms.Padding(2);
+			this.userSessionTestBtn2.Name = "userSessionTestBtn2";
+			this.userSessionTestBtn2.Size = new System.Drawing.Size(69, 23);
+			this.userSessionTestBtn2.TabIndex = 22;
+			this.userSessionTestBtn2.Text = "テスト";
+			this.userSessionTestBtn2.UseVisualStyleBackColor = true;
+			this.userSessionTestBtn2.Click += new System.EventHandler(this.UserSessionTestBtn2Click);
 			// 
 			// optionForm
 			// 
@@ -2448,6 +2519,12 @@ namespace namaichi
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Button userSessionTestBtn2;
+		private System.Windows.Forms.RadioButton useUserSessionRadioBtn2;
+		private System.Windows.Forms.TextBox userSessionText2;
+		private System.Windows.Forms.Button userSessionTestBtn;
+		private System.Windows.Forms.TextBox userSessionText;
+		private System.Windows.Forms.RadioButton useUserSessionRadioBtn;
 		private System.Windows.Forms.RadioButton housoushaUserIDRadioBtn;
 		private System.Windows.Forms.Button secondRecFolderSanshouBtn;
 		private System.Windows.Forms.CheckBox useSecondRecFolderChk;

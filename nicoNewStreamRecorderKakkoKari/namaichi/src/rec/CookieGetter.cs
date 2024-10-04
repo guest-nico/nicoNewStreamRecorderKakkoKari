@@ -53,7 +53,8 @@ namespace namaichi.rec
 			var num = isSub ? "2" : "";
 			cc = await getCookieContainer(cfg.get("BrowserNum" + num),
 					cfg.get("issecondlogin" + num), cfg.get("accountId" + num), 
-					cfg.get("accountPass" + num), cfg.get("user_session" + num),
+					cfg.get("accountPass" + num), cfg.get("user_session_setting" + num),
+					cfg.get("user_session" + num),
 					cfg.get("user_session_secure" + num), isSub, 
 					url).ConfigureAwait(false);
 			if (cc != null) {
@@ -77,10 +78,11 @@ namespace namaichi.rec
 		}
 		async private Task<CookieContainer> getCookieContainer(
 				string browserNum, string isSecondLogin, string accountId,
-				string accountPass, string userSession, string userSessionSecure,
+				string accountPass, string userSessionSetting,
+				string userSession, string userSessionSecure,
 				bool isSub, string url) {
 			
-			RecordLogInfo.loginType = browserNum == "2" ? "ブラウザログイン" : "アカウントログイン";
+			RecordLogInfo.loginType = browserNum == "2" ? "ブラウザログイン" : (browserNum == "1" ? "アカウントログイン" : "ユーザーセッションログイン");
 			if (cfg.argAi != null) {
 				RecordLogInfo.loginLog += "ログイン引数が見つかりました。";
 				if (cfg.argAi.isBrowser && cfg.argAi.si != null) {
@@ -96,7 +98,8 @@ namespace namaichi.rec
 							return cc;
 						} else RecordLogInfo.loginLog += "ブラウザログイン引数からログインを確認できませんでした。";
 					}
-				} else {
+				} else if (cfg.argAi.isAccount && cfg.argAi.accountId != null && 
+						cfg.argAi.accountPass != null) {
 					RecordLogInfo.loginLog += "引数によりアカウントログインを試行します。";
 					reason = null;
 					var mail = cfg.argAi.accountId;
@@ -110,6 +113,20 @@ namespace namaichi.rec
 							RecordLogInfo.loginLog += "アカウントログイン引数からログインを確認しました。";
 							return accCC;
 						} else RecordLogInfo.loginLog += "アカウントログイン引数からログインを確認できませんでした。";
+					}
+				} else if (cfg.argAi.isUserSession && cfg.argAi.userSession != null) {
+					RecordLogInfo.loginLog += "引数によりユーザーセッションログインを試行します。";
+					reason = null;
+					var us = cfg.argAi.userSession;
+					var accCC = getUserSessionCookie(us);
+					log += (accCC == null) ? "引数で指定されたユーザーセッションログインからユーザーセッションを取得できませんでした。" : "ユーザーセッションログインからユーザーセッションを取得しました。";
+					if (accCC != null) {
+						util.debugWriteLine("usersessionSetting ishtml5login");
+						if (isHtml5Login(accCC, url)) {
+							util.debugWriteLine("userSessionSetting login ok");
+							RecordLogInfo.loginLog += "ユーザーセッションログイン引数からログインを確認しました。";
+							return accCC;
+						} else RecordLogInfo.loginLog += "ユーザーセッションログイン引数からログインを確認できませんでした。";
 					}
 				}
 			}
@@ -161,6 +178,22 @@ namespace namaichi.rec
 				} else RecordLogInfo.loginLog += "アカウントログインからクッキーを取得できませんでした。";
 			}
 			
+			if (browserNum == "3" || 
+			    	isSecondLogin == "true") {
+				RecordLogInfo.loginLog += "ユーザーセッションログインからログインを試行します。";
+				reason = null;
+				var accCC = getUserSessionCookie(userSessionSetting);
+				log += (accCC == null) ? "ユーザーセッションログインからユーザーセッションを取得できませんでした。" : "アカウントログインからユーザーセッションを取得しました。";
+				if (accCC != null) {
+					util.debugWriteLine("userSession setting ishtml5login");
+					RecordLogInfo.loginLog += "ユーザーセッションログインからクッキーを取得しました。";
+					if (isHtml5Login(accCC, url)) {
+						util.debugWriteLine("userSession setting login ok");
+						RecordLogInfo.loginLog += "ユーザーセッションログインからログインを確認しました。";
+						return accCC;
+					} else RecordLogInfo.loginLog += "ユーザーセッションログインからログインを確認できませんでした。";
+				} else RecordLogInfo.loginLog += "ユーザーセッションログインからクッキーを取得できませんでした。";
+			}
 			if (isWatchPage(url)) return new CookieContainer();
 			return null;
 		}
@@ -213,7 +246,7 @@ namespace namaichi.rec
 			return cc;
 			
 		}
-		private bool isHtml5Login(CookieContainer cc, string url) {
+		public bool isHtml5Login(CookieContainer cc, string url) {
 			var ccc = cc.GetCookieHeader(new Uri(url));
 			for (var i = 0; i < 3; i++) {
 				try {
@@ -268,14 +301,16 @@ namespace namaichi.rec
 	
 				//"login_status":"not_login"
 				if (pageSource.IndexOf("\"login_status\":\"not_login\"") != -1 ||
-				    	pageSource.IndexOf("login_status = 'not_login'") != -1) {
+				    	pageSource.IndexOf("login_status = 'not_login'") != -1 ||
+				    	pageSource.IndexOf("login_status&quot;:&quot;not_login&quot;") != -1) {
 					log += "ログインしていませんでした。";
 					reason = "not_login";
 					return false;
 				}
 				
 				var isLogin = !(pageSource.IndexOf("\"login_status\":\"login\"") < 0 &&
-				   	pageSource.IndexOf("login_status = 'login'") < 0);
+				   	pageSource.IndexOf("login_status = 'login'") < 0 &&
+				   	pageSource.IndexOf("login_status&quot;:&quot;login&quot;") < 0);
 				if (isRtmp) isLogin = pageSource.IndexOf("<code>notlogin</code>") == -1;
 				util.debugWriteLine("islogin " + isLogin);
 				log += (isLogin) ? "ログインに成功しました。" : "ログインが確認できませんでした。";
@@ -515,7 +550,22 @@ namespace namaichi.rec
 				return null;
 			}
 		}
-		private CookieContainer setUserSession(CookieContainer cc, 
+		public CookieContainer getUserSessionCookie(string us) {
+			try {
+				if (string.IsNullOrEmpty(us)) {
+					log += "UserSessionが設定されていませんでした " + (us == null ? "null" : "空欄");
+					return null;
+				}
+				var cc = new CookieContainer();
+				setUserSession(cc, new Cookie("user_session", us), null, null);
+				return cc;
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message+e.StackTrace);
+				log += e.Message + e.Source + e.StackTrace;
+				return null;
+			}
+		}
+		public CookieContainer setUserSession(CookieContainer cc, 
 				Cookie c, Cookie secureC, Cookie age_auth = null) {
 			if (c != null && c.Value != "") {
 				cc.Add(new Cookie(c.Name, c.Value, "/", ".nicovideo.jp"));

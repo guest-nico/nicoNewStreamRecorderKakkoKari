@@ -137,6 +137,9 @@ namespace rokugaTouroku
 			this.highRankBtn = new System.Windows.Forms.Button();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.userSessionText = new System.Windows.Forms.TextBox();
+			this.useUserSessionRadioBtn = new System.Windows.Forms.RadioButton();
+			this.userSessionTestBtn = new System.Windows.Forms.Button();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.cookieFileText = new System.Windows.Forms.TextBox();
@@ -153,6 +156,9 @@ namespace rokugaTouroku
 			this.useSecondLoginChkBox = new System.Windows.Forms.CheckBox();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
 			this.groupBox12 = new System.Windows.Forms.GroupBox();
+			this.userSessionText2 = new System.Windows.Forms.TextBox();
+			this.useUserSessionRadioBtn2 = new System.Windows.Forms.RadioButton();
+			this.userSessionTestBtn2 = new System.Windows.Forms.Button();
 			this.isHokanChkBox = new System.Windows.Forms.CheckBox();
 			this.subPassLabel2 = new System.Windows.Forms.Label();
 			this.subMailLabel2 = new System.Windows.Forms.Label();
@@ -207,6 +213,7 @@ namespace rokugaTouroku
 			this.fileNameTypeRadioBtn1 = new System.Windows.Forms.RadioButton();
 			this.fileNameTypeRadioBtn0 = new System.Windows.Forms.RadioButton();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.housoushaUserIDRadioBtn = new System.Windows.Forms.RadioButton();
 			this.secondRecFolderSanshouBtn = new System.Windows.Forms.Button();
 			this.secondRecFolderText = new System.Windows.Forms.TextBox();
 			this.useSecondRecFolderChk = new System.Windows.Forms.CheckBox();
@@ -225,12 +232,15 @@ namespace rokugaTouroku
 			this.tabPage8 = new System.Windows.Forms.TabPage();
 			this.groupBox11 = new System.Windows.Forms.GroupBox();
 			this.isDeleteConfirmMessageRtCheckBtn = new System.Windows.Forms.CheckBox();
-			this.isDuplicateConfirmChkBox = new System.Windows.Forms.CheckBox();
+			this.panel1 = new System.Windows.Forms.Panel();
+			this.isDuplicateCancelRadioBtn = new System.Windows.Forms.RadioButton();
+			this.isDuplicateConfirmRadioBtn = new System.Windows.Forms.RadioButton();
+			this.label14 = new System.Windows.Forms.Label();
+			this.isDuplicateAddRadioBtn = new System.Windows.Forms.RadioButton();
 			this.maxRecordingNum = new System.Windows.Forms.NumericUpDown();
 			this.label3 = new System.Windows.Forms.Label();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
-			this.housoushaUserIDRadioBtn = new System.Windows.Forms.RadioButton();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox17.SuspendLayout();
@@ -266,6 +276,7 @@ namespace rokugaTouroku
 			this.groupBox1.SuspendLayout();
 			this.tabPage8.SuspendLayout();
 			this.groupBox11.SuspendLayout();
+			this.panel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.maxRecordingNum)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -1351,6 +1362,9 @@ namespace rokugaTouroku
 			// 
 			// groupBox3
 			// 
+			this.groupBox3.Controls.Add(this.userSessionText);
+			this.groupBox3.Controls.Add(this.useUserSessionRadioBtn);
+			this.groupBox3.Controls.Add(this.userSessionTestBtn);
 			this.groupBox3.Controls.Add(this.label2);
 			this.groupBox3.Controls.Add(this.label1);
 			this.groupBox3.Controls.Add(this.cookieFileText);
@@ -1367,10 +1381,39 @@ namespace rokugaTouroku
 			this.groupBox3.Controls.Add(this.useSecondLoginChkBox);
 			this.groupBox3.Location = new System.Drawing.Point(5, 10);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(415, 275);
+			this.groupBox3.Size = new System.Drawing.Size(414, 336);
 			this.groupBox3.TabIndex = 18;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "ニコニコ動画アカウントの共有　(普段ニコニコ生放送を見ているブラウザ)";
+			// 
+			// userSessionText
+			// 
+			this.userSessionText.Location = new System.Drawing.Point(20, 295);
+			this.userSessionText.Name = "userSessionText";
+			this.userSessionText.Size = new System.Drawing.Size(277, 19);
+			this.userSessionText.TabIndex = 23;
+			// 
+			// useUserSessionRadioBtn
+			// 
+			this.useUserSessionRadioBtn.Checked = true;
+			this.useUserSessionRadioBtn.Location = new System.Drawing.Point(6, 271);
+			this.useUserSessionRadioBtn.Name = "useUserSessionRadioBtn";
+			this.useUserSessionRadioBtn.Size = new System.Drawing.Size(311, 18);
+			this.useUserSessionRadioBtn.TabIndex = 22;
+			this.useUserSessionRadioBtn.TabStop = true;
+			this.useUserSessionRadioBtn.Text = "ユーザーセッションを指定してログインする";
+			this.useUserSessionRadioBtn.UseVisualStyleBackColor = true;
+			// 
+			// userSessionTestBtn
+			// 
+			this.userSessionTestBtn.Location = new System.Drawing.Point(302, 293);
+			this.userSessionTestBtn.Margin = new System.Windows.Forms.Padding(2);
+			this.userSessionTestBtn.Name = "userSessionTestBtn";
+			this.userSessionTestBtn.Size = new System.Drawing.Size(69, 23);
+			this.userSessionTestBtn.TabIndex = 21;
+			this.userSessionTestBtn.Text = "テスト";
+			this.userSessionTestBtn.UseVisualStyleBackColor = true;
+			this.userSessionTestBtn.Click += new System.EventHandler(this.UserSessionTestBtnClick);
 			// 
 			// label2
 			// 
@@ -1524,6 +1567,9 @@ namespace rokugaTouroku
 			// 
 			// groupBox12
 			// 
+			this.groupBox12.Controls.Add(this.userSessionText2);
+			this.groupBox12.Controls.Add(this.useUserSessionRadioBtn2);
+			this.groupBox12.Controls.Add(this.userSessionTestBtn2);
 			this.groupBox12.Controls.Add(this.isHokanChkBox);
 			this.groupBox12.Controls.Add(this.subPassLabel2);
 			this.groupBox12.Controls.Add(this.subMailLabel2);
@@ -1542,10 +1588,39 @@ namespace rokugaTouroku
 			this.groupBox12.ImeMode = System.Windows.Forms.ImeMode.NoControl;
 			this.groupBox12.Location = new System.Drawing.Point(5, 10);
 			this.groupBox12.Name = "groupBox12";
-			this.groupBox12.Size = new System.Drawing.Size(415, 323);
+			this.groupBox12.Size = new System.Drawing.Size(415, 391);
 			this.groupBox12.TabIndex = 19;
 			this.groupBox12.TabStop = false;
 			this.groupBox12.Text = "補完設定";
+			// 
+			// userSessionText2
+			// 
+			this.userSessionText2.Location = new System.Drawing.Point(20, 350);
+			this.userSessionText2.Name = "userSessionText2";
+			this.userSessionText2.Size = new System.Drawing.Size(277, 19);
+			this.userSessionText2.TabIndex = 27;
+			// 
+			// useUserSessionRadioBtn2
+			// 
+			this.useUserSessionRadioBtn2.Checked = true;
+			this.useUserSessionRadioBtn2.Location = new System.Drawing.Point(6, 326);
+			this.useUserSessionRadioBtn2.Name = "useUserSessionRadioBtn2";
+			this.useUserSessionRadioBtn2.Size = new System.Drawing.Size(311, 18);
+			this.useUserSessionRadioBtn2.TabIndex = 26;
+			this.useUserSessionRadioBtn2.TabStop = true;
+			this.useUserSessionRadioBtn2.Text = "ユーザーセッションを指定してログインする";
+			this.useUserSessionRadioBtn2.UseVisualStyleBackColor = true;
+			// 
+			// userSessionTestBtn2
+			// 
+			this.userSessionTestBtn2.Location = new System.Drawing.Point(302, 348);
+			this.userSessionTestBtn2.Margin = new System.Windows.Forms.Padding(2);
+			this.userSessionTestBtn2.Name = "userSessionTestBtn2";
+			this.userSessionTestBtn2.Size = new System.Drawing.Size(69, 23);
+			this.userSessionTestBtn2.TabIndex = 25;
+			this.userSessionTestBtn2.Text = "テスト";
+			this.userSessionTestBtn2.UseVisualStyleBackColor = true;
+			this.userSessionTestBtn2.Click += new System.EventHandler(this.UserSessionTestBtn2Click);
 			// 
 			// isHokanChkBox
 			// 
@@ -2130,6 +2205,15 @@ namespace rokugaTouroku
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "録画保存先フォルダ";
 			// 
+			// housoushaUserIDRadioBtn
+			// 
+			this.housoushaUserIDRadioBtn.Location = new System.Drawing.Point(244, 164);
+			this.housoushaUserIDRadioBtn.Name = "housoushaUserIDRadioBtn";
+			this.housoushaUserIDRadioBtn.Size = new System.Drawing.Size(141, 27);
+			this.housoushaUserIDRadioBtn.TabIndex = 25;
+			this.housoushaUserIDRadioBtn.Text = "放送者名＋ユーザーID";
+			this.housoushaUserIDRadioBtn.UseVisualStyleBackColor = true;
+			// 
 			// secondRecFolderSanshouBtn
 			// 
 			this.secondRecFolderSanshouBtn.Location = new System.Drawing.Point(312, 81);
@@ -2286,33 +2370,74 @@ namespace rokugaTouroku
 			// groupBox11
 			// 
 			this.groupBox11.Controls.Add(this.isDeleteConfirmMessageRtCheckBtn);
-			this.groupBox11.Controls.Add(this.isDuplicateConfirmChkBox);
+			this.groupBox11.Controls.Add(this.panel1);
 			this.groupBox11.Controls.Add(this.maxRecordingNum);
 			this.groupBox11.Controls.Add(this.label3);
 			this.groupBox11.Location = new System.Drawing.Point(5, 10);
 			this.groupBox11.Name = "groupBox11";
-			this.groupBox11.Size = new System.Drawing.Size(405, 108);
+			this.groupBox11.Size = new System.Drawing.Size(405, 127);
 			this.groupBox11.TabIndex = 20;
 			this.groupBox11.TabStop = false;
 			this.groupBox11.Text = "録画設定";
 			// 
 			// isDeleteConfirmMessageRtCheckBtn
 			// 
-			this.isDeleteConfirmMessageRtCheckBtn.Location = new System.Drawing.Point(6, 83);
+			this.isDeleteConfirmMessageRtCheckBtn.Location = new System.Drawing.Point(6, 100);
 			this.isDeleteConfirmMessageRtCheckBtn.Name = "isDeleteConfirmMessageRtCheckBtn";
 			this.isDeleteConfirmMessageRtCheckBtn.Size = new System.Drawing.Size(372, 19);
 			this.isDeleteConfirmMessageRtCheckBtn.TabIndex = 3;
 			this.isDeleteConfirmMessageRtCheckBtn.Text = "「全ての行を削除」「完了した行を削除」の際に確認メッセージを表示する";
 			this.isDeleteConfirmMessageRtCheckBtn.UseVisualStyleBackColor = true;
 			// 
-			// isDuplicateConfirmChkBox
+			// panel1
 			// 
-			this.isDuplicateConfirmChkBox.Location = new System.Drawing.Point(6, 58);
-			this.isDuplicateConfirmChkBox.Name = "isDuplicateConfirmChkBox";
-			this.isDuplicateConfirmChkBox.Size = new System.Drawing.Size(271, 19);
-			this.isDuplicateConfirmChkBox.TabIndex = 3;
-			this.isDuplicateConfirmChkBox.Text = "重複する放送IDを登録時に確認する";
-			this.isDuplicateConfirmChkBox.UseVisualStyleBackColor = true;
+			this.panel1.Controls.Add(this.isDuplicateCancelRadioBtn);
+			this.panel1.Controls.Add(this.isDuplicateConfirmRadioBtn);
+			this.panel1.Controls.Add(this.label14);
+			this.panel1.Controls.Add(this.isDuplicateAddRadioBtn);
+			this.panel1.Location = new System.Drawing.Point(6, 53);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(356, 39);
+			this.panel1.TabIndex = 21;
+			// 
+			// isDuplicateCancelRadioBtn
+			// 
+			this.isDuplicateCancelRadioBtn.Location = new System.Drawing.Point(255, 17);
+			this.isDuplicateCancelRadioBtn.Name = "isDuplicateCancelRadioBtn";
+			this.isDuplicateCancelRadioBtn.Size = new System.Drawing.Size(79, 24);
+			this.isDuplicateCancelRadioBtn.TabIndex = 1;
+			this.isDuplicateCancelRadioBtn.TabStop = true;
+			this.isDuplicateCancelRadioBtn.Text = "登録しない";
+			this.isDuplicateCancelRadioBtn.UseVisualStyleBackColor = true;
+			// 
+			// isDuplicateConfirmRadioBtn
+			// 
+			this.isDuplicateConfirmRadioBtn.Location = new System.Drawing.Point(139, 17);
+			this.isDuplicateConfirmRadioBtn.Name = "isDuplicateConfirmRadioBtn";
+			this.isDuplicateConfirmRadioBtn.Size = new System.Drawing.Size(118, 24);
+			this.isDuplicateConfirmRadioBtn.TabIndex = 0;
+			this.isDuplicateConfirmRadioBtn.TabStop = true;
+			this.isDuplicateConfirmRadioBtn.Text = "登録時に確認する";
+			this.isDuplicateConfirmRadioBtn.UseVisualStyleBackColor = true;
+			// 
+			// label14
+			// 
+			this.label14.Location = new System.Drawing.Point(0, 0);
+			this.label14.Name = "label14";
+			this.label14.Size = new System.Drawing.Size(91, 20);
+			this.label14.TabIndex = 2;
+			this.label14.Text = "重複する放送ID：";
+			// 
+			// isDuplicateAddRadioBtn
+			// 
+			this.isDuplicateAddRadioBtn.Checked = true;
+			this.isDuplicateAddRadioBtn.Location = new System.Drawing.Point(27, 17);
+			this.isDuplicateAddRadioBtn.Name = "isDuplicateAddRadioBtn";
+			this.isDuplicateAddRadioBtn.Size = new System.Drawing.Size(113, 24);
+			this.isDuplicateAddRadioBtn.TabIndex = 0;
+			this.isDuplicateAddRadioBtn.TabStop = true;
+			this.isDuplicateAddRadioBtn.Text = "そのまま登録する";
+			this.isDuplicateAddRadioBtn.UseVisualStyleBackColor = true;
 			// 
 			// maxRecordingNum
 			// 
@@ -2358,15 +2483,6 @@ namespace rokugaTouroku
 			this.button4.Text = "キャンセル";
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
-			// 
-			// housoushaUserIDRadioBtn
-			// 
-			this.housoushaUserIDRadioBtn.Location = new System.Drawing.Point(244, 164);
-			this.housoushaUserIDRadioBtn.Name = "housoushaUserIDRadioBtn";
-			this.housoushaUserIDRadioBtn.Size = new System.Drawing.Size(141, 27);
-			this.housoushaUserIDRadioBtn.TabIndex = 25;
-			this.housoushaUserIDRadioBtn.Text = "放送者名＋ユーザーID";
-			this.housoushaUserIDRadioBtn.UseVisualStyleBackColor = true;
 			// 
 			// optionForm
 			// 
@@ -2429,9 +2545,21 @@ namespace rokugaTouroku
 			this.groupBox1.PerformLayout();
 			this.tabPage8.ResumeLayout(false);
 			this.groupBox11.ResumeLayout(false);
+			this.panel1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.maxRecordingNum)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Button userSessionTestBtn2;
+		private System.Windows.Forms.RadioButton useUserSessionRadioBtn2;
+		private System.Windows.Forms.TextBox userSessionText2;
+		private System.Windows.Forms.Button userSessionTestBtn;
+		private System.Windows.Forms.RadioButton useUserSessionRadioBtn;
+		private System.Windows.Forms.TextBox userSessionText;
+		private System.Windows.Forms.RadioButton isDuplicateAddRadioBtn;
+		private System.Windows.Forms.Label label14;
+		private System.Windows.Forms.RadioButton isDuplicateConfirmRadioBtn;
+		private System.Windows.Forms.RadioButton isDuplicateCancelRadioBtn;
+		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.RadioButton housoushaUserIDRadioBtn;
 		private System.Windows.Forms.CheckBox useSecondRecFolderChk;
 		private System.Windows.Forms.TextBox secondRecFolderText;
@@ -2469,7 +2597,6 @@ namespace rokugaTouroku
 		private System.Windows.Forms.TabPage tabPage11;
 		private System.Windows.Forms.CheckBox isRestoreLocationChkBox;
 		private System.Windows.Forms.RadioButton isCommentXmlInfo;
-		private System.Windows.Forms.CheckBox isDuplicateConfirmChkBox;
 		private System.Windows.Forms.CheckBox isSaveCommentOnlyRetryingRecChkBox;
 		private System.Windows.Forms.CheckBox isCommentConvertSpaceChkbox;
 		private System.Windows.Forms.TextBox playerArgsText;

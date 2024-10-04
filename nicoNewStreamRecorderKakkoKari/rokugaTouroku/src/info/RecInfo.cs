@@ -182,7 +182,8 @@ namespace rokugaTouroku.info
        		if (ai == null || ai.isRecSetting) return "録画ツールの設定を使用";
        		else if (ai.isBrowser) {
        			return ai.si != null ? (ai.si.BrowserName + " " + ai.si.ProfileName) : "録画ツールの設定を使用";
-       		} else return "アカウント";
+       		} else if (ai.isAccount) return "アカウント";
+       		else return "ユーザーセッション";
        	}
        		set { }
         }

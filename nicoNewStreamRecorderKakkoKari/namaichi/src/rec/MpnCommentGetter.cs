@@ -37,6 +37,7 @@ namespace namaichi.rec
 		List<string> gotCommentIDList = new List<string>();
 		List<KeyValuePair<double, string>> gotPastCommentBuf = null;
 		List<KeyValuePair<double, string>> gotRealTimeCommentBuf = null;
+		List<string> gotBackwardUrl = null;
 		bool isPastCommentMode = false;
 		
 		string at = "now";
@@ -52,6 +53,7 @@ namespace namaichi.rec
 			if (wr.ri.si.isTimeShift && !wr.ri.isRealtimeChase) {
 				gotPastCommentBuf = new List<KeyValuePair<double, string>>();
 				gotRealTimeCommentBuf = new List<KeyValuePair<double, string>>();
+				gotBackwardUrl = new List<string>();
 			}
 		}
 		public void get(string wsMsg) {
@@ -256,6 +258,7 @@ namespace namaichi.rec
 				}
 				if (ce.Backward != null && gotPastCommentBuf != null && !isPastCommentMode) {
 					isPastCommentMode = true;
+					gotBackwardUrl.Add(ce.Backward.Segment.Uri);
 					messageSegmentProcess<PackedSegment>(ce.Backward.Segment.Uri);
 					saveCommentBuf();
 				}
@@ -274,7 +277,9 @@ namespace namaichi.rec
 						if (chatXml == null) 
 							continue;
 						var json = JsonConvert.SerializeXNode(chatXml);
-						json = json.Replace("\"#text\"", "\"content\"");
+						json = json.Replace("\"#text\"", "\"content\"")
+								.Replace("\\u0000", "")
+								.Replace("\\u0010", "");
 						
 						if (gotRealTimeCommentBuf != null)
 							addCommentBuf(cm.meta.At, json, gotRealTimeCommentBuf);
@@ -289,35 +294,54 @@ namespace namaichi.rec
 			}
 		}
 		void onPackedSegmentReceived(List<PackedSegment> l) {
+			var isWrite = gotBackwardUrl.IndexOf("end") > -1;
+			
 			foreach (var ps in l) {
-				if (ps.Messages != null) {
+				if (ps.Messages != null && isWrite) {
 					foreach (var cm in ps.Messages) {
-						if (gotCommentIDList.IndexOf(cm.meta.Id) > -1 &&
-						    	!string.IsNullOrEmpty(cm.meta.Id))
-						    continue;
-						
-						var chatXml = getMsgProtoToXML(cm);
-						if (chatXml == null)
-							continue;
-						var json = JsonConvert.SerializeXNode(chatXml);
-						json = json.Replace("\"#text\"", "\"content\"");
-						
-						addCommentBuf(cm.meta.At, json, gotPastCommentBuf);
-						gotCommentIDList.Add(cm.meta.Id);
-						
-						if (gotPastCommentBuf.Count % 1000 == 0)
-							rm.form.addLogText(gotPastCommentBuf.Count + "件のコメントを取得しました");
+						try {
+							if (cm.Message != null && cm.Message.Chat != null && cm.Message.Chat.No == 161250)
+								util.debugWriteLine("aaa");
+							if (wr.ri.isChase) {
+							if (gotCommentIDList.IndexOf(cm.meta.Id) > -1 &&
+							    	!string.IsNullOrEmpty(cm.meta.Id))
+							    continue;
+							}
+							
+							var chatXml = getMsgProtoToXML(cm);
+							if (chatXml == null)
+								continue;
+							var json = JsonConvert.SerializeXNode(chatXml);
+							json = json.Replace("\"#text\"", "\"content\"")
+									.Replace("\\u0000", "")
+									.Replace("\\u0010", "");
+							
+							//addCommentBuf(cm.meta.At, json, gotPastCommentBuf);
+							wr.onCommentMessageReceiveCore(json, false);
+							gotCommentIDList.Add(cm.meta.Id);
+							
+							if (gotCommentIDList.Count % 1000 == 0)
+								rm.form.addLogText(gotCommentIDList.Count + "件のコメントを取得しました");
+						} catch (Exception e) {
+							util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+						}
 					}
 				}
 				if (ps.next != null) {
-					receiveFromProtoUri<PackedSegment>(ps.next.Uri, false);
+					if (!isWrite) {
+						gotBackwardUrl.Add(ps.next.Uri);
+						receiveFromProtoUri<PackedSegment>(ps.next.Uri, false);
+					}
 				}
 			}
+			if (l.FirstOrDefault(x => x.next != null) == null && 
+			    	gotBackwardUrl.IndexOf("end") == -1)
+				gotBackwardUrl.Add("end");
 		}
 		void messageSegmentProcess<T>(string segmentUri) {
 			var isOk = false;
 			for (var i = 0; i < 5; i++) {
-				isOk = receiveFromProtoUri<T>(segmentUri, i == 0);
+				isOk = receiveFromProtoUri<T>(segmentUri, i == 0 && segmentUri.IndexOf("/backward") == -1);
 				if (!isOk) {
 					Thread.Sleep(1000);
 					continue;
@@ -551,14 +575,17 @@ namespace namaichi.rec
 			return string.Join(" ", m.ToArray());
 		}
 		void saveCommentBuf() {
+			rm.form.addLogText("コメントの保存を開始します");
 			util.debugWriteLine("sumPastComment " + (gotPastCommentBuf != null ? gotPastCommentBuf.Count.ToString() : "null"));
 			try {
 				gotPastCommentBuf = gotPastCommentBuf.OrderBy(x => x.Key).ToList();
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
 			}
-			saveCommentBufCore(gotPastCommentBuf);
+			saveFromBackwardUrlList();
+			//saveCommentBufCore(gotPastCommentBuf);
 			gotPastCommentBuf = null;
+			gotBackwardUrl = null;
 			
 			saveCommentBufCore(gotRealTimeCommentBuf);
 			gotRealTimeCommentBuf= null;
@@ -589,6 +616,27 @@ namespace namaichi.rec
 			var nano = double.Parse("0." + at.Nanos);
 			l.Add(new KeyValuePair<double, string>(
 					seconds + nano, json));
+		}
+		void saveFromBackwardUrlList() {
+			var l = gotBackwardUrl;
+			var a = gotBackwardUrl.Count;
+			while (l != null && 
+			       !(l.Count == 0 || 
+			         l[0] == "end") && rm.rfu == rfu) {
+				
+				try {
+					var c = l[l.Count - 2];
+					if (c == "end") continue;
+					
+					if (c != null) 
+						receiveFromProtoUri<PackedSegment>(c, false);
+					l.Remove(c);
+				} catch (Exception e) {
+					util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+					Thread.Sleep(1000);
+				}
+			}
+			util.debugWriteLine("saveFromBackwardUrlList end");
 		}
 	}
 }
