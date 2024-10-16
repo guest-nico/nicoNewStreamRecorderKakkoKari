@@ -137,6 +137,7 @@ namespace rokugaTouroku
 			this.highRankBtn = new System.Windows.Forms.Button();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.getChromeBtn = new System.Windows.Forms.Button();
 			this.userSessionText = new System.Windows.Forms.TextBox();
 			this.useUserSessionRadioBtn = new System.Windows.Forms.RadioButton();
 			this.userSessionTestBtn = new System.Windows.Forms.Button();
@@ -1362,6 +1363,7 @@ namespace rokugaTouroku
 			// 
 			// groupBox3
 			// 
+			this.groupBox3.Controls.Add(this.getChromeBtn);
 			this.groupBox3.Controls.Add(this.userSessionText);
 			this.groupBox3.Controls.Add(this.useUserSessionRadioBtn);
 			this.groupBox3.Controls.Add(this.userSessionTestBtn);
@@ -1385,6 +1387,17 @@ namespace rokugaTouroku
 			this.groupBox3.TabIndex = 18;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "ニコニコ動画アカウントの共有　(普段ニコニコ生放送を見ているブラウザ)";
+			// 
+			// getChromeBtn
+			// 
+			this.getChromeBtn.Location = new System.Drawing.Point(231, 87);
+			this.getChromeBtn.Margin = new System.Windows.Forms.Padding(2);
+			this.getChromeBtn.Name = "getChromeBtn";
+			this.getChromeBtn.Size = new System.Drawing.Size(131, 23);
+			this.getChromeBtn.TabIndex = 24;
+			this.getChromeBtn.Text = "Chromeのクッキーを取得";
+			this.getChromeBtn.UseVisualStyleBackColor = true;
+			this.getChromeBtn.Click += new System.EventHandler(this.GetChromeBtnClick);
 			// 
 			// userSessionText
 			// 
@@ -2549,6 +2562,7 @@ namespace rokugaTouroku
 			((System.ComponentModel.ISupportInitialize)(this.maxRecordingNum)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Button getChromeBtn;
 		private System.Windows.Forms.Button userSessionTestBtn2;
 		private System.Windows.Forms.RadioButton useUserSessionRadioBtn2;
 		private System.Windows.Forms.TextBox userSessionText2;

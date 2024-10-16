@@ -163,6 +163,9 @@ namespace namaichi
 			this.useSecondLoginChkBox = new System.Windows.Forms.CheckBox();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
 			this.groupBox12 = new System.Windows.Forms.GroupBox();
+			this.userSessionText2 = new System.Windows.Forms.TextBox();
+			this.useUserSessionRadioBtn2 = new System.Windows.Forms.RadioButton();
+			this.userSessionTestBtn2 = new System.Windows.Forms.Button();
 			this.isHokanChkBox = new System.Windows.Forms.CheckBox();
 			this.subPassLabel2 = new System.Windows.Forms.Label();
 			this.subMailLabel2 = new System.Windows.Forms.Label();
@@ -235,9 +238,7 @@ namespace namaichi
 			this.recordDirectoryText = new System.Windows.Forms.TextBox();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
-			this.userSessionText2 = new System.Windows.Forms.TextBox();
-			this.useUserSessionRadioBtn2 = new System.Windows.Forms.RadioButton();
-			this.userSessionTestBtn2 = new System.Windows.Forms.Button();
+			this.getChromeBtn = new System.Windows.Forms.Button();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox16.SuspendLayout();
@@ -288,20 +289,21 @@ namespace namaichi
 			this.tabControl1.Controls.Add(this.tabPage3);
 			this.tabControl1.Location = new System.Drawing.Point(9, 10);
 			this.tabControl1.Margin = new System.Windows.Forms.Padding(2);
+			this.tabControl1.Multiline = true;
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(456, 535);
+			this.tabControl1.Size = new System.Drawing.Size(456, 550);
 			this.tabControl1.TabIndex = 1;
 			// 
 			// tabPage1
 			// 
 			this.tabPage1.Controls.Add(this.groupBox16);
 			this.tabPage1.Controls.Add(this.groupBox6);
-			this.tabPage1.Location = new System.Drawing.Point(4, 22);
+			this.tabPage1.Location = new System.Drawing.Point(4, 40);
 			this.tabPage1.Margin = new System.Windows.Forms.Padding(2);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(2);
-			this.tabPage1.Size = new System.Drawing.Size(448, 509);
+			this.tabPage1.Size = new System.Drawing.Size(448, 506);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "一般";
 			this.tabPage1.UseVisualStyleBackColor = true;
@@ -516,9 +518,9 @@ namespace namaichi
 			this.tabPage8.Controls.Add(this.groupBox17);
 			this.tabPage8.Controls.Add(this.groupBox5);
 			this.tabPage8.Controls.Add(this.groupBox9);
-			this.tabPage8.Location = new System.Drawing.Point(4, 22);
+			this.tabPage8.Location = new System.Drawing.Point(4, 40);
 			this.tabPage8.Name = "tabPage8";
-			this.tabPage8.Size = new System.Drawing.Size(448, 509);
+			this.tabPage8.Size = new System.Drawing.Size(448, 506);
 			this.tabPage8.TabIndex = 8;
 			this.tabPage8.Text = "一般2";
 			this.tabPage8.UseVisualStyleBackColor = true;
@@ -887,10 +889,10 @@ namespace namaichi
 			// 
 			this.tabPage6.Controls.Add(this.groupBox4);
 			this.tabPage6.Controls.Add(this.groupBox10);
-			this.tabPage6.Location = new System.Drawing.Point(4, 22);
+			this.tabPage6.Location = new System.Drawing.Point(4, 40);
 			this.tabPage6.Name = "tabPage6";
 			this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage6.Size = new System.Drawing.Size(448, 509);
+			this.tabPage6.Size = new System.Drawing.Size(448, 506);
 			this.tabPage6.TabIndex = 5;
 			this.tabPage6.Text = "録画方法";
 			this.tabPage6.UseVisualStyleBackColor = true;
@@ -1174,9 +1176,9 @@ namespace namaichi
 			// 
 			this.tabPage9.Controls.Add(this.groupBox14);
 			this.tabPage9.Controls.Add(this.groupBox11);
-			this.tabPage9.Location = new System.Drawing.Point(4, 22);
+			this.tabPage9.Location = new System.Drawing.Point(4, 40);
 			this.tabPage9.Name = "tabPage9";
-			this.tabPage9.Size = new System.Drawing.Size(448, 509);
+			this.tabPage9.Size = new System.Drawing.Size(448, 506);
 			this.tabPage9.TabIndex = 9;
 			this.tabPage9.Text = "追っかけ録画";
 			this.tabPage9.UseVisualStyleBackColor = true;
@@ -1267,10 +1269,10 @@ namespace namaichi
 			// 
 			this.tabPage5.Controls.Add(this.groupBox18);
 			this.tabPage5.Controls.Add(this.groupBox7);
-			this.tabPage5.Location = new System.Drawing.Point(4, 22);
+			this.tabPage5.Location = new System.Drawing.Point(4, 40);
 			this.tabPage5.Name = "tabPage5";
 			this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage5.Size = new System.Drawing.Size(448, 509);
+			this.tabPage5.Size = new System.Drawing.Size(448, 506);
 			this.tabPage5.TabIndex = 4;
 			this.tabPage5.Text = "画質";
 			this.tabPage5.UseVisualStyleBackColor = true;
@@ -1429,11 +1431,11 @@ namespace namaichi
 			// tabPage2
 			// 
 			this.tabPage2.Controls.Add(this.groupBox3);
-			this.tabPage2.Location = new System.Drawing.Point(4, 22);
+			this.tabPage2.Location = new System.Drawing.Point(4, 40);
 			this.tabPage2.Margin = new System.Windows.Forms.Padding(2);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(2);
-			this.tabPage2.Size = new System.Drawing.Size(448, 509);
+			this.tabPage2.Size = new System.Drawing.Size(448, 506);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "アカウント設定";
 			this.tabPage2.UseVisualStyleBackColor = true;
@@ -1455,6 +1457,7 @@ namespace namaichi
 			this.groupBox3.Controls.Add(this.userSessionTestBtn);
 			this.groupBox3.Controls.Add(this.loginBtn);
 			this.groupBox3.Controls.Add(this.cookieFileSanshouBtn);
+			this.groupBox3.Controls.Add(this.getChromeBtn);
 			this.groupBox3.Controls.Add(this.btnReload);
 			this.groupBox3.Controls.Add(this.useSecondLoginChkBox);
 			this.groupBox3.Location = new System.Drawing.Point(5, 10);
@@ -1638,10 +1641,10 @@ namespace namaichi
 			// tabPage4
 			// 
 			this.tabPage4.Controls.Add(this.groupBox12);
-			this.tabPage4.Location = new System.Drawing.Point(4, 22);
+			this.tabPage4.Location = new System.Drawing.Point(4, 40);
 			this.tabPage4.Name = "tabPage4";
 			this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage4.Size = new System.Drawing.Size(448, 509);
+			this.tabPage4.Size = new System.Drawing.Size(448, 506);
 			this.tabPage4.TabIndex = 7;
 			this.tabPage4.Text = "補完設定";
 			this.tabPage4.UseVisualStyleBackColor = true;
@@ -1672,6 +1675,35 @@ namespace namaichi
 			this.groupBox12.TabIndex = 19;
 			this.groupBox12.TabStop = false;
 			this.groupBox12.Text = "補完設定";
+			// 
+			// userSessionText2
+			// 
+			this.userSessionText2.Location = new System.Drawing.Point(20, 350);
+			this.userSessionText2.Name = "userSessionText2";
+			this.userSessionText2.Size = new System.Drawing.Size(277, 19);
+			this.userSessionText2.TabIndex = 24;
+			// 
+			// useUserSessionRadioBtn2
+			// 
+			this.useUserSessionRadioBtn2.Checked = true;
+			this.useUserSessionRadioBtn2.Location = new System.Drawing.Point(6, 326);
+			this.useUserSessionRadioBtn2.Name = "useUserSessionRadioBtn2";
+			this.useUserSessionRadioBtn2.Size = new System.Drawing.Size(311, 18);
+			this.useUserSessionRadioBtn2.TabIndex = 23;
+			this.useUserSessionRadioBtn2.TabStop = true;
+			this.useUserSessionRadioBtn2.Text = "ユーザーセッションを指定してログインする";
+			this.useUserSessionRadioBtn2.UseVisualStyleBackColor = true;
+			// 
+			// userSessionTestBtn2
+			// 
+			this.userSessionTestBtn2.Location = new System.Drawing.Point(302, 348);
+			this.userSessionTestBtn2.Margin = new System.Windows.Forms.Padding(2);
+			this.userSessionTestBtn2.Name = "userSessionTestBtn2";
+			this.userSessionTestBtn2.Size = new System.Drawing.Size(69, 23);
+			this.userSessionTestBtn2.TabIndex = 22;
+			this.userSessionTestBtn2.Text = "テスト";
+			this.userSessionTestBtn2.UseVisualStyleBackColor = true;
+			this.userSessionTestBtn2.Click += new System.EventHandler(this.UserSessionTestBtn2Click);
 			// 
 			// isHokanChkBox
 			// 
@@ -1826,10 +1858,10 @@ namespace namaichi
 			// tabPage10
 			// 
 			this.tabPage10.Controls.Add(this.groupBox15);
-			this.tabPage10.Location = new System.Drawing.Point(4, 22);
+			this.tabPage10.Location = new System.Drawing.Point(4, 40);
 			this.tabPage10.Name = "tabPage10";
 			this.tabPage10.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage10.Size = new System.Drawing.Size(448, 509);
+			this.tabPage10.Size = new System.Drawing.Size(448, 506);
 			this.tabPage10.TabIndex = 10;
 			this.tabPage10.Text = "接続";
 			this.tabPage10.UseVisualStyleBackColor = true;
@@ -1900,10 +1932,10 @@ namespace namaichi
 			// 
 			this.tabPage7.Controls.Add(this.groupBox8);
 			this.tabPage7.Controls.Add(this.groupBox13);
-			this.tabPage7.Location = new System.Drawing.Point(4, 22);
+			this.tabPage7.Location = new System.Drawing.Point(4, 40);
 			this.tabPage7.Name = "tabPage7";
 			this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage7.Size = new System.Drawing.Size(448, 509);
+			this.tabPage7.Size = new System.Drawing.Size(448, 506);
 			this.tabPage7.TabIndex = 6;
 			this.tabPage7.Text = "視聴";
 			this.tabPage7.UseVisualStyleBackColor = true;
@@ -2082,11 +2114,11 @@ namespace namaichi
 			// 
 			this.tabPage3.Controls.Add(this.groupBox2);
 			this.tabPage3.Controls.Add(this.groupBox1);
-			this.tabPage3.Location = new System.Drawing.Point(4, 22);
+			this.tabPage3.Location = new System.Drawing.Point(4, 40);
 			this.tabPage3.Margin = new System.Windows.Forms.Padding(2);
 			this.tabPage3.Name = "tabPage3";
 			this.tabPage3.Padding = new System.Windows.Forms.Padding(2);
-			this.tabPage3.Size = new System.Drawing.Size(448, 509);
+			this.tabPage3.Size = new System.Drawing.Size(448, 506);
 			this.tabPage3.TabIndex = 2;
 			this.tabPage3.Text = "録画";
 			this.tabPage3.UseVisualStyleBackColor = true;
@@ -2410,7 +2442,7 @@ namespace namaichi
 			// 
 			// button3
 			// 
-			this.button3.Location = new System.Drawing.Point(249, 550);
+			this.button3.Location = new System.Drawing.Point(249, 565);
 			this.button3.Name = "button3";
 			this.button3.Size = new System.Drawing.Size(74, 23);
 			this.button3.TabIndex = 1;
@@ -2420,7 +2452,7 @@ namespace namaichi
 			// 
 			// button4
 			// 
-			this.button4.Location = new System.Drawing.Point(329, 550);
+			this.button4.Location = new System.Drawing.Point(329, 565);
 			this.button4.Name = "button4";
 			this.button4.Size = new System.Drawing.Size(74, 23);
 			this.button4.TabIndex = 1;
@@ -2428,40 +2460,22 @@ namespace namaichi
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
 			// 
-			// userSessionText2
+			// getChromeBtn
 			// 
-			this.userSessionText2.Location = new System.Drawing.Point(20, 350);
-			this.userSessionText2.Name = "userSessionText2";
-			this.userSessionText2.Size = new System.Drawing.Size(277, 19);
-			this.userSessionText2.TabIndex = 24;
-			// 
-			// useUserSessionRadioBtn2
-			// 
-			this.useUserSessionRadioBtn2.Checked = true;
-			this.useUserSessionRadioBtn2.Location = new System.Drawing.Point(6, 326);
-			this.useUserSessionRadioBtn2.Name = "useUserSessionRadioBtn2";
-			this.useUserSessionRadioBtn2.Size = new System.Drawing.Size(311, 18);
-			this.useUserSessionRadioBtn2.TabIndex = 23;
-			this.useUserSessionRadioBtn2.TabStop = true;
-			this.useUserSessionRadioBtn2.Text = "ユーザーセッションを指定してログインする";
-			this.useUserSessionRadioBtn2.UseVisualStyleBackColor = true;
-			// 
-			// userSessionTestBtn2
-			// 
-			this.userSessionTestBtn2.Location = new System.Drawing.Point(302, 348);
-			this.userSessionTestBtn2.Margin = new System.Windows.Forms.Padding(2);
-			this.userSessionTestBtn2.Name = "userSessionTestBtn2";
-			this.userSessionTestBtn2.Size = new System.Drawing.Size(69, 23);
-			this.userSessionTestBtn2.TabIndex = 22;
-			this.userSessionTestBtn2.Text = "テスト";
-			this.userSessionTestBtn2.UseVisualStyleBackColor = true;
-			this.userSessionTestBtn2.Click += new System.EventHandler(this.UserSessionTestBtn2Click);
+			this.getChromeBtn.Location = new System.Drawing.Point(231, 87);
+			this.getChromeBtn.Margin = new System.Windows.Forms.Padding(2);
+			this.getChromeBtn.Name = "getChromeBtn";
+			this.getChromeBtn.Size = new System.Drawing.Size(131, 23);
+			this.getChromeBtn.TabIndex = 17;
+			this.getChromeBtn.Text = "Chromeのクッキーを取得";
+			this.getChromeBtn.UseVisualStyleBackColor = true;
+			this.getChromeBtn.Click += new System.EventHandler(this.GetChromeBtnClick);
 			// 
 			// optionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(468, 595);
+			this.ClientSize = new System.Drawing.Size(468, 610);
 			this.Controls.Add(this.button4);
 			this.Controls.Add(this.button3);
 			this.Controls.Add(this.tabControl1);
@@ -2519,6 +2533,7 @@ namespace namaichi
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Button getChromeBtn;
 		private System.Windows.Forms.Button userSessionTestBtn2;
 		private System.Windows.Forms.RadioButton useUserSessionRadioBtn2;
 		private System.Windows.Forms.TextBox userSessionText2;

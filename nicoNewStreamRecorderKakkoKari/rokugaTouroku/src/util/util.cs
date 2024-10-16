@@ -28,8 +28,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.11.1";
-	public static string versionDayStr = "2024/10/05";
+	public static string versionStr = "ver0.1.3.11.2";
+	public static string versionDayStr = "2024/10/16";
 	public static string osName = null;
 	public static bool isCurl = true;
 	public static bool isWebRequestOk = false;
@@ -1152,4 +1152,22 @@ class util {
 			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 		}
     }
+    public static void CloseProcessByName(string name) {
+		var processList = Process.GetProcessesByName(name);
+		foreach (var p in processList) {
+			try {
+				p.Kill();
+			} catch (Exception e) {
+				Debug.WriteLine(e.Message);
+			}
+		}
+	}
+	public static void setAppbEnvVar(string appbKey) {
+		var appb = appbKey;
+		if (appb == "") return;
+		var appbArr = appb.Split(',');
+		for (var i = 0; i < appbArr.Length; i++) {
+			Environment.SetEnvironmentVariable("appbKey" + i, appbArr[i]);
+		}
+	}
 }

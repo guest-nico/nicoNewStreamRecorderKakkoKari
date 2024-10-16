@@ -143,6 +143,7 @@ public class config
 //			{"isAllBrowserMode","true"},
 			{"issecondlogin","false"},
 			{"age_auth","0"},
+			{"chrome_appb",""},
 			
 			{"IsHokan","true"},
 			{"accountId2",""},
@@ -374,6 +375,6 @@ public class config
 			{5, "音声のみ(audio_high)"}, {6, "6Mbps(6Mbps1080p30fps)"},
 			{7, "8Mbps(8Mbps1080p60fps)"}, {8, "4Mbps(4Mbps720p60fps)"},
 			{9, "音声のみ(audio_only)"}
-		};
-	}
+	};
+}
 }

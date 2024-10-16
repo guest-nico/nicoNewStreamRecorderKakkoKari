@@ -679,7 +679,7 @@ namespace rokugaTouroku
 				}
 				argProcess();
 			});
-			
+			util.setAppbEnvVar(config.get("chrome_appb"));
 		}
 		void setCookie() {
 			try {

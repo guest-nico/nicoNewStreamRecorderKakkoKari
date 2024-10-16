@@ -98,6 +98,7 @@ public class config
 //			{"isAllBrowserMode","true"},
 			{"issecondlogin","false"},
 			{"age_auth","0"},
+			{"chrome_appb",""},
 			
 			{"IsHokan","true"},
 			{"accountId2",""},

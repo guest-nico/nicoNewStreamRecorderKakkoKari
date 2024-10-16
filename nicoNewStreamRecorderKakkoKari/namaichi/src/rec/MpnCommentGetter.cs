@@ -300,12 +300,10 @@ namespace namaichi.rec
 				if (ps.Messages != null && isWrite) {
 					foreach (var cm in ps.Messages) {
 						try {
-							if (cm.Message != null && cm.Message.Chat != null && cm.Message.Chat.No == 161250)
-								util.debugWriteLine("aaa");
 							if (wr.ri.isChase) {
-							if (gotCommentIDList.IndexOf(cm.meta.Id) > -1 &&
-							    	!string.IsNullOrEmpty(cm.meta.Id))
-							    continue;
+								if (gotCommentIDList.IndexOf(cm.meta.Id) > -1 &&
+							    		!string.IsNullOrEmpty(cm.meta.Id))
+							    	continue;
 							}
 							
 							var chatXml = getMsgProtoToXML(cm);
@@ -373,7 +371,7 @@ namespace namaichi.rec
 					        chat.HashedUserId, modifier, chat.Name,
 					        chat.No.ToString(), chat.RawUserId.ToString(), 
 					        chat.Vpos.ToString(), msgProto.meta.At.Seconds,
-					        msgProto.meta.At.Nanos);
+					        msgProto.meta.At.Nanos / 1000);
 				} else {
 					var vpos = (msgProto.meta.At.Seconds - wr.ri.si._openTime) * 100;
 					var content = "undefined";
@@ -404,7 +402,7 @@ namespace namaichi.rec
 							"", "", "",
 							"", "", vpos.ToString(), 
 							msgProto.meta.At.Seconds, 
-							msgProto.meta.At.Nanos);
+							msgProto.meta.At.Nanos / 1000);
 				} 
 				
 			} catch (Exception e) {
@@ -461,19 +459,20 @@ namespace namaichi.rec
 		}
 		string getNotification(SimpleNotification n) {
 			var m = new List<string>();
-			if (n.Cruise != null) m.Add(n.Cruise);
-			if (n.Emotion != null) m.Add(n.Emotion);
-			if (n.Ichiba != null) m.Add(n.Ichiba);
-			if (n.ProgramExtended != null) m.Add(n.ProgramExtended);
-			if (n.Quote != null) m.Add(n.Quote);
-			if (n.RankingIn != null) m.Add(n.RankingIn);
-			if (n.RankingUpdated != null) m.Add(n.RankingUpdated);
-			if (n.Visited != null) m.Add(n.Visited);
+			if (!string.IsNullOrEmpty(n.Cruise)) m.Add("/cruise " + n.Cruise);
+			if (!string.IsNullOrEmpty(n.Emotion)) m.Add("/emotion " + n.Emotion);
+			if (!string.IsNullOrEmpty(n.Ichiba)) m.Add("/ichiba " + n.Ichiba);
+			if (!string.IsNullOrEmpty(n.ProgramExtended)) m.Add("/extended " + n.ProgramExtended);
+			if (!string.IsNullOrEmpty(n.Quote)) m.Add("/quote " + n.Quote);
+			if (!string.IsNullOrEmpty(n.RankingIn)) m.Add("/ranking " + n.RankingIn);
+			if (!string.IsNullOrEmpty(n.RankingUpdated)) m.Add("/ranking " + n.RankingUpdated);
+			if (!string.IsNullOrEmpty(n.Visited)) m.Add("/visited " + n.Visited);
 			return string.Join(" ", m.ToArray());
 		}
 		string getStateComment(NicoliveState s) {
 			var l = new List<string>();
 			if (s.Marquee != null) {
+				l.Add("/marquee");
 				if (s.Marquee.display != null && 
 				    	s.Marquee.display.OperatorComment != null) {
 					var opComment = s.Marquee.display.OperatorComment;
@@ -483,6 +482,7 @@ namespace namaichi.rec
 					l.Add("Hide Marquee");
 			}
 			if (s.Enquete != null) {
+				l.Add("/enquete");
 				if (!string.IsNullOrEmpty(s.Enquete.Question)) {
 					if (s.Enquete.status.ToString() == "Poll")
 						l.Add(s.Enquete.Question);
@@ -495,17 +495,23 @@ namespace namaichi.rec
 				
 			}
 			if (s.ProgramStatus != null) {
+				l.Add("/status");
 				l.Add(s.ProgramStatus.state.ToString());
 			}
 			if (s.CommentLock != null) {
+				l.Add("/CommentLock");
 				l.Add(s.CommentLock.status.ToString());
 			}
 			if (s.CommentMode != null) {
+				l.Add("/CommentMode");
 				l.Add(s.CommentMode.layout.ToString());
 			}
-			if (s.ModerationAnnouncement != null)
+			if (s.ModerationAnnouncement != null) {
+				l.Add("/moderation");
 				l.Add(s.ModerationAnnouncement.Message);
+			}
 			if (s.MoveOrder != null) {
+				l.Add("/move");
 				var m = s.MoveOrder;
 				if (m.Jump != null)
 					l.Add(m.Jump.Message + " " + m.Jump.Content);
@@ -513,6 +519,7 @@ namespace namaichi.rec
 					l.Add(m.Redirect.Message + " " + m.Redirect.Uri);
 			}
 			if (s.Statistics != null) {
+				l.Add("/statistics");
 				var st = s.Statistics;
 				//l.Add("来場者:" + st.Viewers);
 				//l.Add("コメント:" + st.Comments);
@@ -520,6 +527,7 @@ namespace namaichi.rec
 				if (st.GiftPoints != 0) l.Add("ギフト:" + st.GiftPoints);
 			}
 			if (s.TrialPanel != null) {
+				l.Add("/TrialPanel");
 				l.Add(s.TrialPanel.panel.ToString());
 				l.Add(s.TrialPanel.UnqualifiedUser.ToString());
 			}
@@ -535,12 +543,14 @@ namespace namaichi.rec
 		}
 		string getNicoAd(Nicoad n) {
 			var m = new List<string>();
+			m.Add("/NicoAd");
 			if (n.v0 != null) m.Add(n.v0.latest.Message + " Total:" + n.v0.TotalPoint);
 			if (n.v1 != null) m.Add(n.v1.Message + " Total:" + n.v1.TotalAdPoint.ToString());
 			return string.Join(" ", m.ToArray());
 		}
 		string getGift(Gift n) {
 			var m = new List<string>();
+			m.Add("/gift");
 			if (n.ContributionRank != 0) m.Add("【ギフト貢献" + n.ContributionRank + "位】");
 			if (n.AdvertiserName != null) {
 				m.Add(n.AdvertiserName);
@@ -552,14 +562,14 @@ namespace namaichi.rec
 		}
 		string getModeratorUpdated(ModeratorUpdated n) {
 			var m = new List<string>();
-			m.Add("Moderator " + n.Operation.ToString());
+			m.Add("/moderator " + n.Operation.ToString());
 			if (n.Operator != null && n.Operator.Nickname != null) m.Add(n.Operator.Nickname);
 			if (n.Operator != null && n.Operator.UserId != 0) m.Add(n.Operator.UserId.ToString());
 			return string.Join(" ", m.ToArray());
 		}
 		string getSSNGUpdated(SSNGUpdated n) {
 			var m = new List<string>();
-			m.Add("NG updated");
+			m.Add("/NG updated");
 			m.Add(n.Operation.ToString());
 			if (n.Operator != null) m.Add(n.Operator.Nickname + " " + n.Operator.UserId);
 			if (n.Source != null) m.Add(n.Source);
@@ -569,7 +579,7 @@ namespace namaichi.rec
 		}
 		string getTagUpdated(TagUpdated n) {
 			var m = new List<string>();
-			m.Add("タグが更新されました");
+			m.Add("/tag タグが更新されました");
 			if (n.OwnerLocked) m.Add("ロック");
 			m.Add(string.Join(",", n.Tags.Select(x => x.Text).ToArray()));
 			return string.Join(" ", m.ToArray());
@@ -624,9 +634,13 @@ namespace namaichi.rec
 			       !(l.Count == 0 || 
 			         l[0] == "end") && rm.rfu == rfu) {
 				
+				string c = null;
 				try {
-					var c = l[l.Count - 2];
-					if (c == "end") continue;
+					c = l.Count == 1 ? l[0] : l[l.Count - 2];
+					if (c == "end" || string.IsNullOrEmpty(c)) {
+						l.RemoveAt(l.Count - 2);
+						continue;
+					}
 					
 					if (c != null) 
 						receiveFromProtoUri<PackedSegment>(c, false);

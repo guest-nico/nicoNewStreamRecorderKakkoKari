@@ -155,6 +155,7 @@ namespace namaichi
 					else rec.rec(false);
 				}
             }
+			util.setAppbEnvVar(config.get("chrome_appb"));
 		}
 
 		private void recBtnAction(object sender, EventArgs e) {

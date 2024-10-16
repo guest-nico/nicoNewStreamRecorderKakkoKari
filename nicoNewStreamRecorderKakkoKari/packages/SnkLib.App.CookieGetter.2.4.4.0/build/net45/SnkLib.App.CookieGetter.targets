@@ -1,0 +1,39 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--SnkLib.App.CookieGetterの依存ファイルを配置-->
+  <Import Project=".\Deploy.targets" />
+
+  <!--ファイルを配置する-->
+  <Target Name="CopyLibCheckerFiles"
+          Condition="
+            '$(CopyLibCheckerFiles)' != 'false' And
+            '$(OutputPath)' != '' And
+            HasTrailingSlash('$(OutputPath)') And Exists('$(OutputPath)')"
+          Inputs="$(MSBuildThisFileDirectory)SnkLib.App.CookieGetter.LibChecker.exe"
+          Outputs="$(OutputPath)SnkLib.App.CookieGetter.LibChecker.exe">
+
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)SnkLib.App.CookieGetter.LibChecker.exe"
+          DestinationFiles="$(OutputPath)SnkLib.App.CookieGetter.LibChecker.exe" />
+  </Target>
+
+  <!--配置していたファイルを削除する-->
+  <Target Name="CleanLibCheckerFiles"
+          Condition="
+            '$(CleanLibCheckerFiles)' != 'false' And
+            '$(OutputPath)' != '' And
+            HasTrailingSlash('$(OutputPath)') And Exists('$(OutputPath)')">
+
+    <Delete Files="$(OutputPath)SnkLib.App.CookieGetter.LibChecker.exe" />
+  </Target>
+
+  <!--既存のBuild,Cleanに事後処理として任意のTargetを追加する-->
+  <PropertyGroup>
+    <BuildDependsOn>
+      $(BuildDependsOn);
+      CopyLibCheckerFiles;
+    </BuildDependsOn>
+    <CleanDependsOn>
+      $(CleanDependsOn);
+      CleanLibCheckerFiles;
+    </CleanDependsOn>
+  </PropertyGroup>
+</Project>

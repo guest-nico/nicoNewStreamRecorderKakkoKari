@@ -1234,5 +1234,56 @@ namespace rokugaTouroku
 				util.showMessageBoxCenterForm(this, "login error " + e.Message + e.Source + e.StackTrace, "", MessageBoxButtons.OK);
 			}
 		}
+		void GetChromeBtnClick(object sender, EventArgs e)
+		{
+			if (!Environment.Is64BitOperatingSystem) {
+				MessageBox.Show("現在、こちらの機能は64bitのOSでのみ動作できます");
+				return;
+			}
+			while (true) {
+				var chrome = Process.GetProcessesByName("chrome");
+				if (chrome.Length == 0) break;
+				if (MessageBox.Show("Google Chromeが起動されているとクッキーを取得できません", 
+						"", MessageBoxButtons.RetryCancel) == DialogResult.Cancel) {
+					return;
+				}
+			}
+			Process p = null;
+			try {
+				var path = util.getJarPath()[0] + "/detours/x64/";
+				var appPath = path + "cryptHook.exe";
+				var si = new ProcessStartInfo(appPath);
+				
+				si.UseShellExecute = false;
+				si.CreateNoWindow = true;
+				si.RedirectStandardOutput = true;
+				
+				si.WorkingDirectory = path;
+				//si.EnvironmentVariables["PATH"] = path + ";" + Environment.GetEnvironmentVariable("PATH");
+				p = Process.Start(si);
+				var n = 0;
+				var cfg_buf = "";
+				while (!p.HasExited) {
+					var s = p.StandardOutput.ReadLine();
+					util.debugWriteLine("read appb " + s);
+					if (string.IsNullOrEmpty(s) || s == "end")
+						break;
+					
+					var bytes = s.Split(',').Select(x => byte.Parse(x)).ToArray();
+					var b64 = Convert.ToBase64String(bytes);
+					cfg_buf += (cfg_buf == "" ? "" : ",") + b64;
+					util.debugWriteLine("receive key " + bytes[0] + " " + bytes[1]);
+					if (n >= 2) break;
+				}
+				util.setAppbEnvVar(cfg_buf);
+				cfg.set("chrome_appb", cfg_buf);
+				
+			} catch (Exception ee) {
+				util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace);
+			}
+			if (p != null && !p.HasExited) p.Kill();
+			util.CloseProcessByName("chrome");
+			nicoSessionComboBox1.Selector.UpdateAsync();
+		}
 	}
 }

@@ -70,7 +70,7 @@ namespace namaichi.info
 			
 			if (root == "chat" || root == "control") {
 				if (!isOriginalVposBase) {
-					var _dateUseC = ((double)date_usec / (Math.Pow(10, date_usec.ToString().Length)));
+					var _dateUseC = (double)date_usec / 1000000;
 					vpos = (long)((date + _dateUseC - serverTime) * 100);
 				} else {
 					vpos = vpos - vposStartTime * 100;

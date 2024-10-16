@@ -2033,7 +2033,9 @@ namespace namaichi.rec
 				Thread.Sleep(1000);
 			}
 			var vposStartTime = (ri.timeShiftConfig.isVposStartTime) ? (long)firstSegmentSecond : 0;
-			if (ri.si.type == "official") {
+			if (ri.si.type == "official" || ri.si.type == "channel" || ri.si.type == "user") {
+				//return chatinfo.getFormatXml(ri.si._openTime + vposStartTime);
+				//return chatinfo.getFormatXml(0, true, ri.timeShiftConfig.timeSeconds);
 				return chatinfo.getFormatXml(0, true, vposStartTime);
 			} else {
 				return chatinfo.getFormatXml(ri.si.openTime + vposStartTime);

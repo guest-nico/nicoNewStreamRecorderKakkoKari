@@ -35,8 +35,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.89.10";
-	public static string versionDayStr = "2024/10/05";
+	public static string versionStr = "ver0.89.11";
+	public static string versionDayStr = "2024/10/16";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -1726,5 +1726,23 @@ public static void soundEnd(config cfg, MainForm form) {
 		}
 		util.debugWriteLine("vcr140Check " + mes + " " + isExists);
 		return isExists;
+	}
+	public static void CloseProcessByName(string name) {
+		var processList = Process.GetProcessesByName(name);
+		foreach (var p in processList) {
+			try {
+				p.Kill();
+			} catch (Exception e) {
+				Debug.WriteLine(e.Message);
+			}
+		}
+	}
+	public static void setAppbEnvVar(string appbKey) {
+		var appb = appbKey;
+		if (appb == "") return;
+		var appbArr = appb.Split(',');
+		for (var i = 0; i < appbArr.Length; i++) {
+			Environment.SetEnvironmentVariable("appbKey" + i, appbArr[i]);
+		}
 	}
 }
