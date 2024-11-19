@@ -243,7 +243,7 @@ namespace rokugaTouroku
 			this.label14.Name = "label14";
 			this.label14.Size = new System.Drawing.Size(92, 18);
 			this.label14.TabIndex = 0;
-			this.label14.Text = "{4} コミュニティ名";
+			this.label14.Text = "{4} チャンネル名";
 			// 
 			// label13
 			// 
@@ -251,7 +251,7 @@ namespace rokugaTouroku
 			this.label13.Name = "label13";
 			this.label13.Size = new System.Drawing.Size(92, 18);
 			this.label13.TabIndex = 0;
-			this.label13.Text = "{3} コミュニティID";
+			this.label13.Text = "{3} チャンネルID";
 			// 
 			// label12
 			// 

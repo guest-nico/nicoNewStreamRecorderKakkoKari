@@ -50,7 +50,7 @@ namespace rokugaTouroku
 			this.accountColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.タイトル = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.放送者 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-			this.コミュニティ名 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.チャンネル名 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.開始時刻 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.終了時刻 = new System.Windows.Forms.DataGridViewTextBoxColumn();
 			this.ログ = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -117,6 +117,7 @@ namespace rokugaTouroku
 			this.addListBtn = new System.Windows.Forms.Button();
 			this.downBtn = new System.Windows.Forms.Button();
 			this.upBtn = new System.Windows.Forms.Button();
+			this.addFromReserveBtn = new System.Windows.Forms.Button();
 			this.deleteFinishedBtn = new System.Windows.Forms.Button();
 			this.clearBtn = new System.Windows.Forms.Button();
 			this.recBtn = new System.Windows.Forms.Button();
@@ -147,7 +148,6 @@ namespace rokugaTouroku
 			this.label3 = new System.Windows.Forms.Label();
 			this.samuneBox = new System.Windows.Forms.PictureBox();
 			this.logText = new System.Windows.Forms.TextBox();
-			this.addFromReserveBtn = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.recList)).BeginInit();
 			this.contextMenuStrip1.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
@@ -203,7 +203,7 @@ namespace rokugaTouroku
 									this.accountColumn,
 									this.タイトル,
 									this.放送者,
-									this.コミュニティ名,
+									this.チャンネル名,
 									this.開始時刻,
 									this.終了時刻,
 									this.ログ});
@@ -300,12 +300,12 @@ namespace rokugaTouroku
 			this.放送者.Name = "放送者";
 			this.放送者.ReadOnly = true;
 			// 
-			// コミュニティ名
+			// チャンネル名
 			// 
-			this.コミュニティ名.DataPropertyName = "communityName";
-			this.コミュニティ名.HeaderText = "コミュニティ名";
-			this.コミュニティ名.Name = "コミュニティ名";
-			this.コミュニティ名.ReadOnly = true;
+			this.チャンネル名.DataPropertyName = "communityName";
+			this.チャンネル名.HeaderText = "チャンネル名";
+			this.チャンネル名.Name = "チャンネル名";
+			this.チャンネル名.ReadOnly = true;
 			// 
 			// 開始時刻
 			// 
@@ -357,7 +357,7 @@ namespace rokugaTouroku
 			// 
 			this.openCommunityUrlMenu.Name = "openCommunityUrlMenu";
 			this.openCommunityUrlMenu.Size = new System.Drawing.Size(232, 22);
-			this.openCommunityUrlMenu.Text = "コミュニティページへ移動";
+			this.openCommunityUrlMenu.Text = "チャンネルページへ移動";
 			this.openCommunityUrlMenu.Click += new System.EventHandler(this.openCommunityUrlMenu_Click);
 			// 
 			// copyWatchUrlMenu
@@ -371,7 +371,7 @@ namespace rokugaTouroku
 			// 
 			this.copyCommunityUrlMenu.Name = "copyCommunityUrlMenu";
 			this.copyCommunityUrlMenu.Size = new System.Drawing.Size(232, 22);
-			this.copyCommunityUrlMenu.Text = "コミュニティURLをコピー";
+			this.copyCommunityUrlMenu.Text = "チャンネルURLをコピー";
 			this.copyCommunityUrlMenu.Click += new System.EventHandler(this.copyCommunityUrlMenu_Click);
 			// 
 			// toolStripSeparator2
@@ -620,7 +620,7 @@ namespace rokugaTouroku
 			// 
 			this.isDisplayRecCommunityNameMenu.Name = "isDisplayRecCommunityNameMenu";
 			this.isDisplayRecCommunityNameMenu.Size = new System.Drawing.Size(151, 22);
-			this.isDisplayRecCommunityNameMenu.Text = "コミュニティ名";
+			this.isDisplayRecCommunityNameMenu.Text = "チャンネル名";
 			// 
 			// isDisplayRecStartTimeMenu
 			// 
@@ -867,6 +867,17 @@ namespace rokugaTouroku
 			this.upBtn.UseVisualStyleBackColor = true;
 			this.upBtn.Click += new System.EventHandler(this.UpBtnClick);
 			// 
+			// addFromReserveBtn
+			// 
+			this.addFromReserveBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.addFromReserveBtn.Location = new System.Drawing.Point(401, 264);
+			this.addFromReserveBtn.Name = "addFromReserveBtn";
+			this.addFromReserveBtn.Size = new System.Drawing.Size(142, 23);
+			this.addFromReserveBtn.TabIndex = 7;
+			this.addFromReserveBtn.Text = "タイムシフト予約から追加";
+			this.addFromReserveBtn.UseVisualStyleBackColor = true;
+			this.addFromReserveBtn.Click += new System.EventHandler(this.AddFromReserveBtnClick);
+			// 
 			// deleteFinishedBtn
 			// 
 			this.deleteFinishedBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -1033,7 +1044,7 @@ namespace rokugaTouroku
 			this.label15.Name = "label15";
 			this.label15.Size = new System.Drawing.Size(99, 14);
 			this.label15.TabIndex = 6;
-			this.label15.Text = "コミュニティURL";
+			this.label15.Text = "チャンネルURL";
 			// 
 			// urlLabel
 			// 
@@ -1097,7 +1108,7 @@ namespace rokugaTouroku
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(407, 14);
 			this.label11.TabIndex = 2;
-			this.label11.Text = "コミュニティ";
+			this.label11.Text = "チャンネル";
 			// 
 			// label6
 			// 
@@ -1192,17 +1203,6 @@ namespace rokugaTouroku
 			this.logText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
 			this.logText.Size = new System.Drawing.Size(187, 154);
 			this.logText.TabIndex = 8;
-			// 
-			// addFromReserveBtn
-			// 
-			this.addFromReserveBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.addFromReserveBtn.Location = new System.Drawing.Point(401, 264);
-			this.addFromReserveBtn.Name = "addFromReserveBtn";
-			this.addFromReserveBtn.Size = new System.Drawing.Size(142, 23);
-			this.addFromReserveBtn.TabIndex = 7;
-			this.addFromReserveBtn.Text = "タイムシフト予約から追加";
-			this.addFromReserveBtn.UseVisualStyleBackColor = true;
-			this.addFromReserveBtn.Click += new System.EventHandler(this.AddFromReserveBtnClick);
 			// 
 			// MainForm
 			// 
@@ -1320,7 +1320,7 @@ namespace rokugaTouroku
 		private System.Windows.Forms.DataGridViewTextBoxColumn ログ;
 		private System.Windows.Forms.DataGridViewTextBoxColumn 終了時刻;
 		private System.Windows.Forms.DataGridViewTextBoxColumn 開始時刻;
-		private System.Windows.Forms.DataGridViewTextBoxColumn コミュニティ名;
+		private System.Windows.Forms.DataGridViewTextBoxColumn チャンネル名;
 		private System.Windows.Forms.DataGridViewTextBoxColumn 放送者;
 		private System.Windows.Forms.DataGridViewTextBoxColumn タイトル;
 		private System.Windows.Forms.DataGridViewTextBoxColumn 状態;

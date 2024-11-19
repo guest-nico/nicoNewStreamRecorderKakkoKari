@@ -59,6 +59,7 @@ namespace rokugaTouroku.rec
 							ri.state = "録画中";
 							ri.rdg = this;
 							Task.Run(() => {recProcess(ri);});
+							rlm.form.saveList();
 						}
 						Thread.Sleep(2000);
 					}
@@ -100,6 +101,7 @@ namespace rokugaTouroku.rec
 			util.debugWriteLine("recProcess loop end wait go " + ri.id + " " + ri.state);
 			row = rlm.recListData.IndexOf(ri);
 			rlm.form.resetBindingList(row);
+			rlm.form.saveList();
 		}
 		private void startRecProcess(RecInfo ri) {
 			util.debugWriteLine("startrecprocess " + ri);

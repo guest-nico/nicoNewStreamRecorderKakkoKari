@@ -63,7 +63,7 @@ namespace namaichi.rec
 					util.debugWriteLine(res);
 				}
 				if (res == "") {
-					form.addLogText("コミュニティ情報の取得に失敗しました");
+					form.addLogText("チャンネル情報の取得に失敗しました");
 					return false;
 				}
 				var isJidouShounin = res.IndexOf("\"community_auto_accept_entry\":1") > -1;

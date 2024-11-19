@@ -13,6 +13,7 @@ using namaichi;
 using System.Windows.Forms;
 using System.IO;
 using System.Collections.Generic;
+using namaichi.gui;
 using namaichi.info;
 using namaichi.utility;
 
@@ -197,7 +198,7 @@ namespace namaichi.rec
 					}
 					if (bool.Parse(rm.cfg.get("IsmessageBox")) && util.isShowWindow) {
 						var ret = rm.form.formAction(() =>
-								util.showMessageBoxCenterForm(rm.form, "コミュニティに入る必要があります：\nrequire_community_member/" + lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None), false);
+								util.showMessageBoxCenterForm(rm.form, "チャンネルに入る必要があります：\nrequire_community_member/" + lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None), false);
 						if (!ret) return 2;
 					}
 					if (bool.Parse(rm.cfg.get("IsfailExit"))) {
@@ -267,6 +268,15 @@ namespace namaichi.rec
 						util.debugWriteLine(e.Message + " " + e.StackTrace + " ");
 					}
 					continue;
+				} else if (pageType == 14) {
+					try {
+						var f = new AikotobaInputForm(lvid, cc);
+						if (f.ShowDialog() != DialogResult.OK) return 2;
+						pageType = getPageType(url, false, ref jr, ref cc);
+						util.debugWriteLine("pagetype_ " + pageType);
+					} catch (Exception e) {
+						util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+					}
 				} else {
 					var mes = "";
 					if (pageType == 2 || pageType == 3) mes = "この放送は終了しています。";

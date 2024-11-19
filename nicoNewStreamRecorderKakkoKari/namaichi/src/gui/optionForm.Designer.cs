@@ -159,6 +159,7 @@ namespace namaichi
 			this.userSessionTestBtn = new System.Windows.Forms.Button();
 			this.loginBtn = new System.Windows.Forms.Button();
 			this.cookieFileSanshouBtn = new System.Windows.Forms.Button();
+			this.getChromeBtn = new System.Windows.Forms.Button();
 			this.btnReload = new System.Windows.Forms.Button();
 			this.useSecondLoginChkBox = new System.Windows.Forms.CheckBox();
 			this.tabPage4 = new System.Windows.Forms.TabPage();
@@ -238,7 +239,6 @@ namespace namaichi
 			this.recordDirectoryText = new System.Windows.Forms.TextBox();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
-			this.getChromeBtn = new System.Windows.Forms.Button();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox16.SuspendLayout();
@@ -313,7 +313,7 @@ namespace namaichi
 			this.groupBox16.Controls.Add(this.isRestoreLocationChkBox);
 			this.groupBox16.Controls.Add(this.isMiniStartChkBox);
 			this.groupBox16.Controls.Add(this.isMinimizedChkBox);
-			this.groupBox16.Location = new System.Drawing.Point(5, 379);
+			this.groupBox16.Location = new System.Drawing.Point(5, 331);
 			this.groupBox16.Name = "groupBox16";
 			this.groupBox16.Size = new System.Drawing.Size(372, 84);
 			this.groupBox16.TabIndex = 13;
@@ -366,7 +366,7 @@ namespace namaichi
 			this.groupBox6.Controls.Add(this.isRetryChkBox);
 			this.groupBox6.Location = new System.Drawing.Point(5, 10);
 			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(395, 363);
+			this.groupBox6.Size = new System.Drawing.Size(395, 315);
 			this.groupBox6.TabIndex = 0;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Recorder設定";
@@ -379,14 +379,14 @@ namespace namaichi
 									"ダイアログで確認",
 									"常に予約する",
 									"常に予約しない"});
-			this.reserveMessageList.Location = new System.Drawing.Point(125, 312);
+			this.reserveMessageList.Location = new System.Drawing.Point(125, 260);
 			this.reserveMessageList.Name = "reserveMessageList";
 			this.reserveMessageList.Size = new System.Drawing.Size(117, 20);
 			this.reserveMessageList.TabIndex = 35;
 			// 
 			// label17
 			// 
-			this.label17.Location = new System.Drawing.Point(19, 315);
+			this.label17.Location = new System.Drawing.Point(19, 263);
 			this.label17.Name = "label17";
 			this.label17.Size = new System.Drawing.Size(140, 19);
 			this.label17.TabIndex = 34;
@@ -394,7 +394,7 @@ namespace namaichi
 			// 
 			// isRecBtnOnlyMouseChkBox
 			// 
-			this.isRecBtnOnlyMouseChkBox.Location = new System.Drawing.Point(19, 290);
+			this.isRecBtnOnlyMouseChkBox.Location = new System.Drawing.Point(19, 238);
 			this.isRecBtnOnlyMouseChkBox.Name = "isRecBtnOnlyMouseChkBox";
 			this.isRecBtnOnlyMouseChkBox.Size = new System.Drawing.Size(307, 19);
 			this.isRecBtnOnlyMouseChkBox.TabIndex = 6;
@@ -403,7 +403,7 @@ namespace namaichi
 			// 
 			// isNotSleepChkBox
 			// 
-			this.isNotSleepChkBox.Location = new System.Drawing.Point(19, 268);
+			this.isNotSleepChkBox.Location = new System.Drawing.Point(19, 216);
 			this.isNotSleepChkBox.Name = "isNotSleepChkBox";
 			this.isNotSleepChkBox.Size = new System.Drawing.Size(291, 19);
 			this.isNotSleepChkBox.TabIndex = 5;
@@ -412,16 +412,17 @@ namespace namaichi
 			// 
 			// isAutoFollowComGen
 			// 
-			this.isAutoFollowComGen.Location = new System.Drawing.Point(19, 150);
+			this.isAutoFollowComGen.Location = new System.Drawing.Point(311, 180);
 			this.isAutoFollowComGen.Name = "isAutoFollowComGen";
 			this.isAutoFollowComGen.Size = new System.Drawing.Size(351, 46);
 			this.isAutoFollowComGen.TabIndex = 2;
 			this.isAutoFollowComGen.Text = "コミュニティが自動承認の場合、自動でフォローしてコミュ限を録画する\r\n（フォローから視聴可能までラグがあるため、録画開始まで数秒から数分かかります。）";
 			this.isAutoFollowComGen.UseVisualStyleBackColor = true;
+			this.isAutoFollowComGen.Visible = false;
 			// 
 			// isLogFileChkBox
 			// 
-			this.isLogFileChkBox.Location = new System.Drawing.Point(19, 339);
+			this.isLogFileChkBox.Location = new System.Drawing.Point(19, 287);
 			this.isLogFileChkBox.Name = "isLogFileChkBox";
 			this.isLogFileChkBox.Size = new System.Drawing.Size(271, 19);
 			this.isLogFileChkBox.TabIndex = 2;
@@ -430,7 +431,7 @@ namespace namaichi
 			// 
 			// isDescriptionTagChkBox
 			// 
-			this.isDescriptionTagChkBox.Location = new System.Drawing.Point(47, 224);
+			this.isDescriptionTagChkBox.Location = new System.Drawing.Point(47, 172);
 			this.isDescriptionTagChkBox.Name = "isDescriptionTagChkBox";
 			this.isDescriptionTagChkBox.Size = new System.Drawing.Size(271, 19);
 			this.isDescriptionTagChkBox.TabIndex = 2;
@@ -439,7 +440,7 @@ namespace namaichi
 			// 
 			// isSegmentNukeInfoChkBox
 			// 
-			this.isSegmentNukeInfoChkBox.Location = new System.Drawing.Point(19, 246);
+			this.isSegmentNukeInfoChkBox.Location = new System.Drawing.Point(19, 194);
 			this.isSegmentNukeInfoChkBox.Name = "isSegmentNukeInfoChkBox";
 			this.isSegmentNukeInfoChkBox.Size = new System.Drawing.Size(271, 19);
 			this.isSegmentNukeInfoChkBox.TabIndex = 2;
@@ -449,7 +450,7 @@ namespace namaichi
 			// 
 			// isHosoInfoChkBox
 			// 
-			this.isHosoInfoChkBox.Location = new System.Drawing.Point(19, 202);
+			this.isHosoInfoChkBox.Location = new System.Drawing.Point(19, 150);
 			this.isHosoInfoChkBox.Name = "isHosoInfoChkBox";
 			this.isHosoInfoChkBox.Size = new System.Drawing.Size(271, 19);
 			this.isHosoInfoChkBox.TabIndex = 2;
@@ -488,18 +489,18 @@ namespace namaichi
 			// 
 			this.isFailExit.Location = new System.Drawing.Point(19, 62);
 			this.isFailExit.Name = "isFailExit";
-			this.isFailExit.Size = new System.Drawing.Size(308, 19);
+			this.isFailExit.Size = new System.Drawing.Size(318, 19);
 			this.isFailExit.TabIndex = 2;
-			this.isFailExit.Text = "コミュ限とnotloginで接続できなかった時にRecorderを閉じる";
+			this.isFailExit.Text = "限定放送とnotloginで接続できなかった時にRecorderを閉じる";
 			this.isFailExit.UseVisualStyleBackColor = true;
 			// 
 			// isMessageBoxChkBox
 			// 
 			this.isMessageBoxChkBox.Location = new System.Drawing.Point(19, 40);
 			this.isMessageBoxChkBox.Name = "isMessageBoxChkBox";
-			this.isMessageBoxChkBox.Size = new System.Drawing.Size(353, 19);
+			this.isMessageBoxChkBox.Size = new System.Drawing.Size(366, 19);
 			this.isMessageBoxChkBox.TabIndex = 2;
-			this.isMessageBoxChkBox.Text = "コミュ限とnotloginで接続できなかった時にメッセージボックスで知らせる";
+			this.isMessageBoxChkBox.Text = "限定放送とnotloginで接続できなかった時にメッセージボックスで知らせる";
 			this.isMessageBoxChkBox.UseVisualStyleBackColor = true;
 			// 
 			// isRetryChkBox
@@ -1617,6 +1618,18 @@ namespace namaichi
 			this.cookieFileSanshouBtn.UseVisualStyleBackColor = true;
 			this.cookieFileSanshouBtn.Click += new System.EventHandler(this.cookieFileSiteiSanshouBtn_Click);
 			// 
+			// getChromeBtn
+			// 
+			this.getChromeBtn.Location = new System.Drawing.Point(231, 87);
+			this.getChromeBtn.Margin = new System.Windows.Forms.Padding(2);
+			this.getChromeBtn.Name = "getChromeBtn";
+			this.getChromeBtn.Size = new System.Drawing.Size(131, 23);
+			this.getChromeBtn.TabIndex = 17;
+			this.getChromeBtn.Text = "Chromeのクッキーを取得";
+			this.getChromeBtn.UseVisualStyleBackColor = true;
+			this.getChromeBtn.Visible = false;
+			this.getChromeBtn.Click += new System.EventHandler(this.GetChromeBtnClick);
+			// 
 			// btnReload
 			// 
 			this.btnReload.Location = new System.Drawing.Point(322, 59);
@@ -2168,10 +2181,10 @@ namespace namaichi
 			this.fileNameTypeRadioBtn8.Checked = true;
 			this.fileNameTypeRadioBtn8.Location = new System.Drawing.Point(15, 198);
 			this.fileNameTypeRadioBtn8.Name = "fileNameTypeRadioBtn8";
-			this.fileNameTypeRadioBtn8.Size = new System.Drawing.Size(292, 21);
+			this.fileNameTypeRadioBtn8.Size = new System.Drawing.Size(344, 21);
 			this.fileNameTypeRadioBtn8.TabIndex = 0;
 			this.fileNameTypeRadioBtn8.TabStop = true;
-			this.fileNameTypeRadioBtn8.Text = "日付_放送タイトル(放送ID)_名前_コミュ名(コミュID)_xx.ts";
+			this.fileNameTypeRadioBtn8.Text = "日付_放送タイトル(放送ID)_名前_チャンネル名(チャンネルID)_xx.ts";
 			this.fileNameTypeRadioBtn8.UseVisualStyleBackColor = true;
 			// 
 			// fileNameTypeRadioBtn7
@@ -2179,10 +2192,10 @@ namespace namaichi
 			this.fileNameTypeRadioBtn7.Checked = true;
 			this.fileNameTypeRadioBtn7.Location = new System.Drawing.Point(15, 178);
 			this.fileNameTypeRadioBtn7.Name = "fileNameTypeRadioBtn7";
-			this.fileNameTypeRadioBtn7.Size = new System.Drawing.Size(292, 21);
+			this.fileNameTypeRadioBtn7.Size = new System.Drawing.Size(347, 21);
 			this.fileNameTypeRadioBtn7.TabIndex = 0;
 			this.fileNameTypeRadioBtn7.TabStop = true;
-			this.fileNameTypeRadioBtn7.Text = "日付_コミュ名(コミュID)_名前_放送タイトル(放送ID)_xx.ts";
+			this.fileNameTypeRadioBtn7.Text = "日付_チャンネル名(チャンネルID)_名前_放送タイトル(放送ID)_xx.ts";
 			this.fileNameTypeRadioBtn7.UseVisualStyleBackColor = true;
 			// 
 			// fileNameTypeRadioBtn5
@@ -2190,10 +2203,10 @@ namespace namaichi
 			this.fileNameTypeRadioBtn5.Checked = true;
 			this.fileNameTypeRadioBtn5.Location = new System.Drawing.Point(15, 128);
 			this.fileNameTypeRadioBtn5.Name = "fileNameTypeRadioBtn5";
-			this.fileNameTypeRadioBtn5.Size = new System.Drawing.Size(292, 21);
+			this.fileNameTypeRadioBtn5.Size = new System.Drawing.Size(314, 21);
 			this.fileNameTypeRadioBtn5.TabIndex = 0;
 			this.fileNameTypeRadioBtn5.TabStop = true;
-			this.fileNameTypeRadioBtn5.Text = "放送タイトル(放送ID)_名前_コミュ名(コミュID)_xx.ts";
+			this.fileNameTypeRadioBtn5.Text = "放送タイトル(放送ID)_名前_チャンネル名(チャンネルID)_xx.ts";
 			this.fileNameTypeRadioBtn5.UseVisualStyleBackColor = true;
 			// 
 			// fileNameTypeRadioBtn6
@@ -2201,10 +2214,10 @@ namespace namaichi
 			this.fileNameTypeRadioBtn6.Checked = true;
 			this.fileNameTypeRadioBtn6.Location = new System.Drawing.Point(15, 158);
 			this.fileNameTypeRadioBtn6.Name = "fileNameTypeRadioBtn6";
-			this.fileNameTypeRadioBtn6.Size = new System.Drawing.Size(292, 21);
+			this.fileNameTypeRadioBtn6.Size = new System.Drawing.Size(344, 21);
 			this.fileNameTypeRadioBtn6.TabIndex = 0;
 			this.fileNameTypeRadioBtn6.TabStop = true;
-			this.fileNameTypeRadioBtn6.Text = "日付_名前_コミュ名(コミュID)_放送タイトル(放送ID)_xx.ts";
+			this.fileNameTypeRadioBtn6.Text = "日付_名前_チャンネル名(チャンネルID)_放送タイトル(放送ID)_xx.ts";
 			this.fileNameTypeRadioBtn6.UseVisualStyleBackColor = true;
 			// 
 			// fileNameTypeRadioBtn4
@@ -2212,10 +2225,10 @@ namespace namaichi
 			this.fileNameTypeRadioBtn4.Checked = true;
 			this.fileNameTypeRadioBtn4.Location = new System.Drawing.Point(15, 108);
 			this.fileNameTypeRadioBtn4.Name = "fileNameTypeRadioBtn4";
-			this.fileNameTypeRadioBtn4.Size = new System.Drawing.Size(292, 21);
+			this.fileNameTypeRadioBtn4.Size = new System.Drawing.Size(314, 21);
 			this.fileNameTypeRadioBtn4.TabIndex = 0;
 			this.fileNameTypeRadioBtn4.TabStop = true;
-			this.fileNameTypeRadioBtn4.Text = "コミュ名(コミュID)_名前_放送タイトル(放送ID)_xx.ts";
+			this.fileNameTypeRadioBtn4.Text = "チャンネル名(チャンネルID)_名前_放送タイトル(放送ID)_xx.ts";
 			this.fileNameTypeRadioBtn4.UseVisualStyleBackColor = true;
 			// 
 			// fileNameTypeRadioBtn3
@@ -2223,10 +2236,10 @@ namespace namaichi
 			this.fileNameTypeRadioBtn3.Checked = true;
 			this.fileNameTypeRadioBtn3.Location = new System.Drawing.Point(15, 88);
 			this.fileNameTypeRadioBtn3.Name = "fileNameTypeRadioBtn3";
-			this.fileNameTypeRadioBtn3.Size = new System.Drawing.Size(292, 21);
+			this.fileNameTypeRadioBtn3.Size = new System.Drawing.Size(314, 21);
 			this.fileNameTypeRadioBtn3.TabIndex = 0;
 			this.fileNameTypeRadioBtn3.TabStop = true;
-			this.fileNameTypeRadioBtn3.Text = "名前_コミュ名(コミュID)_放送タイトル(放送ID)_xx.ts";
+			this.fileNameTypeRadioBtn3.Text = "名前_チャンネル名(チャンネルID)_放送タイトル(放送ID)_xx.ts";
 			this.fileNameTypeRadioBtn3.UseVisualStyleBackColor = true;
 			// 
 			// fileNameTypeRadioBtn2
@@ -2234,10 +2247,10 @@ namespace namaichi
 			this.fileNameTypeRadioBtn2.Checked = true;
 			this.fileNameTypeRadioBtn2.Location = new System.Drawing.Point(15, 58);
 			this.fileNameTypeRadioBtn2.Name = "fileNameTypeRadioBtn2";
-			this.fileNameTypeRadioBtn2.Size = new System.Drawing.Size(292, 21);
+			this.fileNameTypeRadioBtn2.Size = new System.Drawing.Size(314, 21);
 			this.fileNameTypeRadioBtn2.TabIndex = 0;
 			this.fileNameTypeRadioBtn2.TabStop = true;
-			this.fileNameTypeRadioBtn2.Text = "放送ID(放送タイトル)_名前_コミュID(コミュ名)_xx.ts";
+			this.fileNameTypeRadioBtn2.Text = "放送ID(放送タイトル)_名前_チャンネルID(チャンネル名)_xx.ts";
 			this.fileNameTypeRadioBtn2.UseVisualStyleBackColor = true;
 			// 
 			// fileNameTypeRadioBtn1
@@ -2245,10 +2258,10 @@ namespace namaichi
 			this.fileNameTypeRadioBtn1.Checked = true;
 			this.fileNameTypeRadioBtn1.Location = new System.Drawing.Point(15, 38);
 			this.fileNameTypeRadioBtn1.Name = "fileNameTypeRadioBtn1";
-			this.fileNameTypeRadioBtn1.Size = new System.Drawing.Size(292, 21);
+			this.fileNameTypeRadioBtn1.Size = new System.Drawing.Size(314, 21);
 			this.fileNameTypeRadioBtn1.TabIndex = 0;
 			this.fileNameTypeRadioBtn1.TabStop = true;
-			this.fileNameTypeRadioBtn1.Text = "コミュID(コミュ名)_名前_放送ID(放送タイトル)_xx.ts";
+			this.fileNameTypeRadioBtn1.Text = "チャンネルID(チャンネル名)_名前_放送ID(放送タイトル)_xx.ts";
 			this.fileNameTypeRadioBtn1.UseVisualStyleBackColor = true;
 			// 
 			// fileNameTypeRadioBtn0
@@ -2256,10 +2269,10 @@ namespace namaichi
 			this.fileNameTypeRadioBtn0.Checked = true;
 			this.fileNameTypeRadioBtn0.Location = new System.Drawing.Point(15, 18);
 			this.fileNameTypeRadioBtn0.Name = "fileNameTypeRadioBtn0";
-			this.fileNameTypeRadioBtn0.Size = new System.Drawing.Size(292, 21);
+			this.fileNameTypeRadioBtn0.Size = new System.Drawing.Size(314, 21);
 			this.fileNameTypeRadioBtn0.TabIndex = 0;
 			this.fileNameTypeRadioBtn0.TabStop = true;
-			this.fileNameTypeRadioBtn0.Text = "名前_コミュID(コミュ名)_放送ID(放送タイトル)_xx.ts";
+			this.fileNameTypeRadioBtn0.Text = "名前_チャンネルID(チャンネル名)_放送ID(放送タイトル)_xx.ts";
 			this.fileNameTypeRadioBtn0.UseVisualStyleBackColor = true;
 			// 
 			// groupBox1
@@ -2284,7 +2297,7 @@ namespace namaichi
 			this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
-			this.groupBox1.Size = new System.Drawing.Size(376, 195);
+			this.groupBox1.Size = new System.Drawing.Size(418, 195);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "録画保存先フォルダ";
@@ -2302,7 +2315,7 @@ namespace namaichi
 			// 
 			// housoushaUserIDRadioBtn
 			// 
-			this.housoushaUserIDRadioBtn.Location = new System.Drawing.Point(244, 164);
+			this.housoushaUserIDRadioBtn.Location = new System.Drawing.Point(279, 164);
 			this.housoushaUserIDRadioBtn.Name = "housoushaUserIDRadioBtn";
 			this.housoushaUserIDRadioBtn.Size = new System.Drawing.Size(141, 27);
 			this.housoushaUserIDRadioBtn.TabIndex = 4;
@@ -2341,9 +2354,9 @@ namespace namaichi
 			// 
 			this.ComIDComNameRadioBtn.Location = new System.Drawing.Point(206, 144);
 			this.ComIDComNameRadioBtn.Name = "ComIDComNameRadioBtn";
-			this.ComIDComNameRadioBtn.Size = new System.Drawing.Size(141, 27);
+			this.ComIDComNameRadioBtn.Size = new System.Drawing.Size(153, 27);
 			this.ComIDComNameRadioBtn.TabIndex = 4;
-			this.ComIDComNameRadioBtn.Text = "コミュID＋コミュ名";
+			this.ComIDComNameRadioBtn.Text = "チャンネルID＋チャンネル名";
 			this.ComIDComNameRadioBtn.UseVisualStyleBackColor = true;
 			// 
 			// secondRecFolderText
@@ -2360,16 +2373,16 @@ namespace namaichi
 			this.comIDRadioBtn.Name = "comIDRadioBtn";
 			this.comIDRadioBtn.Size = new System.Drawing.Size(87, 27);
 			this.comIDRadioBtn.TabIndex = 4;
-			this.comIDRadioBtn.Text = "コミュID";
+			this.comIDRadioBtn.Text = "チャンネルID";
 			this.comIDRadioBtn.UseVisualStyleBackColor = true;
 			// 
 			// housoushaComIDRadioBtn
 			// 
-			this.housoushaComIDRadioBtn.Location = new System.Drawing.Point(126, 164);
+			this.housoushaComIDRadioBtn.Location = new System.Drawing.Point(141, 164);
 			this.housoushaComIDRadioBtn.Name = "housoushaComIDRadioBtn";
-			this.housoushaComIDRadioBtn.Size = new System.Drawing.Size(117, 27);
+			this.housoushaComIDRadioBtn.Size = new System.Drawing.Size(141, 27);
 			this.housoushaComIDRadioBtn.TabIndex = 4;
-			this.housoushaComIDRadioBtn.Text = "放送者名＋コミュID";
+			this.housoushaComIDRadioBtn.Text = "放送者名＋チャンネルID";
 			this.housoushaComIDRadioBtn.UseVisualStyleBackColor = true;
 			// 
 			// useSecondRecFolderChk
@@ -2386,9 +2399,9 @@ namespace namaichi
 			// 
 			this.comIDHousoushaRadioBtn.Location = new System.Drawing.Point(5, 164);
 			this.comIDHousoushaRadioBtn.Name = "comIDHousoushaRadioBtn";
-			this.comIDHousoushaRadioBtn.Size = new System.Drawing.Size(121, 27);
+			this.comIDHousoushaRadioBtn.Size = new System.Drawing.Size(143, 27);
 			this.comIDHousoushaRadioBtn.TabIndex = 4;
-			this.comIDHousoushaRadioBtn.Text = "コミュID＋放送者名";
+			this.comIDHousoushaRadioBtn.Text = "チャンネルID＋放送者名";
 			this.comIDHousoushaRadioBtn.UseVisualStyleBackColor = true;
 			// 
 			// comNameRadioBtn
@@ -2397,7 +2410,7 @@ namespace namaichi
 			this.comNameRadioBtn.Name = "comNameRadioBtn";
 			this.comNameRadioBtn.Size = new System.Drawing.Size(87, 27);
 			this.comNameRadioBtn.TabIndex = 4;
-			this.comNameRadioBtn.Text = "コミュ名";
+			this.comNameRadioBtn.Text = "チャンネル名";
 			this.comNameRadioBtn.UseVisualStyleBackColor = true;
 			// 
 			// housoushaRadioBtn
@@ -2459,17 +2472,6 @@ namespace namaichi
 			this.button4.Text = "キャンセル";
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
-			// 
-			// getChromeBtn
-			// 
-			this.getChromeBtn.Location = new System.Drawing.Point(231, 87);
-			this.getChromeBtn.Margin = new System.Windows.Forms.Padding(2);
-			this.getChromeBtn.Name = "getChromeBtn";
-			this.getChromeBtn.Size = new System.Drawing.Size(131, 23);
-			this.getChromeBtn.TabIndex = 17;
-			this.getChromeBtn.Text = "Chromeのクッキーを取得";
-			this.getChromeBtn.UseVisualStyleBackColor = true;
-			this.getChromeBtn.Click += new System.EventHandler(this.GetChromeBtnClick);
 			// 
 			// optionForm
 			// 

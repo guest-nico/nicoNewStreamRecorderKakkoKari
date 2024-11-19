@@ -41,6 +41,7 @@ namespace rokugaTouroku
 		public CookieContainer container = null;
 		
 		private Thread madeThread;
+		public Mutex mutex = null;
 		
 		public MainForm(string[] args)
 		{
@@ -307,7 +308,7 @@ namespace rokugaTouroku
 	            	recList["状態", row].Value = (ri.state == null) ? "" : string.Copy(ri.state);
 	            	recList["タイトル", row].Value = (ri.title == null) ? "" : string.Copy(ri.title);
 	            	recList["放送者", row].Value = (ri.host == null) ? "" : string.Copy(ri.host);
-	            	recList["コミュニティ名", row].Value = (ri.communityName == null) ? "" : string.Copy(ri.communityName);
+	            	recList["チャンネル名", row].Value = (ri.communityName == null) ? "" : string.Copy(ri.communityName);
 	            	recList["開始時刻", row].Value = (ri.startTime == null) ? "" : string.Copy(ri.startTime);
 	            	recList["終了時刻", row].Value = (ri.endTime == null) ? "" : string.Copy(ri.endTime);
 	            	recList["ログ", row].Value = (ri.log == null) ? "" : string.Copy(ri.log);

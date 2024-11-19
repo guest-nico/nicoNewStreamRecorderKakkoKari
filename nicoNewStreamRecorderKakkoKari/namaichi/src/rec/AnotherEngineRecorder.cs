@@ -7,6 +7,8 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Threading;
@@ -74,6 +76,32 @@ namespace namaichi.rec
 			*/
 			if (f == null || arg == null) return;
 			
+			STARTUPINFO si = new STARTUPINFO();
+			PROCESS_INFORMATION pi = new PROCESS_INFORMATION();
+			
+			si.cb = (uint)Marshal.SizeOf(si);
+			
+			si.dwFlags = 0x00000001; //STARTF_USESHOWWINDOW
+			si.wShowWindow = 7; //SW_SHOWMINNOACTIVE
+			bool r = CreateProcess(
+					null,
+					f + " " + arg,
+					IntPtr.Zero,
+					IntPtr.Zero,
+					false,
+					0,
+					IntPtr.Zero,
+					null,
+					ref si,
+					out pi);
+			if (!r) {
+				Thread.Sleep(1000);
+				util.debugWriteLine("create false");
+				return;
+			}
+			util.debugWriteLine("testcommand " + f + " " + arg);
+			process = Process.GetProcessById((int)pi.dwProcessId);
+			/*
 			process = new System.Diagnostics.Process();
 			process.StartInfo.FileName = f;
 			//process.StartInfo.RedirectStandardOutput = true;
@@ -85,23 +113,34 @@ namespace namaichi.rec
 			process.StartInfo.Arguments = arg;
 			process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Minimized;
 			//process.StartInfo.UseShellExecute = true;
-			
-//			util.debugWriteLine(command[command.Length - 2].Trim('\"'));
-			/*
-			if (System.IO.File.Exists(command[command.Length - 2].Trim('\"'))) {
-			    	util.debugWriteLine(command[command.Length - 2]);
-			    	util.debugWriteLine("exost file");
-			    	var i = 3;
-			    }
 			*/
+//			util.debugWriteLine(command[command.Length - 2].Trim('\"'));
 			
 			try {
-				process.Start();
-				
-//				Task.Run(() => {
-//				         	getStandardOutput();
-//				});
-				
+				//var h = GetForegroundWindow();
+				//util.debugWriteLine("getforeground " + h);
+				//process.Start();
+				/*
+				for (var i = 0; i < 50; i++) {
+					if (GetForegroundWindow() == h) {
+						Thread.Sleep(100);
+						util.debugWriteLine("getforeground2 " + h);
+						rm.form.addLogText("get2 ok");
+						continue;
+					}
+					for (var j = 0; j < 50; j++) {
+						var foreH = SetForegroundWindow(h);
+						util.debugWriteLine("setforeground " + foreH);
+						if (foreH) {
+							rm.form.addLogText("set ok");
+							break;
+						}
+						rm.form.addLogText("set no");
+						Thread.Sleep(100);
+					}
+					break;
+				}
+				*/
 				waitProcess(hlsSegM3uUrl);
 				util.debugWriteLine("stop record");
 				stopRecording();
@@ -148,24 +187,31 @@ namespace namaichi.rec
 				System.Threading.Thread.Sleep(1000);
 			}
 			
-			util.debugWriteLine("destroy " + process.ExitCode);
+			util.debugWriteLine("destroy " + process.HasExited);
 
 
 		}
 		public void waitProcess(string hlsSegM3uUrl) {
 			//var es = process.StandardError;
 			
-			
-			while (!process.HasExited) {
+			if (process.HasExited)
+				util.debugWriteLine("start waitprocess " + process.HasExited);
+			while (true) {
+				if (process.HasExited) {
+					util.debugWriteLine("waitprocess hasexited");
+					break;
+				}
 				Thread.Sleep(3000);
 				
 				if (rec.ri.timeShiftConfig != null && isEndTime(hlsSegM3uUrl)) {
 					rec.isEndProgram = true;
+					util.debugWriteLine("end waitprocess ");
 					stopRecording();
 				}
 				if (rm.rfu != rfu) stopRecording();
 			}
-			
+			if (process.HasExited)
+				util.debugWriteLine("end waitprocess " + process.HasExited);
 		}
 		private string getAddedExtRecFilePath(string recFolderFile, string command) {
 			var r = new Regex("\\{o\\}(\\.\\S+)");
@@ -213,5 +259,49 @@ namespace namaichi.rec
 			util.debugWriteLine(dur + " " + sum);
 			return double.Parse(dur) + sum > rec.ri.timeShiftConfig.endTimeSeconds + 10;
 		}
+		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+    public static extern bool CreateProcess(
+        string lpApplicationName,
+        string lpCommandLine,
+        IntPtr lpProcessAttributes,
+        IntPtr lpThreadAttributes,
+        bool bInheritHandles,
+        uint dwCreationFlags,
+        IntPtr lpEnvironment,
+        string lpCurrentDirectory,
+        ref STARTUPINFO lpStartupInfo,
+        out PROCESS_INFORMATION lpProcessInformation);
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct STARTUPINFO
+    {
+        public uint cb;
+        public string lpReserved;
+        public string lpDesktop;
+        public string lpTitle;
+        public uint dwX;
+        public uint dwY;
+        public uint dwXSize;
+        public uint dwYSize;
+        public uint dwXCountChars;
+        public uint dwYCountChars;
+        public uint dwFillAttribute;
+        public uint dwFlags;
+        public ushort wShowWindow;
+        public ushort cbReserved2;
+        public IntPtr lpReserved2;
+        public IntPtr hStdInput;
+        public IntPtr hStdOutput;
+        public IntPtr hStdError;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct PROCESS_INFORMATION
+    {
+        public IntPtr hProcess;
+        public IntPtr hThread;
+        public uint dwProcessId;
+        public uint dwThreadId;
+    }
 	}
 }

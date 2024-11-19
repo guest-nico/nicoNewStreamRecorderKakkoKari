@@ -215,11 +215,11 @@ namespace namaichi.rec
 					sw.WriteLine("[限定] " + gentei + br);
 					sw.WriteLine("[放送タイプ] " + ((isJikken) ? "nicocas" : (isRtmpOnlyPage) ? "nicolive" : "nicolive") + br);
 					sw.WriteLine("[放送者] " + host + br);
-					sw.WriteLine("[コミュニティ名] " + group + br);
+					sw.WriteLine("[チャンネル名] " + group + br);
 					sw.WriteLine("[説明] " + description + br);
 					sw.WriteLine("[放送URL] " + url + br);
 					if (groupUrl != null)
-						sw.WriteLine("[コミュニティURL] " + groupUrl + br);
+						sw.WriteLine("[チャンネルURL] " + groupUrl + br);
 					if (hostUrl != null)
 						sw.WriteLine("[放送者URL] " + hostUrl + br);
 					sw.WriteLine("[タグ] " + tag + br);

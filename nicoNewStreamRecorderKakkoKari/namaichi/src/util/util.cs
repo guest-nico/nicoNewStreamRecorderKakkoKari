@@ -35,8 +35,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.89.11";
-	public static string versionDayStr = "2024/10/16";
+	public static string versionStr = "ver0.89.12";
+	public static string versionDayStr = "2024/11/19";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -346,7 +346,7 @@ class util {
 	}
 	public static string getFileNameTypeSample(string filenametype) {
 			//var format = cfg.get("filenameformat");
-			return getDokujiSetteiFileName("放送者名", "コミュ名", "タイトル", "lv12345", "co9876", filenametype, DateTime.Now, "1000").Replace("{w}", "2").Replace("{c}", "1");
+			return getDokujiSetteiFileName("放送者名", "チャンネル", "タイトル", "lv12345", "co9876", filenametype, DateTime.Now, "1000").Replace("{w}", "2").Replace("{c}", "1");
 		}
 	public static string getOkCommentFileName(config cfg, string fName, string lvid, bool isTimeShift, bool isRtmp) {
 		var kakutyousi = (cfg.get("IsgetcommentXml") == "true") ? ".xml" : ".json";
@@ -852,6 +852,7 @@ class util {
 			var status = (data == null) ? null : util.getRegGroup(data, "&quot;status&quot;:&quot;(.+?)&quot;");
 			var opentime = data != null ? util.getRegGroup(data, "&quot;openTime&quot;:(\\d+)") : null;
 			var serverTime = data != null ? util.getRegGroup(data, "&quot;serverTime&quot;:(\\d+)") : null;
+			var rejectedReason = data == null ? "" : util.getRegGroup(data, "rejectedReasons&quot;:\\[(.*?)\\]");
 			if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ON_AIR" && data.IndexOf("webSocketUrl&quot;:&quot;ws") > -1) return 0;
 			else if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ENDED" && data.IndexOf("webSocketUrl&quot;:&quot;ws") > -1) return 7;
 			else if (util.getRegGroup(res, "(混雑中ですが、プレミアム会員の方は優先して入場ができます)") != null ||
@@ -862,12 +863,12 @@ class util {
 			//         res.IndexOf("に終了いたしました") > -1) return 2;
 			//else if (util.getRegGroup(res, "(コミュニティフォロワー限定番組です。<br>)") != null) return 4;
 			else if (res.IndexOf("isFollowerOnly&quot;:true") > -1 && res.IndexOf("isJoined&quot;:false") > -1 && res.IndexOf("[&quot;noTimeshiftProgram") == -1) return 4;
-			
-			else if (status == "ENDED" && res.IndexOf("rejectedReasons&quot;:[&quot;notHaveTimeshiftTicket") > -1) return 9;
-			else if (status == "ENDED" && res.IndexOf("rejectedReasons&quot;:[&quot;notUseTimeshiftTicket") > -1) return 10;
+			else if (rejectedReason.IndexOf("passwordAuthRequired") > -1) return 14;
+			else if (status == "ENDED" && rejectedReason.IndexOf("notHaveTimeshiftTicket") > -1) return 9;
+			else if (status == "ENDED" && rejectedReason.IndexOf("notUseTimeshiftTicket") > -1) return 10;
 			else if (data != null && data.IndexOf("webSocketUrl&quot;:&quot;ws") == -1 &&
 			         status == "ENDED") return 2;
-			else if (res.IndexOf("rejectedReasons&quot;:[&quot;notHavePayTicket") > -1) return 11;
+			else if (rejectedReason.IndexOf("notHavePayTicket") > -1) return 11;
 			//else if (status == "ENDED" && res.IndexOf(" onclick=\"Nicolive.WatchingReservation") > -1) return 9;
 			
 			//else if (util.getRegGroup(res, "(に終了いたしました)") != null) return 2;
@@ -876,9 +877,10 @@ class util {
 			//else if (util.getRegGroup(res, "(チャンネル会員限定番組です。<br>)") != null) return 4;
 			else if (util.getRegGroup(res, "(<h3>【会場のご案内】</h3>)") != null) return 6;
 			else if (util.getRegGroup(res, "(この番組は放送者により削除されました。<br />|削除された可能性があります。<br />|\">お探しのページは削除されたか)") != null) return 2;
-			else if (res.IndexOf("rejectedReasons&quot;:[&quot;notActivatedBySerial&quot;]") > -1) return 8;
+			else if (rejectedReason.IndexOf("notActivatedBySerial") > -1) return 8;
 			else if (res.IndexOf("content=\"https://jk.nicovideo.jp/\"") > -1) return 12;
 			else if (opentime != null && serverTime != null && long.Parse(opentime) - long.Parse(serverTime) / 1000 > 15) return 13;
+			
 			return 5;
 		//}
 		//return 5;
@@ -1399,7 +1401,8 @@ public static void soundEnd(config cfg, MainForm form) {
 			
 			if (size > max) {
 				size = max;
-				util.showMessageBoxCenterForm(form, "画面上に表示できなくなる可能性があるため、" + size + "に設定されます");
+				//util.showMessageBoxCenterForm(form, "画面上に表示できなくなる可能性があるため、" + size + "に設定されます");
+				MessageBox.Show("画面上に表示できなくなる可能性があるため、" + size + "に設定されます");
 			}
 			
 			form.Font = new Font(form.Font.FontFamily, size);

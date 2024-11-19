@@ -496,7 +496,7 @@ namespace rokugaTouroku
 			this.isFailExit.Name = "isFailExit";
 			this.isFailExit.Size = new System.Drawing.Size(308, 19);
 			this.isFailExit.TabIndex = 2;
-			this.isFailExit.Text = "コミュ限とnotloginで接続できなかった時にRecorderを閉じる";
+			this.isFailExit.Text = "限定放送とnotloginで接続できなかった時にRecorderを閉じる";
 			this.isFailExit.UseVisualStyleBackColor = true;
 			// 
 			// isMessageBoxChkBox
@@ -505,7 +505,7 @@ namespace rokugaTouroku
 			this.isMessageBoxChkBox.Name = "isMessageBoxChkBox";
 			this.isMessageBoxChkBox.Size = new System.Drawing.Size(353, 19);
 			this.isMessageBoxChkBox.TabIndex = 2;
-			this.isMessageBoxChkBox.Text = "コミュ限とnotloginで接続できなかった時にメッセージボックスで知らせる";
+			this.isMessageBoxChkBox.Text = "限定放送とnotloginで接続できなかった時にメッセージボックスで知らせる";
 			this.isMessageBoxChkBox.UseVisualStyleBackColor = true;
 			// 
 			// isRetryChkBox
@@ -1397,6 +1397,7 @@ namespace rokugaTouroku
 			this.getChromeBtn.TabIndex = 24;
 			this.getChromeBtn.Text = "Chromeのクッキーを取得";
 			this.getChromeBtn.UseVisualStyleBackColor = true;
+			this.getChromeBtn.Visible = false;
 			this.getChromeBtn.Click += new System.EventHandler(this.GetChromeBtnClick);
 			// 
 			// userSessionText
@@ -2100,7 +2101,7 @@ namespace rokugaTouroku
 			this.fileNameTypeRadioBtn8.Size = new System.Drawing.Size(292, 21);
 			this.fileNameTypeRadioBtn8.TabIndex = 0;
 			this.fileNameTypeRadioBtn8.TabStop = true;
-			this.fileNameTypeRadioBtn8.Text = "日付_放送タイトル(放送ID)_名前_コミュ名(コミュID)_xx.ts";
+			this.fileNameTypeRadioBtn8.Text = "日付_放送タイトル(放送ID)_名前_チャンネル名(チャンネルID)_xx.ts";
 			this.fileNameTypeRadioBtn8.UseVisualStyleBackColor = true;
 			// 
 			// fileNameTypeRadioBtn7
@@ -2111,7 +2112,7 @@ namespace rokugaTouroku
 			this.fileNameTypeRadioBtn7.Size = new System.Drawing.Size(292, 21);
 			this.fileNameTypeRadioBtn7.TabIndex = 0;
 			this.fileNameTypeRadioBtn7.TabStop = true;
-			this.fileNameTypeRadioBtn7.Text = "日付_コミュ名(コミュID)_名前_放送タイトル(放送ID)_xx.ts";
+			this.fileNameTypeRadioBtn7.Text = "日付_チャンネル名(チャンネルID)_名前_放送タイトル(放送ID)_xx.ts";
 			this.fileNameTypeRadioBtn7.UseVisualStyleBackColor = true;
 			// 
 			// fileNameTypeRadioBtn5
@@ -2122,7 +2123,7 @@ namespace rokugaTouroku
 			this.fileNameTypeRadioBtn5.Size = new System.Drawing.Size(292, 21);
 			this.fileNameTypeRadioBtn5.TabIndex = 0;
 			this.fileNameTypeRadioBtn5.TabStop = true;
-			this.fileNameTypeRadioBtn5.Text = "放送タイトル(放送ID)_名前_コミュ名(コミュID)_xx.ts";
+			this.fileNameTypeRadioBtn5.Text = "放送タイトル(放送ID)_名前_チャンネル名(チャンネルID)_xx.ts";
 			this.fileNameTypeRadioBtn5.UseVisualStyleBackColor = true;
 			// 
 			// fileNameTypeRadioBtn6
@@ -2133,7 +2134,7 @@ namespace rokugaTouroku
 			this.fileNameTypeRadioBtn6.Size = new System.Drawing.Size(292, 21);
 			this.fileNameTypeRadioBtn6.TabIndex = 0;
 			this.fileNameTypeRadioBtn6.TabStop = true;
-			this.fileNameTypeRadioBtn6.Text = "日付_名前_コミュ名(コミュID)_放送タイトル(放送ID)_xx.ts";
+			this.fileNameTypeRadioBtn6.Text = "日付_名前_チャンネル名(チャンネルID)_放送タイトル(放送ID)_xx.ts";
 			this.fileNameTypeRadioBtn6.UseVisualStyleBackColor = true;
 			// 
 			// fileNameTypeRadioBtn4
@@ -2144,7 +2145,7 @@ namespace rokugaTouroku
 			this.fileNameTypeRadioBtn4.Size = new System.Drawing.Size(292, 21);
 			this.fileNameTypeRadioBtn4.TabIndex = 0;
 			this.fileNameTypeRadioBtn4.TabStop = true;
-			this.fileNameTypeRadioBtn4.Text = "コミュ名(コミュID)_名前_放送タイトル(放送ID)_xx.ts";
+			this.fileNameTypeRadioBtn4.Text = "チャンネル名(チャンネルID)_名前_放送タイトル(放送ID)_xx.ts";
 			this.fileNameTypeRadioBtn4.UseVisualStyleBackColor = true;
 			// 
 			// fileNameTypeRadioBtn3
@@ -2155,7 +2156,7 @@ namespace rokugaTouroku
 			this.fileNameTypeRadioBtn3.Size = new System.Drawing.Size(292, 21);
 			this.fileNameTypeRadioBtn3.TabIndex = 0;
 			this.fileNameTypeRadioBtn3.TabStop = true;
-			this.fileNameTypeRadioBtn3.Text = "名前_コミュ名(コミュID)_放送タイトル(放送ID)_xx.ts";
+			this.fileNameTypeRadioBtn3.Text = "名前_チャンネル名(チャンネルID)_放送タイトル(放送ID)_xx.ts";
 			this.fileNameTypeRadioBtn3.UseVisualStyleBackColor = true;
 			// 
 			// fileNameTypeRadioBtn2
@@ -2166,7 +2167,7 @@ namespace rokugaTouroku
 			this.fileNameTypeRadioBtn2.Size = new System.Drawing.Size(292, 21);
 			this.fileNameTypeRadioBtn2.TabIndex = 0;
 			this.fileNameTypeRadioBtn2.TabStop = true;
-			this.fileNameTypeRadioBtn2.Text = "放送ID(放送タイトル)_名前_コミュID(コミュ名)_xx.ts";
+			this.fileNameTypeRadioBtn2.Text = "放送ID(放送タイトル)_名前_チャンネルID(チャンネル名)_xx.ts";
 			this.fileNameTypeRadioBtn2.UseVisualStyleBackColor = true;
 			// 
 			// fileNameTypeRadioBtn1
@@ -2177,7 +2178,7 @@ namespace rokugaTouroku
 			this.fileNameTypeRadioBtn1.Size = new System.Drawing.Size(292, 21);
 			this.fileNameTypeRadioBtn1.TabIndex = 0;
 			this.fileNameTypeRadioBtn1.TabStop = true;
-			this.fileNameTypeRadioBtn1.Text = "コミュID(コミュ名)_名前_放送ID(放送タイトル)_xx.ts";
+			this.fileNameTypeRadioBtn1.Text = "チャンネルID(チャンネル名)_名前_放送ID(放送タイトル)_xx.ts";
 			this.fileNameTypeRadioBtn1.UseVisualStyleBackColor = true;
 			// 
 			// fileNameTypeRadioBtn0
@@ -2188,7 +2189,7 @@ namespace rokugaTouroku
 			this.fileNameTypeRadioBtn0.Size = new System.Drawing.Size(292, 21);
 			this.fileNameTypeRadioBtn0.TabIndex = 0;
 			this.fileNameTypeRadioBtn0.TabStop = true;
-			this.fileNameTypeRadioBtn0.Text = "名前_コミュID(コミュ名)_放送ID(放送タイトル)_xx.ts";
+			this.fileNameTypeRadioBtn0.Text = "名前_チャンネルID(チャンネル名)_放送ID(放送タイトル)_xx.ts";
 			this.fileNameTypeRadioBtn0.UseVisualStyleBackColor = true;
 			// 
 			// groupBox1
@@ -2280,7 +2281,7 @@ namespace rokugaTouroku
 			this.ComIDComNameRadioBtn.Name = "ComIDComNameRadioBtn";
 			this.ComIDComNameRadioBtn.Size = new System.Drawing.Size(141, 27);
 			this.ComIDComNameRadioBtn.TabIndex = 4;
-			this.ComIDComNameRadioBtn.Text = "コミュID＋コミュ名";
+			this.ComIDComNameRadioBtn.Text = "チャンネルID＋チャンネル名";
 			this.ComIDComNameRadioBtn.UseVisualStyleBackColor = true;
 			// 
 			// comIDRadioBtn
@@ -2289,7 +2290,7 @@ namespace rokugaTouroku
 			this.comIDRadioBtn.Name = "comIDRadioBtn";
 			this.comIDRadioBtn.Size = new System.Drawing.Size(87, 27);
 			this.comIDRadioBtn.TabIndex = 4;
-			this.comIDRadioBtn.Text = "コミュID";
+			this.comIDRadioBtn.Text = "チャンネルID";
 			this.comIDRadioBtn.UseVisualStyleBackColor = true;
 			// 
 			// housoushaComIDRadioBtn
@@ -2298,7 +2299,7 @@ namespace rokugaTouroku
 			this.housoushaComIDRadioBtn.Name = "housoushaComIDRadioBtn";
 			this.housoushaComIDRadioBtn.Size = new System.Drawing.Size(118, 27);
 			this.housoushaComIDRadioBtn.TabIndex = 4;
-			this.housoushaComIDRadioBtn.Text = "放送者名＋コミュID";
+			this.housoushaComIDRadioBtn.Text = "放送者名＋チャンネルID";
 			this.housoushaComIDRadioBtn.UseVisualStyleBackColor = true;
 			// 
 			// comIDHousoushaRadioBtn
@@ -2307,7 +2308,7 @@ namespace rokugaTouroku
 			this.comIDHousoushaRadioBtn.Name = "comIDHousoushaRadioBtn";
 			this.comIDHousoushaRadioBtn.Size = new System.Drawing.Size(124, 27);
 			this.comIDHousoushaRadioBtn.TabIndex = 4;
-			this.comIDHousoushaRadioBtn.Text = "コミュID＋放送者名";
+			this.comIDHousoushaRadioBtn.Text = "チャンネルID＋放送者名";
 			this.comIDHousoushaRadioBtn.UseVisualStyleBackColor = true;
 			// 
 			// comNameRadioBtn
@@ -2316,7 +2317,7 @@ namespace rokugaTouroku
 			this.comNameRadioBtn.Name = "comNameRadioBtn";
 			this.comNameRadioBtn.Size = new System.Drawing.Size(87, 27);
 			this.comNameRadioBtn.TabIndex = 4;
-			this.comNameRadioBtn.Text = "コミュ名";
+			this.comNameRadioBtn.Text = "チャンネル名";
 			this.comNameRadioBtn.UseVisualStyleBackColor = true;
 			// 
 			// housoushaRadioBtn

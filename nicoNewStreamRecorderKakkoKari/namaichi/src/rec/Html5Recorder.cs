@@ -81,11 +81,12 @@ namespace namaichi.rec
 				
 				ri = new RecordInfo(si, pageType, isRtmp);
 				ri.set(isChaseCheck, rm.cfg, rm.form);
-				RecordLogInfo.recType = ri.si.isTimeShift ? (ri.isChase ? "chase" : "timeshift") : "realtime";
 				
 				if (!si.isRtmpOnlyPage && ri.webSocketRecInfo == null) return 1;
 				if (!ri.setTimeShiftConfig(rm, isChaseCheck)) return 2;
 				if (!ri.setRecFolderFile(rm)) return 2;
+				
+				RecordLogInfo.recType = ri.si.isTimeShift ? (ri.isChase ? (ri.isRealtimeChase ? "realtime chase" : "setting chase") : "timeshift") : "realtime";
 				
 				//display set
 				var rss = new RecordStateSetter(rm.form, false, rfu.isPlayOnlyMode, si.isRtmpOnlyPage, si.isReservation);
@@ -199,7 +200,7 @@ namespace namaichi.rec
 					if (rm.form.IsDisposed) return 2;
 					try {
 						rm.form.formAction(() => {
-			       			util.showMessageBoxCenterForm(rm.form, "コミュニティに入る必要があります：\nrequire_community_member/" + ri.si.lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None);
+			       			util.showMessageBoxCenterForm(rm.form, "チャンネルに入る必要があります：\nrequire_community_member/" + ri.si.lvid, "", MessageBoxButtons.OK, MessageBoxIcon.None);
 						}, false);
 					} catch (Exception e) {
 			       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);

@@ -1601,9 +1601,9 @@ namespace namaichi.rec
 					addDebugBuf(ee.Message + " " + ee.StackTrace);
 				}
 				try {
-					sendMessage(wsc[0], msReq[0], 0);
+					//sendMessage(wsc[0], msReq[0], 0);
 				} catch (Exception ee) {
-					addDebugBuf("on open wsc0 req send exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
+					addDebugBuf("on open wsc0 req send exception " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite + " " + wsc + " / " + msReq);
 				}
 				try {
 					if (wsc[1] != null)

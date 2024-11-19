@@ -41,7 +41,13 @@ namespace rokugaTouroku
 			System.Net.ServicePointManager.DefaultConnectionLimit = 20;
 			ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls |SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
 			
-			Application.Run(new MainForm(args));
+			var form = new MainForm(args);
+			form.mutex = util.doubleRunCheck();
+			if (form.mutex == null) {
+				Application.Exit();
+				return;
+			}
+			Application.Run(form);
 			//args = new string[]{"lv888"};
 			//var a = new MainForm(args);
 			//while(true) System.Threading.Thread.Sleep(1000);

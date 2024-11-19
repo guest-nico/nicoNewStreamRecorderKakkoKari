@@ -220,7 +220,7 @@ namespace namaichi.utility
 		
 		public static Dictionary<string, string> getDefaultHeaders(string origin = "https://nicochannel.jp") {
 			var h = new Dictionary<string, string>();
-			h.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/102.0");
+			h.Add("User-Agent", util.userAgent);
 			
 			h.Add("Accept-Language", "ja,en-US;q=0.7,en;q=0.3");
 			h.Add("Origin", origin); //"https://nicochannel.jp");

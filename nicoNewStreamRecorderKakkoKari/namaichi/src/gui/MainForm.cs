@@ -941,7 +941,7 @@ namespace namaichi
 				keikaTimeLabel.Height = isMini ? 13 : 25;
 				titleLabel.Location = isMini ? new Point(6, 16) : new Point(78,label5.Location.Y);
 				//titleLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 10, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
-				titleLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 107, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
+				
 				communityLabel.Location = isMini? new Point(6, 33) : new Point(78,label1.Location.Y);
 				hostLabel.Location = isMini ? new Point(6, 50) : new Point(78,label2.Location.Y);
 				genteiLabel.Location = isMini ? label3.Location : new Point(78,label3.Location.Y);
@@ -950,18 +950,16 @@ namespace namaichi
 				miniStreamStateLabel.Visible = isMini;
 				//groupBox5.Location = isMini ? new Point(160, 76) : new Point(179, 76);
 				recordGroupBox.Location = isMini ? new Point(6, 143) : new Point(6, 217);
-				
 				//communityLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 10, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
-				communityLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 107, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
 				//hostLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 10, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
-				hostLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 107, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
 				samuneBox.Size = isMini ? new Size(87, 76) : new Size(141, 150);
 				
 				var urlTextX = isMini ? 19 : 69;
 				urlText.Location = new Point(urlTextX, urlText.Location.Y);
-				urlText.Width = isMini ? 219 : 241;
+				urlText.Width = isMini ? 235 : 241;
 				recBtn.Location = new Point(urlText.Location.X + urlText.Width + 4, recBtn.Location.Y);
-				miniBtn.Location = new Point((isMini) ? (recBtn.Location.X + 105) : 698, miniBtn.Location.Y);
+				recBtn.Width = isMini ? 65 : 75;
+				miniBtn.Location = new Point((isMini) ? (recBtn.Location.X + 90) : 698, miniBtn.Location.Y);
 				playerBtn.Location = new Point(recBtn.Location.X + recBtn.Width + 3, playerBtn.Location.Y);
 				playerBtn.Text = isMini ? playerBtn.Text.Substring(playerBtn.Text.Length - 2, 1) : (playerBtn.Text.Substring(0, 1) == "視" ? "視聴" : "視聴停止");
 				playerBtn.Width = isMini ? miniBtn.Width : 64; 
@@ -969,6 +967,9 @@ namespace namaichi
 				Size = isMini ? new Size(386, 236) : originalSize;
 				streamInfoGroupBox.Location = isMini ? new Point(109, 76) : new Point(179, 76);
 				streamInfoGroupBox.Size = isMini ? new Size(Width - 126, 70) : new Size(Width - 196, 180);
+				titleLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 107, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
+				communityLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 107, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
+				hostLabel.Size = isMini ? new Size(streamInfoGroupBox.Width - 107, 12) : new Size(streamInfoGroupBox.Width - 93, 23);
 				originalSize = isMini ? _size : Size.Empty;
 				miniBtn.Text = isMini ? "戻" : "小";
 				isChaseChkBtn.Location = isMini ? new Point(265, 65) : new Point(319, 65);

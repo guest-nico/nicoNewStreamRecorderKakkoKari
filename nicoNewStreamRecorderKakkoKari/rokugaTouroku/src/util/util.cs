@@ -28,8 +28,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.11.2";
-	public static string versionDayStr = "2024/10/16";
+	public static string versionStr = "ver0.1.3.11.3";
+	public static string versionDayStr = "2024/11/19";
 	public static string osName = null;
 	public static bool isCurl = true;
 	public static bool isWebRequestOk = false;
@@ -273,7 +273,7 @@ class util {
 	}
 	public static string getFileNameTypeSample(string filenametype) {
 			//var format = cfg.get("filenameformat");
-			return getDokujiSetteiFileName("放送者名", "コミュ名", "タイトル", "lv12345", "co9876", filenametype, DateTime.Now, "1000").Replace("{w}", "2").Replace("{c}", "1");
+			return getDokujiSetteiFileName("放送者名", "チャンネル名", "タイトル", "lv12345", "co9876", filenametype, DateTime.Now, "1000").Replace("{w}", "2").Replace("{c}", "1");
 		}
 	public static string getOkCommentFileName(config cfg, string fName, string lvid, bool isTimeShift) {
 		var kakutyousi = (cfg.get("IsgetcommentXml") == "true") ? ".xml" : ".json";
@@ -1170,4 +1170,32 @@ class util {
 			Environment.SetEnvironmentVariable("appbKey" + i, appbArr[i]);
 		}
 	}
+    public static Mutex doubleRunCheck() {
+        var p = "";
+        try {
+        	p = getJarPath()[0].Replace("\\", "/");
+        } catch (Exception e) {
+        	util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+        	p = "";
+        }
+        string appName = "ニコ生録画登録ツール " + p;
+		var mutex = new System.Threading.Mutex(false, appName);
+		bool hasHandle = false;
+		try {
+			try {
+	            hasHandle = mutex.WaitOne(0, false);
+	        }
+			catch (System.Threading.AbandonedMutexException) {
+	            hasHandle = true;
+	        }
+			if (!hasHandle) {
+	            util.showMessageBoxCenterForm(null, "すでに起動しています。同じパスに存在しているニコ生録画登録ツールは2つ同時に起動できません。", "ニコ生録画登録ツール（仮の多重起動禁止");
+	            return null;
+	        }
+			return mutex;
+		} catch (Exception e) {
+			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+		}
+	    return null;
+    }
 }

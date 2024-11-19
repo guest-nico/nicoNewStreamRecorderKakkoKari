@@ -67,6 +67,7 @@ namespace namaichi
 			this.linkColorMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.helpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openReadmeMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.直近の動作の記録を確認するVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.更新方法VToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.バージョン情報VToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.streamInfoGroupBox = new System.Windows.Forms.GroupBox();
@@ -115,7 +116,6 @@ namespace namaichi
 			this.openNotifyIconMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
 			this.closeNotifyIconMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.直近の動作の記録を確認するVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.samuneBox)).BeginInit();
 			this.menuStrip1.SuspendLayout();
 			this.streamInfoGroupBox.SuspendLayout();
@@ -366,6 +366,13 @@ namespace namaichi
 			this.openReadmeMenu.Text = "readme.htmlを開く(&V)";
 			this.openReadmeMenu.Click += new System.EventHandler(this.OpenReadmeMenuClick);
 			// 
+			// 直近の動作の記録を確認するVToolStripMenuItem
+			// 
+			this.直近の動作の記録を確認するVToolStripMenuItem.Name = "直近の動作の記録を確認するVToolStripMenuItem";
+			this.直近の動作の記録を確認するVToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+			this.直近の動作の記録を確認するVToolStripMenuItem.Text = "直近の動作記録を確認する(&R)";
+			this.直近の動作の記録を確認するVToolStripMenuItem.Click += new System.EventHandler(this.openRecordLogToolStripMenuItemClick);
+			// 
 			// 更新方法VToolStripMenuItem
 			// 
 			this.更新方法VToolStripMenuItem.Name = "更新方法VToolStripMenuItem";
@@ -576,7 +583,7 @@ namespace namaichi
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(66, 19);
 			this.label1.TabIndex = 0;
-			this.label1.Text = "コミュニティ";
+			this.label1.Text = "チャンネル";
 			// 
 			// mainWindowRightClickMenu
 			// 
@@ -600,7 +607,7 @@ namespace namaichi
 			// 
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
 			this.toolStripMenuItem2.Size = new System.Drawing.Size(198, 22);
-			this.toolStripMenuItem2.Text = "コミュニティURLをコピー";
+			this.toolStripMenuItem2.Text = "チャンネルURLをコピー";
 			this.toolStripMenuItem2.Click += new System.EventHandler(this.copyCommunityUrlMenu_Clicked);
 			// 
 			// toolStripMenuItem3
@@ -788,13 +795,6 @@ namespace namaichi
 			this.closeNotifyIconMenu.Size = new System.Drawing.Size(98, 22);
 			this.closeNotifyIconMenu.Text = "終了";
 			this.closeNotifyIconMenu.Click += new System.EventHandler(this.CloseNotifyIconMenuClick);
-			// 
-			// 直近の動作の記録を確認するVToolStripMenuItem
-			// 
-			this.直近の動作の記録を確認するVToolStripMenuItem.Name = "直近の動作の記録を確認するVToolStripMenuItem";
-			this.直近の動作の記録を確認するVToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
-			this.直近の動作の記録を確認するVToolStripMenuItem.Text = "直近の動作記録を確認する(&R)";
-			this.直近の動作の記録を確認するVToolStripMenuItem.Click += new System.EventHandler(this.openRecordLogToolStripMenuItemClick);
 			// 
 			// MainForm
 			// 

@@ -70,10 +70,10 @@ namespace rokugaTouroku.rec
 			} else if (coId != null) {
 				lvList = getCommunityStreamList(coId);
 				if (lvList == null) {
-					util.showMessageBoxCenterForm(form, "コミュニティID" + coId + "の放送の取得に失敗しました");
+					util.showMessageBoxCenterForm(form, "チャンネルID" + coId + "の放送の取得に失敗しました");
 					return false;
 				}
-				var r = util.showMessageBoxCenterForm(form, "コミュニティID" + coId + "のタイムシフトを登録しますか？ " + lvList.Count + "件", "", MessageBoxButtons.YesNo);
+				var r = util.showMessageBoxCenterForm(form, "チャンネルID" + coId + "のタイムシフトを登録しますか？ " + lvList.Count + "件", "", MessageBoxButtons.YesNo);
 				if (r == DialogResult.No) return false;
 			} else {
 				util.showMessageBoxCenterForm(form, "not found ID");

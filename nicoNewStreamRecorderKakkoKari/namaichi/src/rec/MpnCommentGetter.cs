@@ -636,6 +636,8 @@ namespace namaichi.rec
 				
 				string c = null;
 				try {
+					if (l.Count == 1) rm.form.addLogText("comment " + l.Count);
+					
 					c = l.Count == 1 ? l[0] : l[l.Count - 2];
 					if (c == "end" || string.IsNullOrEmpty(c)) {
 						l.RemoveAt(l.Count - 2);
@@ -647,6 +649,7 @@ namespace namaichi.rec
 					l.Remove(c);
 				} catch (Exception e) {
 					util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+					rm.form.addLogText("URLからコメントを取得できませんでした " + c + ".");
 					Thread.Sleep(1000);
 				}
 			}
