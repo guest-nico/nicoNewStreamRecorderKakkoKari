@@ -31,7 +31,8 @@ namespace namaichi.utility
 			
 		}
 		public bool isInitialized() {
-			return curlM != IntPtr.Zero;
+			//return curlM != IntPtr.Zero;
+			return true;
 		}
 		public byte[] getBytes(string url, Dictionary<string, string> headers, CurlHttpVersion httpVer, string method = "GET", string postData = null, bool isAddHeader = false) {
 			var d = postData == null ? null : Encoding.UTF8.GetBytes(postData);

@@ -124,7 +124,7 @@ namespace namaichi.info
 						group = util.getRegGroup(data, "\"socialGroup\".+?\"name\".\"(.+?)\"");
 						
 			//			if (host == null) host = "official";
-						host = util.getRegGroup(data, "\"supplier\"..\"name\".\"(.*?)\"");
+						host = util.getRegGroup(data, "\"supplier\".+?\"name\".\"(.*?)\"");
 						if (host == null || host == "") {
 							//group = "official";
 							host = "公式生放送";
@@ -153,7 +153,7 @@ namespace namaichi.info
 							group = util.getRegGroup(data, "\"socialGroup\".*?\"name\".\"(.*?)\"");
 				//			group = util.uniToOriginal(group);
 				//			group = util.getRegGroup(res, "communityInfo.\".+?title.\"..\"(.+?).\"");
-							host = util.getRegGroup(data, "\"supplier\"..\"name\".\"(.*?)\"");
+							host = util.getRegGroup(data, "\"supplier\".+?\"name\".\"(.*?)\"");
 							if (string.IsNullOrEmpty(host)) host = group;
 				//			System.out.println(group);
 				//			host = util.uniToOriginal(host);
@@ -163,7 +163,7 @@ namespace namaichi.info
 				//			communityNum = util.getRegGroup(res, "socialGroup: \\{[\\s\\S]*registrationUrl: \"http://com.nicovideo.jp/motion/(.*?)\\?");
 							communityNum = util.getRegGroup(data, "\"socialGroup\".+?\"id\".\"(.+?)\"");
 				//			community = util.getRegGroup(res, "socialGroup\\:)");
-							userId = (isChannel) ? "channel" : (util.getRegGroup(data, "supplier\":{\"name\".+?pageUrl\":\"https*://www.nicovideo.jp/user/(\\d+?)\""));
+							userId = (isChannel) ? "channel" : (util.getRegGroup(data, "supplier\".+?pageUrl\":\"https*://www.nicovideo.jp/user/(\\d+?)\""));
 							util.debugWriteLine("userid " + userId);
 				
 							util.debugWriteLine("title " + title);

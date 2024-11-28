@@ -1508,7 +1508,7 @@ namespace namaichi
 			this.useUserSessionRadioBtn.Size = new System.Drawing.Size(311, 18);
 			this.useUserSessionRadioBtn.TabIndex = 18;
 			this.useUserSessionRadioBtn.TabStop = true;
-			this.useUserSessionRadioBtn.Text = "ユーザーセッションを指定してログインする";
+			this.useUserSessionRadioBtn.Text = "user_sessionクッキーを指定してログインする";
 			this.useUserSessionRadioBtn.UseVisualStyleBackColor = true;
 			this.useUserSessionRadioBtn.CheckedChanged += new System.EventHandler(this.LoginRadioBtnCheckedChanged);
 			// 

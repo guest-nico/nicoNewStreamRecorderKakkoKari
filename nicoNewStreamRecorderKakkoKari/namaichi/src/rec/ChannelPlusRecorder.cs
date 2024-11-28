@@ -92,7 +92,7 @@ namespace namaichi.rec
 			
 			var h = util.getHeader(null, "https://nicochannel.jp", null);
 			var fcName = util.getRegGroup(id, "(.+?)/");
-			var channelsPageUrl = "https://nfc-api.nicochannel.jp/fc/content_providers/channels";
+			var channelsPageUrl = "https://api.nicochannel.jp/fc/content_providers/channels";
 			var channelsRes = videoPageCurl.getStr(channelsPageUrl, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS);
 			fcId = util.getRegGroup(channelsRes, fcName + "\",.+?\"id\":(\\d+)");
 			if (fcId == null) {
@@ -231,12 +231,14 @@ namespace namaichi.rec
 		string getSessionId() {
 			for (var i = 0; i < 10; i++) {
 				try {
-					var url = "https://nfc-api.nicochannel.jp/fc/video_pages/" + videoId + "/session_ids";
-					var h = util.getHeader(null, "https://nicochannel.jp", null);
+					//var url = "https://nfc-api.nicochannel.jp/fc/video_pages/" + videoId + "/session_ids";
+					var url = "https://api.nicochannel.jp/fc/video_pages/" + videoId + "/session_ids";
+					var h = util.getHeader(null, "https://nicochannel.jp/", null);
 					h["Content-Type"] = "application/json";
 					h["Accept"] = "application/json, text/plain, */*";
 					h.Add("fc_site_id", fcId);
 					h.Add("fc_use_device", "null");
+					h.Add("Origin", "https://api.nicochannel.jp");
 					var _auth = rl.getAuth();
 					if (_auth != null) h.Add("Authorization", "Bearer " + _auth);
 					var res = videoPageCurl.getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS, "POST", "{}");

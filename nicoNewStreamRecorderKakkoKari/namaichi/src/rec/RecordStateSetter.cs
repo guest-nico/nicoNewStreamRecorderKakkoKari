@@ -133,7 +133,7 @@ namespace namaichi.rec
 			
 			
 			if (!isJikken && !isChannelPlus) {
-				hostUrl = (type == "community" || type == "user") ? util.getRegGroup(data, "supplier\":{\"name\".\".+?\",\"pageUrl\":\"(.+?)\"") : null;
+				hostUrl = (type == "community" || type == "user") ? util.getRegGroup(data, "supplier\".+?\"pageUrl\":\"(.+?)\"") : null;
 				groupUrl = util.getRegGroup(data, "\"socialGroupPageUrl\":\"(.+?)\"");
 				gentei = (data.IndexOf("\"isFollowerOnly\":true") > -1) ? "限定" : "オープン";
 	//			var _openTime = long.Parse(util.getRegGroup(data, "\"openTime\":(\\d+)"));

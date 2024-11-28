@@ -106,8 +106,8 @@ namespace namaichi.rec
 				} else {
 					var isChannel = util.getRegGroup(data, "visualProviderType\":\"(channel)\",\"title\"") != null;
 					communityId = util.getRegGroup(data, "\"socialGroup\".+?\"id\".\"(.+?)\"");
-					userId = (isChannel) ? null : (util.getRegGroup(data, "supplier\":{\"name\".+?pageUrl\":\"http[s]*://www.nicovideo.jp/user/(\\d+?)\""));
-					userName = util.getRegGroup(data, "supplier\":{\"name\":\"(.+?)\"");
+					userId = (isChannel) ? null : (util.getRegGroup(data, "supplier\".+?pageUrl\":\"http[s]*://www.nicovideo.jp/user/(\\d+?)\""));
+					userName = util.getRegGroup(data, "supplier\".+?\"name\":\"(.+?)\"");
 				}
 				description = util.getRegGroup(data, "\"description\":\"(.*?[^\\\\])\",");
 				
