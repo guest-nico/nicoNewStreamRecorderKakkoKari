@@ -120,7 +120,7 @@ namespace namaichi.rec
 				
 				ri = new RecordInfo(_si, pageType, false);
 				setFormInfo(vpRes);
-				 
+				
 				if (pageType == 0 || pageType == 7) {
 					return _rec(vpRes);
 				} else if (pageType == 2) {
@@ -200,6 +200,7 @@ namespace namaichi.rec
 			Debug.WriteLine("session_id " + sessionId);
 			if (sessionId == null) {
 				util.debugWriteLine("session_idが取得できませんでした");
+				rm.form.addLogText("session_idが取得できませんでした");
 				return false;
 			}
 			
@@ -207,6 +208,7 @@ namespace namaichi.rec
 			Debug.WriteLine("hlsUrl " + hlsUrl);
 			if (hlsUrl == null) {
 				util.debugWriteLine("M3U8のURLが取得できませんでした");
+				rm.form.addLogText("M3U8のURLが取得できませんでした");
 				return false;
 			}
 			return true;
@@ -245,6 +247,7 @@ namespace namaichi.rec
 					return util.getRegGroup(res, "\"session_id\":\"(.+?)\"");
 				} catch (Exception e) {
 					util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+					rm.form.addLogText(e.Message + e.Source + e.StackTrace);
 					Thread.Sleep(10000);
 				}
 			}
@@ -273,6 +276,7 @@ namespace namaichi.rec
 				return getBestGettableQuolity(d);
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+				rm.form.addLogText(e.Message + e.Source + e.StackTrace);
 				Thread.Sleep(10000);
 			}
 			return null;

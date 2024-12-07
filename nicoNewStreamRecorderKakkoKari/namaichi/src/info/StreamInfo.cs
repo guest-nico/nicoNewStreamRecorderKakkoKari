@@ -173,6 +173,8 @@ namespace namaichi.info
 							//  ,\"programHeader\":{\"thumbnailUrl\":\"http:\/\/icon.nimg.jp\/community\/s\/123\/co1231728.jpg?1373210036\",\"title\":\"\u56F2\u7881\",\"provider
 				//			title = util.uniToOriginal(title);
 							util.debugWriteLine(host + " " + group + " " + title + " " + communityNum + " userid " + userId);
+							if (host != null || group != null || title != null || communityNum != null || userId != null)
+								complementInfo(ref host, ref group, ref title, ref communityNum, ref userId);
 							if (host == null || group == null || title == null || communityNum == null || userId == null) return null;
 						}
 						
@@ -191,6 +193,8 @@ namespace namaichi.info
 					userId = "official";
 					
 					util.debugWriteLine(host + " " + group + " " + title + " " + communityNum);
+					if (host != null || group != null || title != null || communityNum != null)
+						complementInfo(ref host, ref group, ref title, ref communityNum, ref userId);
 					if (host == null || group == null || title == null || communityNum == null) return null;
 					util.debugWriteLine(host + " " + group + " " + title + " " + communityNum);
 				}
@@ -244,6 +248,14 @@ namespace namaichi.info
 			ret.programTime = programTime;
 			return ret;
 			*/
+		}
+		void complementInfo(ref string host, ref string group, ref string title, ref string communityNum, ref string userId) {
+			var n = "undefined";
+			if (host == null) host = n;
+			if (group == null) group = n;
+			if (title == null) title = n;
+			if (communityNum == null) communityNum = n;
+			if (userId == null) userId = n;
 		}
 	}
 	public class RecordInfo {

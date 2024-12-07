@@ -398,6 +398,7 @@ namespace namaichi.rec
 					           msgProto.Message.TagUpdated != null) {
 						content = getTagUpdated(msgProto.Message.TagUpdated);
 					}
+					if (content == null) return null;
 					_xml = getXDocument(content, "3",
 							"", "", "",
 							"", "", vpos.ToString(), 
@@ -519,6 +520,7 @@ namespace namaichi.rec
 					l.Add(m.Redirect.Message + " " + m.Redirect.Uri);
 			}
 			if (s.Statistics != null) {
+				return null;
 				l.Add("/statistics");
 				var st = s.Statistics;
 				//l.Add("来場者:" + st.Viewers);
