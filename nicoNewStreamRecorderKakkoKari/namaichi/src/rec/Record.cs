@@ -176,14 +176,18 @@ namespace namaichi.rec
 			this.referer = null;//rfu.url;
 			ext = ri.isFmp4 ? ".mp4" : ".ts";
 			this.ri = ri;
+			if (wr.isDlive) {
+				engineMode = "3";
+				//dlm = new DliveManager(rm, rfu, this, container);
+			}
 		}
 		public Record(RecordingManager rm, RecordFromUrl rfu, 
-				string segHlsUrl, CookieContainer container, 
+				string hlsUrl, CookieContainer container, 
 				RecordInfo ri, IRecorderProcess wr) {
 			this.rm = rm;
 			this.rfu = rfu;
 			this.recFolderFile = ri.recFolderFile[1];
-			this.hlsSegM3uUrl = segHlsUrl;
+			this.hlsSegM3uUrl = hlsUrl;
 			this.container = container;
 			this.wr = wr;
 			segmentSaveType = int.Parse(rm.cfg.get("segmentSaveType"));
@@ -201,11 +205,17 @@ namespace namaichi.rec
 			this.ri = ri;
 			getM3u8Curl = new Curl();
 			getTsCurl = new Curl();
+			if (wr.isDlive) {
+				engineMode = "3";
+				//dlm = new DliveManager(rm, rfu, this, container);
+			}
 		}
 		public void record(string quality) {
 			recordingQuality = quality;
 			tsWriterTask = Task.Factory.StartNew(() => {startDebugWriter();}, TaskCreationOptions.LongRunning);
 			
+			if (wr.isDlive)
+				rm.form.addLogText("こちらの放送では動作できません。https://blog.nicovideo.jp/niconews/235926.html");
 			var _m = (isPlayOnlyMode) ? "視聴" : "録画";
 			if (ri.si.isTimeShift) {
 				var isHokan = !wr.isSaveComment && ri.isChase; 
@@ -227,7 +237,7 @@ namespace namaichi.rec
 		private void realTimeRecord() {
 			if (hlsSegM3uUrl == null)
 				hlsSegM3uUrl = getHlsSegM3uUrl(hlsMasterUrl);
-			rm.hlsUrl = hlsSegM3uUrl;
+			rm.setHlsInfo(hlsSegM3uUrl, ri);
 			rm.form.setPlayerBtnEnable(true);
 			
 			if (engineMode == "0") {
@@ -274,7 +284,7 @@ namespace namaichi.rec
 					isFirst = false;
 					
 					var aer = new AnotherEngineRecorder(rm, rfu, this);
-					aer.record(hlsSegM3uUrl, recFolderFile, anotherEngineCommand);
+					aer.record(hlsSegM3uUrl, recFolderFile, anotherEngineCommand, null);
 					
 					recFolderFile = util.incrementRecFolderFile(recFolderFile);//wr.getRecFilePath()[1];
 					setReconnecting(true);
@@ -292,7 +302,7 @@ namespace namaichi.rec
 				return;
 			}
 			*/
-			rm.hlsUrl = "end";
+			rm.setHlsInfo("end", ri);
 //			rm.form.setPlayerBtnEnable(false);
 			
 			if (engineMode == "0" && !isPlayOnlyMode) {
@@ -952,9 +962,11 @@ namespace namaichi.rec
 		}
 		private string getHlsSegM3uUrl(string masterUrl) {
 			addDebugBuf("master m3u8 " + masterUrl);
-			//var wc = new WebHeaderCollection();
+			if (masterUrl.IndexOf("dlive.") > -1) return masterUrl;
+			
 			testWebRequest(masterUrl);
-			var res = util.getPageSource(masterUrl, null, referer, false, 2000, ua);
+			var cstr = container.GetCookieHeader(new Uri(masterUrl));
+			var res = util.getPageSource(masterUrl, container, referer, false, 2000, ua);
 			if (res == null) {
 				addDebugBuf("getHlsSegM3uUrl res null reconnect " + masterUrl);
 				addDebugBuf("master url res null");
@@ -1442,7 +1454,7 @@ namespace namaichi.rec
 					tf.start(outFName, true);
 					
 				}
-				if (rm.ri != null && rm.ri.afterFFmpegMode != 0) {
+				if (rm.rdi != null && rm.rdi.afterFFmpegMode != 0) {
 					
 				}
 			}
@@ -1529,20 +1541,21 @@ namespace namaichi.rec
 		}
 		private void timeShiftOnTimeRecord() {
 			/*
-			if (ri.timeShiftConfig.isOutputUrlList) {
-				setOutputTimeShiftTsUrlListStartTime();
+			if (wr.isDlive) {
+				dlm.run(hlsMasterUrl);
+				return;
 			}
 			*/
 			if (hlsSegM3uUrl == null) {
 				var start = (ri.timeShiftConfig.timeSeconds - 10 < 0) ? 0 : (ri.timeShiftConfig.timeSeconds - 10);
 				var baseMasterUrl = hlsMasterUrl;
-				if (!ri.isRealtimeChase) baseMasterUrl += "&start=" + (start.ToString());
+				if (!ri.isRealtimeChase && !wr.isDlive) baseMasterUrl += "&start=" + (start.ToString());
 				
 				wr.tsHlsRequestTime = DateTime.Now;
 				wr.tsStartTime = TimeSpan.FromSeconds((double)start);
 				hlsSegM3uUrl = getHlsSegM3uUrl(baseMasterUrl);
 			}
-			rm.hlsUrl = hlsSegM3uUrl;
+			rm.setHlsInfo(hlsSegM3uUrl, ri);
 			rm.form.setPlayerBtnEnable(true);
 			
 			var isWriteEnd = new bool[1]{false};
@@ -1562,22 +1575,15 @@ namespace namaichi.rec
 					continue;
 				}
 				
-				if (engineMode == "0" || engineMode == "3") {
-
+				if (engineMode == "0") {
 					targetDuration = addNewTsTaskList(hlsSegM3uUrl);
 
-					if (engineMode == "3" && 
-					    	wr.mcg != null && 
-					    	wr.mcg.isEnd) {
-						isRetry = false;
-						isEndProgram = true;
-					}
 					var intervalTime = (int)(targetDuration * (ri.isRealtimeChase ? 500 : 1000));
 					var elapsedTime = (int)((TimeSpan)(DateTime.Now - lastAccessPlaylistTime)).TotalMilliseconds;
 					util.debugWriteLine("wait time intervalTime " + intervalTime + " elapsedTime " + elapsedTime + " recordedSeconds " + recordedSecond);
 					Thread.Sleep(elapsedTime > intervalTime ? 0 : intervalTime - elapsedTime);
 					lastAccessPlaylistTime = DateTime.Now;
-				} else {
+				} else if (engineMode == "1") {
 					if (!isFirst) wr.resetCommentFile();
 					isFirst = false;
 					
@@ -1590,7 +1596,7 @@ namespace namaichi.rec
 					wr.firstSegmentSecond = (_currentPos == null) ? 0 : double.Parse(_currentPos, NumberStyles.Float);
 					var aer = new AnotherEngineRecorder(rm, rfu, this);
 					setSpeed(true);
-					aer.record(hlsSegM3uUrl, recFolderFile, anotherEngineCommand);
+					aer.record(hlsSegM3uUrl, recFolderFile, anotherEngineCommand, "\"cookie: " + container.GetCookieHeader(new Uri(hlsMasterUrl)) + "\"");
 					
 					if (isEndProgram || isAnotherEngineTimeShiftEnd(recStartTime, hlsSegM3uUrl, startPlayList) && !ri.isRealtimeChase) {
 						isEndProgram = true;
@@ -1604,10 +1610,19 @@ namespace namaichi.rec
 					reConnect();
 					continue;
 					
+				} else if (engineMode == "3") {
+					if (engineMode == "3" && 
+					    	wr.mcg != null && 
+					    	wr.mcg.isEnd) {
+						isRetry = false;
+						isEndProgram = true;
+					}
+					lastAccessPlaylistTime = DateTime.Now;
+					Thread.Sleep(3000);
 				}
 				
 			}
-			rm.hlsUrl = "end";
+			rm.setHlsInfo("end", ri);
 			isWriteEnd[0] = true;
 			
 //			rm.form.setPlayerBtnEnable(false);
@@ -1737,11 +1752,11 @@ namespace namaichi.rec
 		private void setReconnecting(bool b) {
 			isReConnecting = b;
 			if (isReConnecting) {
-				rm.hlsUrl = "reconnecting";
+				rm.setHlsInfo("reconnecting", ri);
 //				rm.form.setPlayerBtnEnable(false);
 			}
 			else {
-				rm.hlsUrl = hlsSegM3uUrl;
+				rm.setHlsInfo(hlsSegM3uUrl, ri);
 //				rm.form.setPlayerBtnEnable(true);
 			}
 		}
@@ -2301,11 +2316,15 @@ namespace namaichi.rec
 		}
 		void testWebRequest(string url) {
 			try {
+				var cstr = container.GetCookieHeader(new Uri(url));
+				
 				var h = util.getHeader();
 				h.Add("Accept", "*/*");
 				h.Add("Accept-Language", "ja,en-US;q=0.7,en;q=0.3");
 				h.Add("Origin", "https://live.nicovideo.jp");
 				h.Add("Referer", "https://live.nicovideo.jp/");
+				h.Add("Cookie", cstr);
+				
 				var r = util.sendRequest(url, h, null, "GET", null);
 				if (r != null) {
 					using (var _r = r.GetResponseStream())

@@ -92,6 +92,7 @@ namespace namaichi.utility
 				} else {
 					var _d = postData == null ? null : Encoding.UTF8.GetBytes(postData);
 					var r22 = util.sendRequest(url, headers, _d, method, null);
+					if (r22 == null) return null;
 					using (var r2 = r22.GetResponseStream())
 					using (var r3 = new StreamReader(r2)) {
 						var a = r3.ReadToEnd();

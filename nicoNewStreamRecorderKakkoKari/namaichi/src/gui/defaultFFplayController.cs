@@ -185,7 +185,8 @@ namespace namaichi
 				if (IsDisposed) return;
 				this.Invoke((MethodInvoker)delegate() {
 	       	       	try {
-		       			timeLabel.Text = s;
+				        if (timeLabel.Text != s)
+		       				timeLabel.Text = s;
 	       	       	} catch (Exception e) {
 	       	       		util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
 	       	       	}

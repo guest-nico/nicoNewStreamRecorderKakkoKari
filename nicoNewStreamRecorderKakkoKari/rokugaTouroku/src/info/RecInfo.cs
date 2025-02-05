@@ -128,7 +128,13 @@ namespace rokugaTouroku.info
 						("https://com.nicovideo.jp/community/" + hig.communityId);
          		communityUrl = comUrl;
          	}
+         	if (string.IsNullOrEmpty(samuneUrl)) {
+         		samuneUrl = hig.thumbnail;
+         		samune = util.getSamune(samuneUrl);
+         	}
          	form.updateRecListCell(this);
+         	if (form.displayingRi == this)
+         		form.displayRiInfo(this, null, null, true);
          	form.saveList();
 		}
 		public string Id

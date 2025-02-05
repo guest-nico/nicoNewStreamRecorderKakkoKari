@@ -36,6 +36,7 @@ namespace namaichi.info
 		public TimeSpan programTime;
 		public string[] recFolderFileInfo;
 		public bool isChannelPlus = false;
+		public bool isDlive = false;
 		
 		public StreamInfo() {
 		}
@@ -59,7 +60,7 @@ namespace namaichi.info
 				data = (isRtmpOnlyPage) ? System.Web.HttpUtility.UrlDecode(res) :
 							System.Web.HttpUtility.HtmlDecode(data);
 				isReservation = lvid.StartsWith("lv") ? data.IndexOf("\"reservation\"") > -1 : data.IndexOf("\"has_archived_files\":true") > -1;
-				
+				isDlive = data.IndexOf("\"type\":\"dlive\"") > -1;
 				//long endTime, _openTime, serverTime, vposBaseTime;
 				//openTime = endTime = _openTime = serverTime = vposBaseTime = 0;
 			} else {
@@ -68,7 +69,6 @@ namespace namaichi.info
 			    isChasable = false;
 			    isReservation = false;
 		    }
-			programTime = util.getUnixToDatetime(endTime) - util.getUnixToDatetime(openTime);
 			recFolderFileInfo = getHtml5RecFolderFileInfo(data, type, isRtmpOnlyPage);
 		}
 		public bool getTimeInfo() {
@@ -111,6 +111,7 @@ namespace namaichi.info
 				
 				serverTime = vposBaseTime = util.getUnixTime();
 			}
+			programTime = util.getUnixToDatetime(endTime) - util.getUnixToDatetime(openTime);
 			return true;
 		}
 		private string[] getHtml5RecFolderFileInfo(string data, string type, bool isRtmpOnlyPage) {
@@ -291,7 +292,7 @@ namespace namaichi.info
 			isFmp4 = si.data.IndexOf("\"providerType\":\"community\"") > -1 &&
 					pageType == 0 && !si.isTimeShift && cfg.get("latency") == "新方式の低遅延" && true;
 			
-			webSocketRecInfo = RecordInfo.getWebSocketInfo(si.data, isRtmp, isChase, si.isTimeShift, form, isFmp4);
+			webSocketRecInfo = RecordInfo.getWebSocketInfo(si.data, isRtmp, isChase, si.isTimeShift, form, isFmp4, si.isDlive);
 			util.debugWriteLine("websocketrecinfo " + webSocketRecInfo);
 			
 			isRealtimeChase =  isChase && !isChaseCheck && 
@@ -305,11 +306,10 @@ namespace namaichi.info
 			isPremium = si.res.IndexOf("\"member_status\":\"premium\"") > -1;
 		}
 		
-		public string[] getRecFilePath(bool isRtmp, TimeShiftConfig timeShiftConfig, bool isFmp4, config.config cfg, MainForm form) {
+		public string[] getRecFilePath(config.config cfg, MainForm form) {
 			util.debugWriteLine(si.openTime + " c " + si.recFolderFileInfo[0] + " timeshiftConfig " + timeShiftConfig);
 			try {
-				var id = si.isChannelPlus ? si.recFolderFileInfo[3].Substring(0, 12) : si.recFolderFileInfo[3];
-				return util.getRecFolderFilePath(si.recFolderFileInfo[0], si.recFolderFileInfo[1], si.recFolderFileInfo[2], id, si.recFolderFileInfo[4], si.recFolderFileInfo[5], cfg, si.isTimeShift, timeShiftConfig, si.openTime, isRtmp, isFmp4, false, form);
+				return util.getRecFolderFilePath(si.recFolderFileInfo[0], si.recFolderFileInfo[1], si.recFolderFileInfo[2], si.recFolderFileInfo[3], si.recFolderFileInfo[4], si.recFolderFileInfo[5], cfg, si.isTimeShift, timeShiftConfig, si.openTime, isRtmp, isFmp4, false, form);
 			} catch (Exception e) {
 				form.addLogText("保存先パスの取得もしくはフォルダの作成に失敗しました");
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
@@ -332,7 +332,7 @@ namespace namaichi.info
 			//return res.IndexOf("<is_nonarchive_timeshift_enabled>1") > -1 ||
 			//	res.IndexOf("is_archiveplayserver>1") > -1;
 		}
-		public static string[] getWebSocketInfo(string data, bool isRtmp, bool isChase, bool isTimeShift, MainForm form, bool isFmp4) {
+		public static string[] getWebSocketInfo(string data, bool isRtmp, bool isChase, bool isTimeShift, MainForm form, bool isFmp4, bool isDlive) {
 //			util.debugWriteLine(data);
 			var wsUrl = util.getRegGroup(data, "\"webSocketUrl\":\"(ws[\\d\\D]+?)\"");
 			if (wsUrl == null) return null;
@@ -377,9 +377,8 @@ namespace namaichi.info
 						//("{\"type\":\"watch\",\"body\":{\"command\":\"getpermit\",\"requirement\":{\"broadcastId\":\"" + broadcastId + "\",\"route\":\"\",\"stream\":{\"protocol\":\"hls\",\"requireNewStream\":true,\"priorStreamQuality\":\"normal\", \"isLowLatency\": false},\"room\":{\"isCommentable\":true,\"protocol\":\"webSocket\"}}}}");
 						("{\"type\":\"watch\",\"body\":{\"command\":\"getpermit\",\"requirement\":{\"broadcastId\":\"" + broadcastId + "\",\"route\":\"\",\"stream\":{\"protocol\":\"hls\",\"requireNewStream\":true,\"priorStreamQuality\":\"normal\", \"isLowLatency\": false,\"isChasePlay\":false},\"room\":{\"isCommentable\":true,\"protocol\":\"webSocket\"}}}}");
 			} else if (ver == "2") {
-				
-				request = isRtmp ? "{\"type\":\"startWatching\",\"data\":{\"stream\":{\"quality\":\"normal\",\"protocol\":\"rtmp\",\"latency\":\"high\",\"chasePlay\":false},\"room\":{\"protocol\":\"webSocket\",\"commentable\":true},\"reconnect\":false}}"
-					: "{\"type\":\"startWatching\",\"data\":{\"stream\":{\"quality\":\"normal\",\"protocol\":\"hls" + (isFmp4 ? "+fmp4" : "") + "\",\"latency\":\"" + (latency == "新方式の低遅延" || latency == "1" ? "low" : "high") + "\",\"chasePlay\":" + (isChase ? "true" : "false") + "},\"room\":{\"protocol\":\"webSocket\",\"commentable\":true},\"reconnect\":false}}";
+				request = isRtmp ? "{\"type\":\"startWatching\",\"data\":{\"stream\":{\"quality\":\"normal\",\"protocol\":\"rtmp\",\"latency\":\"high\"" + (isDlive ? ",\"accessRightMethod\":\"single_cookie\"" : "") + ",\"chasePlay\":false},\"room\":{\"protocol\":\"webSocket\",\"commentable\":true},\"reconnect\":false}}"
+					: "{\"type\":\"startWatching\",\"data\":{\"stream\":{\"quality\":\"normal\",\"protocol\":\"hls" + (isFmp4 ? "+fmp4" : "") + "\",\"latency\":\"" + (latency == "新方式の低遅延" || latency == "1" ? "low" : "high") + "\"" + (isDlive ? ",\"accessRightMethod\":\"single_cookie\"" : "") + ",\"chasePlay\":" + (isChase ? "true" : "false") + "},\"room\":{\"protocol\":\"webSocket\",\"commentable\":true},\"reconnect\":false}}";
 			} else {
 				form.addLogText("unknown type " + ver);
 				return null;
@@ -475,7 +474,7 @@ namespace namaichi.info
 			if (!rm.rfu.isPlayOnlyMode) {
 				util.debugWriteLine("rm.rfu " + rm.rfu.GetHashCode() + " rfu " + rm.rfu.GetHashCode());
 				if (recFolderFile == null)
-					recFolderFile = getRecFilePath(isRtmp, timeShiftConfig, isFmp4, rm.cfg, rm.form);
+					recFolderFile = getRecFilePath(rm.cfg, rm.form);
 				if (recFolderFile == null || recFolderFile[0] == null) {
 					//パスが長すぎ
 					rm.form.addLogText("パスに問題があります。 " + (recFolderFile != null ? recFolderFile[1] : ""));

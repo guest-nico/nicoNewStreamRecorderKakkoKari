@@ -2195,6 +2195,8 @@ namespace rokugaTouroku
 			// groupBox1
 			// 
 			this.groupBox1.Controls.Add(this.housoushaUserIDRadioBtn);
+			this.groupBox1.Controls.Add(this.housoushaComIDRadioBtn);
+			this.groupBox1.Controls.Add(this.comIDHousoushaRadioBtn);
 			this.groupBox1.Controls.Add(this.secondRecFolderSanshouBtn);
 			this.groupBox1.Controls.Add(this.secondRecFolderText);
 			this.groupBox1.Controls.Add(this.useSecondRecFolderChk);
@@ -2202,8 +2204,6 @@ namespace rokugaTouroku
 			this.groupBox1.Controls.Add(this.userIDRadioBtn);
 			this.groupBox1.Controls.Add(this.ComIDComNameRadioBtn);
 			this.groupBox1.Controls.Add(this.comIDRadioBtn);
-			this.groupBox1.Controls.Add(this.housoushaComIDRadioBtn);
-			this.groupBox1.Controls.Add(this.comIDHousoushaRadioBtn);
 			this.groupBox1.Controls.Add(this.comNameRadioBtn);
 			this.groupBox1.Controls.Add(this.housoushaRadioBtn);
 			this.groupBox1.Controls.Add(this.useSubFolderChk);
@@ -2214,14 +2214,14 @@ namespace rokugaTouroku
 			this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
-			this.groupBox1.Size = new System.Drawing.Size(396, 195);
+			this.groupBox1.Size = new System.Drawing.Size(415, 195);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "録画保存先フォルダ";
 			// 
 			// housoushaUserIDRadioBtn
 			// 
-			this.housoushaUserIDRadioBtn.Location = new System.Drawing.Point(244, 164);
+			this.housoushaUserIDRadioBtn.Location = new System.Drawing.Point(279, 164);
 			this.housoushaUserIDRadioBtn.Name = "housoushaUserIDRadioBtn";
 			this.housoushaUserIDRadioBtn.Size = new System.Drawing.Size(141, 27);
 			this.housoushaUserIDRadioBtn.TabIndex = 25;
@@ -2279,7 +2279,7 @@ namespace rokugaTouroku
 			// 
 			this.ComIDComNameRadioBtn.Location = new System.Drawing.Point(206, 144);
 			this.ComIDComNameRadioBtn.Name = "ComIDComNameRadioBtn";
-			this.ComIDComNameRadioBtn.Size = new System.Drawing.Size(141, 27);
+			this.ComIDComNameRadioBtn.Size = new System.Drawing.Size(153, 27);
 			this.ComIDComNameRadioBtn.TabIndex = 4;
 			this.ComIDComNameRadioBtn.Text = "チャンネルID＋チャンネル名";
 			this.ComIDComNameRadioBtn.UseVisualStyleBackColor = true;
@@ -2288,16 +2288,16 @@ namespace rokugaTouroku
 			// 
 			this.comIDRadioBtn.Location = new System.Drawing.Point(98, 144);
 			this.comIDRadioBtn.Name = "comIDRadioBtn";
-			this.comIDRadioBtn.Size = new System.Drawing.Size(87, 27);
+			this.comIDRadioBtn.Size = new System.Drawing.Size(102, 27);
 			this.comIDRadioBtn.TabIndex = 4;
 			this.comIDRadioBtn.Text = "チャンネルID";
 			this.comIDRadioBtn.UseVisualStyleBackColor = true;
 			// 
 			// housoushaComIDRadioBtn
 			// 
-			this.housoushaComIDRadioBtn.Location = new System.Drawing.Point(126, 164);
+			this.housoushaComIDRadioBtn.Location = new System.Drawing.Point(141, 164);
 			this.housoushaComIDRadioBtn.Name = "housoushaComIDRadioBtn";
-			this.housoushaComIDRadioBtn.Size = new System.Drawing.Size(118, 27);
+			this.housoushaComIDRadioBtn.Size = new System.Drawing.Size(141, 27);
 			this.housoushaComIDRadioBtn.TabIndex = 4;
 			this.housoushaComIDRadioBtn.Text = "放送者名＋チャンネルID";
 			this.housoushaComIDRadioBtn.UseVisualStyleBackColor = true;
@@ -2306,7 +2306,7 @@ namespace rokugaTouroku
 			// 
 			this.comIDHousoushaRadioBtn.Location = new System.Drawing.Point(5, 164);
 			this.comIDHousoushaRadioBtn.Name = "comIDHousoushaRadioBtn";
-			this.comIDHousoushaRadioBtn.Size = new System.Drawing.Size(124, 27);
+			this.comIDHousoushaRadioBtn.Size = new System.Drawing.Size(141, 27);
 			this.comIDHousoushaRadioBtn.TabIndex = 4;
 			this.comIDHousoushaRadioBtn.Text = "チャンネルID＋放送者名";
 			this.comIDHousoushaRadioBtn.UseVisualStyleBackColor = true;

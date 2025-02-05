@@ -294,7 +294,7 @@ namespace namaichi.rec
 				#endif
 				
 				new ChaseLastRecord(ri.si.lvid, container, rm, 
-						ri.si.recFolderFileInfo, ri.si.openTime, ri, 
+						ri.si.openTime, ri, 
 						ri.timeShiftConfig, rfu, 
 						rec != null ? rec.lastSegmentNo : -1).rec(rec.recFolderFile);
 			}
@@ -533,6 +533,8 @@ namespace namaichi.rec
 //				     		!rfu.isRtmpMain && !rm.isPlayOnlyMode && 
 //				     		engineMode == "0" && !isTimeShift)) {
 				}
+				if (message.IndexOf(".dlive.") > -1) isDlive = true;
+				if (message.IndexOf("\"cookies\"") > -1) setCoookies(message);
 				
 				var bestGettableQuolity = getBestGettableQuolity(message);
 				if (ri.isChase && !isChaseStream(message)) {
@@ -1291,8 +1293,8 @@ namespace namaichi.rec
 			var gettableList = ri.webSocketRecInfo[2] == "1" ? 
 					util.getRegGroup(msg, "\"qualityTypes\"\\:\\[(.+?)\\]").Replace("\"", "").Split(',')
 					: util.getRegGroup(msg, "\"availableQualities\"\\:\\[(.+?)\\]").Replace("\"", "").Split(',');
-			var ranks = (rm.ri == null) ? (qualityRank) :
-					rm.ri.qualityRank;
+			var ranks = (rm.rdi == null) ? (qualityRank) :
+					rm.rdi.qualityRank;
 			//if (ranks.Length == 6) qualityList.Insert(0, "abr");
 			
 			var bestGettableQuality = "normal";
@@ -1331,7 +1333,7 @@ namespace namaichi.rec
 			} else {
 				var _latency = rm.cfg.get("latency");
 				var latency = (_latency == "新方式の低遅延" || _latency == "1") ? "low" : "high";
-				req = "{\"type\":\"changeStream\",\"data\":{\"quality\":\"" + bestGettableQuolity + "\",\"protocol\":\"hls" + (ri.isFmp4 ? "+fmp4" : "") + "\",\"latency\":\"" + latency + "\",\"chasePlay\":" + ri.isChase.ToString().ToLower() + "}}";
+				req = "{\"type\":\"changeStream\",\"data\":{\"quality\":\"" + bestGettableQuolity + "\",\"protocol\":\"hls" + (ri.isFmp4 ? "+fmp4" : "") + "\",\"latency\":\"" + latency + (isDlive ? "\",\"accessRightMethod\":\"single_cookie" : "") + "\",\"chasePlay\":" + ri.isChase.ToString().ToLower() + "}}";
 			}
 			
 			sendMessage(ws, req, -1);
@@ -1478,7 +1480,7 @@ namespace namaichi.rec
 		}
 		 */
 		override public string[] getRecFilePath() {
-			return ri.getRecFilePath(ri.isRtmp, ri.timeShiftConfig, ri.isFmp4, rm.cfg, rm.form);
+			return ri.getRecFilePath(rm.cfg, rm.form);
 		}
 		private void startDebugWriter() {
 			#if !DEBUG
@@ -1528,7 +1530,7 @@ namespace namaichi.rec
 				}
 				res = System.Web.HttpUtility.HtmlDecode(res);
 				
-				var _webSocketInfo = RecordInfo.getWebSocketInfo(res, ri.isRtmp, ri.isChase, ri.si.isTimeShift, rm.form, ri.isFmp4);
+				var _webSocketInfo = RecordInfo.getWebSocketInfo(res, ri.isRtmp, ri.isChase, ri.si.isTimeShift, rm.form, ri.isFmp4, ri.si.isDlive);
 				if (_webSocketInfo == null) {
 					addDebugBuf("resetWebsocketInfo _websocketInfo null");
 					return;
@@ -1655,7 +1657,7 @@ namespace namaichi.rec
 					rr = new RtmpRecorder(ri.si.lvid, container, rm, rfu, !ri.isRtmp, ri.recFolderFile, this, ri.si.openTime);
 					Task.Factory.StartNew(() => {
 						rr.record(url, quality);
-						rm.hlsUrl = "end";
+						rm.setHlsInfo("end", null);
 						if (rr.isEndProgram) {
 							isEndProgram = true;
 							if (endTime == DateTime.MinValue)
@@ -1981,7 +1983,7 @@ namespace namaichi.rec
 		void firstCommentProcess() {
 			//ticket = chatinfo.ticket;
 			ticket = "_";
-			if (!rfu.isPlayOnlyMode && engineMode != "3") {
+			if (!rfu.isPlayOnlyMode && engineMode != "3" && !isDlive) {
 				for (var i = 0; i < 60 && sync == 0 && rm.rfu == rfu; i++) 
 					Thread.Sleep(1000);
 			}
@@ -2029,7 +2031,7 @@ namespace namaichi.rec
 			}
 		}
 		XDocument getTsChatXml(ChatInfo chatinfo) {
-			while (firstSegmentSecond == -1 && rm.rfu == rfu) {
+			while (firstSegmentSecond == -1 && rm.rfu == rfu && engineMode != "3" && !isDlive) {
 				Thread.Sleep(1000);
 			}
 			var vposStartTime = (ri.timeShiftConfig.isVposStartTime) ? (long)firstSegmentSecond : 0;
@@ -2039,6 +2041,21 @@ namespace namaichi.rec
 				return chatinfo.getFormatXml(0, true, vposStartTime);
 			} else {
 				return chatinfo.getFormatXml(ri.si.openTime + vposStartTime);
+			}
+		}
+		class cookies {
+				public string name = null;
+				public string value = null;
+				public string domain = null;
+				public string path = null;
+			}
+		void setCoookies(string message) {
+			var cStr = util.getRegGroup(message, "\"cookies\":(\\[.+?\\])");
+			if (cStr == null) return;
+			var c = JsonConvert.DeserializeObject<cookies[]>(cStr);
+			foreach (var _c in c) {
+				util.debugWriteLine(_c);
+				container.Add(new Cookie(_c.name, _c.value, _c.path, _c.domain));
 			}
 		}
 	}

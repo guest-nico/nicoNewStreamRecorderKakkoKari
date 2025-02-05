@@ -41,7 +41,7 @@ namespace namaichi.play
 		public bool isReconnect = false;
 		
 		private bool isUsePlayer = false;
-		private bool isUseCommentViewer = false;
+		public bool isUseCommentViewer = false;
 		
 		public StreamWriter pipeWriter;
 		
@@ -50,11 +50,11 @@ namespace namaichi.play
 			this.form = form;
 			this.config = config;
 			
+			isUsePlayer = bool.Parse(config.get("IsUsePlayer"));
+			isUseCommentViewer = bool.Parse(config.get("IsUseCommentViewer"));
 		}
 		public void play() {
 			util.debugWriteLine("play");
-			isUsePlayer = bool.Parse(config.get("IsUsePlayer"));
-			isUseCommentViewer = bool.Parse(config.get("IsUseCommentViewer"));
 			
 			if (!form.isPlayingBtn()) {
 				form.setPlayerBtnPlaying(true);
@@ -106,7 +106,7 @@ namespace namaichi.play
 					var isStarted = false;
 					while (form.isPlayingBtn()) {
 		         		if (form.rec.hlsUrl == "end") {
-		         			form.rec.hlsUrl = null;
+							form.rec.setHlsInfo(null, null);
 		         			Thread.Sleep(15000);
 		         			stopPlaying(true, false);
 		         			if (isDefaultPlayer) ctrlFormClose();
@@ -114,7 +114,7 @@ namespace namaichi.play
 				        }
 						if (form.rec.hlsUrl == "timeshift") {
 							form.addLogText("RTMPのタイムシフト録画中はツールでの視聴ができません。");
-		         			form.rec.hlsUrl = null;
+							form.rec.setHlsInfo(null, null);
 		         			stopPlaying(true, true);
 		         			if (isDefaultPlayer) ctrlFormClose();
 		         			break;
@@ -186,7 +186,7 @@ namespace namaichi.play
 						playCommand("ffplay", form.rec.hlsUrl + " -autoexit -volume " + volume + " " + exArgs);
 					else 
 	//					playCommandStd("MPC-HC.1.7.13.x86/mpc-hc.exe", "-");
-						Task.Run(() => playCommandStd("ffplay.exe", form.rec.hlsUrl + " -autoexit -volume " + volume + " " + exArgs));
+						Task.Run(() => playCommandStd("ffplay.exe", "-i " + form.rec.hlsUrl + " -autoexit -volume " + volume + " " + exArgs));
 					
 					util.debugWriteLine("kia 0 " + ctrl);
 					
@@ -439,7 +439,7 @@ namespace namaichi.play
 		}
 		private bool getHlsUrl() {
 			if (form.rec.rfu == null) {
-				form.rec.hlsUrl = null;
+				form.rec.setHlsInfo(null, null);
 				//form.rec.isPlayOnlyMode = true;
 				form.rec.rec(true);
 				form.Invoke((MethodInvoker)delegate() {

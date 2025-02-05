@@ -287,7 +287,7 @@ namespace namaichi.rec
 	        }
 			return null;
 		}
-		
+		/*
 		private TimeShiftConfig getReadyArgTsConfig(
 				TimeShiftConfig _tsConfig, string host, 
 				string group, string title, string lvId, 
@@ -316,7 +316,7 @@ namespace namaichi.rec
 			if (_tsConfig.isOpenTimeBaseEndArg) _tsConfig.endTimeSeconds += prepTime;
 			return _tsConfig;
 		}
-		
+		*/
 		
 		private void renameStatistics(RecordStateSetter rss) {
 			try {

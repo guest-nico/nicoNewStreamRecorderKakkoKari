@@ -402,10 +402,10 @@ namespace rokugaTouroku
 				.Replace("6", "6M").Replace("8", "4M")
 				.Replace("7", "8M").Replace("9", "音");
 		}
-		public void displayRiInfo(RecInfo ri, string ctrl = null, string val = null) {
+		public void displayRiInfo(RecInfo ri, string ctrl = null, string val = null, bool isForce = false) {
 			var isChange = displayingRi != ri;
 			displayingRi = ri;
-			if (!isChange) 
+			if (!isChange && !isForce) 
 				return;
 			//util.debugWriteLine("display c " + recList.RowCount + " " + recListDataSource.Count);
 			
@@ -639,6 +639,7 @@ namespace rokugaTouroku
 			}
 			foreach (var ri in selectedRIList)
 				recListDataSource.Remove(ri);
+			if (recList.CurrentCell == null) clearRiInfo();
 			saveList();
 		}
 		public bool deleteRow(RecInfo ri) {
@@ -1289,8 +1290,12 @@ namespace rokugaTouroku
 		}
 		void addFromReserve() {
 			try {
+				container = null;
 				setCookie();
-				if (container == null) return;
+				if (container == null) {
+					addLogText("Cookieを確認できませんでした。アカウント設定が必要です。");
+					return;
+				}
 				
 				var url = "https://live.nicovideo.jp/embed/timeshift-reservations";
 				var referer = "https://www.nicovideo.jp/my/timeshift-reservations?ref=pc_mypage_watchlater";

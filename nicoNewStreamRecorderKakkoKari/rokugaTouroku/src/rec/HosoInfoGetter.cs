@@ -40,7 +40,7 @@ namespace namaichi.rec
 			
 			title = util.getRegGroup(res, "<meta property=\"og:title\" content=\"(.*?)\"");
 			type = util.getRegGroup(res, "\"content_type\":\"(.+?)\"");
-			thumbnail = getThumbnail(res);
+			
 			var _dt = util.getRegGroup(res, "(\\d{4}/\\d{1,2}/\\d{1,2}.{0,10}\\d{1,2}:\\d{1,2}(:\\d{1,2})*)");
 			if (_dt != null) {
 				util.debugWriteLine("dt0 " + _dt);
@@ -128,6 +128,7 @@ namespace namaichi.rec
 				
 			}
 			tags = getTag(data);
+			thumbnail = getThumbnail(data);
 			return communityId != null || userId != null || title != null;
 		}
 		private string[] getTag(string data) {
@@ -152,8 +153,15 @@ namespace namaichi.rec
 			}
 			return ret.ToArray();
 		}
-		private string getThumbnail(string res) {
-			return util.getRegGroup(res, "<meta property=\"og:image\" content=\"(.+?)\"");
+		private string getThumbnail(string data) {
+			var samuneUrl = util.getRegGroup(data, "uri150x150\".+?(https:.+?)\"");
+			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "\"thumbnailImageUrl\":\"(.+?)\"");
+			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "\"small\":\"(.+?)\"");
+			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "thumbnail:.+?'(https*://.+?)'");
+			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "<thumb_url>(.+?)</thumb_url>");
+			if (samuneUrl == null) samuneUrl = util.getRegGroup(data, "\"thumbnail_url\":\"(.+?)\"");
+			return samuneUrl; 
+			//return util.getRegGroup(res, "<meta property=\"og:image\" content=\"(.+?)\"");
 		}
 	}
 }

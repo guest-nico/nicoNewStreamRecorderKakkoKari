@@ -125,7 +125,7 @@ namespace namaichi.rec
 				data = System.Web.HttpUtility.HtmlDecode(data);
 				//var type = util.getRegGroup(res, "\"content_type\":\"(.+?)\"");
 				var type = this.ri.si.type;
-				var webSocketRecInfo = RecordInfo.getWebSocketInfo(data, false, true, true, rm.form, false);
+				var webSocketRecInfo = RecordInfo.getWebSocketInfo(data, false, true, true, rm.form, false, this.ri.si.isDlive);
 				if (webSocketRecInfo == null) return null;
 				
 				//var n = nti;

@@ -247,7 +247,7 @@ namespace namaichi.rec
 				if (!isFirst && ((WebSocketRecorder)wr).isEndedProgram())
 					return "end";
 				var ret = "-vr " + rtmpUrl + " ";
-				rm.hlsUrl = ret;
+				rm.setHlsInfo(ret, null);
 				ret += "-o \"" + util.getOkSJisOut(recFolderFile) + ".flv\"";
 				util.debugWriteLine("getProcessArgs rtmp2Url exist " + ret);
 				
@@ -354,7 +354,7 @@ namespace namaichi.rec
 								Thread.Sleep(3000);
 								return null;
 							}
-							if (!isSub) rm.hlsUrl = arg;
+							if (!isSub) rm.setHlsInfo(arg, null);
 							if (!isSub && !rfu.isPlayOnlyMode) arg += " -o \"" + util.getOkSJisOut(recFolderFile) + ".flv\"";
 							util.debugWriteLine(arg + util.getMainSubStr(isSub, true));
 							return arg;
@@ -374,7 +374,7 @@ namespace namaichi.rec
 					*/
 					util.debugWriteLine(type + " contentsUrl " + contentsUrl + " rtmpUrl " + rtmpUrl + " ticket " + ticket + util.getMainSubStr(isSub, true));
 					var arg = "-vr " + rtmpUrl + "/" + lvid + " -N " + contentsUrl + " -C S:" + ticket;
-					if (!isSub) rm.hlsUrl = arg;
+					if (!isSub) rm.setHlsInfo(arg, null);
 					
 					if (!isSub && !rfu.isPlayOnlyMode) arg += " -o \"" + util.getOkSJisOut(recFolderFile) + ".flv\"";
 					util.debugWriteLine(arg + util.getMainSubStr(isSub, true));
@@ -432,7 +432,7 @@ namespace namaichi.rec
 						//arg += "-r " + url + " -y mp4:" + a + " -C S:" + ticket + " -o ";
 						 
 					}
-					rm.hlsUrl = "timeshift";
+					rm.setHlsInfo("timeshift", null);
 					util.debugWriteLine(arg + util.getMainSubStr(isSub, true));
 					return arg;
 					
@@ -463,7 +463,7 @@ namespace namaichi.rec
 						if (arg != "") arg += "$";
 						arg += "-vr " + rtmpUrl + " -N " + a + " -C S:" + ticket + " -p http://live.nicovideo.jp/watch/" + lvid + " -s http://live.nicovideo.jp/nicoliveplayer.swf?180116154229 -f \"WIN 29,0,0,113\" " + " -o ";
 					}
-					rm.hlsUrl = "timeshift";
+					rm.setHlsInfo("timeshift", null);
 					util.debugWriteLine(arg + util.getMainSubStr(isSub, true));
 					return arg;
 					

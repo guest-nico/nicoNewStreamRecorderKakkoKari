@@ -50,6 +50,7 @@ namespace namaichi.rec
 		public List<string[]> commentReplaceList = null;
 		public List<string> chaseCommentBuf = new List<string>();
 		public TimeSpan jisa;
+		public bool isDlive = false;
 		
 		public IRecorderProcess()
 		{

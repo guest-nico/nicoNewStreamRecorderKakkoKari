@@ -22,7 +22,6 @@ namespace namaichi.rec
 		private string lvid = null;
 		private CookieContainer container;
 		private RecordingManager rm;
-		private string[] recFolderFileInfo;
 		private long openTime;
 		//private Html5Recorder h5r;
 		private RecordInfo ri;
@@ -32,14 +31,13 @@ namespace namaichi.rec
 		
 		public ChaseLastRecord(string lvid, 
 				CookieContainer container, RecordingManager rm,
-				string[] recFolderFileInfo, long openTime, 
+				long openTime, 
 				RecordInfo ri, TimeShiftConfig tsConfig, 
 				RecordFromUrl rfu, int lastSegmentNo)
 		{
 			this.lvid = lvid;
 			this.container = container;
 			this.rm = rm;
-			this.recFolderFileInfo = recFolderFileInfo;
 			this.openTime = openTime;
 			this.ri = ri;
 			this.tsConfig = tsConfig;
@@ -133,12 +131,12 @@ namespace namaichi.rec
 				if (data == null) return null;
 				data = System.Web.HttpUtility.HtmlDecode(data);
 				var type = util.getRegGroup(res, "\"content_type\":\"(.+?)\"");
-				var webSocketRecInfo = RecordInfo.getWebSocketInfo(data, false, false, true, rm.form, this.ri.isFmp4);
+				var webSocketRecInfo = RecordInfo.getWebSocketInfo(data, false, false, true, rm.form, this.ri.isFmp4, ri.si.isDlive);
 				if (webSocketRecInfo == null) return null;
 				
 				var segmentSaveType = rm.cfg.get("segmentSaveType");
 				var lastFile = util.getLastTimeshiftFileName(
-					recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, openTime, this.ri.isFmp4);
+					ri.si.recFolderFileInfo[0], ri.si.recFolderFileInfo[1], ri.si.recFolderFileInfo[2], ri.si.recFolderFileInfo[3], ri.si.recFolderFileInfo[4], ri.si.recFolderFileInfo[5], rm.cfg, openTime, ri.isFmp4);
 				util.debugWriteLine("timeshift lastfile " + lastFile);
 				string[] lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType, this.ri.isFmp4);
 				if (lastFileTime == null)
@@ -148,7 +146,7 @@ namespace namaichi.rec
 				tsConfig.endTimeMode = this.tsConfig.endTimeMode;
 				tsConfig.endTimeSeconds = this.tsConfig.endTimeSeconds;
 				//tsConfig.lastSegmentNo = lastSegmentNo;
-				var	recFolderFile = util.getRecFolderFilePath(recFolderFileInfo[0], recFolderFileInfo[1], recFolderFileInfo[2], recFolderFileInfo[3], recFolderFileInfo[4], recFolderFileInfo[5], rm.cfg, true, tsConfig, openTime, false, this.ri.isFmp4, false, rm.form);
+				var	recFolderFile = util.getRecFolderFilePath(ri.si.recFolderFileInfo[0], ri.si.recFolderFileInfo[1], ri.si.recFolderFileInfo[2], ri.si.recFolderFileInfo[3], ri.si.recFolderFileInfo[4], ri.si.recFolderFileInfo[5], rm.cfg, true, tsConfig, openTime, false, this.ri.isFmp4, false, rm.form);
 				if (recFolderFile == null || recFolderFile[0] == null) {
 					//パスが長すぎ
 					rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);
@@ -160,19 +158,19 @@ namespace namaichi.rec
 				var isPremium = res.IndexOf("\"member_status\":\"premium\"") > -1;
 				
 				//test
-				var ri = this.ri.clone();
-				ri.webSocketRecInfo = webSocketRecInfo;
-				ri.userId = null;
-				ri.isPremium = isPremium;
-				ri.recFolderFile = recFolderFile;
-				ri.timeShiftConfig = tsConfig;
-				ri.si.isTimeShift = true;
-				ri.isRtmp = ri.si.isRtmpOnlyPage = false;
-				ri.isChase = false;
-				ri.isRealtimeChase = false;
+				var _ri = this.ri.clone();
+				_ri.webSocketRecInfo = webSocketRecInfo;
+				_ri.userId = null;
+				_ri.isPremium = isPremium;
+				_ri.recFolderFile = recFolderFile;
+				_ri.timeShiftConfig = tsConfig;
+				_ri.si.isTimeShift = true;
+				_ri.isRtmp = _ri.si.isRtmpOnlyPage = false;
+				_ri.isChase = false;
+				_ri.isRealtimeChase = false;
 				
 				//return new WebSocketRecorder(webSocketRecInfo, container, recFolderFile, rm, rm.rfu, h5r, openTime, true, lvid, tsConfig, null/*userId*/, isPremium, TimeSpan.MaxValue, type, openTime, false, false, false, false, false, null, 0);
-				return new WebSocketRecorder(container, rm, rm.rfu, false, null, ri);
+				return new WebSocketRecorder(container, rm, rm.rfu, false, null, _ri);
 				
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);

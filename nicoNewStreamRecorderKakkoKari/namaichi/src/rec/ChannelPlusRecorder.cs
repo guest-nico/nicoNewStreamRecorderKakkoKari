@@ -337,7 +337,7 @@ namespace namaichi.rec
 		}
 		override public void reConnect(WebSocket ws) {}
 		override public string[] getRecFilePath() {
-			return ri.getRecFilePath(ri.isRtmp, ri.timeShiftConfig, ri.isFmp4, rm.cfg, rm.form);
+			return ri.getRecFilePath(rm.cfg, rm.form);
 		}
 		override public void sendComment(string s, bool is184) {}
 		override public void resetCommentFile() {
@@ -576,13 +576,15 @@ namespace namaichi.rec
 			buf += "\r\n";
 			buf += bodyBuf;
 			
-			var b = Encoding.ASCII.GetBytes(buf);
-			sw.Write(b, 0, b.Length);
-			//if (isWroteTsLine)
-				//Thread.Sleep(string.IsNullOrEmpty(tsSeconds) ? 5000 : int.Parse(tsSeconds) * 1000 / 2);
-				if (lastWriteUrl == lastUrl)
-					util.debugWriteLine("last write url");
-			//Thread.Sleep((lastWriteUrl == lastUrl) ? 20000 : 5000);
+			if (sw != null) {
+				var b = Encoding.ASCII.GetBytes(buf);
+				sw.Write(b, 0, b.Length);
+				//if (isWroteTsLine)
+					//Thread.Sleep(string.IsNullOrEmpty(tsSeconds) ? 5000 : int.Parse(tsSeconds) * 1000 / 2);
+					if (lastWriteUrl == lastUrl)
+						util.debugWriteLine("last write url");
+				//Thread.Sleep((lastWriteUrl == lastUrl) ? 20000 : 5000);
+			}
 			return lastWriteUrl == lastUrl;
 		}
 		void setKeikaJikan(double startSeconds) {
@@ -642,20 +644,25 @@ namespace namaichi.rec
 				try {
 					listener = new TcpListener(new IPEndPoint(IPAddress.Parse("127.0.0.1"), port));
 					listener.Start();
-					rm.form.addLogText("http://127.0.0.1:" + port.ToString() + "/segment.m3u8");
+					var m3u8Url = "http://127.0.0.1:" + port.ToString() + "/segment.m3u8";
+					rm.form.addLogText(m3u8Url);
 					
 					var startTime = DateTime.Now;
 					var i = 0;
 					Task.Run(() => {
 			         	for (i = 0; i < tsUrlList.Length; i++) {
-							Thread.Sleep(i == 0 || i == tsUrlList.Length - 1 ? 25000 : 5000);
+							Thread.Sleep(i == 0 || i == tsUrlList.Length - 1 ? 25000 : 10000);
 							if (rm.rfu != rfu) break;
+							writeM3u8(lines, i, 0, tsUrlList[tsUrlList.Length - 1], null);
 							util.debugWriteLine("sleep i " + i + " tsUrlList.Len " + tsUrlList.Length);
 			         	}
 					    util.debugWriteLine("m3u8 loop end");
 						stop();
 						i = -1;
 					});
+					
+					Task.Factory.StartNew(() => launchPlayer(m3u8Url), TaskCreationOptions.LongRunning);
+					
 					while (rm.rfu == rfu && i != -1) {
 						try {
 							using (var client = listener.AcceptTcpClient())
@@ -707,6 +714,12 @@ namespace namaichi.rec
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
 			}
+		}
+		void launchPlayer(string url) {
+			rm.setHlsInfo(url, ri);
+			//var p = new namaichi.play.Player(rm.form, rm.cfg);
+			rm.form.player.isUseCommentViewer = false;
+			rm.form.player.play();
 		}
 	}
 }

@@ -36,14 +36,14 @@ namespace namaichi.rec
 			ext = rfu.h5r.ri.isFmp4 ? ".mp4" : ".ts";
 			this.rec = rec;
 		}
-		public void record(string hlsSegM3uUrl, string recFolderFile, string command) {
+		public void record(string hlsSegM3uUrl, string recFolderFile, string command, string header) {
 			util.debugWriteLine("another rec start");
 			util.debugWriteLine("command "  + command);
 
 			System.IO.Directory.SetCurrentDirectory(util.getJarPath()[0]);
 			
-			var _command = command.Replace("{i}", hlsSegM3uUrl);
-			_command = getAddedExtRecFilePath(recFolderFile, _command);
+			var _command = command.Replace("{i}", "\"" + hlsSegM3uUrl + "\"");
+			_command = getAddedExtRecFilePath(recFolderFile, _command, header);
 			
 			
 			util.debugWriteLine("_command " + _command);
@@ -213,7 +213,7 @@ namespace namaichi.rec
 			if (process.HasExited)
 				util.debugWriteLine("end waitprocess " + process.HasExited);
 		}
-		private string getAddedExtRecFilePath(string recFolderFile, string command) {
+		private string getAddedExtRecFilePath(string recFolderFile, string command, string header) {
 			var r = new Regex("\\{o\\}(\\.\\S+)");
 			var m = r.Match(command);
 			if (m.Success) 
@@ -221,6 +221,7 @@ namespace namaichi.rec
 			
 			command = r.Replace(command, "\"" + recFolderFile + "${1}\"");
 			command = command.Replace("{o}", "\"" + recFolderFile + ext + "\"");
+			command = command.Replace("{h}", header);
 //			if (recFolderFile.IndexOf(" ") > -1) o = "\"" + o + "\"";
 //			_command = _command.Replace("{o}", o);
 			return command;

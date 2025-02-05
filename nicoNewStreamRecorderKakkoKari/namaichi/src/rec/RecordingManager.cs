@@ -36,6 +36,7 @@ namespace namaichi.rec
 		public RecordFromUrl rfu;
 		public bool isClickedRecBtn = false;
 		public string hlsUrl = null;
+		public RecordInfo ri = null;
 		public Stream rtmpPipe = null;
 		public IRecorderProcess wsr = null;
 		//static readonly Uri TargetUrl = new Uri("https://live.nicovideo.jp/");
@@ -46,7 +47,7 @@ namespace namaichi.rec
 		public bool isJikken = false;
 //		public JikkenRecorder jr = null;
 //		public JikkenRecordProcess jrp = null;
-		public RedistInfo ri = null;
+		public RedistInfo rdi = null;
 		
 		public bool isTitleBarInfo = false;
 		//public bool isPlayOnlyMode = false;
@@ -159,7 +160,7 @@ namespace namaichi.rec
 						form.close();
             		}
 				}
-				hlsUrl = null;
+				setHlsInfo(null, null);
 				recordingUrl = null;
         	}
         	if (bool.Parse(cfg.get("IscloseExit")) && endCode == 3) {
@@ -173,7 +174,7 @@ namespace namaichi.rec
         	}
 		}
 		public void setRedistInfo(string[] args) {
-			ri = new RedistInfo(args);
+			rdi = new RedistInfo(args);
 		}
 		public void stopRecording(bool isPlayOnlyMode) {
 			setRecModeForm(false, true);
@@ -182,7 +183,7 @@ namespace namaichi.rec
 			
 			isRecording = false;
 			rfu = null;
-			hlsUrl = null;
+			setHlsInfo(null, null);
 			
         	recordingUrl = null;
 		}
@@ -197,6 +198,10 @@ namespace namaichi.rec
        				util.debugWriteLine(e.Message + " " + e.StackTrace + " " + e.Source + " " + e.TargetSite);
        			}
             }, isAsync);
+		}
+		public void setHlsInfo(string hlsUrl, RecordInfo ri) {
+			this.hlsUrl = hlsUrl;
+			this.ri = ri;
 		}
 	}
 }

@@ -521,12 +521,12 @@ namespace namaichi.rec
 			}
 			if (s.Statistics != null) {
 				return null;
-				l.Add("/statistics");
-				var st = s.Statistics;
+				//l.Add("/statistics");
+				//var st = s.Statistics;
 				//l.Add("来場者:" + st.Viewers);
 				//l.Add("コメント:" + st.Comments);
-				if (st.AdPoints != 0) l.Add("広告:" + st.AdPoints);
-				if (st.GiftPoints != 0) l.Add("ギフト:" + st.GiftPoints);
+				//if (st.AdPoints != 0) l.Add("広告:" + st.AdPoints);
+				//if (st.GiftPoints != 0) l.Add("ギフト:" + st.GiftPoints);
 			}
 			if (s.TrialPanel != null) {
 				l.Add("/TrialPanel");

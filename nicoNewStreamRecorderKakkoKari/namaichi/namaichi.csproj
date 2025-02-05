@@ -80,7 +80,7 @@
       <HintPath>..\packages\protobuf-net.2.4.4\lib\net40\protobuf-net.dll</HintPath>
     </Reference>
     <Reference Include="SnkLib.App.CookieGetter">
-      <HintPath>..\packages\SnkLib.App.CookieGetter.2.4.2.0\lib\net45\SnkLib.App.CookieGetter.dll</HintPath>
+      <HintPath>..\packages\SnkLib.App.CookieGetter.2.4.4.0\lib\net45\SnkLib.App.CookieGetter.dll</HintPath>
     </Reference>
     <Reference Include="SnkLib.App.CookieGetter.Forms">
       <HintPath>..\packages\SnkLib.App.CookieGetter.Forms.1.4.3.0\lib\net45\SnkLib.App.CookieGetter.Forms.dll</HintPath>
@@ -137,6 +137,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\config\config.cs" />
+    <Compile Include="src\gui\AikotobaInputForm.cs" />
+    <Compile Include="src\gui\AikotobaInputForm.Designer.cs">
+      <DependentUpon>AikotobaInputForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="src\gui\commentForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -220,6 +224,7 @@
     </Compile>
     <Compile Include="src\info\AccountInfo.cs" />
     <Compile Include="src\info\ChatInfo.cs" />
+    <Compile Include="src\info\M3u8Info.cs" />
     <Compile Include="src\info\numTaskInfo.cs" />
     <Compile Include="src\info\RecordLogInfo.cs" />
     <Compile Include="src\info\RedistInfo.cs" />
@@ -239,6 +244,7 @@
     <Compile Include="src\rec\ChaseHokan.cs" />
     <Compile Include="src\rec\ChaseLastRecord.cs" />
     <Compile Include="src\rec\DeflateDecoder.cs" />
+    <Compile Include="src\rec\DliveManager.cs" />
     <Compile Include="src\rec\DropSegmentProcess.cs" />
     <Compile Include="src\rec\FFMpegConcat.cs" />
     <Compile Include="src\rec\FFMpegRecord.cs" />
@@ -277,6 +283,9 @@
     <Compile Include="src\util\varint.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="src\gui\AikotobaInputForm.resx">
+      <DependentUpon>AikotobaInputForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\gui\commentForm.resx">
       <DependentUpon>commentForm.cs</DependentUpon>
     </EmbeddedResource>
