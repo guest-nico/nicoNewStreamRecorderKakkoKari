@@ -215,6 +215,8 @@ namespace rokugaTouroku
 			this.fileNameTypeRadioBtn0 = new System.Windows.Forms.RadioButton();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.housoushaUserIDRadioBtn = new System.Windows.Forms.RadioButton();
+			this.housoushaComIDRadioBtn = new System.Windows.Forms.RadioButton();
+			this.comIDHousoushaRadioBtn = new System.Windows.Forms.RadioButton();
 			this.secondRecFolderSanshouBtn = new System.Windows.Forms.Button();
 			this.secondRecFolderText = new System.Windows.Forms.TextBox();
 			this.useSecondRecFolderChk = new System.Windows.Forms.CheckBox();
@@ -222,8 +224,6 @@ namespace rokugaTouroku
 			this.userIDRadioBtn = new System.Windows.Forms.RadioButton();
 			this.ComIDComNameRadioBtn = new System.Windows.Forms.RadioButton();
 			this.comIDRadioBtn = new System.Windows.Forms.RadioButton();
-			this.housoushaComIDRadioBtn = new System.Windows.Forms.RadioButton();
-			this.comIDHousoushaRadioBtn = new System.Windows.Forms.RadioButton();
 			this.comNameRadioBtn = new System.Windows.Forms.RadioButton();
 			this.housoushaRadioBtn = new System.Windows.Forms.RadioButton();
 			this.useSubFolderChk = new System.Windows.Forms.CheckBox();
@@ -242,6 +242,7 @@ namespace rokugaTouroku
 			this.label3 = new System.Windows.Forms.Label();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
+			this.isDliveCloseChkBox = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox17.SuspendLayout();
@@ -320,7 +321,7 @@ namespace rokugaTouroku
 			this.groupBox17.Controls.Add(this.isRestoreLocationChkBox);
 			this.groupBox17.Controls.Add(this.isMiniStartChkBox);
 			this.groupBox17.Controls.Add(this.isMinimizedChkBox);
-			this.groupBox17.Location = new System.Drawing.Point(5, 379);
+			this.groupBox17.Location = new System.Drawing.Point(5, 405);
 			this.groupBox17.Name = "groupBox17";
 			this.groupBox17.Size = new System.Drawing.Size(372, 84);
 			this.groupBox17.TabIndex = 11;
@@ -356,6 +357,7 @@ namespace rokugaTouroku
 			// 
 			// groupBox6
 			// 
+			this.groupBox6.Controls.Add(this.isDliveCloseChkBox);
 			this.groupBox6.Controls.Add(this.reserveMessageList);
 			this.groupBox6.Controls.Add(this.label18);
 			this.groupBox6.Controls.Add(this.isRecBtnOnlyMouseChkBox);
@@ -373,7 +375,7 @@ namespace rokugaTouroku
 			this.groupBox6.Controls.Add(this.isRetryChkBox);
 			this.groupBox6.Location = new System.Drawing.Point(5, 10);
 			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(395, 363);
+			this.groupBox6.Size = new System.Drawing.Size(395, 385);
 			this.groupBox6.TabIndex = 0;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Recorder設定";
@@ -428,7 +430,7 @@ namespace rokugaTouroku
 			// 
 			// isLogFileChkBox
 			// 
-			this.isLogFileChkBox.Location = new System.Drawing.Point(19, 339);
+			this.isLogFileChkBox.Location = new System.Drawing.Point(19, 361);
 			this.isLogFileChkBox.Name = "isLogFileChkBox";
 			this.isLogFileChkBox.Size = new System.Drawing.Size(337, 19);
 			this.isLogFileChkBox.TabIndex = 2;
@@ -2228,6 +2230,24 @@ namespace rokugaTouroku
 			this.housoushaUserIDRadioBtn.Text = "放送者名＋ユーザーID";
 			this.housoushaUserIDRadioBtn.UseVisualStyleBackColor = true;
 			// 
+			// housoushaComIDRadioBtn
+			// 
+			this.housoushaComIDRadioBtn.Location = new System.Drawing.Point(141, 164);
+			this.housoushaComIDRadioBtn.Name = "housoushaComIDRadioBtn";
+			this.housoushaComIDRadioBtn.Size = new System.Drawing.Size(141, 27);
+			this.housoushaComIDRadioBtn.TabIndex = 4;
+			this.housoushaComIDRadioBtn.Text = "放送者名＋チャンネルID";
+			this.housoushaComIDRadioBtn.UseVisualStyleBackColor = true;
+			// 
+			// comIDHousoushaRadioBtn
+			// 
+			this.comIDHousoushaRadioBtn.Location = new System.Drawing.Point(5, 164);
+			this.comIDHousoushaRadioBtn.Name = "comIDHousoushaRadioBtn";
+			this.comIDHousoushaRadioBtn.Size = new System.Drawing.Size(141, 27);
+			this.comIDHousoushaRadioBtn.TabIndex = 4;
+			this.comIDHousoushaRadioBtn.Text = "チャンネルID＋放送者名";
+			this.comIDHousoushaRadioBtn.UseVisualStyleBackColor = true;
+			// 
 			// secondRecFolderSanshouBtn
 			// 
 			this.secondRecFolderSanshouBtn.Location = new System.Drawing.Point(312, 81);
@@ -2292,24 +2312,6 @@ namespace rokugaTouroku
 			this.comIDRadioBtn.TabIndex = 4;
 			this.comIDRadioBtn.Text = "チャンネルID";
 			this.comIDRadioBtn.UseVisualStyleBackColor = true;
-			// 
-			// housoushaComIDRadioBtn
-			// 
-			this.housoushaComIDRadioBtn.Location = new System.Drawing.Point(141, 164);
-			this.housoushaComIDRadioBtn.Name = "housoushaComIDRadioBtn";
-			this.housoushaComIDRadioBtn.Size = new System.Drawing.Size(141, 27);
-			this.housoushaComIDRadioBtn.TabIndex = 4;
-			this.housoushaComIDRadioBtn.Text = "放送者名＋チャンネルID";
-			this.housoushaComIDRadioBtn.UseVisualStyleBackColor = true;
-			// 
-			// comIDHousoushaRadioBtn
-			// 
-			this.comIDHousoushaRadioBtn.Location = new System.Drawing.Point(5, 164);
-			this.comIDHousoushaRadioBtn.Name = "comIDHousoushaRadioBtn";
-			this.comIDHousoushaRadioBtn.Size = new System.Drawing.Size(141, 27);
-			this.comIDHousoushaRadioBtn.TabIndex = 4;
-			this.comIDHousoushaRadioBtn.Text = "チャンネルID＋放送者名";
-			this.comIDHousoushaRadioBtn.UseVisualStyleBackColor = true;
 			// 
 			// comNameRadioBtn
 			// 
@@ -2498,6 +2500,15 @@ namespace rokugaTouroku
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
 			// 
+			// isDliveCloseChkBox
+			// 
+			this.isDliveCloseChkBox.Location = new System.Drawing.Point(19, 339);
+			this.isDliveCloseChkBox.Name = "isDliveCloseChkBox";
+			this.isDliveCloseChkBox.Size = new System.Drawing.Size(271, 19);
+			this.isDliveCloseChkBox.TabIndex = 38;
+			this.isDliveCloseChkBox.Text = "新サーバー(dlive)の場合には動作を終了する";
+			this.isDliveCloseChkBox.UseVisualStyleBackColor = true;
+			// 
 			// optionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -2563,6 +2574,7 @@ namespace rokugaTouroku
 			((System.ComponentModel.ISupportInitialize)(this.maxRecordingNum)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox isDliveCloseChkBox;
 		private System.Windows.Forms.Button getChromeBtn;
 		private System.Windows.Forms.Button userSessionTestBtn2;
 		private System.Windows.Forms.RadioButton useUserSessionRadioBtn2;

@@ -195,6 +195,7 @@ public class config
 			{"IsRecBtnOnlyMouse","false"},
 			{"reserveMessage","ダイアログで確認"},
 			
+			{"IsDliveClose","false"},
 			{"IsLogFile","false"},
 			{"IsSegmentNukeInfo","true"},
 			{"IsNotSleep","false"},

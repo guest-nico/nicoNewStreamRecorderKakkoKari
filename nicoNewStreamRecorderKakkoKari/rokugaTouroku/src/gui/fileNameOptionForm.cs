@@ -38,8 +38,9 @@ namespace rokugaTouroku
 		void fileNameTypeOkBtn_Click(object sender, EventArgs e)
 		{
 			if (fileNameTypeText.Text.IndexOf("{0}") < 0) {
-				util.showMessageBoxCenterForm(this, "{0}は必ず入れてください", "注意", MessageBoxButtons.OK, MessageBoxIcon.None);
-				return;
+				//util.showMessageBoxCenterForm(this, "{0}は必ず入れてください", "注意", MessageBoxButtons.OK, MessageBoxIcon.None);
+				if (MessageBox.Show("{0}がないです。このまま登録しますか？", "注意", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
+					return;
 			}
 			DialogResult = DialogResult.OK;
 			ret = fileNameTypeText.Text;

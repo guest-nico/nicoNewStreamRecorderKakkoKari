@@ -537,7 +537,7 @@ namespace namaichi.rec
 				if (message.IndexOf("\"cookies\"") > -1) setCoookies(message);
 				
 				var bestGettableQuolity = getBestGettableQuolity(message);
-				if (ri.isChase && !isChaseStream(message)) {
+				if (ri.isChase && !isChaseStream(message) && !isDlive) {
 					var chaseReq = ri.webSocketRecInfo[2] == "1" ? 
 						"{\"type\":\"watch\",\"body\":{\"command\":\"getstream\",\"requirement\":{\"protocol\":\"hls\",\"isChasePlay\":true}}}"
 						: "{\"type\":\"changeStream\",\"data\":{\"quality\":\"" + bestGettableQuolity + "\",\"protocol\":\"hls\",\"latency\":\"low\",\"chasePlay\":true}}";

@@ -61,6 +61,10 @@ namespace namaichi.rec
 				var si = new StreamInfo(url, lvid, isTimeShift, false);
 				si.set(res);
 				if (!si.getTimeInfo()) return 3;
+				if (si.isDlive && bool.Parse(rm.cfg.get("IsDliveClose"))) {
+					rm.form.addLogText("dlive配信でした");
+					return 3;
+				}
 				
 				if ((si.data == null && !si.isRtmpOnlyPage) || (pageType != 0 && pageType != 7)) {
 					//processType 0-ok 1-retry 2-放送終了 3-その他の理由の終了

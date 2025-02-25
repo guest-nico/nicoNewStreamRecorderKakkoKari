@@ -48,6 +48,7 @@ namespace namaichi
 			this.isRecBtnOnlyMouseChkBox = new System.Windows.Forms.CheckBox();
 			this.isNotSleepChkBox = new System.Windows.Forms.CheckBox();
 			this.isAutoFollowComGen = new System.Windows.Forms.CheckBox();
+			this.isDliveCloseChkBox = new System.Windows.Forms.CheckBox();
 			this.isLogFileChkBox = new System.Windows.Forms.CheckBox();
 			this.isDescriptionTagChkBox = new System.Windows.Forms.CheckBox();
 			this.isSegmentNukeInfoChkBox = new System.Windows.Forms.CheckBox();
@@ -313,7 +314,7 @@ namespace namaichi
 			this.groupBox16.Controls.Add(this.isRestoreLocationChkBox);
 			this.groupBox16.Controls.Add(this.isMiniStartChkBox);
 			this.groupBox16.Controls.Add(this.isMinimizedChkBox);
-			this.groupBox16.Location = new System.Drawing.Point(5, 331);
+			this.groupBox16.Location = new System.Drawing.Point(5, 353);
 			this.groupBox16.Name = "groupBox16";
 			this.groupBox16.Size = new System.Drawing.Size(372, 84);
 			this.groupBox16.TabIndex = 13;
@@ -354,6 +355,7 @@ namespace namaichi
 			this.groupBox6.Controls.Add(this.isRecBtnOnlyMouseChkBox);
 			this.groupBox6.Controls.Add(this.isNotSleepChkBox);
 			this.groupBox6.Controls.Add(this.isAutoFollowComGen);
+			this.groupBox6.Controls.Add(this.isDliveCloseChkBox);
 			this.groupBox6.Controls.Add(this.isLogFileChkBox);
 			this.groupBox6.Controls.Add(this.isDescriptionTagChkBox);
 			this.groupBox6.Controls.Add(this.isSegmentNukeInfoChkBox);
@@ -366,7 +368,7 @@ namespace namaichi
 			this.groupBox6.Controls.Add(this.isRetryChkBox);
 			this.groupBox6.Location = new System.Drawing.Point(5, 10);
 			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(395, 315);
+			this.groupBox6.Size = new System.Drawing.Size(395, 337);
 			this.groupBox6.TabIndex = 0;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Recorder設定";
@@ -420,9 +422,18 @@ namespace namaichi
 			this.isAutoFollowComGen.UseVisualStyleBackColor = true;
 			this.isAutoFollowComGen.Visible = false;
 			// 
+			// isDliveCloseChkBox
+			// 
+			this.isDliveCloseChkBox.Location = new System.Drawing.Point(19, 287);
+			this.isDliveCloseChkBox.Name = "isDliveCloseChkBox";
+			this.isDliveCloseChkBox.Size = new System.Drawing.Size(271, 19);
+			this.isDliveCloseChkBox.TabIndex = 2;
+			this.isDliveCloseChkBox.Text = "新サーバー(dlive)の場合には動作を終了する";
+			this.isDliveCloseChkBox.UseVisualStyleBackColor = true;
+			// 
 			// isLogFileChkBox
 			// 
-			this.isLogFileChkBox.Location = new System.Drawing.Point(19, 287);
+			this.isLogFileChkBox.Location = new System.Drawing.Point(19, 309);
 			this.isLogFileChkBox.Name = "isLogFileChkBox";
 			this.isLogFileChkBox.Size = new System.Drawing.Size(271, 19);
 			this.isLogFileChkBox.TabIndex = 2;
@@ -2535,6 +2546,7 @@ namespace namaichi
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox isDliveCloseChkBox;
 		private System.Windows.Forms.Button getChromeBtn;
 		private System.Windows.Forms.Button userSessionTestBtn2;
 		private System.Windows.Forms.RadioButton useUserSessionRadioBtn2;
