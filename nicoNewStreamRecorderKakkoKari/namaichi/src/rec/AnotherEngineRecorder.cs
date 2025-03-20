@@ -42,8 +42,7 @@ namespace namaichi.rec
 
 			System.IO.Directory.SetCurrentDirectory(util.getJarPath()[0]);
 			
-			var _command = command.Replace("{i}", "\"" + hlsSegM3uUrl + "\"");
-			_command = getAddedExtRecFilePath(recFolderFile, _command, header);
+			var _command = getCommand(hlsSegM3uUrl, recFolderFile, command, header);
 			
 			
 			util.debugWriteLine("_command " + _command);
@@ -213,7 +212,9 @@ namespace namaichi.rec
 			if (process.HasExited)
 				util.debugWriteLine("end waitprocess " + process.HasExited);
 		}
-		private string getAddedExtRecFilePath(string recFolderFile, string command, string header) {
+		public static string getAddedExtRecFilePath(string recFolderFile, string _command, string header, string ext, string hlsSegM3uUrl) {
+			var command = _command.Replace("{i}", "\"" + hlsSegM3uUrl + "\"");
+			
 			var r = new Regex("\\{o\\}(\\.\\S+)");
 			var m = r.Match(command);
 			if (m.Success) 
@@ -221,7 +222,7 @@ namespace namaichi.rec
 			
 			command = r.Replace(command, "\"" + recFolderFile + "${1}\"");
 			command = command.Replace("{o}", "\"" + recFolderFile + ext + "\"");
-			command = command.Replace("{h}", header);
+			//command = command.Replace("{h}", header);
 //			if (recFolderFile.IndexOf(" ") > -1) o = "\"" + o + "\"";
 //			_command = _command.Replace("{o}", o);
 			return command;
@@ -260,49 +261,68 @@ namespace namaichi.rec
 			util.debugWriteLine(dur + " " + sum);
 			return double.Parse(dur) + sum > rec.ri.timeShiftConfig.endTimeSeconds + 10;
 		}
+		string getCommand(string hlsSegM3uUrl, string recFolderFile, string command, string header) {
+			var _command = getAddedExtRecFilePath(recFolderFile, command, header, ext, hlsSegM3uUrl);
+			
+			var rffi = rec.ri.si.recFolderFileInfo;
+			var us = "";
+			try {
+				var c = rfu.h5r.wsr.container.GetCookies(new Uri("https://live.nicovideo.jp/watch/" + rec.ri.si.lvid));
+				us = c["user_session"] != null ? c["user_session"].Value : "";
+			} catch (Exception e) {util.debugWriteLine(e.Message + e.Source + e.StackTrace);}
+			
+			var isProxy = bool.Parse(rm.cfg.get("useProxy"));
+			_command = util.getDokujiSetteiArg(rffi[0], rffi[1], rffi[2], 
+					rffi[3], rffi[4], _command, 
+					util.getUnixToDatetime(rec.ri.si._openTime / 1), rffi[5],
+					us, rec.ri.timeShiftConfig,
+					isProxy ? rm.cfg.get("proxyAddress") : "", 
+					isProxy ? rm.cfg.get("proxyPort") : "");
+			return _command;
+		}
 		[DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-    public static extern bool CreateProcess(
-        string lpApplicationName,
-        string lpCommandLine,
-        IntPtr lpProcessAttributes,
-        IntPtr lpThreadAttributes,
-        bool bInheritHandles,
-        uint dwCreationFlags,
-        IntPtr lpEnvironment,
-        string lpCurrentDirectory,
-        ref STARTUPINFO lpStartupInfo,
-        out PROCESS_INFORMATION lpProcessInformation);
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct STARTUPINFO
-    {
-        public uint cb;
-        public string lpReserved;
-        public string lpDesktop;
-        public string lpTitle;
-        public uint dwX;
-        public uint dwY;
-        public uint dwXSize;
-        public uint dwYSize;
-        public uint dwXCountChars;
-        public uint dwYCountChars;
-        public uint dwFillAttribute;
-        public uint dwFlags;
-        public ushort wShowWindow;
-        public ushort cbReserved2;
-        public IntPtr lpReserved2;
-        public IntPtr hStdInput;
-        public IntPtr hStdOutput;
-        public IntPtr hStdError;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct PROCESS_INFORMATION
-    {
-        public IntPtr hProcess;
-        public IntPtr hThread;
-        public uint dwProcessId;
-        public uint dwThreadId;
-    }
+	    public static extern bool CreateProcess(
+	        string lpApplicationName,
+	        string lpCommandLine,
+	        IntPtr lpProcessAttributes,
+	        IntPtr lpThreadAttributes,
+	        bool bInheritHandles,
+	        uint dwCreationFlags,
+	        IntPtr lpEnvironment,
+	        string lpCurrentDirectory,
+	        ref STARTUPINFO lpStartupInfo,
+	        out PROCESS_INFORMATION lpProcessInformation);
+	
+	    [StructLayout(LayoutKind.Sequential)]
+	    public struct STARTUPINFO
+	    {
+	        public uint cb;
+	        public string lpReserved;
+	        public string lpDesktop;
+	        public string lpTitle;
+	        public uint dwX;
+	        public uint dwY;
+	        public uint dwXSize;
+	        public uint dwYSize;
+	        public uint dwXCountChars;
+	        public uint dwYCountChars;
+	        public uint dwFillAttribute;
+	        public uint dwFlags;
+	        public ushort wShowWindow;
+	        public ushort cbReserved2;
+	        public IntPtr lpReserved2;
+	        public IntPtr hStdInput;
+	        public IntPtr hStdOutput;
+	        public IntPtr hStdError;
+	    }
+	
+	    [StructLayout(LayoutKind.Sequential)]
+	    public struct PROCESS_INFORMATION
+	    {
+	        public IntPtr hProcess;
+	        public IntPtr hThread;
+	        public uint dwProcessId;
+	        public uint dwThreadId;
+	    }
 	}
 }

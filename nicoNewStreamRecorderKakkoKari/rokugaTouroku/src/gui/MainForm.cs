@@ -113,6 +113,7 @@ namespace rokugaTouroku
 			changeRecBtnClickEvent(bool.Parse(config.get("IsRecBtnOnlyMouse")));
 			
 			setQualitySetting();
+			setTsBtnFromSetting();
 			
 			var osName = config.get("osName");
 			if (osName == "") {
@@ -134,8 +135,8 @@ namespace rokugaTouroku
 			
 			qualityRank = config.get("rokugaTourokuQualityRank");
 			qualityBtn.Text = getQualityRankStr(qualityRank);
-			setConvertList(int.Parse(config.get("afterConvertMode")));
-			recCommmentList.Text = "映像＋コメント";
+			setConvertList(int.Parse(config.get("tourokuAfterConvertMode")));
+			recCommmentList.Text = config.get("tourokuRecComment");
 			
 			setBackColor(Color.FromArgb(int.Parse(config.get("tourokuBackColor"))));
 			setForeColor(Color.FromArgb(int.Parse(config.get("tourokuForeColor"))));
@@ -242,6 +243,8 @@ namespace rokugaTouroku
 			saveList();
 			saveFormState();
 			saveMenuSetting();
+			config.set("tourokuRecComment", recCommmentList.Text);
+			config.set("tourokuAfterConvertMode", util.getAfterConvertTypeNum(afterConvertModeList.Text));
 			return true;
 		}
 		public void addLogText(string t) {
@@ -379,7 +382,17 @@ namespace rokugaTouroku
 			}
 			return start + "-" + end;
 		}
-		
+		void setTsBtnFromSetting() {
+			try {
+				var segmentSaveType = config.get("segmentSaveType");
+				var o = new TimeShiftOptionForm(segmentSaveType, config, setTsConfig);
+				o.okBtn_Click(null, null);
+				setTimeshiftBtn.Text = getSetTsBtnText(o.ret);
+				setTsConfig = o.ret;
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+			}
+		}
 		void qualityBtn_Click(object sender, EventArgs e)
 		{
 			var o = new QualityForm(qualityRank, int.Parse(config.get("fontSize")));

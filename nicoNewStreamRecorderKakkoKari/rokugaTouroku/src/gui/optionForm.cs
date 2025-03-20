@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using rokugaTouroku.config;
+using rokugaTouroku.gui;
 using rokugaTouroku.rec;
 using SunokoLibrary.Application;
 using SunokoLibrary.Application.Browsers;
@@ -1286,6 +1287,14 @@ namespace rokugaTouroku
 			if (p != null && !p.HasExited) p.Kill();
 			util.CloseProcessByName("chrome");
 			nicoSessionComboBox1.Selector.UpdateAsync();
+		}
+		void DisplayArgInfoLabelLinkClicked(object _sender, LinkLabelLinkClickedEventArgs e) {
+			util.debugWriteLine("display arg info click");
+			LinkLabel sender = (LinkLabel)_sender;
+			if (e.Button == MouseButtons.Left) {
+				var f = new ArgOptionForm(int.Parse(cfg.get("fontSize")));
+				f.ShowDialog();
+			}
 		}
 	}
 }

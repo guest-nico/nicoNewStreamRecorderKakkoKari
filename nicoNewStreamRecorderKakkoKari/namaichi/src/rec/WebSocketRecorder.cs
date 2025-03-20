@@ -537,7 +537,7 @@ namespace namaichi.rec
 				if (message.IndexOf("\"cookies\"") > -1) setCoookies(message);
 				
 				var bestGettableQuolity = getBestGettableQuolity(message);
-				if (ri.isChase && !isChaseStream(message) && !isDlive) {
+				if (!isDlive && ri.isChase && !isChaseStream(message)) {
 					var chaseReq = ri.webSocketRecInfo[2] == "1" ? 
 						"{\"type\":\"watch\",\"body\":{\"command\":\"getstream\",\"requirement\":{\"protocol\":\"hls\",\"isChasePlay\":true}}}"
 						: "{\"type\":\"changeStream\",\"data\":{\"quality\":\"" + bestGettableQuolity + "\",\"protocol\":\"hls\",\"latency\":\"low\",\"chasePlay\":true}}";
@@ -2034,6 +2034,7 @@ namespace namaichi.rec
 			while (firstSegmentSecond == -1 && rm.rfu == rfu && engineMode != "3" && !isDlive) {
 				Thread.Sleep(1000);
 			}
+			if (engineMode != "0" && firstSegmentSecond == -1) firstSegmentSecond = ri.timeShiftConfig.timeSeconds;
 			var vposStartTime = (ri.timeShiftConfig.isVposStartTime) ? (long)firstSegmentSecond : 0;
 			if (ri.si.type == "official" || ri.si.type == "channel" || ri.si.type == "user") {
 				//return chatinfo.getFormatXml(ri.si._openTime + vposStartTime);

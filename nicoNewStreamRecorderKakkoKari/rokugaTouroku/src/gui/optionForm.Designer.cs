@@ -43,6 +43,7 @@ namespace rokugaTouroku
 			this.isMiniStartChkBox = new System.Windows.Forms.CheckBox();
 			this.isMinimizedChkBox = new System.Windows.Forms.CheckBox();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.isDliveCloseChkBox = new System.Windows.Forms.CheckBox();
 			this.reserveMessageList = new System.Windows.Forms.ComboBox();
 			this.label18 = new System.Windows.Forms.Label();
 			this.isRecBtnOnlyMouseChkBox = new System.Windows.Forms.CheckBox();
@@ -99,6 +100,7 @@ namespace rokugaTouroku
 			this.label4 = new System.Windows.Forms.Label();
 			this.afterConvertModeList = new System.Windows.Forms.ComboBox();
 			this.groupBox10 = new System.Windows.Forms.GroupBox();
+			this.displayArgInfoLabel = new System.Windows.Forms.LinkLabel();
 			this.label15 = new System.Windows.Forms.Label();
 			this.latencyList = new System.Windows.Forms.ComboBox();
 			this.label16 = new System.Windows.Forms.Label();
@@ -242,7 +244,6 @@ namespace rokugaTouroku
 			this.label3 = new System.Windows.Forms.Label();
 			this.button3 = new System.Windows.Forms.Button();
 			this.button4 = new System.Windows.Forms.Button();
-			this.isDliveCloseChkBox = new System.Windows.Forms.CheckBox();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.groupBox17.SuspendLayout();
@@ -379,6 +380,15 @@ namespace rokugaTouroku
 			this.groupBox6.TabIndex = 0;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = "Recorder設定";
+			// 
+			// isDliveCloseChkBox
+			// 
+			this.isDliveCloseChkBox.Location = new System.Drawing.Point(19, 339);
+			this.isDliveCloseChkBox.Name = "isDliveCloseChkBox";
+			this.isDliveCloseChkBox.Size = new System.Drawing.Size(271, 19);
+			this.isDliveCloseChkBox.TabIndex = 38;
+			this.isDliveCloseChkBox.Text = "新サーバー(dlive)の場合には動作を終了する";
+			this.isDliveCloseChkBox.UseVisualStyleBackColor = true;
 			// 
 			// reserveMessageList
 			// 
@@ -959,6 +969,7 @@ namespace rokugaTouroku
 			// 
 			// groupBox10
 			// 
+			this.groupBox10.Controls.Add(this.displayArgInfoLabel);
 			this.groupBox10.Controls.Add(this.label15);
 			this.groupBox10.Controls.Add(this.latencyList);
 			this.groupBox10.Controls.Add(this.label16);
@@ -982,6 +993,18 @@ namespace rokugaTouroku
 			this.groupBox10.TabIndex = 0;
 			this.groupBox10.TabStop = false;
 			this.groupBox10.Text = "録画エンジン";
+			// 
+			// displayArgInfoLabel
+			// 
+			this.displayArgInfoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+									| System.Windows.Forms.AnchorStyles.Right)));
+			this.displayArgInfoLabel.Location = new System.Drawing.Point(261, 179);
+			this.displayArgInfoLabel.Name = "displayArgInfoLabel";
+			this.displayArgInfoLabel.Size = new System.Drawing.Size(141, 13);
+			this.displayArgInfoLabel.TabIndex = 49;
+			this.displayArgInfoLabel.TabStop = true;
+			this.displayArgInfoLabel.Text = "その他の引数の書式の説明";
+			this.displayArgInfoLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.DisplayArgInfoLabelLinkClicked);
 			// 
 			// label15
 			// 
@@ -2500,15 +2523,6 @@ namespace rokugaTouroku
 			this.button4.UseVisualStyleBackColor = true;
 			this.button4.Click += new System.EventHandler(this.optionCancel_Click);
 			// 
-			// isDliveCloseChkBox
-			// 
-			this.isDliveCloseChkBox.Location = new System.Drawing.Point(19, 339);
-			this.isDliveCloseChkBox.Name = "isDliveCloseChkBox";
-			this.isDliveCloseChkBox.Size = new System.Drawing.Size(271, 19);
-			this.isDliveCloseChkBox.TabIndex = 38;
-			this.isDliveCloseChkBox.Text = "新サーバー(dlive)の場合には動作を終了する";
-			this.isDliveCloseChkBox.UseVisualStyleBackColor = true;
-			// 
 			// optionForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -2574,6 +2588,7 @@ namespace rokugaTouroku
 			((System.ComponentModel.ISupportInitialize)(this.maxRecordingNum)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.LinkLabel displayArgInfoLabel;
 		private System.Windows.Forms.CheckBox isDliveCloseChkBox;
 		private System.Windows.Forms.Button getChromeBtn;
 		private System.Windows.Forms.Button userSessionTestBtn2;

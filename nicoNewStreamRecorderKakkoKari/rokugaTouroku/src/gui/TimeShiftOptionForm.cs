@@ -61,7 +61,7 @@ namespace rokugaTouroku
 			*/
 			setFormFromConfig();
 						
-			
+			/*
 			hText.Text = tsConfigIn.h.ToString();
 			mText.Text = tsConfigIn.m.ToString();
 			sText.Text = tsConfigIn.s.ToString();
@@ -78,7 +78,7 @@ namespace rokugaTouroku
 			if (tsConfigIn.endTimeMode == 0) isEndTimeRadioBtn.Checked = true;
 			else if (tsConfigIn.endTimeMode == 1) isManualEndTimeRadioBtn.Checked = true;
 			if (!tsConfigIn.isDeletePosTime) isDeletePosTimeChkBox.Checked = false;
-			
+			*/
 			updateTimeShiftStartTimeChkBox();
 			updateIsFromLastTimeRadioBtn();
 			//updateIsM3u8RadioBtn_CheckedChanged();
@@ -98,7 +98,7 @@ namespace rokugaTouroku
 			Close();
 		}
 		
-		void okBtn_Click(object sender, EventArgs e)
+		public void okBtn_Click(object sender, EventArgs e)
 		{
 			var startType = (isFromLastTimeRadioBtn.Checked) ? 1 : 0;
 			var startTimeMode = (isMostStartTimeRadioBtn.Checked ? 0 :((isStartTimeRadioBtn.Checked) ? 1 : 2));

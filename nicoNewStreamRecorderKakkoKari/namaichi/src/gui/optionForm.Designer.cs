@@ -101,6 +101,7 @@ namespace namaichi
 			this.afterConvertModeCmdText = new System.Windows.Forms.TextBox();
 			this.afterConvertModeCmdDefaultBtn = new System.Windows.Forms.Button();
 			this.groupBox10 = new System.Windows.Forms.GroupBox();
+			this.displayArgInfoLabel = new System.Windows.Forms.LinkLabel();
 			this.label15 = new System.Windows.Forms.Label();
 			this.latencyList = new System.Windows.Forms.ComboBox();
 			this.label14 = new System.Windows.Forms.Label();
@@ -977,6 +978,7 @@ namespace namaichi
 			// 
 			// groupBox10
 			// 
+			this.groupBox10.Controls.Add(this.displayArgInfoLabel);
 			this.groupBox10.Controls.Add(this.label15);
 			this.groupBox10.Controls.Add(this.latencyList);
 			this.groupBox10.Controls.Add(this.label14);
@@ -1000,6 +1002,18 @@ namespace namaichi
 			this.groupBox10.TabIndex = 0;
 			this.groupBox10.TabStop = false;
 			this.groupBox10.Text = "録画エンジン";
+			// 
+			// displayArgInfoLabel
+			// 
+			this.displayArgInfoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+									| System.Windows.Forms.AnchorStyles.Right)));
+			this.displayArgInfoLabel.Location = new System.Drawing.Point(261, 179);
+			this.displayArgInfoLabel.Name = "displayArgInfoLabel";
+			this.displayArgInfoLabel.Size = new System.Drawing.Size(141, 13);
+			this.displayArgInfoLabel.TabIndex = 48;
+			this.displayArgInfoLabel.TabStop = true;
+			this.displayArgInfoLabel.Text = "その他の引数の書式の説明";
+			this.displayArgInfoLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.DisplayArgInfoLabelLinkClicked);
 			// 
 			// label15
 			// 
@@ -2546,6 +2560,7 @@ namespace namaichi
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.LinkLabel displayArgInfoLabel;
 		private System.Windows.Forms.CheckBox isDliveCloseChkBox;
 		private System.Windows.Forms.Button getChromeBtn;
 		private System.Windows.Forms.Button userSessionTestBtn2;

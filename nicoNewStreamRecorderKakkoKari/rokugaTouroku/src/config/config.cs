@@ -251,6 +251,9 @@ public class config
 			{"recLinkColor","-16776961"},
 			{"tourokuBackColor","-986896"},
 			{"tourokuForeColor","-16777216"},
+			{"tourokuRecComment","映像＋コメント"},
+			{"tourokuAfterConvertMode","0"},
+			
 		};
 		try {
 			var buf = new Dictionary<string,string>();

@@ -16,6 +16,7 @@ using System.Drawing;
 using namaichi;
 using namaichi.config;
 using namaichi.info;
+using namaichi.rec;
 using namaichi.utility;
 using SuperSocket.ClientEngine.Proxy;
 
@@ -35,8 +36,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.89.16";
-	public static string versionDayStr = "2025/02/26";
+	public static string versionStr = "ver0.89.17";
+	public static string versionDayStr = "2025/03/21";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -271,6 +272,9 @@ class util {
 		*/
 		return name;
 	}
+	public static string getOkArg(string arg) {
+		return arg.Replace("\"", "”");
+	}
 	private static string getSubFolderName(string host, string group, string title, string lvId, string communityNum, string userId, config cfg) {
 		var n = cfg.get("subFolderNameType");
 		if (n == null) n = "1";
@@ -345,9 +349,15 @@ class util {
 		
 	}
 	public static string getFileNameTypeSample(string filenametype) {
-			//var format = cfg.get("filenameformat");
-			return getDokujiSetteiFileName("放送者名", "チャンネル", "タイトル", "lv12345", "co9876", filenametype, DateTime.Now, "1000").Replace("{w}", "2").Replace("{c}", "1");
-		}
+			return getDokujiSetteiFileName("放送者名", "チャンネル", "タイトル", "lv12345", "ch9876", filenametype, DateTime.Now, "1000");
+	}
+	public static string getArgTypeSample(string filenametype) {
+			var _command = AnotherEngineRecorder.getAddedExtRecFilePath("C:\\Users\\user", filenametype, "Cookie: aaa=aaa;", ".ts", "https://main.m3u8");
+			var tsConfig = new TimeShiftConfig();
+			tsConfig.timeSeconds = 83;
+			tsConfig.endTimeSeconds = 5025;
+			return getDokujiSetteiArg("放送者名", "チャンネル", "タイトル", "lv12345", "ch9876", _command, DateTime.Now, "1000", "user_session_12345_abcde", tsConfig, "https://proxy", "8080").Replace("{w}", "2").Replace("{c}", "1");
+	}
 	public static string getOkCommentFileName(config cfg, string fName, string lvid, bool isTimeShift, bool isRtmp) {
 		var kakutyousi = (cfg.get("IsgetcommentXml") == "true") ? ".xml" : ".json";
 		var engineMode = cfg.get("EngineMode");
@@ -1747,5 +1757,44 @@ public static void soundEnd(config cfg, MainForm form) {
 		for (var i = 0; i < appbArr.Length; i++) {
 			Environment.SetEnvironmentVariable("appbKey" + i, appbArr[i]);
 		}
+	}
+	public static string getDokujiSetteiArg(string host, string group, string title, string lvId, string communityNum, string format, DateTime _openTime, string hostId, string us, TimeShiftConfig tsConfig, string proxyUrl, string proxyPort) {
+		var type = format;
+		
+		var dt = _openTime;
+		var yearBuf = ("0000" + dt.Year.ToString());
+		var year2 = yearBuf.Substring(yearBuf.Length - 2);
+		var year4 = yearBuf.Substring(yearBuf.Length - 4);
+		var monthBuf = "00" + dt.Month.ToString();
+		var month = monthBuf.Substring(monthBuf.Length - 2);
+		var dayBuf = "00" + dt.Day.ToString();
+		var day = dayBuf.Substring(dayBuf.Length - 2);
+		
+		var week = dt.ToString("ddd");
+		var hour = dt.ToString("HH");
+		var minute = dt.ToString("mm");
+		var second = dt.ToString("ss");
+		
+		type = type.Replace("{Y}", year4);
+		type = type.Replace("{y}", year2);
+		type = type.Replace("{M}", month);
+		type = type.Replace("{D}", day);
+		type = type.Replace("{W}", week);
+		type = type.Replace("{h}", hour);
+		type = type.Replace("{m}", minute);
+		type = type.Replace("{s}", second);
+		type = type.Replace("{0}", lvId);
+		type = type.Replace("{1}", getOkArg(title));
+		type = type.Replace("{2}", getOkArg(host));
+		type = type.Replace("{3}", communityNum);
+		type = type.Replace("{4}", getOkArg(group));
+		type = type.Replace("{5}", hostId);
+		type = type.Replace("{url}", "https://live.nicovideo.jp/watch/" + lvId);
+		type = type.Replace("{us}", us);
+		type = type.Replace("{tsStart}", tsConfig != null ? tsConfig.timeSeconds.ToString() : "");
+		type = type.Replace("{tsEnd}", tsConfig != null ? tsConfig.endTimeSeconds.ToString() : "");
+		type = type.Replace("{proxyAddress}", proxyUrl);
+		type = type.Replace("{proxyPort}", proxyPort);
+		return type;
 	}
 }

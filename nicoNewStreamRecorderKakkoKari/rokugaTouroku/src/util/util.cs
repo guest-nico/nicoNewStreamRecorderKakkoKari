@@ -28,8 +28,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.11.6";
-	public static string versionDayStr = "2025/02/26";
+	public static string versionStr = "ver0.1.3.11.7";
+	public static string versionDayStr = "2025/03/21";
 	public static string osName = null;
 	public static bool isCurl = true;
 	public static bool isWebRequestOk = false;
@@ -1197,5 +1197,85 @@ class util {
 			util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
 		}
 	    return null;
+    }
+	public static string getArgTypeSample(string filenametype) {
+			var _command = getAddedExtRecFilePath("C:\\Users\\user", filenametype, "Cookie: aaa=aaa;", ".ts", "https://main.m3u8");
+			var tsConfig = new TimeShiftConfig();
+			tsConfig.timeSeconds = 83;
+			tsConfig.endTimeSeconds = 5025;
+			return getDokujiSetteiArg("放送者名", "チャンネル", "タイトル", "lv12345", "ch9876", _command, DateTime.Now, "1000", "user_session_12345_abcde", tsConfig, "https://proxy", "8080").Replace("{w}", "2").Replace("{c}", "1");
+	}
+    private static string getAddedExtRecFilePath(string recFolderFile, string _command, string header, string ext, string hlsSegM3uUrl) {
+		var command = _command.Replace("{i}", "\"" + hlsSegM3uUrl + "\"");
+		
+		var r = new Regex("\\{o\\}(\\.\\S+)");
+		var m = r.Match(command);
+		if (m.Success) 
+			ext = m.Groups[1].ToString();
+		
+		command = r.Replace(command, "\"" + recFolderFile + "${1}\"");
+		command = command.Replace("{o}", "\"" + recFolderFile + ext + "\"");
+		//command = command.Replace("{h}", header);
+//			if (recFolderFile.IndexOf(" ") > -1) o = "\"" + o + "\"";
+//			_command = _command.Replace("{o}", o);
+		return command;
+	}
+    public static string getDokujiSetteiArg(string host, string group, string title, string lvId, string communityNum, string format, DateTime _openTime, string hostId, string us, TimeShiftConfig tsConfig, string proxyUrl, string proxyPort) {
+		var type = format;
+		
+		var dt = _openTime;
+		var yearBuf = ("0000" + dt.Year.ToString());
+		var year2 = yearBuf.Substring(yearBuf.Length - 2);
+		var year4 = yearBuf.Substring(yearBuf.Length - 4);
+		var monthBuf = "00" + dt.Month.ToString();
+		var month = monthBuf.Substring(monthBuf.Length - 2);
+		var dayBuf = "00" + dt.Day.ToString();
+		var day = dayBuf.Substring(dayBuf.Length - 2);
+		
+		var week = dt.ToString("ddd");
+		var hour = dt.ToString("HH");
+		var minute = dt.ToString("mm");
+		var second = dt.ToString("ss");
+		
+		type = type.Replace("{Y}", year4);
+		type = type.Replace("{y}", year2);
+		type = type.Replace("{M}", month);
+		type = type.Replace("{D}", day);
+		type = type.Replace("{W}", week);
+		type = type.Replace("{h}", hour);
+		type = type.Replace("{m}", minute);
+		type = type.Replace("{s}", second);
+		type = type.Replace("{0}", lvId);
+		type = type.Replace("{1}", title);
+		type = type.Replace("{2}", host);
+		type = type.Replace("{3}", communityNum);
+		type = type.Replace("{4}", group);
+		type = type.Replace("{5}", hostId);
+		type = type.Replace("{url}", "https://live.nicovideo.jp/watch/" + lvId);
+		type = type.Replace("{us}", us);
+		type = type.Replace("{tsStart}", tsConfig != null ? tsConfig.timeSeconds.ToString() : "");
+		type = type.Replace("{tsEnd}", tsConfig != null ? tsConfig.endTimeSeconds.ToString() : "");
+		type = type.Replace("{proxyAddress}", proxyUrl);
+		type = type.Replace("{proxyPort}", proxyPort);
+		return type;
+	}
+    public static string getAfterConvertTypeNum(string afterConvertType) {
+    	var t = afterConvertType;
+		if (t == "処理しない") return "0";
+		if (t == "形式を変更せず処理する") return "1";
+		if (t == "ts") return "2";
+		if (t == "avi") return "3";
+		if (t == "mp4") return "4";
+		if (t == "flv") return "5";
+		if (t == "mov") return "6";
+		if (t == "wmv") return "7";
+		if (t == "vob") return "8";
+		if (t == "mkv") return "9";
+		if (t == "mp3(音声)") return "10";
+		if (t == "wav(音声)") return "11";
+		if (t == "wma(音声)") return "12";
+		if (t == "aac(音声)") return "13";
+		if (t == "ogg(音声)") return "14";
+		return "0";
     }
 }

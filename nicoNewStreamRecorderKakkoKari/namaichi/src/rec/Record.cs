@@ -237,8 +237,10 @@ namespace namaichi.rec
 		private void realTimeRecord() {
 			if (hlsSegM3uUrl == null)
 				hlsSegM3uUrl = getHlsSegM3uUrl(hlsMasterUrl);
-			rm.setHlsInfo(hlsSegM3uUrl, ri);
-			rm.form.setPlayerBtnEnable(true);
+			if (!wr.isDlive) {
+				rm.setHlsInfo(hlsSegM3uUrl, ri);
+				rm.form.setPlayerBtnEnable(true);
+			}
 			
 			if (engineMode == "0") {
 				m3u8GetterTask = Task.Factory.StartNew(() => {startM3u8Getter();}, TaskCreationOptions.LongRunning);
@@ -277,7 +279,7 @@ namespace namaichi.rec
 					Thread.Sleep(500);
 					
 				} else {
-					if (wr != null) {
+					if (wr != null && !wr.isDlive) {
 						wr.setSync(0, 0, hlsSegM3uUrl);
 						if (!isFirst) wr.resetCommentFile();
 					}
@@ -286,12 +288,18 @@ namespace namaichi.rec
 					var aer = new AnotherEngineRecorder(rm, rfu, this);
 					aer.record(hlsSegM3uUrl, recFolderFile, anotherEngineCommand, null);
 					
+					if (wr.isDlive) {
+						isEnd = isEndProgram = true;
+						isRetry = false;
+						continue;
+					}
 					recFolderFile = util.incrementRecFolderFile(recFolderFile);//wr.getRecFilePath()[1];
 					setReconnecting(true);
 					if (wr != null)
 						wr.sync = 0;
 					
 					reConnect();
+					Thread.Sleep(10000);
 					continue;
 					
 				}
@@ -1555,8 +1563,10 @@ namespace namaichi.rec
 				wr.tsStartTime = TimeSpan.FromSeconds((double)start);
 				hlsSegM3uUrl = getHlsSegM3uUrl(baseMasterUrl);
 			}
-			rm.setHlsInfo(hlsSegM3uUrl, ri);
-			rm.form.setPlayerBtnEnable(true);
+			if (!wr.isDlive) {
+				rm.setHlsInfo(hlsSegM3uUrl, ri);
+				rm.form.setPlayerBtnEnable(true);
+			}
 			
 			var isWriteEnd = new bool[1]{false};
 			if (engineMode == "0" && ri.isChase)
@@ -1587,15 +1597,18 @@ namespace namaichi.rec
 					if (!isFirst) wr.resetCommentFile();
 					isFirst = false;
 					
-					var recStartTime = DateTime.Now;
-					var startPlayList = !ri.si.isChannelPlus ? 
-							util.getPageSource(hlsSegM3uUrl, null, referer, false, 2000, ua) :
-							getM3u8Curl.getStr(hlsSegM3uUrl, util.getHeader(), CurlHttpVersion.CURL_HTTP_VERSION_3);
-					
-					var _currentPos = util.getRegGroup(startPlayList, "#CURRENT-POSITION:(\\d+)");
-					wr.firstSegmentSecond = (_currentPos == null) ? 0 : double.Parse(_currentPos, NumberStyles.Float);
+					string startPlayList = null;
+					DateTime recStartTime = DateTime.Now;
+					if (!wr.isDlive) {
+						startPlayList = !ri.si.isChannelPlus ? 
+								util.getPageSource(hlsSegM3uUrl, null, referer, false, 2000, ua) :
+								getM3u8Curl.getStr(hlsSegM3uUrl, util.getHeader(), CurlHttpVersion.CURL_HTTP_VERSION_3);
+						
+						var _currentPos = util.getRegGroup(startPlayList, "#CURRENT-POSITION:(\\d+)");
+						wr.firstSegmentSecond = (_currentPos == null) ? 0 : double.Parse(_currentPos, NumberStyles.Float);
+					}
 					var aer = new AnotherEngineRecorder(rm, rfu, this);
-					setSpeed(true);
+					if (!wr.isDlive) setSpeed(true);
 					aer.record(hlsSegM3uUrl, recFolderFile, anotherEngineCommand, "\"cookie: " + container.GetCookieHeader(new Uri(hlsMasterUrl)) + "\"");
 					
 					if (isEndProgram || isAnotherEngineTimeShiftEnd(recStartTime, hlsSegM3uUrl, startPlayList) && !ri.isRealtimeChase) {
@@ -1608,6 +1621,7 @@ namespace namaichi.rec
 					 
 					setReconnecting(true);
 					reConnect();
+					Thread.Sleep(10000);
 					continue;
 					
 				} else if (engineMode == "3") {
@@ -1904,6 +1918,7 @@ namespace namaichi.rec
 		}
 		private bool isAnotherEngineTimeShiftEnd(DateTime recStartTime, string hlsSegM3uUrl, string startPlayList) {
 			if (ri.si.isChannelPlus) return false;
+			if (wr.isDlive) return true;
 			
 			if (startPlayList == null) return false;
 			var lastTsNum = util.getRegGroup(startPlayList, "[\\s\\S]+\n(\\d+)" + ext, 1, rm.regGetter.getLastTsNum());

@@ -9,6 +9,7 @@
 using System;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Web;
 using namaichi.rec;
 using namaichi.utility;
 
@@ -151,16 +152,16 @@ namespace namaichi.info
 							
 							var isChannel = util.getRegGroup(data, "visualProviderType\":\"(channel)\",\"title\"") != null;
 				//			host = util.getRegGroup(res, "provider......name.....(.*?)\\\\\"");
-							group = util.getRegGroup(data, "\"socialGroup\".*?\"name\".\"(.*?)\"");
+							group = util.getRegGroup(data, "\"socialGroup\".*?\"name\".\"(.*?)\"").Replace("\\\"", "\"");
 				//			group = util.uniToOriginal(group);
 				//			group = util.getRegGroup(res, "communityInfo.\".+?title.\"..\"(.+?).\"");
-							host = util.getRegGroup(data, "\"supplier\".+?\"name\".\"(.*?)\"");
+							host = util.getRegGroup(data, "\"supplier\".+?\"name\".\"(.*?)\"").Replace("\\\"", "\"");
 							if (string.IsNullOrEmpty(host)) host = group;
 				//			System.out.println(group);
 				//			host = util.uniToOriginal(host);
 				//			title = util.getRegGroup(res, "\\\"programHeader\\\"\:\{\\\"thumbnailUrl\\\".+?\\\"title\\\"\:\\\"(.*?)\\\"");
 				//			title = util.getRegGroup(res, "\\\\\"programHeader\\\\\":\\{\\\\\"thumbnailUrl.+?\\\\\"title\\\\\":\\\\\"(.*?)\\\\\"");
-							title = util.getRegGroup(data, "visualProviderType\":\"(community|channel)\",\"title\":\"(.*?)\",", 2);
+							title = util.getRegGroup(data, "visualProviderType\":\"(community|channel)\",\"title\":\"(.*?)\",", 2).Replace("\\\"", "\"");
 				//			communityNum = util.getRegGroup(res, "socialGroup: \\{[\\s\\S]*registrationUrl: \"http://com.nicovideo.jp/motion/(.*?)\\?");
 							communityNum = util.getRegGroup(data, "\"socialGroup\".+?\"id\".\"(.+?)\"");
 				//			community = util.getRegGroup(res, "socialGroup\\:)");

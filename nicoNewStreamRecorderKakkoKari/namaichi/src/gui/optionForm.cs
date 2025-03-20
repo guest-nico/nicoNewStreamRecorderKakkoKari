@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
 using namaichi.config;
+using namaichi.gui;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SunokoLibrary.Application;
@@ -1364,6 +1365,15 @@ namespace namaichi
 			if (p != null && !p.HasExited) p.Kill();
 			util.CloseProcessByName("chrome");
 			nicoSessionComboBox1.Selector.UpdateAsync();
+		}
+		void DisplayArgInfoLabelLinkClicked(object _sender, LinkLabelLinkClickedEventArgs e)
+		{
+			util.debugWriteLine("display arg info click");
+			LinkLabel sender = (LinkLabel)_sender;
+			if (e.Button == MouseButtons.Left) {
+				var f = new ArgOptionForm(int.Parse(cfg.get("fontSize")));
+				f.ShowDialog();
+			}
 		}
 	}
 }
