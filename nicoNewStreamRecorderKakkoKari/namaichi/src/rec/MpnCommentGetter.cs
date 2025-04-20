@@ -327,8 +327,10 @@ namespace namaichi.rec
 				}
 				if (ps.next != null) {
 					if (!isWrite) {
-						gotBackwardUrl.Add(ps.next.Uri);
-						receiveFromProtoUri<PackedSegment>(ps.next.Uri, false);
+						if (gotBackwardUrl.IndexOf(ps.next.Uri) == -1) {
+							gotBackwardUrl.Add(ps.next.Uri);
+							receiveFromProtoUri<PackedSegment>(ps.next.Uri, false);
+						}
 					}
 				}
 			}
@@ -630,6 +632,8 @@ namespace namaichi.rec
 					seconds + nano, json));
 		}
 		void saveFromBackwardUrlList() {
+			if (gotBackwardUrl.IndexOf("end") == -1) 
+				gotBackwardUrl.Add("end");
 			var l = gotBackwardUrl;
 			var a = gotBackwardUrl.Count;
 			while (l != null && 

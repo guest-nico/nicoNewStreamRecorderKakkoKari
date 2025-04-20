@@ -2034,7 +2034,8 @@ namespace namaichi.rec
 			while (firstSegmentSecond == -1 && rm.rfu == rfu && engineMode != "3" && !isDlive) {
 				Thread.Sleep(1000);
 			}
-			if (engineMode != "0" && firstSegmentSecond == -1) firstSegmentSecond = ri.timeShiftConfig.timeSeconds;
+			//if (engineMode != "0" && firstSegmentSecond == -1) firstSegmentSecond = ri.timeShiftConfig.timeSeconds;
+			if (firstSegmentSecond == -1) firstSegmentSecond = ri.timeShiftConfig.timeSeconds;
 			var vposStartTime = (ri.timeShiftConfig.isVposStartTime) ? (long)firstSegmentSecond : 0;
 			if (ri.si.type == "official" || ri.si.type == "channel" || ri.si.type == "user") {
 				//return chatinfo.getFormatXml(ri.si._openTime + vposStartTime);
