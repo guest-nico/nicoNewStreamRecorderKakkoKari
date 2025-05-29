@@ -1058,9 +1058,7 @@ namespace namaichi.rec
 					if (rm.cfg.get("fileNameType") == "10" && (name.IndexOf("{w}") > -1 || name.IndexOf("{c}") > -1)) {
 						Task.Run(() => {
 				         	setRealTimeStatistics();
-				         	var _name = name.Replace("{w}", visitCount.Replace("-", "")).Replace("{c}", commentCount.Replace("-", "")); 
-				         	File.Move(name, _name);
-				         	name = _name;
+				         	renameStatisticComment();
 						});
 					}
 				} catch (Exception e) {
@@ -1221,7 +1219,7 @@ namespace namaichi.rec
 			             
 					}
 				}
-           
+				renameStatisticComment();
 			} catch (Exception ee) {addDebugBuf("comment write exception " + ee.Message + " " + ee.StackTrace);}
 			
 			
@@ -2058,6 +2056,29 @@ namespace namaichi.rec
 			foreach (var _c in c) {
 				util.debugWriteLine(_c);
 				container.Add(new Cookie(_c.name, _c.value, _c.path, _c.domain));
+			}
+		}
+		void renameStatisticComment() {
+			try {
+				var isOriginalFileName = 
+						rm.cfg.get("fileNameType") == "10" &&
+						(ri.recFolderFile[1].IndexOf("{w}") > -1 
+					     	|| ri.recFolderFile[1].IndexOf("{c}") > -1);
+				if (commentSW != null && isOriginalFileName && commentFileName != null) {
+					var newName = ri.recFolderFile[1].Replace("{w}", visitCount).Replace("{c}", commentCount);
+					newName = util.getOkCommentFileName(rm.cfg, newName, ri.si.lvid, ri.si.isTimeShift, ri.isRtmp);
+					//var curName = util.getOkCommentFileName(rm.cfg, commentFileName, ri.si.lvid, ri.si.isTimeShift, ri.isRtmp);
+					var curName = ((FileStream)commentSW.BaseStream).Name;
+					if (commentSW != null && curName != newName && !File.Exists(newName) && File.Exists(curName)) {
+						//closeWscProcess();
+						commentSW.Close();
+						File.Move(curName, newName);
+						commentSW = new StreamWriter(newName, true, System.Text.Encoding.UTF8);
+						commentFileName = newName.Substring(0, newName.LastIndexOf("."));
+					}
+				}
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
 			}
 		}
 	}

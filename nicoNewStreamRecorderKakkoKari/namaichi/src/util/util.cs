@@ -36,8 +36,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.89.18";
-	public static string versionDayStr = "2025/04/21";
+	public static string versionStr = "ver0.89.19";
+	public static string versionDayStr = "2025/05/29";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -525,7 +525,7 @@ class util {
 		var files = Directory.GetFiles(folder);
 		
 		foreach (var e in ext) {
-			var reg = new Regex(Regex.Escape(fName.Replace("\\", "/")).Replace("\\{w}", "\\d*").Replace("\\{c}", "\\d*") + e);
+			var reg = new Regex(Regex.Escape(fName.Replace("\\", "/")).Replace("\\{w}", "((\\d+,)*\\d*|{w})").Replace("\\{c}", "((\\d+,)*\\d*|{c})") + e);
 			foreach (var f in files) {
 				if (reg.Match(f.Replace("\\", "/")).Success) return true;
 				
@@ -537,7 +537,7 @@ class util {
 	private static bool isExistDirectory(string fName, string dirPath) {
 		var files = Directory.GetDirectories(dirPath);
 		foreach (var f in files) {
-			var reg = new Regex(Regex.Escape(fName.Replace("\\", "/")).Replace("\\{w}", "\\d*").Replace("\\{c}", "\\d*"));
+			var reg = new Regex(Regex.Escape(fName.Replace("\\", "/")).Replace("\\{w}", "(\\d*|{w})").Replace("\\{c}", "(\\d*|{c})"));
 			if (reg.Match(f.Replace("\\", "/")).Success) return true;
 		}
 		return false;
@@ -863,8 +863,8 @@ class util {
 			var opentime = data != null ? util.getRegGroup(data, "&quot;openTime&quot;:(\\d+)") : null;
 			var serverTime = data != null ? util.getRegGroup(data, "&quot;serverTime&quot;:(\\d+)") : null;
 			var rejectedReason = data == null ? "" : util.getRegGroup(data, "rejectedReasons&quot;:\\[(.*?)\\]");
-			if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ON_AIR" && data.IndexOf("webSocketUrl&quot;:&quot;ws") > -1) return 0;
-			else if (res.IndexOf("<!doctype html>") > -1 && data != null && status == "ENDED" && data.IndexOf("webSocketUrl&quot;:&quot;ws") > -1) return 7;
+			if (res.ToLower().IndexOf("<!doctype html>") > -1 && data != null && status == "ON_AIR" && data.IndexOf("webSocketUrl&quot;:&quot;ws") > -1) return 0;
+			else if (res.ToLower().IndexOf("<!doctype html>") > -1 && data != null && status == "ENDED" && data.IndexOf("webSocketUrl&quot;:&quot;ws") > -1) return 7;
 			else if (util.getRegGroup(res, "(混雑中ですが、プレミアム会員の方は優先して入場ができます)") != null ||
 			        util.getRegGroup(res, "(ただいま、満員のため入場できません)") != null) return 1;
 	//		else if (util.getRegGroup(res, "<div id=\"comment_arealv\\d+\">[^<]+この番組は\\d+/\\d+/\\d+\\(.\\) \\d+:\\d+に終了いたしました。<br>") != null) return 2;
