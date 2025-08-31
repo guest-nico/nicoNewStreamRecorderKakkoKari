@@ -1093,11 +1093,12 @@ namespace namaichi
 		void OpenReadmeMenuClick(object sender, EventArgs e)
 		{
 			string[] jarpath = util.getJarPath();
-			string path = jarpath[0] + "/readme.html.url";
+			string path = jarpath[0] + "/readme.url";
+			if (!File.Exists(path)) path = jarpath[0] + "/readme.html.url";
 			try {
 				if (!File.Exists(path)) {
-					addLogText("readme.htmlが見つかりませんでした " + path);
-					util.showMessageBoxCenterForm(this, "readme.htmlが見つかりませんでした");
+					addLogText("readmeが見つかりませんでした " + path);
+					util.showMessageBoxCenterForm(this, "readmeが見つかりませんでした");
 					return;
 				}
 				util.openUrl(path, bool.Parse(config.get("IsdefaultBrowserPath")), config.get("browserPath"));

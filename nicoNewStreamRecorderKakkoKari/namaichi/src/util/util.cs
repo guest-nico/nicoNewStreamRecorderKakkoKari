@@ -36,8 +36,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.89.19";
-	public static string versionDayStr = "2025/05/29";
+	public static string versionStr = "ver0.89.20";
+	public static string versionDayStr = "2025/09/01";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -525,6 +525,7 @@ class util {
 		var files = Directory.GetFiles(folder);
 		
 		foreach (var e in ext) {
+			//var reg = new Regex(Regex.Escape(fName.Replace("\\", "/")).Replace("\\{w}", "(\\d*|{w})").Replace("\\{c}", "(\\d*|{c})") + e);
 			var reg = new Regex(Regex.Escape(fName.Replace("\\", "/")).Replace("\\{w}", "((\\d+,)*\\d*|{w})").Replace("\\{c}", "((\\d+,)*\\d*|{c})") + e);
 			foreach (var f in files) {
 				if (reg.Match(f.Replace("\\", "/")).Success) return true;
@@ -1248,13 +1249,12 @@ public static void soundEnd(config cfg, MainForm form) {
 	public static string CheckOSName()
         {
             string result = "";
-
-            System.Management.ManagementClass mc =
-                new System.Management.ManagementClass("Win32_OperatingSystem");
-            System.Management.ManagementObjectCollection moc = mc.GetInstances();
-
             try
             {
+            	System.Management.ManagementClass mc =
+	                new System.Management.ManagementClass("Win32_OperatingSystem");
+	            System.Management.ManagementObjectCollection moc = mc.GetInstances();
+            
                 foreach (System.Management.ManagementObject mo in moc)
                 {
                     result = mo["Caption"].ToString();
@@ -1267,21 +1267,29 @@ public static void soundEnd(config cfg, MainForm form) {
             catch (Exception e)
             {
                 util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
-                return result;
+                try {
+                	var ver = Environment.OSVersion.Version;
+					var osVer = "";
+					if (ver.Major > 6 || (ver.Major >= 6 && ver.Minor >= 2))
+						osVer = "Windows 10";
+					util.debugWriteLine("Environment " + osVer);
+					return osVer;
+                } catch (Exception ee) {
+                	util.debugWriteLine(ee.Message + e.Source + e.StackTrace + ee.TargetSite);
+                }
+                return result + " unknownOsName";
             }
-
             return result;
         }
         public static string CheckOSType()
         {
             string result = "";
-
-            System.Management.ManagementClass mc =
-                new System.Management.ManagementClass("Win32_OperatingSystem");
-            System.Management.ManagementObjectCollection moc = mc.GetInstances();
-
             try
             {
+            	System.Management.ManagementClass mc =
+	                new System.Management.ManagementClass("Win32_OperatingSystem");
+	            System.Management.ManagementObjectCollection moc = mc.GetInstances();
+            
                 foreach (System.Management.ManagementObject mo in moc)
                 {
                     if (mo["Version"].ToString().StartsWith("5.1"))

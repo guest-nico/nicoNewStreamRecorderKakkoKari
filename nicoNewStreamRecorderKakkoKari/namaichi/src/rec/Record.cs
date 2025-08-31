@@ -215,7 +215,7 @@ namespace namaichi.rec
 			tsWriterTask = Task.Factory.StartNew(() => {startDebugWriter();}, TaskCreationOptions.LongRunning);
 			
 			if (wr.isDlive)
-				rm.form.addLogText("こちらの放送では動作できません。https://blog.nicovideo.jp/niconews/235926.html");
+				rm.form.addLogText("こちらの放送では動作できません。\nhttps://guest-nico.github.io/pages/rec_readme.html#t-onlyComment");
 			var _m = (isPlayOnlyMode) ? "視聴" : "録画";
 			if (ri.si.isTimeShift) {
 				var isHokan = !wr.isSaveComment && ri.isChase; 

@@ -1104,15 +1104,19 @@ namespace rokugaTouroku
 		void OpenReadmeMenuClick(object sender, EventArgs e)
 		{
 			string[] jarpath = util.getJarPath();
-			string path = jarpath[0] + "/readme.html.url";
+			string path = jarpath[0] + "/readme.url";
+			if (!File.Exists(path)) path = jarpath[0] + "/readme.html.url";
 			try {
 				if (!File.Exists(path)) {
-					util.showMessageBoxCenterForm(this, "readme.htmlが見つかりませんでした");
+					addLogText("readmeが見つかりませんでした " + path);
+					util.showMessageBoxCenterForm(this, "readmeが見つかりませんでした");
 					return;
 				}
 				util.openUrlBrowser(path, config);
 			} catch (Exception ee) {
 				util.debugWriteLine(ee.Message + " " + ee.StackTrace);
+				//debug
+				addLogText("ファイルの表示に失敗しました " + ee.Message + ee.Source + ee.StackTrace + ee.TargetSite);
 			}
 		}
 		

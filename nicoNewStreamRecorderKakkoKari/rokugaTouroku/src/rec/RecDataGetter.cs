@@ -150,7 +150,7 @@ namespace rokugaTouroku.rec
 				ri.process.OutputDataReceived += ri.readHandler;
 				ri.process.Start();
 			} catch (Exception e) {
-				rlm.form.addLogText("ニコ生新配信録画ツール（仮.exeを呼び出せませんでした");
+				rlm.form.addLogText("ニコ生新配信録画ツール（仮.exeを呼び出せませんでした " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				util.debugWriteLine("process start exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 			}
 		}

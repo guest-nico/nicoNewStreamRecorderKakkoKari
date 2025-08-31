@@ -106,6 +106,7 @@ namespace namaichi.rec
 		//public List<string[]> commentReplaceList = null;
 		private bool isSaveCommentOnlyRetryingRec;
 		private bool isNormalizeComment;
+		private string fileNameType;
 		
 		private object commentLock = new object();
 		private bool isLogEnd = false;
@@ -114,6 +115,7 @@ namespace namaichi.rec
 		public WebSocketCurl wsCurl = null;
 		public WebSocketCurl[] wscCurl = new WebSocketCurl[2];
 		public bool isUseCurlWs = false;
+		public bool isCommentFileChangeOnFileAdded = false;
 		/*
 		public WebSocketRecorder(string[] webSocketInfo, 
 				CookieContainer container, string[] recFolderFile, 
@@ -202,6 +204,9 @@ namespace namaichi.rec
 			
 			isUseCurlWs = false || !util.isWin10orLater();
 			util.debugWriteLine("isUseCurl() " + util.isWin10orLater());
+			
+			fileNameType = rm.cfg.get("fileNameType");
+			isCommentFileChangeOnFileAdded = bool.Parse(rm.cfg.get("IsCommentFileChangeOnFileAdded"));
 		}
 		public bool start() {
 			addDebugBuf("ws rec start");
@@ -229,7 +234,10 @@ namespace namaichi.rec
 			object lastWebSocket = null;
 			var stopWsCount = 0;
 			var lastSendRequired = DateTime.Now;
-			
+			var lastFileNumCheckTime = DateTime.Now;
+			var lastFileNumCheckCount = 1;
+			checkSameIdFileNum(ref lastFileNumCheckCount);
+				
 			while (rm.rfu == rfu && IsRetry) {
 				if (isUseCurlWs) {
 					reConnectCheck(ref stopWsCount, ref lastWebSocket);
@@ -245,6 +253,13 @@ namespace namaichi.rec
 				}
 				if (bool.Parse(rm.cfg.get("IsNotSleep")))
 					util.setThreadExecutionState();
+				if ((!ri.si.isTimeShift || ri.isRealtimeChase) && isCommentFileChangeOnFileAdded &&
+				    	DateTime.Now > lastFileNumCheckTime + TimeSpan.FromSeconds(10)) {
+					if (checkSameIdFileNum(ref lastFileNumCheckCount))
+						resetCommentFile();
+					lastFileNumCheckTime = DateTime.Now;
+				}
+					
 			}
 
 			addDebugBuf("wsr end0");
@@ -1055,7 +1070,7 @@ namespace namaichi.rec
 					commentSW.Close();
 					commentSW = null;
 					lastSaveComments.Clear();
-					if (rm.cfg.get("fileNameType") == "10" && (name.IndexOf("{w}") > -1 || name.IndexOf("{c}") > -1)) {
+					if (fileNameType == "10" && (name.IndexOf("{w}") > -1 || name.IndexOf("{c}") > -1)) {
 						Task.Run(() => {
 				         	setRealTimeStatistics();
 				         	renameStatisticComment();
@@ -1567,6 +1582,9 @@ namespace namaichi.rec
 					addDebugBuf(e.Message + e.Source + e.StackTrace + e.TargetSite);
 				}
 				
+				serverTime = util.getUnixTime(DateTime.Now + jisa) - 3600 * 9;
+				ri.si.serverTime = serverTime * 1000;
+								
 				try {
 					
 					if (bool.Parse(rm.cfg.get("IsgetComment")) && commentSW == null && !rfu.isPlayOnlyMode) {
@@ -2061,7 +2079,7 @@ namespace namaichi.rec
 		void renameStatisticComment() {
 			try {
 				var isOriginalFileName = 
-						rm.cfg.get("fileNameType") == "10" &&
+						fileNameType == "10" &&
 						(ri.recFolderFile[1].IndexOf("{w}") > -1 
 					     	|| ri.recFolderFile[1].IndexOf("{c}") > -1);
 				if (commentSW != null && isOriginalFileName && commentFileName != null) {
@@ -2079,6 +2097,24 @@ namespace namaichi.rec
 				}
 			} catch (Exception e) {
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
+			}
+		}
+		bool checkSameIdFileNum(ref int lastFileNumCheckCount) {
+			try {
+				if (ri.recFolderFile == null || ri.recFolderFile.Length < 3) return false;
+				var _files = new DirectoryInfo(ri.recFolderFile[0]).GetFiles("*" + ri.si.lvid + "*");
+				var files = _files.Where(x => !x.Name.EndsWith(".xml") && !x.Name.EndsWith(".json") && !x.Name.EndsWith(".txt"));
+				util.debugWriteLine(files);
+				
+				var isAdded = files.Count() > lastFileNumCheckCount;
+				if (isAdded) {
+					lastFileNumCheckCount = files.Count();
+				}
+				return isAdded;
+			} catch (Exception e) {
+				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
+				rm.form.addLogText("同じ放送IDを含むファイル名のチェックに失敗しました " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+				return false;
 			}
 		}
 	}

@@ -69,6 +69,7 @@ namespace namaichi
 			this.applyBtn = new System.Windows.Forms.Button();
 			this.IsTrayChkBox = new System.Windows.Forms.CheckBox();
 			this.groupBox17 = new System.Windows.Forms.GroupBox();
+			this.isCommentFileChangeOnFileAddedChkBox = new System.Windows.Forms.CheckBox();
 			this.commentReplaceText = new System.Windows.Forms.TextBox();
 			this.commentReplaceEditBtn = new System.Windows.Forms.Button();
 			this.label18 = new System.Windows.Forms.Label();
@@ -572,9 +573,9 @@ namespace namaichi
 			this.displayGroup.Controls.Add(this.label64);
 			this.displayGroup.Controls.Add(this.applyBtn);
 			this.displayGroup.Controls.Add(this.IsTrayChkBox);
-			this.displayGroup.Location = new System.Drawing.Point(5, 417);
+			this.displayGroup.Location = new System.Drawing.Point(5, 439);
 			this.displayGroup.Name = "displayGroup";
-			this.displayGroup.Size = new System.Drawing.Size(372, 67);
+			this.displayGroup.Size = new System.Drawing.Size(372, 65);
 			this.displayGroup.TabIndex = 15;
 			this.displayGroup.TabStop = false;
 			this.displayGroup.Text = "ツール設定";
@@ -630,6 +631,7 @@ namespace namaichi
 			// 
 			// groupBox17
 			// 
+			this.groupBox17.Controls.Add(this.isCommentFileChangeOnFileAddedChkBox);
 			this.groupBox17.Controls.Add(this.commentReplaceText);
 			this.groupBox17.Controls.Add(this.commentReplaceEditBtn);
 			this.groupBox17.Controls.Add(this.label18);
@@ -644,10 +646,19 @@ namespace namaichi
 			this.groupBox17.Controls.Add(this.isDisplayCommentChkbox);
 			this.groupBox17.Location = new System.Drawing.Point(5, 83);
 			this.groupBox17.Name = "groupBox17";
-			this.groupBox17.Size = new System.Drawing.Size(395, 153);
+			this.groupBox17.Size = new System.Drawing.Size(407, 175);
 			this.groupBox17.TabIndex = 11;
 			this.groupBox17.TabStop = false;
 			this.groupBox17.Text = "コメント";
+			// 
+			// isCommentFileChangeOnFileAddedChkBox
+			// 
+			this.isCommentFileChangeOnFileAddedChkBox.Location = new System.Drawing.Point(19, 152);
+			this.isCommentFileChangeOnFileAddedChkBox.Name = "isCommentFileChangeOnFileAddedChkBox";
+			this.isCommentFileChangeOnFileAddedChkBox.Size = new System.Drawing.Size(390, 19);
+			this.isCommentFileChangeOnFileAddedChkBox.TabIndex = 15;
+			this.isCommentFileChangeOnFileAddedChkBox.Text = "出力フォルダ内に新たにファイルが作成された際にコメントファイルを切り替える";
+			this.isCommentFileChangeOnFileAddedChkBox.UseVisualStyleBackColor = true;
 			// 
 			// commentReplaceText
 			// 
@@ -816,7 +827,7 @@ namespace namaichi
 			this.groupBox9.Controls.Add(this.isDefaultSoundChkBtn);
 			this.groupBox9.Controls.Add(this.soundSanshouBtn);
 			this.groupBox9.Controls.Add(this.soundPathText);
-			this.groupBox9.Location = new System.Drawing.Point(5, 242);
+			this.groupBox9.Location = new System.Drawing.Point(5, 264);
 			this.groupBox9.Name = "groupBox9";
 			this.groupBox9.Size = new System.Drawing.Size(372, 169);
 			this.groupBox9.TabIndex = 1;
@@ -2560,6 +2571,7 @@ namespace namaichi
 			this.groupBox1.PerformLayout();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.CheckBox isCommentFileChangeOnFileAddedChkBox;
 		private System.Windows.Forms.LinkLabel displayArgInfoLabel;
 		private System.Windows.Forms.CheckBox isDliveCloseChkBox;
 		private System.Windows.Forms.Button getChromeBtn;

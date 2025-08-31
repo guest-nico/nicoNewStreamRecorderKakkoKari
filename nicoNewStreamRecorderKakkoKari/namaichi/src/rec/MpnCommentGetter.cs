@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
@@ -85,7 +86,7 @@ namespace namaichi.rec
 				_vposBaseTime = wr.ri.si.vposBaseTime.ToString();
 				util.debugWriteLine("not found vposBaseTime mpn");
 			}
-			vposBaseTimeUnix = util.getUnixTime(DateTime.Parse(_vposBaseTime));
+			vposBaseTimeUnix = util.getUnixTime(DateTime.Parse(Regex.Replace(_vposBaseTime, "\\+.*", "")));
 			
 			mpnHashedUserId = util.getRegGroup(message, "\"hashedUserId\":\"(.+?)\"");
 			if (mpnHashedUserId == null) {

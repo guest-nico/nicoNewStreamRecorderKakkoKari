@@ -149,6 +149,7 @@ namespace namaichi
 				{"IsDisplayComment",isDisplayCommentChkbox.Checked.ToString().ToLower()},
 				{"IsNormalizeComment",isNormalizeCommentChkBox.Checked.ToString().ToLower()},
 				{"CommentReplaceText",getCommentReplaceText()},
+				{"IsCommentFileChangeOnFileAdded",isCommentFileChangeOnFileAddedChkBox.Checked.ToString().ToLower()},
 				{"IstitlebarSamune",isTitleBarSamune.Checked.ToString().ToLower()},
 				{"IsautoFollowComgen",isAutoFollowComGen.Checked.ToString().ToLower()},
 				{"qualityRank",getQualityRank()},
@@ -412,6 +413,7 @@ namespace namaichi
         	isDisplayCommentChkbox.Checked = bool.Parse(cfg.get("IsDisplayComment"));
         	isNormalizeCommentChkBox.Checked = bool.Parse(cfg.get("IsNormalizeComment"));
         	setCommentReplaceTextForm(cfg.get("CommentReplaceText"));
+        	isCommentFileChangeOnFileAddedChkBox.Checked = bool.Parse(cfg.get("IsCommentFileChangeOnFileAdded"));
         	isTitleBarSamune.Checked = bool.Parse(cfg.get("IstitlebarSamune"));
         	isAutoFollowComGen.Checked = bool.Parse(cfg.get("IsautoFollowComgen"));
         	setInitQualityRankList(cfg.get("qualityRank"));

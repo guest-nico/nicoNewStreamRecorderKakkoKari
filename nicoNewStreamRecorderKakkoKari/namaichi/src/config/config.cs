@@ -184,6 +184,7 @@ public class config
 			{"IsDisplayComment","true"},
 			{"IsNormalizeComment","false"},
 			{"CommentReplaceText",""},
+			{"IsCommentFileChangeOnFileAdded","false"},
 			
 			{"IstitlebarSamune","true"},
 			{"IsautoFollowComgen","false"},
