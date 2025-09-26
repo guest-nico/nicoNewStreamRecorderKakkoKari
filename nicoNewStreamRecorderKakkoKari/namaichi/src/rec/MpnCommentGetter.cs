@@ -380,7 +380,9 @@ namespace namaichi.rec
 					var content = "undefined";
 					if (msgProto.Message != null && msgProto.Message.SimpleNotification != null) {
 						content = getNotification(msgProto.Message.SimpleNotification);
-					} if (msgProto.State != null) {
+					} else if (msgProto.Message != null && msgProto.Message.SimpleNotificationV2 != null) {
+						content = getNotificationV2(msgProto.Message.SimpleNotificationV2);
+					} else if (msgProto.State != null) {
 						content = getStateComment(msgProto.State);
 					} else if (msgProto.Message != null && 
 				           msgProto.Message.Nicoad != null) {
@@ -471,6 +473,19 @@ namespace namaichi.rec
 			if (!string.IsNullOrEmpty(n.RankingIn)) m.Add("/ranking " + n.RankingIn);
 			if (!string.IsNullOrEmpty(n.RankingUpdated)) m.Add("/ranking " + n.RankingUpdated);
 			if (!string.IsNullOrEmpty(n.Visited)) m.Add("/visited " + n.Visited);
+			return string.Join(" ", m.ToArray());
+		}
+		string getNotificationV2(SimpleNotificationV2 n) {
+			var m = new List<string>();
+			if (n.Type == SimpleNotificationV2.NotificationType.Cruise) m.Add("/cruise " + n.Message);
+			if (n.Type == SimpleNotificationV2.NotificationType.Emotion) m.Add("/emotion " + n.Message);
+			if (n.Type == SimpleNotificationV2.NotificationType.Ichiba) m.Add("/ichiba " + n.Message);
+			if (n.Type == SimpleNotificationV2.NotificationType.ProgramExtended) m.Add("/extended " + n.Message);
+			if (n.Type == SimpleNotificationV2.NotificationType.RankingIn) m.Add("/ranking " + n.Message);
+			if (n.Type == SimpleNotificationV2.NotificationType.Visited) m.Add("/visited " + n.Message);
+			if (n.Type == SimpleNotificationV2.NotificationType.SupporterRegistered) m.Add("/SupporterRegistered " + n.Message);
+			if (n.Type == SimpleNotificationV2.NotificationType.UserLevelUp) m.Add("/UserLevelUp " + n.Message);
+			if (n.Type == SimpleNotificationV2.NotificationType.Unknown) m.Add("/notify" + n.Message);
 			return string.Join(" ", m.ToArray());
 		}
 		string getStateComment(NicoliveState s) {

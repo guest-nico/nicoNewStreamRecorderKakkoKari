@@ -1759,6 +1759,20 @@ namespace namaichi.utility
             global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__data, 20);
         }
 
+        [global::ProtoBuf.ProtoMember(23, Name = @"simple_notification_v2")]
+        public SimpleNotificationV2 SimpleNotificationV2
+        {
+            get { return __pbn__data.Is(23) ? ((SimpleNotificationV2)__pbn__data.Object) : default(SimpleNotificationV2); }
+            set { __pbn__data = new global::ProtoBuf.DiscriminatedUnionObject(23, value); }
+        }
+        public bool ShouldSerializeSimpleNotificationV2()
+        {
+            return __pbn__data.Is(23);
+        }
+        public void ResetSimpleNotificationV2()
+        {
+            global::ProtoBuf.DiscriminatedUnionObject.Reset(ref __pbn__data, 23);
+        }
     }
 
     [global::ProtoBuf.ProtoContract()]
@@ -2085,7 +2099,63 @@ namespace namaichi.utility
         public PackedSegment.StateSnapshot Snapshot { get; set; }
 
     }
+	
+    [global::ProtoBuf.ProtoContract()]
+    public partial class SimpleNotificationV2 : global::ProtoBuf.IExtensible
+    {
+        private global::ProtoBuf.IExtension __pbn__extensionData;
+        //global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+        //    => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+        global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing) {
+        	return global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
+        }
+            
 
+        [global::ProtoBuf.ProtoMember(1, Name = @"type")]
+        public NotificationType Type { get; set; }
+
+        [global::ProtoBuf.ProtoMember(2, Name = @"message")]
+        [global::System.ComponentModel.DefaultValue("")]
+        //public string Message { get; set; } = "";
+        public string Message { get; set; }
+        public SimpleNotificationV2()
+	    {
+	        this.Message = "";
+	    }
+
+        [global::ProtoBuf.ProtoMember(3, Name = @"show_in_telop")]
+        public bool ShowInTelop { get; set; }
+
+        [global::ProtoBuf.ProtoMember(4, Name = @"show_in_list")]
+        public bool ShowInList { get; set; }
+
+        [global::ProtoBuf.ProtoContract()]
+        public enum NotificationType
+        {
+            [global::ProtoBuf.ProtoEnum(Name = @"UNKNOWN")]
+            Unknown = 0,
+            [global::ProtoBuf.ProtoEnum(Name = @"ICHIBA")]
+            Ichiba = 1,
+            [global::ProtoBuf.ProtoEnum(Name = @"EMOTION")]
+            Emotion = 2,
+            [global::ProtoBuf.ProtoEnum(Name = @"CRUISE")]
+            Cruise = 3,
+            [global::ProtoBuf.ProtoEnum(Name = @"PROGRAM_EXTENDED")]
+            ProgramExtended = 4,
+            [global::ProtoBuf.ProtoEnum(Name = @"RANKING_IN")]
+            RankingIn = 5,
+            [global::ProtoBuf.ProtoEnum(Name = @"VISITED")]
+            Visited = 6,
+            [global::ProtoBuf.ProtoEnum(Name = @"SUPPORTER_REGISTERED")]
+            SupporterRegistered = 7,
+            [global::ProtoBuf.ProtoEnum(Name = @"USER_LEVEL_UP")]
+            UserLevelUp = 8,
+        }
+
+    }
+	
+    
+    
 }
 
 #pragma warning restore 0612, 0618, 1591, 3021
