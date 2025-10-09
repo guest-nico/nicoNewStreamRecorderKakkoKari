@@ -36,8 +36,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.89.21";
-	public static string versionDayStr = "2025/09/27";
+	public static string versionStr = "ver0.89.22";
+	public static string versionDayStr = "2025/10/10";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -112,6 +112,11 @@ class util {
 			host = getOkFileName(host, isRtmp, false);
 			group = getOkFileName(group, isRtmp, false);
 			title = getOkFileName(title, isRtmp, false);
+			
+			if (communityNum == "co0") {
+				group = host;
+				communityNum = userId;
+			}
 			
 			string[] jarpath = getJarPath();
 	//		util.debugWriteLine(jarpath);
@@ -864,6 +869,7 @@ class util {
 			var opentime = data != null ? util.getRegGroup(data, "&quot;openTime&quot;:(\\d+)") : null;
 			var serverTime = data != null ? util.getRegGroup(data, "&quot;serverTime&quot;:(\\d+)") : null;
 			var rejectedReason = data == null ? "" : util.getRegGroup(data, "rejectedReasons&quot;:\\[(.*?)\\]");
+			if (rejectedReason == null) rejectedReason = "";
 			if (res.ToLower().IndexOf("<!doctype html>") > -1 && data != null && status == "ON_AIR" && data.IndexOf("webSocketUrl&quot;:&quot;ws") > -1) return 0;
 			else if (res.ToLower().IndexOf("<!doctype html>") > -1 && data != null && status == "ENDED" && data.IndexOf("webSocketUrl&quot;:&quot;ws") > -1) return 7;
 			else if (util.getRegGroup(res, "(混雑中ですが、プレミアム会員の方は優先して入場ができます)") != null ||
@@ -877,12 +883,18 @@ class util {
 			else if (rejectedReason.IndexOf("passwordAuthRequired") > -1) return 14;
 			else if (status == "ENDED" && rejectedReason.IndexOf("notHaveTimeshiftTicket") > -1) return 9;
 			else if (status == "ENDED" && rejectedReason.IndexOf("notUseTimeshiftTicket") > -1) return 10;
+			//else if (status == "ENDED" && res.IndexOf(" onclick=\"Nicolive.WatchingReservation") > -1) return 9;
+			//else if (util.getRegGroup(res, "(に終了いたしました)") != null) return 2;
+			
+			var tsStatus = data != null ? util.getRegGroup(data, "userProgramTimeshiftWatch&quot;.+?&quot;status&quot;:&quot;(.+?)&quot;") : null;
+			var isPayment = data != null && util.getRegGroup(data, "&quot;condition&quot;.+&quot;(TicketOrSerialCode)") != null;
+			if (isPayment) return 8; 
+			if (tsStatus != null && tsStatus.IndexOf("NoPermission") > -1) return 9;
+			if (tsStatus != null && tsStatus.IndexOf("Inactive") > -1) return 10;
+			
 			else if (data != null && data.IndexOf("webSocketUrl&quot;:&quot;ws") == -1 &&
 			         status == "ENDED") return 2;
 			else if (rejectedReason.IndexOf("notHavePayTicket") > -1) return 11;
-			//else if (status == "ENDED" && res.IndexOf(" onclick=\"Nicolive.WatchingReservation") > -1) return 9;
-			
-			//else if (util.getRegGroup(res, "(に終了いたしました)") != null) return 2;
 			else if (status == "ENDED") return 2;
 			else if (util.getRegGroup(res, "(<archive>1</archive>)") != null) return 3;
 			//else if (util.getRegGroup(res, "(チャンネル会員限定番組です。<br>)") != null) return 4;

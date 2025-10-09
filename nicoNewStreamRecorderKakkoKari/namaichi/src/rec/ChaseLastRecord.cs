@@ -85,9 +85,10 @@ namespace namaichi.rec
 					return _res;
 				} else if (pageType == 9) {
 					if (bool.Parse(rm.cfg.get("IsChaseReserveRec"))) {
-						var ret = new Reservation(container, lvid).reserve();
+						//var ret = new Reservation(container, lvid).reserve();
+						var ret = new Reservation(container, lvid).live2Reserve2();
 						if (ret == "ok") {
-							rm.form.addLogText("タイムシフトを予約しました");
+							continue;
 						} else {
 							rm.form.addLogText("タイムシフトの予約に失敗しました");
 							rm.form.addLogText("録画を終了します");
@@ -97,6 +98,16 @@ namespace namaichi.rec
 						rm.form.addLogText("この放送のタイムシフトの視聴には予約が必要です");
 						rm.form.addLogText("録画を終了します");
 						return null;
+					}
+				} else if (pageType == 10) {
+					if (bool.Parse(rm.cfg.get("IsChaseReserveRec"))) {
+						var ret = new Reservation(container, lvid).useLive2Reserve2();
+						if (ret) {
+							rm.form.addLogText("タイムシフトを予約しました");
+						} else {
+							rm.form.addLogText("この番組のチケットを正常に使用できませんでした。");
+							return null;
+						}
 					}
 				} else if (pageType == 2 || pageType == 3) {
 					/*
