@@ -945,6 +945,15 @@ namespace namaichi.rec
 				_visit = util.getRegGroup(e, "\"data\":{\"viewers\":(\\d*),\"comments\":\\d*");
 				_comment = util.getRegGroup(e, "\"data\":{\"viewers\":\\d*,\"comments\":(\\d*)");
 			}
+			if (_visit == null || _comment == null) return;
+			int v, c;
+			int.TryParse(visitCount, out v);
+			int.TryParse(commentCount, out c);
+			if (v > int.Parse(_visit)) _visit = visitCount;
+			if (c > int.Parse(_comment)) _comment = commentCount;    
+			setStatistics(_visit, _comment);
+		}
+		public void setStatistics(string _visit, string _comment) {
 			try {
 				if (_visit != null)
 					visitCount = int.Parse(_visit).ToString("n0");

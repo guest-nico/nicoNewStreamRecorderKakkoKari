@@ -28,8 +28,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.11.8";
-	public static string versionDayStr = "2025/09/01";
+	public static string versionStr = "ver0.1.3.11.9";
+	public static string versionDayStr = "2025/10/30";
 	public static string osName = null;
 	public static bool isCurl = true;
 	public static bool isWebRequestOk = false;

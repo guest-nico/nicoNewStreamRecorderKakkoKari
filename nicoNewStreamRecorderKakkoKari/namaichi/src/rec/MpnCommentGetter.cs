@@ -538,6 +538,7 @@ namespace namaichi.rec
 					l.Add(m.Redirect.Message + " " + m.Redirect.Uri);
 			}
 			if (s.Statistics != null) {
+				wr.setStatistics(s.Statistics.Viewers.ToString(), s.Statistics.Comments.ToString());
 				return null;
 				//l.Add("/statistics");
 				//var st = s.Statistics;

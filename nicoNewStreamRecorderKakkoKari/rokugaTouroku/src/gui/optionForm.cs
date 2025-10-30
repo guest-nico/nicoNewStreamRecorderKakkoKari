@@ -198,6 +198,7 @@ namespace rokugaTouroku
 				{"subFolderNameType",getSubFolderNameType() + ""},
 				{"fileNameType",getFileNameType() + ""},
 				{"filenameformat",fileNameFormat},
+				{"IsUserInfoFileName",isUserInfoFileNameChkBox.Checked.ToString().ToLower()},
 				//{"ffmpegopt",ffmpegoptText.Text},
 				{"user_session",""},
 				{"user_session_secure",""},
@@ -478,6 +479,7 @@ namespace rokugaTouroku
         	setFileNameType(int.Parse(cfg.get("fileNameType")));
         	fileNameFormat = cfg.get("filenameformat");
         	fileNameTypeDokujiSetteiBtn.Text = util.getFileNameTypeSample(fileNameFormat);
+        	isUserInfoFileNameChkBox.Checked = bool.Parse(cfg.get("IsUserInfoFileName"));
         	//ffmpegoptText.Text = cfg.get("ffmpegopt");
         	
         	isHokanChkBox.Checked = bool.Parse(cfg.get("IsHokan"));

@@ -213,6 +213,7 @@ public class config
 			{"subFolderNameType","1"},
 			{"fileNameType","1"},
 			{"filenameformat","{Y}年{M}月{D}日{h}時{m}分{0}_{1}_{2}_{3}_{4}"},
+			{"IsUserInfoFileName","false"},
 			{"ffmpegopt",""},
 			{"Height","400"},
 			{"Width","735"},

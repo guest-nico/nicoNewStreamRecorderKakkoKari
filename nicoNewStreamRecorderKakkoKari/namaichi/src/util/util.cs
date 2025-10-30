@@ -36,8 +36,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.89.22";
-	public static string versionDayStr = "2025/10/10";
+	public static string versionStr = "ver0.89.23";
+	public static string versionDayStr = "2025/10/30";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -113,7 +113,7 @@ class util {
 			group = getOkFileName(group, isRtmp, false);
 			title = getOkFileName(title, isRtmp, false);
 			
-			if (communityNum == "co0") {
+			if (bool.Parse(cfg.get("IsUserInfoFileName")) && communityNum == "co0") {
 				group = host;
 				communityNum = userId;
 			}

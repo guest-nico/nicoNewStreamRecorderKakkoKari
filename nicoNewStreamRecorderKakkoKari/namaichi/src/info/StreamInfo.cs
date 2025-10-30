@@ -50,7 +50,7 @@ namespace namaichi.info
 		//public void set(string res, CookieContainer cc) {
 		public void set(string res) {
 			if (lvid.StartsWith("lv")) {
-				type = util.getRegGroup(res, "\"content_type\":\"(.+?)\"");
+				type = util.getRegGroup(res.Replace("&quot;", "\""), "\"content_type\":\"(.+?)\"");
 				data = util.getRegGroup(res, "<script id=\"embedded-data\" data-props=\"([\\d\\D]+?)</script>");
 				this.res = res; 
 				isRtmpOnlyPage = res.IndexOf("%3Cgetplayerstatus%20") > -1 || res.IndexOf("<getplayerstatus ") > -1;
@@ -61,7 +61,8 @@ namespace namaichi.info
 				data = (isRtmpOnlyPage) ? System.Web.HttpUtility.UrlDecode(res) :
 							System.Web.HttpUtility.HtmlDecode(data);
 				isReservation = lvid.StartsWith("lv") ? data.IndexOf("\"reservation\"") > -1 : data.IndexOf("\"has_archived_files\":true") > -1;
-				isDlive = data.IndexOf("\"type\":\"dlive\"") > -1;
+				//isDlive = data.IndexOf("\"type\":\"dlive\"") > -1;
+				isDlive = true;
 				//long endTime, _openTime, serverTime, vposBaseTime;
 				//openTime = endTime = _openTime = serverTime = vposBaseTime = 0;
 			} else {
@@ -150,7 +151,7 @@ namespace namaichi.info
 						
 						} else {
 							
-							var isChannel = util.getRegGroup(data, "visualProviderType\":\"(channel)\",\"title\"") != null;
+							var isChannel = util.getRegGroup(data, "visualProviderType\":\"(channel|official)\",\"title\"") != null;
 				//			host = util.getRegGroup(res, "provider......name.....(.*?)\\\\\"");
 							group = util.getRegGroup(data, "\"socialGroup\".*?\"name\".\"(.*?)\"").Replace("\\\"", "\"");
 				//			group = util.uniToOriginal(group);
@@ -161,7 +162,7 @@ namespace namaichi.info
 				//			host = util.uniToOriginal(host);
 				//			title = util.getRegGroup(res, "\\\"programHeader\\\"\:\{\\\"thumbnailUrl\\\".+?\\\"title\\\"\:\\\"(.*?)\\\"");
 				//			title = util.getRegGroup(res, "\\\\\"programHeader\\\\\":\\{\\\\\"thumbnailUrl.+?\\\\\"title\\\\\":\\\\\"(.*?)\\\\\"");
-							title = util.getRegGroup(data, "visualProviderType\":\"(community|channel)\",\"title\":\"(.*?)\",", 2).Replace("\\\"", "\"");
+							title = util.getRegGroup(data, "visualProviderType\":\"(community|channel|official)\",\"title\":\"(.*?)\",", 2).Replace("\\\"", "\"");
 				//			communityNum = util.getRegGroup(res, "socialGroup: \\{[\\s\\S]*registrationUrl: \"http://com.nicovideo.jp/motion/(.*?)\\?");
 							communityNum = util.getRegGroup(data, "\"socialGroup\".+?\"id\".\"(.+?)\"");
 				//			community = util.getRegGroup(res, "socialGroup\\:)");
