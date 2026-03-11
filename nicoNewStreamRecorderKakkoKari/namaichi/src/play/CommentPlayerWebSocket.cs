@@ -194,7 +194,7 @@ namespace namaichi.play
 				}
 				
 				XDocument chatXml;
-				chatXml = chatinfo.getFormatXml(wsr.ri.si.openTime);
+				chatXml = chatinfo.getFormatXml(wsr.ri.si.beginTime);
 				
 				util.debugWriteLine("player xml " + chatXml.ToString());
 				
@@ -230,7 +230,7 @@ namespace namaichi.play
 			if (chat.contents == null) return;
 //			var time = util.getUnixToDatetime(chat.vpos / 100);
 //			var unixKijunDt = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-			var __time = chat.date - wsr.ri.si.openTime; //- (60 * 60 * 9);
+			var __time = chat.date - wsr.ri.si.beginTime; //- (60 * 60 * 9);
 			if (__time < 0) __time = 0;
 
 //			var __timeDt = util.getUnixToDatetime(__time);

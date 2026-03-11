@@ -45,6 +45,7 @@ namespace rokugaTouroku
 			this.fileNameTypeDateBtn = new System.Windows.Forms.Button();
 			this.fileNameTypeDefaultBtn = new System.Windows.Forms.Button();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.label16 = new System.Windows.Forms.Label();
 			this.label15 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
@@ -62,7 +63,7 @@ namespace rokugaTouroku
 			this.label2 = new System.Windows.Forms.Label();
 			this.FileNameTypeCancelBtn = new System.Windows.Forms.Button();
 			this.fileNameTypeOkBtn = new System.Windows.Forms.Button();
-			this.label16 = new System.Windows.Forms.Label();
+			this.timeTypeList = new System.Windows.Forms.ComboBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -150,6 +151,7 @@ namespace rokugaTouroku
 			// 
 			// groupBox3
 			// 
+			this.groupBox3.Controls.Add(this.timeTypeList);
 			this.groupBox3.Controls.Add(this.label16);
 			this.groupBox3.Controls.Add(this.label15);
 			this.groupBox3.Controls.Add(this.label1);
@@ -172,6 +174,14 @@ namespace rokugaTouroku
 			this.groupBox3.TabIndex = 2;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "変換記号";
+			// 
+			// label16
+			// 
+			this.label16.Location = new System.Drawing.Point(199, 116);
+			this.label16.Name = "label16";
+			this.label16.Size = new System.Drawing.Size(92, 18);
+			this.label16.TabIndex = 3;
+			this.label16.Text = "{5} 配信者ID";
 			// 
 			// label15
 			// 
@@ -313,13 +323,17 @@ namespace rokugaTouroku
 			this.fileNameTypeOkBtn.UseVisualStyleBackColor = true;
 			this.fileNameTypeOkBtn.Click += new System.EventHandler(this.fileNameTypeOkBtn_Click);
 			// 
-			// label16
+			// timeTypeList
 			// 
-			this.label16.Location = new System.Drawing.Point(199, 116);
-			this.label16.Name = "label16";
-			this.label16.Size = new System.Drawing.Size(92, 18);
-			this.label16.TabIndex = 3;
-			this.label16.Text = "{5} 配信者ID";
+			this.timeTypeList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.timeTypeList.FormattingEnabled = true;
+			this.timeTypeList.Items.AddRange(new object[] {
+									"開演時間",
+									"開場時間"});
+			this.timeTypeList.Location = new System.Drawing.Point(17, 113);
+			this.timeTypeList.Name = "timeTypeList";
+			this.timeTypeList.Size = new System.Drawing.Size(92, 20);
+			this.timeTypeList.TabIndex = 37;
 			// 
 			// fileNameOptionForm
 			// 
@@ -339,6 +353,7 @@ namespace rokugaTouroku
 			this.groupBox3.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		public System.Windows.Forms.ComboBox timeTypeList;
 		private System.Windows.Forms.Label label16;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label15;

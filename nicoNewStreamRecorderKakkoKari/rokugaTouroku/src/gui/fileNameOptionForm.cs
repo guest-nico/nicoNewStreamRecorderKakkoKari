@@ -18,8 +18,9 @@ namespace rokugaTouroku
 	public partial class fileNameOptionForm : Form
 	{
 		public string ret;
+		public string timeTypeRet;
 		
-		public fileNameOptionForm(string filenameformat, int fontSize)
+		public fileNameOptionForm(string filenameformat, string timeType, int fontSize)
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -29,6 +30,7 @@ namespace rokugaTouroku
 			fileNameTypeText.Text = filenameformat;
 			fileNameTypeLabel.Text = 
 				util.getFileNameTypeSample(filenameformat);
+			timeTypeList.Text = (timeType == "begin") ? "開演時間" : "開場時間";
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
@@ -44,6 +46,7 @@ namespace rokugaTouroku
 			}
 			DialogResult = DialogResult.OK;
 			ret = fileNameTypeText.Text;
+			timeTypeRet = (timeTypeList.Text == "開演時間") ? "begin" : "open";
 			Close();
 		}
 		void fileNameTypeCancelBtn_Click(object sender, EventArgs e)

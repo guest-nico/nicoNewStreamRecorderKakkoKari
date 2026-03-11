@@ -48,6 +48,8 @@ namespace rokugaTouroku.gui
 			this.label15 = new System.Windows.Forms.Label();
 			this.label16 = new System.Windows.Forms.Label();
 			this.label22 = new System.Windows.Forms.Label();
+			this.label24 = new System.Windows.Forms.Label();
+			this.label23 = new System.Windows.Forms.Label();
 			this.label21 = new System.Windows.Forms.Label();
 			this.label20 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
@@ -69,8 +71,6 @@ namespace rokugaTouroku.gui
 			this.label2 = new System.Windows.Forms.Label();
 			this.fileNameTypeOkBtn = new System.Windows.Forms.Button();
 			this.copyBtn = new System.Windows.Forms.Button();
-			this.label23 = new System.Windows.Forms.Label();
-			this.label24 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -205,6 +205,7 @@ namespace rokugaTouroku.gui
 			this.label16.Size = new System.Drawing.Size(316, 18);
 			this.label16.TabIndex = 0;
 			this.label16.Text = "引数が空欄の場合、セグメントm3u8アドレスのみが設定されます。";
+			this.label16.Visible = false;
 			// 
 			// label22
 			// 
@@ -213,6 +214,25 @@ namespace rokugaTouroku.gui
 			this.label22.Size = new System.Drawing.Size(155, 18);
 			this.label22.TabIndex = 0;
 			this.label22.Text = "{tsEnd} (TS設定の終了時間)";
+			this.label22.Visible = false;
+			// 
+			// label24
+			// 
+			this.label24.Location = new System.Drawing.Point(199, 188);
+			this.label24.Name = "label24";
+			this.label24.Size = new System.Drawing.Size(143, 18);
+			this.label24.TabIndex = 0;
+			this.label24.Text = "{proxyPort} (プロキシポート)";
+			this.label24.Visible = false;
+			// 
+			// label23
+			// 
+			this.label23.Location = new System.Drawing.Point(17, 188);
+			this.label23.Name = "label23";
+			this.label23.Size = new System.Drawing.Size(176, 18);
+			this.label23.TabIndex = 0;
+			this.label23.Text = "{proxyAddress} (プロキシアドレス)";
+			this.label23.Visible = false;
 			// 
 			// label21
 			// 
@@ -221,6 +241,7 @@ namespace rokugaTouroku.gui
 			this.label21.Size = new System.Drawing.Size(176, 18);
 			this.label21.TabIndex = 0;
 			this.label21.Text = "{tsStart} (TS設定の開始時間)";
+			this.label21.Visible = false;
 			// 
 			// label20
 			// 
@@ -385,22 +406,6 @@ namespace rokugaTouroku.gui
 			this.copyBtn.Text = "クリップボードにコピー";
 			this.copyBtn.UseVisualStyleBackColor = true;
 			this.copyBtn.Click += new System.EventHandler(this.CopyBtnClick);
-			// 
-			// label23
-			// 
-			this.label23.Location = new System.Drawing.Point(17, 188);
-			this.label23.Name = "label23";
-			this.label23.Size = new System.Drawing.Size(176, 18);
-			this.label23.TabIndex = 0;
-			this.label23.Text = "{proxyAddress} (プロキシアドレス)";
-			// 
-			// label24
-			// 
-			this.label24.Location = new System.Drawing.Point(199, 188);
-			this.label24.Name = "label24";
-			this.label24.Size = new System.Drawing.Size(143, 18);
-			this.label24.TabIndex = 0;
-			this.label24.Text = "{proxyPort} (プロキシポート)";
 			// 
 			// ArgOptionForm
 			// 

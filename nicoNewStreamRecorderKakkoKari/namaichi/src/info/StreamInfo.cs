@@ -21,7 +21,7 @@ namespace namaichi.info
 	public class StreamInfo {
 		public string url;
 		public string lvid;
-		public long openTime;
+		public long beginTime;
 		
 		public string type = null;
 		public string data = null;
@@ -33,7 +33,7 @@ namespace namaichi.info
 		
 		public string communityNum = null;
 		
-		public long endTime, _openTime, serverTime, vposBaseTime;
+		public long endTime, openTime, serverTime, vposBaseTime;
 		public TimeSpan programTime;
 		public string[] recFolderFileInfo;
 		public bool isChannelPlus = false;
@@ -78,24 +78,24 @@ namespace namaichi.info
 			
 			if (lvid.StartsWith("lv")) {
 				if (!isRtmpOnlyPage) {
-					if (!long.TryParse(util.getRegGroup(data, "\"beginTime\":(\\d+)"), out openTime))
+					if (!long.TryParse(util.getRegGroup(data, "\"beginTime\":(\\d+)"), out beginTime))
 							return false;
 		//				var openTime = long.Parse(util.getRegGroup(data, "\"beginTimeMs\":(\\d+)"));
 					if (!long.TryParse(util.getRegGroup(data, "\"endTime\":(\\d+)"), out endTime))
 							return false;				
-					if (!long.TryParse(util.getRegGroup(data, "\"openTime\":(\\d+)"), out _openTime))
+					if (!long.TryParse(util.getRegGroup(data, "\"openTime\":(\\d+)"), out openTime))
 							return false;
 					if (!long.TryParse(util.getRegGroup(data, "\"serverTime\":(\\d+)"), out serverTime))
 							return false;
 					if (!long.TryParse(util.getRegGroup(data, "\"vposBaseTime\":(\\d+)"), out vposBaseTime))
 							return false;
 				} else {
-					if (!long.TryParse(util.getRegGroup(data, "<start_time>(\\d+)"), out openTime))
+					if (!long.TryParse(util.getRegGroup(data, "<start_time>(\\d+)"), out beginTime))
 							return false;
 		//				var openTime = long.Parse(util.getRegGroup(data, "\"beginTimeMs\":(\\d+)"));
 					if (!long.TryParse(util.getRegGroup(data, "<end_time>(\\d+)"), out endTime))
 							return false;				
-					if (!long.TryParse(util.getRegGroup(data, "<base_time>(\\d+)"), out _openTime))
+					if (!long.TryParse(util.getRegGroup(data, "<base_time>(\\d+)"), out openTime))
 							return false;
 					if (!long.TryParse(util.getRegGroup(data, "status=\"ok\" time=\"(\\d+)\""), out serverTime))
 							return false;
@@ -108,12 +108,12 @@ namespace namaichi.info
 				if (endTimeDtStr == null) endTimeDtStr = util.getRegGroup(data, "\"live_scheduled_end_at\":\"(.+?)\"");
 				if (endTimeDtStr == null) endTimeDtStr = util.getRegGroup(data, "\"released_at\":\"(.+?)\"");
 				if (startTimeDtStr == null || endTimeDtStr == null) return false;
-				openTime = _openTime = util.getUnixTime(DateTime.Parse(startTimeDtStr) + TimeSpan.FromHours(9));
+				beginTime = openTime = util.getUnixTime(DateTime.Parse(startTimeDtStr) + TimeSpan.FromHours(9));
 				endTime = util.getUnixTime(DateTime.Parse(endTimeDtStr) + TimeSpan.FromHours(9));
 				
 				serverTime = vposBaseTime = util.getUnixTime();
 			}
-			programTime = util.getUnixToDatetime(endTime) - util.getUnixToDatetime(openTime);
+			programTime = util.getUnixToDatetime(endTime) - util.getUnixToDatetime(beginTime);
 			return true;
 		}
 		private string[] getHtml5RecFolderFileInfo(string data, string type, bool isRtmpOnlyPage) {
@@ -309,9 +309,9 @@ namespace namaichi.info
 		}
 		
 		public string[] getRecFilePath(config.config cfg, MainForm form) {
-			util.debugWriteLine(si.openTime + " c " + si.recFolderFileInfo[0] + " timeshiftConfig " + timeShiftConfig);
+			util.debugWriteLine(si.beginTime + " c " + si.recFolderFileInfo[0] + " timeshiftConfig " + timeShiftConfig);
 			try {
-				return util.getRecFolderFilePath(si.recFolderFileInfo[0], si.recFolderFileInfo[1], si.recFolderFileInfo[2], si.recFolderFileInfo[3], si.recFolderFileInfo[4], si.recFolderFileInfo[5], cfg, si.isTimeShift, timeShiftConfig, si.openTime, isRtmp, isFmp4, false, form);
+				return util.getRecFolderFilePath(si.recFolderFileInfo[0], si.recFolderFileInfo[1], si.recFolderFileInfo[2], si.recFolderFileInfo[3], si.recFolderFileInfo[4], si.recFolderFileInfo[5], cfg, si.isTimeShift, timeShiftConfig, si.openTime, si.beginTime, isRtmp, isFmp4, false, form);
 			} catch (Exception e) {
 				form.addLogText("保存先パスの取得もしくはフォルダの作成に失敗しました");
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace + e.TargetSite);
@@ -395,9 +395,9 @@ namespace namaichi.info
 			if (((si.isTimeShift && !isChase) || isChaseCheck) && !isRtmp) {
 //						if (rm.ri != null) timeShiftConfig = rm.ri.tsConfig;
 				if (rm.argTsConfig != null) {
-					timeShiftConfig = getReadyArgTsConfig(rm.argTsConfig.clone(), si.recFolderFileInfo[0], si.recFolderFileInfo[1], si.recFolderFileInfo[2], si.recFolderFileInfo[3], si.recFolderFileInfo[4], si.recFolderFileInfo[5], si.openTime, (int)(si.openTime - si._openTime), rm);
+					timeShiftConfig = getReadyArgTsConfig(rm.argTsConfig.clone(), si.recFolderFileInfo[0], si.recFolderFileInfo[1], si.recFolderFileInfo[2], si.recFolderFileInfo[3], si.recFolderFileInfo[4], si.recFolderFileInfo[5], si.openTime, si.beginTime, (int)(si.beginTime - si.openTime), rm);
 				} else {
-					timeShiftConfig = getTimeShiftConfig(si.recFolderFileInfo[0], si.recFolderFileInfo[1], si.recFolderFileInfo[2], si.recFolderFileInfo[3],si. recFolderFileInfo[4], si.recFolderFileInfo[5], rm.cfg, si.openTime, isChase, si._openTime, rm);
+					timeShiftConfig = getTimeShiftConfig(si.recFolderFileInfo[0], si.recFolderFileInfo[1], si.recFolderFileInfo[2], si.recFolderFileInfo[3],si. recFolderFileInfo[4], si.recFolderFileInfo[5], rm.cfg, si.openTime, si.beginTime, isChase, rm);
 					if (timeShiftConfig == null) return false;
 				}
 			}
@@ -407,12 +407,12 @@ namespace namaichi.info
 		}
 		private TimeShiftConfig getTimeShiftConfig(string host, 
 				string group, string title, string lvId, string communityNum, 
-				string userId, config.config cfg, long startTime, bool isChase, 
-				long openTime, RecordingManager rm) {
+				string userId, config.config cfg, long openTime, long beginTime, bool isChase, 
+				RecordingManager rm) {
 			var segmentSaveType = cfg.get("segmentSaveType");
 			var _lvid = !si.isChannelPlus ? lvId : lvId.Substring(0, 12);
 			var lastFile = util.getLastTimeshiftFileName(host,
-					group, title, _lvid, communityNum, userId, cfg, startTime, isFmp4);
+					group, title, _lvid, communityNum, userId, cfg, openTime, beginTime, isFmp4);
 			util.debugWriteLine("timeshift lastfile " + lastFile);
 			string[] lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType, isFmp4);
 			if (lastFileTime == null)
@@ -420,7 +420,7 @@ namespace namaichi.info
 				                    ((lastFileTime == null) ? "null" : string.Join(" ", lastFileTime)));
 			
 			try {
-				var prepTime = (int)(startTime - openTime);
+				var prepTime = (int)(beginTime - openTime);
 				var o = new TimeShiftOptionForm(lastFileTime, segmentSaveType, rm.cfg, isChase, prepTime, isFmp4, si.isChannelPlus);
 				
 				
@@ -448,11 +448,11 @@ namespace namaichi.info
 				TimeShiftConfig _tsConfig, string host, 
 				string group, string title, string lvId, 
 				string communityNum, string userId, 
-				long _openTime, int prepTime, RecordingManager rm) {
+				long openTime, long beginTime, int prepTime, RecordingManager rm) {
 			
 			var segmentSaveType = rm.cfg.get("segmentSaveType");
 			var lastFile = util.getLastTimeshiftFileName(host,
-					group, title, lvId, communityNum, userId, rm.cfg, _openTime, isFmp4);
+					group, title, lvId, communityNum, userId, rm.cfg, openTime, beginTime, isFmp4);
 			util.debugWriteLine("timeshift lastfile " + lastFile + " host " + host + " title " + title);
 			
 			var lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType, isFmp4);
@@ -484,7 +484,7 @@ namespace namaichi.info
 					return false;
 				}
 			} else {
-				var fName = "a/" + util.getFileName(si.recFolderFileInfo[0], si.recFolderFileInfo[1], si.recFolderFileInfo[2], si.recFolderFileInfo[3], si.recFolderFileInfo[4], rm.cfg, si.openTime, si.recFolderFileInfo[5]);
+				var fName = "a/" + util.getFileName(si.recFolderFileInfo[0], si.recFolderFileInfo[1], si.recFolderFileInfo[2], si.recFolderFileInfo[3], si.recFolderFileInfo[4], rm.cfg, si.beginTime, si.openTime, si.recFolderFileInfo[5]);
 				recFolderFile = new String[]{fName, fName, fName};//new string[]{"", "", ""};
 			}
 			for (int i = 0; i < recFolderFile.Length; i++)

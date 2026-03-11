@@ -18,8 +18,9 @@ namespace namaichi
 	public partial class fileNameOptionForm : Form
 	{
 		public string ret;
+		public string timeTypeRet; 
 		
-		public fileNameOptionForm(string filenameformat, int fontSize)
+		public fileNameOptionForm(string filenameformat, string timeType, int fontSize)
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -29,12 +30,12 @@ namespace namaichi
 			fileNameTypeText.Text = filenameformat;
 			fileNameTypeLabel.Text = 
 				util.getFileNameTypeSample(filenameformat);
+			timeTypeList.Text = (timeType == "begin") ? "開演時間" : "開場時間";
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
 			util.setFontSize(fontSize, this, false);
 		}
-		
 		void fileNameTypeOkBtn_Click(object sender, EventArgs e)
 		{
 			if (fileNameTypeText.Text.IndexOf("{0}") < 0) {
@@ -44,6 +45,7 @@ namespace namaichi
 			}
 			DialogResult = DialogResult.OK;
 			ret = fileNameTypeText.Text;
+			timeTypeRet = (timeTypeList.Text == "開演時間") ? "begin" : "open";
 			Close();
 		}
 		void fileNameTypeCancelBtn_Click(object sender, EventArgs e)

@@ -137,6 +137,8 @@ namespace rokugaTouroku
 			qualityBtn.Text = getQualityRankStr(qualityRank);
 			setConvertList(int.Parse(config.get("tourokuAfterConvertMode")));
 			recCommmentList.Text = config.get("tourokuRecComment");
+			setAppList();
+			appList.SelectedIndex = int.Parse(config.get("tourokuAppIndex"));
 			
 			setBackColor(Color.FromArgb(int.Parse(config.get("tourokuBackColor"))));
 			setForeColor(Color.FromArgb(int.Parse(config.get("tourokuForeColor"))));
@@ -177,6 +179,7 @@ namespace rokugaTouroku
 	        			Size = formSize;
 	        			Location = loc;
 	        		}
+	        		setAppList();
 	        	}
 	        } catch (Exception ee) {
         		util.debugWriteLine(ee.Message + " " + ee.StackTrace);
@@ -245,6 +248,7 @@ namespace rokugaTouroku
 			saveMenuSetting();
 			config.set("tourokuRecComment", recCommmentList.Text);
 			config.set("tourokuAfterConvertMode", util.getAfterConvertTypeNum(afterConvertModeList.Text));
+			config.set("tourokuAppIndex", appList.SelectedIndex.ToString());
 			return true;
 		}
 		public void addLogText(string t) {
@@ -602,7 +606,7 @@ namespace rokugaTouroku
 						util.showMessageBoxCenterForm(this, "録画中は再登録できません", "", MessageBoxButtons.OK, MessageBoxIcon.None);
 						return;
 					}
-					var _ri = new RecInfo(ri.id, ri.url, ri.rdg, ri.afterConvertType, ri.tsConfig, ri.timeShift, ri.quality, ri.qualityRank, ri.recComment, ri.isChase, ri.ai);
+					var _ri = new RecInfo(ri.id, ri.url, ri.rdg, ri.afterConvertType, ri.tsConfig, ri.timeShift, ri.quality, ri.qualityRank, ri.recComment, ri.isChase, ri.ai, ri.appIndex, ri.appName);
 					Task.Run(() => _ri.setHosoInfo(this));
 					
 					recListDataSource[c.RowIndex] = _ri;
@@ -626,7 +630,7 @@ namespace rokugaTouroku
 						util.showMessageBoxCenterForm(this, "録画中は再登録できません", "", MessageBoxButtons.OK, MessageBoxIcon.None);
 						return;
 					}
-					var _ri = new RecInfo(ri.id, ri.url, ri.rdg, afterConvertModeList.Text, setTsConfig, setTimeshiftBtn.Text, qualityBtn.Text, qualityRank, recCommmentList.Text, isChaseChkBox.Checked, (AccountInfo)accountBtn.Tag);
+					var _ri = new RecInfo(ri.id, ri.url, ri.rdg, afterConvertModeList.Text, setTsConfig, setTimeshiftBtn.Text, qualityBtn.Text, qualityRank, recCommmentList.Text, isChaseChkBox.Checked, (AccountInfo)accountBtn.Tag, appList.SelectedIndex, appList.Text);
 					Task.Run(() => _ri.setHosoInfo(this));
 					
 					recListDataSource[c.RowIndex] = _ri;
@@ -878,7 +882,7 @@ namespace rokugaTouroku
 			try {
 				var list = new List<RecInfo>();
 				foreach (RecInfo ri in recListDataSource) {
-					var _ri = new RecInfo(ri.id, ri.url, ri.rdg, ri.afterConvertType, ri.tsConfig, ri.timeShift, ri.quality, ri.qualityRank, ri.recComment, ri.isChase, ri.ai);
+					var _ri = new RecInfo(ri.id, ri.url, ri.rdg, ri.afterConvertType, ri.tsConfig, ri.timeShift, ri.quality, ri.qualityRank, ri.recComment, ri.isChase, ri.ai, ri.appIndex, ri.appName);
 					_ri.samune = null;
 					_ri.process = null;
 					_ri.rdg = null;
@@ -983,6 +987,7 @@ namespace rokugaTouroku
 				recCommmentList.Text = recCommmentText;
 				setTimeshiftBtn.Text = timeshiftText;
 				urlText.Text = _urlText;
+				setAppList();
 				
 				Update();
 
@@ -1018,8 +1023,11 @@ namespace rokugaTouroku
 			for(var i = 0; i < recList.Columns.Count; i++) {
 				if (i >= showRecListColumns.Length) continue;
 				recList.Columns[i].Visible = showRecListColumns[i] == '1';
-				var menu = (ToolStripMenuItem)displayRecListMenu.DropDownItems[i];
-				menu.Checked = recList.Columns[i].Visible;
+				
+				var items = displayRecListMenu.DropDownItems;
+				for (var j = 0; j < items.Count; j++)
+					if (items[i].Text == recList.Columns[i].HeaderText)
+						((ToolStripMenuItem)items[i]).Checked = recList.Columns[i].Visible; 
 			}
 		}
 		void saveMenuSetting() {
@@ -1059,8 +1067,11 @@ namespace rokugaTouroku
 		void DisplayRecListMenuDropDownOpened(object sender, EventArgs e)
 		{
 			for (var i = 0; i < recList.Columns.Count; i++) {
-				displayRecListMenu.DropDownItems[i].Text = recList.Columns[i].HeaderText;
-				((ToolStripMenuItem)displayRecListMenu.DropDownItems[i]).Checked = recList.Columns[i].Visible;
+				foreach (ToolStripMenuItem item in displayRecListMenu.DropDownItems)
+					if (item.Text == recList.Columns[i].HeaderText)
+						item.Checked = recList.Columns[i].Visible;
+				//displayRecListMenu.DropDownItems[i].Text = recList.Columns[i].HeaderText;
+				//((ToolStripMenuItem)displayRecListMenu.DropDownItems[i]).Checked = recList.Columns[i].Visible;
 			}
 		}
 		
@@ -1322,15 +1333,17 @@ namespace rokugaTouroku
 				data = util.getRegGroup(data, "{&quot;reservations&quot;:(.+?}])");
 				//var a = res.Substring(100000, 30000);
 				//data = System.Web.HttpUtility.HtmlDecode(data);
-				var l = Regex.Split(data, "&quot;features&");
+				//var l = Regex.Split(data, "&quot;features&");
+				var l = Regex.Split(data, "&quot;timeshiftTicket&quot;");
 				foreach (var _l in l) {
+					if (_l.IndexOf("isActive") == -1) continue;
 					if (_l.IndexOf("isActive&quot;:false") > -1) continue;
 					
-					var lvid = util.getRegGroup(_l, "&quot;programId&quot;:&quot;(lv\\d+)&quot;");
+					var lvid = util.getRegGroup(_l, "&quot;nicoliveProgramId&quot;:&quot;(lv\\d+)&quot;");
 					if (lvid == null) continue;
 					rec.add(lvid);
 				}
-				var m = Regex.Matches(data, "&quot;programId&quot;:&quot;(lv\\d+)&quot;");
+				var m = Regex.Matches(data, "&quot;nicoliveProgramId&quot;:&quot;(lv\\d+)&quot;");
 				foreach (Match _m in m)
 					util.debugWriteLine(_m.Groups[1].Value);
 			} catch (Exception ee) {
@@ -1352,6 +1365,20 @@ namespace rokugaTouroku
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
 				util.debugWriteLine(e.Message + e.Source + e.StackTrace);
 			}
+		}
+		void setAppList() {
+			for (var i = 0; i < 3; i++) {
+				var c = config.get("appli" + ((char)('A' + i)) + "Name");
+				if (string.IsNullOrEmpty(c)) c = "アプリ" + ((char)('A' + i));
+				appList.Items[i + 1] = c;
+			}
+		}
+		void AppListSelectedIndexChanged(object sender, EventArgs e)
+		{
+			var enabled = appList.SelectedIndex == 0;
+			setTimeshiftBtn.Enabled = qualityBtn.Enabled = 
+					accountBtn.Enabled = afterConvertModeList.Enabled =
+					recCommmentList.Enabled = isChaseChkBox.Enabled = enabled; 
 		}
 	}
 }

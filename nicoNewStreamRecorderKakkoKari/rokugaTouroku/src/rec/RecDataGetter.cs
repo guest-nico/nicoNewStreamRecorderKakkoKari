@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.IO;
 using System.Drawing;
+using namaichi.rec;
 using rokugaTouroku;
 using rokugaTouroku.info;
 
@@ -84,12 +85,14 @@ namespace rokugaTouroku.rec
 			var row = rlm.recListData.IndexOf(ri);
 			if (row == -1) return;
 			rlm.form.resetBindingList(row, "状態", "録画中");
-			startRecProcess(ri);
+			if (ri.appIndex == 0 || !customAppProcess(ri))
+				startRecProcess(ri);
+			
 			try {
 				ri.process.BeginOutputReadLine();
 				util.debugWriteLine("recProcess loop end wait mae " + ri.id + " " + ri.state);
 				ri.process.WaitForExit();
-				ri.state = (ri.process.ExitCode == 5) ? "録画完了" : "録画失敗";
+				ri.state = (ri.process.ExitCode == 5 || ri.appIndex != 0) ? "録画完了" : "録画失敗";
 			} catch (Exception e) {
 				util.debugWriteLine("ri " + ri + " ri.process " + (ri.process == null ? null : ri.process));
 				if (ri != null && ri.process != null)
@@ -152,6 +155,55 @@ namespace rokugaTouroku.rec
 			} catch (Exception e) {
 				rlm.form.addLogText("ニコ生新配信録画ツール（仮.exeを呼び出せませんでした " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				util.debugWriteLine("process start exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+			}
+		}
+		bool customAppProcess(RecInfo ri) {
+			util.debugWriteLine("custom startrecprocess " + ri);
+			try {
+				ri.process = new Process();
+				var si = new ProcessStartInfo();
+				var path = rlm.cfg.get("appli" + ((char)('A' + ri.appIndex - 1)) + "Path");
+				
+				si.FileName = path;
+				
+				var us = "";
+				try {
+					var c = rlm.form.container.GetCookies(new Uri(ri.url));
+					us = c["user_session"] != null ? c["user_session"].Value : "";
+				} catch (Exception e) {util.debugWriteLine(e.Message + e.Source + e.StackTrace);}
+				
+				string proxyAddress = "", proxyPort = "";
+				try {
+					proxyAddress = rlm.cfg.get("proxyAddress");
+					proxyPort = rlm.cfg.get("proxyPort");
+				} catch (Exception e) {util.debugWriteLine(e.Message + e.Source + e.StackTrace);}
+				
+				var hig = new HosoInfoGetter();
+				if (!hig.get(ri.url)) {
+					rlm.form.addLogText("アプリの起動時に放送情報を取得できませんでした");
+					return false;
+				}
+				
+				var arg = rlm.cfg.get("appli" + ((char)('A' + ri.appIndex - 1)) + "Args");
+				arg = util.getDokujiSetteiArg(hig.userName, hig.group, hig.title, ri.id, hig.communityId, arg, hig.dt, hig.userId, us, null, proxyAddress, proxyPort);
+				if (string.IsNullOrEmpty(arg)) arg = ri.url;
+				si.Arguments = arg;
+				
+				util.debugWriteLine(si.Arguments);
+				//si.CreateNoWindow = true;
+				si.UseShellExecute = false;
+				//si.WindowStyle = ProcessWindowStyle.Hidden;
+				si.RedirectStandardInput = true;
+				si.RedirectStandardOutput = true;
+				si.RedirectStandardError = true;
+				ri.process.StartInfo = si;
+				ri.process.OutputDataReceived += ri.readHandler;
+				ri.process.Start();
+				return true;
+			} catch (Exception e) {
+				rlm.form.addLogText("アプリ" + ri.appIndex + "を呼び出せませんでした " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+				util.debugWriteLine("process start exception " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+				return false;
 			}
 		}
 		/*

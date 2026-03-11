@@ -649,7 +649,7 @@ namespace namaichi
 			this.groupBox17.Controls.Add(this.isDisplayCommentChkbox);
 			this.groupBox17.Location = new System.Drawing.Point(5, 83);
 			this.groupBox17.Name = "groupBox17";
-			this.groupBox17.Size = new System.Drawing.Size(407, 175);
+			this.groupBox17.Size = new System.Drawing.Size(438, 175);
 			this.groupBox17.TabIndex = 11;
 			this.groupBox17.TabStop = false;
 			this.groupBox17.Text = "コメント";
@@ -658,9 +658,9 @@ namespace namaichi
 			// 
 			this.isCommentFileChangeOnFileAddedChkBox.Location = new System.Drawing.Point(19, 152);
 			this.isCommentFileChangeOnFileAddedChkBox.Name = "isCommentFileChangeOnFileAddedChkBox";
-			this.isCommentFileChangeOnFileAddedChkBox.Size = new System.Drawing.Size(390, 19);
+			this.isCommentFileChangeOnFileAddedChkBox.Size = new System.Drawing.Size(437, 19);
 			this.isCommentFileChangeOnFileAddedChkBox.TabIndex = 15;
-			this.isCommentFileChangeOnFileAddedChkBox.Text = "出力フォルダ内に新たにファイルが作成された際にコメントファイルを切り替える";
+			this.isCommentFileChangeOnFileAddedChkBox.Text = "出力フォルダ内に同じ放送IDを含むファイルが作成された際にｺﾒﾝﾄﾌｧｲﾙを切り替える";
 			this.isCommentFileChangeOnFileAddedChkBox.UseVisualStyleBackColor = true;
 			// 
 			// commentReplaceText

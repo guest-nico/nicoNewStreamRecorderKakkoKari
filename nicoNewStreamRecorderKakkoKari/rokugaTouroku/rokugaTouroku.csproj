@@ -55,7 +55,7 @@
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="SnkLib.App.CookieGetter">
-      <HintPath>..\packages\SnkLib.App.CookieGetter.2.4.2.0\lib\net45\SnkLib.App.CookieGetter.dll</HintPath>
+      <HintPath>..\packages\SnkLib.App.CookieGetter.2.4.4.0\lib\net45\SnkLib.App.CookieGetter.dll</HintPath>
     </Reference>
     <Reference Include="SnkLib.App.CookieGetter.Forms">
       <HintPath>..\packages\SnkLib.App.CookieGetter.Forms.1.4.3.0\lib\net45\SnkLib.App.CookieGetter.Forms.dll</HintPath>
@@ -90,6 +90,14 @@
     </Compile>
     <Compile Include="src\gui\accountForm.Designer.cs">
       <DependentUpon>accountForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\gui\AppSettingForm.cs" />
+    <Compile Include="src\gui\AppSettingForm.Designer.cs">
+      <DependentUpon>AppSettingForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\gui\argOptionForm.cs" />
+    <Compile Include="src\gui\argOptionForm.Designer.cs">
+      <DependentUpon>argOptionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="src\gui\fileNameOptionForm.cs">
       <SubType>Form</SubType>
@@ -157,6 +165,7 @@
       <DependentUpon>VersionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="src\info\AccountInfo.cs" />
+    <Compile Include="src\info\AppSettingInfo.cs" />
     <Compile Include="src\info\RecInfo.cs" />
     <Compile Include="src\info\TimeShiftConfig.cs" />
     <Compile Include="src\Logger\TraceListener.cs" />
@@ -184,6 +193,9 @@
   <ItemGroup>
     <EmbeddedResource Include="src\gui\accountForm.resx">
       <DependentUpon>accountForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\gui\argOptionForm.resx">
+      <DependentUpon>argOptionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="src\gui\fileNameOptionForm.resx">
       <DependentUpon>fileNameOptionForm.cs</DependentUpon>

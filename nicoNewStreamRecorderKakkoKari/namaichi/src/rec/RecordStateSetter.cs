@@ -71,12 +71,13 @@ namespace namaichi.rec
 		}
 		public void set(string data, string[] recFolderFileInfo, string res) {
 			if (!isChannelPlus) {
-				isEnded = res.IndexOf("\"content_status\":\"closed\"") > -1 ||
-					res.IndexOf("\"content_status\":\"ENDED\"") > -1;
+				isEnded = res.Replace("&quot;", "\"").IndexOf("\"content_status\":\"closed\"") > -1 ||
+					res.Replace("&quot;", "\"").IndexOf("\"content_status\":\"ENDED\"") > -1;
 			} else {
 				isEnded = res.IndexOf("\"live_finished_at\":null") == -1;
 			}
-			var type = util.getRegGroup(res, "\"content_type\":\"(.+?)\"");
+			//var type = util.getRegGroup(res, "\"content_type\":\"(.+?)\"");
+			var type = util.getRegGroup(res, "&quot;providerType&quot;:&quot;(.+?)&");
 			setInfo(data, form, type, recFolderFileInfo);
 //			var a = await setInfo(data, form, type, recFolderFileInfo).ConfigureAwait(false);
 			
@@ -129,7 +130,7 @@ namespace namaichi.rec
 				}
 			}
 //			string hostUrl, groupUrl, gentei;
-			long _openTime = 0, _endTime = 0;
+			long beginTime = 0, _endTime = 0;
 			
 			
 			if (!isJikken && !isChannelPlus) {
@@ -137,16 +138,16 @@ namespace namaichi.rec
 				groupUrl = util.getRegGroup(data, "\"socialGroupPageUrl\":\"(.+?)\"");
 				gentei = (data.IndexOf("\"isFollowerOnly\":true") > -1) ? "限定" : "オープン";
 	//			var _openTime = long.Parse(util.getRegGroup(data, "\"openTime\":(\\d+)"));
-				var _openTimeStr = util.getRegGroup(data, "\"beginTime\":(\\d+)");
+				var beginTimeStr = util.getRegGroup(data, "\"beginTime\":(\\d+)");
 				var _endTimeStr = util.getRegGroup(data, "\"endTime\":(\\d+)");
 				
-				if (_openTimeStr == null) _openTimeStr = util.getRegGroup(data, "<start_time>(\\d+)");
+				if (beginTimeStr == null) beginTimeStr = util.getRegGroup(data, "<start_time>(\\d+)");
 				if (_endTimeStr == null) _endTimeStr = util.getRegGroup(data, "<end_time>(\\d+)");
-				if (_openTimeStr == null) {
-					_openTimeStr = "0";
+				if (beginTimeStr == null) {
+					beginTimeStr = "0";
 					_endTimeStr = "0";
 				}
-				_openTime = long.Parse(_openTimeStr);
+				beginTime = long.Parse(beginTimeStr);
 				_endTime = long.Parse(_endTimeStr);
 			} else if (isChannelPlus) {
 				var _u = util.getRegGroup(url, "(https://.+/)(live|video)");
@@ -164,23 +165,23 @@ namespace namaichi.rec
 				}
 				DateTime dtBuf; 
 				if (DateTime.TryParse(_openTimeStr, out dtBuf))
-					_openTime = util.getUnixTime(dtBuf);
+					beginTime = util.getUnixTime(dtBuf);
 				if (DateTime.TryParse(_endTimeStr, out dtBuf))
 					_endTime = util.getUnixTime(dtBuf);
-				if (_openTime == 0) {
+				if (beginTime == 0) {
 					var _releaseTime = util.getRegGroup(data, "\"released_at\":(.+?)");
 					if (DateTime.TryParse(_releaseTime, out dtBuf))
-						_openTime = util.getUnixTime(dtBuf);
+						beginTime = util.getUnixTime(dtBuf);
 					_endTimeStr = "0";
 				}
 			} else {
 				hostUrl = (type == "community" || type == "user") ? util.getRegGroup(data, "broadcaster\":{.+?\"pageUrl\":\"(.+?)\"") : null;
 				groupUrl = "https://com.nicovideo.jp/community/" + recFolderFileInfo[4];
 				gentei = (data.IndexOf("\"type\":\"memberOnly\"") > -1) ? "限定" : "オープン";
-				_openTime = long.Parse(util.getRegGroup(data, "\"beginTimeMs\":(\\d+)")) / 1000;
+				beginTime = long.Parse(util.getRegGroup(data, "\"beginTimeMs\":(\\d+)")) / 1000;
 				_endTime = long.Parse(util.getRegGroup(data, "\"endTimeMs\":(\\d+)")) / 1000;
 			}
-			openTimeDt = getUnixToDt(_openTime);
+			openTimeDt = getUnixToDt(beginTime);
 			openTime = openTimeDt.ToString("MM/dd(ddd) HH:mm:ss");
 			endTimeDt = getUnixToDt(_endTime);
 			endTime = endTimeDt.ToString("MM/dd(ddd) HH:mm:ss");
@@ -288,14 +289,17 @@ namespace namaichi.rec
 			var fName = outFileName + ext;
 			//StreamWriter sw;
 			try {
-				if (!File.Exists(fName)) return;
+				if (!File.Exists(fName)) {
+					form.addLogText("放送終了時間を番組情報テキストへ書き込む際にファイルが見つかりませんでした。 " + fName);
+					return;
+				}
 				using (var sw = new StreamWriter(fName, true)) {
 					var br = (isDescriptionTag) ? "<br />" : "";
 					sw.WriteLine("[放送終了時間] " + endTime.ToString("MM/dd(ddd) HH:mm:ss") + br);
 				}
 				//sw.Close();
 			} catch (Exception e) {
-				form.addLogText("放送終了時間を番組情報テキストへ書き込みに問題が発生しました。 " + e.Message + e.Source + e.StackTrace + e.TargetSite);
+				form.addLogText("放送終了時間を番組情報テキストへ書き込み中に問題が発生しました。 " + e.Message + e.Source + e.StackTrace + e.TargetSite);
 				form.addLogText(fName);
 				return;
 			}

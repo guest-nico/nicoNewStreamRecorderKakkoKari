@@ -28,8 +28,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.11.9";
-	public static string versionDayStr = "2025/10/30";
+	public static string versionStr = "ver0.1.3.11.10";
+	public static string versionDayStr = "2026/03/11";
 	public static string osName = null;
 	public static bool isCurl = true;
 	public static bool isWebRequestOk = false;
@@ -271,10 +271,9 @@ class util {
 		return type;
 		
 	}
-	public static string getFileNameTypeSample(string filenametype) {
-			//var format = cfg.get("filenameformat");
-			return getDokujiSetteiFileName("放送者名", "チャンネル名", "タイトル", "lv12345", "co9876", filenametype, DateTime.Now, "1000").Replace("{w}", "2").Replace("{c}", "1");
-		}
+	public static string getFileNameTypeSample(string filenametype, bool isArgMode = true) {
+		return getDokujiSetteiFileName("放送者名", "チャンネル名", "タイトル", "lv12345", "co9876", filenametype, DateTime.Now, "1000").Replace("{w}", "2").Replace("{c}", "1");
+	}
 	public static string getOkCommentFileName(config cfg, string fName, string lvid, bool isTimeShift) {
 		var kakutyousi = (cfg.get("IsgetcommentXml") == "true") ? ".xml" : ".json";
 		var engineMode = cfg.get("EngineMode");
@@ -1257,6 +1256,8 @@ class util {
 		type = type.Replace("{tsEnd}", tsConfig != null ? tsConfig.endTimeSeconds.ToString() : "");
 		type = type.Replace("{proxyAddress}", proxyUrl);
 		type = type.Replace("{proxyPort}", proxyPort);
+		//if (type.IndexOf("{file}") > -1) 
+		//	type = type.Replace("{file}", "\"" + getRecFolderFilePath(getOkArg(host), getOkArg(group), getOkArg(title), lvId, communityNum, hostId, false, util.getUnixTime(_openTime), asi)[1] + (asi.ext != "" ? ("." + asi.ext) : "") + "\"");
 		return type;
 	}
     public static string getAfterConvertTypeNum(string afterConvertType) {

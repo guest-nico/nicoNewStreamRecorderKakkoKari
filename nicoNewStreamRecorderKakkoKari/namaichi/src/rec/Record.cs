@@ -215,7 +215,7 @@ namespace namaichi.rec
 			tsWriterTask = Task.Factory.StartNew(() => {startDebugWriter();}, TaskCreationOptions.LongRunning);
 			
 			if (wr.isDlive)
-				rm.form.addLogText("こちらの放送では動作できません。\nhttps://guest-nico.github.io/pages/rec_readme.html#t-onlyComment");
+				rm.form.addLogText("現在、こちらのツールでは映像のダウンロードに対応しておらず、コメントの取得のみに対応しております。\nhttps://guest-nico.github.io/pages/rec_readme.html#t-onlyComment を参照");
 			var _m = (isPlayOnlyMode) ? "視聴" : "録画";
 			if (ri.si.isTimeShift) {
 				var isHokan = !wr.isSaveComment && ri.isChase; 
@@ -2183,7 +2183,7 @@ namespace namaichi.rec
 			return availableFreeSpace > 10000000 && availableFreeSpace > nti.res.Length;
 		}
 		private void changeSecondRecordDir() {
-			var newRecDir = util.getRecFolderFilePath(ri.si.recFolderFileInfo[0], ri.si.recFolderFileInfo[1], ri.si.recFolderFileInfo[2], ri.si.lvid, ri.si.recFolderFileInfo[4], ri.si.recFolderFileInfo[5], rm.cfg, ri.si.isTimeShift, ri.timeShiftConfig, ri.si.openTime, ri.isRtmp, ri.isFmp4, true, rm.form);
+			var newRecDir = util.getRecFolderFilePath(ri.si.recFolderFileInfo[0], ri.si.recFolderFileInfo[1], ri.si.recFolderFileInfo[2], ri.si.lvid, ri.si.recFolderFileInfo[4], ri.si.recFolderFileInfo[5], rm.cfg, ri.si.isTimeShift, ri.timeShiftConfig, ri.si.openTime, ri.si.beginTime, ri.isRtmp, ri.isFmp4, true, rm.form);
 			if (newRecDir[1] != recFolderFile) {
 				recFolderFile = newRecDir[1];
 				ri.recFolderFile = newRecDir;

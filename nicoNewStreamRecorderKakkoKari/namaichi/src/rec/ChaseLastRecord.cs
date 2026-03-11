@@ -22,7 +22,6 @@ namespace namaichi.rec
 		private string lvid = null;
 		private CookieContainer container;
 		private RecordingManager rm;
-		private long openTime;
 		//private Html5Recorder h5r;
 		private RecordInfo ri;
 		private TimeShiftConfig tsConfig;
@@ -31,14 +30,12 @@ namespace namaichi.rec
 		
 		public ChaseLastRecord(string lvid, 
 				CookieContainer container, RecordingManager rm,
-				long openTime, 
 				RecordInfo ri, TimeShiftConfig tsConfig, 
 				RecordFromUrl rfu, int lastSegmentNo)
 		{
 			this.lvid = lvid;
 			this.container = container;
 			this.rm = rm;
-			this.openTime = openTime;
 			this.ri = ri;
 			this.tsConfig = tsConfig;
 			this.rfu = rfu;
@@ -147,7 +144,7 @@ namespace namaichi.rec
 				
 				var segmentSaveType = rm.cfg.get("segmentSaveType");
 				var lastFile = util.getLastTimeshiftFileName(
-					ri.si.recFolderFileInfo[0], ri.si.recFolderFileInfo[1], ri.si.recFolderFileInfo[2], ri.si.recFolderFileInfo[3], ri.si.recFolderFileInfo[4], ri.si.recFolderFileInfo[5], rm.cfg, openTime, ri.isFmp4);
+					ri.si.recFolderFileInfo[0], ri.si.recFolderFileInfo[1], ri.si.recFolderFileInfo[2], ri.si.recFolderFileInfo[3], ri.si.recFolderFileInfo[4], ri.si.recFolderFileInfo[5], rm.cfg, ri.si.openTime, ri.si.beginTime, ri.isFmp4);
 				util.debugWriteLine("timeshift lastfile " + lastFile);
 				string[] lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType, this.ri.isFmp4);
 				if (lastFileTime == null)
@@ -157,7 +154,7 @@ namespace namaichi.rec
 				tsConfig.endTimeMode = this.tsConfig.endTimeMode;
 				tsConfig.endTimeSeconds = this.tsConfig.endTimeSeconds;
 				//tsConfig.lastSegmentNo = lastSegmentNo;
-				var	recFolderFile = util.getRecFolderFilePath(ri.si.recFolderFileInfo[0], ri.si.recFolderFileInfo[1], ri.si.recFolderFileInfo[2], ri.si.recFolderFileInfo[3], ri.si.recFolderFileInfo[4], ri.si.recFolderFileInfo[5], rm.cfg, true, tsConfig, openTime, false, this.ri.isFmp4, false, rm.form);
+				var	recFolderFile = util.getRecFolderFilePath(ri.si.recFolderFileInfo[0], ri.si.recFolderFileInfo[1], ri.si.recFolderFileInfo[2], ri.si.recFolderFileInfo[3], ri.si.recFolderFileInfo[4], ri.si.recFolderFileInfo[5], rm.cfg, true, tsConfig, ri.si.openTime, ri.si.beginTime, false, this.ri.isFmp4, false, rm.form);
 				if (recFolderFile == null || recFolderFile[0] == null) {
 					//パスが長すぎ
 					rm.form.addLogText("パスに問題があります。 " + recFolderFile[1]);

@@ -368,7 +368,7 @@ namespace namaichi.rec
 					var content = chat.Content != null ? chat.Content : "";
 					var premium = ((int)chat.account_status).ToString();
 					var modifier = chat.modifier != null ? getModifier(chat.modifier) : "";
-					msgProto.Message.Chat.Vpos -= ((int)wr.ri.si._openTime - vposBaseTimeUnix + 32400) * 100;
+					msgProto.Message.Chat.Vpos -= ((int)wr.ri.si.openTime - vposBaseTimeUnix + 32400) * 100;
 					
 					_xml = getXDocument(content, premium,
 					        chat.HashedUserId, modifier, chat.Name,
@@ -376,7 +376,7 @@ namespace namaichi.rec
 					        chat.Vpos.ToString(), msgProto.meta.At.Seconds,
 					        msgProto.meta.At.Nanos / 1000);
 				} else {
-					var vpos = (msgProto.meta.At.Seconds - wr.ri.si._openTime) * 100;
+					var vpos = (msgProto.meta.At.Seconds - wr.ri.si.openTime) * 100;
 					var content = "undefined";
 					if (msgProto.Message != null && msgProto.Message.SimpleNotification != null) {
 						content = getNotification(msgProto.Message.SimpleNotification);

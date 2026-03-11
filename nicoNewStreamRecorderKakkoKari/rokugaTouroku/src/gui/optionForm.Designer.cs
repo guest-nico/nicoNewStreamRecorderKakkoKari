@@ -236,6 +236,32 @@ namespace rokugaTouroku
 			this.recFolderSanshouBtn = new System.Windows.Forms.Button();
 			this.recordDirectoryText = new System.Windows.Forms.TextBox();
 			this.tabPage8 = new System.Windows.Forms.TabPage();
+			this.groupBox20 = new System.Windows.Forms.GroupBox();
+			this.appCSettingBtn = new System.Windows.Forms.Button();
+			this.appBSettingBtn = new System.Windows.Forms.Button();
+			this.appASettingBtn = new System.Windows.Forms.Button();
+			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+			this.label34 = new System.Windows.Forms.Label();
+			this.argCText = new System.Windows.Forms.TextBox();
+			this.label35 = new System.Windows.Forms.Label();
+			this.argBText = new System.Windows.Forms.TextBox();
+			this.label43 = new System.Windows.Forms.Label();
+			this.label44 = new System.Windows.Forms.Label();
+			this.label45 = new System.Windows.Forms.Label();
+			this.argA = new System.Windows.Forms.Label();
+			this.nameCText = new System.Windows.Forms.TextBox();
+			this.nameBText = new System.Windows.Forms.TextBox();
+			this.nameAText = new System.Windows.Forms.TextBox();
+			this.argAText = new System.Windows.Forms.TextBox();
+			this.label46 = new System.Windows.Forms.Label();
+			this.appliCPathSanshouBtn = new System.Windows.Forms.Button();
+			this.appliCPathText = new System.Windows.Forms.TextBox();
+			this.label47 = new System.Windows.Forms.Label();
+			this.appliBPathSanshouBtn = new System.Windows.Forms.Button();
+			this.appliBPathText = new System.Windows.Forms.TextBox();
+			this.label48 = new System.Windows.Forms.Label();
+			this.appliAPathSanshouBtn = new System.Windows.Forms.Button();
+			this.appliAPathText = new System.Windows.Forms.TextBox();
 			this.groupBox11 = new System.Windows.Forms.GroupBox();
 			this.isDeleteConfirmMessageRtCheckBtn = new System.Windows.Forms.CheckBox();
 			this.panel1 = new System.Windows.Forms.Panel();
@@ -282,6 +308,7 @@ namespace rokugaTouroku
 			this.groupBox2.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.tabPage8.SuspendLayout();
+			this.groupBox20.SuspendLayout();
 			this.groupBox11.SuspendLayout();
 			this.panel1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.maxRecordingNum)).BeginInit();
@@ -2431,6 +2458,7 @@ namespace rokugaTouroku
 			// 
 			// tabPage8
 			// 
+			this.tabPage8.Controls.Add(this.groupBox20);
 			this.tabPage8.Controls.Add(this.groupBox11);
 			this.tabPage8.Location = new System.Drawing.Point(4, 40);
 			this.tabPage8.Name = "tabPage8";
@@ -2439,6 +2467,253 @@ namespace rokugaTouroku
 			this.tabPage8.TabIndex = 8;
 			this.tabPage8.Text = "録画登録";
 			this.tabPage8.UseVisualStyleBackColor = true;
+			// 
+			// groupBox20
+			// 
+			this.groupBox20.Controls.Add(this.appCSettingBtn);
+			this.groupBox20.Controls.Add(this.appBSettingBtn);
+			this.groupBox20.Controls.Add(this.appASettingBtn);
+			this.groupBox20.Controls.Add(this.linkLabel1);
+			this.groupBox20.Controls.Add(this.label34);
+			this.groupBox20.Controls.Add(this.argCText);
+			this.groupBox20.Controls.Add(this.label35);
+			this.groupBox20.Controls.Add(this.argBText);
+			this.groupBox20.Controls.Add(this.label43);
+			this.groupBox20.Controls.Add(this.label44);
+			this.groupBox20.Controls.Add(this.label45);
+			this.groupBox20.Controls.Add(this.argA);
+			this.groupBox20.Controls.Add(this.nameCText);
+			this.groupBox20.Controls.Add(this.nameBText);
+			this.groupBox20.Controls.Add(this.nameAText);
+			this.groupBox20.Controls.Add(this.argAText);
+			this.groupBox20.Controls.Add(this.label46);
+			this.groupBox20.Controls.Add(this.appliCPathSanshouBtn);
+			this.groupBox20.Controls.Add(this.appliCPathText);
+			this.groupBox20.Controls.Add(this.label47);
+			this.groupBox20.Controls.Add(this.appliBPathSanshouBtn);
+			this.groupBox20.Controls.Add(this.appliBPathText);
+			this.groupBox20.Controls.Add(this.label48);
+			this.groupBox20.Controls.Add(this.appliAPathSanshouBtn);
+			this.groupBox20.Controls.Add(this.appliAPathText);
+			this.groupBox20.Location = new System.Drawing.Point(5, 143);
+			this.groupBox20.Name = "groupBox20";
+			this.groupBox20.Size = new System.Drawing.Size(405, 165);
+			this.groupBox20.TabIndex = 21;
+			this.groupBox20.TabStop = false;
+			this.groupBox20.Text = "アプリケーション設定";
+			// 
+			// appCSettingBtn
+			// 
+			this.appCSettingBtn.Location = new System.Drawing.Point(383, 109);
+			this.appCSettingBtn.Margin = new System.Windows.Forms.Padding(2);
+			this.appCSettingBtn.Name = "appCSettingBtn";
+			this.appCSettingBtn.Size = new System.Drawing.Size(37, 23);
+			this.appCSettingBtn.TabIndex = 51;
+			this.appCSettingBtn.Text = "詳細";
+			this.appCSettingBtn.UseVisualStyleBackColor = true;
+			this.appCSettingBtn.Visible = false;
+			this.appCSettingBtn.Click += new System.EventHandler(this.AppSettingBtnClick);
+			// 
+			// appBSettingBtn
+			// 
+			this.appBSettingBtn.Location = new System.Drawing.Point(383, 71);
+			this.appBSettingBtn.Margin = new System.Windows.Forms.Padding(2);
+			this.appBSettingBtn.Name = "appBSettingBtn";
+			this.appBSettingBtn.Size = new System.Drawing.Size(37, 23);
+			this.appBSettingBtn.TabIndex = 51;
+			this.appBSettingBtn.Text = "詳細";
+			this.appBSettingBtn.UseVisualStyleBackColor = true;
+			this.appBSettingBtn.Visible = false;
+			this.appBSettingBtn.Click += new System.EventHandler(this.AppSettingBtnClick);
+			// 
+			// appASettingBtn
+			// 
+			this.appASettingBtn.Location = new System.Drawing.Point(383, 33);
+			this.appASettingBtn.Margin = new System.Windows.Forms.Padding(2);
+			this.appASettingBtn.Name = "appASettingBtn";
+			this.appASettingBtn.Size = new System.Drawing.Size(37, 23);
+			this.appASettingBtn.TabIndex = 50;
+			this.appASettingBtn.Text = "詳細";
+			this.appASettingBtn.UseVisualStyleBackColor = true;
+			this.appASettingBtn.Visible = false;
+			this.appASettingBtn.Click += new System.EventHandler(this.AppSettingBtnClick);
+			// 
+			// linkLabel1
+			// 
+			this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+									| System.Windows.Forms.AnchorStyles.Right)));
+			this.linkLabel1.Location = new System.Drawing.Point(297, 141);
+			this.linkLabel1.Name = "linkLabel1";
+			this.linkLabel1.Size = new System.Drawing.Size(106, 13);
+			this.linkLabel1.TabIndex = 47;
+			this.linkLabel1.TabStop = true;
+			this.linkLabel1.Text = "引数の書式の説明";
+			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.DisplayArgInfoLabelLinkClicked);
+			// 
+			// label34
+			// 
+			this.label34.Location = new System.Drawing.Point(276, 95);
+			this.label34.Name = "label34";
+			this.label34.Size = new System.Drawing.Size(60, 15);
+			this.label34.TabIndex = 17;
+			this.label34.Text = "引数";
+			// 
+			// argCText
+			// 
+			this.argCText.Location = new System.Drawing.Point(276, 111);
+			this.argCText.Name = "argCText";
+			this.argCText.Size = new System.Drawing.Size(60, 19);
+			this.argCText.TabIndex = 16;
+			// 
+			// label35
+			// 
+			this.label35.Location = new System.Drawing.Point(276, 57);
+			this.label35.Name = "label35";
+			this.label35.Size = new System.Drawing.Size(60, 15);
+			this.label35.TabIndex = 15;
+			this.label35.Text = "引数";
+			// 
+			// argBText
+			// 
+			this.argBText.Location = new System.Drawing.Point(276, 73);
+			this.argBText.Name = "argBText";
+			this.argBText.Size = new System.Drawing.Size(60, 19);
+			this.argBText.TabIndex = 14;
+			// 
+			// label43
+			// 
+			this.label43.Location = new System.Drawing.Point(343, 95);
+			this.label43.Name = "label43";
+			this.label43.Size = new System.Drawing.Size(42, 15);
+			this.label43.TabIndex = 13;
+			this.label43.Text = "表示名";
+			// 
+			// label44
+			// 
+			this.label44.Location = new System.Drawing.Point(343, 57);
+			this.label44.Name = "label44";
+			this.label44.Size = new System.Drawing.Size(42, 15);
+			this.label44.TabIndex = 13;
+			this.label44.Text = "表示名";
+			// 
+			// label45
+			// 
+			this.label45.Location = new System.Drawing.Point(343, 19);
+			this.label45.Name = "label45";
+			this.label45.Size = new System.Drawing.Size(42, 15);
+			this.label45.TabIndex = 13;
+			this.label45.Text = "表示名";
+			// 
+			// argA
+			// 
+			this.argA.Location = new System.Drawing.Point(276, 19);
+			this.argA.Name = "argA";
+			this.argA.Size = new System.Drawing.Size(60, 15);
+			this.argA.TabIndex = 13;
+			this.argA.Text = "引数";
+			// 
+			// nameCText
+			// 
+			this.nameCText.Location = new System.Drawing.Point(343, 111);
+			this.nameCText.Name = "nameCText";
+			this.nameCText.Size = new System.Drawing.Size(35, 19);
+			this.nameCText.TabIndex = 12;
+			// 
+			// nameBText
+			// 
+			this.nameBText.Location = new System.Drawing.Point(343, 73);
+			this.nameBText.Name = "nameBText";
+			this.nameBText.Size = new System.Drawing.Size(35, 19);
+			this.nameBText.TabIndex = 12;
+			// 
+			// nameAText
+			// 
+			this.nameAText.Location = new System.Drawing.Point(343, 35);
+			this.nameAText.Name = "nameAText";
+			this.nameAText.Size = new System.Drawing.Size(35, 19);
+			this.nameAText.TabIndex = 12;
+			// 
+			// argAText
+			// 
+			this.argAText.Location = new System.Drawing.Point(276, 35);
+			this.argAText.Name = "argAText";
+			this.argAText.Size = new System.Drawing.Size(60, 19);
+			this.argAText.TabIndex = 12;
+			// 
+			// label46
+			// 
+			this.label46.Location = new System.Drawing.Point(14, 95);
+			this.label46.Name = "label46";
+			this.label46.Size = new System.Drawing.Size(85, 15);
+			this.label46.TabIndex = 11;
+			this.label46.Text = "アプリケーションC";
+			// 
+			// appliCPathSanshouBtn
+			// 
+			this.appliCPathSanshouBtn.Location = new System.Drawing.Point(230, 109);
+			this.appliCPathSanshouBtn.Name = "appliCPathSanshouBtn";
+			this.appliCPathSanshouBtn.Size = new System.Drawing.Size(40, 23);
+			this.appliCPathSanshouBtn.TabIndex = 9;
+			this.appliCPathSanshouBtn.Text = "参照";
+			this.appliCPathSanshouBtn.UseVisualStyleBackColor = true;
+			this.appliCPathSanshouBtn.Click += new System.EventHandler(this.appliPathSanshouBtn_Click);
+			// 
+			// appliCPathText
+			// 
+			this.appliCPathText.Location = new System.Drawing.Point(14, 111);
+			this.appliCPathText.Name = "appliCPathText";
+			this.appliCPathText.Size = new System.Drawing.Size(210, 19);
+			this.appliCPathText.TabIndex = 8;
+			// 
+			// label47
+			// 
+			this.label47.Location = new System.Drawing.Point(14, 57);
+			this.label47.Name = "label47";
+			this.label47.Size = new System.Drawing.Size(85, 15);
+			this.label47.TabIndex = 7;
+			this.label47.Text = "アプリケーションB";
+			// 
+			// appliBPathSanshouBtn
+			// 
+			this.appliBPathSanshouBtn.Location = new System.Drawing.Point(230, 71);
+			this.appliBPathSanshouBtn.Name = "appliBPathSanshouBtn";
+			this.appliBPathSanshouBtn.Size = new System.Drawing.Size(40, 23);
+			this.appliBPathSanshouBtn.TabIndex = 5;
+			this.appliBPathSanshouBtn.Text = "参照";
+			this.appliBPathSanshouBtn.UseVisualStyleBackColor = true;
+			this.appliBPathSanshouBtn.Click += new System.EventHandler(this.appliPathSanshouBtn_Click);
+			// 
+			// appliBPathText
+			// 
+			this.appliBPathText.Location = new System.Drawing.Point(14, 73);
+			this.appliBPathText.Name = "appliBPathText";
+			this.appliBPathText.Size = new System.Drawing.Size(210, 19);
+			this.appliBPathText.TabIndex = 4;
+			// 
+			// label48
+			// 
+			this.label48.Location = new System.Drawing.Point(14, 19);
+			this.label48.Name = "label48";
+			this.label48.Size = new System.Drawing.Size(85, 15);
+			this.label48.TabIndex = 3;
+			this.label48.Text = "アプリケーションA";
+			// 
+			// appliAPathSanshouBtn
+			// 
+			this.appliAPathSanshouBtn.Location = new System.Drawing.Point(230, 33);
+			this.appliAPathSanshouBtn.Name = "appliAPathSanshouBtn";
+			this.appliAPathSanshouBtn.Size = new System.Drawing.Size(40, 23);
+			this.appliAPathSanshouBtn.TabIndex = 1;
+			this.appliAPathSanshouBtn.Text = "参照";
+			this.appliAPathSanshouBtn.UseVisualStyleBackColor = true;
+			this.appliAPathSanshouBtn.Click += new System.EventHandler(this.appliPathSanshouBtn_Click);
+			// 
+			// appliAPathText
+			// 
+			this.appliAPathText.Location = new System.Drawing.Point(14, 35);
+			this.appliAPathText.Name = "appliAPathText";
+			this.appliAPathText.Size = new System.Drawing.Size(210, 19);
+			this.appliAPathText.TabIndex = 0;
 			// 
 			// groupBox11
 			// 
@@ -2618,11 +2893,39 @@ namespace rokugaTouroku
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.tabPage8.ResumeLayout(false);
+			this.groupBox20.ResumeLayout(false);
+			this.groupBox20.PerformLayout();
 			this.groupBox11.ResumeLayout(false);
 			this.panel1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.maxRecordingNum)).EndInit();
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.Label label48;
+		private System.Windows.Forms.Label label47;
+		private System.Windows.Forms.TextBox appliCPathText;
+		private System.Windows.Forms.Button appliCPathSanshouBtn;
+		private System.Windows.Forms.Label label46;
+		private System.Windows.Forms.TextBox nameCText;
+		private System.Windows.Forms.Label label45;
+		private System.Windows.Forms.Label label44;
+		private System.Windows.Forms.Label label43;
+		private System.Windows.Forms.Label label35;
+		private System.Windows.Forms.TextBox argCText;
+		private System.Windows.Forms.Label label34;
+		private System.Windows.Forms.LinkLabel linkLabel1;
+		private System.Windows.Forms.Button appCSettingBtn;
+		private System.Windows.Forms.TextBox appliBPathText;
+		private System.Windows.Forms.Button appliBPathSanshouBtn;
+		private System.Windows.Forms.TextBox nameAText;
+		private System.Windows.Forms.TextBox nameBText;
+		private System.Windows.Forms.TextBox argBText;
+		private System.Windows.Forms.Button appBSettingBtn;
+		private System.Windows.Forms.TextBox appliAPathText;
+		private System.Windows.Forms.Button appliAPathSanshouBtn;
+		private System.Windows.Forms.TextBox argAText;
+		private System.Windows.Forms.Label argA;
+		private System.Windows.Forms.Button appASettingBtn;
+		private System.Windows.Forms.GroupBox groupBox20;
 		private System.Windows.Forms.CheckBox isUserInfoFileNameChkBox;
 		private System.Windows.Forms.GroupBox groupBox19;
 		private System.Windows.Forms.CheckBox isCommentFileChangeOnFileAddedChkBox;

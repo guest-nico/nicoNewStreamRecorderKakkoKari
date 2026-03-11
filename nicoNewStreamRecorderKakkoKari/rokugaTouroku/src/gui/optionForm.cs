@@ -22,6 +22,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using rokugaTouroku.config;
 using rokugaTouroku.gui;
+using rokugaTouroku.info;
 using rokugaTouroku.rec;
 using SunokoLibrary.Application;
 using SunokoLibrary.Application.Browsers;
@@ -38,7 +39,7 @@ namespace rokugaTouroku
 		
 		static readonly Uri TargetUrl = new Uri("https://live.nicovideo.jp/");
 		private string fileNameFormat;
-//		private string 
+		private string timeType;
 		
 		public optionForm(config.config cfg)
 		{
@@ -79,11 +80,12 @@ namespace rokugaTouroku
 		}
 		void FileNameDokujiSetteiBtn_Click(object sender, EventArgs e)
 		{
-			var a = new fileNameOptionForm(fileNameFormat, int.Parse(cfg.get("fontSize")));
+			var a = new fileNameOptionForm(fileNameFormat, timeType, int.Parse(cfg.get("fontSize")));
 			var res = a.ShowDialog();
 			if (res != DialogResult.OK) return;
 			fileNameTypeDokujiSetteiBtn.Text = util.getFileNameTypeSample(a.ret);
 			fileNameFormat = a.ret;
+			timeType = a.timeTypeRet;
 		}
 		
 		void optionOk_Click(object sender, EventArgs e)
@@ -198,6 +200,7 @@ namespace rokugaTouroku
 				{"subFolderNameType",getSubFolderNameType() + ""},
 				{"fileNameType",getFileNameType() + ""},
 				{"filenameformat",fileNameFormat},
+				{"fileNameTimeType",timeType},
 				{"IsUserInfoFileName",isUserInfoFileNameChkBox.Checked.ToString().ToLower()},
 				//{"ffmpegopt",ffmpegoptText.Text},
 				{"user_session",""},
@@ -221,6 +224,20 @@ namespace rokugaTouroku
 				{"IsDuplicateConfirm",isDuplicateConfirmRadioBtn.Checked.ToString().ToLower()},
 				{"IsDuplicateCancel",isDuplicateCancelRadioBtn.Checked.ToString().ToLower()},
 				{"IsDeleteConfirmMessageRt",isDeleteConfirmMessageRtCheckBtn.Checked.ToString().ToLower()},
+				
+				{"appliAPath",appliAPathText.Text},
+				{"appliBPath",appliBPathText.Text},
+				{"appliCPath",appliCPathText.Text},
+				{"appliAArgs",argAText.Text},
+				{"appliBArgs",argBText.Text},
+				{"appliCArgs",argCText.Text},
+				{"appliAName",nameAText.Text},
+				{"appliBName",nameBText.Text},
+				{"appliCName",nameCText.Text},
+				{"appliASetting",Newtonsoft.Json.JsonConvert.SerializeObject(appASettingBtn.Tag)},
+				{"appliBSetting",Newtonsoft.Json.JsonConvert.SerializeObject(appBSettingBtn.Tag)},
+				{"appliCSetting",Newtonsoft.Json.JsonConvert.SerializeObject(appCSettingBtn.Tag)},
+				{"IsminimizedApp",getIsminimizedApp()},
 				
 				{"useProxy",useProxyChkBox.Checked.ToString().ToLower()},
 				{"proxyAddress",proxyAddressText.Text},
@@ -479,6 +496,7 @@ namespace rokugaTouroku
         	setFileNameType(int.Parse(cfg.get("fileNameType")));
         	fileNameFormat = cfg.get("filenameformat");
         	fileNameTypeDokujiSetteiBtn.Text = util.getFileNameTypeSample(fileNameFormat);
+        	timeType = cfg.get("fileNameTimeType");
         	isUserInfoFileNameChkBox.Checked = bool.Parse(cfg.get("IsUserInfoFileName"));
         	//ffmpegoptText.Text = cfg.get("ffmpegopt");
         	
@@ -505,6 +523,20 @@ namespace rokugaTouroku
         	isDuplicateConfirmRadioBtn.Checked = bool.Parse(cfg.get("IsDuplicateConfirm"));
         	isDuplicateCancelRadioBtn.Checked = bool.Parse(cfg.get("IsDuplicateCancel"));
         	isDeleteConfirmMessageRtCheckBtn.Checked = bool.Parse(cfg.get("IsDeleteConfirmMessageRt"));
+        	
+        	appliAPathText.Text = cfg.get("appliAPath");
+			appliBPathText.Text = cfg.get("appliBPath");
+			appliCPathText.Text = cfg.get("appliCPath");
+			argAText.Text = cfg.get("appliAArgs");
+			argBText.Text = cfg.get("appliBArgs");
+			argCText.Text = cfg.get("appliCArgs");
+			nameAText.Text = cfg.get("appliAName");
+			nameBText.Text = cfg.get("appliBName");
+			nameCText.Text = cfg.get("appliCName");
+			appASettingBtn.Tag = JsonConvert.DeserializeObject<AppSettingInfo>(cfg.get("appliASetting"));
+			appBSettingBtn.Tag = JsonConvert.DeserializeObject<AppSettingInfo>(cfg.get("appliBSetting"));
+			appCSettingBtn.Tag = JsonConvert.DeserializeObject<AppSettingInfo>(cfg.get("appliCSetting"));
+			setIsminimizedAppInit();
         	
         	proxyAddressText.Text = cfg.get("proxyAddress");
         	proxyPortText.Text = cfg.get("proxyPort");
@@ -1299,6 +1331,57 @@ namespace rokugaTouroku
 				var f = new ArgOptionForm(int.Parse(cfg.get("fontSize")));
 				f.ShowDialog();
 			}
+		}
+		void appliPathSanshouBtn_Click(object sender, EventArgs e)
+		{
+			var n = ((Button)sender).Name[5];
+			var t = this.Controls.Find("appli" + n + "PathText", true)[0];
+			
+			appliPathSanshouBtnClickProcess((TextBox)t);
+		}
+		void appliPathSanshouBtnClickProcess(TextBox tb) {
+			var dialog = new OpenFileDialog();
+			dialog.Multiselect = false;
+			var result = dialog.ShowDialog();
+			if (result != DialogResult.OK) return;
+			
+			tb.Text = dialog.FileName;
+		}
+		void AppSettingBtnClick(object sender, EventArgs e)
+		{
+			var btn = (Button)sender;
+			var asi = (AppSettingInfo)btn.Tag;
+			
+			var f = new AppSettingForm(asi, cfg, timeType);
+			if (f.ShowDialog() != DialogResult.OK) return;
+			
+			btn.Tag = f.ret;
+		}
+		private void setIsminimizedAppInit() {
+			var c = cfg.get("IsminimizedApp");
+			if (string.IsNullOrEmpty(c)) return;
+			var arr = c.Split(',');
+			if (arr.Length != 10) return;
+			
+			for (var i = 0; i < 3; i++) {
+				var appName = (char)('A' + i);
+				
+				var btn = this.Controls.Find("app" + appName + "SettingBtn", true);
+				var asi = (AppSettingInfo)btn[0].Tag;
+				asi.isMin = bool.Parse(arr[i]);
+			}
+		}
+		private string getIsminimizedApp() {
+			var ret = "";
+			for (var i = 0; i < 3; i++) {
+				if (i != 0) ret += ",";
+				var appName = (char)('A' + i);
+				
+				var btn = this.Controls.Find("app" + appName + "SettingBtn", true);
+				var asi = (AppSettingInfo)btn[0].Tag;
+				ret += asi.isMin;
+			}
+			return ret;
 		}
 	}
 }

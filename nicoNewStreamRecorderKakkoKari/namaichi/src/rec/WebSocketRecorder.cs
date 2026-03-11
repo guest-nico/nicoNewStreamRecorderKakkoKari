@@ -309,7 +309,7 @@ namespace namaichi.rec
 				#endif
 				
 				new ChaseLastRecord(ri.si.lvid, container, rm, 
-						ri.si.openTime, ri, 
+						ri, 
 						ri.timeShiftConfig, rfu, 
 						rec != null ? rec.lastSegmentNo : -1).rec(rec.recFolderFile);
 			}
@@ -627,7 +627,8 @@ namespace namaichi.rec
 //				         });
 				}
 			} else if (message.IndexOf("\"INTERNAL_SERVERERROR\"") >= 0 ||
-			          	message.IndexOf("\"INVALID_MESSAGE\"") >= 0) {
+			          	message.IndexOf("\"INVALID_MESSAGE\"") >= 0 ||
+			          	message.IndexOf("\"FAILED_PRECONDITION\"") >= 0) {
 				try {
 					if (ws != null) ws.Close();
 					#if DEBUG
@@ -727,7 +728,7 @@ namespace namaichi.rec
 	         			Thread.Sleep(1000);
 	         			continue;
 	         		}       
-			        DateTime _keikaTimeStart = (!ri.si.isTimeShift || ri.isChase) ? (util.getUnixToDatetime(ri.si.openTime) - jisa) : (tsHlsRequestTime - tsStartTime - jisa);
+			        DateTime _keikaTimeStart = (!ri.si.isTimeShift || ri.isChase) ? (util.getUnixToDatetime(ri.si.beginTime) - jisa) : (tsHlsRequestTime - tsStartTime - jisa);
 			        if (keikaTimeStart == _keikaTimeStart)
 			        	_keikaTimeStart = DateTime.MinValue;
 			        else keikaTimeStart = _keikaTimeStart;
@@ -1197,10 +1198,10 @@ namespace namaichi.rec
 			
 			try {
 				var isComSave = chatinfo.root == "thread" || ri.timeShiftConfig == null || ((!ri.timeShiftConfig.isAfterStartTimeComment ||
-						chatinfo.date > ri.si._openTime + ri.timeShiftConfig.timeSeconds - 10) && 
+						chatinfo.date > ri.si.openTime + ri.timeShiftConfig.timeSeconds - 10) && 
 					(!ri.timeShiftConfig.isBeforeEndTimeComment || 
 						ri.timeShiftConfig.endTimeSeconds == 0 || 
-						chatinfo.date < ri.si._openTime + ri.timeShiftConfig.endTimeSeconds + 10));
+						chatinfo.date < ri.si.openTime + ri.timeShiftConfig.endTimeSeconds + 10));
 				if (!isComSave) 
 					return;
 			
@@ -1466,7 +1467,7 @@ namespace namaichi.rec
 			//if (msThread == null) return;
 			sendCommentBuf = s;
 			isSend184 = is184;
-			var vpos = (int)(((TimeSpan)(DateTime.Now - util.getUnixToDatetime(ri.si.openTime))).TotalMilliseconds / 10) + 60000 + 780;
+			var vpos = (int)(((TimeSpan)(DateTime.Now - util.getUnixToDatetime(ri.si.beginTime))).TotalMilliseconds / 10) + 60000 + 780;
 			//ws.Send("{\"type\":\"watch\",\"body\":{\"command\":\"getpostkey\",\"params\":[\"" + msThread + "\"]}}");
 			if (ri.webSocketRecInfo[2] == "1")
 				sendMessage(ws, "{\"type\":\"watch\",\"body\":{\"command\":\"getpostkey\",\"params\":[\"" + msThread + "\"]}}");
@@ -1474,7 +1475,7 @@ namespace namaichi.rec
 			else sendMessage(ws, "{\"type\":\"postComment\",\"data\":{\"text\":\"" + s + "\",\"vpos\":" + vpos + ",\"isAnonymous\":" + is184.ToString().ToLower() + ",\"color\":\"white\",\"size\":\"medium\",\"position\":\"naka\"}}");
 		}
 		public void sendCommentWsc(string s) {
-			var vpos = (int)(((TimeSpan)(DateTime.Now - util.getUnixToDatetime(ri.si.openTime))).TotalMilliseconds / 10) + 60000 + 780;
+			var vpos = (int)(((TimeSpan)(DateTime.Now - util.getUnixToDatetime(ri.si.beginTime))).TotalMilliseconds / 10) + 60000 + 780;
 			var mail = (isSend184) ? ",\"mail\":\"184 \"" : "";
 			var premium = (ri.isPremium) ? "1" : "0";
 			string postKey = null;
@@ -1679,7 +1680,7 @@ namespace namaichi.rec
 				rfu.subGotNumTaskInfo = new List<numTaskInfo>();
 				if (rr != null) rr.resetRtmpUrl(url);
 				else {
-					rr = new RtmpRecorder(ri.si.lvid, container, rm, rfu, !ri.isRtmp, ri.recFolderFile, this, ri.si.openTime);
+					rr = new RtmpRecorder(ri.si.lvid, container, rm, rfu, !ri.isRtmp, ri.recFolderFile, this, ri.si.beginTime);
 					Task.Factory.StartNew(() => {
 						rr.record(url, quality);
 						rm.setHlsInfo("end", null);
@@ -1721,9 +1722,9 @@ namespace namaichi.rec
 		}
 		private void saveXmlComment() {
 			tscgx = new TimeShiftCommentGetter_xml ( 
-					ri.userId, rm, rfu, rm.form, ri.si.openTime, 
+					ri.userId, rm, rfu, rm.form, ri.si.beginTime, 
 					ri.recFolderFile, ri.si.lvid, container, 
-					ri.si.type, ri.si._openTime, this, 
+					ri.si.type, ri.si.openTime, this, 
 					(ri.isRtmp) ? 0 : ri.timeShiftConfig.timeSeconds, 
 					(ri.isRtmp) ? false : ri.timeShiftConfig.isVposStartTime, ri.isRtmp);
 			tscgx.save();
@@ -1877,8 +1878,8 @@ namespace namaichi.rec
 		override public void setSync(int no, double second, string m3u8Url) {
 			try {
 				if (ri.si.isTimeShift) {
-					sync = no + ri.si._openTime * 1000;
-					addDebugBuf("setSync ts " + no + " " + ri.si._openTime + " " + ri.si.openTime + " " + ri.si.vposBaseTime + " " + second);
+					sync = no + ri.si.openTime * 1000;
+					addDebugBuf("setSync ts " + no + " " + ri.si.openTime + " " + ri.si.beginTime + " " + ri.si.vposBaseTime + " " + second);
 					
 					var _url = m3u8Url.Replace("1/ts/playlist.m3u8", "stream_sync.json");
 					var _m = new Regex("(.+\\?).*?(ht2.+)").Match(_url);
@@ -1888,7 +1889,7 @@ namespace namaichi.rec
 					return;
 				}
 				
-				addDebugBuf("setSync " + no + " " + second + " " + m3u8Url + " " + ri.si._openTime + " " + ri.si.openTime + " " + ri.si.vposBaseTime);
+				addDebugBuf("setSync " + no + " " + second + " " + m3u8Url + " " + ri.si.openTime + " " + ri.si.beginTime + " " + ri.si.vposBaseTime);
 				//var url = util.getRegGroup(mes, "\"syncUri\":\"(.+?)\"");
 				var url = m3u8Url.Replace((ri.isFmp4 ? "mp4" : "ts") + "/playlist.m3u8", "stream_sync.json");
 				var res = util.getPageSource(url);
@@ -1897,7 +1898,7 @@ namespace namaichi.rec
 				var m = new Regex("\"beginning_timestamp\":(\\d+),\"sequence\":(\\d+)").Match(res);
 				if (!m.Success) return;
 				
-				var a = (ri.si._openTime - ri.si.vposBaseTime);
+				var a = (ri.si.openTime - ri.si.vposBaseTime);
 				var beginTime = long.Parse(m.Groups[1].Value);
 				if (second != 0)
 					sync = (long)(beginTime - (long.Parse(m.Groups[2].Value) - no) * second * 1000);
@@ -2026,12 +2027,12 @@ namespace namaichi.rec
 					if (!ri.si.isTimeShift || ri.isRealtimeChase)
 						commentSW.WriteLine("<StartTime>" + serverTime + "</StartTime>");							
 					else {
-						var startTime = ri.si.openTime;
+						var startTime = ri.si.beginTime;
 						var vposStartTime = (ri.timeShiftConfig.isVposStartTime) ? (long)firstSegmentSecond : 0;
 						if (ri.si.type == "official") {
-							startTime = ri.si._openTime + vposStartTime;
-						} else {
 							startTime = ri.si.openTime + vposStartTime;
+						} else {
+							startTime = ri.si.beginTime + vposStartTime;
 						}
 						commentSW.WriteLine("<StartTime>" + startTime + "</StartTime>");
 					}
@@ -2046,7 +2047,7 @@ namespace namaichi.rec
 			} else {
 				if (!ri.si.isTimeShift || ri.isRealtimeChase) {
 					if (ri.si.type == "official") {
-						return chatinfo.getFormatXml(0, true, serverTime - ri.si._openTime);
+						return chatinfo.getFormatXml(0, true, serverTime - ri.si.openTime);
 					} else {
 						return chatinfo.getFormatXml(serverTime);
 					}
@@ -2067,7 +2068,7 @@ namespace namaichi.rec
 				//return chatinfo.getFormatXml(0, true, ri.timeShiftConfig.timeSeconds);
 				return chatinfo.getFormatXml(0, true, vposStartTime);
 			} else {
-				return chatinfo.getFormatXml(ri.si.openTime + vposStartTime);
+				return chatinfo.getFormatXml(ri.si.beginTime + vposStartTime);
 			}
 		}
 		class cookies {

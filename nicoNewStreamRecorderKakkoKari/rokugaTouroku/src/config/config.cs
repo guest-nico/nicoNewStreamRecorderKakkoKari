@@ -213,6 +213,7 @@ public class config
 			{"subFolderNameType","1"},
 			{"fileNameType","1"},
 			{"filenameformat","{Y}年{M}月{D}日{h}時{m}分{0}_{1}_{2}_{3}_{4}"},
+			{"fileNameTimeType","begin"},
 			{"IsUserInfoFileName","false"},
 			{"ffmpegopt",""},
 			{"Height","400"},
@@ -243,10 +244,24 @@ public class config
 			{"rokugaTourokuY",""},
 			{"rokugaTourokuMiniInfo","false"},
 			{"rokugaTourokuMaxRecordingNum","10"},
+			
 			{"IsDuplicateConfirm","false"},
 			{"IsDuplicateCancel","false"},
 			{"rokugaTourokuQualityRank","0,1,2,3,4,5,6,7,8,9"},
 			{"IsDeleteConfirmMessageRt","false"},
+			
+			{"appliAPath",""},
+			{"appliBPath",""},
+			{"appliCPath",""},
+			{"appliAArgs",""},
+			{"appliBArgs",""},
+			{"appliCArgs",""},
+			{"appliAName",""},
+			{"appliBName",""},
+			{"appliCName",""},
+			{"appliASetting", "{}"},
+			{"appliBSetting", "{}"},
+			{"appliCSetting", "{}"},
 			
 			{"recBackColor","-1"},
 			{"recForeColor","-16777216"},
@@ -255,7 +270,7 @@ public class config
 			{"tourokuForeColor","-16777216"},
 			{"tourokuRecComment","映像＋コメント"},
 			{"tourokuAfterConvertMode","0"},
-			
+			{"tourokuAppIndex","0"},
 		};
 		try {
 			var buf = new Dictionary<string,string>();

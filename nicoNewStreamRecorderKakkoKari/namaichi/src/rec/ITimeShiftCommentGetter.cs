@@ -57,12 +57,12 @@ namespace namaichi.rec
 			return x.comment.CompareTo(y.comment);
 		}
 		internal void writeXmlStreamInfo(StreamWriter w) {
-			var startTime = ri.si.openTime;
+			var startTime = ri.si.beginTime;
 			var vposStartTime = (isVposStartTime) ? (long)rp.firstSegmentSecond : 0;
 			if (ri.si.type == "official") {
-				startTime = ri.si._openTime + vposStartTime;
-			} else {
 				startTime = ri.si.openTime + vposStartTime;
+			} else {
+				startTime = ri.si.beginTime + vposStartTime;
 			}
 			w.WriteLine("<packet xmlns=\"http://posite-c.jp/niconamacommentviewer/commentlog/\">");
 			w.WriteLine("<RoomLabel>room</RoomLabel>");

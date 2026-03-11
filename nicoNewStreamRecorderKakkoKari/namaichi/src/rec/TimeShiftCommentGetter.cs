@@ -347,19 +347,18 @@ namespace namaichi.rec
 				var vposStartTime = (isVposStartTime) ? (long)rp.firstSegmentSecond : 0;
 				
 				if (isRtmp) {
-					chatXml = chatinfo.getFormatXml(ri.si._openTime + vposStartTime);
+					chatXml = chatinfo.getFormatXml(ri.si.openTime + vposStartTime);
 				} else {
 					if (lastRealTimeComment == null) {
 						if (ri.si.type == "official") {
 							chatXml = chatinfo.getFormatXml(0, true, vposStartTime);
 		//					chatXml = chatinfo.getFormatXml(_openTime + vposStartTime);
 						} else {
-							chatXml = chatinfo.getFormatXml(ri.si.openTime + vposStartTime);
-		
+							chatXml = chatinfo.getFormatXml(ri.si.beginTime + vposStartTime);
 						}
 					} else {
 						if (ri.si.type == "official") {
-							chatXml = chatinfo.getFormatXml(0, true, rp.serverTime - ri.si._openTime);
+							chatXml = chatinfo.getFormatXml(0, true, rp.serverTime - ri.si.openTime);
 						//} else chatXml = chatinfo.getFormatXml(serverTime);
 						} else {
 							//chatXml = chatinfo.getFormatXml(0, true, serverTime - _openTime);
@@ -444,10 +443,10 @@ namespace namaichi.rec
 							}
 			            } else {
 							var isMeetStartTimeSave = !tsConfig.isAfterStartTimeComment ||
-	              					chatinfo.date > ri.si._openTime + tsConfig.timeSeconds - 10;
+	              					chatinfo.date > ri.si.openTime + tsConfig.timeSeconds - 10;
 							var isMeetEndTimeSave = !tsConfig.isBeforeEndTimeComment || 
 										tsConfig.endTimeSeconds == 0 || 
-		  								chatinfo.date < ri.si._openTime + tsConfig.endTimeSeconds + 10;
+		  								chatinfo.date < ri.si.openTime + tsConfig.endTimeSeconds + 10;
 							
 							if (!isMeetStartTimeSave || s == lastRealTimeComment)
 								isReachStartTimeSave = true;

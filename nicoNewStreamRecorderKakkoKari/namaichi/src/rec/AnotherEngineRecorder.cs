@@ -274,7 +274,7 @@ namespace namaichi.rec
 			var isProxy = bool.Parse(rm.cfg.get("useProxy"));
 			_command = util.getDokujiSetteiArg(rffi[0], rffi[1], rffi[2], 
 					rffi[3], rffi[4], _command, 
-					util.getUnixToDatetime(rec.ri.si._openTime / 1), rffi[5],
+					util.getUnixToDatetime(rec.ri.si.beginTime / 1), rffi[5],
 					us, rec.ri.timeShiftConfig,
 					isProxy ? rm.cfg.get("proxyAddress") : "", 
 					isProxy ? rm.cfg.get("proxyPort") : "");

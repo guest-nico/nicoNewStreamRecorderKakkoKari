@@ -47,11 +47,13 @@ namespace rokugaTouroku.info
 		public DateTime keikaTimeStart;
 		public string samuneUrl = null;
 		public AccountInfo ai = null;
+		public int appIndex = 0;
+		public string appName = "デフォルト";
 		
 		public RecInfo() {
 			
 		}
-		public RecInfo(string id, string url, RecDataGetter rdg, string afterConvertType, info.TimeShiftConfig tsConfig, string tsStr, string qualityRankStr, string qualityRank, string recComment, bool isChase, AccountInfo ai) {
+		public RecInfo(string id, string url, RecDataGetter rdg, string afterConvertType, info.TimeShiftConfig tsConfig, string tsStr, string qualityRankStr, string qualityRank, string recComment, bool isChase, AccountInfo ai, int appIndex, string appName) {
 			this.id = id;
 			var lvM = Regex.Match(url, "lv\\d+");
 			if (lvM != null && !string.IsNullOrEmpty(lvM.Value)) {
@@ -73,6 +75,8 @@ namespace rokugaTouroku.info
 			this.recComment = recComment;
 			this.isChase = isChase;
 			this.ai = ai;
+			this.appIndex = appIndex;
+			this.appName = appName;
 		}
 		public RecInfo(string id, string title, 
 				string host, string communityName,
@@ -81,7 +85,7 @@ namespace rokugaTouroku.info
 				string communityUrl, string description,
 				string qualityRank, TimeShiftConfig tsConfig, 
 				RecDataGetter rdg, string recComment, bool isChase,
-				AccountInfo ai) {
+				AccountInfo ai, int appIndex, string appName) {
 			this.id = id;
 			this.title = title;
 			this.host = host;
@@ -98,6 +102,8 @@ namespace rokugaTouroku.info
 			this.recComment = recComment;
 			this.isChase = isChase;
 			this.ai = ai;
+			this.appIndex = appIndex;
+			this.appName = appName;
 		}
 		public void setHosoInfo(MainForm form) {
          	var hig = new namaichi.rec.HosoInfoGetter();
@@ -120,8 +126,9 @@ namespace rokugaTouroku.info
          	}
          	if (string.IsNullOrEmpty(communityName) && 
          	    	!string.IsNullOrEmpty(hig.communityId)) {
-         		var isFollow = false;
-         		var _comName = util.getCommunityName(hig.communityId, out isFollow, null);
+         		//var isFollow = false;
+         		var _comName = hig.group;
+         		//var _comName0 = util.getCommunityName(hig.communityId, out isFollow, null);
          		if (_comName != null) communityName = _comName;
          		var comUrl = (hig.communityId.StartsWith("ch")) ?
 						("https://ch.nicovideo.jp/" + hig.communityId) :
@@ -222,6 +229,11 @@ namespace rokugaTouroku.info
         {
             get { return log; }
             set { this.log = value; }
+        }
+       	public string Appli
+        {
+            get { return appName; }
+            set { /*this.log = value;*/ }
         }
         public void addLog(string s) {
         	if (log != "") log += "\r\n";

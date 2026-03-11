@@ -113,7 +113,7 @@ namespace rokugaTouroku.rec
 				
 				form.formAction(() => {
 					var rdg = new RecDataGetter(this);
-					var ri = new RecInfo(_lv, url, rdg, form.afterConvertModeList.Text, form.setTsConfig, form.setTimeshiftBtn.Text, form.qualityBtn.Text, form.qualityRank, form.recCommmentList.Text, form.isChaseChkBox.Checked, (AccountInfo)form.accountBtn.Tag);
+					var ri = new RecInfo(_lv, url, rdg, form.afterConvertModeList.Text, form.setTsConfig, form.setTimeshiftBtn.Text, form.qualityBtn.Text, form.qualityRank, form.recCommmentList.Text, form.isChaseChkBox.Checked, (AccountInfo)form.accountBtn.Tag, form.appList.SelectedIndex, form.appList.Text);
 					Task.Run(() => ri.setHosoInfo(form));
 					form.addList(ri);
 				});

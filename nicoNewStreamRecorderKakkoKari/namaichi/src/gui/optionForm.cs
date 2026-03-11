@@ -39,6 +39,7 @@ namespace namaichi
 		
 		static readonly Uri TargetUrl = new Uri("https://live.nicovideo.jp/");
 		private string fileNameFormat;
+		private string timeType;
 		
 		public optionForm(config.config cfg)
 		{
@@ -81,11 +82,12 @@ namespace namaichi
 		}
 		void FileNameDokujiSetteiBtn_Click(object sender, EventArgs e)
 		{
-			var a = new fileNameOptionForm(fileNameFormat, int.Parse(cfg.get("fontSize")));
+			var a = new fileNameOptionForm(fileNameFormat, timeType, int.Parse(cfg.get("fontSize")));
 			var res = a.ShowDialog();
 			if (res != DialogResult.OK) return;
 			fileNameTypeDokujiSetteiBtn.Text = util.getFileNameTypeSample(a.ret);
 			fileNameFormat = a.ret;
+			timeType = a.timeTypeRet;
 		}
 		
 		void optionOk_Click(object sender, EventArgs e)
@@ -202,6 +204,7 @@ namespace namaichi
 				{"subFolderNameType",getSubFolderNameType() + ""},
 				{"fileNameType",getFileNameType() + ""},
 				{"filenameformat",fileNameFormat},
+				{"fileNameTimeType",timeType},
 				{"IsUserInfoFileName",isUserInfoFileNameChkBox.Checked.ToString().ToLower()},
 				//{"ffmpegopt",ffmpegoptText.Text},
 				{"user_session",""},
@@ -479,6 +482,7 @@ namespace namaichi
         	setFileNameType(int.Parse(cfg.get("fileNameType")));
         	fileNameFormat = cfg.get("filenameformat");
         	fileNameTypeDokujiSetteiBtn.Text = util.getFileNameTypeSample(fileNameFormat);
+        	timeType = cfg.get("fileNameTimeType");
         	isUserInfoFileNameChkBox.Checked = bool.Parse(cfg.get("IsUserInfoFileName"));
         	//ffmpegoptText.Text = cfg.get("ffmpegopt");
         	

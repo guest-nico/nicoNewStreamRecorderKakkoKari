@@ -36,8 +36,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.89.23";
-	public static string versionDayStr = "2025/10/30";
+	public static string versionStr = "ver0.89.24";
+	public static string versionDayStr = "2026/03/11";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -99,7 +99,7 @@ class util {
 			string group, string title, string lvId, 
 			string communityNum, string userId, config cfg, 
 			bool isTimeShift, TimeShiftConfig tsConfig, 
-			long _openTime, bool isRtmp, bool isFmp4, bool isSecondDir = false, MainForm form = null) {
+			long openTime, long beginTime, bool isRtmp, bool isFmp4, bool isSecondDir = false, MainForm form = null) {
 		string name = null, dirPath = null;
 		bool _isTimeShift = isTimeShift;
 		var segmentSaveType = cfg.get("segmentSaveType");
@@ -153,7 +153,7 @@ class util {
 			//bool _isTimeShift = isTimeShift;
 			if (cfg.get("EngineMode") != "0") _isTimeShift = false;
 	
-			name = getFileName(host, group, title, lvId, communityNum,  cfg, _openTime, userId);
+			name = getFileName(host, group, title, lvId, communityNum,  cfg, openTime, beginTime, userId);
 			if (name.IndexOf("\\") > -1) {
 				sfn += "\\" + name.Substring(0, name.LastIndexOf("\\"));
 				dirPath += "\\" + name.Substring(0, name.LastIndexOf("\\"));
@@ -294,10 +294,10 @@ class util {
 		else if (n == "9") return host + "_" + userId + "";
 		else return host;
 	}
-	public static string getFileName(string host, string group, string title, string lvId, string communityNum, config cfg, long _openTime, string hostId) {
+	public static string getFileName(string host, string group, string title, string lvId, string communityNum, config cfg, long openTime, long beginTime, string hostId) {
 		var n = cfg.get("fileNameType");
 		//var _hiduke = DateTime.Now;
-		var _hiduke = getUnixToDatetime(_openTime);
+		var _hiduke = getUnixToDatetime(cfg.get("fileNameTimeType") == "begin" ? beginTime : openTime);
 		var month = (_hiduke.Month < 10) ? ("0" + _hiduke.Month.ToString()) : (_hiduke.Month.ToString());
 		var day = (_hiduke.Day < 10) ? ("0" + _hiduke.Day.ToString()) : (_hiduke.Day.ToString());
 		var hiduke = _hiduke.Year + "年" + month + "月" + day + "日";
@@ -384,7 +384,7 @@ class util {
 	}
 	public static string getLastTimeshiftFileName(string host, 
 			string group, string title, string lvId, string communityNum, 
-			string userId, config cfg, long _openTime, bool isFmp4) {
+			string userId, config cfg, long openTime, long beginTime, bool isFmp4) {
 		host = getOkFileName(host, false, false);
 		group = getOkFileName(group, false, false);
 		title = getOkFileName(title, false, false);
@@ -406,7 +406,7 @@ class util {
 
 		var segmentSaveType = cfg.get("segmentSaveType");
 
-		var name = getFileName(host, group, title, lvId, communityNum,  cfg, _openTime, userId);
+		var name = getFileName(host, group, title, lvId, communityNum,  cfg, openTime, beginTime, userId);
 		if (name.IndexOf("\\") > -1) {
 			sfn += "\\" + name.Substring(0, name.LastIndexOf("\\"));
 			dirPath += "\\" + name.Substring(0, name.LastIndexOf("\\"));

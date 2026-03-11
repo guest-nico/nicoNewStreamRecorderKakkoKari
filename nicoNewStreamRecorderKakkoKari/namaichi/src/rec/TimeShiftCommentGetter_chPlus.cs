@@ -211,7 +211,7 @@ namespace namaichi.rec
 						//chatXml = chatinfo.getFormatXml(ri.si.openTime, true, );
 						chatXml = chatinfo.getFormatXml(0, true, vposStartTime);
 					} else {
-						chatXml = chatinfo.getFormatXml(0, true, ri.si.openTime);
+						chatXml = chatinfo.getFormatXml(0, true, ri.si.beginTime);
 						//if (ri.si.type == "official") {
 							//chatXml = chatinfo.getFormatXml(0, true, rp.serverTime - ri.si._openTime);
 						//} else chatXml = chatinfo.getFormatXml(serverTime);

@@ -253,14 +253,14 @@ namespace namaichi.rec
 			}
 			
 		}
-		
+		/*
 		private TimeShiftConfig getTimeShiftConfig(string host, 
 				string group, string title, string lvId, string communityNum, 
-				string userId, config.config cfg, long startTime, bool isChase, 
-				long openTime) {
+				string userId, config.config cfg, long _openTime, long openTime, bool isChase
+				) {
 			var segmentSaveType = cfg.get("segmentSaveType");
 			var lastFile = util.getLastTimeshiftFileName(host,
-					group, title, lvId, communityNum, userId, cfg, startTime, ri.isFmp4);
+					group, title, lvId, communityNum, userId, cfg, _openTime, openTime, ri.isFmp4);
 			util.debugWriteLine("timeshift lastfile " + lastFile);
 			string[] lastFileTime = util.getLastTimeShiftFileTime(lastFile, segmentSaveType, ri.isFmp4);
 			if (lastFileTime == null)
@@ -268,7 +268,7 @@ namespace namaichi.rec
 				                    ((lastFileTime == null) ? "null" : string.Join(" ", lastFileTime)));
 			
 			try {
-				var prepTime = (int)(startTime - openTime);
+				var prepTime = (int)(_openTime - openTime);
 				var o = new TimeShiftOptionForm(lastFileTime, segmentSaveType, rm.cfg, isChase, prepTime, ri.isFmp4, ri.si.isChannelPlus);
 				
 				
@@ -291,6 +291,7 @@ namespace namaichi.rec
 	        }
 			return null;
 		}
+		*/
 		/*
 		private TimeShiftConfig getReadyArgTsConfig(
 				TimeShiftConfig _tsConfig, string host, 
