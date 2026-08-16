@@ -1540,7 +1540,7 @@ namespace namaichi.rec
 		}
 		private void resetWebsocketInfo() {
 			try {
-				var cg = new CookieGetter(rm.cfg);
+				var cg = new CookieGetter(rm.cfg, rm.form);
 				var cgTask = cg.getHtml5RecordCookie(ri.si.url);
 				cgTask.Wait();
 				container = cgTask.Result[0];

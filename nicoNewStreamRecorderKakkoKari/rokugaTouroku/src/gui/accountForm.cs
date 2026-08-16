@@ -26,7 +26,8 @@ namespace rokugaTouroku.gui
 		public CookieSourceInfo si = null;
 		public AccountInfo ai = null;
 		private config.config cfg;
-		public accountForm(config.config config, AccountInfo ai)
+		private MainForm form = null;
+		public accountForm(config.config config, AccountInfo ai, MainForm form)
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -37,6 +38,7 @@ namespace rokugaTouroku.gui
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
 			this.ai = ai;
+			this.form = form;
         	
         	checkBoxShowAll.Checked = bool.Parse(config.get("IsBrowserShowAll"));
         	
@@ -120,7 +122,7 @@ namespace rokugaTouroku.gui
 		void LoginBtnClick(object sender, EventArgs e)
 		{
 			var TargetUrl = new Uri("https://live.nicovideo.jp/");
-			var cg = new rec.CookieGetter(cfg);
+			var cg = new rec.CookieGetter(cfg, form);
 			var cc = cg.getAccountCookie(mailText.Text, passText.Text);
 			if (cc == null) {
 				util.showMessageBoxCenterForm(this, "login error", "", MessageBoxButtons.OK);
@@ -137,7 +139,7 @@ namespace rokugaTouroku.gui
 		}
 		void UserSessionTest(string us) {
 			try {
-				var cg = new rec.CookieGetter(cfg);
+				var cg = new rec.CookieGetter(cfg, form);
 				var cc = cg.getUserSessionCookie(us);
 				if (cc == null || !cg.isHtml5Login(cc, "https://live.nicovideo.jp/")) {
 					util.showMessageBoxCenterForm(this, "login error " + cg.log, "", MessageBoxButtons.OK);

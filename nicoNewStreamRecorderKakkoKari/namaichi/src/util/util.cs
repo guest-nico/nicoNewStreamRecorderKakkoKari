@@ -36,8 +36,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.89.24";
-	public static string versionDayStr = "2026/03/11";
+	public static string versionStr = "ver0.89.25";
+	public static string versionDayStr = "2026/08/17";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -574,7 +574,7 @@ class util {
 		}
 		return null;
 	}
-	public static string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36";
+	public static string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36";
 	public static string getPageSource(string _url, CookieContainer container = null, string referer = null, bool isFirstLog = true, int timeoutMs = 0, string userAgent = null, bool isGetErrorPage = false) {
 		util.debugWriteLine("access__ getpage " + _url);
 		if (_url == null) {
@@ -1124,12 +1124,34 @@ class util {
        return 4.5;      
     return -1;
    }
+	public static bool isWebView2Installed() {
+    	
+    	var subkeys = new List<string>() {
+			@"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}",
+			@"HKEY_CURRENT_USER\Software\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}",
+			@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}",
+			@"HKEY_CURRENT_USER\Software\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"
+    	};
+    	foreach (var subkey in subkeys) {
+    		var hive = subkey.StartsWith("HKEY_LOCAL_MACHINE") ? RegistryHive.LocalMachine : RegistryHive.CurrentUser;
+    		var _subkey = subkey.Substring(subkey.IndexOf("\\") + 1);
+			using (RegistryKey ndpKey = RegistryKey.OpenBaseKey(hive, RegistryView.Registry32).OpenSubKey(_subkey))
+			{
+				if (ndpKey == null) continue;
+				var v = ndpKey.GetValue("pv");
+				if (v != null && v.ToString() != "" && v.ToString() != "0.0.0.0") {
+					return true;
+				}
+			}
+    	}
+		return false;
+	}
 	public static string getMainSubStr(bool isSub, bool isKakko = false) {
 		var ret = (isSub) ? "サブ" : "メイン";
 		if (isKakko) ret = "(" + ret + ")";
 		return ret;		
 	}
-public static void soundEnd(config cfg, MainForm form) {
+	public static void soundEnd(config cfg, MainForm form) {
 		try {
 			var path = (bool.Parse(cfg.get("IsSoundDefault"))) ? 
 					(util.getJarPath()[0] + "/Sound/se_soc02.wav") : cfg.get("soundPath");

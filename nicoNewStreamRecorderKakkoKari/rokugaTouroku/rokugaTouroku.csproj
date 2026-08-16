@@ -51,6 +51,12 @@
     <Reference Include="BouncyCastle.Crypto">
       <HintPath>..\packages\BouncyCastle.1.8.9\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Web.WebView2.Core">
+      <HintPath>..\packages\microsoft.web.webview2.1.0.2478.35.nupkg\lib\net45\Microsoft.Web.WebView2.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.WebView2.WinForms">
+      <HintPath>..\packages\microsoft.web.webview2.1.0.2478.35.nupkg\lib\net45\Microsoft.Web.WebView2.WinForms.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -164,6 +170,10 @@
     <Compile Include="src\gui\VersionForm.Designer.cs">
       <DependentUpon>VersionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\gui\WebViewLoginForm.cs" />
+    <Compile Include="src\gui\WebViewLoginForm.Designer.cs">
+      <DependentUpon>WebViewLoginForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="src\info\AccountInfo.cs" />
     <Compile Include="src\info\AppSettingInfo.cs" />
     <Compile Include="src\info\RecInfo.cs" />
@@ -188,6 +198,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
+    <None Include="WebView2Loader.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -220,6 +233,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\gui\VersionForm.resx">
       <DependentUpon>VersionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\gui\WebViewLoginForm.resx">
+      <DependentUpon>WebViewLoginForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

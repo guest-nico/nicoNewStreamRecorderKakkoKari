@@ -163,7 +163,7 @@ namespace rokugaTouroku
 		void optionItem_Select(object sender, EventArgs e)
         { 
 			try {
-	        	optionForm o = new optionForm(config);
+	        	optionForm o = new optionForm(config, this);
 
 	        	var size = config.get("fontSize");
 	        	if (o.ShowDialog() == DialogResult.OK) {
@@ -691,7 +691,9 @@ namespace rokugaTouroku
 					if (config.brokenCopyFile != null)
 						addLogText("設定ファイルを読み込めませんでした。設定ファイルをバックアップしました。" + config.brokenCopyFile);
 			
-					setCookie();
+					if (!string.IsNullOrEmpty(config.get("user_session")) ||
+							config.get("BrowserNum") != "1")
+						setCookie();
 					util.dllCheck(this);            
 				} catch (Exception ee) {
 					util.debugWriteLine(ee.Message + ee.Source + ee.StackTrace);
@@ -702,7 +704,7 @@ namespace rokugaTouroku
 		}
 		void setCookie() {
 			try {
-				var cg = new CookieGetter(config);
+				var cg = new CookieGetter(config, this);
 				var cgret = cg.getHtml5RecordCookie("https://live.nicovideo.jp/", false);
 				//var cgreta = cg.getHtml5RecordCookie("https://live.nicovideo.jp/", false).Result;
 				if (cgret != null && cgret.Result != null
@@ -1221,7 +1223,7 @@ namespace rokugaTouroku
 		}
 		void AccountBtnClick(object sender, EventArgs e)
 		{
-			var f = new accountForm(config, (AccountInfo)accountBtn.Tag);
+			var f = new accountForm(config, (AccountInfo)accountBtn.Tag, this);
 			//util.showMessageBoxCenterForm(f
 			f.ShowDialog(this);
 			if (f.DialogResult != DialogResult.OK) return;

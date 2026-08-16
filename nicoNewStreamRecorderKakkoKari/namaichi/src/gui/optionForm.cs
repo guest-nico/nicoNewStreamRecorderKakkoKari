@@ -36,12 +36,13 @@ namespace namaichi
 	public partial class optionForm : Form
 	{
 		private config.config cfg;
+		private MainForm form = null;
 		
 		static readonly Uri TargetUrl = new Uri("https://live.nicovideo.jp/");
 		private string fileNameFormat;
 		private string timeType;
 		
-		public optionForm(config.config cfg)
+		public optionForm(config.config cfg, MainForm form)
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
@@ -51,6 +52,7 @@ namespace namaichi
 			InitializeComponent();
 			//this.Location = p;
 			this.cfg = cfg;
+			this.form = form;
 			
 			nicoSessionComboBox1.Selector.PropertyChanged += Selector_PropertyChanged;
 			nicoSessionComboBox2.Selector.PropertyChanged += Selector2_PropertyChanged;
@@ -121,7 +123,7 @@ namespace namaichi
 		private Dictionary<string, string> getFormData() {
 			var browserNum = (useCookieRadioBtn.Checked) ? "2" : (useAccountLoginRadioBtn.Checked ? "1" : "3");
 			var browserNum2 = (useCookieRadioBtn2.Checked) ? "2" : (useAccountLoginRadioBtn2.Checked ? "1" : "3");
-			return new Dictionary<string, string>(){
+			var ret = new Dictionary<string, string>(){
 				{"accountId",mailText.Text},
 				{"accountPass",passText.Text},
 				{"user_session_setting",userSessionText.Text},
@@ -232,7 +234,9 @@ namespace namaichi
 				{"fontSize",fontList.Value.ToString()},
 				{"IsTray",IsTrayChkBox.Checked.ToString().ToLower()},
 			};
-			
+			if (browserNum == "1" && loginBtn.Tag != null)
+				ret["user_session"] = loginBtn.Tag.ToString();
+			return ret;
 		}
 		
 		async void Selector_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -607,8 +611,12 @@ namespace namaichi
 		
 		void loginBtn_Click(object sender, EventArgs e)
 		{
-			
-			var cg = new rec.CookieGetter(cfg);
+			if (!util.isWebView2Installed()) {
+				MessageBox.Show("現在のところ、こちらのログイン方法ではWebView2 Runtimeが必要です。\nhttps://developer.microsoft.com/ja-jp/microsoft-edge/webview2?form=MA13LH&cs=2463970835#download");
+				util.openUrl("https://developer.microsoft.com/ja-jp/microsoft-edge/webview2?form=MA13LH&cs=2463970835#download", bool.Parse(cfg.get("IsdefaultBrowserPath")), cfg.get("browserPath"));
+				return;
+			}
+			var cg = new rec.CookieGetter(cfg, form);
 			var cc = cg.getAccountCookie(mailText.Text, passText.Text);
 			if (cc == null) {
 				util.showMessageBoxCenterForm(this, "login error " + cg.log, "", MessageBoxButtons.OK);
@@ -617,12 +625,15 @@ namespace namaichi
 			if (cc.GetCookies(TargetUrl)["user_session"] == null &&
 				                   cc.GetCookies(TargetUrl)["user_session_secure"] == null)
 				util.showMessageBoxCenterForm(this, "no login", "", MessageBoxButtons.OK);
-			else util.showMessageBoxCenterForm(this, "login ok", "", MessageBoxButtons.OK);
+			else {
+				util.showMessageBoxCenterForm(this, "login ok", "", MessageBoxButtons.OK);
+				loginBtn.Tag = cc.GetCookies(TargetUrl)["user_session"].Value;
+			}
 		}
 		void loginBtn2_Click(object sender, EventArgs e)
 		{
 			
-			var cg = new rec.CookieGetter(cfg);
+			var cg = new rec.CookieGetter(cfg, form);
 			var cc = cg.getAccountCookie(mailText2.Text, passText2.Text);
 			if (cc == null) {
 				util.showMessageBoxCenterForm(this, "login error " + cg.log, "", MessageBoxButtons.OK);
@@ -1291,8 +1302,9 @@ namespace namaichi
 			foreach (var c in cookieControls) 
 				c.Enabled = useCookieRadioBtn.Checked;
 			
-			var accountControls = new Control[]{mailText,
-					passText, loginBtn};
+			//var accountControls = new Control[]{mailText,
+			//		passText, loginBtn};
+			var accountControls = new Control[]{loginBtn};
 			foreach (var c in accountControls)
 				c.Enabled = useAccountLoginRadioBtn.Checked;
 			
@@ -1311,7 +1323,7 @@ namespace namaichi
 		}
 		void UserSessionTest(string us) {
 			try {
-				var cg = new rec.CookieGetter(cfg);
+				var cg = new rec.CookieGetter(cfg, form);
 				var cc = cg.getUserSessionCookie(us);
 				if (cc == null || !cg.isHtml5Login(cc, "https://live.nicovideo.jp/")) {
 					util.showMessageBoxCenterForm(this, "login error " + cg.log, "", MessageBoxButtons.OK);

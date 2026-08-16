@@ -29,6 +29,7 @@ namespace namaichi.rec
 		RecordingManager rm;
 		RecordFromUrl rfu;
 		string groupId = null;
+		string fcId = null;
 		string token = null;
 		string id = null;
 		Curl getMsgCurl = new Curl();
@@ -45,7 +46,8 @@ namespace namaichi.rec
 		public TimeShiftCommentGetter_chPlus(MainForm form, 
 				RecordingManager rm, RecordFromUrl rfu,
 				RecordInfo ri,
-				string id, string groupId, string vpRes,
+				string id, string groupId, string fcId, 
+				string vpRes,
 				bool isLog, TimeShiftConfig tsConfig, 
 				IRecorderProcess rp, RedirectLogin rl)
 		{
@@ -69,6 +71,7 @@ namespace namaichi.rec
 			this.rfu = rfu;
 			this.groupId = groupId;
 			//this.token = token;
+			this.fcId = fcId;
 			this.id = id;
 			this.vpRes = vpRes;
 			this.isLog = isLog;
@@ -184,8 +187,11 @@ namespace namaichi.rec
 			return url + dt + "&sort_direction=asc";
 		}
 		string getToken() {
-			var url = "https://nfc-api.nicochannel.jp/fc/video_pages/" + id + "/comments_user_token";
+			var url = "https://api.nicochannel.jp/fc/video_pages/" + id + "/comments_user_token";
 			var h = util.getHeader();
+			h["fc_site_id"] = fcId;
+			h["fc_use_device"] = "null";
+			h["Referer"] = "https://nicochannel.jp/";
 			var _auth = rl.getAuth();
 			if (_auth != null) h.Add("Authorization", "Bearer " + _auth);
 			var token = new Curl().getStr(url, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS);

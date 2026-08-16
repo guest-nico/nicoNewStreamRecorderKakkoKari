@@ -101,9 +101,11 @@ namespace namaichi.rec
 			}
 			while (rm.rfu == rfu) {
 				videoId = util.getRegGroup(id, ".+/(.+)");
-				var videoPageUrl = "https://nfc-api.nicochannel.jp/fc/video_pages/" + videoId;
-				h.Add("fc_site_id", fcId);
-				h.Add("fc_use_device", "null");
+				//var videoPageUrl = "https://nfc-api.nicochannel.jp/fc/video_pages/" + videoId;
+				var videoPageUrl = "https://api.nicochannel.jp/fc/video_pages/" + videoId;
+				h["fc_site_id"] = fcId;
+				h["fc_use_device"] = "null";
+				h["Referer"] = "https://nicochannel.jp/";
 				var vpRes = videoPageCurl.getStr(videoPageUrl, h, CurlHttpVersion.CURL_HTTP_VERSION_2TLS);
 				util.debugWriteLine(vpRes);
 				if (vpRes == null) {
@@ -325,7 +327,7 @@ namespace namaichi.rec
 			try {
 				if (ri.si.isTimeShift) {
 					if (tscg == null) 
-						tscg = new TimeShiftCommentGetter_chPlus(form, rm, rfu, ri, videoId, group_id, vpRes, true, ri.timeShiftConfig, this, rl);
+						tscg = new TimeShiftCommentGetter_chPlus(form, rm, rfu, ri, videoId, group_id, fcId, vpRes, true, ri.timeShiftConfig, this, rl);
 					tscg.save();
 				}
 			} catch (Exception e) {

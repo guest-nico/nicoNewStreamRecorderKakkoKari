@@ -234,7 +234,7 @@ namespace namaichi
         void optionItem_Select(object sender, EventArgs e)
         { 
         	try {
-	        	optionForm o = new optionForm(config);
+	        	optionForm o = new optionForm(config, this);
 	        	var size = config.get("fontSize");
 	        	if (o.ShowDialog() == DialogResult.OK) {
 	        		config.argConfig = new Dictionary<string, string>(); 

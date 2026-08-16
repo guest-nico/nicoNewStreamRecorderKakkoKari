@@ -80,7 +80,7 @@ namespace namaichi.rec
 			try {
 				var url = "https://live.nicovideo.jp/watch/" + lvid;
 				for (var i = 0; i < 3; i++) {
-					var cg = new CookieGetter(rm.cfg);
+					var cg = new CookieGetter(rm.cfg, rm.form);
 					var cgret = cg.getHtml5RecordCookie(url, true);
 					cgret.Wait();
 					

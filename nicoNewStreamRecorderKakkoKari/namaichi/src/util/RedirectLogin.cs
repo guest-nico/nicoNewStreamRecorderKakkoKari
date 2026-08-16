@@ -260,7 +260,7 @@ namespace namaichi.utility
 			//FCS00000
 			
 			try {
-				var cg = new CookieGetter(cpr.rm.cfg);
+				var cg = new CookieGetter(cpr.rm.cfg, cpr.rm.form);
 				for (var i = 0; i < 2; i++) {
 					try {
 						var cgret = cg.getHtml5RecordCookie("https://live.nicovideo.jp/", false).Result;

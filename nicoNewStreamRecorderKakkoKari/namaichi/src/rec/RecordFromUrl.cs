@@ -394,7 +394,7 @@ namespace namaichi.rec
 			//Uri TargetUrl2 = new Uri("https://live2.nicovideo.jp");
 			for (int i = 0; this == rm.rfu; i++) {
 				try {
-					var cg = new CookieGetter(rm.cfg);
+					var cg = new CookieGetter(rm.cfg, rm.form);
 					var cgret = cg.getHtml5RecordCookie(url);
 					cgret.Wait();
 					
@@ -453,7 +453,7 @@ namespace namaichi.rec
 			}
 		}
 		int setCookie(bool isLogin, ref bool isFirst, ref CookieContainer cc, out string pageSource) {
-			var cg = new CookieGetter(rm.cfg);
+			var cg = new CookieGetter(rm.cfg, rm.form);
 			var cgret = cg.getHtml5RecordCookie(url);
 			pageSource = null;
 			cgret.Wait();

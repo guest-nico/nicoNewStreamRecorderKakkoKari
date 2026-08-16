@@ -31,6 +31,7 @@ namespace rokugaTouroku.rec
 		public string pageSource = null;
 		public bool isHtml5 = false;
 		private config.config cfg;
+		private MainForm form = null;
 		public string log = "";
 		public string id = null;
 		static readonly Uri TargetUrl = new Uri("https://live.nicovideo.jp/");
@@ -38,9 +39,10 @@ namespace rokugaTouroku.rec
 		static readonly Uri TargetUrl3 = new Uri("https://com.nicovideo.jp");
 		private bool isSub;
 		
-		public CookieGetter(config.config cfg)
+		public CookieGetter(config.config cfg, MainForm form)
 		{
 			this.cfg = cfg;
+			this.form = form;
 		}
 		async public Task<CookieContainer[]> getHtml5RecordCookie(string url, bool isSub) {
 			this.isSub = isSub; 
@@ -279,20 +281,36 @@ namespace rokugaTouroku.rec
 				return null;
 			}
 			
-			var isNew = true;
+			var isNew = 2;
 			
-			string loginUrl;
+			string loginUrl = null;
 			Dictionary<string, string> param;
-			if (isNew) {
+			if (isNew == 0) {
 				loginUrl = "https://account.nicovideo.jp/login/redirector?show_button_twitter=1&site=niconico&show_button_facebook=1&sec=header_pc&next_url=/";
 				param = new Dictionary<string, string> {
 					{"mail_tel", mail}, {"password", pass}, {"auth_id", "15263781"}//dummy
 				};
-			} else {
+			} else if (isNew == 1) {
 				loginUrl = "https://secure.nicovideo.jp/secure/login?site=nicolive";
 				param = new Dictionary<string, string> {
 					{"mail", mail}, {"password", pass}
 				};
+			} else if (isNew == 2) {
+				WebViewLoginForm f = null;
+				form.formAction(() => {
+				                	f = new WebViewLoginForm();
+				                	f.ShowDialog();
+				                });
+				if (f == null) {
+					util.debugWriteLine("WebViewLoginForm null");
+					return null;
+				}
+				if (string.IsNullOrEmpty(f.us)) return null;
+				var cc = new CookieContainer();
+				var _us = new Cookie("user_session", f.us);
+                
+				setUserSession(cc, _us, null);
+				return cc;
 			}
 			
 			try {
@@ -302,7 +320,7 @@ namespace rokugaTouroku.rec
 				h.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8");
 				h.Add("User-Agent", util.userAgent);
 				
-				var _d = "mail_tel=" + WebUtility.UrlEncode(param["mail_tel"]) + "&password=" + WebUtility.UrlEncode(param["password"]) + "&auth_id=" + param["auth_id"];
+				var _d = "mail_tel=" + WebUtility.UrlEncode(mail) + "&password=" + WebUtility.UrlEncode(pass) + "&auth_id=" + "15263781";
 				var d = Encoding.ASCII.GetBytes(_d);
 				var cc = new CookieContainer();
 				

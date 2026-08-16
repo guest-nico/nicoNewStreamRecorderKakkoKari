@@ -142,7 +142,7 @@ namespace namaichi.rec
 		private string getPageSourceFromNewCookie() {
 			while (rm.rfu == rfu) {
 				try {
-					var _cg = new CookieGetter(rm.cfg);
+					var _cg = new CookieGetter(rm.cfg, rm.form);
 					var _cgtask = _cg.getHtml5RecordCookie(ri.si.url);
 					_cgtask.Wait();
 					

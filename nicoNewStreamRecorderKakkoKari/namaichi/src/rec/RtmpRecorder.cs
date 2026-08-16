@@ -267,7 +267,7 @@ namespace namaichi.rec
 					continue;
 				}
 				if (res.IndexOf("<code>notlogin</code>") > -1) {
-					var c = new CookieGetter(rm.cfg);
+					var c = new CookieGetter(rm.cfg, rm.form);
 					var t = c.getHtml5RecordCookie(rfu.url);
 					t.Wait();
 					if (t.Result != null && t.Result[0] != null)

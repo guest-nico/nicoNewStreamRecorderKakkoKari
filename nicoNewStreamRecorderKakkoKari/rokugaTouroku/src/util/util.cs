@@ -10,6 +10,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.Drawing;
+using Microsoft.Win32;
 using namaichi.utility;
 using rokugaTouroku;
 using rokugaTouroku.config;
@@ -28,8 +29,8 @@ class app {
 	}
 }
 class util {
-	public static string versionStr = "ver0.1.3.11.10";
-	public static string versionDayStr = "2026/03/11";
+	public static string versionStr = "ver0.1.3.11.11";
+	public static string versionDayStr = "2026/08/17";
 	public static string osName = null;
 	public static bool isCurl = true;
 	public static bool isWebRequestOk = false;
@@ -751,6 +752,28 @@ class util {
 			}
 			util.isLogFile = true;
 		}
+	}
+	public static bool isWebView2Installed() {
+    	
+    	var subkeys = new List<string>() {
+			@"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}",
+			@"HKEY_CURRENT_USER\Software\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}",
+			@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}",
+			@"HKEY_CURRENT_USER\Software\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"
+    	};
+    	foreach (var subkey in subkeys) {
+    		var hive = subkey.StartsWith("HKEY_LOCAL_MACHINE") ? RegistryHive.LocalMachine : RegistryHive.CurrentUser;
+    		var _subkey = subkey.Substring(subkey.IndexOf("\\") + 1);
+			using (RegistryKey ndpKey = RegistryKey.OpenBaseKey(hive, RegistryView.Registry32).OpenSubKey(_subkey))
+			{
+				if (ndpKey == null) continue;
+				var v = ndpKey.GetValue("pv");
+				if (v != null && v.ToString() != "" && v.ToString() != "0.0.0.0") {
+					return true;
+				}
+			}
+    	}
+		return false;
 	}
 	public static Bitmap getSamune(string url) {
    		WebClient cl = new WebClient();

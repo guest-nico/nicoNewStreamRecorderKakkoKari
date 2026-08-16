@@ -445,7 +445,6 @@ namespace namaichi.utility
 		CURLWS_PING = (1<<4),
 		CURLWS_OFFSET = (1<<5)
 	}
-	
 	public struct curl_ws_frame {
 		int age;              /* zero */
 		int flags;            /* See the CURLWS_* defines */

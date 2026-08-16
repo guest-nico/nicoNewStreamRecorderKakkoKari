@@ -31,6 +31,7 @@ namespace namaichi.rec
 		public string pageSource = null;
 		public bool isHtml5 = false;
 		private config.config cfg;
+		private MainForm form = null;
 		public string log = "";
 		public string id = null;
 		static readonly Uri TargetUrl = new Uri("https://live.nicovideo.jp/");
@@ -43,9 +44,10 @@ namespace namaichi.rec
 		public string reason = null;
 		public static bool isLoginCheck = false;
 		
-		public CookieGetter(config.config cfg)
+		public CookieGetter(config.config cfg, MainForm form)
 		{
 			this.cfg = cfg;
+			this.form = form;
 		}
 		async public Task<CookieContainer[]> getHtml5RecordCookie(string url, bool isSub = false) {
 			CookieContainer cc;
@@ -337,27 +339,45 @@ namespace namaichi.rec
 				return null;
 			}
 			
-			var isNew = true;
+			var isNew = 2;
 			
-			string loginUrl;
+			string loginUrl = null;
 			Dictionary<string, string> param;
-			if (isNew) {
+			if (isNew == 0) {
 				loginUrl = "https://account.nicovideo.jp/login/redirector?show_button_twitter=1&site=niconico&show_button_facebook=1&sec=header_pc&next_url=/";
 				param = new Dictionary<string, string> {
 					{"mail_tel", mail}, {"password", pass}, {"auth_id", "15263781"}//dummy
 				};
-			} else {
+			} else if (isNew == 1) {
 				loginUrl = "https://secure.nicovideo.jp/secure/login?site=nicolive";
 				param = new Dictionary<string, string> {
 					{"mail", mail}, {"password", pass}
 				};
+			} else if (isNew == 2) {
+				WebViewLoginForm f = null;
+				form.formAction(() => {
+				                	f = new WebViewLoginForm();
+				                	f.ShowDialog();
+				                });
+				if (f == null) {
+					util.debugWriteLine("WebViewLoginForm null");
+					return null;
+				}
+				if (string.IsNullOrEmpty(f.us)) return null;
+				var cc = new CookieContainer();
+				var _us = new Cookie("user_session", f.us);
+                
+				setUserSession(cc, _us, null);
+				return cc;
 			}
-			
+			util.debugWriteLine(loginUrl);
+			return null;
+			/*
 			try {
 				var h = new Dictionary<string, string>();
 				h.Add("Referer", "https://account.nicovideo.jp/login?site=niconico&next_url=%2F&sec=header_pc&cmnhd_ref=device%3Dpc%26site%3Dniconico%26pos%3Dheader_login%26page%3Dtop");
 				h.Add("Content-Type", "application/x-www-form-urlencoded");
-				h.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8");
+				h.Add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,**;q=0.8");
 				h.Add("User-Agent", util.userAgent);
 				
 				var _d = "mail_tel=" + WebUtility.UrlEncode(param["mail_tel"]) + "&password=" + WebUtility.UrlEncode(param["password"]) + "&auth_id=" + param["auth_id"];
@@ -549,6 +569,7 @@ namespace namaichi.rec
 				log += e.Message + e.Source + e.StackTrace;
 				return null;
 			}
+			*/
 		}
 		public CookieContainer getUserSessionCookie(string us) {
 			try {
