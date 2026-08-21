@@ -354,6 +354,7 @@ namespace namaichi.rec
 					{"mail", mail}, {"password", pass}
 				};
 			} else if (isNew == 2) {
+				if (Thread.CurrentThread != form.madeThread) return null;
 				WebViewLoginForm f = null;
 				form.formAction(() => {
 				                	f = new WebViewLoginForm();

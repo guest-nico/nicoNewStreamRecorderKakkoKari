@@ -47,7 +47,7 @@ namespace namaichi
 		private namaichi.config.config config = new namaichi.config.config();
 		public string[] args;
 		public play.Player player;
-		private Thread madeThread;
+		public Thread madeThread;
 		private Size originalSize = Size.Empty;
 		private Icon defIcon;
 		public string recEndProcess = null;

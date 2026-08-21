@@ -392,6 +392,8 @@ namespace namaichi
         	mailText.Text = cfg.get("accountId");
         	passText.Text = cfg.get("accountPass");
         	userSessionText.Text = cfg.get("user_session_setting");
+        	if (cfg.get("browserNum") == "1" && !string.IsNullOrEmpty(cfg.get("user_session")))
+        	    loginBtn.Tag = cfg.get("user_session");
         	
         	if (cfg.get("browserNum") == "1") useAccountLoginRadioBtn.Checked = true;
         	else if (cfg.get("browserNum") == "2") useCookieRadioBtn.Checked = true;
@@ -1073,6 +1075,7 @@ namespace namaichi
 		
 		void OptionFormLoad(object sender, EventArgs e)
 		{
+			//tabControl1.TabPages.Remove(tabPage4);
 			setFormFromConfig();
 		}
 		private void setBackColor(Color color) {

@@ -1418,6 +1418,10 @@ namespace rokugaTouroku
 			// tabPage2
 			// 
 			this.tabPage2.Controls.Add(this.groupBox3);
+			this.tabPage2.Controls.Add(this.label1);
+			this.tabPage2.Controls.Add(this.mailText);
+			this.tabPage2.Controls.Add(this.passText);
+			this.tabPage2.Controls.Add(this.label2);
 			this.tabPage2.Location = new System.Drawing.Point(4, 40);
 			this.tabPage2.Margin = new System.Windows.Forms.Padding(2);
 			this.tabPage2.Name = "tabPage2";
@@ -1433,13 +1437,9 @@ namespace rokugaTouroku
 			this.groupBox3.Controls.Add(this.userSessionText);
 			this.groupBox3.Controls.Add(this.useUserSessionRadioBtn);
 			this.groupBox3.Controls.Add(this.userSessionTestBtn);
-			this.groupBox3.Controls.Add(this.label2);
-			this.groupBox3.Controls.Add(this.label1);
 			this.groupBox3.Controls.Add(this.cookieFileText);
 			this.groupBox3.Controls.Add(this.useAccountLoginRadioBtn);
 			this.groupBox3.Controls.Add(this.useCookieRadioBtn);
-			this.groupBox3.Controls.Add(this.passText);
-			this.groupBox3.Controls.Add(this.mailText);
 			this.groupBox3.Controls.Add(this.nicoSessionComboBox1);
 			this.groupBox3.Controls.Add(this.isCookieFileSiteiChkBox);
 			this.groupBox3.Controls.Add(this.checkBoxShowAll);
@@ -1449,7 +1449,7 @@ namespace rokugaTouroku
 			this.groupBox3.Controls.Add(this.useSecondLoginChkBox);
 			this.groupBox3.Location = new System.Drawing.Point(5, 10);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(414, 336);
+			this.groupBox3.Size = new System.Drawing.Size(414, 310);
 			this.groupBox3.TabIndex = 18;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "ニコニコ動画アカウントの共有　(普段ニコニコ生放送を見ているブラウザ)";
@@ -1468,7 +1468,7 @@ namespace rokugaTouroku
 			// 
 			// userSessionText
 			// 
-			this.userSessionText.Location = new System.Drawing.Point(20, 295);
+			this.userSessionText.Location = new System.Drawing.Point(20, 267);
 			this.userSessionText.Name = "userSessionText";
 			this.userSessionText.Size = new System.Drawing.Size(277, 19);
 			this.userSessionText.TabIndex = 23;
@@ -1476,7 +1476,7 @@ namespace rokugaTouroku
 			// useUserSessionRadioBtn
 			// 
 			this.useUserSessionRadioBtn.Checked = true;
-			this.useUserSessionRadioBtn.Location = new System.Drawing.Point(6, 271);
+			this.useUserSessionRadioBtn.Location = new System.Drawing.Point(6, 243);
 			this.useUserSessionRadioBtn.Name = "useUserSessionRadioBtn";
 			this.useUserSessionRadioBtn.Size = new System.Drawing.Size(311, 18);
 			this.useUserSessionRadioBtn.TabIndex = 22;
@@ -1486,7 +1486,7 @@ namespace rokugaTouroku
 			// 
 			// userSessionTestBtn
 			// 
-			this.userSessionTestBtn.Location = new System.Drawing.Point(302, 293);
+			this.userSessionTestBtn.Location = new System.Drawing.Point(302, 265);
 			this.userSessionTestBtn.Margin = new System.Windows.Forms.Padding(2);
 			this.userSessionTestBtn.Name = "userSessionTestBtn";
 			this.userSessionTestBtn.Size = new System.Drawing.Size(69, 23);
@@ -1497,21 +1497,23 @@ namespace rokugaTouroku
 			// 
 			// label2
 			// 
-			this.label2.Location = new System.Drawing.Point(6, 232);
+			this.label2.Location = new System.Drawing.Point(11, 396);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(80, 19);
 			this.label2.TabIndex = 20;
 			this.label2.Text = "パスワード：";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.label2.Visible = false;
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(6, 204);
+			this.label1.Location = new System.Drawing.Point(11, 368);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(80, 19);
 			this.label1.TabIndex = 20;
 			this.label1.Text = "メールアドレス：";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.label1.Visible = false;
 			// 
 			// cookieFileText
 			// 
@@ -1545,20 +1547,22 @@ namespace rokugaTouroku
 			// passText
 			// 
 			this.passText.Enabled = false;
-			this.passText.Location = new System.Drawing.Point(95, 232);
+			this.passText.Location = new System.Drawing.Point(100, 396);
 			this.passText.Margin = new System.Windows.Forms.Padding(2);
 			this.passText.Name = "passText";
 			this.passText.Size = new System.Drawing.Size(193, 19);
 			this.passText.TabIndex = 13;
+			this.passText.Visible = false;
 			// 
 			// mailText
 			// 
 			this.mailText.Enabled = false;
-			this.mailText.Location = new System.Drawing.Point(95, 203);
+			this.mailText.Location = new System.Drawing.Point(100, 367);
 			this.mailText.Margin = new System.Windows.Forms.Padding(2);
 			this.mailText.Name = "mailText";
 			this.mailText.Size = new System.Drawing.Size(193, 19);
 			this.mailText.TabIndex = 12;
+			this.mailText.Visible = false;
 			// 
 			// nicoSessionComboBox1
 			// 
@@ -1595,7 +1599,7 @@ namespace rokugaTouroku
 			// 
 			// loginBtn
 			// 
-			this.loginBtn.Location = new System.Drawing.Point(302, 230);
+			this.loginBtn.Location = new System.Drawing.Point(302, 201);
 			this.loginBtn.Margin = new System.Windows.Forms.Padding(2);
 			this.loginBtn.Name = "loginBtn";
 			this.loginBtn.Size = new System.Drawing.Size(69, 23);
@@ -2876,6 +2880,7 @@ namespace rokugaTouroku
 			this.tabPage5.ResumeLayout(false);
 			this.groupBox7.ResumeLayout(false);
 			this.tabPage2.ResumeLayout(false);
+			this.tabPage2.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
 			this.tabPage4.ResumeLayout(false);

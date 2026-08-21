@@ -407,6 +407,8 @@ namespace rokugaTouroku
         	mailText.Text = cfg.get("accountId");
         	passText.Text = cfg.get("accountPass");
         	userSessionText.Text = cfg.get("user_session_setting");
+        	if (cfg.get("browserNum") == "1" && !string.IsNullOrEmpty(cfg.get("user_session")))
+        	    loginBtn.Tag = cfg.get("user_session");
         	
         	if (cfg.get("browserNum") == "1") useAccountLoginRadioBtn.Checked = true;
         	else if (cfg.get("browserNum") == "2") useCookieRadioBtn.Checked = true;
