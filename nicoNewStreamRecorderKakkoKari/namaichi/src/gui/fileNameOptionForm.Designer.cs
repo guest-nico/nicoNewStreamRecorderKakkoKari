@@ -180,8 +180,9 @@ namespace namaichi
 			this.timeTypeList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.timeTypeList.FormattingEnabled = true;
 			this.timeTypeList.Items.AddRange(new object[] {
-									"開演時間",
-									"開場時間"});
+									"開演時刻",
+									"開場時刻",
+									"現在時刻"});
 			this.timeTypeList.Location = new System.Drawing.Point(17, 113);
 			this.timeTypeList.Name = "timeTypeList";
 			this.timeTypeList.Size = new System.Drawing.Size(92, 20);

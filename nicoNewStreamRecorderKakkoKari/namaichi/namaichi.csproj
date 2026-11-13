@@ -86,10 +86,10 @@
       <HintPath>..\packages\protobuf-net.2.4.4\lib\net40\protobuf-net.dll</HintPath>
     </Reference>
     <Reference Include="SnkLib.App.CookieGetter">
-      <HintPath>..\packages\SnkLib.App.CookieGetter.2.4.4.0\lib\net45\SnkLib.App.CookieGetter.dll</HintPath>
+      <HintPath>..\packages\SnkLib.App.CookieGetter.2.4.5\lib\net45\SnkLib.App.CookieGetter.dll</HintPath>
     </Reference>
     <Reference Include="SnkLib.App.CookieGetter.Forms">
-      <HintPath>..\packages\SnkLib.App.CookieGetter.Forms.1.4.3.0\lib\net45\SnkLib.App.CookieGetter.Forms.dll</HintPath>
+      <HintPath>..\packages\SnkLib.App.CookieGetter.Forms.1.4.6\lib\net45\SnkLib.App.CookieGetter.Forms.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.ClientEngine">
       <HintPath>..\packages\SuperSocket.ClientEngine.Core.0.10.0\lib\net45\SuperSocket.ClientEngine.dll</HintPath>

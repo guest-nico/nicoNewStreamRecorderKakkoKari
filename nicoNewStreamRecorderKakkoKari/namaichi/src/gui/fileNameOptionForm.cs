@@ -30,7 +30,7 @@ namespace namaichi
 			fileNameTypeText.Text = filenameformat;
 			fileNameTypeLabel.Text = 
 				util.getFileNameTypeSample(filenameformat);
-			timeTypeList.Text = (timeType == "begin") ? "開演時間" : "開場時間";
+			timeTypeList.Text = (timeType == "begin") ? "開演時刻" : (timeType == "open" ? "開場時刻" : "現在時刻");
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
@@ -45,7 +45,7 @@ namespace namaichi
 			}
 			DialogResult = DialogResult.OK;
 			ret = fileNameTypeText.Text;
-			timeTypeRet = (timeTypeList.Text == "開演時間") ? "begin" : "open";
+			timeTypeRet = (timeTypeList.Text == "開演時刻") ? "begin" : (timeTypeList.Text == "開場時刻" ? "open": "now");
 			Close();
 		}
 		void fileNameTypeCancelBtn_Click(object sender, EventArgs e)

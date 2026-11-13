@@ -123,7 +123,7 @@ namespace namaichi.rec
 				ri = new RecordInfo(_si, pageType, false);
 				setFormInfo(vpRes);
 				
-				if (pageType == 0 || pageType == 7) {
+				if (pageType == 7) {
 					return _rec(vpRes);
 				} else if (pageType == 2) {
 					form.addLogText("放送を取得できませんでした。");

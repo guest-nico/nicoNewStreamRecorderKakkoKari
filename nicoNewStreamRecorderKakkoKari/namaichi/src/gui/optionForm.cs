@@ -1075,7 +1075,6 @@ namespace namaichi
 		
 		void OptionFormLoad(object sender, EventArgs e)
 		{
-			//tabControl1.TabPages.Remove(tabPage4);
 			setFormFromConfig();
 		}
 		private void setBackColor(Color color) {

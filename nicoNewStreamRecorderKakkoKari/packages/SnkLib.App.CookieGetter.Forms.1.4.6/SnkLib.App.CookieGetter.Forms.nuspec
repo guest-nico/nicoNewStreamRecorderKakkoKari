@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>SnkLib.App.CookieGetter.Forms</id>
+    <version>1.4.6</version>
+    <title>SnkLib.App.CookieGetter.Forms</title>
+    <authors>namoshika</authors>
+    <owners>namoshika</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://www.gnu.org/licenses/lgpl-2.1.txt</licenseUrl>
+    <projectUrl>https://github.com/namoshika/SnkLib.App.CookieGetter</projectUrl>
+    <description>SnkLib.App.CookieGetterを使用し、ブラウザのCookieを取り込む際に使えるUI部品を提供します。</description>
+    <summary>This library provides extensions for Windows Forms to "SnkLib.App.CookieGetter".</summary>
+    <copyright>Copyright 2014 namoshika</copyright>
+    <tags>Browser Cookie Getter</tags>
+    <dependencies>
+      <group targetFramework=".NETFramework4.5">
+        <dependency id="SnkLib.App.CookieGetter" version="2.4.5" />
+      </group>
+      <group targetFramework=".NETFramework4.0">
+        <dependency id="SnkLib.App.CookieGetter" version="2.4.5" />
+        <dependency id="Microsoft.Bcl.Async" version="1.0.168" />
+        <dependency id="Microsoft.Net.Http" version="2.2.29" />
+      </group>
+    </dependencies>
+    <references>
+      <reference file="SnkLib.App.CookieGetter.Forms.dll" />
+    </references>
+  </metadata>
+</package>

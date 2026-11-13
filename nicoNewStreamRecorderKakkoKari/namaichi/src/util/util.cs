@@ -36,8 +36,8 @@ class app {
 }
 */
 class util {
-	public static string versionStr = "ver0.89.26";
-	public static string versionDayStr = "2026/08/22";
+	public static string versionStr = "ver0.89.27";
+	public static string versionDayStr = "2026/11/14";
 	public static bool isShowWindow = true;
 	public static bool isStdIO = false;
 	public static double dotNetVer = 0;
@@ -296,8 +296,10 @@ class util {
 	}
 	public static string getFileName(string host, string group, string title, string lvId, string communityNum, config cfg, long openTime, long beginTime, string hostId) {
 		var n = cfg.get("fileNameType");
-		//var _hiduke = DateTime.Now;
-		var _hiduke = getUnixToDatetime(cfg.get("fileNameTimeType") == "begin" ? beginTime : openTime);
+		var fileNameTimeType = cfg.get("fileNameTimeType");
+		var _hiduke = fileNameTimeType == "now" ? DateTime.Now : 
+				getUnixToDatetime(fileNameTimeType == "begin" ? beginTime : openTime);
+		
 		var month = (_hiduke.Month < 10) ? ("0" + _hiduke.Month.ToString()) : (_hiduke.Month.ToString());
 		var day = (_hiduke.Day < 10) ? ("0" + _hiduke.Day.ToString()) : (_hiduke.Day.ToString());
 		var hiduke = _hiduke.Year + "年" + month + "月" + day + "日";

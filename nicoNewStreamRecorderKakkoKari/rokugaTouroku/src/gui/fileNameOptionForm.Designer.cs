@@ -45,6 +45,7 @@ namespace rokugaTouroku
 			this.fileNameTypeDateBtn = new System.Windows.Forms.Button();
 			this.fileNameTypeDefaultBtn = new System.Windows.Forms.Button();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.timeTypeList = new System.Windows.Forms.ComboBox();
 			this.label16 = new System.Windows.Forms.Label();
 			this.label15 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
@@ -63,7 +64,6 @@ namespace rokugaTouroku
 			this.label2 = new System.Windows.Forms.Label();
 			this.FileNameTypeCancelBtn = new System.Windows.Forms.Button();
 			this.fileNameTypeOkBtn = new System.Windows.Forms.Button();
-			this.timeTypeList = new System.Windows.Forms.ComboBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -174,6 +174,19 @@ namespace rokugaTouroku
 			this.groupBox3.TabIndex = 2;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "変換記号";
+			// 
+			// timeTypeList
+			// 
+			this.timeTypeList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.timeTypeList.FormattingEnabled = true;
+			this.timeTypeList.Items.AddRange(new object[] {
+									"開演時刻",
+									"開場時刻",
+									"現在時刻"});
+			this.timeTypeList.Location = new System.Drawing.Point(17, 113);
+			this.timeTypeList.Name = "timeTypeList";
+			this.timeTypeList.Size = new System.Drawing.Size(92, 20);
+			this.timeTypeList.TabIndex = 37;
 			// 
 			// label16
 			// 
@@ -322,18 +335,6 @@ namespace rokugaTouroku
 			this.fileNameTypeOkBtn.Text = "OK";
 			this.fileNameTypeOkBtn.UseVisualStyleBackColor = true;
 			this.fileNameTypeOkBtn.Click += new System.EventHandler(this.fileNameTypeOkBtn_Click);
-			// 
-			// timeTypeList
-			// 
-			this.timeTypeList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.timeTypeList.FormattingEnabled = true;
-			this.timeTypeList.Items.AddRange(new object[] {
-									"開演時間",
-									"開場時間"});
-			this.timeTypeList.Location = new System.Drawing.Point(17, 113);
-			this.timeTypeList.Name = "timeTypeList";
-			this.timeTypeList.Size = new System.Drawing.Size(92, 20);
-			this.timeTypeList.TabIndex = 37;
 			// 
 			// fileNameOptionForm
 			// 

@@ -259,7 +259,6 @@ namespace namaichi.rec
 						resetCommentFile();
 					lastFileNumCheckTime = DateTime.Now;
 				}
-					
 			}
 
 			addDebugBuf("wsr end0");
@@ -1596,7 +1595,19 @@ namespace namaichi.rec
 				ri.si.serverTime = serverTime * 1000;
 								
 				try {
-					
+					if (isCommentFileChangeOnFileAdded && 
+					    	rm.cfg.get("fileNameType") == "10" && rm.cfg.get("fileNameTimeType") == "now") {
+						//var _f = ri.getRecFilePath(rm.cfg, rm.form);
+						var n = util.getRegGroup(commentFileName, "(\\d)$");
+						var _f = ri.getRecFilePath(rm.cfg, rm.form);//(ri.si.recFolderFileInfo[0], ri.si.recFolderFileInfo[1], ri.si.recFolderFileInfo[2], ri.si.recFolderFileInfo[3], ri.si.recFolderFileInfo[4], rm.cfg, ri.si.beginTime, ri.si.openTime, ri.si.recFolderFileInfo[5]);
+						if (_f != null) {
+							commentFileName = _f[1];
+							ri.recFolderFile = _f;
+						}
+						if (n != null) commentFileName = Regex.Replace(commentFileName, "\\d$", n);
+						util.debugWriteLine(ri.recFolderFile);
+					}
+					                          
 					if (bool.Parse(rm.cfg.get("IsgetComment")) && commentSW == null && !rfu.isPlayOnlyMode) {
 						if (DateTime.Now < lastOpenCommentSwDt + TimeSpan.FromSeconds(3) 
 						    	&& (rec.engineMode != "0" && rec.engineMode != "3")) {
